@@ -1,0 +1,6 @@
+rootProject.name = 'legui2'
+
+include 'internal'
+include 'core'
+include 'demo'
+include 'renderer.nanovg'
