@@ -1,13 +1,14 @@
 package org.liquidengine.legui;
 
+import org.liquidengine.legui.core.Window;
+
 /**
  * Created by ShchAlexander on 09.08.2018.
  */
 public class Main {
 
     public static void main(String[] args) {
-        Legui.initialize();
-        Window window = Legui.createWindow(800, 600, "Example", true);
+        Window window = new Window(800, 600, "Example", true);
 
     }
 

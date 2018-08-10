@@ -3,5 +3,5 @@
  */
 module org.liquidengine.legui.demo {
     requires org.liquidengine.legui.core;
-    requires org.liquidengine.legui.renderer.nanovg;
+    requires org.liquidengine.legui.backend.opengl32;
 }

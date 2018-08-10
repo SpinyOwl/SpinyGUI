@@ -1,6 +1,8 @@
 rootProject.name = 'legui2'
 
-include 'internal'
+include 'backend'
 include 'core'
 include 'demo'
-include 'renderer.nanovg'
+include 'backend.opengl32'
+include 'backend.opengl30'
+include 'backend.vulkan'

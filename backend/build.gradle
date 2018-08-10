@@ -1,0 +1,14 @@
+plugins {
+    id 'java-library'
+}
+def le_cbchain = '1.0.0'
+
+dependencies {
+    // https://mvnrepository.com/artifact/io.github.classgraph/classgraph
+    compile group: 'io.github.classgraph', name: 'classgraph', version: '4.0.6'
+    compile 'org.atteo.classindex:classindex:3.3'
+
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+}
+
+ext.moduleName = 'org.liquidengine.legui.backend'

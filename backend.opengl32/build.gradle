@@ -3,8 +3,9 @@ plugins {
 }
 
 dependencies {
+    api project(':core')
     api project(':backend')
     testCompile group: 'junit', name: 'junit', version: '4.12'
 }
 
-ext.moduleName = 'org.liquidengine.legui.core'
+ext.moduleName = 'org.liquidengine.legui.backend.opengl32'
