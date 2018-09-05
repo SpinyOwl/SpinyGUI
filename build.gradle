@@ -2,7 +2,6 @@ group 'org.liquidengine.legui'
 version '1.0-SNAPSHOT'
 
 subprojects {
-
     afterEvaluate {
         group 'org.liquidengine.legui'
         version '1.0-SNAPSHOT'

@@ -4,7 +4,7 @@
 /target/
 /.gradle/
 /classes/
-/out/
+*/out/*
 hs_err_pid*
 /logs/
 

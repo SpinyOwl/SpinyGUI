@@ -1,0 +1,11 @@
+plugins {
+    id 'java-library'
+}
+
+dependencies {
+    api project(':backend.external')
+    api project(':core.external')
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+}
+
+ext.moduleName = 'org.liquidengine.legui.api.external'

@@ -1,6 +1,6 @@
 package org.liquidengine.legui;
 
-import org.liquidengine.legui.core.Window;
+import org.liquidengine.legui.api.Window;
 
 /**
  * Created by ShchAlexander on 09.08.2018.
