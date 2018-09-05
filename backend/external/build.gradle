@@ -5,6 +5,7 @@ plugins {
 def lwjgl_version = '3.2.0-SNAPSHOT'
 
 dependencies {
+    api project(':backend.internal')
     implementation project(':core')
     // https://mvnrepository.com/artifact/io.github.classgraph/classgraph
     compile group: 'io.github.classgraph', name: 'classgraph', version: '4.0.6'
