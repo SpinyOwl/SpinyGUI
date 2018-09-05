@@ -6,7 +6,7 @@ plugins {
 }
 
 dependencies {
-    implementation project(':api.external')
+    implementation project(':api')
     implementation project(':backend.opengl32')
     implementation project(':backend.opengl30')
 

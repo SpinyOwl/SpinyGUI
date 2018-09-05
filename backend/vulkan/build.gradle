@@ -3,8 +3,8 @@ plugins {
 }
 
 dependencies {
-    api project(':core.external')
-    api project(':backend.external')
+    api project(':core')
+    api project(':backend')
     testCompile group: 'junit', name: 'junit', version: '4.12'
 }
 

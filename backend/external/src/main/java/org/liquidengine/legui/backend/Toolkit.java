@@ -1,4 +1,4 @@
-package org.liquidengine.legui.backend.external;
+package org.liquidengine.legui.backend;
 
 import io.github.classgraph.ClassGraph;
 import org.apache.logging.log4j.LogManager;
@@ -25,7 +25,7 @@ public abstract class Toolkit {
 
         static {
             try (var scanResult = new ClassGraph().enableAllInfo().scan()) {
-                var toolkitClasses = scanResult.getSubclasses("org.liquidengine.legui.backend.Toolkit");
+                var toolkitClasses = scanResult.getSubclasses("Toolkit");
                 var toolkitClassRefs = toolkitClasses.loadClasses();
                 if (toolkitClassRefs != null && !toolkitClassRefs.isEmpty()) {
                     for (var toolkitClass : toolkitClassRefs) {

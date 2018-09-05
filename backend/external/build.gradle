@@ -5,7 +5,7 @@ plugins {
 def lwjgl_version = '3.2.0-SNAPSHOT'
 
 dependencies {
-    implementation project(':core.external')
+    implementation project(':core')
     // https://mvnrepository.com/artifact/io.github.classgraph/classgraph
     compile group: 'io.github.classgraph', name: 'classgraph', version: '4.0.6'
 
@@ -19,4 +19,4 @@ dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.12'
 }
 
-ext.moduleName = 'org.liquidengine.legui.backend.external'
+ext.moduleName = 'org.liquidengine.legui.backend'
