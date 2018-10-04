@@ -3,6 +3,6 @@
  */
 module org.liquidengine.legui.backend.vulkan {
     requires org.liquidengine.legui.backend;
-    requires transitive org.liquidengine.legui.core;
+    requires org.liquidengine.legui.core;
     exports org.liquidengine.legui.backend.vulkan;
 }

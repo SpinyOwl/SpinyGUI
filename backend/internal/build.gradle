@@ -1,9 +1,0 @@
-plugins {
-    id 'java-library'
-}
-
-dependencies {
-    api project(':backend.internal')
-}
-
-ext.moduleName = 'org.liquidengine.legui.backend.internal'

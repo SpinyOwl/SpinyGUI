@@ -1,0 +1,8 @@
+plugins {
+    id 'java-library'
+}
+
+dependencies{
+    compile group: 'io.github.classgraph', name: 'classgraph', version: '4.0.6'
+}
+ext.moduleName = 'org.liquidengine.legui.core.system'

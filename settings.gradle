@@ -1,29 +1,22 @@
 rootProject.name = 'legui2'
 
-include 'core'
-include 'core.internal'
+include 'legui'
 
-include 'api'
-include 'api.internal'
+include 'core.component'
+include 'core.system'
 
 include 'backend'
-include 'backend.internal'
 
 include 'backend.opengl32'
-include 'backend.opengl30'
-include 'backend.vulkan'
 
-include 'demo'
+include 'demo.simple'
 include 'demo.integrated'
 
 project(":backend").projectDir = file("backend/external")
-project(":backend.internal").projectDir = file("backend/internal")
 project(":backend.opengl32").projectDir = file("backend/opengl32")
-project(":backend.opengl30").projectDir = file("backend/opengl30")
-project(":backend.vulkan").projectDir = file("backend/vulkan")
 
-project(":core").projectDir = file("core/external")
-project(":core.internal").projectDir = file("core/internal")
+project(":core.system").projectDir = file("core/system")
+project(":core.component").projectDir = file("core/component")
 
-project(":api").projectDir = file("api/external")
-project(":api.internal").projectDir = file("api/internal")
+project(":demo.simple").projectDir = file("demo/simple")
+project(":demo.integrated").projectDir = file("demo/integrated")

@@ -1,0 +1,71 @@
+import java.util.regex.Matcher
+
+plugins {
+    id 'java'
+    id 'application'
+}
+
+def lwjgl_version = '3.2.1-SNAPSHOT'
+
+dependencies {
+    compile group: 'org.lwjgl',  name: 'lwjgl',        version: lwjgl_version,  changing: true
+    runtime group: 'org.lwjgl',  name: 'lwjgl',        version: lwjgl_version,  changing: true,  classifier: 'natives-windows'
+    runtime group: 'org.lwjgl',  name: 'lwjgl',        version: lwjgl_version,  changing: true,  classifier: 'natives-linux'
+    runtime group: 'org.lwjgl',  name: 'lwjgl',        version: lwjgl_version,  changing: true,  classifier: 'natives-macos'
+
+    compile group: 'org.lwjgl',  name: 'lwjgl-glfw',   version: lwjgl_version,  changing: true
+    runtime group: 'org.lwjgl',  name: 'lwjgl-glfw',   version: lwjgl_version,  changing: true,  classifier: 'natives-windows'
+    runtime group: 'org.lwjgl',  name: 'lwjgl-glfw',   version: lwjgl_version,  changing: true,  classifier: 'natives-linux'
+    runtime group: 'org.lwjgl',  name: 'lwjgl-glfw',   version: lwjgl_version,  changing: true,  classifier: 'natives-macos'
+
+    compile group: 'org.lwjgl',  name: 'lwjgl-opengl', version: lwjgl_version,  changing: true
+    compile group: 'org.lwjgl',  name: 'lwjgl-opengl', version: lwjgl_version,  changing: true,  classifier: 'natives-windows'
+    compile group: 'org.lwjgl',  name: 'lwjgl-opengl', version: lwjgl_version,  changing: true,  classifier: 'natives-linux'
+    compile group: 'org.lwjgl',  name: 'lwjgl-opengl', version: lwjgl_version,  changing: true,  classifier: 'natives-macos'
+
+    implementation project(':core.system')
+    implementation project(':core.component')
+    implementation project(':backend')
+    implementation project(':backend.opengl32')
+//    implementation project(':backend.opengl30')
+
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+}
+
+ext.moduleName = 'org.liquidengine.legui.demo.integrated'
+
+
+mainClassName = "$moduleName/Main"
+
+
+run {
+    inputs.property("moduleName", moduleName)
+    doFirst {
+        jvmArgs = [
+                '--patch-module',
+                '--module-path', classpath.asPath,
+                '--module', mainClassName // <2>
+        ]
+        classpath = files()
+    }
+}
+
+startScripts {
+    inputs.property("moduleName", moduleName)
+    doFirst {
+        classpath = files()
+        defaultJvmOpts = [
+                '--module-path', 'APP_HOME_LIBS',  // <1>
+                '--module', mainClassName
+        ]
+    }
+    doLast{
+        def bashFile = new File(outputDir, applicationName)
+        String bashContent = bashFile.text
+        bashFile.text = bashContent.replaceFirst('APP_HOME_LIBS', Matcher.quoteReplacement('$APP_HOME/lib'))
+
+        def batFile = new File(outputDir, applicationName + ".bat")
+        String batContent = batFile.text
+        batFile.text = batContent.replaceFirst('APP_HOME_LIBS', Matcher.quoteReplacement('%APP_HOME%\\lib'))
+    }
+}
