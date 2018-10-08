@@ -19,8 +19,8 @@
 //    private static volatile boolean running = false;
 //
 //    public static void main(String[] args) throws IOException {
-//        LeguiCore.setProperty("joml.nounsafe", Boolean.TRUE.toString());
-//        LeguiCore.setProperty("java.awt.headless", Boolean.TRUE.toString());
+//        Legui.setProperty("joml.nounsafe", Boolean.TRUE.toString());
+//        Legui.setProperty("java.awt.headless", Boolean.TRUE.toString());
 //        if (!GLFW.glfwInit()) {
 //            throw new RuntimeException("Can't initialize GLFW");
 //        }
@@ -61,7 +61,7 @@
 //        keeper.getChainKeyCallback().add(glfwKeyCallbackI);
 //        keeper.getChainWindowCloseCallback().add(glfwWindowCloseCallbackI);
 //
-//        // Event processor for system events. LeguiCore events should be processed and translated to gui events.
+//        // Event processor for system events. Legui events should be processed and translated to gui events.
 //        SystemEventProcessor systemEventProcessor = new SystemEventProcessor();
 //        systemEventProcessor.addDefaultCallbacks(keeper);
 //
@@ -154,7 +154,7 @@
 //            }
 //        });
 //
-//        button.getListenerMap().addListener(CursorEnterEvent.class, (CursorEnterEventListener) LeguiCore.out::println);
+//        button.getListenerMap().addListener(CursorEnterEvent.class, (CursorEnterEventListener) Legui.out::println);
 //
 //        frame.getContainer().add(button);
 //    }

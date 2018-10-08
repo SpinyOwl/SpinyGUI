@@ -1,12 +1,12 @@
 package org.liquidengine.legui.backend.opengl32;
 
-import org.liquidengine.legui.core.LeguiCore;
+import org.liquidengine.legui.core.Legui;
 import org.liquidengine.legui.core.api.Monitor;
 import org.liquidengine.legui.core.api.Window;
 
 import java.util.List;
 
-public class OpenGL32Core extends LeguiCore {
+public class LeguiOpenGL32 extends Legui {
     {
         System.out.println("INITIALIZED WITH OpenGL 32 CORE");
     }
