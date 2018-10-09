@@ -25,4 +25,9 @@ public interface Window {
     void setPosition(int x, int y);
 
     void setSize(int width, int height);
+
+    boolean isVisible();
+
+    void setVisible(boolean visible);
+
 }

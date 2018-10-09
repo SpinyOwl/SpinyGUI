@@ -10,7 +10,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
 public abstract class Legui {
-
     private static final Logger LOGGER = LogManager.getLogger();
     private static Legui insance;
 
@@ -20,6 +19,14 @@ public abstract class Legui {
 
     public static Window createWindow(int width, int height, String title, boolean fullscreen) {
         return getInstance()._createWindow(width, height, title, fullscreen);
+    }
+
+    public static void destroyWindow(Window window) {
+        getInstance()._destroyWindow(window);
+    }
+
+    public static List<Window> getWindows() {
+        return getInstance()._getWindows();
     }
 
     public static Monitor getPrimaryMonitor() {
@@ -35,6 +42,10 @@ public abstract class Legui {
     protected abstract List<Monitor> _getMonitors();
 
     protected abstract Window _createWindow(int width, int height, String title, boolean fullscreen);
+
+    protected abstract void _destroyWindow(Window window);
+
+    protected abstract List<Window> _getWindows();
 
     private static final class SystemInitializer {
         private static Legui instance;

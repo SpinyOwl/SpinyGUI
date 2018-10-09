@@ -1,7 +1,7 @@
 package org.liquidengine.legui.demo;
 
-import org.liquidengine.legui.backend.opengl32.LeguiOpenGL32;
 import org.liquidengine.legui.core.Legui;
+import org.liquidengine.legui.backend.opengl32.LeguiOpenGL32;
 import org.liquidengine.legui.core.api.Monitor;
 import org.liquidengine.legui.core.api.Window;
 

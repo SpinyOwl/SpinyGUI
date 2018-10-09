@@ -19,7 +19,7 @@ subprojects {
             compile group: 'org.apache.logging.log4j', name: 'log4j-core', version: '2.11.1'
         }
 
-        sourceCompatibility = 1.10
+        sourceCompatibility = 1.11
 
         compileJava {
             doFirst {

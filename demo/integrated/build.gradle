@@ -9,23 +9,21 @@ def lwjgl_version = '3.2.1-SNAPSHOT'
 
 dependencies {
     compile group: 'org.lwjgl',  name: 'lwjgl',        version: lwjgl_version,  changing: true
-    runtime group: 'org.lwjgl',  name: 'lwjgl',        version: lwjgl_version,  changing: true,  classifier: 'natives-windows'
-    runtime group: 'org.lwjgl',  name: 'lwjgl',        version: lwjgl_version,  changing: true,  classifier: 'natives-linux'
-    runtime group: 'org.lwjgl',  name: 'lwjgl',        version: lwjgl_version,  changing: true,  classifier: 'natives-macos'
+    compile group: 'org.lwjgl',  name: 'lwjgl',        version: lwjgl_version,  changing: true,  classifier: 'natives-windows'
+    compile group: 'org.lwjgl',  name: 'lwjgl',        version: lwjgl_version,  changing: true,  classifier: 'natives-linux'
+    compile group: 'org.lwjgl',  name: 'lwjgl',        version: lwjgl_version,  changing: true,  classifier: 'natives-macos'
 
     compile group: 'org.lwjgl',  name: 'lwjgl-glfw',   version: lwjgl_version,  changing: true
-    runtime group: 'org.lwjgl',  name: 'lwjgl-glfw',   version: lwjgl_version,  changing: true,  classifier: 'natives-windows'
-    runtime group: 'org.lwjgl',  name: 'lwjgl-glfw',   version: lwjgl_version,  changing: true,  classifier: 'natives-linux'
-    runtime group: 'org.lwjgl',  name: 'lwjgl-glfw',   version: lwjgl_version,  changing: true,  classifier: 'natives-macos'
+    compile group: 'org.lwjgl',  name: 'lwjgl-glfw',   version: lwjgl_version,  changing: true,  classifier: 'natives-windows'
+    compile group: 'org.lwjgl',  name: 'lwjgl-glfw',   version: lwjgl_version,  changing: true,  classifier: 'natives-linux'
+    compile group: 'org.lwjgl',  name: 'lwjgl-glfw',   version: lwjgl_version,  changing: true,  classifier: 'natives-macos'
 
     compile group: 'org.lwjgl',  name: 'lwjgl-opengl', version: lwjgl_version,  changing: true
     compile group: 'org.lwjgl',  name: 'lwjgl-opengl', version: lwjgl_version,  changing: true,  classifier: 'natives-windows'
     compile group: 'org.lwjgl',  name: 'lwjgl-opengl', version: lwjgl_version,  changing: true,  classifier: 'natives-linux'
     compile group: 'org.lwjgl',  name: 'lwjgl-opengl', version: lwjgl_version,  changing: true,  classifier: 'natives-macos'
 
-    implementation project(':core.system')
-    implementation project(':core.component')
-    implementation project(':backend')
+    implementation project(':core')
     implementation project(':backend.opengl32')
 //    implementation project(':backend.opengl30')
 

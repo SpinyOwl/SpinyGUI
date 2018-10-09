@@ -2,21 +2,14 @@ rootProject.name = 'legui2'
 
 include 'legui'
 
-include 'core.component'
-include 'core.system'
-
-include 'backend'
+include 'core'
 
 include 'backend.opengl32'
 
 include 'demo.simple'
 include 'demo.integrated'
 
-project(":backend").projectDir = file("backend/external")
 project(":backend.opengl32").projectDir = file("backend/opengl32")
-
-project(":core.system").projectDir = file("core/system")
-project(":core.component").projectDir = file("core/component")
 
 project(":demo.simple").projectDir = file("demo/simple")
 project(":demo.integrated").projectDir = file("demo/integrated")

@@ -25,4 +25,14 @@ public class LeguiOpenGL32 extends Legui {
     protected Window _createWindow(int width, int height, String title, boolean fullscreen) {
         return null;
     }
+
+    @Override
+    protected void _destroyWindow(Window window) {
+
+    }
+
+    @Override
+    protected List<Window> _getWindows() {
+        return null;
+    }
 }

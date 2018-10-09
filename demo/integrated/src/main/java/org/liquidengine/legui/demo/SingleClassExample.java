@@ -1,15 +1,18 @@
 //package org.liquidengine.legui.demo;
 //
+//import org.liquidengine.legui.core.component.*;
 //import org.lwjgl.glfw.GLFW;
 //import org.lwjgl.glfw.GLFWKeyCallbackI;
 //import org.lwjgl.glfw.GLFWWindowCloseCallbackI;
 //import org.lwjgl.opengl.GL;
 //
+//import javax.swing.text.html.StyleSheet;
 //import java.io.IOException;
 //import java.util.ArrayList;
 //import java.util.List;
 //
 //import static org.lwjgl.glfw.GLFW.*;
+//import static org.lwjgl.opengl.GL11.*;
 //import static org.lwjgl.system.MemoryUtil.NULL;
 //
 //public class SingleClassExample {
@@ -19,8 +22,8 @@
 //    private static volatile boolean running = false;
 //
 //    public static void main(String[] args) throws IOException {
-//        Legui.setProperty("joml.nounsafe", Boolean.TRUE.toString());
-//        Legui.setProperty("java.awt.headless", Boolean.TRUE.toString());
+//        System.setProperty("joml.nounsafe", Boolean.TRUE.toString());
+//        System.setProperty("java.awt.headless", Boolean.TRUE.toString());
 //        if (!GLFW.glfwInit()) {
 //            throw new RuntimeException("Can't initialize GLFW");
 //        }
@@ -137,46 +140,46 @@
 //    }
 //
 //    private static void createGuiElements(Frame frame) {
-//        // Set background color for frame
-//        frame.getContainer().getStyle().getBackground().setColor(ColorConstants.lightBlue());
-//
-//        Button button = new Button("Add components", 20, 20, 160, 30);
-//        SimpleLineBorder border = new SimpleLineBorder(ColorConstants.black(), 1);
-//        button.getStyle().setBorder(border);
-//
-//        boolean[] added = {false};
-//        button.getListenerMap().addListener(MouseClickEvent.class, (MouseClickEventListener) event -> {
-//            if (!added[0]) {
-//                added[0] = true;
-//                for (Component c : generateOnFly()) {
-//                    frame.getContainer().add(c);
-//                }
-//            }
-//        });
-//
-//        button.getListenerMap().addListener(CursorEnterEvent.class, (CursorEnterEventListener) Legui.out::println);
-//
-//        frame.getContainer().add(button);
+////        // Set background color for frame
+////        frame.getContainer().getStyle().getBackground().setColor(ColorConstants.lightBlue());
+////
+////        Button button = new Button("Add components", 20, 20, 160, 30);
+////        SimpleLineBorder border = new SimpleLineBorder(ColorConstants.black(), 1);
+////        button.getStyle().setBorder(border);
+////
+////        boolean[] added = {false};
+////        button.getListenerMap().addListener(MouseClickEvent.class, (MouseClickEventListener) event -> {
+////            if (!added[0]) {
+////                added[0] = true;
+////                for (Component c : generateOnFly()) {
+////                    frame.getContainer().add(c);
+////                }
+////            }
+////        });
+////
+////        button.getListenerMap().addListener(CursorEnterEvent.class, (CursorEnterEventListener) System.out::println);
+////
+////        frame.getContainer().add(button);
 //    }
 //
 //    private static List<Component> generateOnFly() {
-//        List<Component> list = new ArrayList<>();
-//
-//        Label label = new Label(20, 60, 200, 20);
-//        label.getTextState().setText("Generated on fly label");
-//        label.getTextState().setTextColor(ColorConstants.red());
-//
-//        RadioButtonGroup group = new RadioButtonGroup();
-//        RadioButton radioButtonFirst = new RadioButton("First", 20, 90, 200, 20);
-//        RadioButton radioButtonSecond = new RadioButton("Second", 20, 110, 200, 20);
-//
-//        radioButtonFirst.setRadioButtonGroup(group);
-//        radioButtonSecond.setRadioButtonGroup(group);
-//
-//        list.add(label);
-//        list.add(radioButtonFirst);
-//        list.add(radioButtonSecond);
-//
-//        return list;
+////        List<Component> list = new ArrayList<>();
+////
+////        Label label = new Label(20, 60, 200, 20);
+////        label.getTextState().setText("Generated on fly label");
+////        label.getTextState().setTextColor(ColorConstants.red());
+////
+////        RadioButtonGroup group = new RadioButtonGroup();
+////        RadioButton radioButtonFirst = new RadioButton("First", 20, 90, 200, 20);
+////        RadioButton radioButtonSecond = new RadioButton("Second", 20, 110, 200, 20);
+////
+////        radioButtonFirst.setRadioButtonGroup(group);
+////        radioButtonSecond.setRadioButtonGroup(group);
+////
+////        list.add(label);
+////        list.add(radioButtonFirst);
+////        list.add(radioButtonSecond);
+////
+////        return list;
 //    }
 //}
