@@ -16,6 +16,8 @@ public class Main {
         Monitor monitor = Legui.getPrimaryMonitor();
         Window window = Legui.createWindow(800, 600, "Example", true);
         window.setPosition(50,50);
+
+
 //        window.setVisible(true);
 //        window.addCloseEventListener(event -> Legui.destroyWindow(window));
 //        window.
