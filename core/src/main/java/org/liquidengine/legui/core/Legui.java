@@ -17,8 +17,18 @@ public abstract class Legui {
         return SystemInitializer.instance;
     }
 
-    public static Window createWindow(int width, int height, String title, boolean fullscreen) {
-        return getInstance()._createWindow(width, height, title, fullscreen);
+    /**
+     * Creates window with specified resolution (width, height) and title.
+     * Creates fullscreen window if monitor specified.
+     *
+     * @param width the desired width, in screen coordinates, of the window
+     * @param height the desired height, in screen coordinates, of the window
+     * @param title initial, UTF-8 encoded window title
+     * @param monitor monitor to use for fullscreen mode or null for windowed mode.
+     * @return new window.
+     */
+    public static Window createWindow(int width, int height, String title, Monitor monitor) {
+        return getInstance()._createWindow(width, height, title, monitor);
     }
 
     public static void destroyWindow(Window window) {
@@ -41,7 +51,7 @@ public abstract class Legui {
 
     protected abstract List<Monitor> _getMonitors();
 
-    protected abstract Window _createWindow(int width, int height, String title, boolean fullscreen);
+    protected abstract Window _createWindow(int width, int height, String title, Monitor monitor);
 
     protected abstract void _destroyWindow(Window window);
 

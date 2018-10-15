@@ -1,4 +1,4 @@
 package org.liquidengine.legui.core.component;
 
-public class RadioButton extends Component {
+public class RadioButton {
 }

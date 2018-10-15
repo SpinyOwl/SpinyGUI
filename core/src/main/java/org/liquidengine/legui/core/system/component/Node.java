@@ -1,22 +1,16 @@
 package org.liquidengine.legui.core.system.component;
 
+
+import java.util.Map;
+
 public abstract class Node {
 
-    private String name;
     private Node parent;
 
     private float x;
     private float y;
     private float width;
     private float height;
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
 
     public Node getParent() {
         return parent;
@@ -63,7 +57,37 @@ public abstract class Node {
         this.height = height;
     }
 
-    protected abstract void removeChild(Node node);
+    public abstract void removeChild(Node node);
 
-    protected abstract void addChild(Node node);
+    public abstract void addChild(Node node);
+
+    /**
+     * Returns unmodifiable collection of node attributes.
+     *
+     * @return unmodifiable collection of node attributes.
+     */
+    public abstract Map<String, String> getAttributes();
+
+    /**
+     * Used to set attribute.
+     *
+     * @param key   attribute name.
+     * @param value attribute value.
+     */
+    public abstract void setAttribute(String key, String value);
+
+    /**
+     * Used to get attribute.
+     *
+     * @param key attribute name.
+     * @return attribute value.
+     */
+    public abstract String getAttribute(String key);
+
+    /**
+     * Used to remove attribute.
+     *
+     * @param key attribute name.
+     */
+    public abstract void removeAttribute(String key);
 }

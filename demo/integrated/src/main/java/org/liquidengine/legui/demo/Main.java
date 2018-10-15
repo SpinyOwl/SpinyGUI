@@ -14,7 +14,7 @@ public class Main {
         LeguiOpenGL32 f;
 
         Monitor monitor = Legui.getPrimaryMonitor();
-        Window window = Legui.createWindow(800, 600, "Example", true);
+        Window window = Legui.createWindow(800, 600, "Example", null);
         window.setPosition(50,50);
 
 

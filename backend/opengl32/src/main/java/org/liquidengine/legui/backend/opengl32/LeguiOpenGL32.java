@@ -22,7 +22,7 @@ public class LeguiOpenGL32 extends Legui {
     }
 
     @Override
-    protected Window _createWindow(int width, int height, String title, boolean fullscreen) {
+    protected Window _createWindow(int width, int height, String title, Monitor monitor) {
         return null;
     }
 
