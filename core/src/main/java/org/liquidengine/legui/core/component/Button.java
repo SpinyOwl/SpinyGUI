@@ -1,7 +1,7 @@
 package org.liquidengine.legui.core.component;
 
-import org.liquidengine.legui.core.system.component.Element;
+import org.liquidengine.legui.core.component.base.Component;
 
-public class Button extends Element {
+public class Button extends Component {
 
 }

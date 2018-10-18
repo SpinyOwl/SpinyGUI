@@ -1,8 +1,8 @@
 package org.liquidengine.legui.core.component;
 
-import org.liquidengine.legui.core.system.component.EmptyElement;
+import org.liquidengine.legui.core.component.base.EmptyComponent;
 
-public class Input extends EmptyElement {
+public class Input extends EmptyComponent {
 
 
     public String getValue() {

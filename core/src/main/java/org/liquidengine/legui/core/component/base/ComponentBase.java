@@ -1,22 +1,23 @@
-package org.liquidengine.legui.core.system.component;
+package org.liquidengine.legui.core.component.base;
 
 
+import java.util.List;
 import java.util.Map;
 
-public abstract class Node {
+public abstract class ComponentBase {
 
-    private Node parent;
+    private ComponentBase parent;
 
     private float x;
     private float y;
     private float width;
     private float height;
 
-    public Node getParent() {
+    public ComponentBase getParent() {
         return parent;
     }
 
-    public void setParent(Node parent) {
+    public void setParent(ComponentBase parent) {
         if (parent == this) return;
         if (parent == null) throw new NullPointerException("Parent node could not be null.");
 
@@ -57,9 +58,21 @@ public abstract class Node {
         this.height = height;
     }
 
-    public abstract void removeChild(Node node);
+    public abstract void removeChild(ComponentBase component);
 
-    public abstract void addChild(Node node);
+    public abstract void addChild(ComponentBase component);
+
+    public ComponentBase add(ComponentBase component) {
+        this.addChild(component);
+        return this;
+    }
+
+    public ComponentBase remove(ComponentBase component) {
+        this.removeChild(component);
+        return this;
+    }
+
+    public abstract List<ComponentBase> getChildBaseComponents();
 
     /**
      * Returns unmodifiable collection of node attributes.

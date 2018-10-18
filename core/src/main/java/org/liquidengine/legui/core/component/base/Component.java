@@ -1,5 +1,7 @@
-package org.liquidengine.legui.core.system.component;
+package org.liquidengine.legui.core.component.base;
 
+
+import com.google.common.base.Objects;
 
 import java.util.Collections;
 import java.util.List;
@@ -7,28 +9,33 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-public class Element extends Node {
+public abstract class Component extends ComponentBase {
 
     private Map<String, String> attributes = new ConcurrentHashMap<>();
 
-    private List<Node> childComponents = new CopyOnWriteArrayList<>();
+    private List<ComponentBase> childBaseComponents = new CopyOnWriteArrayList<>();
 
 
     @Override
-    public void removeChild(Node node) {
-        childComponents.remove(node);
+    public void removeChild(ComponentBase component) {
+        childBaseComponents.remove(component);
     }
 
     @Override
-    public void addChild(Node node) {
-        if (node == null || node == this || isContainsByRef(node)) return;
+    public void addChild(ComponentBase component) {
+        if (component == null || component == this || isContainsByRef(component)) return;
 
-        Node parent = node.getParent();
-        if (parent != null) parent.removeChild(node);
+        ComponentBase parent = component.getParent();
+        if (parent != null) parent.removeChild(component);
 
-        childComponents.add(node);
+        childBaseComponents.add(component);
 
-        node.setParent(this);
+        component.setParent(this);
+    }
+
+    @Override
+    public List<ComponentBase> getChildBaseComponents() {
+        return Collections.unmodifiableList(childBaseComponents);
     }
 
     /**
@@ -73,8 +80,8 @@ public class Element extends Node {
         attributes.remove(key);
     }
 
-    private boolean isContainsByRef(Node node) {
-        return childComponents.stream().anyMatch(n -> n == node);
+    private boolean isContainsByRef(ComponentBase component) {
+        return childBaseComponents.stream().anyMatch(n -> n == component);
     }
 
     public String getClassAttribute() {
@@ -93,5 +100,17 @@ public class Element extends Node {
         setAttribute("id", id);
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Component component = (Component) o;
+        return Objects.equal(attributes, component.attributes) &&
+                Objects.equal(childBaseComponents, component.childBaseComponents);
+    }
 
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(attributes, childBaseComponents);
+    }
 }

@@ -4,9 +4,12 @@ import org.liquidengine.legui.core.Legui;
 import org.liquidengine.legui.core.api.Monitor;
 import org.liquidengine.legui.core.api.Window;
 import org.liquidengine.legui.core.component.Button;
+import org.liquidengine.legui.core.component.Panel;
 import org.liquidengine.legui.core.component.Input;
-import org.liquidengine.legui.core.system.component.Element;
-import org.liquidengine.legui.core.system.component.TextNode;
+import org.liquidengine.legui.core.component.RadioButton;
+import org.liquidengine.legui.core.component.base.ComponentBase;
+import org.liquidengine.legui.core.component.base.TextComponent;
+import org.liquidengine.legui.core.converter.ComponentMarshaller;
 
 
 /**
@@ -17,19 +20,26 @@ public class Main {
     public static void main(String[] args) throws Exception {
         Monitor monitor = Legui.getPrimaryMonitor();
         Window window = Legui.createWindow(800, 600, "Example", null);
-//        window.setSize(800, 600);
-//        window.setPosition(50,50);
-//        window.setVisible(true);
-//        window.setTitle("Example 2");
+
+        Input input = new Input();
+        input.setName("password");
+        input.setValue("PASS_@!@#&");
+        ComponentBase element = new Panel()
+                .add(new Button()
+                        .add(new TextComponent("Hello World "))
+                        .add(new Panel()
+                                .add(new TextComponent("Bold"))
+                        )
+                )
+                .add(input)
+                .add(new RadioButton());
 
 
-        Element element = new Element();
-        Button node = new Button();
-        TextNode textNode = new TextNode();
-        node.addChild(textNode);
-        element.addChild(node);
-        element.addChild(new Input());
+        String xml = ComponentMarshaller.marshal(element);
+        System.out.println(xml);
 
+        ComponentBase unmarshal = ComponentMarshaller.unmarshal(xml);
+        System.out.println(ComponentMarshaller.marshal(unmarshal));
 //        window.addCloseEventListener(event -> Legui.destroyWindow(window));
 //        window.
     }
