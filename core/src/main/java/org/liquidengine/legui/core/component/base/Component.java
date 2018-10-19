@@ -1,52 +1,90 @@
 package org.liquidengine.legui.core.component.base;
 
 
-import com.google.common.base.Objects;
-
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.CopyOnWriteArrayList;
 
-public abstract class Component extends ComponentBase {
+public abstract class Component {
 
-    private Map<String, String> attributes = new ConcurrentHashMap<>();
+    private Component parent;
 
-    private List<ComponentBase> childBaseComponents = new CopyOnWriteArrayList<>();
+    private float x;
+    private float y;
+    private float width;
+    private float height;
 
-
-    @Override
-    public void removeChild(ComponentBase component) {
-        childBaseComponents.remove(component);
+    public Component getParent() {
+        return parent;
     }
 
-    @Override
-    public void addChild(ComponentBase component) {
-        if (component == null || component == this || isContainsByRef(component)) return;
+    public void setParent(Component parent) {
+        if (parent == this) return;
+        if (parent == null) throw new NullPointerException("Parent node could not be null.");
 
-        ComponentBase parent = component.getParent();
-        if (parent != null) parent.removeChild(component);
-
-        childBaseComponents.add(component);
-
-        component.setParent(this);
+        if (this.parent != null) this.parent.removeChild(this);
+        this.parent = parent;
+        parent.addChild(this);
     }
 
-    @Override
-    public List<ComponentBase> getChildBaseComponents() {
-        return Collections.unmodifiableList(childBaseComponents);
+    public float getX() {
+        return x;
     }
+
+    public void setX(float x) {
+        this.x = x;
+    }
+
+    public float getY() {
+        return y;
+    }
+
+    public void setY(float y) {
+        this.y = y;
+    }
+
+    public float getWidth() {
+        return width;
+    }
+
+    public void setWidth(float width) {
+        this.width = width;
+    }
+
+    public float getHeight() {
+        return height;
+    }
+
+    public void setHeight(float height) {
+        this.height = height;
+    }
+
+    public abstract void removeChild(Component component);
+
+    public abstract void addChild(Component component);
+
+    /**
+     * Builder method that calls {@link #addChild(Component)} method and returns {@literal this}.
+     * @param component component to add.
+     * @return this.
+     */
+    public final Component add(Component component) {
+        this.addChild(component);
+        return this;
+    }
+
+    public final Component remove(Component component) {
+        this.removeChild(component);
+        return this;
+    }
+
+    public abstract List<Component> getChildComponents();
 
     /**
      * Returns unmodifiable collection of node attributes.
      *
      * @return unmodifiable collection of node attributes.
      */
-    @Override
-    public Map<String, String> getAttributes() {
-        return Collections.unmodifiableMap(attributes);
-    }
+    public abstract Map<String, String> getAttributes();
 
     /**
      * Used to set attribute.
@@ -54,10 +92,7 @@ public abstract class Component extends ComponentBase {
      * @param key   attribute name.
      * @param value attribute value.
      */
-    @Override
-    public void setAttribute(String key, String value) {
-        attributes.put(key, value);
-    }
+    public abstract void setAttribute(String key, String value);
 
     /**
      * Used to get attribute.
@@ -65,52 +100,12 @@ public abstract class Component extends ComponentBase {
      * @param key attribute name.
      * @return attribute value.
      */
-    @Override
-    public String getAttribute(String key) {
-        return attributes.get(key);
-    }
+    public abstract String getAttribute(String key);
 
     /**
      * Used to remove attribute.
      *
      * @param key attribute name.
      */
-    @Override
-    public void removeAttribute(String key) {
-        attributes.remove(key);
-    }
-
-    private boolean isContainsByRef(ComponentBase component) {
-        return childBaseComponents.stream().anyMatch(n -> n == component);
-    }
-
-    public String getClassAttribute() {
-        return getAttribute("class");
-    }
-
-    public void setClassAttribute(String classAttribute) {
-        setAttribute("class", classAttribute);
-    }
-
-    public String getId() {
-        return getAttribute("id");
-    }
-
-    public void setId(String id) {
-        setAttribute("id", id);
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Component component = (Component) o;
-        return Objects.equal(attributes, component.attributes) &&
-                Objects.equal(childBaseComponents, component.childBaseComponents);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hashCode(attributes, childBaseComponents);
-    }
+    public abstract void removeAttribute(String key);
 }

@@ -1,27 +1,27 @@
 package org.liquidengine.legui.core.component.base;
 
-public abstract class EmptyComponent extends Component {
+public abstract class EmptyComponent extends Container {
 
     /**
-     * Child operations are not supported for TextComponent.
+     * Child operations are not supported for {@link Text}.
      *
      * @param component component.
-     * @throws UnsupportedOperationException because child operations are not supported for TextComponent.
+     * @throws UnsupportedOperationException because child operations are not supported for {@link Text}.
      */
     @Override
-    public void removeChild(ComponentBase component) {
-        throw new UnsupportedOperationException("Child operations are not supported for TextComponent");
+    public final void removeChild(Component component) {
+        throw new UnsupportedOperationException("Child operations are not supported for Text.");
     }
 
     /**
-     * Child operations are not supported for TextComponent.
+     * Child operations are not supported for {@link Text}.
      *
      * @param component component.
-     * @throws UnsupportedOperationException because child operations are not supported for TextComponent.
+     * @throws UnsupportedOperationException because child operations are not supported for {@link Text}.
      */
     @Override
-    public void addChild(ComponentBase component) {
-        throw new UnsupportedOperationException("Child operations are not supported for TextComponent");
+    public final void addChild(Component component) {
+        throw new UnsupportedOperationException("Child operations are not supported for Text.");
     }
 
 }

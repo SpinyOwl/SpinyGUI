@@ -1,6 +1,6 @@
 package org.liquidengine.legui.core.component;
 
-import org.liquidengine.legui.core.component.base.Component;
+import org.liquidengine.legui.core.component.base.Container;
 
-public class Panel extends Component {
+public class Panel extends Container {
 }

@@ -151,7 +151,7 @@
 ////        button.getListenerMap().addListener(MouseClickEvent.class, (MouseClickEventListener) event -> {
 ////            if (!added[0]) {
 ////                added[0] = true;
-////                for (Component c : generateOnFly()) {
+////                for (Container c : generateOnFly()) {
 ////                    frame.getContainer().add(c);
 ////                }
 ////            }
@@ -162,8 +162,8 @@
 ////        frame.getContainer().add(button);
 //    }
 //
-//    private static List<Component> generateOnFly() {
-////        List<Component> list = new ArrayList<>();
+//    private static List<Container> generateOnFly() {
+////        List<Container> list = new ArrayList<>();
 ////
 ////        Label label = new Label(20, 60, 200, 20);
 ////        label.getTextState().setText("Generated on fly label");
