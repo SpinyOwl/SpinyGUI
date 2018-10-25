@@ -9,5 +9,6 @@ module org.liquidengine.legui.demo.integrated {
     requires org.lwjgl.opengl;
 
     requires org.liquidengine.legui.core;
+    requires org.liquidengine.legui.backend;
     requires org.liquidengine.legui.backend.opengl32;
 }

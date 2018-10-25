@@ -4,12 +4,12 @@ include 'legui'
 
 include 'core'
 
+include 'backend'
 include 'backend.opengl32'
 
 include 'demo.simple'
 include 'demo.integrated'
 
-project(":backend.opengl32").projectDir = file("backend/opengl32")
 
 project(":demo.simple").projectDir = file("demo/simple")
 project(":demo.integrated").projectDir = file("demo/integrated")

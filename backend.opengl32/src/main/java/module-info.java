@@ -3,6 +3,7 @@
  */
 open module org.liquidengine.legui.backend.opengl32 {
     requires org.liquidengine.legui.core;
+    requires org.liquidengine.legui.backend;
 
     requires org.lwjgl;
     requires org.lwjgl.natives;

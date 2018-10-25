@@ -17,7 +17,7 @@ public class Main {
         Window window = Legui.createWindow(800, 600, "Example", null);
         window.setPosition(50,50);
 
-
+//        org.liquidengine.legui.core.system.renderer.
 //        window.setVisible(true);
 //        window.addCloseEventListener(event -> Legui.destroyWindow(window));
 //        window.

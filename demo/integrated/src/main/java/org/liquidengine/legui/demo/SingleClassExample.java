@@ -1,14 +1,17 @@
 //package org.liquidengine.legui.demo;
 //
-//import org.liquidengine.legui.core.component.*;
+//import org.liquidengine.legui.backend.context.Context;
+//import org.liquidengine.legui.backend.event.SystemEventProcessor;
+//import org.liquidengine.legui.backend.renderer.Renderer;
+//import org.liquidengine.legui.core.component.Frame;
+//import org.liquidengine.legui.core.component.base.Container;
+//import org.liquidengine.legui.core.event.processor.EventProcessor;
 //import org.lwjgl.glfw.GLFW;
 //import org.lwjgl.glfw.GLFWKeyCallbackI;
 //import org.lwjgl.glfw.GLFWWindowCloseCallbackI;
 //import org.lwjgl.opengl.GL;
 //
-//import javax.swing.text.html.StyleSheet;
 //import java.io.IOException;
-//import java.util.ArrayList;
 //import java.util.List;
 //
 //import static org.lwjgl.glfw.GLFW.*;

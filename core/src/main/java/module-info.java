@@ -13,5 +13,7 @@ open module org.liquidengine.legui.core {
     exports org.liquidengine.legui.core.component.base;
     exports org.liquidengine.legui.core.style;
     exports org.liquidengine.legui.core.converter;
+    exports org.liquidengine.legui.core.event;
+    exports org.liquidengine.legui.core.event.processor;
 
 }

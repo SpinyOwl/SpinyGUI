@@ -6,6 +6,7 @@ def lwjgl_version = '3.2.1-SNAPSHOT'
 
 dependencies {
     api project(':core')
+    api project(':backend')
 
     compile group: 'org.lwjgl', name: 'lwjgl', version: lwjgl_version
     compile group: 'org.lwjgl', name: 'lwjgl', version: lwjgl_version, changing: true, classifier: 'natives-windows'
