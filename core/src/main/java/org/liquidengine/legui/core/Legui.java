@@ -11,11 +11,6 @@ import java.util.List;
 
 public abstract class Legui {
     private static final Logger LOGGER = LogManager.getLogger();
-    private static Legui insance;
-
-    static Legui getInstance() {
-        return SystemInitializer.instance;
-    }
 
     /**
      * Creates window with specified resolution (width, height) and title.
@@ -28,48 +23,58 @@ public abstract class Legui {
      * @return new window.
      */
     public static Window createWindow(int width, int height, String title, Monitor monitor) {
-        return getInstance()._createWindow(width, height, title, monitor);
+        return SystemInitializer.instance.createWindow(width, height, title, monitor);
     }
 
+    /**
+     * Destroys provided window.
+     *
+     * @param window window to destroy.
+     */
     public static void destroyWindow(Window window) {
-        getInstance()._destroyWindow(window);
+        SystemInitializer.instance.destroyWindow(window);
     }
 
+    /**
+     * Returns all existing windows that are alive.
+     *
+     * @return alive windows.
+     */
     public static List<Window> getWindows() {
-        return getInstance()._getWindows();
+        return SystemInitializer.instance.getWindows();
     }
 
+    /**
+     * Returns primary monitor.
+     *
+     * @return primary monitor.
+     */
     public static Monitor getPrimaryMonitor() {
-        return getInstance()._getPrimaryMonitor();
+        return SystemInitializer.instance.getPrimaryMonitor();
     }
 
     public static List<Monitor> getMonitors() {
-        return getInstance()._getMonitors();
+        return SystemInitializer.instance.getMonitors();
     }
 
-    protected abstract Monitor _getPrimaryMonitor();
-
-    protected abstract List<Monitor> _getMonitors();
-
-    protected abstract Window _createWindow(int width, int height, String title, Monitor monitor);
-
-    protected abstract void _destroyWindow(Window window);
-
-    protected abstract List<Window> _getWindows();
-
     private static final class SystemInitializer {
-        private static Legui instance;
+        private static LeguiService instance;
 
         static {
+            initializeLeguiInstance();
+        }
+
+        private static void initializeLeguiInstance() {
             try (var scanResult = new ClassGraph().enableAllInfo().scan()) {
                 // get all subclasses
-                var leguiClassRefs = scanResult.getSubclasses("org.liquidengine.legui.core.Legui").loadClasses();
+                String serviceClassName = LeguiService.class.getCanonicalName();
+                var leguiClassRefs = scanResult.getClassesImplementing(serviceClassName).loadClasses();
                 // check if found implementations.
                 if (leguiClassRefs != null && !leguiClassRefs.isEmpty()) {
                     // log existing implementations
                     if (LOGGER.isDebugEnabled()) {
                         leguiClassRefs.stream()
-                                .map(lc -> String.format("Legui class implementation found: %s", lc.getName()))
+                                .map(lc -> String.format(serviceClassName + " class implementation found: %s", lc.getName()))
                                 .forEach(LOGGER::debug);
                     }
 
@@ -97,14 +102,14 @@ public abstract class Legui {
                 }
                 // if no implementation found - throwing exception
                 if (instance == null) {
-                    throw new IllegalStateException("Can't find any appropriate Legui implementations.");
+                    throw new IllegalStateException(String.format("Can't find any appropriate %s implementations.", serviceClassName));
                 }
             }
         }
 
         private static void createInstance(Class<?> aClass2) {
             try {
-                instance = (Legui) aClass2.getDeclaredConstructor().newInstance();
+                instance = (LeguiService) aClass2.getDeclaredConstructor().newInstance();
             } catch (IllegalAccessException | InstantiationException | NoSuchMethodException | InvocationTargetException e) {
                 LOGGER.error(e.getMessage(), e);
             }

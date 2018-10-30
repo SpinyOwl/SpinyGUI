@@ -1,7 +1,7 @@
 //package org.liquidengine.legui.demo;
 //
 //import org.liquidengine.legui.backend.context.Context;
-//import org.liquidengine.legui.backend.event.SystemEventProcessor;
+//import org.liquidengine.legui.backend.event.processor.SystemEventProcessor;
 //import org.liquidengine.legui.backend.renderer.Renderer;
 //import org.liquidengine.legui.core.component.Frame;
 //import org.liquidengine.legui.core.component.base.Container;
@@ -92,14 +92,14 @@
 //            //    GLFW.glfwGetWindowSize(window, windowWidth, windowHeight);
 //            //    int[] frameBufferWidth = {0}, frameBufferHeight = {0};
 //            //    GLFW.glfwGetFramebufferSize(window, frameBufferWidth, frameBufferHeight);
-//            //    int[] xpos = {0}, ypos = {0};
-//            //    GLFW.glfwGetWindowPos(window, xpos, ypos);
+//            //    int[] posX = {0}, posY = {0};
+//            //    GLFW.glfwGetWindowPos(window, posX, posY);
 //            //    double[] mx = {0}, my = {0};
 //            //    GLFW.glfwGetCursorPos(window, mx, my);
 //            //
 //            //    context.update(windowWidth[0], windowHeight[0],
 //            //            frameBufferWidth[0], frameBufferHeight[0],
-//            //            xpos[0], ypos[0],
+//            //            posX[0], posY[0],
 //            //            mx[0], my[0]
 //            //    );
 //            //}

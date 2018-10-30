@@ -12,5 +12,7 @@ open module org.liquidengine.legui.backend.opengl32 {
     requires org.lwjgl.opengl;
     requires org.lwjgl.opengl.natives;
 
+    requires org.apache.logging.log4j;
+
     exports org.liquidengine.legui.backend.opengl32;
 }
