@@ -1,15 +1,19 @@
 //package org.spinyowl.spinygui.demo;
 //
-//import Context;
-//import SystemEventProcessor;
-//import Renderer;
-//import Frame;
-//import Container;
-//import EventProcessor;
 //import org.lwjgl.glfw.GLFW;
 //import org.lwjgl.glfw.GLFWKeyCallbackI;
 //import org.lwjgl.glfw.GLFWWindowCloseCallbackI;
 //import org.lwjgl.opengl.GL;
+//
+//import org.spinyowl.spinygui.backend.context.Context;
+//import org.spinyowl.spinygui.backend.event.processor.SystemEventProcessor;
+//import org.spinyowl.spinygui.backend.opengl32.SystemEventProcessorForOpenGL32;
+//import org.spinyowl.spinygui.backend.renderer.Renderer;
+//
+//import org.spinyowl.spinygui.core.animation.Animator;
+//import org.spinyowl.spinygui.core.component.Frame;
+//import org.spinyowl.spinygui.core.component.base.Container;
+//import org.spinyowl.spinygui.core.event.processor.EventProcessor;
 //
 //import java.io.IOException;
 //import java.util.List;
@@ -67,8 +71,8 @@
 //        keeper.getChainKeyCallback().add(glfwKeyCallbackI);
 //        keeper.getChainWindowCloseCallback().add(glfwWindowCloseCallbackI);
 //
-//        // Event processor for system events. SpinyGui events should be processed and translated to gui events.
-//        SystemEventProcessor systemEventProcessor = new SystemEventProcessor();
+//        // Event processor for system events. System events should be processed and translated to gui events.
+//        SystemEventProcessor systemEventProcessor = new SystemEventProcessorForOpenGL32();
 //        systemEventProcessor.addDefaultCallbacks(keeper);
 //
 //        // Also we need to create renderer provider

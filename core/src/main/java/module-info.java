@@ -9,6 +9,7 @@ open module org.spinyowl.spinygui.core {
 
     exports org.spinyowl.spinygui.core;
     exports org.spinyowl.spinygui.core.api;
+    exports org.spinyowl.spinygui.core.animation;
     exports org.spinyowl.spinygui.core.component;
     exports org.spinyowl.spinygui.core.component.base;
     exports org.spinyowl.spinygui.core.style;
