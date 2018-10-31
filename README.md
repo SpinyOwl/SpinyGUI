@@ -1,1 +1,1 @@
-# legui2
+# SpinyGUI
