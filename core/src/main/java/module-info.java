@@ -1,4 +1,4 @@
-open module org.liquidengine.legui.core {
+open module org.spinyowl.spinygui.core {
 
     requires transitive jdom2;
     requires transitive java.xml;
@@ -7,13 +7,13 @@ open module org.liquidengine.legui.core {
     requires io.github.classgraph;
     requires org.apache.logging.log4j;
 
-    exports org.liquidengine.legui.core;
-    exports org.liquidengine.legui.core.api;
-    exports org.liquidengine.legui.core.component;
-    exports org.liquidengine.legui.core.component.base;
-    exports org.liquidengine.legui.core.style;
-    exports org.liquidengine.legui.core.converter;
-    exports org.liquidengine.legui.core.event;
-    exports org.liquidengine.legui.core.event.processor;
+    exports org.spinyowl.spinygui.core;
+    exports org.spinyowl.spinygui.core.api;
+    exports org.spinyowl.spinygui.core.component;
+    exports org.spinyowl.spinygui.core.component.base;
+    exports org.spinyowl.spinygui.core.style;
+    exports org.spinyowl.spinygui.core.converter;
+    exports org.spinyowl.spinygui.core.event;
+    exports org.spinyowl.spinygui.core.event.processor;
 
 }

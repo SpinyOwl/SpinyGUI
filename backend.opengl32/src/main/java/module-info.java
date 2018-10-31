@@ -1,9 +1,9 @@
 /**
  * Created by ShchAlexander on 09.08.2018.
  */
-open module org.liquidengine.legui.backend.opengl32 {
-    requires org.liquidengine.legui.core;
-    requires org.liquidengine.legui.backend;
+open module org.spinyowl.spinygui.backend.opengl32 {
+    requires org.spinyowl.spinygui.core;
+    requires org.spinyowl.spinygui.backend;
 
     requires org.lwjgl;
     requires org.lwjgl.natives;
@@ -14,5 +14,5 @@ open module org.liquidengine.legui.backend.opengl32 {
 
     requires org.apache.logging.log4j;
 
-    exports org.liquidengine.legui.backend.opengl32;
+    exports org.spinyowl.spinygui.backend.opengl32;
 }

@@ -1,4 +1,4 @@
-package org.liquidengine.legui.backend.opengl30;
+package org.spinyowl.spinygui.backend.opengl30;
 
 public class Renderer {
 }

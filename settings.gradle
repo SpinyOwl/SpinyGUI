@@ -1,6 +1,6 @@
-rootProject.name = 'legui2'
+rootProject.name = 'SpinyGUI'
 
-include 'legui'
+include 'spinygui'
 
 include 'core'
 
