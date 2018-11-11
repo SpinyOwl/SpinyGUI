@@ -1,7 +1,7 @@
 package org.spinyowl.spinygui.backend.opengl32;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.spinyowl.spinygui.core.SpinyGuiService;
 import org.spinyowl.spinygui.core.api.Monitor;
 import org.spinyowl.spinygui.core.api.Window;
@@ -9,7 +9,7 @@ import org.spinyowl.spinygui.core.api.Window;
 import java.util.List;
 
 public class SpinyGuiOpenGL32 extends SpinyGuiService {
-    private static final Logger LOGGER = LogManager.getLogger();
+    private static final Logger LOGGER = LoggerFactory.getLogger(SpinyGuiOpenGL32.class);
 
     static {
         LOGGER.debug("INITIALIZED WITH OpenGL 32 CORE");

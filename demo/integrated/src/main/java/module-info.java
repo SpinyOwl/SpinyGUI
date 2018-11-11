@@ -2,7 +2,7 @@
  * Created by ShchAlexander on 09.08.2018.
  */
 module org.spinyowl.spinygui.demo.integrated {
-    requires org.apache.logging.log4j;
+    requires org.slf4j;
 
     requires org.lwjgl;
     requires org.lwjgl.glfw;

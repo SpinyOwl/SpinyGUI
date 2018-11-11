@@ -15,7 +15,6 @@ public abstract class Container extends Component {
 
     private List<Component> childComponents = new CopyOnWriteArrayList<>();
 
-
     @Override
     public void removeChild(Component component) {
         childComponents.remove(component);

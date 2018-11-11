@@ -6,6 +6,8 @@ import org.jdom2.Element;
 import org.jdom2.input.SAXBuilder;
 import org.jdom2.output.Format;
 import org.jdom2.output.XMLOutputter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.spinyowl.spinygui.core.component.base.Component;
 import org.spinyowl.spinygui.core.component.base.ComponentMapping;
 import org.spinyowl.spinygui.core.component.base.Text;
@@ -13,6 +15,7 @@ import org.spinyowl.spinygui.core.component.base.Text;
 import java.io.StringReader;
 
 public class ComponentMarshaller {
+    private static final Logger LOGGER = LoggerFactory.getLogger(ComponentMarshaller.class);
 
     public static String marshal(Component component) {
         return marshal(component, true);
@@ -53,8 +56,8 @@ public class ComponentMarshaller {
 
     private static <T extends Component> String getTagName(T component) {
         var componentClass = component.getClass();
-        if (ComponentMapping.getTagMapping().containsKey(componentClass)) {
-            return ComponentMapping.getTagMapping().get(componentClass);
+        if (ComponentMapping.containsKey(componentClass)) {
+            return ComponentMapping.get(componentClass);
         } else {
             return componentClass.getCanonicalName();
         }
@@ -79,7 +82,11 @@ public class ComponentMarshaller {
     }
 
     private static Component createComponentFromElement(Element element) throws Exception {
-        Component instance = getClassByTag(element.getName()).getDeclaredConstructor().newInstance();
+        Class<? extends Component> aClass = getClassByTag(element.getName());
+        if (aClass == null) {
+            return null;
+        }
+        Component instance = aClass.getDeclaredConstructor().newInstance();
         element.getAttributes().forEach(a -> instance.setAttribute(a.getName(), a.getValue()));
 
         for (Content c : element.getContent()) {
@@ -96,10 +103,15 @@ public class ComponentMarshaller {
         return instance;
     }
 
-    private static Class<? extends Component> getClassByTag(String name) throws Exception {
-        if (ComponentMapping.getTagMapping().containsValue(name)) {
-            return ComponentMapping.getTagMapping().inverse().get(name);
+    private static Class<? extends Component> getClassByTag(String name) {
+        if (ComponentMapping.containsTag(name)) {
+            return ComponentMapping.getByTag(name);
         }
-        return (Class<? extends Component>) Class.forName(name);
+        try {
+            return (Class<? extends Component>) Class.forName(name);
+        } catch (ClassNotFoundException e) {
+            LOGGER.warn(String.format("Can't find component mapping and class for tag '%s'.", name));
+            return null;
+        }
     }
 }

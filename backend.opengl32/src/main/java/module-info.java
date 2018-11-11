@@ -12,7 +12,7 @@ open module org.spinyowl.spinygui.backend.opengl32 {
     requires org.lwjgl.opengl;
     requires org.lwjgl.opengl.natives;
 
-    requires org.apache.logging.log4j;
+    requires org.slf4j;
 
     exports org.spinyowl.spinygui.backend.opengl32;
 }

@@ -1,8 +1,8 @@
 package org.spinyowl.spinygui.core;
 
 import io.github.classgraph.ClassGraph;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 import org.spinyowl.spinygui.core.api.Monitor;
 import org.spinyowl.spinygui.core.api.Window;
 
@@ -10,7 +10,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
 public abstract class SpinyGui {
-    private static final Logger LOGGER = LogManager.getLogger();
+    private static final Logger LOGGER = LoggerFactory.getLogger(SpinyGui.class);
 
     /**
      * Creates window with specified resolution (width, height) and title.
@@ -68,7 +68,7 @@ public abstract class SpinyGui {
             try (var scanResult = new ClassGraph().enableAllInfo().scan()) {
                 // get all subclasses
                 String serviceClassName = SpinyGuiService.class.getCanonicalName();
-                var spinyguiClassRefs = scanResult.getClassesImplementing(serviceClassName).loadClasses();
+                var spinyguiClassRefs = scanResult.getSubclasses(serviceClassName).loadClasses();
                 // check if found implementations.
                 if (spinyguiClassRefs != null && !spinyguiClassRefs.isEmpty()) {
                     // log existing implementations
