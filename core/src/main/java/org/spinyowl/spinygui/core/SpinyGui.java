@@ -110,6 +110,7 @@ public abstract class SpinyGui {
         private static void createInstance(Class<?> aClass2) {
             try {
                 instance = (SpinyGuiService) aClass2.getDeclaredConstructor().newInstance();
+                instance.startService();
             } catch (IllegalAccessException | InstantiationException | NoSuchMethodException | InvocationTargetException e) {
                 LOGGER.error(e.getMessage(), e);
             }

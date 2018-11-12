@@ -1,7 +1,7 @@
 package org.spinyowl.spinygui.demo;
 
 import org.spinyowl.spinygui.core.SpinyGui;
-import org.spinyowl.spinygui.backend.opengl32.SpinyGuiOpenGL32;
+import org.spinyowl.spinygui.backend.opengl32.service.SpinyGuiOpenGL32Wrapper;
 import org.spinyowl.spinygui.core.api.Monitor;
 import org.spinyowl.spinygui.core.api.Window;
 
@@ -11,7 +11,7 @@ import org.spinyowl.spinygui.core.api.Window;
 public class Main {
 
     public static void main(String[] args) {
-        SpinyGuiOpenGL32 f;
+        SpinyGuiOpenGL32Wrapper f;
 
         Monitor monitor = SpinyGui.getPrimaryMonitor();
         Window window = SpinyGui.createWindow(800, 600, "Example", null);

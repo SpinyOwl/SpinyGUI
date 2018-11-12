@@ -8,6 +8,8 @@ import org.spinyowl.spinygui.core.component.base.Component;
 import org.spinyowl.spinygui.core.component.base.Text;
 import org.spinyowl.spinygui.core.converter.ComponentMarshaller;
 
+import java.util.concurrent.TimeUnit;
+
 
 /**
  * Created by ShchAlexander on 09.08.2018.
@@ -16,6 +18,7 @@ public class Main {
 
     public static void main(String[] args) throws Exception {
         Monitor monitor = SpinyGui.getPrimaryMonitor();
+        System.out.println(monitor);
         Window window = SpinyGui.createWindow(800, 600, "Example", null);
 
         Input input = new Input();
