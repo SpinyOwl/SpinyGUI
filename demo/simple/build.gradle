@@ -11,7 +11,7 @@ dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.12'
 }
 
-ext.moduleName = 'org.spinyowl.spinygui.demo'
+ext.moduleName = 'com.spinyowl.spinygui.demo'
 
 
 mainClassName = "$moduleName/Main"
@@ -37,7 +37,7 @@ startScripts {
                 '--module', mainClassName
         ]
     }
-    doLast{
+    doLast {
         def bashFile = new File(outputDir, applicationName)
         String bashContent = bashFile.text
         bashFile.text = bashContent.replaceFirst('APP_HOME_LIBS', Matcher.quoteReplacement('$APP_HOME/lib'))

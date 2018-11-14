@@ -1,8 +1,8 @@
 /**
  * Created by ShchAlexander on 09.08.2018.
  */
-module org.spinyowl.spinygui.backend.vulkan {
-    requires org.spinyowl.spinygui.backend;
-    requires org.spinyowl.spinygui.core;
-    exports org.spinyowl.spinygui.backend.vulkan;
+module com.spinyowl.spinygui.backend.vulkan {
+    requires com.spinyowl.spinygui.backend;
+    requires com.spinyowl.spinygui.core;
+    exports com.spinyowl.spinygui.backend.vulkan;
 }

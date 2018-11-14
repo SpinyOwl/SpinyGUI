@@ -1,4 +1,4 @@
-open module org.spinyowl.spinygui.core {
+open module com.spinyowl.spinygui.core {
 
     requires transitive jdom2;
     requires transitive java.xml;
@@ -7,14 +7,14 @@ open module org.spinyowl.spinygui.core {
     requires io.github.classgraph;
     requires org.slf4j;
 
-    exports org.spinyowl.spinygui.core;
-    exports org.spinyowl.spinygui.core.api;
-    exports org.spinyowl.spinygui.core.animation;
-    exports org.spinyowl.spinygui.core.component;
-    exports org.spinyowl.spinygui.core.component.base;
-    exports org.spinyowl.spinygui.core.style;
-    exports org.spinyowl.spinygui.core.converter;
-    exports org.spinyowl.spinygui.core.event;
-    exports org.spinyowl.spinygui.core.event.processor;
+    exports com.spinyowl.spinygui.core;
+    exports com.spinyowl.spinygui.core.api;
+    exports com.spinyowl.spinygui.core.animation;
+    exports com.spinyowl.spinygui.core.component;
+    exports com.spinyowl.spinygui.core.component.base;
+    exports com.spinyowl.spinygui.core.style;
+    exports com.spinyowl.spinygui.core.converter;
+    exports com.spinyowl.spinygui.core.event;
+    exports com.spinyowl.spinygui.core.event.processor;
 
 }

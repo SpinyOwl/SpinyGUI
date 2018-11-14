@@ -1,9 +1,9 @@
-group 'org.spinyowl.spinygui'
+group 'com.spinyowl.spinygui'
 version '1.0-SNAPSHOT'
 
 subprojects {
     afterEvaluate {
-        group 'org.spinyowl.spinygui'
+        group 'com.spinyowl.spinygui'
         version '1.0-SNAPSHOT'
 
         repositories {

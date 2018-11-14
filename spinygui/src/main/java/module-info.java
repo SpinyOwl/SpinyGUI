@@ -1,5 +1,5 @@
-open module org.spinyowl.spinygui {
-    requires transitive org.spinyowl.spinygui.core;
-    requires org.spinyowl.spinygui.backend;
-    requires org.spinyowl.spinygui.backend.opengl32;
+open module com.spinyowl.spinygui {
+    requires transitive com.spinyowl.spinygui.core;
+    requires com.spinyowl.spinygui.backend;
+    requires com.spinyowl.spinygui.backend.opengl32;
 }

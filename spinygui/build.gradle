@@ -8,4 +8,4 @@ dependencies {
     api project(':backend.opengl32')
 }
 
-ext.moduleName = 'org.spinyowl.spinygui'
+ext.moduleName = 'com.spinyowl.spinygui'
