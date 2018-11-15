@@ -25,6 +25,7 @@ public class Main {
         Monitor monitor = SpinyGui.getPrimaryMonitor();
         System.out.println(monitor);
         Window window = SpinyGui.createWindow(800, 600, "Example", null);
+        Window window2 = SpinyGui.createWindow(400, 300, "Example2", null);
 
         Input input = new Input();
         input.setName("password");
@@ -40,6 +41,7 @@ public class Main {
                 .add(input)
                 .add(new RadioButton());
 
+        window.getContainer().add(element);
 
         String xml = ComponentMarshaller.marshal(element, false);
         System.out.println(xml);
@@ -63,12 +65,6 @@ public class Main {
                 "  <input name=\"password\" value=\"PASS_@!@#&amp;\" />\n" +
                 "  <RadioButton />\n" +
                 "</div>";
-
-        TimeUnit.SECONDS.sleep(2);
-        System.out.println("DEST WIND");
-        SpinyGui.destroyWindow(window);
-        System.out.println("DEST WIND");
-        TimeUnit.SECONDS.sleep(2);
         Component unmarshal = ComponentMarshaller.unmarshal(xml2);
         System.out.println(ComponentMarshaller.marshal(unmarshal));
     }

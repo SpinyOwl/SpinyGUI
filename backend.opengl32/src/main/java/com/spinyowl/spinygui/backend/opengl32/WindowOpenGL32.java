@@ -3,7 +3,7 @@ package com.spinyowl.spinygui.backend.opengl32;
 import com.spinyowl.spinygui.core.api.Monitor;
 import com.spinyowl.spinygui.core.api.Window;
 
-public class WindowOpenGL32 implements Window {
+public class WindowOpenGL32 extends Window {
     private long pointer;
 
     private int width;

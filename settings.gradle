@@ -9,7 +9,3 @@ include 'backend.opengl32'
 
 include 'demo.simple'
 include 'demo.integrated'
-
-
-project(":demo.simple").projectDir = file("demo/simple")
-project(":demo.integrated").projectDir = file("demo/integrated")

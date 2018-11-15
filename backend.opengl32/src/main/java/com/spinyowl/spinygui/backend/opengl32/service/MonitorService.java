@@ -16,12 +16,13 @@ import java.util.stream.Collectors;
 
 class MonitorService {
 
-    private static final Map<Long, Monitor> monitorCache = new ConcurrentHashMap<>();
+    private static final Map<Long, Monitor> MONITOR_CACHE = new ConcurrentHashMap<>();
+    private static final Map<Long, VideoMode> VIDEO_MODE_CACHE = new ConcurrentHashMap<>();
 
     static Monitor getPrimaryMonitor() {
         long primaryMonitor = GLFW.glfwGetPrimaryMonitor();
         if (primaryMonitor == 0) return null;
-        return monitorCache.computeIfAbsent(primaryMonitor, MonitorService::createMonitor);
+        return MONITOR_CACHE.computeIfAbsent(primaryMonitor, MonitorService::createMonitor);
     }
 
     static List<Monitor> getMonitors() {
@@ -32,7 +33,7 @@ class MonitorService {
             for (int i = 0; i < capacity; i++) {
                 long monitor = pointerBuffer.get(i);
                 if (monitor != 0) {
-                    monitors.add(monitorCache.computeIfAbsent(monitor, MonitorService::createMonitor));
+                    monitors.add(MONITOR_CACHE.computeIfAbsent(monitor, MonitorService::createMonitor));
                 }
             }
             return monitors;
@@ -44,7 +45,7 @@ class MonitorService {
     /**
      * Used to create monitor instance from glfw monitor pointer.
      * <p>
-     * Unsafe to use outside of callable of {@link SpinyGuiOpenGL32Service#glfwService}.
+     * Unsafe to use outside of callable of {@link SpinyGuiOpenGL32Service#thread}.
      *
      * @param monitor monitor pointer.
      * @return instance of {@link Monitor}.
@@ -70,9 +71,13 @@ class MonitorService {
     }
 
     private static VideoMode createVideoMode(GLFWVidMode vidMode) {
-        return new VideoModeOpenGL32(
-                vidMode.redBits(), vidMode.greenBits(), vidMode.blueBits(),
-                vidMode.width(), vidMode.height(),
-                vidMode.refreshRate(), vidMode.address());
+        if (!VIDEO_MODE_CACHE.containsKey(vidMode.address())) {
+            VideoMode videoMode = new VideoModeOpenGL32(
+                    vidMode.redBits(), vidMode.greenBits(), vidMode.blueBits(),
+                    vidMode.width(), vidMode.height(),
+                    vidMode.refreshRate(), vidMode.address());
+            VIDEO_MODE_CACHE.put(vidMode.address(), videoMode);
+        }
+        return VIDEO_MODE_CACHE.get(vidMode.address());
     }
 }

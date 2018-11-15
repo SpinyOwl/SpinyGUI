@@ -1,38 +1,53 @@
 package com.spinyowl.spinygui.core.api;
 
-public interface Window {
+import com.spinyowl.spinygui.core.component.Panel;
+import com.spinyowl.spinygui.core.component.base.Container;
 
-    long getPointer();
+public abstract class Window {
 
-    int getWidth();
+    private Container container = new Panel();
 
-    void setWidth(int width);
+    public abstract long getPointer();
 
-    int getHeight();
+    public abstract int getWidth();
 
-    void setHeight(int height);
+    public abstract void setWidth(int width);
 
-    String getTitle();
+    public abstract int getHeight();
 
-    void setTitle(String title);
+    public abstract void setHeight(int height);
 
-    int getX();
+    public abstract String getTitle();
 
-    void setX(int x);
+    public abstract void setTitle(String title);
 
-    int getY();
+    public abstract int getX();
 
-    void setY();
+    public abstract void setX(int x);
 
-    void setPosition(int x, int y);
+    public abstract int getY();
 
-    void setSize(int width, int height);
+    public abstract void setY();
 
-    boolean isVisible();
+    public abstract void setPosition(int x, int y);
 
-    void setVisible(boolean visible);
+    public abstract void setSize(int width, int height);
 
-    Monitor getMonitor();
+    public abstract boolean isVisible();
 
-    void setMonitor(Monitor monitor);
+    public abstract void setVisible(boolean visible);
+
+    public abstract Monitor getMonitor();
+
+    public abstract void setMonitor(Monitor monitor);
+
+    public Container getContainer() {
+        return container;
+    }
+
+    public void setContainer(Container container) {
+        if (container != null) {
+            this.container = container;
+        }
+    }
 }

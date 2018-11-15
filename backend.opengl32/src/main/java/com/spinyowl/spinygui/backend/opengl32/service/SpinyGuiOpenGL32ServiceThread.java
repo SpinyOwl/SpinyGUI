@@ -1,9 +1,12 @@
 package com.spinyowl.spinygui.backend.opengl32.service;
 
+import com.spinyowl.spinygui.backend.event.processor.SystemEventProcessor;
+import com.spinyowl.spinygui.core.event.processor.EventProcessor;
 import org.lwjgl.glfw.GLFW;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.Callable;
 import java.util.concurrent.FutureTask;
@@ -47,7 +50,6 @@ public class SpinyGuiOpenGL32ServiceThread {
 
     private void service() {
         try {
-
             initialize();
             initialized = true;
 
@@ -105,9 +107,14 @@ public class SpinyGuiOpenGL32ServiceThread {
     }
 
     private void pollEvents() {
+        GLFW.glfwPollEvents();
     }
 
     private void swapBuffers() {
+        List<Long> windowPointers = WindowService.getWindowPointers();
+        for (Long p : windowPointers) {
+            GLFW.glfwSwapBuffers(p);
+        }
     }
 
     private void processExecutions() {
@@ -116,9 +123,17 @@ public class SpinyGuiOpenGL32ServiceThread {
     }
 
     private void processSystemEvents() {
+        SystemEventProcessor processor = null;
+        if (processor != null) {
+            processor.processEvent();
+        }
     }
 
     private void processLibraryEvents() {
+        EventProcessor instance = EventProcessor.getInstance();
+        if (instance != null) {
+            instance.processEvents();
+        }
     }
 
     private void updateLayouts() {

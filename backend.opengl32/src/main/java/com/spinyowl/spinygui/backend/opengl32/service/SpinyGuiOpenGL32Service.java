@@ -10,7 +10,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-public class SpinyGuiOpenGL32Service {
+class SpinyGuiOpenGL32Service {
     private static final Logger LOGGER = LoggerFactory.getLogger(SpinyGuiOpenGL32Service.class);
     private static final SpinyGuiOpenGL32Service INSTANCE = new SpinyGuiOpenGL32Service();
 
@@ -18,11 +18,10 @@ public class SpinyGuiOpenGL32Service {
 
     private SpinyGuiOpenGL32ServiceThread thread;
 
-
     private SpinyGuiOpenGL32Service() {
     }
 
-    public static SpinyGuiOpenGL32Service getInstance() {
+    static SpinyGuiOpenGL32Service getInstance() {
         return INSTANCE;
     }
 
@@ -32,11 +31,11 @@ public class SpinyGuiOpenGL32Service {
         }
     }
 
-    protected void startService() {
+    void startService() {
         if (started.compareAndSet(false, true)) {
 
             // register shutdown hook to release resources.
-            Runtime.getRuntime().addShutdownHook(new Thread(this::stopService));
+            Runtime.getRuntime().addShutdownHook(new Thread(this::stopService, "SpinyGui OpenGL 3.2 Service Thread Destroyer"));
 
             // create task executor.
             thread = new SpinyGuiOpenGL32ServiceThread();
@@ -44,10 +43,17 @@ public class SpinyGuiOpenGL32Service {
         }
     }
 
-    protected void stopService() {
+    void stopService() {
+        LOGGER.debug("WAITING FOR ALL WINDOWS ARE CLOSED");
+        while (!WindowService.getWindows().isEmpty()) {
+            Thread.yield();
+        }
+
+        LOGGER.debug("STOPPING THE SERVICE");
         if (started.compareAndSet(true, false)) {
             Future<?> submit = thread.addTask(this::destroyAllResources);
             while (!submit.isDone()) {
+                Thread.yield();
             }
             thread.stop();
         }
@@ -56,55 +62,55 @@ public class SpinyGuiOpenGL32Service {
     private void destroyAllResources() {
     }
 
-    public Monitor getPrimaryMonitor() {
+    Monitor getPrimaryMonitor() {
         check();
         try {
             return thread.addTask(MonitorService::getPrimaryMonitor).get();
         } catch (InterruptedException | ExecutionException e) {
-            LOGGER.error("Error occured during creating Monitor instance.", e);
+            LOGGER.error("Error occurred during creating Monitor instance.", e);
             return null;
         }
     }
 
 
-    public List<Monitor> getMonitors() {
+    List<Monitor> getMonitors() {
         check();
 
         try {
             return thread.addTask(MonitorService::getMonitors).get();
         } catch (InterruptedException | ExecutionException e) {
-            LOGGER.error("Error occured during creating Monitor instances.", e);
+            LOGGER.error("Error occurred during creating Monitor instances.", e);
             return null;
         }
     }
 
-    public Window createWindow(int width, int height, String title) {
+    Window createWindow(int width, int height, String title) {
         return this.createWindow(width, height, title, null);
     }
 
-    public Window createWindow(int width, int height, String title, Monitor monitor) {
+    Window createWindow(int width, int height, String title, Monitor monitor) {
         check();
 
         try {
             return thread.addTask(() -> WindowService.createWindow(width, height, title, monitor)).get();
         } catch (InterruptedException | ExecutionException e) {
-            LOGGER.error("Error occured during creating Window instance.", e);
+            LOGGER.error("Error occurred during creating Window instance.", e);
             return null;
         }
     }
 
-    public void destroyWindow(Window window) {
+    void destroyWindow(Window window) {
         check();
-
-        try {
-            thread.addTask(() -> WindowService.destroyWindow(window)).get();
-        } catch (InterruptedException | ExecutionException e) {
-            LOGGER.error("Error occured during destroying Window instance.", e);
-        }
+        thread.addTask(() -> WindowService.destroyWindow(window));
     }
 
-    public List<Window> getWindows() {
+    List<Window> getWindows() {
         check();
-        return null;
+        try {
+            return thread.addTask(WindowService::getWindows).get();
+        } catch (InterruptedException | ExecutionException e) {
+            LOGGER.error("Error occurred during retrieving Window instances.", e);
+            return null;
+        }
     }
 }
