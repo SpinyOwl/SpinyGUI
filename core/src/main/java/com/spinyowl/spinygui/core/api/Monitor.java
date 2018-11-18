@@ -1,30 +1,36 @@
 package com.spinyowl.spinygui.core.api;
 
+import com.spinyowl.spinygui.core.service.MonitorService;
+
 import java.util.List;
 
-public interface Monitor {
+public abstract class Monitor {
 
-    VideoMode getVideoMode();
+//    public static Monitor getPrimaryMonitor() {
+//        MonitorService.
+//    }
 
-    void setVideoMode(VideoMode videoMode);
+    public abstract VideoMode getVideoMode();
 
-    List<VideoMode> getAvailableVideoModes();
+    public abstract void setVideoMode(VideoMode videoMode);
 
-    long getPointer();
+    public abstract List<VideoMode> getAvailableVideoModes();
 
-    String getMonitorName();
+    public abstract long getPointer();
 
-    long getUserPointer();
+    public abstract String getMonitorName();
 
-    int getPosX();
+    public abstract long getUserPointer();
 
-    int getPosY();
+    public abstract int getPosX();
 
-    float getScaleX();
+    public abstract int getPosY();
 
-    float getScaleY();
+    public abstract float getScaleX();
 
-    int getSizeX();
+    public abstract float getScaleY();
 
-    int getSizeY();
+    public abstract int getSizeX();
+
+    public abstract int getSizeY();
 }

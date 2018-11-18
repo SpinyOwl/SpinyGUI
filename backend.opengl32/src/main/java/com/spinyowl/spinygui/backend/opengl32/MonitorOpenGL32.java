@@ -6,7 +6,7 @@ import com.spinyowl.spinygui.core.api.VideoMode;
 
 import java.util.List;
 
-public class MonitorOpenGL32 implements Monitor {
+public class MonitorOpenGL32 extends Monitor {
 
     private final long pointer;
     private final String monitorName;

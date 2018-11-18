@@ -22,10 +22,11 @@ public class Main {
     public static void main(String[] args) throws Exception {
 
         LOGGER.info("a test message");
-        Monitor monitor = SpinyGui.getPrimaryMonitor();
-        System.out.println(monitor);
-        Window window = SpinyGui.createWindow(800, 600, "Example", null);
-        Window window2 = SpinyGui.createWindow(400, 300, "Example2", null);
+//        Monitor monitor = Monitor.getPrimaryMonitor();
+//        System.out.println(monitor);
+//        Window window = new Window(800, 600, "Example");
+//        Window window = SpinyGui.createWindow(800, 600, "Example", null);
+//        Window window2 = SpinyGui.createWindow(400, 300, "Example2", null);
 
         Input input = new Input();
         input.setName("password");
@@ -41,7 +42,7 @@ public class Main {
                 .add(input)
                 .add(new RadioButton());
 
-        window.getContainer().add(element);
+//        window.getContainer().add(element);
 
         String xml = ComponentMarshaller.marshal(element, false);
         System.out.println(xml);

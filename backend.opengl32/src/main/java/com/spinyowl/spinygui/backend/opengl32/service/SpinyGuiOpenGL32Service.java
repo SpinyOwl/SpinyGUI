@@ -10,7 +10,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-class SpinyGuiOpenGL32Service {
+public class SpinyGuiOpenGL32Service {
     private static final Logger LOGGER = LoggerFactory.getLogger(SpinyGuiOpenGL32Service.class);
     private static final SpinyGuiOpenGL32Service INSTANCE = new SpinyGuiOpenGL32Service();
 
@@ -21,7 +21,7 @@ class SpinyGuiOpenGL32Service {
     private SpinyGuiOpenGL32Service() {
     }
 
-    static SpinyGuiOpenGL32Service getInstance() {
+    public static SpinyGuiOpenGL32Service getInstance() {
         return INSTANCE;
     }
 
@@ -31,7 +31,7 @@ class SpinyGuiOpenGL32Service {
         }
     }
 
-    void startService() {
+    public void startService() {
         if (started.compareAndSet(false, true)) {
 
             // register shutdown hook to release resources.
@@ -43,7 +43,7 @@ class SpinyGuiOpenGL32Service {
         }
     }
 
-    void stopService() {
+    public void stopService() {
         LOGGER.debug("WAITING FOR ALL WINDOWS ARE CLOSED");
         while (!WindowService.getWindows().isEmpty()) {
             Thread.yield();
@@ -62,7 +62,7 @@ class SpinyGuiOpenGL32Service {
     private void destroyAllResources() {
     }
 
-    Monitor getPrimaryMonitor() {
+    public Monitor getPrimaryMonitor() {
         check();
         try {
             return thread.addTask(MonitorService::getPrimaryMonitor).get();
@@ -73,7 +73,7 @@ class SpinyGuiOpenGL32Service {
     }
 
 
-    List<Monitor> getMonitors() {
+    public List<Monitor> getMonitors() {
         check();
 
         try {
@@ -84,11 +84,11 @@ class SpinyGuiOpenGL32Service {
         }
     }
 
-    Window createWindow(int width, int height, String title) {
+    public Window createWindow(int width, int height, String title) {
         return this.createWindow(width, height, title, null);
     }
 
-    Window createWindow(int width, int height, String title, Monitor monitor) {
+    public Window createWindow(int width, int height, String title, Monitor monitor) {
         check();
 
         try {
@@ -99,12 +99,12 @@ class SpinyGuiOpenGL32Service {
         }
     }
 
-    void destroyWindow(Window window) {
+    public void destroyWindow(Window window) {
         check();
         thread.addTask(() -> WindowService.destroyWindow(window));
     }
 
-    List<Window> getWindows() {
+    public List<Window> getWindows() {
         check();
         try {
             return thread.addTask(WindowService::getWindows).get();
@@ -112,5 +112,20 @@ class SpinyGuiOpenGL32Service {
             LOGGER.error("Error occurred during retrieving Window instances.", e);
             return null;
         }
+    }
+
+    public boolean isVisible(Window window) {
+        check();
+        try {
+            return thread.addTask(() -> WindowService.isVisible(window)).get();
+        } catch (InterruptedException | ExecutionException e) {
+            LOGGER.error("Error occurred during retrieving Window visibility.", e);
+            return false;
+        }
+    }
+
+    public void setVisible(Window window, boolean visible) {
+        check();
+        thread.addTask(() -> WindowService.setVisible(window, visible));
     }
 }

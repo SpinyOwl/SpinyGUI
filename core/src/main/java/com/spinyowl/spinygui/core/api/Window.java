@@ -37,6 +37,10 @@ public abstract class Window {
 
     public abstract void setVisible(boolean visible);
 
+    public abstract boolean isClosed();
+
+    public abstract void close();
+
     public abstract Monitor getMonitor();
 
     public abstract void setMonitor(Monitor monitor);

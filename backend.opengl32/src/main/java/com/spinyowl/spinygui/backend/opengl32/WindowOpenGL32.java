@@ -1,5 +1,6 @@
 package com.spinyowl.spinygui.backend.opengl32;
 
+import com.spinyowl.spinygui.backend.opengl32.service.SpinyGuiOpenGL32Service;
 import com.spinyowl.spinygui.core.api.Monitor;
 import com.spinyowl.spinygui.core.api.Window;
 
@@ -12,11 +13,10 @@ public class WindowOpenGL32 extends Window {
     private int x;
     private int y;
 
-    private boolean visible;
-
     private String title;
 
     private Monitor monitor;
+    private boolean closed = false;
 
     public WindowOpenGL32(long pointer, int width, int height, String title, Monitor monitor) {
         this.pointer = pointer;
@@ -97,13 +97,23 @@ public class WindowOpenGL32 extends Window {
 
     @Override
     public boolean isVisible() {
-        return visible;
+        return SpinyGuiOpenGL32Service.getInstance().isVisible(this);
     }
 
     @Override
     public void setVisible(boolean visible) {
-        //TODO CALL UPDATE
-        this.visible = visible;
+        SpinyGuiOpenGL32Service.getInstance().setVisible(this, visible);
+    }
+
+    @Override
+    public boolean isClosed() {
+        return closed;
+    }
+
+    @Override
+    public void close() {
+        closed = true;
+        SpinyGuiOpenGL32Service.getInstance().destroyWindow(this);
     }
 
     @Override

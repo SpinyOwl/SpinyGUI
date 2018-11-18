@@ -38,6 +38,14 @@ class WindowService {
         GLFW.glfwDestroyWindow(pointer);
     }
 
+    static boolean isVisible(Window window) {
+        return GLFW.glfwGetWindowAttrib(window.getPointer(), GLFW.GLFW_VISIBLE) == GLFW.GLFW_TRUE;
+    }
+
+    static void setVisible(Window window, boolean visible) {
+        GLFW.glfwSetWindowAttrib(window.getPointer(), GLFW.GLFW_VISIBLE, visible ? GLFW.GLFW_TRUE : GLFW.GLFW_FALSE);
+    }
+
     static List<Window> getWindows() {
         return new ArrayList<>(WINDOW_CACHE.values());
     }

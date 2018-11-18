@@ -1,10 +1,13 @@
 group 'com.spinyowl.spinygui'
-version '1.0-SNAPSHOT'
+version '0.0.1-SNAPSHOT'
 
 subprojects {
+    
+    buildDir = new File(rootProject.projectDir, "build/" + project.name)
+    
     afterEvaluate {
         group 'com.spinyowl.spinygui'
-        version '1.0-SNAPSHOT'
+        version rootProject.version
 
         repositories {
             mavenCentral()
