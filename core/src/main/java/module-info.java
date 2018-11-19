@@ -17,4 +17,6 @@ open module com.spinyowl.spinygui.core {
     exports com.spinyowl.spinygui.core.event;
     exports com.spinyowl.spinygui.core.event.processor;
 
+    exports com.spinyowl.spinygui.core.service;
+
 }

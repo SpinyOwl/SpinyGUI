@@ -1,18 +1,20 @@
 package com.spinyowl.spinygui.core.api;
 
-import com.spinyowl.spinygui.core.service.MonitorService;
+import com.spinyowl.spinygui.core.service.ServiceHandler;
 
 import java.util.List;
 
 public abstract class Monitor {
 
-//    public static Monitor getPrimaryMonitor() {
-//        MonitorService.
-//    }
+    public static Monitor getPrimaryMonitor() {
+        return ServiceHandler.getMonitorService().getPrimaryMonitor();
+    }
+
+    public static List<Monitor> getMonitors() {
+        return ServiceHandler.getMonitorService().getMonitors();
+    }
 
     public abstract VideoMode getVideoMode();
-
-    public abstract void setVideoMode(VideoMode videoMode);
 
     public abstract List<VideoMode> getAvailableVideoModes();
 

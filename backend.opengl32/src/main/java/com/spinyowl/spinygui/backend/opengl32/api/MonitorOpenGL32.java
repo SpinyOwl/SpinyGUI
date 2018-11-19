@@ -1,4 +1,4 @@
-package com.spinyowl.spinygui.backend.opengl32;
+package com.spinyowl.spinygui.backend.opengl32.api;
 
 import com.google.common.base.Objects;
 import com.spinyowl.spinygui.core.api.Monitor;
@@ -39,12 +39,6 @@ public class MonitorOpenGL32 extends Monitor {
     @Override
     public VideoMode getVideoMode() {
         return videoMode;
-    }
-
-    @Override
-    public void setVideoMode(VideoMode videoMode) {
-        //TODO IMPLEMENT VIDEOMODE UPDATE.
-        this.videoMode = videoMode;
     }
 
     @Override

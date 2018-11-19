@@ -1,6 +1,7 @@
-package com.spinyowl.spinygui.backend.opengl32.service;
+package com.spinyowl.spinygui.backend.opengl32.service.internal;
 
 import com.spinyowl.spinygui.backend.event.processor.SystemEventProcessor;
+import com.spinyowl.spinygui.backend.opengl32.service.SpinyGuiOpenGL32WindowService;
 import com.spinyowl.spinygui.core.event.processor.EventProcessor;
 import org.lwjgl.glfw.GLFW;
 import org.slf4j.Logger;
@@ -9,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.FutureTask;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -111,7 +113,7 @@ public class SpinyGuiOpenGL32ServiceThread {
     }
 
     private void swapBuffers() {
-        List<Long> windowPointers = WindowService.getWindowPointers();
+        List<Long> windowPointers = SpinyGuiOpenGL32WindowService.getInstance().getWindowPointers();
         for (Long p : windowPointers) {
             GLFW.glfwSwapBuffers(p);
         }
@@ -163,15 +165,34 @@ public class SpinyGuiOpenGL32ServiceThread {
         return running;
     }
 
-    FutureTask<Void> addTask(Runnable r) {
+    public FutureTask<Void> addTask(Runnable r) {
         FutureTask<Void> voidFutureTask = new FutureTask<>(r, null);
         tasks.add(voidFutureTask);
         return voidFutureTask;
     }
 
-    <T> FutureTask<T> addTask(Callable<T> t) {
+    public <T> FutureTask<T> addTask(Callable<T> t) {
         FutureTask<T> futureTask = new FutureTask<>(t);
         tasks.add(futureTask);
         return futureTask;
     }
+
+    public <T> T addTaskAndGet(Callable<T> t) {
+        try {
+            return addTask(t).get();
+        } catch (InterruptedException | ExecutionException e) {
+            LOGGER.error(e.getMessage(), e);
+            throw new IllegalStateException(e);
+        }
+    }
+
+    public void addTaskAndWait(Runnable r) {
+        try {
+            addTask(r).get();
+        } catch (InterruptedException | ExecutionException e) {
+            LOGGER.error(e.getMessage(), e);
+            throw new IllegalStateException(e);
+        }
+    }
+
 }

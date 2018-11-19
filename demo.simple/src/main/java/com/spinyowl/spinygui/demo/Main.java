@@ -1,6 +1,5 @@
 package com.spinyowl.spinygui.demo;
 
-import com.spinyowl.spinygui.core.SpinyGui;
 import com.spinyowl.spinygui.core.api.Monitor;
 import com.spinyowl.spinygui.core.api.Window;
 import com.spinyowl.spinygui.core.component.*;
@@ -9,8 +8,6 @@ import com.spinyowl.spinygui.core.component.base.Text;
 import com.spinyowl.spinygui.core.converter.ComponentMarshaller;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.concurrent.TimeUnit;
 
 
 /**
@@ -22,12 +19,12 @@ public class Main {
     public static void main(String[] args) throws Exception {
 
         LOGGER.info("a test message");
-//        Monitor monitor = Monitor.getPrimaryMonitor();
-//        System.out.println(monitor);
-//        Window window = new Window(800, 600, "Example");
-//        Window window = SpinyGui.createWindow(800, 600, "Example", null);
-//        Window window2 = SpinyGui.createWindow(400, 300, "Example2", null);
+        Monitor monitor = Monitor.getPrimaryMonitor();
+        System.out.println(monitor);
 
+        Window window = Window.createWindow(800, 600, "Example");
+        Window window2 = Window.createWindow(400, 300, "Example2", null);
+//
         Input input = new Input();
         input.setName("password");
         input.setValue("PASS_@!@#&");

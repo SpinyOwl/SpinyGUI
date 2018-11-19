@@ -2,9 +2,20 @@ package com.spinyowl.spinygui.core.api;
 
 import com.spinyowl.spinygui.core.component.Panel;
 import com.spinyowl.spinygui.core.component.base.Container;
+import com.spinyowl.spinygui.core.service.ServiceHandler;
 
+
+/**
+ * Window class. Represents window in OS.
+ * <br>
+ * <br>
+ * <b>If you need to add custom functionality to winodw class - you need to create proxy for instance created by static method!</b>
+ */
 public abstract class Window {
 
+    /**
+     * Root panel.
+     */
     private Container container = new Panel();
 
     public abstract long getPointer();
@@ -44,6 +55,14 @@ public abstract class Window {
     public abstract Monitor getMonitor();
 
     public abstract void setMonitor(Monitor monitor);
+
+    public static Window createWindow(int width, int height, String title) {
+        return ServiceHandler.getWindowService().createWindow(width, height, title);
+    }
+
+    public static Window createWindow(int width, int height, String title, Monitor monitor) {
+        return ServiceHandler.getWindowService().createWindow(width, height, title, monitor);
+    }
 
     public Container getContainer() {
         return container;
