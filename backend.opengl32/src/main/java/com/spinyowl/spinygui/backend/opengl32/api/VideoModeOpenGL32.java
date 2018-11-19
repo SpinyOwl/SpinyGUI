@@ -1,4 +1,4 @@
-package com.spinyowl.spinygui.backend.opengl32;
+package com.spinyowl.spinygui.backend.opengl32.api;
 
 import com.google.common.base.Objects;
 import com.spinyowl.spinygui.core.api.VideoMode;

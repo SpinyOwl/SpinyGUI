@@ -1,6 +1,6 @@
-package com.spinyowl.spinygui.backend.opengl32;
+package com.spinyowl.spinygui.backend.opengl32.api;
 
-import com.spinyowl.spinygui.backend.opengl32.service.SpinyGuiOpenGL32Service;
+import com.spinyowl.spinygui.backend.opengl32.service.internal.SpinyGuiOpenGL32Service;
 import com.spinyowl.spinygui.core.api.Monitor;
 import com.spinyowl.spinygui.core.api.Window;
 
@@ -97,12 +97,15 @@ public class WindowOpenGL32 extends Window {
 
     @Override
     public boolean isVisible() {
-        return SpinyGuiOpenGL32Service.getInstance().isVisible(this);
+        //TODO CALL UPDATE
+        return false;
     }
 
     @Override
     public void setVisible(boolean visible) {
-        SpinyGuiOpenGL32Service.getInstance().setVisible(this, visible);
+
+        //TODO CALL UPDATE
+        // SpinyGuiOpenGL32Service.getInstance().setVisible(this, visible);
     }
 
     @Override
@@ -113,7 +116,7 @@ public class WindowOpenGL32 extends Window {
     @Override
     public void close() {
         closed = true;
-        SpinyGuiOpenGL32Service.getInstance().destroyWindow(this);
+//        SpinyGuiOpenGL32Service.getInstance().destroyWindow(this);
     }
 
     @Override

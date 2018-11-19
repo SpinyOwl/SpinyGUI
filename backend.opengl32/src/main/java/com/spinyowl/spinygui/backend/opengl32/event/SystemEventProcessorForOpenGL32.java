@@ -1,4 +1,4 @@
-package com.spinyowl.spinygui.backend.opengl32;
+package com.spinyowl.spinygui.backend.opengl32.event;
 
 import com.spinyowl.spinygui.backend.event.SystemEvent;
 import com.spinyowl.spinygui.backend.event.processor.SystemEventProcessor;
