@@ -24,7 +24,7 @@ dependencies {
     compile group: 'org.lwjgl', name: 'lwjgl-opengl', version: lwjgl_version, changing: true, classifier: 'natives-macos'
 
     implementation project(':core')
-    implementation project(':backend')
+    implementation project(':backend.core')
     implementation project(':backend.opengl32')
 //    implementation project(':backend.opengl30')
 

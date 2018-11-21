@@ -2,39 +2,41 @@ package com.spinyowl.spinygui.core.component.base;
 
 
 import com.google.common.base.Objects;
+import com.spinyowl.spinygui.core.util.Reference;
 
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.stream.Collectors;
 
 public abstract class Container extends Component {
 
     private Map<String, String> attributes = new ConcurrentHashMap<>();
 
-    private List<Component> childComponents = new CopyOnWriteArrayList<>();
+    private List<Reference<Component>> childComponents = new CopyOnWriteArrayList<>();
 
     @Override
     public void removeChild(Component component) {
-        childComponents.remove(component);
+        childComponents.remove(Reference.of(component));
     }
 
     @Override
     public void addChild(Component component) {
-        if (component == null || component == this || isContainsByRef(component)) return;
+        if (component == null || component == this || childComponents.contains(Reference.of(component))) return;
 
         Component parent = component.getParent();
         if (parent != null) parent.removeChild(component);
 
-        childComponents.add(component);
+        childComponents.add(Reference.of(component));
 
         component.setParent(this);
     }
 
     @Override
     public List<Component> getChildComponents() {
-        return Collections.unmodifiableList(childComponents);
+        return childComponents.stream().map(Reference::get).collect(Collectors.toUnmodifiableList());
     }
 
     /**
@@ -77,10 +79,6 @@ public abstract class Container extends Component {
     @Override
     public void removeAttribute(String key) {
         attributes.remove(key);
-    }
-
-    private boolean isContainsByRef(Component component) {
-        return childComponents.stream().anyMatch(n -> n == component);
     }
 
     public String getClassAttribute() {

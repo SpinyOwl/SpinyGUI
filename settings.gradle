@@ -4,7 +4,8 @@ include 'spinygui'
 
 include 'core'
 
-include 'backend'
+include 'backend.core'
+include 'backend.glfwutil'
 include 'backend.opengl32'
 
 include 'demo.simple'

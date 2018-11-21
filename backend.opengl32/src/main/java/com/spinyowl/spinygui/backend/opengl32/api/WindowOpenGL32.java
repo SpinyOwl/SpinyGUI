@@ -1,6 +1,6 @@
 package com.spinyowl.spinygui.backend.opengl32.api;
 
-import com.spinyowl.spinygui.backend.opengl32.service.internal.SpinyGuiOpenGL32Service;
+import com.spinyowl.spinygui.backend.glfwutil.CallbackKeeper;
 import com.spinyowl.spinygui.core.api.Monitor;
 import com.spinyowl.spinygui.core.api.Window;
 
@@ -16,14 +16,16 @@ public class WindowOpenGL32 extends Window {
     private String title;
 
     private Monitor monitor;
-    private boolean closed = false;
 
-    public WindowOpenGL32(long pointer, int width, int height, String title, Monitor monitor) {
+    private CallbackKeeper keeper;
+
+    public WindowOpenGL32(long pointer, int width, int height, String title, Monitor monitor, CallbackKeeper keeper) {
         this.pointer = pointer;
         this.width = width;
         this.height = height;
         this.title = title;
         this.monitor = monitor;
+        this.keeper = keeper;
     }
 
     @Override
@@ -109,17 +111,6 @@ public class WindowOpenGL32 extends Window {
     }
 
     @Override
-    public boolean isClosed() {
-        return closed;
-    }
-
-    @Override
-    public void close() {
-        closed = true;
-//        SpinyGuiOpenGL32Service.getInstance().destroyWindow(this);
-    }
-
-    @Override
     public Monitor getMonitor() {
         return monitor;
     }
@@ -133,5 +124,13 @@ public class WindowOpenGL32 extends Window {
     @Override
     public long getPointer() {
         return pointer;
+    }
+
+    public CallbackKeeper getKeeper() {
+        return keeper;
+    }
+
+    public void setKeeper(CallbackKeeper keeper) {
+        this.keeper = keeper;
     }
 }

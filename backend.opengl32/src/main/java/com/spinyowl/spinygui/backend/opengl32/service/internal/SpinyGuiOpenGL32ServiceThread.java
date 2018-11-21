@@ -1,6 +1,6 @@
 package com.spinyowl.spinygui.backend.opengl32.service.internal;
 
-import com.spinyowl.spinygui.backend.event.processor.SystemEventProcessor;
+import com.spinyowl.spinygui.backend.core.event.processor.SystemEventProcessor;
 import com.spinyowl.spinygui.backend.opengl32.service.SpinyGuiOpenGL32WindowService;
 import com.spinyowl.spinygui.core.event.processor.EventProcessor;
 import org.lwjgl.glfw.GLFW;

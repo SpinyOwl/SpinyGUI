@@ -4,7 +4,7 @@ plugins {
 
 dependencies {
     api project(':core')
-    api project(':backend')
+    api project(':backend.core')
     api project(':backend.opengl32')
 }
 

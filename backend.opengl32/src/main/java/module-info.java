@@ -3,7 +3,8 @@
  */
 open module com.spinyowl.spinygui.backend.opengl32 {
     requires com.spinyowl.spinygui.core;
-    requires com.spinyowl.spinygui.backend;
+    requires com.spinyowl.spinygui.backend.core;
+    requires com.spinyowl.spinygui.backend.glfwutil;
 
     requires org.lwjgl;
     requires org.lwjgl.natives;

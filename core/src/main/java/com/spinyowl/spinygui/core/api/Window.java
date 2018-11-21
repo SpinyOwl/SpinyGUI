@@ -2,7 +2,16 @@ package com.spinyowl.spinygui.core.api;
 
 import com.spinyowl.spinygui.core.component.Panel;
 import com.spinyowl.spinygui.core.component.base.Container;
+import com.spinyowl.spinygui.core.event.WindowCloseEvent;
+import com.spinyowl.spinygui.core.event.listener.Listener;
+import com.spinyowl.spinygui.core.event.listener.impl.DefaultWindowCloseEventListener;
 import com.spinyowl.spinygui.core.service.ServiceHandler;
+import com.spinyowl.spinygui.core.util.Reference;
+
+import java.util.List;
+import java.util.Set;
+import java.util.concurrent.CopyOnWriteArraySet;
+import java.util.stream.Collectors;
 
 
 /**
@@ -12,11 +21,17 @@ import com.spinyowl.spinygui.core.service.ServiceHandler;
  * <b>If you need to add custom functionality to winodw class - you need to create proxy for instance created by static method!</b>
  */
 public abstract class Window {
-
     /**
      * Root panel.
      */
     private Container container = new Panel();
+    private volatile boolean closed = false;
+
+    private Set<Reference<Listener<WindowCloseEvent>>> windowCloseEventListeners = new CopyOnWriteArraySet<>();
+
+    {
+        windowCloseEventListeners.add(Reference.of(new DefaultWindowCloseEventListener()));
+    }
 
     public abstract long getPointer();
 
@@ -48,9 +63,13 @@ public abstract class Window {
 
     public abstract void setVisible(boolean visible);
 
-    public abstract boolean isClosed();
+    public boolean isClosed() {
+        return closed;
+    }
 
-    public abstract void close();
+    public void close() {
+        closed = ServiceHandler.getWindowService().closeWindow(this);
+    }
 
     public abstract Monitor getMonitor();
 
@@ -72,5 +91,21 @@ public abstract class Window {
         if (container != null) {
             this.container = container;
         }
+    }
+
+    public void addWindowCloseEventListener(Listener<WindowCloseEvent> listener) {
+        if (listener != null) {
+            windowCloseEventListeners.add(Reference.of(listener));
+        }
+    }
+
+    public void removeWindowCloseEventListener(Listener<WindowCloseEvent> listener) {
+        if (listener != null) {
+            windowCloseEventListeners.remove(Reference.of(listener));
+        }
+    }
+
+    public List<Listener<WindowCloseEvent>> getWindowCloseEventListeners() {
+        return windowCloseEventListeners.stream().map(Reference::get).collect(Collectors.toList());
     }
 }

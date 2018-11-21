@@ -1,7 +1,6 @@
 package com.spinyowl.spinygui.core.converter;
 
 import com.spinyowl.spinygui.core.component.base.Component;
-import com.spinyowl.spinygui.core.component.base.ComponentMapping;
 import com.spinyowl.spinygui.core.component.base.Text;
 import org.jdom2.Content;
 import org.jdom2.Document;

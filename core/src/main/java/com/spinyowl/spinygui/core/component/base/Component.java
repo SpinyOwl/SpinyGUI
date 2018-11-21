@@ -4,6 +4,16 @@ package com.spinyowl.spinygui.core.component.base;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Base structure of any component.
+ * <p>
+ * Have three base subclasses that should be used to create any kind of element:
+ * <ul>
+ * <li>{@link Container}<br> - base for components that could contain other components. </li>
+ * <li>{@link EmptyComponent}<br> - base for components that could not contain other components. </li>
+ * <li>{@link Text}<br> - representation of text node. </li>
+ * </ul>
+ */
 public abstract class Component {
 
     private Component parent;
@@ -63,7 +73,7 @@ public abstract class Component {
     public abstract void addChild(Component component);
 
     /**
-     * Builder method that calls {@link #addChild(Component)} method and returns {@literal this}.
+     * Add method that calls {@link #addChild(Component)} method and returns {@literal this}.
      *
      * @param component component to add.
      * @return this.
@@ -73,6 +83,12 @@ public abstract class Component {
         return this;
     }
 
+    /**
+     * Remove method that calls {@link #addChild(Component)} method and returns {@literal this}.
+     *
+     * @param component component to add.
+     * @return this.
+     */
     public final Component remove(Component component) {
         this.removeChild(component);
         return this;

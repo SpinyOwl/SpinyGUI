@@ -9,6 +9,6 @@ module com.spinyowl.spinygui.demo.integrated {
     requires org.lwjgl.opengl;
 
     requires com.spinyowl.spinygui.core;
-    requires com.spinyowl.spinygui.backend;
+    requires com.spinyowl.spinygui.backend.core;
     requires com.spinyowl.spinygui.backend.opengl32;
 }

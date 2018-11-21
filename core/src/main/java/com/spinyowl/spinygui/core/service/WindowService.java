@@ -9,4 +9,6 @@ public interface WindowService {
 
     Window createWindow(int width, int height, String title, Monitor monitor);
 
+    boolean closeWindow(Window window);
+
 }

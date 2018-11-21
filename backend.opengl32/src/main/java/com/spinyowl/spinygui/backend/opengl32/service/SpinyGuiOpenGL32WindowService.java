@@ -1,5 +1,7 @@
 package com.spinyowl.spinygui.backend.opengl32.service;
 
+import com.spinyowl.spinygui.backend.glfwutil.CallbackKeeper;
+import com.spinyowl.spinygui.backend.glfwutil.DefaultCallbackKeeper;
 import com.spinyowl.spinygui.backend.opengl32.api.WindowOpenGL32;
 import com.spinyowl.spinygui.backend.opengl32.service.internal.SpinyGuiOpenGL32Service;
 import com.spinyowl.spinygui.core.api.Monitor;
@@ -44,8 +46,10 @@ public class SpinyGuiOpenGL32WindowService implements WindowService {
             //TODO THROW
             return null;
         }
-        WindowOpenGL32 window = new WindowOpenGL32(windowPointer, width, height, title, monitor);
-        GLFW.glfwSetWindowCloseCallback(windowPointer, (w) -> destroyWindow(window));
+        CallbackKeeper keeper = new DefaultCallbackKeeper();
+        CallbackKeeper.registerCallbacks(windowPointer, keeper);
+
+        WindowOpenGL32 window = new WindowOpenGL32(windowPointer, width, height, title, monitor, keeper);
 
         WINDOW_CACHE.put(windowPointer, window);
         return window;
@@ -55,12 +59,12 @@ public class SpinyGuiOpenGL32WindowService implements WindowService {
         return new ArrayList<>(WINDOW_CACHE.values());
     }
 
-
-    public void destroyWindow(Window window) {
-        SpinyGuiOpenGL32Service.getInstance().addTask(() -> {
+    public boolean closeWindow(Window window) {
+        return SpinyGuiOpenGL32Service.getInstance().addTaskAndGet(() -> {
             long pointer = window.getPointer();
             WINDOW_CACHE.remove(pointer, window);
             GLFW.glfwDestroyWindow(pointer);
+            return true;
         });
     }
 
