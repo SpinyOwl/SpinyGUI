@@ -1,0 +1,5 @@
+grammar Stylesheet;
+
+styleSheet
+    :   
+    ;
