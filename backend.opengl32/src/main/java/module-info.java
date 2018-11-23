@@ -16,7 +16,9 @@ open module com.spinyowl.spinygui.backend.opengl32 {
     requires org.slf4j;
 
     exports com.spinyowl.spinygui.backend.opengl32.api;
+
     exports com.spinyowl.spinygui.backend.opengl32.event;
+
     exports com.spinyowl.spinygui.backend.opengl32.service;
     exports com.spinyowl.spinygui.backend.opengl32.service.internal;
 }

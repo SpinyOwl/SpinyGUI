@@ -4,7 +4,6 @@ import com.spinyowl.spinygui.core.component.base.EmptyComponent;
 
 public class Input extends EmptyComponent {
 
-
     public String getValue() {
         return getAttribute("value");
     }

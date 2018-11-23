@@ -71,6 +71,10 @@ public class SpinyGuiOpenGL32WindowService implements WindowService {
     public List<Long> getWindowPointers() {
         return new ArrayList<>(WINDOW_CACHE.keySet());
     }
+
+    public Window getWindow(long pointer) {
+        return WINDOW_CACHE.get(pointer);
+    }
 //
 //    static Window _createWindow(int width, int height, String title, Monitor monitor) {
 //        long windowPointer = GLFW.glfwCreateWindow(width, height, title, monitor == null ? 0 : monitor.getPointer(), 0);

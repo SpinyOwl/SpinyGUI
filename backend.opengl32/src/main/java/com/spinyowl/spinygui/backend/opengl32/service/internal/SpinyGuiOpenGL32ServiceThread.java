@@ -127,7 +127,7 @@ public class SpinyGuiOpenGL32ServiceThread {
     private void processSystemEvents() {
         SystemEventProcessor processor = null;
         if (processor != null) {
-            processor.processEvent();
+            processor.processEvents();
         }
     }
 
