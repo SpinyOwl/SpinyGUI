@@ -14,7 +14,7 @@ dependencies {
 ext.moduleName = 'com.spinyowl.spinygui.demo'
 
 
-mainClassName = "$moduleName/Main"
+mainClassName = "$moduleName/com.spinyowl.spinygui.demo.Main"
 
 
 run {

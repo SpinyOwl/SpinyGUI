@@ -6,7 +6,6 @@ import com.spinyowl.spinygui.core.component.*;
 import com.spinyowl.spinygui.core.component.base.Component;
 import com.spinyowl.spinygui.core.component.base.Text;
 import com.spinyowl.spinygui.core.converter.ComponentMarshaller;
-import com.spinyowl.spinygui.core.event.listener.impl.DefaultWindowCloseEventListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,8 +26,6 @@ public class Main {
         Window window = Window.createWindow(800, 600, "Example");
         Window window2 = Window.createWindow(400, 300, "Example2", null);
 
-        window.addWindowCloseEventListener(new DefaultWindowCloseEventListener());
-//
         Input input = new Input();
         input.setName("password");
         input.setValue("PASS_@!@#&");
