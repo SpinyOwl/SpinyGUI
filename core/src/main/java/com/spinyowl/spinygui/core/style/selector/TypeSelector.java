@@ -17,6 +17,14 @@ public class TypeSelector implements StyleSelector {
         return component.getClass().equals(type);
     }
 
+    public Class<?> getType() {
+        return type;
+    }
+
+    public void setType(Class<?> type) {
+        this.type = type;
+    }
+
     @Override
     public String toString() {
         return new StringJoiner(", ", TypeSelector.class.getSimpleName() + "[", "]")

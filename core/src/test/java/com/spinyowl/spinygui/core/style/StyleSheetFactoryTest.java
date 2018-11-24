@@ -10,7 +10,7 @@ public class StyleSheetFactoryTest {
     @Test
     public void createFromCSS() throws StyleSheetException {
 
-        String css = "container > button:hover" +
+        String css = "panel > button .test" +
                 "{" +
                 "background: red;" +
                 "}";
