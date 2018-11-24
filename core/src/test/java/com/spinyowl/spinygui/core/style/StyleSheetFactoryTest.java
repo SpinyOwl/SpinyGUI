@@ -12,13 +12,12 @@ public class StyleSheetFactoryTest {
 
         String css = "panel > button .test" +
                 "{" +
-                "background: red;" +
+                "   background: #ffff80;" +
+                "   color: red;" +
                 "}";
 
 
-
         var stylesheet = StyleSheetFactory.createFromCSS(css);
-
 
 
     }
