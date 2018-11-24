@@ -3,8 +3,6 @@ plugins {
 }
 
 dependencies {
-//    api project(':core')
-
     compile group: 'io.github.classgraph', name: 'classgraph', version: '4.0.6'
 
     // https://mvnrepository.com/artifact/org.jdom/jdom2

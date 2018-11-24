@@ -8,8 +8,8 @@ import org.slf4j.LoggerFactory;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
-public class ServiceHandler {
-    private static final Logger LOGGER = LoggerFactory.getLogger(ServiceHandler.class.getName());
+public class ServiceHolder {
+    private static final Logger LOGGER = LoggerFactory.getLogger(ServiceHolder.class.getName());
 
     private static final ServiceProvider serviceProvider;
     private static final MonitorService monitorService;

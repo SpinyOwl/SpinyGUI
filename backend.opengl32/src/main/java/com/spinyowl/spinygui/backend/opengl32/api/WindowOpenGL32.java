@@ -1,8 +1,9 @@
 package com.spinyowl.spinygui.backend.opengl32.api;
 
-import com.spinyowl.spinygui.backend.glfwutil.CallbackKeeper;
+import com.spinyowl.spinygui.backend.glfwutil.callback.CallbackKeeper;
 import com.spinyowl.spinygui.core.api.Monitor;
 import com.spinyowl.spinygui.core.api.Window;
+import com.spinyowl.spinygui.core.component.base.Component;
 
 public class WindowOpenGL32 extends Window {
     private long pointer;
@@ -132,5 +133,10 @@ public class WindowOpenGL32 extends Window {
 
     public void setKeeper(CallbackKeeper keeper) {
         this.keeper = keeper;
+    }
+
+    @Override
+    public Component getFocusOwner() {
+        return null;
     }
 }

@@ -2,10 +2,9 @@ package com.spinyowl.spinygui.core.event;
 
 import com.spinyowl.spinygui.core.api.Window;
 
-public class WindowCloseEvent extends WindowEvent {
+public class WindowEvent extends Event<Window> {
 
-    public WindowCloseEvent(Window target) {
+    public WindowEvent(Window target) {
         super(target);
     }
-
 }

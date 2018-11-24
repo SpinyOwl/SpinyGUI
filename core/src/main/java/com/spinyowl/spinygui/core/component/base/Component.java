@@ -1,6 +1,8 @@
 package com.spinyowl.spinygui.core.component.base;
 
 
+import com.spinyowl.spinygui.core.event.EventTarget;
+
 import java.util.List;
 import java.util.Map;
 
@@ -14,7 +16,7 @@ import java.util.Map;
  * <li>{@link Text}<br> - representation of text node. </li>
  * </ul>
  */
-public abstract class Component {
+public abstract class Component implements EventTarget {
 
     private Component parent;
 

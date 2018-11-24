@@ -11,4 +11,5 @@ public interface WindowService {
 
     boolean closeWindow(Window window);
 
+    Window getWindow(long pointer);
 }

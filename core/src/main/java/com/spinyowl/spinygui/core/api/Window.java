@@ -1,11 +1,13 @@
 package com.spinyowl.spinygui.core.api;
 
 import com.spinyowl.spinygui.core.component.Panel;
+import com.spinyowl.spinygui.core.component.base.Component;
 import com.spinyowl.spinygui.core.component.base.Container;
+import com.spinyowl.spinygui.core.event.EventTarget;
 import com.spinyowl.spinygui.core.event.WindowCloseEvent;
 import com.spinyowl.spinygui.core.event.listener.Listener;
 import com.spinyowl.spinygui.core.event.listener.impl.DefaultWindowCloseEventListener;
-import com.spinyowl.spinygui.core.service.ServiceHandler;
+import com.spinyowl.spinygui.core.service.ServiceHolder;
 import com.spinyowl.spinygui.core.util.Reference;
 
 import java.util.List;
@@ -20,7 +22,7 @@ import java.util.stream.Collectors;
  * <br>
  * <b>If you need to add custom functionality to winodw class - you need to create proxy for instance created by static method!</b>
  */
-public abstract class Window {
+public abstract class Window implements EventTarget {
     /**
      * Root panel.
      */
@@ -68,7 +70,7 @@ public abstract class Window {
     }
 
     public void close() {
-        closed = ServiceHandler.getWindowService().closeWindow(this);
+        closed = ServiceHolder.getWindowService().closeWindow(this);
     }
 
     public abstract Monitor getMonitor();
@@ -76,11 +78,11 @@ public abstract class Window {
     public abstract void setMonitor(Monitor monitor);
 
     public static Window createWindow(int width, int height, String title) {
-        return ServiceHandler.getWindowService().createWindow(width, height, title);
+        return ServiceHolder.getWindowService().createWindow(width, height, title);
     }
 
     public static Window createWindow(int width, int height, String title, Monitor monitor) {
-        return ServiceHandler.getWindowService().createWindow(width, height, title, monitor);
+        return ServiceHolder.getWindowService().createWindow(width, height, title, monitor);
     }
 
     public Container getContainer() {
@@ -108,4 +110,6 @@ public abstract class Window {
     public List<Listener<WindowCloseEvent>> getWindowCloseEventListeners() {
         return windowCloseEventListeners.stream().map(Reference::get).collect(Collectors.toList());
     }
+
+    public abstract Component getFocusOwner();
 }

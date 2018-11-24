@@ -1,7 +1,8 @@
 package com.spinyowl.spinygui.backend.opengl32.service;
 
-import com.spinyowl.spinygui.backend.glfwutil.CallbackKeeper;
-import com.spinyowl.spinygui.backend.glfwutil.DefaultCallbackKeeper;
+import com.spinyowl.spinygui.backend.glfwutil.callback.CallbackKeeper;
+import com.spinyowl.spinygui.backend.glfwutil.callback.DefaultCallback;
+import com.spinyowl.spinygui.backend.glfwutil.callback.DefaultCallbackKeeper;
 import com.spinyowl.spinygui.backend.opengl32.api.WindowOpenGL32;
 import com.spinyowl.spinygui.backend.opengl32.service.internal.SpinyGuiOpenGL32Service;
 import com.spinyowl.spinygui.core.api.Monitor;
@@ -48,6 +49,7 @@ public class SpinyGuiOpenGL32WindowService implements WindowService {
         }
         CallbackKeeper keeper = new DefaultCallbackKeeper();
         CallbackKeeper.registerCallbacks(windowPointer, keeper);
+        addDefaultEventListeners(keeper);
 
         WindowOpenGL32 window = new WindowOpenGL32(windowPointer, width, height, title, monitor, keeper);
 
@@ -55,17 +57,37 @@ public class SpinyGuiOpenGL32WindowService implements WindowService {
         return window;
     }
 
+    private void addDefaultEventListeners(CallbackKeeper keeper) {
+        keeper.getChainCharCallback().add(DefaultCallback.createCharCallback());
+        keeper.getChainCharModsCallback().add(DefaultCallback.createCharModsCallback());
+        keeper.getChainCursorEnterCallback().add(DefaultCallback.createCursorEnterCallback());
+        keeper.getChainCursorPosCallback().add(DefaultCallback.createCursorPosCallback());
+        keeper.getChainDropCallback().add(DefaultCallback.createDropCallback());
+        keeper.getChainFramebufferSizeCallback().add(DefaultCallback.createFramebufferSizeCallback());
+        keeper.getChainKeyCallback().add(DefaultCallback.createKeyCallback());
+        keeper.getChainMouseButtonCallback().add(DefaultCallback.createMouseButtonCallback());
+        keeper.getChainScrollCallback().add(DefaultCallback.createScrollCallback());
+        keeper.getChainWindowCloseCallback().add(DefaultCallback.createWindowCloseCallback());
+        keeper.getChainWindowContentScaleCallback().add(DefaultCallback.createWindowContentScaleCallback());
+        keeper.getChainWindowFocusCallback().add(DefaultCallback.createWindowFocusCallback());
+        keeper.getChainWindowIconifyCallback().add(DefaultCallback.createWindowIconifyCallback());
+        keeper.getChainWindowMaximizeCallback().add(DefaultCallback.createWindowMaximizeCallback());
+        keeper.getChainWindowPosCallback().add(DefaultCallback.createWindowPosCallback());
+        keeper.getChainWindowRefreshCallback().add(DefaultCallback.createWindowRefreshCallback());
+        keeper.getChainWindowSizeCallback().add(DefaultCallback.createWindowSizeCallback());
+    }
+
     public List<Window> getWindows() {
         return new ArrayList<>(WINDOW_CACHE.values());
     }
 
     public boolean closeWindow(Window window) {
-        return SpinyGuiOpenGL32Service.getInstance().addTaskAndGet(() -> {
+        SpinyGuiOpenGL32Service.getInstance().addTask(() -> {
             long pointer = window.getPointer();
             WINDOW_CACHE.remove(pointer, window);
             GLFW.glfwDestroyWindow(pointer);
-            return true;
         });
+        return true;
     }
 
     public List<Long> getWindowPointers() {
@@ -75,6 +97,7 @@ public class SpinyGuiOpenGL32WindowService implements WindowService {
     public Window getWindow(long pointer) {
         return WINDOW_CACHE.get(pointer);
     }
+
 //
 //    static Window _createWindow(int width, int height, String title, Monitor monitor) {
 //        long windowPointer = GLFW.glfwCreateWindow(width, height, title, monitor == null ? 0 : monitor.getPointer(), 0);
