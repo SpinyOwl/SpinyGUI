@@ -2,37 +2,14 @@ package com.spinyowl.spinygui.backend.core.event.processor;
 
 import com.spinyowl.spinygui.backend.core.event.SystemEvent;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Queue;
-import java.util.concurrent.LinkedBlockingQueue;
-
 public abstract class SystemEventProcessor {
 
-    private static SystemEventProcessor INSTANCE = new SystemEventProcessor() {
-        private Queue<SystemEvent> eventQueue = new LinkedBlockingQueue<>();
-
-        @Override
-        public void pushEvent(SystemEvent event) {
-            eventQueue.add(event);
-        }
-
-        @Override
-        public void processEvents() {
-            List<SystemEvent> events = new ArrayList<>(eventQueue);
-            for (SystemEvent event : events) {
-                this.processEvent(event);
-            }
-            eventQueue.removeAll(events);
-        }
-
-        private void processEvent(SystemEvent event) {
-
-        }
-    };
-
     public static SystemEventProcessor getInstance() {
-        return INSTANCE;
+        return SEPH.INSTANCE;
+    }
+
+    public static void setInstance(SystemEventProcessor instance) {
+        if (instance != null) SEPH.INSTANCE = instance;
     }
 
     /**
@@ -46,4 +23,8 @@ public abstract class SystemEventProcessor {
      * @param event event to push.
      */
     public abstract void pushEvent(SystemEvent event);
+
+    private static final class SEPH {
+        private static SystemEventProcessor INSTANCE = new DefaultSystemEventProcessor();
+    }
 }

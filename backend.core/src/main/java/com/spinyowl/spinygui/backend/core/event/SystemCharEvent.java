@@ -1,17 +1,15 @@
 package com.spinyowl.spinygui.backend.core.event;
 
+import com.spinyowl.spinygui.core.api.Window;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
-/**
- * Created by Shcherbin Alexander on 6/10/2016.
- */
 public class SystemCharEvent implements SystemEvent {
 
-    public final long window;
+    public final Window window;
     public final int codePoint;
 
-    public SystemCharEvent(long window, int codePoint) {
+    public SystemCharEvent(Window window, int codePoint) {
         this.window = window;
         this.codePoint = codePoint;
     }

@@ -3,24 +3,20 @@ package com.spinyowl.spinygui.backend.core.event;
 import com.spinyowl.spinygui.core.api.Window;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
-public class SystemWindowPosEvent implements SystemEvent {
-
+public class SystemWindowMaximizeEvent implements SystemEvent {
     public final Window window;
-    public final int posX;
-    public final int posY;
+    public final boolean maximized;
 
-    public SystemWindowPosEvent(Window window, int posX, int posY) {
+    public SystemWindowMaximizeEvent(Window window, boolean maximized) {
         this.window = window;
-        this.posX = posX;
-        this.posY = posY;
+        this.maximized = maximized;
     }
 
     @Override
     public String toString() {
         return new ToStringBuilder(this)
                 .append("window", window)
-                .append("posX", posX)
-                .append("posY", posY)
+                .append("maximized", maximized)
                 .toString();
     }
 }
