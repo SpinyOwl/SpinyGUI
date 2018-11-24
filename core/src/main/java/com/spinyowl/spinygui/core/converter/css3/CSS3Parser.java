@@ -1,13 +1,10 @@
 // Generated from C:/Users/Marvin/Documents/SpinyGui/SpinyGUI/core/src/main/resources/grammars\CSS3.g4 by ANTLR 4.7
-package com.spinyowl.spinygui.core.converter;
+package com.spinyowl.spinygui.core.converter.css3;
 import org.antlr.v4.runtime.atn.*;
 import org.antlr.v4.runtime.dfa.DFA;
 import org.antlr.v4.runtime.*;
-import org.antlr.v4.runtime.misc.*;
 import org.antlr.v4.runtime.tree.*;
 import java.util.List;
-import java.util.Iterator;
-import java.util.ArrayList;
 
 @SuppressWarnings({"all", "warnings", "unchecked", "unused", "cast"})
 public class CSS3Parser extends Parser {
