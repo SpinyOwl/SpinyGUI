@@ -20,7 +20,7 @@ public class Main {
 
     public static void main(String[] args) throws Exception {
 
-        LOGGER.info("a test message");
+        LOGGER.info("a core message");
         Monitor monitor = Monitor.getPrimaryMonitor();
         System.out.println(monitor);
 

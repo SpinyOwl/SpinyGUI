@@ -6,7 +6,9 @@ grammar CSS3;
 // IE and vendor specific rules are added for real world usage
 
 stylesheet
-    : ws ( charset ( Comment | Space | Cdo | Cdc )* )* ( imports ( Comment | Space | Cdo | Cdc )* )* ( namespace ( Comment | Space | Cdo | Cdc )* )* ( nestedStatement ( Comment | Space | Cdo | Cdc )* )*
+    : //ws ( charset ( Comment | Space | Cdo | Cdc )* )* ( imports ( Comment | Space | Cdo | Cdc )* )*
+    ( namespace ( Comment | Space | Cdo | Cdc )* )*
+    ( nestedStatement ( Comment | Space | Cdo | Cdc )* )*
     ;
 
 charset
@@ -257,6 +259,7 @@ atRule
 atKeyword
     : '@' ident
     ;
+
 
 unused
     : block

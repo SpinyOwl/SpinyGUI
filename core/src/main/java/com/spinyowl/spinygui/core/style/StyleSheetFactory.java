@@ -27,6 +27,7 @@ public class StyleSheetFactory {
 
         } catch (Exception e) {
             //TODO: Proper exception handling
+            e.printStackTrace();
             throw new StyleSheetException();
         }
     }

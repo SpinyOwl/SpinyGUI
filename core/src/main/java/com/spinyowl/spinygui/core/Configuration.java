@@ -1,4 +1,4 @@
-package com.spinyowl.spinygui.core.style;
+package com.spinyowl.spinygui.core;
 
 public final class Configuration<T> {
 

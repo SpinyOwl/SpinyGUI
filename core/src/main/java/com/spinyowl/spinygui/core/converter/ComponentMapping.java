@@ -2,8 +2,8 @@ package com.spinyowl.spinygui.core.converter;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
-import com.spinyowl.spinygui.core.component.*;
 import com.spinyowl.spinygui.core.component.base.Component;
+import com.spinyowl.spinygui.core.component.*;
 
 /**
  * Component mapping - contains component to tag mapping for {@link ComponentMarshaller}.

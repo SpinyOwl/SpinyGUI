@@ -6,9 +6,14 @@ import com.spinyowl.spinygui.core.style.StyleSheet;
 
 public class StyleSheetVisitor extends CSS3BaseVisitor<StyleSheet> {
 
+
     @Override
     public StyleSheet visitStylesheet(CSS3Parser.StylesheetContext ctx) {
 
+
+        for (CSS3Parser.NestedStatementContext nestedStatementCtx : ctx.nestedStatement()) {
+            var rulset = new RulesetVisitor().visit(nestedStatementCtx);
+        }
 
 
         return super.visitStylesheet(ctx);
