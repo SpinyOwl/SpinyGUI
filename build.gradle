@@ -1,4 +1,4 @@
-group 'com.spinyowl.spinygui'
+group 'com.spinyowl'
 version '0.0.1-SNAPSHOT'
 
 subprojects {
@@ -6,7 +6,7 @@ subprojects {
     buildDir = new File(rootProject.projectDir, "build/" + project.name)
     
     afterEvaluate {
-        group 'com.spinyowl.spinygui'
+        group 'com.spinyowl'
         version rootProject.version
 
         repositories {
