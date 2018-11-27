@@ -14,9 +14,11 @@ public class ServiceHolder {
     private static final ServiceProvider serviceProvider;
     private static final MonitorService monitorService;
     private static final WindowService windowService;
+    private static final ClipboardService clipboardService;
 
     static {
         serviceProvider = initializeService(ServiceProvider.class, Configuration.SERVICE_PROVIDER.getState());
+
 
         if (Configuration.WINDOW_SERVICE.getState() != null) {
             windowService = initializeService(WindowService.class, Configuration.WINDOW_SERVICE.getState());
@@ -29,6 +31,9 @@ public class ServiceHolder {
         } else {
             monitorService = serviceProvider.getMonitorService();
         }
+
+        clipboardService = serviceProvider.getClipboardService();
+
     }
 
     public static MonitorService getMonitorService() {
@@ -39,12 +44,16 @@ public class ServiceHolder {
         return windowService;
     }
 
+    public static ClipboardService getClipboardService() {
+        return clipboardService;
+    }
+
     private static <T> T initializeService(Class<T> serviceClass, String implementationClass) {
         T instance = null;
 
         try (var scanResult = new ClassGraph().enableAllInfo().scan()) {
             // get all subclasses
-            String serviceClassName = serviceClass.getCanonicalName();
+            String serviceClassName = serviceClass.getName();
 
             List<Class<?>> spinyguiClassRefs;
             if (serviceClass.isInterface()) {
@@ -84,13 +93,23 @@ public class ServiceHolder {
         return instance;
     }
 
-    private static <T> T createInstance(Class<T> aClass2) {
+    private static <T> T createInstance(Class<T> clazz) {
         T instance = null;
         try {
-            instance = aClass2.getDeclaredConstructor().newInstance();
+            instance = clazz.getDeclaredConstructor().newInstance();
         } catch (IllegalAccessException | InstantiationException | NoSuchMethodException | InvocationTargetException e) {
             LOGGER.error(e.getMessage(), e);
         }
         return instance;
+    }
+
+    public interface ServiceProvider {
+
+        MonitorService getMonitorService();
+
+        WindowService getWindowService();
+
+        ClipboardService getClipboardService();
+
     }
 }

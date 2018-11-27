@@ -10,5 +10,6 @@ module com.spinyowl.spinygui.demo.integrated {
 
     requires com.spinyowl.spinygui.core;
     requires com.spinyowl.spinygui.backend.core;
+    requires com.spinyowl.spinygui.backend.glfwutil;
     requires com.spinyowl.spinygui.backend.opengl32;
 }

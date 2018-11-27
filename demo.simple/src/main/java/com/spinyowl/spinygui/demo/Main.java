@@ -24,11 +24,11 @@ public class Main {
         System.out.println(monitor);
 
         Window window = Window.createWindow(800, 600, "Example");
-        Window window2 = Window.createWindow(400, 300, "Example2", null);
 
         Input input = new Input();
         input.setName("password");
         input.setValue("PASS_@!@#&");
+
         Component element = new Panel()
                 .add(new Button()
                         .add(new Text("\n\n\tFOrmantted text\n\t\n\n asdfasdfa\n"))
@@ -40,7 +40,7 @@ public class Main {
                 .add(input)
                 .add(new RadioButton());
 
-//        window.getContainer().add(element);
+        window.getContainer().add(element);
 
         String xml = ComponentMarshaller.marshal(element, false);
         System.out.println(xml);

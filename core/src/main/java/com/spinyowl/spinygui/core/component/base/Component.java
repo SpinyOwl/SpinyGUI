@@ -1,6 +1,8 @@
 package com.spinyowl.spinygui.core.component.base;
 
 
+import com.spinyowl.spinygui.core.component.intersection.Intersection;
+import com.spinyowl.spinygui.core.component.intersection.Intersections;
 import com.spinyowl.spinygui.core.event.EventTarget;
 
 import java.util.List;
@@ -18,12 +20,59 @@ import java.util.Map;
  */
 public abstract class Component implements EventTarget {
 
+    /**
+     * Parent component.
+     */
     private Component parent;
 
+    /**
+     * Component x position. Mostly assigned to component by layout manager.
+     */
     private float x;
+
+    /**
+     * Component y position. Mostly assigned to component by layout manager.
+     */
     private float y;
+
+    /**
+     * Component width. Mostly assigned to component by layout manager.
+     */
     private float width;
+
+    /**
+     * Component height. Mostly assigned to component by layout manager.
+     */
     private float height;
+
+    /**
+     * Component intersection. During initialization used {@link Intersections#getDefaultIntersection()}.
+     * Used to allow detect intersection of point on virtual window surface and component.
+     */
+    private Intersection intersection = Intersections.getDefaultIntersection();
+
+    /**
+     * Returns intersection instance.
+     *
+     * @return intersection instance.
+     */
+    public Intersection getIntersection() {
+        return intersection;
+    }
+
+    /**
+     * Used to set intersection.
+     * If intersection instance is null - intersection will be replaced with default intersection.
+     *
+     * @param intersection intersection to set.
+     */
+    public void setIntersection(Intersection intersection) {
+        if (intersection != null) {
+            this.intersection = intersection;
+        } else {
+            this.intersection = Intersections.getDefaultIntersection();
+        }
+    }
 
     public Component getParent() {
         return parent;
