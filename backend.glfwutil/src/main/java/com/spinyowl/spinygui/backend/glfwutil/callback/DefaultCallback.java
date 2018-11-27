@@ -17,7 +17,7 @@ public final class DefaultCallback {
      * @return the GLFWWindowSizeCallback.
      */
     public static GLFWWindowSizeCallbackI createWindowSizeCallback() {
-        return (window, width, height) -> SystemEventProcessor.getInstance().pushEvent(new SystemWindowSizeEvent(ServiceHolder.getWindowService().getWindow(window), width, height));
+        return (window, width, height) -> SystemEventProcessor.getInstance().pushEvent(new SystemWindowSizeEvent(window, width, height));
     }
 
     /**
@@ -26,7 +26,7 @@ public final class DefaultCallback {
      * @return the GLFWWindowRefreshCallback.
      */
     public static GLFWWindowRefreshCallbackI createWindowRefreshCallback() {
-        return window -> SystemEventProcessor.getInstance().pushEvent(new SystemWindowRefreshEvent(ServiceHolder.getWindowService().getWindow(window)));
+        return window -> SystemEventProcessor.getInstance().pushEvent(new SystemWindowRefreshEvent(window));
     }
 
     /**
@@ -35,7 +35,7 @@ public final class DefaultCallback {
      * @return the GLFWWindowPosCallback.
      */
     public static GLFWWindowPosCallbackI createWindowPosCallback() {
-        return (window, xpos, ypos) -> SystemEventProcessor.getInstance().pushEvent(new SystemWindowPosEvent(ServiceHolder.getWindowService().getWindow(window), xpos, ypos));
+        return (window, xpos, ypos) -> SystemEventProcessor.getInstance().pushEvent(new SystemWindowPosEvent(window, xpos, ypos));
     }
 
     /**
@@ -44,7 +44,7 @@ public final class DefaultCallback {
      * @return the GLFWWindowIconifyCallback.
      */
     public static GLFWWindowIconifyCallbackI createWindowIconifyCallback() {
-        return (window, iconified) -> SystemEventProcessor.getInstance().pushEvent(new SystemWindowIconifyEvent(ServiceHolder.getWindowService().getWindow(window), iconified));
+        return (window, iconified) -> SystemEventProcessor.getInstance().pushEvent(new SystemWindowIconifyEvent(window, iconified));
     }
 
     /**
@@ -53,7 +53,7 @@ public final class DefaultCallback {
      * @return the GLFWWindowFocusCallback.
      */
     public static GLFWWindowFocusCallbackI createWindowFocusCallback() {
-        return (window, focused) -> SystemEventProcessor.getInstance().pushEvent(new SystemWindowFocusEvent(ServiceHolder.getWindowService().getWindow(window), focused));
+        return (window, focused) -> SystemEventProcessor.getInstance().pushEvent(new SystemWindowFocusEvent(window, focused));
     }
 
     /**
@@ -62,7 +62,7 @@ public final class DefaultCallback {
      * @return the GLFWWindowCloseCallback.
      */
     public static GLFWWindowCloseCallbackI createWindowCloseCallback() {
-        return (window) -> SystemEventProcessor.getInstance().pushEvent(new SystemWindowCloseEvent(ServiceHolder.getWindowService().getWindow(window)));
+        return (window) -> SystemEventProcessor.getInstance().pushEvent(new SystemWindowCloseEvent(window));
     }
 
     /**
@@ -71,7 +71,7 @@ public final class DefaultCallback {
      * @return the GLFWCursorPosCallback.
      */
     public static GLFWCursorPosCallbackI createCursorPosCallback() {
-        return (window, xpos, ypos) -> SystemEventProcessor.getInstance().pushEvent(new SystemCursorPosEvent(ServiceHolder.getWindowService().getWindow(window), xpos, ypos));
+        return (window, xpos, ypos) -> SystemEventProcessor.getInstance().pushEvent(new SystemCursorPosEvent(window, xpos, ypos));
     }
 
     /**
@@ -80,7 +80,7 @@ public final class DefaultCallback {
      * @return the GLFWMouseButtonCallback.
      */
     public static GLFWMouseButtonCallbackI createMouseButtonCallback() {
-        return (window, button, action, mods) -> SystemEventProcessor.getInstance().pushEvent(new SystemMouseClickEvent(ServiceHolder.getWindowService().getWindow(window), button, action, mods));
+        return (window, button, action, mods) -> SystemEventProcessor.getInstance().pushEvent(new SystemMouseClickEvent(window, button, action, mods));
     }
 
     /**
@@ -89,7 +89,7 @@ public final class DefaultCallback {
      * @return the GLFWFramebufferSizeCallback.
      */
     public static GLFWFramebufferSizeCallbackI createFramebufferSizeCallback() {
-        return (window, width, height) -> SystemEventProcessor.getInstance().pushEvent(new SystemFramebufferSizeEvent(ServiceHolder.getWindowService().getWindow(window), width, height));
+        return (window, width, height) -> SystemEventProcessor.getInstance().pushEvent(new SystemFramebufferSizeEvent(window, width, height));
     }
 
     /**
@@ -98,7 +98,7 @@ public final class DefaultCallback {
      * @return the GLFWCursorEnterCallback.
      */
     public static GLFWCursorEnterCallbackI createCursorEnterCallback() {
-        return (window, entered) -> SystemEventProcessor.getInstance().pushEvent(new SystemCursorEnterEvent(ServiceHolder.getWindowService().getWindow(window), entered));
+        return (window, entered) -> SystemEventProcessor.getInstance().pushEvent(new SystemCursorEnterEvent(window, entered));
     }
 
     /**
@@ -107,7 +107,7 @@ public final class DefaultCallback {
      * @return the GLFWCharModsCallback.
      */
     public static GLFWCharModsCallbackI createCharModsCallback() {
-        return (window, codepoint, mods) -> SystemEventProcessor.getInstance().pushEvent(new SystemCharModsEvent(ServiceHolder.getWindowService().getWindow(window), codepoint, mods));
+        return (window, codepoint, mods) -> SystemEventProcessor.getInstance().pushEvent(new SystemCharModsEvent(window, codepoint, mods));
     }
 
     /**
@@ -116,7 +116,7 @@ public final class DefaultCallback {
      * @return the GLFWScrollCallback.
      */
     public static GLFWScrollCallbackI createScrollCallback() {
-        return (window, xoffset, yoffset) -> SystemEventProcessor.getInstance().pushEvent(new SystemScrollEvent(ServiceHolder.getWindowService().getWindow(window), xoffset, yoffset));
+        return (window, xoffset, yoffset) -> SystemEventProcessor.getInstance().pushEvent(new SystemScrollEvent(window, xoffset, yoffset));
     }
 
     /**
@@ -125,7 +125,7 @@ public final class DefaultCallback {
      * @return the GLFWKeyCallback.
      */
     public static GLFWKeyCallbackI createKeyCallback() {
-        return (window, key, scancode, action, mods) -> SystemEventProcessor.getInstance().pushEvent(new SystemKeyEvent(ServiceHolder.getWindowService().getWindow(window), key, scancode, action, mods));
+        return (window, key, scancode, action, mods) -> SystemEventProcessor.getInstance().pushEvent(new SystemKeyEvent(window, key, scancode, action, mods));
     }
 
     /**
@@ -140,7 +140,7 @@ public final class DefaultCallback {
             for (int i = 0; i < count; i++) {
                 strings[i] = pb.getStringUTF8(i);
             }
-            SystemEventProcessor.getInstance().pushEvent(new SystemDropEvent(ServiceHolder.getWindowService().getWindow(window), strings));
+            SystemEventProcessor.getInstance().pushEvent(new SystemDropEvent(window, strings));
         };
     }
 
@@ -150,7 +150,7 @@ public final class DefaultCallback {
      * @return the GLFWCharCallback.
      */
     public static GLFWCharCallbackI createCharCallback() {
-        return (window, codepoint) -> SystemEventProcessor.getInstance().pushEvent(new SystemCharEvent(ServiceHolder.getWindowService().getWindow(window), codepoint));
+        return (window, codepoint) -> SystemEventProcessor.getInstance().pushEvent(new SystemCharEvent(window, codepoint));
     }
 
     /**
@@ -159,7 +159,7 @@ public final class DefaultCallback {
      * @return the GLFWWindowContentScaleCallbackI.
      */
     public static GLFWWindowContentScaleCallbackI createWindowContentScaleCallback() {
-        return (window, xscale, yscale) -> SystemEventProcessor.getInstance().pushEvent(new SystemWindowContentScaleEvent(ServiceHolder.getWindowService().getWindow(window), xscale, yscale));
+        return (window, xscale, yscale) -> SystemEventProcessor.getInstance().pushEvent(new SystemWindowContentScaleEvent(window, xscale, yscale));
     }
 
     /**
@@ -168,6 +168,6 @@ public final class DefaultCallback {
      * @return the GLFWWindowMaximizeCallbackI.
      */
     public static GLFWWindowMaximizeCallbackI createWindowMaximizeCallback() {
-        return (window, maximized) -> SystemEventProcessor.getInstance().pushEvent(new SystemWindowMaximizeEvent(ServiceHolder.getWindowService().getWindow(window), maximized));
+        return (window, maximized) -> SystemEventProcessor.getInstance().pushEvent(new SystemWindowMaximizeEvent(window, maximized));
     }
 }

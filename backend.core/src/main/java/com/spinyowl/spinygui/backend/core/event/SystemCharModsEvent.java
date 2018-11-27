@@ -1,16 +1,15 @@
 package com.spinyowl.spinygui.backend.core.event;
 
-import com.spinyowl.spinygui.core.api.Window;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
 public class SystemCharModsEvent implements SystemEvent {
 
-    public final Window window;
+    public final long window;
     public final int codePoint;
     public final int mods;
 
-    public SystemCharModsEvent(Window window, int codePoint, int mods) {
+    public SystemCharModsEvent(long window, int codePoint, int mods) {
         this.window = window;
         this.codePoint = codePoint;
         this.mods = mods;

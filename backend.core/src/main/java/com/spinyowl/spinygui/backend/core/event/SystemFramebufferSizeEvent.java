@@ -1,16 +1,15 @@
 package com.spinyowl.spinygui.backend.core.event;
 
-import com.spinyowl.spinygui.core.api.Window;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
 public class SystemFramebufferSizeEvent implements SystemEvent {
 
-    public final Window window;
+    public final long window;
     public final int width;
     public final int height;
 
-    public SystemFramebufferSizeEvent(Window window, int width, int height) {
+    public SystemFramebufferSizeEvent(long window, int width, int height) {
 
         this.window = window;
         this.width = width;

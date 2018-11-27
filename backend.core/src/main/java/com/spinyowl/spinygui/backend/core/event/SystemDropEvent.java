@@ -1,15 +1,14 @@
 package com.spinyowl.spinygui.backend.core.event;
 
-import com.spinyowl.spinygui.core.api.Window;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
 public class SystemDropEvent implements SystemEvent {
 
-    public final Window window;
+    public final long window;
     public final String[] strings;
 
-    public SystemDropEvent(Window window, String[] strings) {
+    public SystemDropEvent(long window, String[] strings) {
         this.window = window;
         this.strings = strings;
     }

@@ -1,14 +1,13 @@
 package com.spinyowl.spinygui.backend.core.event;
 
-import com.spinyowl.spinygui.core.api.Window;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
 public class SystemWindowIconifyEvent implements SystemEvent {
 
-    public final Window window;
+    public final long window;
     public final boolean iconified;
 
-    public SystemWindowIconifyEvent(Window window, boolean iconified) {
+    public SystemWindowIconifyEvent(long window, boolean iconified) {
         this.window = window;
         this.iconified = iconified;
     }

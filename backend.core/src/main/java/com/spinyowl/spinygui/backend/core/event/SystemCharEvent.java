@@ -1,15 +1,14 @@
 package com.spinyowl.spinygui.backend.core.event;
 
-import com.spinyowl.spinygui.core.api.Window;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
 public class SystemCharEvent implements SystemEvent {
 
-    public final Window window;
+    public final long window;
     public final int codePoint;
 
-    public SystemCharEvent(Window window, int codePoint) {
+    public SystemCharEvent(long window, int codePoint) {
         this.window = window;
         this.codePoint = codePoint;
     }
