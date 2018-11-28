@@ -1,4 +1,4 @@
-package com.spinyowl.spinygui.core.service;
+package com.spinyowl.spinygui.core.system.service;
 
 import com.spinyowl.spinygui.core.Configuration;
 import io.github.classgraph.ClassGraph;
@@ -19,7 +19,6 @@ public class ServiceHolder {
     static {
         serviceProvider = initializeService(ServiceProvider.class, Configuration.SERVICE_PROVIDER.getState());
 
-
         if (Configuration.WINDOW_SERVICE.getState() != null) {
             windowService = initializeService(WindowService.class, Configuration.WINDOW_SERVICE.getState());
         } else {
@@ -33,7 +32,6 @@ public class ServiceHolder {
         }
 
         clipboardService = serviceProvider.getClipboardService();
-
     }
 
     public static MonitorService getMonitorService() {

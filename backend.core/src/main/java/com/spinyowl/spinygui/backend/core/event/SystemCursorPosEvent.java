@@ -3,7 +3,7 @@ package com.spinyowl.spinygui.backend.core.event;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
-public class SystemCursorPosEvent implements SystemEvent {
+public class SystemCursorPosEvent extends SystemEvent {
 
     public final long window;
     public final double posX;
@@ -15,8 +15,8 @@ public class SystemCursorPosEvent implements SystemEvent {
         this.window = window;
         this.posX = posX;
         this.posY = posY;
-        fx = (float) posX;
-        fy = (float) posY;
+        this.fx = (float) posX;
+        this.fy = (float) posY;
     }
 
     @Override

@@ -1,4 +1,4 @@
-package com.spinyowl.spinygui.core.service;
+package com.spinyowl.spinygui.core.system.service;
 
 import com.spinyowl.spinygui.core.api.Monitor;
 

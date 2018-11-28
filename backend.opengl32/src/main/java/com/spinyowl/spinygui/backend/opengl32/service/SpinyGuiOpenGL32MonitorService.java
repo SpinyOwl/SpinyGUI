@@ -5,7 +5,7 @@ import com.spinyowl.spinygui.backend.opengl32.api.VideoModeOpenGL32;
 import com.spinyowl.spinygui.backend.opengl32.service.internal.SpinyGuiOpenGL32Service;
 import com.spinyowl.spinygui.core.api.Monitor;
 import com.spinyowl.spinygui.core.api.VideoMode;
-import com.spinyowl.spinygui.core.service.MonitorService;
+import com.spinyowl.spinygui.core.system.service.MonitorService;
 import org.lwjgl.PointerBuffer;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWVidMode;

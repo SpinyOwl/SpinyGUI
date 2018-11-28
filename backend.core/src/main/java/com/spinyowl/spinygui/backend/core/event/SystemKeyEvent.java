@@ -3,7 +3,7 @@ package com.spinyowl.spinygui.backend.core.event;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
-public class SystemKeyEvent implements SystemEvent {
+public class SystemKeyEvent extends SystemEvent {
 
     public final long window;
     public final int key;

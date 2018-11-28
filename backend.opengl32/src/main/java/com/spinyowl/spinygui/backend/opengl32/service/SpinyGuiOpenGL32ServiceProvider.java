@@ -1,9 +1,9 @@
 package com.spinyowl.spinygui.backend.opengl32.service;
 
-import com.spinyowl.spinygui.core.service.ClipboardService;
-import com.spinyowl.spinygui.core.service.MonitorService;
-import com.spinyowl.spinygui.core.service.ServiceHolder;
-import com.spinyowl.spinygui.core.service.WindowService;
+import com.spinyowl.spinygui.core.system.service.ClipboardService;
+import com.spinyowl.spinygui.core.system.service.MonitorService;
+import com.spinyowl.spinygui.core.system.service.ServiceHolder;
+import com.spinyowl.spinygui.core.system.service.WindowService;
 
 public class SpinyGuiOpenGL32ServiceProvider implements ServiceHolder.ServiceProvider {
 

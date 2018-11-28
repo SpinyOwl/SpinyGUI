@@ -1,7 +1,8 @@
 open module com.spinyowl.spinygui.core {
 
-    requires jdom2;
+    requires transitive jdom2;
     requires transitive java.xml;
+    requires transitive org.joml;
     requires guava.base.r03;
     requires guava.collections.r03;
     requires io.github.classgraph;
@@ -18,7 +19,8 @@ open module com.spinyowl.spinygui.core {
     exports com.spinyowl.spinygui.core.event.processor;
     exports com.spinyowl.spinygui.core.event;
     exports com.spinyowl.spinygui.core.layout;
-    exports com.spinyowl.spinygui.core.service;
+    exports com.spinyowl.spinygui.core.system.render;
+    exports com.spinyowl.spinygui.core.system.service;
     exports com.spinyowl.spinygui.core.style;
     exports com.spinyowl.spinygui.core.util;
     exports com.spinyowl.spinygui.core;

@@ -167,14 +167,23 @@ public class SpinyGuiOpenGL32ServiceThread {
 
     public FutureTask<Void> addTask(Runnable r) {
         FutureTask<Void> voidFutureTask = new FutureTask<>(r, null);
-        tasks.add(voidFutureTask);
+        addOrExecuteTask(voidFutureTask);
         return voidFutureTask;
     }
 
     public <T> FutureTask<T> addTask(Callable<T> t) {
         FutureTask<T> futureTask = new FutureTask<>(t);
-        tasks.add(futureTask);
+        addOrExecuteTask(futureTask);
         return futureTask;
+    }
+
+    private void addOrExecuteTask(FutureTask<?> futureTask) {
+        // need this check to not block any tasks that are created from same thread.
+        if (Thread.currentThread() == thread) {
+            futureTask.run();
+        } else {
+            tasks.add(futureTask);
+        }
     }
 
     public <T> T addTaskAndGet(Callable<T> t) {

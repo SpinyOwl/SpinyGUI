@@ -14,11 +14,6 @@ import java.util.concurrent.LinkedBlockingQueue;
 public class DefaultSystemEventProcessor extends SystemEventProcessor {
 
     private Queue<SystemEvent> eventQueue = new LinkedBlockingQueue<>();
-    private Map<Class<? extends SystemEvent>, SystemEventHandler<? extends SystemEvent>> eventHandlerMap = new ConcurrentHashMap<>();
-
-    {
-        setHandler(SystemWindowCloseEvent.class, new SystemWindowCloseEventHandler());
-    }
 
     @Override
     public void pushEvent(SystemEvent event) {
@@ -36,18 +31,12 @@ public class DefaultSystemEventProcessor extends SystemEventProcessor {
 
 
     private void processEvent(SystemEvent event) {
-        SystemEventHandler handler = getHandler(event.getClass());
+        SystemEventHandler handler = event.getEventHandler();
         if (handler != null) {
             System.out.println("PROCESS EVENT: " + event);
             handler.handle(event);
         }
     }
 
-    public <T extends SystemEvent, H extends SystemEventHandler<T>> void setHandler(Class<T> clazz, H handler) {
-        eventHandlerMap.put(clazz, handler);
-    }
 
-    public <T extends SystemEvent, H extends SystemEventHandler<T>> H getHandler(Class<T> clazz) {
-        return (H) eventHandlerMap.get(clazz);
-    }
 }

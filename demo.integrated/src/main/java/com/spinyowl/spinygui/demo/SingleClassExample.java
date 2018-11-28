@@ -42,7 +42,7 @@
 //        glfwSwapInterval(0);
 //
 //        // Firstly we need to create frame component for window.
-//        Frame frame = new Frame(WIDTH, HEIGHT);
+//        Frame frame = new Frame();
 //        // we can add elements here or on the fly
 //        createGuiElements(frame);
 //

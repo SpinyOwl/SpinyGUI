@@ -2,7 +2,7 @@ package com.spinyowl.spinygui.backend.core.event;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
-public class SystemWindowFocusEvent implements SystemEvent {
+public class SystemWindowFocusEvent extends SystemEvent {
 
     public final long window;
     public final boolean focused;

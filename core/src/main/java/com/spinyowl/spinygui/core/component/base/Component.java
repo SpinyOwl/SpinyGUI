@@ -4,6 +4,7 @@ package com.spinyowl.spinygui.core.component.base;
 import com.spinyowl.spinygui.core.component.intersection.Intersection;
 import com.spinyowl.spinygui.core.component.intersection.Intersections;
 import com.spinyowl.spinygui.core.event.EventTarget;
+import org.joml.Vector2f;
 
 import java.util.List;
 import java.util.Map;
@@ -26,30 +27,33 @@ public abstract class Component implements EventTarget {
     private Component parent;
 
     /**
-     * Component x position. Mostly assigned to component by layout manager.
+     * Component position. Mostly assigned to component by layout manager.
      */
-    private float x;
+    private Vector2f position = new Vector2f();
 
     /**
-     * Component y position. Mostly assigned to component by layout manager.
+     * Component size. Mostly assigned to component by layout manager.
      */
-    private float y;
+    private Vector2f size;
 
     /**
-     * Component width. Mostly assigned to component by layout manager.
+     * Component visibility.
      */
-    private float width;
-
-    /**
-     * Component height. Mostly assigned to component by layout manager.
-     */
-    private float height;
+    private boolean visible;
 
     /**
      * Component intersection. During initialization used {@link Intersections#getDefaultIntersection()}.
      * Used to allow detect intersection of point on virtual window surface and component.
      */
     private Intersection intersection = Intersections.getDefaultIntersection();
+
+    public boolean isVisible() {
+        return visible;
+    }
+
+    public void setVisible(boolean visible) {
+        this.visible = visible;
+    }
 
     /**
      * Returns intersection instance.
@@ -87,36 +91,28 @@ public abstract class Component implements EventTarget {
         parent.addChild(this);
     }
 
-    public float getX() {
-        return x;
+    public Vector2f getPosition() {
+        return position;
     }
 
-    public void setX(float x) {
-        this.x = x;
+    public void setPosition(Vector2f position) {
+        if (position != null) {
+            this.position = position;
+        } else {
+            this.position = new Vector2f();
+        }
     }
 
-    public float getY() {
-        return y;
+    public Vector2f getSize() {
+        return size;
     }
 
-    public void setY(float y) {
-        this.y = y;
-    }
-
-    public float getWidth() {
-        return width;
-    }
-
-    public void setWidth(float width) {
-        this.width = width;
-    }
-
-    public float getHeight() {
-        return height;
-    }
-
-    public void setHeight(float height) {
-        this.height = height;
+    public void setSize(Vector2f size) {
+        if (size != null) {
+            this.size = size;
+        } else {
+            this.size = new Vector2f();
+        }
     }
 
     public abstract void removeChild(Component component);

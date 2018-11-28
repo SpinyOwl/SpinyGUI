@@ -2,7 +2,6 @@ package com.spinyowl.spinygui.backend.glfwutil.callback;
 
 import com.spinyowl.spinygui.backend.core.event.*;
 import com.spinyowl.spinygui.backend.core.event.processor.SystemEventProcessor;
-import com.spinyowl.spinygui.core.service.ServiceHolder;
 import org.lwjgl.PointerBuffer;
 import org.lwjgl.glfw.*;
 

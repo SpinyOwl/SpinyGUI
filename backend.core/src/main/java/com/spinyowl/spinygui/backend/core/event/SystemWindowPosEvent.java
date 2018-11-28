@@ -2,7 +2,7 @@ package com.spinyowl.spinygui.backend.core.event;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
-public class SystemWindowPosEvent implements SystemEvent {
+public class SystemWindowPosEvent extends SystemEvent {
 
     public final long window;
     public final int posX;

@@ -1,6 +1,6 @@
 package com.spinyowl.spinygui.core.api;
 
-import com.spinyowl.spinygui.core.service.ServiceHolder;
+import com.spinyowl.spinygui.core.system.service.ServiceHolder;
 
 import java.util.List;
 

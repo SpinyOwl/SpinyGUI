@@ -2,7 +2,7 @@ package com.spinyowl.spinygui.backend.core.event;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
-public class SystemWindowContentScaleEvent implements SystemEvent {
+public class SystemWindowContentScaleEvent extends SystemEvent {
     public final long window;
     public final float scaleX;
     public final float scaleY;

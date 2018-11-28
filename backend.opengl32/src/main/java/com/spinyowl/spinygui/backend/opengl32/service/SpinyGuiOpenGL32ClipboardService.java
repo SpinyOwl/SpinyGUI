@@ -1,7 +1,7 @@
 package com.spinyowl.spinygui.backend.opengl32.service;
 
 import com.spinyowl.spinygui.backend.opengl32.service.internal.SpinyGuiOpenGL32Service;
-import com.spinyowl.spinygui.core.service.ClipboardService;
+import com.spinyowl.spinygui.core.system.service.ClipboardService;
 import org.lwjgl.glfw.GLFW;
 
 public class SpinyGuiOpenGL32ClipboardService implements ClipboardService {

@@ -2,7 +2,7 @@ package com.spinyowl.spinygui.backend.core.event;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
-public class SystemWindowMaximizeEvent implements SystemEvent {
+public class SystemWindowMaximizeEvent extends SystemEvent {
     public final long window;
     public final boolean maximized;
 

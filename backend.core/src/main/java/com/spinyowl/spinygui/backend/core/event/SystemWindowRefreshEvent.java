@@ -2,7 +2,7 @@ package com.spinyowl.spinygui.backend.core.event;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
-public class SystemWindowRefreshEvent implements SystemEvent {
+public class SystemWindowRefreshEvent extends SystemEvent {
 
     public final long window;
 

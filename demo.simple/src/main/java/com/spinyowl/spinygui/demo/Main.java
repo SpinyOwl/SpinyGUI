@@ -66,6 +66,7 @@ public class Main {
                 "</div>";
         Component unmarshal = ComponentMarshaller.unmarshal(xml2);
         System.out.println(ComponentMarshaller.marshal(unmarshal));
+        window.setVisible(true);
     }
 
 }

@@ -7,8 +7,9 @@ import com.spinyowl.spinygui.core.event.EventTarget;
 import com.spinyowl.spinygui.core.event.WindowCloseEvent;
 import com.spinyowl.spinygui.core.event.listener.Listener;
 import com.spinyowl.spinygui.core.event.listener.impl.DefaultWindowCloseEventListener;
-import com.spinyowl.spinygui.core.service.ServiceHolder;
+import com.spinyowl.spinygui.core.system.service.ServiceHolder;
 import com.spinyowl.spinygui.core.util.Reference;
+import org.joml.Vector2i;
 
 import java.util.List;
 import java.util.Set;
@@ -28,6 +29,8 @@ public abstract class Window implements EventTarget {
      */
     private Container container = new Panel();
     private volatile boolean closed = false;
+    private String title;
+    private Vector2i previousCursorPosition;
 
     private Set<Reference<Listener<WindowCloseEvent>>> windowCloseEventListeners = new CopyOnWriteArraySet<>();
 
@@ -35,35 +38,58 @@ public abstract class Window implements EventTarget {
         windowCloseEventListeners.add(Reference.of(new DefaultWindowCloseEventListener()));
     }
 
+    public static Window createWindow(int width, int height, String title) {
+        return ServiceHolder.getWindowService().createWindow(width, height, title);
+    }
+
+    public static Window createWindow(int width, int height, String title, Monitor monitor) {
+        return ServiceHolder.getWindowService().createWindow(width, height, title, monitor);
+    }
+
     public abstract long getPointer();
 
-    public abstract int getWidth();
+    public String getTitle() {
+        return title;
+    }
 
-    public abstract void setWidth(int width);
+    public void setTitle(String title) {
+        if(title!=null) {
+            this.title = title;
+            ServiceHolder.getWindowService().setWindowTitle(this, title);
+        }
+    }
 
-    public abstract int getHeight();
+    public Vector2i getPosition() {
+        return ServiceHolder.getWindowService().getWindowPosition(this);
+    }
 
-    public abstract void setHeight(int height);
+    public void setPosition(Vector2i position) {
+        ServiceHolder.getWindowService().setWindowPosition(this, position);
+    }
 
-    public abstract String getTitle();
+    public void setPosition(int x, int y) {
+        setPosition(new Vector2i(x, y));
+    }
 
-    public abstract void setTitle(String title);
+    public Vector2i getSize() {
+        return ServiceHolder.getWindowService().getWindowSize(this);
+    }
 
-    public abstract int getX();
+    public void setSize(Vector2i size) {
+        ServiceHolder.getWindowService().setWindowSize(this, size);
+    }
 
-    public abstract void setX(int x);
+    public void setSize(int width, int height) {
+        this.setSize(new Vector2i(width, height));
+    }
 
-    public abstract int getY();
+    public boolean isVisible(){
+        return ServiceHolder.getWindowService().isWindowVisible(this);
+    }
 
-    public abstract void setY();
-
-    public abstract void setPosition(int x, int y);
-
-    public abstract void setSize(int width, int height);
-
-    public abstract boolean isVisible();
-
-    public abstract void setVisible(boolean visible);
+    public void setVisible(boolean visible) {
+        ServiceHolder.getWindowService().setWindowVisible(this, visible);
+    }
 
     public boolean isClosed() {
         return closed;
@@ -76,14 +102,6 @@ public abstract class Window implements EventTarget {
     public abstract Monitor getMonitor();
 
     public abstract void setMonitor(Monitor monitor);
-
-    public static Window createWindow(int width, int height, String title) {
-        return ServiceHolder.getWindowService().createWindow(width, height, title);
-    }
-
-    public static Window createWindow(int width, int height, String title, Monitor monitor) {
-        return ServiceHolder.getWindowService().createWindow(width, height, title, monitor);
-    }
 
     public Container getContainer() {
         return container;

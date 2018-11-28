@@ -2,7 +2,7 @@ package com.spinyowl.spinygui.backend.core.event;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
-public class SystemWindowIconifyEvent implements SystemEvent {
+public class SystemWindowIconifyEvent extends SystemEvent {
 
     public final long window;
     public final boolean iconified;
