@@ -5,6 +5,7 @@ import com.spinyowl.spinygui.core.component.intersection.Intersection;
 import com.spinyowl.spinygui.core.component.intersection.Intersections;
 import com.spinyowl.spinygui.core.event.EventTarget;
 import org.joml.Vector2f;
+import org.joml.Vector2fc;
 
 import java.util.List;
 import java.util.Map;
@@ -91,28 +92,36 @@ public abstract class Component implements EventTarget {
         parent.addChild(this);
     }
 
-    public Vector2f getPosition() {
+    public Vector2fc getPosition() {
         return position;
+    }
+
+    public void setPosition(float x, float y) {
+        this.position.set(x, y);
     }
 
     public void setPosition(Vector2f position) {
         if (position != null) {
-            this.position = position;
+            this.position.set(position);
         } else {
-            this.position = new Vector2f();
+            this.position.set(0, 0);
         }
     }
 
-    public Vector2f getSize() {
+    public Vector2fc getSize() {
         return size;
     }
 
     public void setSize(Vector2f size) {
         if (size != null) {
-            this.size = size;
+            this.size.set(size);
         } else {
-            this.size = new Vector2f();
+            this.size.set(0, 0);
         }
+    }
+
+    public void setSize(float width, float height) {
+        this.size.set(width, height);
     }
 
     public abstract void removeChild(Component component);

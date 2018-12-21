@@ -2,6 +2,7 @@ package com.spinyowl.spinygui.core.component.intersection;
 
 import com.spinyowl.spinygui.core.component.base.Component;
 import org.joml.Vector2f;
+import org.joml.Vector2fc;
 
 public class RectangleIntersection implements Intersection {
 
@@ -15,11 +16,11 @@ public class RectangleIntersection implements Intersection {
      */
     @Override
     public boolean intersects(Component component, float x, float y) {
-        Vector2f pos = component.getPosition();
-        Vector2f size = component.getSize();
-        return     x >= pos.x
-                && x <= pos.x + size.x
-                && y >= pos.y
-                && y <= pos.y + size.y;
+        Vector2fc pos = component.getPosition();
+        Vector2fc size = component.getSize();
+        return     x >= pos.x()
+                && x <= pos.x() + size.x()
+                && y >= pos.y()
+                && y <= pos.y() + size.y();
     }
 }

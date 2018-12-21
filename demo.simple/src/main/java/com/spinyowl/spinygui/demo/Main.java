@@ -29,17 +29,22 @@ public class Main {
         input.setName("password");
         input.setValue("PASS_@!@#&");
 
+        Button button = new Button();
+        Text buttonText = new Text("\n\n\tFOrmantted text\n\t\n\n asdfasdfa\n");
+        Panel buttonPanel = new Panel();
+        Text buttonPanelText = new Text("Bold");
+        Pre buttonPre = new Pre();
+        Text buttonPreText = new Text("\n\n\tFOrmantted text\n\t\n\n asdfasdfa\n");
+        RadioButton radioButton = new RadioButton();
         Component element = new Panel()
-                .add(new Button()
-                        .add(new Text("\n\n\tFOrmantted text\n\t\n\n asdfasdfa\n"))
-                        .add(new Panel()
-                                .add(new Text("Bold"))
-                        )
-                        .add(new Pre().add(new Text("\n\n\tFOrmantted text\n\t\n\n asdfasdfa\n")))
+                .add(button
+                        .add(buttonText)
+                        .add(buttonPanel.add(buttonPanelText))
+                        .add(buttonPre.add(buttonPreText))
                 )
                 .add(input)
-                .add(new RadioButton());
-
+                .add(radioButton);
+        element.setPosition(100, 100);
         window.getContainer().add(element);
 
         String xml = ComponentMarshaller.marshal(element, false);
