@@ -4,6 +4,8 @@ package com.spinyowl.spinygui.core.component.base;
 import com.spinyowl.spinygui.core.component.intersection.Intersection;
 import com.spinyowl.spinygui.core.component.intersection.Intersections;
 import com.spinyowl.spinygui.core.event.EventTarget;
+import com.spinyowl.spinygui.core.system.render.Renderer;
+import com.spinyowl.spinygui.core.system.service.ServiceHolder;
 import org.joml.Vector2f;
 import org.joml.Vector2fc;
 
@@ -47,6 +49,20 @@ public abstract class Component implements EventTarget {
      * Used to allow detect intersection of point on virtual window surface and component.
      */
     private Intersection intersection = Intersections.getDefaultIntersection();
+
+    /**
+     * Component renderer instance.
+     */
+    private Renderer<? extends Component> renderer = ServiceHolder.getRendererFactoryService().getRenderer(this.getClass());
+
+    /**
+     * Returns renderer instance for this component.
+     *
+     * @return renderer instance.
+     */
+    public Renderer getRenderer() {
+        return renderer;
+    }
 
     public boolean isVisible() {
         return visible;

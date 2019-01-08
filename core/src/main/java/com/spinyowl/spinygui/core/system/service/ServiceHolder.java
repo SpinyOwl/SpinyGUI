@@ -11,39 +11,46 @@ import java.util.List;
 public class ServiceHolder {
     private static final Logger LOGGER = LoggerFactory.getLogger(ServiceHolder.class.getName());
 
-    private static final ServiceProvider serviceProvider;
-    private static final MonitorService monitorService;
-    private static final WindowService windowService;
-    private static final ClipboardService clipboardService;
+    private static final ServiceProvider SERVICE_PROVIDER;
+    private static final MonitorService MONITOR_SERVICE;
+    private static final WindowService WINDOW_SERVICE;
+    private static final ClipboardService CLIPBOARD_SERVICE;
+    private static final RendererFactoryService RENDERER_FACTORY_SERVICE;
 
     static {
-        serviceProvider = initializeService(ServiceProvider.class, Configuration.SERVICE_PROVIDER.getState());
+        SERVICE_PROVIDER = initializeService(ServiceProvider.class, Configuration.SERVICE_PROVIDER.getState());
 
         if (Configuration.WINDOW_SERVICE.getState() != null) {
-            windowService = initializeService(WindowService.class, Configuration.WINDOW_SERVICE.getState());
+            WINDOW_SERVICE = initializeService(WindowService.class, Configuration.WINDOW_SERVICE.getState());
         } else {
-            windowService = serviceProvider.getWindowService();
+            WINDOW_SERVICE = SERVICE_PROVIDER.getWindowService();
         }
 
         if (Configuration.MONITOR_SERVICE.getState() != null) {
-            monitorService = initializeService(MonitorService.class, Configuration.MONITOR_SERVICE.getState());
+            MONITOR_SERVICE = initializeService(MonitorService.class, Configuration.MONITOR_SERVICE.getState());
         } else {
-            monitorService = serviceProvider.getMonitorService();
+            MONITOR_SERVICE = SERVICE_PROVIDER.getMonitorService();
         }
 
-        clipboardService = serviceProvider.getClipboardService();
+        CLIPBOARD_SERVICE = SERVICE_PROVIDER.getClipboardService();
+
+        RENDERER_FACTORY_SERVICE = SERVICE_PROVIDER.getRendererFactoryService();
     }
 
     public static MonitorService getMonitorService() {
-        return monitorService;
+        return MONITOR_SERVICE;
     }
 
     public static WindowService getWindowService() {
-        return windowService;
+        return WINDOW_SERVICE;
     }
 
     public static ClipboardService getClipboardService() {
-        return clipboardService;
+        return CLIPBOARD_SERVICE;
+    }
+
+    public static RendererFactoryService getRendererFactoryService() {
+        return RENDERER_FACTORY_SERVICE;
     }
 
     private static <T> T initializeService(Class<T> serviceClass, String implementationClass) {
@@ -108,6 +115,8 @@ public class ServiceHolder {
         WindowService getWindowService();
 
         ClipboardService getClipboardService();
+
+        RendererFactoryService getRendererFactoryService();
 
     }
 }
