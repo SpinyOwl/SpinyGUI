@@ -1,16 +1,21 @@
 package com.spinyowl.spinygui.backend.core.event;
 
-import com.spinyowl.spinygui.core.api.Window;
+import com.spinyowl.spinygui.backend.core.event.handler.SystemEventHandlers;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 
-/**
- * Created by Shcherbin Alexander on 6/10/2016.
- */
-public class SystemWindowCloseEvent implements SystemEvent {
+public class SystemWindowCloseEvent extends SystemEvent {
 
-    public final Window window;
+    public final long window;
 
-    public SystemWindowCloseEvent(Window window) {
+    public SystemWindowCloseEvent(long window) {
+        super(SystemEventHandlers.getSystemWindowCloseEventHandler());
         this.window = window;
     }
 
+    @Override
+    public String toString() {
+        return new ToStringBuilder(this)
+                .append("window", window)
+                .toString();
+    }
 }

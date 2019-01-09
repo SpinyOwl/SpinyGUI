@@ -1,19 +1,19 @@
 //package com.spinyowl.spinygui.demo;
 //
+//import com.spinyowl.spinygui.backend.core.context.Context;
+//import com.spinyowl.spinygui.backend.core.event.processor.SystemEventProcessor;
+//import com.spinyowl.spinygui.backend.core.renderer.Renderer;
+//import com.spinyowl.spinygui.backend.glfwutil.callback.CallbackKeeper;
+//import com.spinyowl.spinygui.backend.glfwutil.callback.DefaultCallbackKeeper;
+//import com.spinyowl.spinygui.core.animation.Animator;
+//import com.spinyowl.spinygui.core.component.Frame;
+//import com.spinyowl.spinygui.core.component.base.Container;
+//import com.spinyowl.spinygui.core.event.processor.EventProcessor;
+//import com.spinyowl.spinygui.core.layout.LayoutManager;
 //import org.lwjgl.glfw.GLFW;
 //import org.lwjgl.glfw.GLFWKeyCallbackI;
 //import org.lwjgl.glfw.GLFWWindowCloseCallbackI;
 //import org.lwjgl.opengl.GL;
-//
-//import Context;
-//import SystemEventProcessor;
-//import SystemEventProcessorForOpenGL32;
-//import Renderer;
-//
-//import Animator;
-//import Frame;
-//import Container;
-//import EventProcessor;
 //
 //import java.io.IOException;
 //import java.util.List;
@@ -42,7 +42,7 @@
 //        glfwSwapInterval(0);
 //
 //        // Firstly we need to create frame component for window.
-//        Frame frame = new Frame(WIDTH, HEIGHT);
+//        Frame frame = new Frame();
 //        // we can add elements here or on the fly
 //        createGuiElements(frame);
 //
@@ -72,8 +72,8 @@
 //        keeper.getChainWindowCloseCallback().add(glfwWindowCloseCallbackI);
 //
 //        // Event processor for system events. System events should be processed and translated to gui events.
-//        SystemEventProcessor systemEventProcessor = new SystemEventProcessorForOpenGL32();
-//        systemEventProcessor.addDefaultCallbacks(keeper);
+//        SystemEventProcessor systemEventProcessor = SystemEventProcessor.getInstance();
+//
 //
 //        // Also we need to create renderer provider
 //        // and create renderer which will render our ui components.

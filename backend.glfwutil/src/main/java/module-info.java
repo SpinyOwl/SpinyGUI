@@ -6,8 +6,9 @@ module com.spinyowl.spinygui.backend.glfwutil {
     requires transitive org.lwjgl.glfw;
     requires transitive org.lwjgl.glfw.natives;
 
-    exports com.spinyowl.spinygui.backend.glfwutil;
+    requires com.spinyowl.spinygui.backend.core;
 
-    exports com.spinyowl.spinygui.backend.glfwutil.cbchain;
-    exports com.spinyowl.spinygui.backend.glfwutil.cbchain.impl;
+    exports com.spinyowl.spinygui.backend.glfwutil.callback;
+    exports com.spinyowl.spinygui.backend.glfwutil.callback.chain;
+    exports com.spinyowl.spinygui.backend.glfwutil.callback.chain.impl;
 }

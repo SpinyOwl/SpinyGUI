@@ -1,6 +1,14 @@
 package com.spinyowl.spinygui.core.component.base;
 
 
+import com.spinyowl.spinygui.core.component.intersection.Intersection;
+import com.spinyowl.spinygui.core.component.intersection.Intersections;
+import com.spinyowl.spinygui.core.event.EventTarget;
+import com.spinyowl.spinygui.core.system.render.Renderer;
+import com.spinyowl.spinygui.core.system.service.ServiceHolder;
+import org.joml.Vector2f;
+import org.joml.Vector2fc;
+
 import java.util.List;
 import java.util.Map;
 
@@ -14,14 +22,78 @@ import java.util.Map;
  * <li>{@link Text}<br> - representation of text node. </li>
  * </ul>
  */
-public abstract class Component {
+public abstract class Component implements EventTarget {
 
+    /**
+     * Parent component.
+     */
     private Component parent;
 
-    private float x;
-    private float y;
-    private float width;
-    private float height;
+    /**
+     * Component position. Mostly assigned to component by layout manager.
+     */
+    private Vector2f position = new Vector2f();
+
+    /**
+     * Component size. Mostly assigned to component by layout manager.
+     */
+    private Vector2f size;
+
+    /**
+     * Component visibility.
+     */
+    private boolean visible;
+
+    /**
+     * Component intersection. During initialization used {@link Intersections#getDefaultIntersection()}.
+     * Used to allow detect intersection of point on virtual window surface and component.
+     */
+    private Intersection intersection = Intersections.getDefaultIntersection();
+
+    /**
+     * Component renderer instance.
+     */
+    private Renderer<? extends Component> renderer = ServiceHolder.getRendererFactoryService().getRenderer(this.getClass());
+
+    /**
+     * Returns renderer instance for this component.
+     *
+     * @return renderer instance.
+     */
+    public Renderer getRenderer() {
+        return renderer;
+    }
+
+    public boolean isVisible() {
+        return visible;
+    }
+
+    public void setVisible(boolean visible) {
+        this.visible = visible;
+    }
+
+    /**
+     * Returns intersection instance.
+     *
+     * @return intersection instance.
+     */
+    public Intersection getIntersection() {
+        return intersection;
+    }
+
+    /**
+     * Used to set intersection.
+     * If intersection instance is null - intersection will be replaced with default intersection.
+     *
+     * @param intersection intersection to set.
+     */
+    public void setIntersection(Intersection intersection) {
+        if (intersection != null) {
+            this.intersection = intersection;
+        } else {
+            this.intersection = Intersections.getDefaultIntersection();
+        }
+    }
 
     public Component getParent() {
         return parent;
@@ -36,36 +108,36 @@ public abstract class Component {
         parent.addChild(this);
     }
 
-    public float getX() {
-        return x;
+    public Vector2fc getPosition() {
+        return position;
     }
 
-    public void setX(float x) {
-        this.x = x;
+    public void setPosition(float x, float y) {
+        this.position.set(x, y);
     }
 
-    public float getY() {
-        return y;
+    public void setPosition(Vector2f position) {
+        if (position != null) {
+            this.position.set(position);
+        } else {
+            this.position.set(0, 0);
+        }
     }
 
-    public void setY(float y) {
-        this.y = y;
+    public Vector2fc getSize() {
+        return size;
     }
 
-    public float getWidth() {
-        return width;
+    public void setSize(Vector2f size) {
+        if (size != null) {
+            this.size.set(size);
+        } else {
+            this.size.set(0, 0);
+        }
     }
 
-    public void setWidth(float width) {
-        this.width = width;
-    }
-
-    public float getHeight() {
-        return height;
-    }
-
-    public void setHeight(float height) {
-        this.height = height;
+    public void setSize(float width, float height) {
+        this.size.set(width, height);
     }
 
     public abstract void removeChild(Component component);

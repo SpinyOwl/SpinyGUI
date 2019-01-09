@@ -1,17 +1,17 @@
 package com.spinyowl.spinygui.core.api;
 
-import com.spinyowl.spinygui.core.service.ServiceHandler;
+import com.spinyowl.spinygui.core.system.service.ServiceHolder;
 
 import java.util.List;
 
 public abstract class Monitor {
 
     public static Monitor getPrimaryMonitor() {
-        return ServiceHandler.getMonitorService().getPrimaryMonitor();
+        return ServiceHolder.getMonitorService().getPrimaryMonitor();
     }
 
     public static List<Monitor> getMonitors() {
-        return ServiceHandler.getMonitorService().getMonitors();
+        return ServiceHolder.getMonitorService().getMonitors();
     }
 
     public abstract VideoMode getVideoMode();

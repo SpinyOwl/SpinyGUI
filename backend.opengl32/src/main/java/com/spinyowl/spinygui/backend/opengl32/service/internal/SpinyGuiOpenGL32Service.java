@@ -15,7 +15,7 @@ public class SpinyGuiOpenGL32Service {
 
     private AtomicBoolean started = new AtomicBoolean(false);
 
-    private SpinyGuiOpenGL32ServiceThread thread;
+    private SpinyGuiOpenGL32ServiceThread serviceThread;
 
     private SpinyGuiOpenGL32Service() {
     }
@@ -32,8 +32,8 @@ public class SpinyGuiOpenGL32Service {
             Runtime.getRuntime().addShutdownHook(new Thread(this::stopService, "SpinyGui OpenGL 3.2 Service Thread Destroyer"));
 
             // create task executor.
-            thread = new SpinyGuiOpenGL32ServiceThread();
-            thread.start();
+            serviceThread = new SpinyGuiOpenGL32ServiceThread();
+            serviceThread.start();
         }
     }
 
@@ -45,11 +45,11 @@ public class SpinyGuiOpenGL32Service {
 
         LOGGER.debug("STOPPING THE SERVICE");
         if (started.compareAndSet(true, false)) {
-            Future<?> submit = thread.addTask(this::destroyAllResources);
+            Future<?> submit = serviceThread.addTask(this::destroyAllResources);
             while (!submit.isDone()) {
                 Thread.yield();
             }
-            thread.stop();
+            serviceThread.stop();
         }
     }
 
@@ -57,18 +57,18 @@ public class SpinyGuiOpenGL32Service {
     }
 
     public FutureTask<Void> addTask(Runnable r) {
-        return thread.addTask(r);
+        return serviceThread.addTask(r);
     }
 
     public <T> FutureTask<T> addTask(Callable<T> t) {
-        return thread.addTask(t);
+        return serviceThread.addTask(t);
         }
 
     public <T> T addTaskAndGet(Callable<T> t) {
-        return thread.addTaskAndGet(t);
+        return serviceThread.addTaskAndGet(t);
     }
 
     public void addTaskAndWait(Runnable r) {
-        thread.addTaskAndWait(r);
+        serviceThread.addTaskAndWait(r);
     }
 }

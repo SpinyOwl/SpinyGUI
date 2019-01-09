@@ -3,10 +3,7 @@ package com.spinyowl.spinygui.backend.core.event;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
-/**
- * Created by Shcherbin Alexander on 6/10/2016.
- */
-public class SystemCharEvent implements SystemEvent {
+public class SystemCharEvent extends SystemEvent {
 
     public final long window;
     public final int codePoint;

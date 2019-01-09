@@ -8,6 +8,7 @@ module com.spinyowl.spinygui.backend.core {
 
     exports com.spinyowl.spinygui.backend.core.renderer;
     exports com.spinyowl.spinygui.backend.core.event;
+    exports com.spinyowl.spinygui.backend.core.event.handler;
     exports com.spinyowl.spinygui.backend.core.event.processor;
     exports com.spinyowl.spinygui.backend.core.context;
 }
