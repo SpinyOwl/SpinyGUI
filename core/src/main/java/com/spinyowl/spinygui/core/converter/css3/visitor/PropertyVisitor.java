@@ -2,18 +2,18 @@ package com.spinyowl.spinygui.core.converter.css3.visitor;
 
 import com.spinyowl.spinygui.core.converter.css3.CSS3BaseVisitor;
 import com.spinyowl.spinygui.core.converter.css3.CSS3Parser;
-import com.spinyowl.spinygui.core.converter.css3.CSSProperty;
+import com.spinyowl.spinygui.core.style.Property;
 import com.spinyowl.spinygui.core.style.types.Color;
 
-public class PropertyVisitor extends CSS3BaseVisitor<CSSProperty> {
+public class PropertyVisitor extends CSS3BaseVisitor<Property> {
 
     @Override
-    public CSSProperty visitKnownDeclaration(CSS3Parser.KnownDeclarationContext ctx) {
+    public Property visitKnownDeclaration(CSS3Parser.KnownDeclarationContext ctx) {
         var name = ctx.property().getText();
-        var object = new ValueVisitor().visit(ctx.expr());
-        if (object == null)
-            object = parseValue(name, ctx.expr().getText());
-        var declaration = new CSSProperty(name, object);
+        var value = new ValueVisitor().visit(ctx.expr());
+        if (value == null)
+            value = parseValue(name, ctx.expr().getText());
+        var declaration = new Property(name, value);
 
         return declaration;
     }

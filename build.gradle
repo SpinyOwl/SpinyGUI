@@ -19,8 +19,8 @@ subprojects {
         }
 
         dependencies {// https://mvnrepository.com/artifact/org.slf4j/slf4j-api
-            compile group: 'org.slf4j', name: 'slf4j-api', version: '1.8.0-beta2'
-            compile group: 'org.slf4j', name: 'slf4j-jdk14', version: '1.8.0-beta2'
+//            compile group: 'org.slf4j', name: 'slf4j-api', version: '1.8.0-beta2'
+//            compile group: 'org.slf4j', name: 'slf4j-jdk14', version: '1.8.0-beta2'
         }
 
         sourceCompatibility = 1.11

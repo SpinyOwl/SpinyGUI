@@ -6,8 +6,8 @@ import com.spinyowl.spinygui.core.component.*;
 import com.spinyowl.spinygui.core.component.base.Component;
 import com.spinyowl.spinygui.core.component.base.Text;
 import com.spinyowl.spinygui.core.converter.ComponentMarshaller;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 
 /**
@@ -15,7 +15,7 @@ import org.slf4j.LoggerFactory;
  */
 public class Main {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(Main.class);
+    private static final Logger LOGGER = Logger.getLogger(Main.class.getName());
 
     public static void main(String[] args) throws Exception {
 

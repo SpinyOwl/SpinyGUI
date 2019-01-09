@@ -22,7 +22,8 @@ public class StyleSheetFactory {
             var tokenStream = new CommonTokenStream(lexer);
             var parser = new CSS3Parser(tokenStream);
 
-            var styleSheet = new StyleSheetVisitor().visit(parser.stylesheet());
+            CSS3Parser.StylesheetContext stylesheet = parser.stylesheet();
+            var styleSheet = new StyleSheetVisitor().visit(stylesheet);
             return styleSheet;
 
         } catch (Exception e) {

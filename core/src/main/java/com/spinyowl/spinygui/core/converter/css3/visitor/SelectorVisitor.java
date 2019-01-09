@@ -1,13 +1,8 @@
 package com.spinyowl.spinygui.core.converter.css3.visitor;
 
-import com.spinyowl.spinygui.core.component.Button;
-import com.spinyowl.spinygui.core.component.Panel;
-import com.spinyowl.spinygui.core.component.base.Component;
-import com.spinyowl.spinygui.core.component.base.Container;
 import com.spinyowl.spinygui.core.converter.css3.CSS3BaseVisitor;
 import com.spinyowl.spinygui.core.converter.css3.CSS3Parser;
 import com.spinyowl.spinygui.core.converter.css3.StyleReflectionHandler;
-import com.spinyowl.spinygui.core.converter.css3.StyleSheetException;
 import com.spinyowl.spinygui.core.style.selector.ClassNameSelector;
 import com.spinyowl.spinygui.core.style.selector.StyleSelector;
 import com.spinyowl.spinygui.core.style.selector.TypeSelector;
@@ -15,7 +10,6 @@ import org.antlr.v4.runtime.tree.ParseTree;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Predicate;
 
 public class SelectorVisitor extends CSS3BaseVisitor<List<StyleSelector>> {
 
@@ -42,11 +36,11 @@ public class SelectorVisitor extends CSS3BaseVisitor<List<StyleSelector>> {
             final var selectorSequence = visitSimpleSelectorSequence(ctx.simpleSelectorSequence(i)).get(0);
 
             if (ctx.combinator(i - 1).Space() != null) {
-                firstSelectorSequence = selectorSequence.and(firstSelectorSequence);
-            } else if (ctx.combinator(i - 1).Greater() != null) {
                 firstSelectorSequence = selectorSequence.child(firstSelectorSequence);
+            } else if (ctx.combinator(i - 1).Greater() != null) {
+                firstSelectorSequence = selectorSequence.immediateChild(firstSelectorSequence);
             } else if (ctx.combinator(i - 1).Plus() != null) {
-                //TODO: Adjacent Sibling Selector
+                firstSelectorSequence = selectorSequence.immediateNext(firstSelectorSequence);
             } else if (ctx.combinator(i - 1).Tilde() != null) {
                 //TODO: General Sibling Selector
             }

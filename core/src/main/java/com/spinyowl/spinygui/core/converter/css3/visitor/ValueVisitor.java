@@ -10,7 +10,6 @@ public class ValueVisitor extends CSS3BaseVisitor<Object> {
     public Object visitHexcolor(CSS3Parser.HexcolorContext ctx) {
         String value = ctx.getText();
 
-
         if (value.length() == 7) {  // #ffffff
             int hex = Integer.parseInt(value.substring(1), 16);
             int r = (hex >> 16) & 0xFF;
@@ -18,6 +17,7 @@ public class ValueVisitor extends CSS3BaseVisitor<Object> {
             int b = hex & 0xFF;
             return new Color(r, g, b);
         }
+
         if (value.length() == 4) { // #fff
             int hex = Integer.parseInt(value.substring(1), 16);
             int r = (hex >> 2) & 0xF;
@@ -28,13 +28,13 @@ public class ValueVisitor extends CSS3BaseVisitor<Object> {
             b |= b << 4;
             return new Color(r, g, b);
         }
+
         return null;
     }
 
     @Override
     public Object visitFunction(CSS3Parser.FunctionContext ctx) {
         String name = ctx.Function().getText().substring(0, ctx.Function().getText().length() - 1);
-
 
         if (name.equals("rgb"))
             return parseRGB(ctx);
@@ -87,4 +87,5 @@ public class ValueVisitor extends CSS3BaseVisitor<Object> {
         }
         return Integer.parseInt(value);
     }
+
 }

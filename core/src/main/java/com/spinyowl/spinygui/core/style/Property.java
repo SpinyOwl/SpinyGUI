@@ -1,14 +1,14 @@
-package com.spinyowl.spinygui.core.converter.css3;
+package com.spinyowl.spinygui.core.style;
 
 import java.util.Objects;
 import java.util.StringJoiner;
 
-public class CSSProperty {
+public class Property {
 
     private String name;
     private Object value;
 
-    public CSSProperty(String name, Object value) {
+    public Property(String name, Object value) {
         this.name = name;
         this.value = value;
     }
@@ -33,7 +33,7 @@ public class CSSProperty {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        CSSProperty that = (CSSProperty) o;
+        Property that = (Property) o;
         return Objects.equals(name, that.name) &&
                 Objects.equals(value, that.value);
     }
@@ -45,7 +45,7 @@ public class CSSProperty {
 
     @Override
     public String toString() {
-        return new StringJoiner(", ", CSSProperty.class.getSimpleName() + "(", ")")
+        return new StringJoiner(", ", Property.class.getSimpleName() + "(", ")")
                 .add("name='" + name + "'")
                 .add("value=" + value)
                 .toString();

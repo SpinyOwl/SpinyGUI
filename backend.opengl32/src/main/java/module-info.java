@@ -14,7 +14,6 @@ open module com.spinyowl.spinygui.backend.opengl32 {
     requires org.lwjgl.opengl.natives;
 
     requires guava.base.r03;
-    requires org.slf4j;
 
     exports com.spinyowl.spinygui.backend.opengl32.api;
     exports com.spinyowl.spinygui.backend.opengl32.service;

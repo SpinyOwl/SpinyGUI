@@ -2,14 +2,14 @@ package com.spinyowl.spinygui.core.system.service;
 
 import com.spinyowl.spinygui.core.Configuration;
 import io.github.classgraph.ClassGraph;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
 public class ServiceHolder {
-    private static final Logger LOGGER = LoggerFactory.getLogger(ServiceHolder.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(ServiceHolder.class.getName());
 
     private static final ServiceProvider SERVICE_PROVIDER;
     private static final MonitorService MONITOR_SERVICE;
@@ -69,16 +69,16 @@ public class ServiceHolder {
             // check if found implementations.
             if (spinyguiClassRefs != null && !spinyguiClassRefs.isEmpty()) {
                 // log existing implementations
-                if (LOGGER.isDebugEnabled()) {
+                if (LOGGER.isLoggable(Level.INFO)) {
                     for (Class<?> classRef : spinyguiClassRefs) {
-                        LOGGER.debug(String.format("%s class implementation found: %s", serviceClass.getSimpleName(), classRef.getName()));
+                        LOGGER.log(Level.INFO,String.format("%s class implementation found: %s", serviceClass.getSimpleName(), classRef.getName()));
                     }
                 }
 
                 //get property
 
                 if (implementationClass != null) {
-                    LOGGER.debug("Trying to load specified implementation: '" + implementationClass + "'.");
+                    LOGGER.log(Level.INFO,"Trying to load specified implementation: '" + implementationClass + "'.");
                     for (Class<?> aClass : spinyguiClassRefs) {
                         if (implementationClass.equals(aClass.getName()) || implementationClass.equals(aClass.getSimpleName())) {
                             instance = createInstance((Class<T>) aClass);
@@ -86,9 +86,9 @@ public class ServiceHolder {
                     }
 
                     if (instance == null) {
-                        LOGGER.debug("Specified implementation '" + implementationClass + "' not found.");
+                        LOGGER.log(Level.INFO,"Specified implementation '" + implementationClass + "' not found.");
                     } else {
-                        LOGGER.debug("Specified implementation '" + implementationClass + "' loaded.");
+                        LOGGER.log(Level.INFO,"Specified implementation '" + implementationClass + "' loaded.");
                     }
                 } else {
                     instance = createInstance((Class<T>) spinyguiClassRefs.get(0));
@@ -103,7 +103,7 @@ public class ServiceHolder {
         try {
             instance = clazz.getDeclaredConstructor().newInstance();
         } catch (IllegalAccessException | InstantiationException | NoSuchMethodException | InvocationTargetException e) {
-            LOGGER.error(e.getMessage(), e);
+            LOGGER.log(Level.WARNING,e.getMessage(), e);
         }
         return instance;
     }
