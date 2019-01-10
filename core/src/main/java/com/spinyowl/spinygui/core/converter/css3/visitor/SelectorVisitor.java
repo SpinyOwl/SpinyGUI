@@ -3,6 +3,7 @@ package com.spinyowl.spinygui.core.converter.css3.visitor;
 import com.spinyowl.spinygui.core.converter.css3.CSS3BaseVisitor;
 import com.spinyowl.spinygui.core.converter.css3.CSS3Parser;
 import com.spinyowl.spinygui.core.converter.css3.StyleReflectionHandler;
+import com.spinyowl.spinygui.core.converter.TagNameMapping;
 import com.spinyowl.spinygui.core.style.selector.ClassNameSelector;
 import com.spinyowl.spinygui.core.style.selector.StyleSelector;
 import com.spinyowl.spinygui.core.style.selector.TypeSelector;
@@ -31,21 +32,21 @@ public class SelectorVisitor extends CSS3BaseVisitor<List<StyleSelector>> {
     @Override
     public List<StyleSelector> visitSelector(CSS3Parser.SelectorContext ctx) {
         var list = new ArrayList<StyleSelector>();
-        var firstSelectorSequence = visitSimpleSelectorSequence(ctx.simpleSelectorSequence(0)).get(0);
+        var firstSelector = visitSimpleSelectorSequence(ctx.simpleSelectorSequence(0)).get(0);
         for (int i = 1; i < ctx.simpleSelectorSequence().size(); i++) {
-            final var selectorSequence = visitSimpleSelectorSequence(ctx.simpleSelectorSequence(i)).get(0);
+            final var secondSelector = visitSimpleSelectorSequence(ctx.simpleSelectorSequence(i)).get(0);
 
             if (ctx.combinator(i - 1).Space() != null) {
-                firstSelectorSequence = selectorSequence.child(firstSelectorSequence);
+                firstSelector = StyleSelector.child(firstSelector, secondSelector);
             } else if (ctx.combinator(i - 1).Greater() != null) {
-                firstSelectorSequence = selectorSequence.immediateChild(firstSelectorSequence);
+                firstSelector = StyleSelector.immediateChild(firstSelector, secondSelector);
             } else if (ctx.combinator(i - 1).Plus() != null) {
-                firstSelectorSequence = selectorSequence.immediateNext(firstSelectorSequence);
+                firstSelector = StyleSelector.immediateNext(firstSelector, secondSelector);
             } else if (ctx.combinator(i - 1).Tilde() != null) {
                 //TODO: General Sibling Selector
             }
         }
-        list.add(firstSelectorSequence);
+        list.add(firstSelector);
         return list;
     }
 
@@ -57,7 +58,7 @@ public class SelectorVisitor extends CSS3BaseVisitor<List<StyleSelector>> {
         for (ParseTree child : ctx.children) {
             var s = visit(child).get(0);
             if (current == null) current = s;
-            else current = current.and(s);
+            else current = StyleSelector.and(current, s);
         }
         list.add(current);
 
@@ -67,7 +68,8 @@ public class SelectorVisitor extends CSS3BaseVisitor<List<StyleSelector>> {
     @Override
     public List<StyleSelector> visitTypeSelector(CSS3Parser.TypeSelectorContext ctx) {
         var list = new ArrayList<StyleSelector>();
-        var clazz = StyleReflectionHandler.getTypeSelector(ctx.getText());
+//        var clazz = StyleReflectionHandler.getTypeSelector(ctx.getText());
+        var clazz = TagNameMapping.getByTag(ctx.getText());
         list.add(new TypeSelector(clazz));
         return list;
     }

@@ -1,7 +1,7 @@
 package com.spinyowl.spinygui.core.component;
 
 import com.spinyowl.spinygui.core.component.base.Container;
-import com.spinyowl.spinygui.core.converter.RawProcessor;
+import com.spinyowl.spinygui.core.converter.dom.RawProcessor;
 
 /**
  *

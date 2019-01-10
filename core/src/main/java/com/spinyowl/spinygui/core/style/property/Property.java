@@ -1,4 +1,4 @@
-package com.spinyowl.spinygui.core.style;
+package com.spinyowl.spinygui.core.style.property;
 
 import java.util.Objects;
 import java.util.StringJoiner;

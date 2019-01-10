@@ -1,4 +1,4 @@
-package com.spinyowl.spinygui.core.converter;
+package com.spinyowl.spinygui.core.converter.dom;
 
 import org.jdom2.Element;
 import org.jdom2.output.Format;
@@ -9,6 +9,9 @@ import org.jdom2.util.NamespaceStack;
 import java.io.IOException;
 import java.io.Writer;
 
+/**
+ * Used only for marshalling component to xml.
+ */
 public class RawProcessor extends AbstractXMLOutputProcessor {
 
     public static final String PREFORMATTED_ATTRIBUTE = "_pre";

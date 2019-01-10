@@ -2,7 +2,7 @@ package com.spinyowl.spinygui.core.converter.css3.visitor;
 
 import com.spinyowl.spinygui.core.converter.css3.CSS3BaseVisitor;
 import com.spinyowl.spinygui.core.converter.css3.CSS3Parser;
-import com.spinyowl.spinygui.core.style.Property;
+import com.spinyowl.spinygui.core.style.property.Property;
 import com.spinyowl.spinygui.core.style.types.Color;
 
 public class PropertyVisitor extends CSS3BaseVisitor<Property> {

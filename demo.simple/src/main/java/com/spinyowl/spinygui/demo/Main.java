@@ -5,8 +5,8 @@ import com.spinyowl.spinygui.core.api.Window;
 import com.spinyowl.spinygui.core.component.*;
 import com.spinyowl.spinygui.core.component.base.Component;
 import com.spinyowl.spinygui.core.component.base.Text;
-import com.spinyowl.spinygui.core.converter.ComponentMarshaller;
-import java.util.logging.Level;
+import com.spinyowl.spinygui.core.converter.dom.ComponentMarshaller;
+
 import java.util.logging.Logger;
 
 
@@ -71,6 +71,7 @@ public class Main {
                 "</div>";
         Component unmarshal = ComponentMarshaller.unmarshal(xml2);
         System.out.println(ComponentMarshaller.marshal(unmarshal));
+        System.out.println(ComponentMarshaller.marshal(unmarshal, false));
         window.setVisible(true);
     }
 

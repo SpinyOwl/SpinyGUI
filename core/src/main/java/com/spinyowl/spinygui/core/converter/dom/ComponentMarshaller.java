@@ -1,7 +1,8 @@
-package com.spinyowl.spinygui.core.converter;
+package com.spinyowl.spinygui.core.converter.dom;
 
 import com.spinyowl.spinygui.core.component.base.Component;
 import com.spinyowl.spinygui.core.component.base.Text;
+import com.spinyowl.spinygui.core.converter.TagNameMapping;
 import org.jdom2.Content;
 import org.jdom2.Document;
 import org.jdom2.Element;
@@ -55,8 +56,8 @@ public class ComponentMarshaller {
 
     private static <T extends Component> String getTagName(T component) {
         var componentClass = component.getClass();
-        if (ComponentMapping.containsKey(componentClass)) {
-            return ComponentMapping.get(componentClass);
+        if (TagNameMapping.containsKey(componentClass)) {
+            return TagNameMapping.get(componentClass);
         } else {
             return componentClass.getCanonicalName();
         }
@@ -106,8 +107,8 @@ public class ComponentMarshaller {
     }
 
     private static Class<? extends Component> getClassByTag(String name) {
-        if (ComponentMapping.containsTag(name)) {
-            return ComponentMapping.getByTag(name);
+        if (TagNameMapping.containsTag(name)) {
+            return TagNameMapping.getByTag(name);
         }
         try {
             return (Class<? extends Component>) Class.forName(name);

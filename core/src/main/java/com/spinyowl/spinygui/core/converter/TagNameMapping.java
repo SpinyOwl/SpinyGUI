@@ -2,30 +2,31 @@ package com.spinyowl.spinygui.core.converter;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
-import com.spinyowl.spinygui.core.component.base.Component;
 import com.spinyowl.spinygui.core.component.*;
+import com.spinyowl.spinygui.core.component.base.Component;
+import com.spinyowl.spinygui.core.converter.dom.ComponentMarshaller;
 
 /**
  * Component mapping - contains component to tag mapping for {@link ComponentMarshaller}.
  */
-public final class ComponentMapping {
+public final class TagNameMapping {
     private static final BiMap<Class<? extends Component>, String> tagMapping = HashBiMap.create();
     private static final BiMap<String, String> tagNameMapping = HashBiMap.create();
 
     static {
-        tagMapping.put(Button.class, "button");
-        tagMapping.put(Input.class, "input");
-        tagMapping.put(Label.class, "label");
-        tagMapping.put(Panel.class, "div");
-        tagMapping.put(Pre.class, "pre");
-        tagMapping.put(RadioButton.class, "radioButton");
+        addMapping(Button.class, "button");
+        addMapping(Input.class, "input");
+        addMapping(Label.class, "label");
+        addMapping(Panel.class, "panel");
+        addMapping(Pre.class, "pre");
+        addMapping(RadioButton.class, "radioButton");
     }
 
-    private ComponentMapping() {
+    private TagNameMapping() {
     }
 
     public static void addMapping(Class<? extends Component> aClass, String tagName) {
-        tagMapping.put(aClass, "radioButton");
+        tagMapping.put(aClass, tagName);
         tagNameMapping.put(tagName.toUpperCase(), tagName);
     }
 

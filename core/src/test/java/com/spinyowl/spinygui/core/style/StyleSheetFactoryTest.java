@@ -31,8 +31,10 @@ public class StyleSheetFactoryTest {
         List<RuleSet> ruleSets = stylesheet.getRuleSets();
         RuleSet ruleSet = ruleSets.get(0);
         List<StyleSelector> selectors = ruleSet.getSelectors();
+
         Assert.assertFalse(selectors.get(0).test(p));
         Assert.assertTrue(selectors.get(0).test(testLabel));
+
         System.out.println(stylesheet);
     }
 }
