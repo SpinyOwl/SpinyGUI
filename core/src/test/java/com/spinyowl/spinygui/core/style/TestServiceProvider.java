@@ -4,6 +4,7 @@ import com.spinyowl.spinygui.core.api.Monitor;
 import com.spinyowl.spinygui.core.api.Window;
 import com.spinyowl.spinygui.core.system.render.Renderer;
 import com.spinyowl.spinygui.core.system.service.*;
+import org.joml.Vector2d;
 import org.joml.Vector2i;
 
 import java.util.List;
@@ -53,9 +54,7 @@ public class TestServiceProvider implements ServiceHolder.ServiceProvider {
             }
 
             @Override
-            public void setWindowSize(Window window, Vector2i size) {
-
-            }
+            public void setWindowSize(Window window, Vector2i size) {}
 
             @Override
             public Vector2i getWindowPosition(Window window) {
@@ -63,9 +62,7 @@ public class TestServiceProvider implements ServiceHolder.ServiceProvider {
             }
 
             @Override
-            public void setWindowPosition(Window window, Vector2i position) {
-
-            }
+            public void setWindowPosition(Window window, Vector2i position) {}
 
             @Override
             public boolean isWindowVisible(Window window) {
@@ -73,19 +70,18 @@ public class TestServiceProvider implements ServiceHolder.ServiceProvider {
             }
 
             @Override
-            public void setWindowVisible(Window window, boolean visible) {
+            public void setWindowVisible(Window window, boolean visible) {}
 
+            @Override
+            public void setWindowTitle(Window window, String title) {}
+
+            @Override
+            public Vector2d getCursorPosition(Window window) {
+                return null;
             }
 
             @Override
-            public void setWindowTitle(Window window, String title) {
-
-            }
-
-            @Override
-            public void getCursorPosition(Window window) {
-
-            }
+            public void setCursorPosition(Window window, Vector2d position) {}
         };
     }
 
