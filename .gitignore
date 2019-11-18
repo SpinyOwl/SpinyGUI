@@ -1,0 +1,17 @@
+/.idea/
+**/build/*
+**/target/*
+/.gradle/
+**/classes/*
+**/out/*
+hs_err_pid*
+/logs/
+
+*.class
+*.iml
+/bin/
+/build/
+
+.classpath
+.project
+/.settings/
