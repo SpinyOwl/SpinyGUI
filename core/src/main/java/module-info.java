@@ -18,28 +18,36 @@ open module com.spinyowl.spinygui.core {
 
     exports com.spinyowl.spinygui.core.animation;
     exports com.spinyowl.spinygui.core.api;
-    exports com.spinyowl.spinygui.core.node.base;
-    exports com.spinyowl.spinygui.core.node.intersection;
+
     exports com.spinyowl.spinygui.core.node;
+    exports com.spinyowl.spinygui.core.node.base;
     exports com.spinyowl.spinygui.core.node.element;
+    exports com.spinyowl.spinygui.core.node.intersection;
+
     exports com.spinyowl.spinygui.core.converter;
     exports com.spinyowl.spinygui.core.converter.css.parser;
     exports com.spinyowl.spinygui.core.converter.css.parser.annotations;
     exports com.spinyowl.spinygui.core.converter.css.parser.visitor;
     exports com.spinyowl.spinygui.core.converter.dom;
+
+    exports com.spinyowl.spinygui.core.event;
     exports com.spinyowl.spinygui.core.event.listener;
     exports com.spinyowl.spinygui.core.event.processor;
-    exports com.spinyowl.spinygui.core.event;
+
     exports com.spinyowl.spinygui.core.layout;
+
     exports com.spinyowl.spinygui.core.style;
     exports com.spinyowl.spinygui.core.style.manager;
-    exports com.spinyowl.spinygui.core.style.css.n;
-    exports com.spinyowl.spinygui.core.style.css.n.impl.color;
+
+    exports com.spinyowl.spinygui.core.style.css;
+    exports com.spinyowl.spinygui.core.style.css.processor;
     exports com.spinyowl.spinygui.core.style.css.property;
     exports com.spinyowl.spinygui.core.style.css.selector;
+
     exports com.spinyowl.spinygui.core.style.types;
     exports com.spinyowl.spinygui.core.style.types.border;
     exports com.spinyowl.spinygui.core.style.types.flex;
+
     exports com.spinyowl.spinygui.core.util;
     exports com.spinyowl.spinygui.core;
 

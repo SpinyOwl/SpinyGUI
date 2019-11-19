@@ -2,6 +2,7 @@ package com.spinyowl.spinygui.core.style;
 
 import static com.spinyowl.spinygui.core.NodeBuilder.*;
 
+import com.spinyowl.spinygui.core.api.Frame;
 import com.spinyowl.spinygui.core.converter.StyleSheetConverter;
 import com.spinyowl.spinygui.core.style.css.RuleSet;
 import com.spinyowl.spinygui.core.style.css.StyleSheet;
@@ -12,10 +13,13 @@ import com.spinyowl.spinygui.core.node.element.Button;
 import com.spinyowl.spinygui.core.node.element.Label;
 import com.spinyowl.spinygui.core.node.base.Node;
 import com.spinyowl.spinygui.core.style.css.selector.StyleSelector;
+import com.spinyowl.spinygui.core.style.manager.StyleManagerProvider;
+import com.spinyowl.spinygui.core.style.types.Color;
 import org.junit.Assert;
 import org.junit.Test;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 public class StyleSheetConverterTest {
@@ -23,7 +27,7 @@ public class StyleSheetConverterTest {
 
     @Test
     public void createFromCSS() throws StyleSheetException {
-        String css = "panel > button .test" +
+        String css = "div > button .test" +
                 "{" +
                 "   background: #ffff80;" +
                 "   color: red;" +
@@ -35,39 +39,48 @@ public class StyleSheetConverterTest {
 
         var stylesheet = StyleSheetConverter.createFromCSS(css);
 
-        Label testLabel = label();
-        testLabel.setAttribute("class", "test");
-        Node p = panel(button(testLabel));
+        Label testLabel = label(Map.of("class", "test"));
+
+        Element div = div(button(testLabel));
+
         List<RuleSet> ruleSets = stylesheet.getRuleSets();
         RuleSet ruleSet = ruleSets.get(0);
         List<StyleSelector> selectors = ruleSet.getSelectors();
 
-        Assert.assertFalse(selectors.get(0).test(p));
+        Assert.assertFalse(selectors.get(0).test(div));
         Assert.assertTrue(selectors.get(0).test(testLabel));
+
+        Frame frame = new Frame();
+        frame.getStyleSheets().add(stylesheet);
+        frame.getContainer().addChild(div);
+
+        StyleManagerProvider.getInstance().recalculateStyles(frame);
+
+        Assert.assertEquals(testLabel.getCalculatedStyle().getColor(), Color.RED);
     }
 
     @Test
     public void searchComponents() throws Exception {
         var css =
-                "panel .test label { background: red; }" +
-                        "panel .test { background: green; border: 1px, 1px, 2px, 1px }" +
+                "div .test label { background: red; }" +
+                        "div .test { background: green; border: 1px, 1px, 2px, 1px }" +
                         "button { color: black; }";
 
         var stylesheet = StyleSheetConverter.createFromCSS(css);
 
-        var xml = "<panel id=\"1\">\n" +
-                "    <panel id=\"2\" class=\"test\">\n" +
+        var xml = "<div id=\"1\">\n" +
+                "    <div id=\"2\" class=\"test\">\n" +
                 "        <label id=\"3\">Label 1</label>\n" +
-                "    </panel>\n" +
+                "    </div>\n" +
                 "    <button id=\"4\" class=\"test\"/>\n" +
-                "    <panel id=\"5\" class=\"test\">\n" +
-                "        <panel id=\"6\">\n" +
-                "            <panel id=\"7\" class=\"test\">\n" +
+                "    <div id=\"5\" class=\"test\">\n" +
+                "        <div id=\"6\">\n" +
+                "            <div id=\"7\" class=\"test\">\n" +
                 "                <label id=\"8\">Label 1</label>\n" +
-                "            </panel>\n" +
-                "        </panel>\n" +
-                "    </panel>\n" +
-                "</panel>";
+                "            </div>\n" +
+                "        </div>\n" +
+                "    </div>\n" +
+                "</div>";
         var componentTree = (Element) NodeConverter.fromXml(xml);
 
         List<RuleSet> ruleSets = stylesheet.getRuleSets();
@@ -79,7 +92,7 @@ public class StyleSheetConverterTest {
 
 
         Set<Element> test = StyleSheet.searchElements(ruleSets.get(1), componentTree);
-        for (Node node : test) {
+        for (Element node : test) {
             Assert.assertEquals("test", node.getAttribute("class"));
         }
 
@@ -90,6 +103,7 @@ public class StyleSheetConverterTest {
         }
 
     }
+
     @Test
     public void parseText() throws Exception {
 

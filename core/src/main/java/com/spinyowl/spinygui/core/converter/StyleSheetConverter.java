@@ -10,12 +10,17 @@ import org.apache.commons.logging.LogFactory;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
 
-public class StyleSheetConverter {
+public final class StyleSheetConverter {
     private static final Log LOGGER = LogFactory.getLog(StyleSheetConverter.class);
 
+    private StyleSheetConverter() {
+    }
+
     /**
-     * @param css
-     * @return
+     * Used to create StyleSheet from css.
+     *
+     * @param css css source
+     * @return StyleSheet
      */
     public static StyleSheet createFromCSS(String css) throws StyleSheetException {
 
@@ -31,7 +36,31 @@ public class StyleSheetConverter {
 
         } catch (Exception e) {
             LOGGER.error(e.getMessage());
-            throw new StyleSheetException();
+            throw new StyleSheetException(e);
         }
     }
+
+//    /**
+//     * Used to create StyleSheet from css.
+//     *
+//     * @param css css source
+//     * @return StyleSheet
+//     */
+//    public static List<> createFromCSS(String css) throws StyleSheetException {
+//
+//        try {
+//            var charStream = CharStreams.fromString(css);
+//            var lexer = new CSS3Lexer(charStream);
+//
+//            var tokenStream = new CommonTokenStream(lexer);
+//            var parser = new CSS3Parser(tokenStream);
+//
+//            CSS3Parser.StylesheetContext stylesheet = parser.stylesheet();
+//            return new StyleSheetVisitor().visit(stylesheet);
+//
+//        } catch (Exception e) {
+//            LOGGER.error(e.getMessage());
+//            throw new StyleSheetException(e);
+//        }
+//    }
 }

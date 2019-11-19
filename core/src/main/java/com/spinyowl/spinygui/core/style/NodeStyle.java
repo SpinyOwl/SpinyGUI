@@ -52,6 +52,9 @@ public class NodeStyle {
      */
     private float flexBasis;
 
+    // font related properties
+    private Color color;
+
     // BACKGROUND properties
     private Color backgroundColor;
 
@@ -339,5 +342,15 @@ public class NodeStyle {
 
     public void setWhiteSpace(WhiteSpace whiteSpace) {
         this.whiteSpace = whiteSpace;
+    }
+
+    public Color getColor() {
+        return color;
+    }
+
+    public void setColor(Color color) {
+        if (color != null) {
+            this.color = color;
+        }
     }
 }

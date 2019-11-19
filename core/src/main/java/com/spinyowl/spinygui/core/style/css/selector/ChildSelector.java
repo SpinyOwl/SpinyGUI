@@ -1,7 +1,6 @@
 package com.spinyowl.spinygui.core.style.css.selector;
 
 import com.spinyowl.spinygui.core.node.base.Element;
-import com.spinyowl.spinygui.core.node.base.Node;
 
 import java.util.Objects;
 
@@ -20,7 +19,8 @@ public class ChildSelector implements StyleSelector {
         if (!componentTest) return false;
         Element parent = t.getParent();
         while (parent != null) {
-            if (first.test(parent)) return true;
+            if (first.test(parent))
+                return true;
             parent = parent.getParent();
         }
         return false;

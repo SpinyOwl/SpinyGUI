@@ -70,6 +70,17 @@ public abstract class Element extends Node implements EventTarget {
     }
 
     /**
+     * Used to set attributes.
+     *
+     * @param attributes attributes map.
+     */
+    public void setAttributes(Map<String, String> attributes) {
+        if (attributes != null && this.attributes != attributes) {
+            this.attributes.putAll(attributes);
+        }
+    }
+
+    /**
      * Used to set attribute.
      *
      * @param key   attribute name.

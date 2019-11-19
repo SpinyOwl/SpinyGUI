@@ -1,11 +1,9 @@
 package com.spinyowl.spinygui.core.style.types;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public class Color {
 
-    private static Map<String, Color> colors = new HashMap<>();
     //@formatter:off
     public static final Color BLACK        = new Color(0    , 0    , 0          );
     public static final Color SILVER       = new Color(192  , 192  , 192        );
@@ -24,6 +22,7 @@ public class Color {
     public static final Color TEAL         = new Color(0    , 128  , 128        );
     public static final Color AQUA         = new Color(0    , 255  , 255        );
     public static final Color TRANSPARENT  = new Color(0f   , 0f   , 0f    , 0f );
+    private static Map<String, Color> colors = new HashMap<>();
     //@formatter:on
 
     static {
@@ -75,16 +74,19 @@ public class Color {
     }
 
     public static Color getColorByName(String name) {
-        return colors.get(name);
+        return colors.get(name.toLowerCase());
     }
 
     /**
-     * Allowed to parse hex strings in RGB/RRGGBB/RRGGBBAA format
+     * Allowed to parse hex strings in RGB/RGBA/RRGGBB/RRGGBBAA format
      *
      * @param value hex value
      * @return color
      */
     public static Color parseHexString(String value) {
+        if (value.startsWith("#")) {
+            value = value.substring(1);
+        }
         int hex = Integer.parseInt(value, 16);
         switch (value.length()) {
             case 8:
@@ -97,6 +99,12 @@ public class Color {
                         (hex >> 16) & 0xFF,
                         (hex >> 8) & 0xFF,
                         hex & 0xFF);
+            case 4:
+                return new Color(
+                        (hex >> 12) & 0xF,
+                        (hex >> 8) & 0xF,
+                        (hex >> 4) & 0xF,
+                        hex & 0xF);
             case 3:
                 return new Color(
                         (hex >> 8) & 0xF,
@@ -113,7 +121,7 @@ public class Color {
      * @param colorExpression color expression
      * @return color if able to parse or null.
      */
-    public static Color parseColorString(String colorExpression) {
+    public static Color parseRGBAColorString(String colorExpression) {
         var values = colorExpression.split(",");
         int length = values.length;
         if (length == 3 || length == 4) {
@@ -129,6 +137,10 @@ public class Color {
 
         }
         throw new IllegalArgumentException("Color expression should look like 'R, G, B' or 'R, G, B, A' but was '" + colorExpression + "'");
+    }
+
+    public static boolean exists(String colorName) {
+        return colors.containsKey(colorName.toLowerCase());
     }
 
     public float getRed() {
@@ -154,5 +166,19 @@ public class Color {
         return String.format("Color(%f, %f, %f)", red, green, blue);
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Color color = (Color) o;
+        return Float.compare(color.red, red) == 0 &&
+                Float.compare(color.green, green) == 0 &&
+                Float.compare(color.blue, blue) == 0 &&
+                Float.compare(color.alpha, alpha) == 0;
+    }
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(red, green, blue, alpha);
+    }
 }

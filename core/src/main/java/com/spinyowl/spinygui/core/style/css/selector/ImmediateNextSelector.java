@@ -1,7 +1,6 @@
 package com.spinyowl.spinygui.core.style.css.selector;
 
 import com.spinyowl.spinygui.core.node.base.Element;
-import com.spinyowl.spinygui.core.node.base.Node;
 
 import java.util.List;
 import java.util.Objects;
@@ -23,7 +22,7 @@ public class ImmediateNextSelector implements StyleSelector {
         Element parent = t.getParent();
         if (parent == null) return false;
 
-        List<Node> siblings = parent.getChildNodes();
+        List<Element> siblings = parent.getChildElements();
         int indexOfComponent = siblings.indexOf(t);
         if (indexOfComponent != 0) {
             return first.test(siblings.get(indexOfComponent - 1));

@@ -43,7 +43,6 @@ public class SelectorVisitor extends CSS3BaseVisitor<List<StyleSelector>> {
             } else if (ctx.combinator(i - 1).Plus() != null) {
                 firstSelector = StyleSelector.immediateNext(firstSelector, secondSelector);
             } else if (ctx.combinator(i - 1).Tilde() != null) {
-                //TODO: General Sibling Selector
                 firstSelector = StyleSelector.generalSibling(firstSelector, secondSelector);
             }
         }

@@ -1,7 +1,5 @@
 package com.spinyowl.spinygui.core.style.css;
 
-//import com.spinyowl.spinygui.core.style.css.property.Property;
-import com.spinyowl.spinygui.core.style.css.n.Property;
 import com.spinyowl.spinygui.core.style.css.selector.StyleSelector;
 
 import java.util.List;

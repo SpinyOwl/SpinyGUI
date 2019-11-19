@@ -22,7 +22,7 @@ final class FlexUtils {
         JustifyContent toUse = justifyContent;
         for (Element lp = element; toUse == JustifyContent.INHERIT; lp = lp.getParent()) {
             if (lp != null) {
-                toUse = lp.getStyle().getFlex().getJustifyContent();
+                toUse = lp.getStyle().getJustifyContent();
             } else {
                 toUse = JustifyContent.FLEX_START;
                 break;
@@ -59,7 +59,7 @@ final class FlexUtils {
         AlignItems toUse = alignItems;
         for (Element lp = component; toUse == AlignItems.INHERIT; lp = lp.getParent()) {
             if (lp != null) {
-                toUse = lp.getStyle().getFlex().getAlignItems();
+                toUse = lp.getStyle().getAlignItems();
             } else {
                 toUse = AlignItems.STRETCH;
                 break;
@@ -84,7 +84,7 @@ final class FlexUtils {
         AlignSelf toUse = alignItems;
         for (Element lp = component; toUse == AlignSelf.INHERIT; lp = lp.getParent()) {
             if (lp != null) {
-                toUse = lp.getStyle().getFlex().getAlignSelf();
+                toUse = lp.getStyle().getAlignSelf();
             } else {
                 toUse = AlignSelf.STRETCH;
                 break;
