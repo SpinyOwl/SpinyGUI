@@ -18,20 +18,28 @@ public class GeneralSiblingSelector implements StyleSelector {
     @Override
     public boolean test(Element node) {
         boolean secondTest = second.test(node);
-        if (!secondTest) return false;
+        if (!secondTest) {
+            return false;
+        }
 
         Element parent = node.getParent();
-        if (parent == null) return false;
+        if (parent == null) {
+            return false;
+        }
 
         List<Element> siblings = parent.getChildElements();
         int nodeIndex = siblings.indexOf(node);
-        if (nodeIndex == 0) return false;
+        if (nodeIndex == 0) {
+            return false;
+        }
 
         siblings = siblings.subList(0, nodeIndex);
         Collections.reverse(siblings);
 
         for (Element sibling : siblings) {
-            if (first.test(sibling)) return true;
+            if (first.test(sibling)) {
+                return true;
+            }
         }
 
         return false;
@@ -39,8 +47,12 @@ public class GeneralSiblingSelector implements StyleSelector {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         GeneralSiblingSelector that = (GeneralSiblingSelector) o;
         return Objects.equals(first, that.first) &&
                 Objects.equals(second, that.second);

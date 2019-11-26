@@ -37,16 +37,18 @@ open module com.spinyowl.spinygui.core {
     exports com.spinyowl.spinygui.core.layout;
 
     exports com.spinyowl.spinygui.core.style;
-    exports com.spinyowl.spinygui.core.style.manager;
 
     exports com.spinyowl.spinygui.core.style.css;
-    exports com.spinyowl.spinygui.core.style.css.processor;
+    exports com.spinyowl.spinygui.core.style.css.extractor;
     exports com.spinyowl.spinygui.core.style.css.property;
     exports com.spinyowl.spinygui.core.style.css.selector;
+
+    exports com.spinyowl.spinygui.core.style.manager;
 
     exports com.spinyowl.spinygui.core.style.types;
     exports com.spinyowl.spinygui.core.style.types.border;
     exports com.spinyowl.spinygui.core.style.types.flex;
+    exports com.spinyowl.spinygui.core.style.types.length;
 
     exports com.spinyowl.spinygui.core.util;
     exports com.spinyowl.spinygui.core;

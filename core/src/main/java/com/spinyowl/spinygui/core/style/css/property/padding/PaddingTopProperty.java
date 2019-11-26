@@ -1,21 +1,21 @@
-package com.spinyowl.spinygui.core.style.css.property;
+package com.spinyowl.spinygui.core.style.css.property.padding;
 
 import com.spinyowl.spinygui.core.style.NodeStyle;
 import com.spinyowl.spinygui.core.style.css.Properties;
 import com.spinyowl.spinygui.core.style.css.Property;
 import com.spinyowl.spinygui.core.style.css.ValueExtractor;
 import com.spinyowl.spinygui.core.style.css.ValueExtractors;
-import com.spinyowl.spinygui.core.style.types.Color;
+import com.spinyowl.spinygui.core.style.types.length.Length;
 
-public class ColorProperty extends Property {
+public class PaddingTopProperty extends Property {
 
-    private ValueExtractor<Color> colorValueExtractor = ValueExtractors.getInstance().getValueExtractor(Color.class);
+    private ValueExtractor<Length> lengthValueExtractor = ValueExtractors.getInstance().getValueExtractor(Length.class);
 
-    public ColorProperty() {
-        super(Properties.COLOR, null, true, true);
+    public PaddingTopProperty() {
+        super(Properties.PADDING_TOP, null, false, true);
     }
 
-    public ColorProperty(String value) {
+    public PaddingTopProperty(String value) {
         this();
         setValue(value);
     }
@@ -27,12 +27,7 @@ public class ColorProperty extends Property {
      */
     @Override
     protected void updateNodeStyle(NodeStyle nodeStyle) {
-        if (value != null && colorValueExtractor.isValid(value)) {
-            Color color = colorValueExtractor.extract(value);
-            if (color != null) {
-                nodeStyle.setColor(color);
-            }
-        }
+        nodeStyle.setPaddingTop(lengthValueExtractor.extract(value));
     }
 
     /**
@@ -42,6 +37,6 @@ public class ColorProperty extends Property {
      */
     @Override
     public boolean isValid() {
-        return colorValueExtractor.isValid(getValue());
+        return lengthValueExtractor.isValid(value);
     }
 }

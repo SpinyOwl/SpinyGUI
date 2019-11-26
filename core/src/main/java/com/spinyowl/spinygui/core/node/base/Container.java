@@ -32,15 +32,20 @@ public abstract class Container extends Element {
      */
     @Override
     public void addChild(Node node) {
-        if (node == null || node == this || Reference.contains(childNodes, node)) return;
+        if (node == null || node == this || Reference.contains(childNodes, node)) {
+            return;
+        }
 
         Container parent = node.getParent();
-        if (parent != null) parent.removeChild(node);
+        if (parent != null) {
+            parent.removeChild(node);
+        }
 
         childNodes.add(node);
 
         node.setParent(this);
     }
+
     /**
      * Returns the number of elements in this node.  If this node contains
      * more than {@code Integer.MAX_VALUE} elements, returns
@@ -70,8 +75,12 @@ public abstract class Container extends Element {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         Container container = (Container) o;
         return Objects.equal(childNodes, container.childNodes);
     }

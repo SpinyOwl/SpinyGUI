@@ -10,13 +10,6 @@ import org.antlr.v4.runtime.dfa.DFA;
 
 @SuppressWarnings({"all", "warnings", "unchecked", "unused", "cast"})
 public class CSS3Lexer extends Lexer {
-    static {
-        RuntimeMetaData.checkVersion("4.7", RuntimeMetaData.VERSION);
-    }
-
-    protected static final DFA[] _decisionToDFA;
-    protected static final PredictionContextCache _sharedContextCache =
-            new PredictionContextCache();
     public static final int
             T__0 = 1, T__1 = 2, T__2 = 3, T__3 = 4, T__4 = 5, T__5 = 6, T__6 = 7, T__7 = 8, T__8 = 9,
             T__9 = 10, T__10 = 11, T__11 = 12, T__12 = 13, T__13 = 14, T__14 = 15, Comment = 16,
@@ -28,14 +21,6 @@ public class CSS3Lexer extends Lexer {
             Supports = 49, Or = 50, Keyframes = 51, From = 52, To = 53, Calc = 54, Viewport = 55,
             CounterStyle = 56, FontFeatureValues = 57, DxImageTransform = 58, Variable = 59,
             Var = 60, Ident = 61, Function = 62;
-    public static String[] channelNames = {
-            "DEFAULT_TOKEN_CHANNEL", "HIDDEN"
-    };
-
-    public static String[] modeNames = {
-            "DEFAULT_MODE"
-    };
-
     public static final String[] ruleNames = {
             "T__0", "T__1", "T__2", "T__3", "T__4", "T__5", "T__6", "T__7", "T__8",
             "T__9", "T__10", "T__11", "T__12", "T__13", "T__14", "Hex", "NewlineOrSpace",
@@ -52,96 +37,11 @@ public class CSS3Lexer extends Lexer {
             "Or", "VendorPrefix", "Keyframes", "From", "To", "Calc", "Viewport", "CounterStyle",
             "FontFeatureValues", "DxImageTransform", "Variable", "Var", "Ident", "Function"
     };
-
-    private static final String[] _LITERAL_NAMES = {
-            null, "';'", "'('", "':'", "')'", "'{'", "'}'", "'*'", "'|'", "'.'", "'['",
-            "'='", "']'", "'/'", "'_'", "'@'", null, null, "'<!--'", "'-->'", "'~='",
-            "'|='", null, null, null, null, null, "'@charset '", null, null, null,
-            null, null, null, null, null, null, "'+'", "'-'", "'>'", "','", "'~'",
-            null, null, null, "'^='", "'$='", "'*='", null, null, null, null, null,
-            null, "'calc('", null, null, null, null, null, "'var('"
-    };
-    private static final String[] _SYMBOLIC_NAMES = {
-            null, null, null, null, null, null, null, null, null, null, null, null,
-            null, null, null, null, "Comment", "Space", "Cdo", "Cdc", "Includes",
-            "DashMatch", "Hash", "Import", "Page", "Media", "Namespace", "Charset",
-            "Important", "Percentage", "Uri", "UnicodeRange", "MediaOnly", "Not",
-            "And", "Dimension", "UnknownDimension", "Plus", "Minus", "Greater", "Comma",
-            "Tilde", "PseudoNot", "Number", "String", "PrefixMatch", "SuffixMatch",
-            "SubstringMatch", "FontFace", "Supports", "Or", "Keyframes", "From", "To",
-            "Calc", "Viewport", "CounterStyle", "FontFeatureValues", "DxImageTransform",
-            "Variable", "Var", "Ident", "Function"
-    };
-    public static final Vocabulary VOCABULARY = new VocabularyImpl(_LITERAL_NAMES, _SYMBOLIC_NAMES);
-
     /**
      * @deprecated Use {@link #VOCABULARY} instead.
      */
     @Deprecated
     public static final String[] tokenNames;
-
-    static {
-        tokenNames = new String[_SYMBOLIC_NAMES.length];
-        for (int i = 0; i < tokenNames.length; i++) {
-            tokenNames[i] = VOCABULARY.getLiteralName(i);
-            if (tokenNames[i] == null) {
-                tokenNames[i] = VOCABULARY.getSymbolicName(i);
-            }
-
-            if (tokenNames[i] == null) {
-                tokenNames[i] = "<INVALID>";
-            }
-        }
-    }
-
-    @Override
-    @Deprecated
-    public String[] getTokenNames() {
-        return tokenNames;
-    }
-
-    @Override
-
-    public Vocabulary getVocabulary() {
-        return VOCABULARY;
-    }
-
-
-    public CSS3Lexer(CharStream input) {
-        super(input);
-        _interp = new LexerATNSimulator(this, _ATN, _decisionToDFA, _sharedContextCache);
-    }
-
-    @Override
-    public String getGrammarFileName() {
-        return "CSS3.g4";
-    }
-
-    @Override
-    public String[] getRuleNames() {
-        return ruleNames;
-    }
-
-    @Override
-    public String getSerializedATN() {
-        return _serializedATN;
-    }
-
-    @Override
-    public String[] getChannelNames() {
-        return channelNames;
-    }
-
-    @Override
-    public String[] getModeNames() {
-        return modeNames;
-    }
-
-    @Override
-    public ATN getATN() {
-        return _ATN;
-    }
-
     public static final String _serializedATN =
             "\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\2@\u056f\b\1\4\2\t" +
                     "\2\4\3\t\3\4\4\t\4\4\5\t\5\4\6\t\6\4\7\t\7\4\b\t\b\4\t\t\t\4\n\t\n\4\13" +
@@ -668,11 +568,105 @@ public class CSS3Lexer extends Lexer {
                     "\u049a\u049c\u04a6\u04a8\u04ac\u04e2\u04e6\u055a\u0563\u0569\2";
     public static final ATN _ATN =
             new ATNDeserializer().deserialize(_serializedATN.toCharArray());
+    protected static final DFA[] _decisionToDFA;
+    protected static final PredictionContextCache _sharedContextCache =
+            new PredictionContextCache();
+    private static final String[] _LITERAL_NAMES = {
+            null, "';'", "'('", "':'", "')'", "'{'", "'}'", "'*'", "'|'", "'.'", "'['",
+            "'='", "']'", "'/'", "'_'", "'@'", null, null, "'<!--'", "'-->'", "'~='",
+            "'|='", null, null, null, null, null, "'@charset '", null, null, null,
+            null, null, null, null, null, null, "'+'", "'-'", "'>'", "','", "'~'",
+            null, null, null, "'^='", "'$='", "'*='", null, null, null, null, null,
+            null, "'calc('", null, null, null, null, null, "'var('"
+    };
+    private static final String[] _SYMBOLIC_NAMES = {
+            null, null, null, null, null, null, null, null, null, null, null, null,
+            null, null, null, null, "Comment", "Space", "Cdo", "Cdc", "Includes",
+            "DashMatch", "Hash", "Import", "Page", "Media", "Namespace", "Charset",
+            "Important", "Percentage", "Uri", "UnicodeRange", "MediaOnly", "Not",
+            "And", "Dimension", "UnknownDimension", "Plus", "Minus", "Greater", "Comma",
+            "Tilde", "PseudoNot", "Number", "String", "PrefixMatch", "SuffixMatch",
+            "SubstringMatch", "FontFace", "Supports", "Or", "Keyframes", "From", "To",
+            "Calc", "Viewport", "CounterStyle", "FontFeatureValues", "DxImageTransform",
+            "Variable", "Var", "Ident", "Function"
+    };
+    public static final Vocabulary VOCABULARY = new VocabularyImpl(_LITERAL_NAMES, _SYMBOLIC_NAMES);
+    public static String[] channelNames = {
+            "DEFAULT_TOKEN_CHANNEL", "HIDDEN"
+    };
+    public static String[] modeNames = {
+            "DEFAULT_MODE"
+    };
+
+    static {
+        RuntimeMetaData.checkVersion("4.7", RuntimeMetaData.VERSION);
+    }
+
+    static {
+        tokenNames = new String[_SYMBOLIC_NAMES.length];
+        for (int i = 0; i < tokenNames.length; i++) {
+            tokenNames[i] = VOCABULARY.getLiteralName(i);
+            if (tokenNames[i] == null) {
+                tokenNames[i] = VOCABULARY.getSymbolicName(i);
+            }
+
+            if (tokenNames[i] == null) {
+                tokenNames[i] = "<INVALID>";
+            }
+        }
+    }
 
     static {
         _decisionToDFA = new DFA[_ATN.getNumberOfDecisions()];
         for (int i = 0; i < _ATN.getNumberOfDecisions(); i++) {
             _decisionToDFA[i] = new DFA(_ATN.getDecisionState(i), i);
         }
+    }
+
+    public CSS3Lexer(CharStream input) {
+        super(input);
+        _interp = new LexerATNSimulator(this, _ATN, _decisionToDFA, _sharedContextCache);
+    }
+
+    @Override
+    @Deprecated
+    public String[] getTokenNames() {
+        return tokenNames;
+    }
+
+    @Override
+
+    public Vocabulary getVocabulary() {
+        return VOCABULARY;
+    }
+
+    @Override
+    public String getGrammarFileName() {
+        return "CSS3.g4";
+    }
+
+    @Override
+    public String[] getRuleNames() {
+        return ruleNames;
+    }
+
+    @Override
+    public String getSerializedATN() {
+        return _serializedATN;
+    }
+
+    @Override
+    public String[] getChannelNames() {
+        return channelNames;
+    }
+
+    @Override
+    public String[] getModeNames() {
+        return modeNames;
+    }
+
+    @Override
+    public ATN getATN() {
+        return _ATN;
     }
 }

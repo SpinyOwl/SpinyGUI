@@ -5,17 +5,17 @@ import com.spinyowl.spinygui.core.style.css.Properties;
 import com.spinyowl.spinygui.core.style.css.Property;
 import com.spinyowl.spinygui.core.style.css.ValueExtractor;
 import com.spinyowl.spinygui.core.style.css.ValueExtractors;
-import com.spinyowl.spinygui.core.style.types.Color;
+import com.spinyowl.spinygui.core.style.types.length.Unit;
 
-public class ColorProperty extends Property {
+public class HeightProperty extends Property {
 
-    private ValueExtractor<Color> colorValueExtractor = ValueExtractors.getInstance().getValueExtractor(Color.class);
+    private ValueExtractor<Unit> unitValueExtractor = ValueExtractors.getInstance().getValueExtractor(Unit.class);
 
-    public ColorProperty() {
-        super(Properties.COLOR, null, true, true);
+    public HeightProperty() {
+        super(Properties.HEIGHT, null, false, true);
     }
 
-    public ColorProperty(String value) {
+    public HeightProperty(String value) {
         this();
         setValue(value);
     }
@@ -27,12 +27,7 @@ public class ColorProperty extends Property {
      */
     @Override
     protected void updateNodeStyle(NodeStyle nodeStyle) {
-        if (value != null && colorValueExtractor.isValid(value)) {
-            Color color = colorValueExtractor.extract(value);
-            if (color != null) {
-                nodeStyle.setColor(color);
-            }
-        }
+        nodeStyle.setHeight(unitValueExtractor.extract(value));
     }
 
     /**
@@ -42,6 +37,6 @@ public class ColorProperty extends Property {
      */
     @Override
     public boolean isValid() {
-        return colorValueExtractor.isValid(getValue());
+        return unitValueExtractor.isValid(value);
     }
 }

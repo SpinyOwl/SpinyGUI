@@ -1,8 +1,7 @@
 package com.spinyowl.spinygui.core.style.css.selector;
 
-import com.spinyowl.spinygui.core.node.base.Element;
-import com.spinyowl.spinygui.core.node.base.Node;
 import com.spinyowl.spinygui.core.converter.css.parser.annotations.PseudoSelector;
+import com.spinyowl.spinygui.core.node.base.Element;
 
 import java.util.StringJoiner;
 

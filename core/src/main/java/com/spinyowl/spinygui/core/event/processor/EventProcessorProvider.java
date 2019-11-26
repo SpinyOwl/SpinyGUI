@@ -6,7 +6,9 @@ public final class EventProcessorProvider {
     }
 
     public static void setInstance(EventProcessor eventProcessor) {
-        if (eventProcessor != null) EPH.instance = eventProcessor;
+        if (eventProcessor != null) {
+            EPH.instance = eventProcessor;
+        }
     }
 
     private static final class EPH {

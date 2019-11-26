@@ -1,56 +1,158 @@
 package com.spinyowl.spinygui.core.style.css;
 
-import com.spinyowl.spinygui.core.style.css.handler.ColorPropertyHandler;
-import com.spinyowl.spinygui.core.style.css.property.ColorProperty;
+import com.spinyowl.spinygui.core.style.css.property.*;
+import com.spinyowl.spinygui.core.style.css.property.margin.*;
+import com.spinyowl.spinygui.core.style.css.property.padding.*;
 
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Supplier;
 
 public final class Properties {
-
-    private Map<String, Supplier<Property>> propertyMap = new ConcurrentHashMap<>();
-    private Map<String, PropertyHandler> handlerMap = new ConcurrentHashMap<>();
-
     //@formatter:off
-    /** Hidden constructor. */
+    public static final String COLOR          = "color";
+    public static final String PADDING        = "padding";
+    public static final String PADDING_TOP    = "padding-top";
+    public static final String PADDING_RIGHT  = "padding-right";
+    public static final String PADDING_BOTTOM = "padding-bottom";
+    public static final String PADDING_LEFT   = "padding-left";
+    public static final String MARGIN         = "margin";
+    public static final String MARGIN_TOP     = "margin-top";
+    public static final String MARGIN_RIGHT   = "margin-right";
+    public static final String MARGIN_BOTTOM  = "margin-bottom";
+    public static final String MARGIN_LEFT    = "margin-left";
+    public static final String BORDER         = "border";
+    public static final String WIDTH          = "width";
+    public static final String HEIGHT         = "height";
+    public static final String MIN_WIDTH      = "min-width";
+    public static final String MIN_HEIGHT     = "min-height";
+    public static final String MAX_WIDTH      = "max-width";
+    public static final String MAX_HEIGHT     = "max-height";
+    public static final String DISPLAY        = "display";
+    public static final String POSITION       = "position";
+    public static final String TOP            = "top";
+    public static final String BOTTOM         = "bottom";
+    public static final String RIGHT          = "right";
+    public static final String LEFT           = "left";
+    public static final String WHITE_SPACE    = "white-space";
+    //@formatter:on
+    private List<String> supportedProperties = new ArrayList<>();
+
+    private Map<String, Supplier<Property>> propertySupplierMap = new ConcurrentHashMap<>();
+
+    /**
+     * Hidden constructor.
+     */
     private Properties() {
-        propertyMap.put("color",ColorProperty::new);
-        handlerMap.put("color",new  ColorPropertyHandler());
+        addSupportedProperty(COLOR, ColorProperty::new);
+
+        addSupportedProperty(PADDING, PaddingProperty::new);
+        addSupportedProperty(PADDING_TOP, PaddingTopProperty::new);
+        addSupportedProperty(PADDING_RIGHT, PaddingRightProperty::new);
+        addSupportedProperty(PADDING_BOTTOM, PaddingBottomProperty::new);
+        addSupportedProperty(PADDING_LEFT, PaddingLeftProperty::new);
+
+        addSupportedProperty(MARGIN, MarginProperty::new);
+        addSupportedProperty(MARGIN_TOP, MarginTopProperty::new);
+        addSupportedProperty(MARGIN_RIGHT, MarginRightProperty::new);
+        addSupportedProperty(MARGIN_BOTTOM, MarginBottomProperty::new);
+        addSupportedProperty(MARGIN_LEFT, MarginLeftProperty::new);
+
+        addSupportedProperty(WIDTH, WidthProperty::new);
+        addSupportedProperty(HEIGHT, HeightProperty::new);
+
+        addSupportedProperty(MIN_WIDTH, MinWidthProperty::new);
+        addSupportedProperty(MIN_HEIGHT, MinHeightProperty::new);
+
+        addSupportedProperty(MAX_WIDTH, MaxWidthProperty::new);
+        addSupportedProperty(MAX_HEIGHT, MaxHeightProperty::new);
+
+//        BORDER
+//        WIDTH
+//        HEIGHT
+//        MIN_WIDTH
+//        MIN_HEIGHT
+//        MAX_WIDTH
+//        MAX_HEIGHT
+//        DISPLAY
+//        POSITION
+//        TOP
+//        BOTTOM
+//        RIGHT
+//        LEFT
+//        WHITE_SPACE
     }
 
+    //@formatter:off
     /** Getter for instance. */
     public static Properties getInstance() { return PropertiesHolder.INSTANCE; }
     //@formatter:on
 
-
-    public void addPorpertySupplier(String name, Supplier<Property> supplier) {
-        propertyMap.put(name, supplier);
+    public Supplier<Property> getPropertySupplier(String propertyName) {
+        return propertySupplierMap.get(propertyName);
     }
 
-    public Supplier<Property> getPropertySupplier(String name) {
-        return propertyMap.get(name);
-    }
-
-    public void addPorpertyHandler(String name, PropertyHandler propertyHandler) {
-        handlerMap.put(name, propertyHandler);
-    }
-
-    public PropertyHandler getPropertyHandler(String name) {
-        return handlerMap.get(name);
-    }
-
-    public Property createProperty(String name, String value) {
-        Supplier<Property> propertySupplier = propertyMap.get(name);
+    /**
+     * Used to create {@link Property}.
+     * Returns {@link UnsupportedProperty} in next cases:
+     * <ul>
+     *     <li>property not listed in supported properties ({@link Properties#getSupportedProperties()}</li>
+     *     <li>property supplier not exist</li>
+     *     <li>property supplier creates null property</li>
+     * </ul>
+     *
+     * @param propertyName  property name which should be used to find appropriate property supplier.
+     * @param propertyValue property value which should be used to fill created property.
+     * @return new created property instance or instance of {@link UnsupportedProperty} if property not supported.
+     */
+    public Property createProperty(String propertyName, String propertyValue) {
+        Objects.requireNonNull(propertyName);
         Property property;
-        if (propertySupplier != null) {
-            property = propertySupplier.get();
+        if (supportedProperties.contains(propertyName)) {
+            Supplier<Property> propertySupplier = propertySupplierMap.get(propertyName);
+            if (propertySupplier != null) {
+                property = propertySupplier.get();
+                if (property == null) {
+                    property = new UnsupportedProperty(propertyName);
+                }
+            } else {
+                property = new UnsupportedProperty(propertyName);
+            }
         } else {
-            property = new Property(name);
+            property = new UnsupportedProperty(propertyName);
         }
-        property.setValue(value);
-        property.setPropertyHandler(handlerMap.get(name));
+        property.setValue(propertyValue);
         return property;
+    }
+
+    /**
+     * Used to add property support.
+     *
+     * @param property         property to support.
+     * @param propertySupplier property supplier which will be used to create {@link Property} instance
+     *                         by property name.
+     */
+    public void addSupportedProperty(String property, Supplier<Property> propertySupplier) {
+        Objects.requireNonNull(property);
+        Objects.requireNonNull(propertySupplier);
+
+        supportedProperties.add(property);
+        propertySupplierMap.put(property, propertySupplier);
+    }
+
+    public void removeSupportedProperty(String property) {
+        Objects.requireNonNull(property);
+        supportedProperties.remove(property);
+        propertySupplierMap.remove(property);
+    }
+
+    /**
+     * Returns unmodifiable list of supported properties.
+     *
+     * @return unmodifiable list of supported properties.
+     */
+    public List<String> getSupportedProperties() {
+        return Collections.unmodifiableList(supportedProperties);
     }
 
     /**

@@ -10,6 +10,7 @@ public interface Layout {
 
     /**
      * Used to lay out element and it's child nodes.
+     *
      * @param element element to lay out.
      */
     void layout(Element element);

@@ -33,8 +33,17 @@ public class Length<T> extends Unit {
         return this.type;
     }
 
+    @Override
+    public String toString() {
+        return new StringJoiner(", ", Length.class.getSimpleName() + "[", "]")
+                .add("value=" + value)
+                .add("type=" + type)
+                .toString();
+    }
+
     /**
      * Converts length to pixels.
+     *
      * @param <T> type of length value.
      */
     public interface Converter<T> {
@@ -64,7 +73,9 @@ public class Length<T> extends Unit {
         }
 
         public Length<T> length(T value) {
-            if (value == null) return null;
+            if (value == null) {
+                return null;
+            }
             return new Length<>(value, this);
         }
 
@@ -79,13 +90,5 @@ public class Length<T> extends Unit {
                     .add("type=" + type)
                     .toString();
         }
-    }
-
-    @Override
-    public String toString() {
-        return new StringJoiner(", ", Length.class.getSimpleName() + "[", "]")
-                .add("value=" + value)
-                .add("type=" + type)
-                .toString();
     }
 }

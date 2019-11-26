@@ -1,16 +1,15 @@
 package com.spinyowl.spinygui.core.style;
 
 import com.spinyowl.spinygui.core.style.types.*;
-import com.spinyowl.spinygui.core.style.types.flex.*;
-import com.spinyowl.spinygui.core.style.types.length.*;
 import com.spinyowl.spinygui.core.style.types.border.Border;
+import com.spinyowl.spinygui.core.style.types.flex.*;
+import com.spinyowl.spinygui.core.style.types.length.Length;
+import com.spinyowl.spinygui.core.style.types.length.Unit;
 
 public class NodeStyle {
 
     // background
     private final Background background = new Background();
-    private final Padding padding = new Padding();
-    private final Margin margin = new Margin();
     private final Border border = new Border();
     private final BorderRadius borderRadius = new BorderRadius();
 
@@ -66,8 +65,14 @@ public class NodeStyle {
     private Length paddingRight;
     private Length paddingLeft;
 
-    private Length width;
-    private Length height;
+    private Unit marginTop;
+    private Unit marginBottom;
+    private Unit marginRight;
+    private Unit marginLeft;
+
+    private Unit width;
+    private Unit height;
+
     private Length minWidth;
     private Length minHeight;
     private Length maxWidth;
@@ -224,19 +229,19 @@ public class NodeStyle {
         return borderRadius;
     }
 
-    public Length getWidth() {
+    public Unit getWidth() {
         return width;
     }
 
-    public void setWidth(Length width) {
+    public void setWidth(Unit width) {
         this.width = width;
     }
 
-    public Length getHeight() {
+    public Unit getHeight() {
         return height;
     }
 
-    public void setHeight(Length height) {
+    public void setHeight(Unit height) {
         this.height = height;
     }
 
@@ -272,12 +277,84 @@ public class NodeStyle {
         this.maxHeight = maxHeight;
     }
 
-    public Padding getPadding() {
-        return padding;
+    public void setPadding(Length padding) {
+        this.paddingTop = this.paddingBottom = this.paddingLeft = this.paddingRight = padding;
     }
 
-    public Margin getMargin() {
-        return margin;
+    public void setPadding(Length paddingTopBottom, Length paddingRightLeft) {
+        this.paddingTop = this.paddingBottom = paddingTopBottom;
+        this.paddingLeft = this.paddingRight = paddingRightLeft;
+    }
+
+
+    public void setPadding(Length paddingTop, Length paddingRightLeft, Length paddingBottom) {
+        this.paddingTop = paddingTop;
+        this.paddingLeft = this.paddingRight = paddingRightLeft;
+        this.paddingBottom = paddingBottom;
+    }
+
+
+    public void setPadding(Length paddingTop, Length paddingRight, Length paddingBottom, Length paddingLeft) {
+        this.paddingTop = paddingTop;
+        this.paddingLeft = paddingLeft;
+        this.paddingBottom = paddingBottom;
+        this.paddingRight = paddingRight;
+    }
+
+    public void setMargin(Unit margin) {
+        this.marginTop = this.marginBottom = this.marginLeft = this.marginRight = margin;
+    }
+
+    public void setMargin(Unit marginTopBottom, Unit marginRightLeft) {
+        this.marginTop = this.marginBottom = marginTopBottom;
+        this.marginLeft = this.marginRight = marginRightLeft;
+    }
+
+
+    public void setMargin(Unit marginTop, Unit marginRightLeft, Unit marginBottom) {
+        this.marginTop = marginTop;
+        this.marginLeft = this.marginRight = marginRightLeft;
+        this.marginBottom = marginBottom;
+    }
+
+
+    public void setMargin(Unit marginTop, Unit marginRight, Unit marginBottom, Unit marginLeft) {
+        this.marginTop = marginTop;
+        this.marginLeft = marginLeft;
+        this.marginBottom = marginBottom;
+        this.marginRight = marginRight;
+    }
+
+    public Unit getMarginTop() {
+        return marginTop;
+    }
+
+    public void setMarginTop(Unit marginTop) {
+        this.marginTop = marginTop;
+    }
+
+    public Unit getMarginBottom() {
+        return marginBottom;
+    }
+
+    public void setMarginBottom(Unit marginBottom) {
+        this.marginBottom = marginBottom;
+    }
+
+    public Unit getMarginRight() {
+        return marginRight;
+    }
+
+    public void setMarginRight(Unit marginRight) {
+        this.marginRight = marginRight;
+    }
+
+    public Unit getMarginLeft() {
+        return marginLeft;
+    }
+
+    public void setMarginLeft(Unit marginLeft) {
+        this.marginLeft = marginLeft;
     }
 
     public Display getDisplay() {
@@ -353,4 +430,5 @@ public class NodeStyle {
             this.color = color;
         }
     }
+
 }

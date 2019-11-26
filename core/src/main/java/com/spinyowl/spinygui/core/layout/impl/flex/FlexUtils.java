@@ -3,7 +3,10 @@ package com.spinyowl.spinygui.core.layout.impl.flex;
 
 import com.spinyowl.spinygui.core.node.base.Element;
 import com.spinyowl.spinygui.core.style.NodeStyle;
-import com.spinyowl.spinygui.core.style.types.flex.*;
+import com.spinyowl.spinygui.core.style.types.flex.AlignItems;
+import com.spinyowl.spinygui.core.style.types.flex.AlignSelf;
+import com.spinyowl.spinygui.core.style.types.flex.FlexDirection;
+import com.spinyowl.spinygui.core.style.types.flex.JustifyContent;
 import com.spinyowl.spinygui.core.style.types.length.Length;
 import com.spinyowl.spinygui.core.style.types.length.Unit;
 import org.lwjgl.util.yoga.Yoga;

@@ -21,8 +21,9 @@ public final class StyleReflectionHandler {
         for (ClassInfo classInfo : scanResult.getClassesWithAnnotation(PseudoSelector.class.getName())) {
             Class<?> clazz = classInfo.loadClass();
             var name = clazz.getAnnotation(PseudoSelector.class).value();
-            if (name.isEmpty())
+            if (name.isEmpty()) {
                 name = clazz.getSimpleName().toLowerCase();
+            }
             pseudoSelectors.put(name, clazz);
         }
 

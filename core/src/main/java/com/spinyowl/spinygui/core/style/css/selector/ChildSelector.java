@@ -16,11 +16,14 @@ public class ChildSelector implements StyleSelector {
     @Override
     public boolean test(Element t) {
         boolean componentTest = second.test(t);
-        if (!componentTest) return false;
+        if (!componentTest) {
+            return false;
+        }
         Element parent = t.getParent();
         while (parent != null) {
-            if (first.test(parent))
+            if (first.test(parent)) {
                 return true;
+            }
             parent = parent.getParent();
         }
         return false;
@@ -28,8 +31,12 @@ public class ChildSelector implements StyleSelector {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         ChildSelector that = (ChildSelector) o;
         return Objects.equals(first, that.first) &&
                 Objects.equals(second, that.second);

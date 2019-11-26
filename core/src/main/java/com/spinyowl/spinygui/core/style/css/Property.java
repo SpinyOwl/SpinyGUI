@@ -1,10 +1,16 @@
 package com.spinyowl.spinygui.core.style.css;
 
+import com.spinyowl.spinygui.core.style.NodeStyle;
+
 import java.util.Collections;
 import java.util.Objects;
 import java.util.Set;
 
-public class Property {
+/**
+ * Root class that describes property.
+ * Should be used to create new classes which implement {@link Property#updateNodeStyle(NodeStyle)} and {@link Property#isValid()}.
+ */
+public abstract class Property {
     public static final String INHERIT = "inherit";
     public static final String INITIAL = "initial";
 
@@ -42,15 +48,6 @@ public class Property {
      * Current value of css property. Could not be null.
      */
     protected String value;
-
-    private PropertyHandler propertyHandler;
-
-    public Property(String name) {
-        this.name = name;
-        this.inherited = false;
-        this.animatable = false;
-        this.defaultValue = null;
-    }
 
     /**
      * Constructor that should be used by implementations to initialize css property.
@@ -125,6 +122,11 @@ public class Property {
         return value;
     }
 
+    /**
+     * Used to set value to property.
+     *
+     * @param value value to set.
+     */
     public void setValue(String value) {
         Objects.requireNonNull(value);
         this.value = value.toLowerCase();
@@ -140,12 +142,28 @@ public class Property {
         return Collections.emptySet();
     }
 
-
-    public PropertyHandler getPropertyHandler() {
-        return propertyHandler;
+    /**
+     * Used to update node style with this property if value is valid.
+     *
+     * @param nodeStyle node style to update.
+     */
+    public void updateStyle(NodeStyle nodeStyle) {
+        if (isValid()) {
+            updateNodeStyle(nodeStyle);
+        }
     }
 
-    public void setPropertyHandler(PropertyHandler propertyHandler) {
-        this.propertyHandler = propertyHandler;
-    }
+    /**
+     * Used to update node style with this property.
+     *
+     * @param nodeStyle node style to update.
+     */
+    protected abstract void updateNodeStyle(NodeStyle nodeStyle);
+
+    /**
+     * Used to check if value is valid or not.
+     *
+     * @return true if value is valid. By default returns false.
+     */
+    public abstract boolean isValid();
 }

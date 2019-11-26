@@ -1,4 +1,4 @@
-package com.spinyowl.spinygui.core.style.css.processor;
+package com.spinyowl.spinygui.core.style.css.extractor;
 
 import com.spinyowl.spinygui.core.style.css.ValueExtractor;
 import com.spinyowl.spinygui.core.style.types.Color;
@@ -16,22 +16,30 @@ public class ColorValueExtractor implements ValueExtractor<Color> {
     public boolean isValid(String value) {
         return value != null &&
                 (value.matches(hexStringRegex) ||
-                value.matches(rgbFunctionRegex) ||
-                value.matches(rgbaFunctionRegex) ||
+                        value.matches(rgbFunctionRegex) ||
+                        value.matches(rgbaFunctionRegex) ||
 //              value.matches(hslFunctionRegex) ||
 //              value.matches(hslaFunctionRegex) ||
-                Color.exists(value));
+                        Color.exists(value));
     }
 
     @Override
     public Color extract(String value) {
-        if (value == null) return null;
+        if (value == null) {
+            return null;
+        }
 
         Color color = Color.getColorByName(value);
-        if (color != null) return color;
+        if (color != null) {
+            return color;
+        }
 
-        if (value.matches(hexStringRegex)) return Color.parseHexString(value);
-        if (value.matches(rgbFunctionRegex)) return Color.parseRGBAColorString(value.substring(4, value.length() - 1));
+        if (value.matches(hexStringRegex)) {
+            return Color.parseHexString(value);
+        }
+        if (value.matches(rgbFunctionRegex)) {
+            return Color.parseRGBAColorString(value.substring(4, value.length() - 1));
+        }
 
         return null;
     }

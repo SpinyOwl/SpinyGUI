@@ -1,6 +1,8 @@
 package com.spinyowl.spinygui.core.style.types;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
 
 public class Color {
 
@@ -161,15 +163,20 @@ public class Color {
 
     @Override
     public String toString() {
-        if (alpha != 1)
+        if (alpha != 1) {
             return String.format("Color(%f, %f, %f, %f)", red, green, blue, alpha);
+        }
         return String.format("Color(%f, %f, %f)", red, green, blue);
     }
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         Color color = (Color) o;
         return Float.compare(color.red, red) == 0 &&
                 Float.compare(color.green, green) == 0 &&

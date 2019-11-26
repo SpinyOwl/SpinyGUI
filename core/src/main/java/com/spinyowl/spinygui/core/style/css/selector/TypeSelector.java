@@ -1,7 +1,6 @@
 package com.spinyowl.spinygui.core.style.css.selector;
 
 import com.spinyowl.spinygui.core.node.base.Element;
-import com.spinyowl.spinygui.core.node.base.Node;
 
 import java.util.Objects;
 import java.util.StringJoiner;
@@ -29,8 +28,12 @@ public class TypeSelector implements StyleSelector {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         TypeSelector that = (TypeSelector) o;
         return Objects.equals(type, that.type);
     }

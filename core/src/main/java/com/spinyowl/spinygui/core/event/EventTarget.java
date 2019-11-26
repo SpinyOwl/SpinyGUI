@@ -8,9 +8,10 @@ public interface EventTarget {
 
     /**
      * Adds event listener to queue of listener for specified event class.
+     *
      * @param eventClass event class
-     * @param listener listener
-     * @param <T> type of event
+     * @param listener   listener
+     * @param <T>        type of event
      */
     <T extends Event> void addListener(Class<T> eventClass, EventListener<T> listener);
 

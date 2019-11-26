@@ -5,10 +5,10 @@ import com.spinyowl.spinygui.core.converter.css.parser.CSS3Parser;
 import com.spinyowl.spinygui.core.converter.css.parser.StyleSheetException;
 import com.spinyowl.spinygui.core.converter.css.parser.visitor.StyleSheetVisitor;
 import com.spinyowl.spinygui.core.style.css.StyleSheet;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 public final class StyleSheetConverter {
     private static final Log LOGGER = LogFactory.getLog(StyleSheetConverter.class);

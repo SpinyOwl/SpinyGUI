@@ -6,8 +6,6 @@ import com.spinyowl.spinygui.core.node.intersection.Intersections;
 import org.joml.Vector2f;
 import org.joml.Vector2fc;
 
-import java.util.List;
-import java.util.Map;
 import java.util.StringJoiner;
 
 /**
@@ -165,7 +163,9 @@ public abstract class Node {
      * @param parent new parent node.
      */
     public void setParent(Container parent) {
-        if (parent == this) return;
+        if (parent == this) {
+            return;
+        }
 
         if (this.parent != null) {
             this.parent.removeChild(this);

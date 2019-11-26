@@ -5,17 +5,17 @@ import com.spinyowl.spinygui.core.style.css.Properties;
 import com.spinyowl.spinygui.core.style.css.Property;
 import com.spinyowl.spinygui.core.style.css.ValueExtractor;
 import com.spinyowl.spinygui.core.style.css.ValueExtractors;
-import com.spinyowl.spinygui.core.style.types.Color;
+import com.spinyowl.spinygui.core.style.types.length.Length;
 
-public class ColorProperty extends Property {
+public class MinHeightProperty extends Property {
 
-    private ValueExtractor<Color> colorValueExtractor = ValueExtractors.getInstance().getValueExtractor(Color.class);
+    private ValueExtractor<Length> lengthValueExtractor = ValueExtractors.getInstance().getValueExtractor(Length.class);
 
-    public ColorProperty() {
-        super(Properties.COLOR, null, true, true);
+    public MinHeightProperty() {
+        super(Properties.HEIGHT, null, false, true);
     }
 
-    public ColorProperty(String value) {
+    public MinHeightProperty(String value) {
         this();
         setValue(value);
     }
@@ -27,11 +27,10 @@ public class ColorProperty extends Property {
      */
     @Override
     protected void updateNodeStyle(NodeStyle nodeStyle) {
-        if (value != null && colorValueExtractor.isValid(value)) {
-            Color color = colorValueExtractor.extract(value);
-            if (color != null) {
-                nodeStyle.setColor(color);
-            }
+        if (value.equalsIgnoreCase("none")) {
+            nodeStyle.setMinHeight(null);
+        } else {
+            nodeStyle.setMinHeight(lengthValueExtractor.extract(value));
         }
     }
 
@@ -42,6 +41,6 @@ public class ColorProperty extends Property {
      */
     @Override
     public boolean isValid() {
-        return colorValueExtractor.isValid(getValue());
+        return value.equalsIgnoreCase("none") || lengthValueExtractor.isValid(value);
     }
 }

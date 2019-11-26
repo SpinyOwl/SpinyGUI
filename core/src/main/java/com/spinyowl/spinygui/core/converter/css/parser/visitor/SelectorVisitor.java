@@ -1,9 +1,9 @@
 package com.spinyowl.spinygui.core.converter.css.parser.visitor;
 
-import com.spinyowl.spinygui.core.converter.dom.TagNameMapping;
 import com.spinyowl.spinygui.core.converter.css.parser.CSS3BaseVisitor;
 import com.spinyowl.spinygui.core.converter.css.parser.CSS3Parser;
 import com.spinyowl.spinygui.core.converter.css.parser.StyleReflectionHandler;
+import com.spinyowl.spinygui.core.converter.dom.TagNameMapping;
 import com.spinyowl.spinygui.core.style.css.selector.ClassNameSelector;
 import com.spinyowl.spinygui.core.style.css.selector.StyleSelector;
 import com.spinyowl.spinygui.core.style.css.selector.TypeSelector;
@@ -22,8 +22,9 @@ public class SelectorVisitor extends CSS3BaseVisitor<List<StyleSelector>> {
         for (CSS3Parser.SelectorContext selectorContext : ctx.selector()) {
 
             var selectors = visit(selectorContext);
-            if (selectors != null)
+            if (selectors != null) {
                 selectorVisitors.addAll(selectors);
+            }
         }
 
         return selectorVisitors;
@@ -57,8 +58,11 @@ public class SelectorVisitor extends CSS3BaseVisitor<List<StyleSelector>> {
         StyleSelector current = null;
         for (ParseTree child : ctx.children) {
             var s = visit(child).get(0);
-            if (current == null) current = s;
-            else current = StyleSelector.and(current, s);
+            if (current == null) {
+                current = s;
+            } else {
+                current = StyleSelector.and(current, s);
+            }
         }
         list.add(current);
 

@@ -1,8 +1,6 @@
 package com.spinyowl.spinygui.core.style.css.selector;
 
 import com.spinyowl.spinygui.core.node.base.Element;
-import com.spinyowl.spinygui.core.node.base.Node;
-import com.spinyowl.spinygui.core.node.base.Text;
 
 import java.util.Objects;
 import java.util.stream.Stream;
@@ -35,8 +33,12 @@ public class ClassNameSelector implements StyleSelector {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         ClassNameSelector that = (ClassNameSelector) o;
         return Objects.equals(className, that.className);
     }

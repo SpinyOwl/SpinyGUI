@@ -50,8 +50,12 @@ public class EventListenerMap {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         EventListenerMap that = (EventListenerMap) o;
         return Objects.equals(listenerMap, that.listenerMap);
     }

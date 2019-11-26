@@ -1,7 +1,6 @@
 package com.spinyowl.spinygui.core.style.css.selector;
 
 import com.spinyowl.spinygui.core.node.base.Element;
-import com.spinyowl.spinygui.core.node.base.Node;
 
 import java.util.Objects;
 
@@ -21,8 +20,12 @@ public class OrSelector implements StyleSelector {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         OrSelector that = (OrSelector) o;
         return Objects.equals(first, that.first) &&
                 Objects.equals(second, that.second);

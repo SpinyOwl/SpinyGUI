@@ -24,8 +24,12 @@ public class Background {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         Background that = (Background) o;
         return Objects.equals(color, that.color);
     }

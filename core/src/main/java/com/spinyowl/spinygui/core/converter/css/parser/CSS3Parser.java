@@ -15,13 +15,6 @@ import java.util.List;
 
 @SuppressWarnings({"all", "warnings", "unchecked", "unused", "cast"})
 public class CSS3Parser extends Parser {
-    static {
-        RuntimeMetaData.checkVersion("4.7", RuntimeMetaData.VERSION);
-    }
-
-    protected static final DFA[] _decisionToDFA;
-    protected static final PredictionContextCache _sharedContextCache =
-            new PredictionContextCache();
     public static final int
             T__0 = 1, T__1 = 2, T__2 = 3, T__3 = 4, T__4 = 5, T__5 = 6, T__6 = 7, T__7 = 8, T__8 = 9,
             T__9 = 10, T__10 = 11, T__11 = 12, T__12 = 13, T__13 = 14, T__14 = 15, Comment = 16,
@@ -75,8729 +68,11 @@ public class CSS3Parser extends Parser {
             "fontFamilyNameList", "fontFamilyName", "featureValueBlock", "featureType",
             "featureValueDefinition", "ident", "ws"
     };
-
-    private static final String[] _LITERAL_NAMES = {
-            null, "';'", "'('", "':'", "')'", "'{'", "'}'", "'*'", "'|'", "'.'", "'['",
-            "'='", "']'", "'/'", "'_'", "'@'", null, null, "'<!--'", "'-->'", "'~='",
-            "'|='", null, null, null, null, null, "'@charset '", null, null, null,
-            null, null, null, null, null, null, "'+'", "'-'", "'>'", "','", "'~'",
-            null, null, null, "'^='", "'$='", "'*='", null, null, null, null, null,
-            null, "'calc('", null, null, null, null, null, "'var('"
-    };
-    private static final String[] _SYMBOLIC_NAMES = {
-            null, null, null, null, null, null, null, null, null, null, null, null,
-            null, null, null, null, "Comment", "Space", "Cdo", "Cdc", "Includes",
-            "DashMatch", "Hash", "Import", "Page", "Media", "Namespace", "Charset",
-            "Important", "Percentage", "Uri", "UnicodeRange", "MediaOnly", "Not",
-            "And", "Dimension", "UnknownDimension", "Plus", "Minus", "Greater", "Comma",
-            "Tilde", "PseudoNot", "Number", "String", "PrefixMatch", "SuffixMatch",
-            "SubstringMatch", "FontFace", "Supports", "Or", "Keyframes", "From", "To",
-            "Calc", "Viewport", "CounterStyle", "FontFeatureValues", "DxImageTransform",
-            "Variable", "Var", "Ident", "Function"
-    };
-    public static final Vocabulary VOCABULARY = new VocabularyImpl(_LITERAL_NAMES, _SYMBOLIC_NAMES);
-
     /**
      * @deprecated Use {@link #VOCABULARY} instead.
      */
     @Deprecated
     public static final String[] tokenNames;
-
-    static {
-        tokenNames = new String[_SYMBOLIC_NAMES.length];
-        for (int i = 0; i < tokenNames.length; i++) {
-            tokenNames[i] = VOCABULARY.getLiteralName(i);
-            if (tokenNames[i] == null) {
-                tokenNames[i] = VOCABULARY.getSymbolicName(i);
-            }
-
-            if (tokenNames[i] == null) {
-                tokenNames[i] = "<INVALID>";
-            }
-        }
-    }
-
-    @Override
-    @Deprecated
-    public String[] getTokenNames() {
-        return tokenNames;
-    }
-
-    @Override
-
-    public Vocabulary getVocabulary() {
-        return VOCABULARY;
-    }
-
-    @Override
-    public String getGrammarFileName() {
-        return "CSS3.g4";
-    }
-
-    @Override
-    public String[] getRuleNames() {
-        return ruleNames;
-    }
-
-    @Override
-    public String getSerializedATN() {
-        return _serializedATN;
-    }
-
-    @Override
-    public ATN getATN() {
-        return _ATN;
-    }
-
-    public CSS3Parser(TokenStream input) {
-        super(input);
-        _interp = new ParserATNSimulator(this, _ATN, _decisionToDFA, _sharedContextCache);
-    }
-
-    public static class StylesheetContext extends ParserRuleContext {
-        public WsContext ws() {
-            return getRuleContext(WsContext.class, 0);
-        }
-
-        public List<CharsetContext> charset() {
-            return getRuleContexts(CharsetContext.class);
-        }
-
-        public CharsetContext charset(int i) {
-            return getRuleContext(CharsetContext.class, i);
-        }
-
-        public List<ImportsContext> imports() {
-            return getRuleContexts(ImportsContext.class);
-        }
-
-        public ImportsContext imports(int i) {
-            return getRuleContext(ImportsContext.class, i);
-        }
-
-        public List<NamespaceContext> namespace() {
-            return getRuleContexts(NamespaceContext.class);
-        }
-
-        public NamespaceContext namespace(int i) {
-            return getRuleContext(NamespaceContext.class, i);
-        }
-
-        public List<NestedStatementContext> nestedStatement() {
-            return getRuleContexts(NestedStatementContext.class);
-        }
-
-        public NestedStatementContext nestedStatement(int i) {
-            return getRuleContext(NestedStatementContext.class, i);
-        }
-
-        public List<TerminalNode> Comment() {
-            return getTokens(CSS3Parser.Comment);
-        }
-
-        public TerminalNode Comment(int i) {
-            return getToken(CSS3Parser.Comment, i);
-        }
-
-        public List<TerminalNode> Space() {
-            return getTokens(CSS3Parser.Space);
-        }
-
-        public TerminalNode Space(int i) {
-            return getToken(CSS3Parser.Space, i);
-        }
-
-        public List<TerminalNode> Cdo() {
-            return getTokens(CSS3Parser.Cdo);
-        }
-
-        public TerminalNode Cdo(int i) {
-            return getToken(CSS3Parser.Cdo, i);
-        }
-
-        public List<TerminalNode> Cdc() {
-            return getTokens(CSS3Parser.Cdc);
-        }
-
-        public TerminalNode Cdc(int i) {
-            return getToken(CSS3Parser.Cdc, i);
-        }
-
-        public StylesheetContext(ParserRuleContext parent, int invokingState) {
-            super(parent, invokingState);
-        }
-
-        @Override
-        public int getRuleIndex() {
-            return RULE_stylesheet;
-        }
-
-        @Override
-        public void enterRule(ParseTreeListener listener) {
-            if (listener instanceof CSS3Listener) ((CSS3Listener) listener).enterStylesheet(this);
-        }
-
-        @Override
-        public void exitRule(ParseTreeListener listener) {
-            if (listener instanceof CSS3Listener) ((CSS3Listener) listener).exitStylesheet(this);
-        }
-
-        @Override
-        public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-            if (visitor instanceof CSS3Visitor) return ((CSS3Visitor<? extends T>) visitor).visitStylesheet(this);
-            else return visitor.visitChildren(this);
-        }
-    }
-
-    public final StylesheetContext stylesheet() throws RecognitionException {
-        StylesheetContext _localctx = new StylesheetContext(_ctx, getState());
-        enterRule(_localctx, 0, RULE_stylesheet);
-        int _la;
-        try {
-            enterOuterAlt(_localctx, 1);
-            {
-                setState(158);
-                ws();
-                setState(168);
-                _errHandler.sync(this);
-                _la = _input.LA(1);
-                while (_la == Charset) {
-                    {
-                        {
-                            setState(159);
-                            charset();
-                            setState(163);
-                            _errHandler.sync(this);
-                            _la = _input.LA(1);
-                            while ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << Comment) | (1L << Space) | (1L << Cdo) | (1L << Cdc))) != 0)) {
-                                {
-                                    {
-                                        setState(160);
-                                        _la = _input.LA(1);
-                                        if (!((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << Comment) | (1L << Space) | (1L << Cdo) | (1L << Cdc))) != 0))) {
-                                            _errHandler.recoverInline(this);
-                                        } else {
-                                            if (_input.LA(1) == Token.EOF) matchedEOF = true;
-                                            _errHandler.reportMatch(this);
-                                            consume();
-                                        }
-                                    }
-                                }
-                                setState(165);
-                                _errHandler.sync(this);
-                                _la = _input.LA(1);
-                            }
-                        }
-                    }
-                    setState(170);
-                    _errHandler.sync(this);
-                    _la = _input.LA(1);
-                }
-                setState(180);
-                _errHandler.sync(this);
-                _la = _input.LA(1);
-                while (_la == Import) {
-                    {
-                        {
-                            setState(171);
-                            imports();
-                            setState(175);
-                            _errHandler.sync(this);
-                            _la = _input.LA(1);
-                            while ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << Comment) | (1L << Space) | (1L << Cdo) | (1L << Cdc))) != 0)) {
-                                {
-                                    {
-                                        setState(172);
-                                        _la = _input.LA(1);
-                                        if (!((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << Comment) | (1L << Space) | (1L << Cdo) | (1L << Cdc))) != 0))) {
-                                            _errHandler.recoverInline(this);
-                                        } else {
-                                            if (_input.LA(1) == Token.EOF) matchedEOF = true;
-                                            _errHandler.reportMatch(this);
-                                            consume();
-                                        }
-                                    }
-                                }
-                                setState(177);
-                                _errHandler.sync(this);
-                                _la = _input.LA(1);
-                            }
-                        }
-                    }
-                    setState(182);
-                    _errHandler.sync(this);
-                    _la = _input.LA(1);
-                }
-                setState(192);
-                _errHandler.sync(this);
-                _la = _input.LA(1);
-                while (_la == Namespace) {
-                    {
-                        {
-                            setState(183);
-                            namespace();
-                            setState(187);
-                            _errHandler.sync(this);
-                            _la = _input.LA(1);
-                            while ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << Comment) | (1L << Space) | (1L << Cdo) | (1L << Cdc))) != 0)) {
-                                {
-                                    {
-                                        setState(184);
-                                        _la = _input.LA(1);
-                                        if (!((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << Comment) | (1L << Space) | (1L << Cdo) | (1L << Cdc))) != 0))) {
-                                            _errHandler.recoverInline(this);
-                                        } else {
-                                            if (_input.LA(1) == Token.EOF) matchedEOF = true;
-                                            _errHandler.reportMatch(this);
-                                            consume();
-                                        }
-                                    }
-                                }
-                                setState(189);
-                                _errHandler.sync(this);
-                                _la = _input.LA(1);
-                            }
-                        }
-                    }
-                    setState(194);
-                    _errHandler.sync(this);
-                    _la = _input.LA(1);
-                }
-                setState(204);
-                _errHandler.sync(this);
-                _la = _input.LA(1);
-                while ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__1) | (1L << T__2) | (1L << T__4) | (1L << T__6) | (1L << T__7) | (1L << T__8) | (1L << T__9) | (1L << T__14) | (1L << Includes) | (1L << DashMatch) | (1L << Hash) | (1L << Page) | (1L << Media) | (1L << Percentage) | (1L << Uri) | (1L << UnicodeRange) | (1L << MediaOnly) | (1L << Not) | (1L << And) | (1L << Dimension) | (1L << UnknownDimension) | (1L << Plus) | (1L << Minus) | (1L << PseudoNot) | (1L << Number) | (1L << String) | (1L << FontFace) | (1L << Supports) | (1L << Or) | (1L << Keyframes) | (1L << From) | (1L << To) | (1L << Viewport) | (1L << CounterStyle) | (1L << FontFeatureValues) | (1L << Ident) | (1L << Function))) != 0)) {
-                    {
-                        {
-                            setState(195);
-                            nestedStatement();
-                            setState(199);
-                            _errHandler.sync(this);
-                            _la = _input.LA(1);
-                            while ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << Comment) | (1L << Space) | (1L << Cdo) | (1L << Cdc))) != 0)) {
-                                {
-                                    {
-                                        setState(196);
-                                        _la = _input.LA(1);
-                                        if (!((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << Comment) | (1L << Space) | (1L << Cdo) | (1L << Cdc))) != 0))) {
-                                            _errHandler.recoverInline(this);
-                                        } else {
-                                            if (_input.LA(1) == Token.EOF) matchedEOF = true;
-                                            _errHandler.reportMatch(this);
-                                            consume();
-                                        }
-                                    }
-                                }
-                                setState(201);
-                                _errHandler.sync(this);
-                                _la = _input.LA(1);
-                            }
-                        }
-                    }
-                    setState(206);
-                    _errHandler.sync(this);
-                    _la = _input.LA(1);
-                }
-            }
-        } catch (RecognitionException re) {
-            _localctx.exception = re;
-            _errHandler.reportError(this, re);
-            _errHandler.recover(this, re);
-        } finally {
-            exitRule();
-        }
-        return _localctx;
-    }
-
-    public static class CharsetContext extends ParserRuleContext {
-        public CharsetContext(ParserRuleContext parent, int invokingState) {
-            super(parent, invokingState);
-        }
-
-        @Override
-        public int getRuleIndex() {
-            return RULE_charset;
-        }
-
-        public CharsetContext() {
-        }
-
-        public void copyFrom(CharsetContext ctx) {
-            super.copyFrom(ctx);
-        }
-    }
-
-    public static class BadCharsetContext extends CharsetContext {
-        public TerminalNode Charset() {
-            return getToken(CSS3Parser.Charset, 0);
-        }
-
-        public List<WsContext> ws() {
-            return getRuleContexts(WsContext.class);
-        }
-
-        public WsContext ws(int i) {
-            return getRuleContext(WsContext.class, i);
-        }
-
-        public TerminalNode String() {
-            return getToken(CSS3Parser.String, 0);
-        }
-
-        public BadCharsetContext(CharsetContext ctx) {
-            copyFrom(ctx);
-        }
-
-        @Override
-        public void enterRule(ParseTreeListener listener) {
-            if (listener instanceof CSS3Listener) ((CSS3Listener) listener).enterBadCharset(this);
-        }
-
-        @Override
-        public void exitRule(ParseTreeListener listener) {
-            if (listener instanceof CSS3Listener) ((CSS3Listener) listener).exitBadCharset(this);
-        }
-
-        @Override
-        public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-            if (visitor instanceof CSS3Visitor) return ((CSS3Visitor<? extends T>) visitor).visitBadCharset(this);
-            else return visitor.visitChildren(this);
-        }
-    }
-
-    public static class GoodCharsetContext extends CharsetContext {
-        public TerminalNode Charset() {
-            return getToken(CSS3Parser.Charset, 0);
-        }
-
-        public List<WsContext> ws() {
-            return getRuleContexts(WsContext.class);
-        }
-
-        public WsContext ws(int i) {
-            return getRuleContext(WsContext.class, i);
-        }
-
-        public TerminalNode String() {
-            return getToken(CSS3Parser.String, 0);
-        }
-
-        public GoodCharsetContext(CharsetContext ctx) {
-            copyFrom(ctx);
-        }
-
-        @Override
-        public void enterRule(ParseTreeListener listener) {
-            if (listener instanceof CSS3Listener) ((CSS3Listener) listener).enterGoodCharset(this);
-        }
-
-        @Override
-        public void exitRule(ParseTreeListener listener) {
-            if (listener instanceof CSS3Listener) ((CSS3Listener) listener).exitGoodCharset(this);
-        }
-
-        @Override
-        public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-            if (visitor instanceof CSS3Visitor) return ((CSS3Visitor<? extends T>) visitor).visitGoodCharset(this);
-            else return visitor.visitChildren(this);
-        }
-    }
-
-    public final CharsetContext charset() throws RecognitionException {
-        CharsetContext _localctx = new CharsetContext(_ctx, getState());
-        enterRule(_localctx, 2, RULE_charset);
-        try {
-            setState(219);
-            _errHandler.sync(this);
-            switch (getInterpreter().adaptivePredict(_input, 8, _ctx)) {
-                case 1:
-                    _localctx = new GoodCharsetContext(_localctx);
-                    enterOuterAlt(_localctx, 1);
-                {
-                    setState(207);
-                    match(Charset);
-                    setState(208);
-                    ws();
-                    setState(209);
-                    match(String);
-                    setState(210);
-                    ws();
-                    setState(211);
-                    match(T__0);
-                    setState(212);
-                    ws();
-                }
-                break;
-                case 2:
-                    _localctx = new BadCharsetContext(_localctx);
-                    enterOuterAlt(_localctx, 2);
-                {
-                    setState(214);
-                    match(Charset);
-                    setState(215);
-                    ws();
-                    setState(216);
-                    match(String);
-                    setState(217);
-                    ws();
-                }
-                break;
-            }
-        } catch (RecognitionException re) {
-            _localctx.exception = re;
-            _errHandler.reportError(this, re);
-            _errHandler.recover(this, re);
-        } finally {
-            exitRule();
-        }
-        return _localctx;
-    }
-
-    public static class ImportsContext extends ParserRuleContext {
-        public ImportsContext(ParserRuleContext parent, int invokingState) {
-            super(parent, invokingState);
-        }
-
-        @Override
-        public int getRuleIndex() {
-            return RULE_imports;
-        }
-
-        public ImportsContext() {
-        }
-
-        public void copyFrom(ImportsContext ctx) {
-            super.copyFrom(ctx);
-        }
-    }
-
-    public static class BadImportContext extends ImportsContext {
-        public TerminalNode Import() {
-            return getToken(CSS3Parser.Import, 0);
-        }
-
-        public List<WsContext> ws() {
-            return getRuleContexts(WsContext.class);
-        }
-
-        public WsContext ws(int i) {
-            return getRuleContext(WsContext.class, i);
-        }
-
-        public MediaQueryListContext mediaQueryList() {
-            return getRuleContext(MediaQueryListContext.class, 0);
-        }
-
-        public TerminalNode String() {
-            return getToken(CSS3Parser.String, 0);
-        }
-
-        public TerminalNode Uri() {
-            return getToken(CSS3Parser.Uri, 0);
-        }
-
-        public BadImportContext(ImportsContext ctx) {
-            copyFrom(ctx);
-        }
-
-        @Override
-        public void enterRule(ParseTreeListener listener) {
-            if (listener instanceof CSS3Listener) ((CSS3Listener) listener).enterBadImport(this);
-        }
-
-        @Override
-        public void exitRule(ParseTreeListener listener) {
-            if (listener instanceof CSS3Listener) ((CSS3Listener) listener).exitBadImport(this);
-        }
-
-        @Override
-        public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-            if (visitor instanceof CSS3Visitor) return ((CSS3Visitor<? extends T>) visitor).visitBadImport(this);
-            else return visitor.visitChildren(this);
-        }
-    }
-
-    public static class GoodImportContext extends ImportsContext {
-        public TerminalNode Import() {
-            return getToken(CSS3Parser.Import, 0);
-        }
-
-        public List<WsContext> ws() {
-            return getRuleContexts(WsContext.class);
-        }
-
-        public WsContext ws(int i) {
-            return getRuleContext(WsContext.class, i);
-        }
-
-        public MediaQueryListContext mediaQueryList() {
-            return getRuleContext(MediaQueryListContext.class, 0);
-        }
-
-        public TerminalNode String() {
-            return getToken(CSS3Parser.String, 0);
-        }
-
-        public TerminalNode Uri() {
-            return getToken(CSS3Parser.Uri, 0);
-        }
-
-        public GoodImportContext(ImportsContext ctx) {
-            copyFrom(ctx);
-        }
-
-        @Override
-        public void enterRule(ParseTreeListener listener) {
-            if (listener instanceof CSS3Listener) ((CSS3Listener) listener).enterGoodImport(this);
-        }
-
-        @Override
-        public void exitRule(ParseTreeListener listener) {
-            if (listener instanceof CSS3Listener) ((CSS3Listener) listener).exitGoodImport(this);
-        }
-
-        @Override
-        public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-            if (visitor instanceof CSS3Visitor) return ((CSS3Visitor<? extends T>) visitor).visitGoodImport(this);
-            else return visitor.visitChildren(this);
-        }
-    }
-
-    public final ImportsContext imports() throws RecognitionException {
-        ImportsContext _localctx = new ImportsContext(_ctx, getState());
-        enterRule(_localctx, 4, RULE_imports);
-        int _la;
-        try {
-            setState(247);
-            _errHandler.sync(this);
-            switch (getInterpreter().adaptivePredict(_input, 9, _ctx)) {
-                case 1:
-                    _localctx = new GoodImportContext(_localctx);
-                    enterOuterAlt(_localctx, 1);
-                {
-                    setState(221);
-                    match(Import);
-                    setState(222);
-                    ws();
-                    setState(223);
-                    _la = _input.LA(1);
-                    if (!(_la == Uri || _la == String)) {
-                        _errHandler.recoverInline(this);
-                    } else {
-                        if (_input.LA(1) == Token.EOF) matchedEOF = true;
-                        _errHandler.reportMatch(this);
-                        consume();
-                    }
-                    setState(224);
-                    ws();
-                    setState(225);
-                    mediaQueryList();
-                    setState(226);
-                    match(T__0);
-                    setState(227);
-                    ws();
-                }
-                break;
-                case 2:
-                    _localctx = new GoodImportContext(_localctx);
-                    enterOuterAlt(_localctx, 2);
-                {
-                    setState(229);
-                    match(Import);
-                    setState(230);
-                    ws();
-                    setState(231);
-                    _la = _input.LA(1);
-                    if (!(_la == Uri || _la == String)) {
-                        _errHandler.recoverInline(this);
-                    } else {
-                        if (_input.LA(1) == Token.EOF) matchedEOF = true;
-                        _errHandler.reportMatch(this);
-                        consume();
-                    }
-                    setState(232);
-                    ws();
-                    setState(233);
-                    match(T__0);
-                    setState(234);
-                    ws();
-                }
-                break;
-                case 3:
-                    _localctx = new BadImportContext(_localctx);
-                    enterOuterAlt(_localctx, 3);
-                {
-                    setState(236);
-                    match(Import);
-                    setState(237);
-                    ws();
-                    setState(238);
-                    _la = _input.LA(1);
-                    if (!(_la == Uri || _la == String)) {
-                        _errHandler.recoverInline(this);
-                    } else {
-                        if (_input.LA(1) == Token.EOF) matchedEOF = true;
-                        _errHandler.reportMatch(this);
-                        consume();
-                    }
-                    setState(239);
-                    ws();
-                    setState(240);
-                    mediaQueryList();
-                }
-                break;
-                case 4:
-                    _localctx = new BadImportContext(_localctx);
-                    enterOuterAlt(_localctx, 4);
-                {
-                    setState(242);
-                    match(Import);
-                    setState(243);
-                    ws();
-                    setState(244);
-                    _la = _input.LA(1);
-                    if (!(_la == Uri || _la == String)) {
-                        _errHandler.recoverInline(this);
-                    } else {
-                        if (_input.LA(1) == Token.EOF) matchedEOF = true;
-                        _errHandler.reportMatch(this);
-                        consume();
-                    }
-                    setState(245);
-                    ws();
-                }
-                break;
-            }
-        } catch (RecognitionException re) {
-            _localctx.exception = re;
-            _errHandler.reportError(this, re);
-            _errHandler.recover(this, re);
-        } finally {
-            exitRule();
-        }
-        return _localctx;
-    }
-
-    public static class NamespaceContext extends ParserRuleContext {
-        public NamespaceContext(ParserRuleContext parent, int invokingState) {
-            super(parent, invokingState);
-        }
-
-        @Override
-        public int getRuleIndex() {
-            return RULE_namespace;
-        }
-
-        public NamespaceContext() {
-        }
-
-        public void copyFrom(NamespaceContext ctx) {
-            super.copyFrom(ctx);
-        }
-    }
-
-    public static class GoodNamespaceContext extends NamespaceContext {
-        public TerminalNode Namespace() {
-            return getToken(CSS3Parser.Namespace, 0);
-        }
-
-        public List<WsContext> ws() {
-            return getRuleContexts(WsContext.class);
-        }
-
-        public WsContext ws(int i) {
-            return getRuleContext(WsContext.class, i);
-        }
-
-        public TerminalNode String() {
-            return getToken(CSS3Parser.String, 0);
-        }
-
-        public TerminalNode Uri() {
-            return getToken(CSS3Parser.Uri, 0);
-        }
-
-        public NamespacePrefixContext namespacePrefix() {
-            return getRuleContext(NamespacePrefixContext.class, 0);
-        }
-
-        public GoodNamespaceContext(NamespaceContext ctx) {
-            copyFrom(ctx);
-        }
-
-        @Override
-        public void enterRule(ParseTreeListener listener) {
-            if (listener instanceof CSS3Listener) ((CSS3Listener) listener).enterGoodNamespace(this);
-        }
-
-        @Override
-        public void exitRule(ParseTreeListener listener) {
-            if (listener instanceof CSS3Listener) ((CSS3Listener) listener).exitGoodNamespace(this);
-        }
-
-        @Override
-        public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-            if (visitor instanceof CSS3Visitor) return ((CSS3Visitor<? extends T>) visitor).visitGoodNamespace(this);
-            else return visitor.visitChildren(this);
-        }
-    }
-
-    public static class BadNamespaceContext extends NamespaceContext {
-        public TerminalNode Namespace() {
-            return getToken(CSS3Parser.Namespace, 0);
-        }
-
-        public List<WsContext> ws() {
-            return getRuleContexts(WsContext.class);
-        }
-
-        public WsContext ws(int i) {
-            return getRuleContext(WsContext.class, i);
-        }
-
-        public TerminalNode String() {
-            return getToken(CSS3Parser.String, 0);
-        }
-
-        public TerminalNode Uri() {
-            return getToken(CSS3Parser.Uri, 0);
-        }
-
-        public NamespacePrefixContext namespacePrefix() {
-            return getRuleContext(NamespacePrefixContext.class, 0);
-        }
-
-        public BadNamespaceContext(NamespaceContext ctx) {
-            copyFrom(ctx);
-        }
-
-        @Override
-        public void enterRule(ParseTreeListener listener) {
-            if (listener instanceof CSS3Listener) ((CSS3Listener) listener).enterBadNamespace(this);
-        }
-
-        @Override
-        public void exitRule(ParseTreeListener listener) {
-            if (listener instanceof CSS3Listener) ((CSS3Listener) listener).exitBadNamespace(this);
-        }
-
-        @Override
-        public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-            if (visitor instanceof CSS3Visitor) return ((CSS3Visitor<? extends T>) visitor).visitBadNamespace(this);
-            else return visitor.visitChildren(this);
-        }
-    }
-
-    public final NamespaceContext namespace() throws RecognitionException {
-        NamespaceContext _localctx = new NamespaceContext(_ctx, getState());
-        enterRule(_localctx, 6, RULE_namespace);
-        int _la;
-        try {
-            setState(271);
-            _errHandler.sync(this);
-            switch (getInterpreter().adaptivePredict(_input, 12, _ctx)) {
-                case 1:
-                    _localctx = new GoodNamespaceContext(_localctx);
-                    enterOuterAlt(_localctx, 1);
-                {
-                    setState(249);
-                    match(Namespace);
-                    setState(250);
-                    ws();
-                    setState(254);
-                    _errHandler.sync(this);
-                    _la = _input.LA(1);
-                    if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << MediaOnly) | (1L << Not) | (1L << And) | (1L << Or) | (1L << From) | (1L << To) | (1L << Ident))) != 0)) {
-                        {
-                            setState(251);
-                            namespacePrefix();
-                            setState(252);
-                            ws();
-                        }
-                    }
-
-                    setState(256);
-                    _la = _input.LA(1);
-                    if (!(_la == Uri || _la == String)) {
-                        _errHandler.recoverInline(this);
-                    } else {
-                        if (_input.LA(1) == Token.EOF) matchedEOF = true;
-                        _errHandler.reportMatch(this);
-                        consume();
-                    }
-                    setState(257);
-                    ws();
-                    setState(258);
-                    match(T__0);
-                    setState(259);
-                    ws();
-                }
-                break;
-                case 2:
-                    _localctx = new BadNamespaceContext(_localctx);
-                    enterOuterAlt(_localctx, 2);
-                {
-                    setState(261);
-                    match(Namespace);
-                    setState(262);
-                    ws();
-                    setState(266);
-                    _errHandler.sync(this);
-                    _la = _input.LA(1);
-                    if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << MediaOnly) | (1L << Not) | (1L << And) | (1L << Or) | (1L << From) | (1L << To) | (1L << Ident))) != 0)) {
-                        {
-                            setState(263);
-                            namespacePrefix();
-                            setState(264);
-                            ws();
-                        }
-                    }
-
-                    setState(268);
-                    _la = _input.LA(1);
-                    if (!(_la == Uri || _la == String)) {
-                        _errHandler.recoverInline(this);
-                    } else {
-                        if (_input.LA(1) == Token.EOF) matchedEOF = true;
-                        _errHandler.reportMatch(this);
-                        consume();
-                    }
-                    setState(269);
-                    ws();
-                }
-                break;
-            }
-        } catch (RecognitionException re) {
-            _localctx.exception = re;
-            _errHandler.reportError(this, re);
-            _errHandler.recover(this, re);
-        } finally {
-            exitRule();
-        }
-        return _localctx;
-    }
-
-    public static class NamespacePrefixContext extends ParserRuleContext {
-        public IdentContext ident() {
-            return getRuleContext(IdentContext.class, 0);
-        }
-
-        public NamespacePrefixContext(ParserRuleContext parent, int invokingState) {
-            super(parent, invokingState);
-        }
-
-        @Override
-        public int getRuleIndex() {
-            return RULE_namespacePrefix;
-        }
-
-        @Override
-        public void enterRule(ParseTreeListener listener) {
-            if (listener instanceof CSS3Listener) ((CSS3Listener) listener).enterNamespacePrefix(this);
-        }
-
-        @Override
-        public void exitRule(ParseTreeListener listener) {
-            if (listener instanceof CSS3Listener) ((CSS3Listener) listener).exitNamespacePrefix(this);
-        }
-
-        @Override
-        public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-            if (visitor instanceof CSS3Visitor) return ((CSS3Visitor<? extends T>) visitor).visitNamespacePrefix(this);
-            else return visitor.visitChildren(this);
-        }
-    }
-
-    public final NamespacePrefixContext namespacePrefix() throws RecognitionException {
-        NamespacePrefixContext _localctx = new NamespacePrefixContext(_ctx, getState());
-        enterRule(_localctx, 8, RULE_namespacePrefix);
-        try {
-            enterOuterAlt(_localctx, 1);
-            {
-                setState(273);
-                ident();
-            }
-        } catch (RecognitionException re) {
-            _localctx.exception = re;
-            _errHandler.reportError(this, re);
-            _errHandler.recover(this, re);
-        } finally {
-            exitRule();
-        }
-        return _localctx;
-    }
-
-    public static class MediaContext extends ParserRuleContext {
-        public TerminalNode Media() {
-            return getToken(CSS3Parser.Media, 0);
-        }
-
-        public List<WsContext> ws() {
-            return getRuleContexts(WsContext.class);
-        }
-
-        public WsContext ws(int i) {
-            return getRuleContext(WsContext.class, i);
-        }
-
-        public MediaQueryListContext mediaQueryList() {
-            return getRuleContext(MediaQueryListContext.class, 0);
-        }
-
-        public GroupRuleBodyContext groupRuleBody() {
-            return getRuleContext(GroupRuleBodyContext.class, 0);
-        }
-
-        public MediaContext(ParserRuleContext parent, int invokingState) {
-            super(parent, invokingState);
-        }
-
-        @Override
-        public int getRuleIndex() {
-            return RULE_media;
-        }
-
-        @Override
-        public void enterRule(ParseTreeListener listener) {
-            if (listener instanceof CSS3Listener) ((CSS3Listener) listener).enterMedia(this);
-        }
-
-        @Override
-        public void exitRule(ParseTreeListener listener) {
-            if (listener instanceof CSS3Listener) ((CSS3Listener) listener).exitMedia(this);
-        }
-
-        @Override
-        public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-            if (visitor instanceof CSS3Visitor) return ((CSS3Visitor<? extends T>) visitor).visitMedia(this);
-            else return visitor.visitChildren(this);
-        }
-    }
-
-    public final MediaContext media() throws RecognitionException {
-        MediaContext _localctx = new MediaContext(_ctx, getState());
-        enterRule(_localctx, 10, RULE_media);
-        try {
-            enterOuterAlt(_localctx, 1);
-            {
-                setState(275);
-                match(Media);
-                setState(276);
-                ws();
-                setState(277);
-                mediaQueryList();
-                setState(278);
-                groupRuleBody();
-                setState(279);
-                ws();
-            }
-        } catch (RecognitionException re) {
-            _localctx.exception = re;
-            _errHandler.reportError(this, re);
-            _errHandler.recover(this, re);
-        } finally {
-            exitRule();
-        }
-        return _localctx;
-    }
-
-    public static class MediaQueryListContext extends ParserRuleContext {
-        public List<WsContext> ws() {
-            return getRuleContexts(WsContext.class);
-        }
-
-        public WsContext ws(int i) {
-            return getRuleContext(WsContext.class, i);
-        }
-
-        public List<MediaQueryContext> mediaQuery() {
-            return getRuleContexts(MediaQueryContext.class);
-        }
-
-        public MediaQueryContext mediaQuery(int i) {
-            return getRuleContext(MediaQueryContext.class, i);
-        }
-
-        public List<TerminalNode> Comma() {
-            return getTokens(CSS3Parser.Comma);
-        }
-
-        public TerminalNode Comma(int i) {
-            return getToken(CSS3Parser.Comma, i);
-        }
-
-        public MediaQueryListContext(ParserRuleContext parent, int invokingState) {
-            super(parent, invokingState);
-        }
-
-        @Override
-        public int getRuleIndex() {
-            return RULE_mediaQueryList;
-        }
-
-        @Override
-        public void enterRule(ParseTreeListener listener) {
-            if (listener instanceof CSS3Listener) ((CSS3Listener) listener).enterMediaQueryList(this);
-        }
-
-        @Override
-        public void exitRule(ParseTreeListener listener) {
-            if (listener instanceof CSS3Listener) ((CSS3Listener) listener).exitMediaQueryList(this);
-        }
-
-        @Override
-        public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-            if (visitor instanceof CSS3Visitor) return ((CSS3Visitor<? extends T>) visitor).visitMediaQueryList(this);
-            else return visitor.visitChildren(this);
-        }
-    }
-
-    public final MediaQueryListContext mediaQueryList() throws RecognitionException {
-        MediaQueryListContext _localctx = new MediaQueryListContext(_ctx, getState());
-        enterRule(_localctx, 12, RULE_mediaQueryList);
-        int _la;
-        try {
-            enterOuterAlt(_localctx, 1);
-            {
-                setState(291);
-                _errHandler.sync(this);
-                switch (getInterpreter().adaptivePredict(_input, 14, _ctx)) {
-                    case 1: {
-                        setState(281);
-                        mediaQuery();
-                        setState(288);
-                        _errHandler.sync(this);
-                        _la = _input.LA(1);
-                        while (_la == Comma) {
-                            {
-                                {
-                                    setState(282);
-                                    match(Comma);
-                                    setState(283);
-                                    ws();
-                                    setState(284);
-                                    mediaQuery();
-                                }
-                            }
-                            setState(290);
-                            _errHandler.sync(this);
-                            _la = _input.LA(1);
-                        }
-                    }
-                    break;
-                }
-                setState(293);
-                ws();
-            }
-        } catch (RecognitionException re) {
-            _localctx.exception = re;
-            _errHandler.reportError(this, re);
-            _errHandler.recover(this, re);
-        } finally {
-            exitRule();
-        }
-        return _localctx;
-    }
-
-    public static class MediaQueryContext extends ParserRuleContext {
-        public List<WsContext> ws() {
-            return getRuleContexts(WsContext.class);
-        }
-
-        public WsContext ws(int i) {
-            return getRuleContext(WsContext.class, i);
-        }
-
-        public MediaTypeContext mediaType() {
-            return getRuleContext(MediaTypeContext.class, 0);
-        }
-
-        public List<TerminalNode> And() {
-            return getTokens(CSS3Parser.And);
-        }
-
-        public TerminalNode And(int i) {
-            return getToken(CSS3Parser.And, i);
-        }
-
-        public List<MediaExpressionContext> mediaExpression() {
-            return getRuleContexts(MediaExpressionContext.class);
-        }
-
-        public MediaExpressionContext mediaExpression(int i) {
-            return getRuleContext(MediaExpressionContext.class, i);
-        }
-
-        public TerminalNode MediaOnly() {
-            return getToken(CSS3Parser.MediaOnly, 0);
-        }
-
-        public TerminalNode Not() {
-            return getToken(CSS3Parser.Not, 0);
-        }
-
-        public MediaQueryContext(ParserRuleContext parent, int invokingState) {
-            super(parent, invokingState);
-        }
-
-        @Override
-        public int getRuleIndex() {
-            return RULE_mediaQuery;
-        }
-
-        @Override
-        public void enterRule(ParseTreeListener listener) {
-            if (listener instanceof CSS3Listener) ((CSS3Listener) listener).enterMediaQuery(this);
-        }
-
-        @Override
-        public void exitRule(ParseTreeListener listener) {
-            if (listener instanceof CSS3Listener) ((CSS3Listener) listener).exitMediaQuery(this);
-        }
-
-        @Override
-        public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-            if (visitor instanceof CSS3Visitor) return ((CSS3Visitor<? extends T>) visitor).visitMediaQuery(this);
-            else return visitor.visitChildren(this);
-        }
-    }
-
-    public final MediaQueryContext mediaQuery() throws RecognitionException {
-        MediaQueryContext _localctx = new MediaQueryContext(_ctx, getState());
-        enterRule(_localctx, 14, RULE_mediaQuery);
-        int _la;
-        try {
-            int _alt;
-            setState(320);
-            _errHandler.sync(this);
-            switch (_input.LA(1)) {
-                case Comment:
-                case Space:
-                case MediaOnly:
-                case Not:
-                case And:
-                case Or:
-                case From:
-                case To:
-                case Ident:
-                    enterOuterAlt(_localctx, 1);
-                {
-                    setState(296);
-                    _errHandler.sync(this);
-                    switch (getInterpreter().adaptivePredict(_input, 15, _ctx)) {
-                        case 1: {
-                            setState(295);
-                            _la = _input.LA(1);
-                            if (!(_la == MediaOnly || _la == Not)) {
-                                _errHandler.recoverInline(this);
-                            } else {
-                                if (_input.LA(1) == Token.EOF) matchedEOF = true;
-                                _errHandler.reportMatch(this);
-                                consume();
-                            }
-                        }
-                        break;
-                    }
-                    setState(298);
-                    ws();
-                    setState(299);
-                    mediaType();
-                    setState(300);
-                    ws();
-                    setState(307);
-                    _errHandler.sync(this);
-                    _alt = getInterpreter().adaptivePredict(_input, 16, _ctx);
-                    while (_alt != 2 && _alt != org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER) {
-                        if (_alt == 1) {
-                            {
-                                {
-                                    setState(301);
-                                    match(And);
-                                    setState(302);
-                                    ws();
-                                    setState(303);
-                                    mediaExpression();
-                                }
-                            }
-                        }
-                        setState(309);
-                        _errHandler.sync(this);
-                        _alt = getInterpreter().adaptivePredict(_input, 16, _ctx);
-                    }
-                }
-                break;
-                case T__1:
-                    enterOuterAlt(_localctx, 2);
-                {
-                    setState(310);
-                    mediaExpression();
-                    setState(317);
-                    _errHandler.sync(this);
-                    _alt = getInterpreter().adaptivePredict(_input, 17, _ctx);
-                    while (_alt != 2 && _alt != org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER) {
-                        if (_alt == 1) {
-                            {
-                                {
-                                    setState(311);
-                                    match(And);
-                                    setState(312);
-                                    ws();
-                                    setState(313);
-                                    mediaExpression();
-                                }
-                            }
-                        }
-                        setState(319);
-                        _errHandler.sync(this);
-                        _alt = getInterpreter().adaptivePredict(_input, 17, _ctx);
-                    }
-                }
-                break;
-                default:
-                    throw new NoViableAltException(this);
-            }
-        } catch (RecognitionException re) {
-            _localctx.exception = re;
-            _errHandler.reportError(this, re);
-            _errHandler.recover(this, re);
-        } finally {
-            exitRule();
-        }
-        return _localctx;
-    }
-
-    public static class MediaTypeContext extends ParserRuleContext {
-        public IdentContext ident() {
-            return getRuleContext(IdentContext.class, 0);
-        }
-
-        public MediaTypeContext(ParserRuleContext parent, int invokingState) {
-            super(parent, invokingState);
-        }
-
-        @Override
-        public int getRuleIndex() {
-            return RULE_mediaType;
-        }
-
-        @Override
-        public void enterRule(ParseTreeListener listener) {
-            if (listener instanceof CSS3Listener) ((CSS3Listener) listener).enterMediaType(this);
-        }
-
-        @Override
-        public void exitRule(ParseTreeListener listener) {
-            if (listener instanceof CSS3Listener) ((CSS3Listener) listener).exitMediaType(this);
-        }
-
-        @Override
-        public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-            if (visitor instanceof CSS3Visitor) return ((CSS3Visitor<? extends T>) visitor).visitMediaType(this);
-            else return visitor.visitChildren(this);
-        }
-    }
-
-    public final MediaTypeContext mediaType() throws RecognitionException {
-        MediaTypeContext _localctx = new MediaTypeContext(_ctx, getState());
-        enterRule(_localctx, 16, RULE_mediaType);
-        try {
-            enterOuterAlt(_localctx, 1);
-            {
-                setState(322);
-                ident();
-            }
-        } catch (RecognitionException re) {
-            _localctx.exception = re;
-            _errHandler.reportError(this, re);
-            _errHandler.recover(this, re);
-        } finally {
-            exitRule();
-        }
-        return _localctx;
-    }
-
-    public static class MediaExpressionContext extends ParserRuleContext {
-        public List<WsContext> ws() {
-            return getRuleContexts(WsContext.class);
-        }
-
-        public WsContext ws(int i) {
-            return getRuleContext(WsContext.class, i);
-        }
-
-        public MediaFeatureContext mediaFeature() {
-            return getRuleContext(MediaFeatureContext.class, 0);
-        }
-
-        public ExprContext expr() {
-            return getRuleContext(ExprContext.class, 0);
-        }
-
-        public MediaExpressionContext(ParserRuleContext parent, int invokingState) {
-            super(parent, invokingState);
-        }
-
-        @Override
-        public int getRuleIndex() {
-            return RULE_mediaExpression;
-        }
-
-        @Override
-        public void enterRule(ParseTreeListener listener) {
-            if (listener instanceof CSS3Listener) ((CSS3Listener) listener).enterMediaExpression(this);
-        }
-
-        @Override
-        public void exitRule(ParseTreeListener listener) {
-            if (listener instanceof CSS3Listener) ((CSS3Listener) listener).exitMediaExpression(this);
-        }
-
-        @Override
-        public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-            if (visitor instanceof CSS3Visitor) return ((CSS3Visitor<? extends T>) visitor).visitMediaExpression(this);
-            else return visitor.visitChildren(this);
-        }
-    }
-
-    public final MediaExpressionContext mediaExpression() throws RecognitionException {
-        MediaExpressionContext _localctx = new MediaExpressionContext(_ctx, getState());
-        enterRule(_localctx, 18, RULE_mediaExpression);
-        int _la;
-        try {
-            enterOuterAlt(_localctx, 1);
-            {
-                setState(324);
-                match(T__1);
-                setState(325);
-                ws();
-                setState(326);
-                mediaFeature();
-                setState(331);
-                _errHandler.sync(this);
-                _la = _input.LA(1);
-                if (_la == T__2) {
-                    {
-                        setState(327);
-                        match(T__2);
-                        setState(328);
-                        ws();
-                        setState(329);
-                        expr();
-                    }
-                }
-
-                setState(333);
-                match(T__3);
-                setState(334);
-                ws();
-            }
-        } catch (RecognitionException re) {
-            _localctx.exception = re;
-            _errHandler.reportError(this, re);
-            _errHandler.recover(this, re);
-        } finally {
-            exitRule();
-        }
-        return _localctx;
-    }
-
-    public static class MediaFeatureContext extends ParserRuleContext {
-        public IdentContext ident() {
-            return getRuleContext(IdentContext.class, 0);
-        }
-
-        public WsContext ws() {
-            return getRuleContext(WsContext.class, 0);
-        }
-
-        public MediaFeatureContext(ParserRuleContext parent, int invokingState) {
-            super(parent, invokingState);
-        }
-
-        @Override
-        public int getRuleIndex() {
-            return RULE_mediaFeature;
-        }
-
-        @Override
-        public void enterRule(ParseTreeListener listener) {
-            if (listener instanceof CSS3Listener) ((CSS3Listener) listener).enterMediaFeature(this);
-        }
-
-        @Override
-        public void exitRule(ParseTreeListener listener) {
-            if (listener instanceof CSS3Listener) ((CSS3Listener) listener).exitMediaFeature(this);
-        }
-
-        @Override
-        public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-            if (visitor instanceof CSS3Visitor) return ((CSS3Visitor<? extends T>) visitor).visitMediaFeature(this);
-            else return visitor.visitChildren(this);
-        }
-    }
-
-    public final MediaFeatureContext mediaFeature() throws RecognitionException {
-        MediaFeatureContext _localctx = new MediaFeatureContext(_ctx, getState());
-        enterRule(_localctx, 20, RULE_mediaFeature);
-        try {
-            enterOuterAlt(_localctx, 1);
-            {
-                setState(336);
-                ident();
-                setState(337);
-                ws();
-            }
-        } catch (RecognitionException re) {
-            _localctx.exception = re;
-            _errHandler.reportError(this, re);
-            _errHandler.recover(this, re);
-        } finally {
-            exitRule();
-        }
-        return _localctx;
-    }
-
-    public static class PageContext extends ParserRuleContext {
-        public TerminalNode Page() {
-            return getToken(CSS3Parser.Page, 0);
-        }
-
-        public List<WsContext> ws() {
-            return getRuleContexts(WsContext.class);
-        }
-
-        public WsContext ws(int i) {
-            return getRuleContext(WsContext.class, i);
-        }
-
-        public PseudoPageContext pseudoPage() {
-            return getRuleContext(PseudoPageContext.class, 0);
-        }
-
-        public List<DeclarationContext> declaration() {
-            return getRuleContexts(DeclarationContext.class);
-        }
-
-        public DeclarationContext declaration(int i) {
-            return getRuleContext(DeclarationContext.class, i);
-        }
-
-        public PageContext(ParserRuleContext parent, int invokingState) {
-            super(parent, invokingState);
-        }
-
-        @Override
-        public int getRuleIndex() {
-            return RULE_page;
-        }
-
-        @Override
-        public void enterRule(ParseTreeListener listener) {
-            if (listener instanceof CSS3Listener) ((CSS3Listener) listener).enterPage(this);
-        }
-
-        @Override
-        public void exitRule(ParseTreeListener listener) {
-            if (listener instanceof CSS3Listener) ((CSS3Listener) listener).exitPage(this);
-        }
-
-        @Override
-        public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-            if (visitor instanceof CSS3Visitor) return ((CSS3Visitor<? extends T>) visitor).visitPage(this);
-            else return visitor.visitChildren(this);
-        }
-    }
-
-    public final PageContext page() throws RecognitionException {
-        PageContext _localctx = new PageContext(_ctx, getState());
-        enterRule(_localctx, 22, RULE_page);
-        int _la;
-        try {
-            enterOuterAlt(_localctx, 1);
-            {
-                setState(339);
-                match(Page);
-                setState(340);
-                ws();
-                setState(342);
-                _errHandler.sync(this);
-                _la = _input.LA(1);
-                if (_la == T__2) {
-                    {
-                        setState(341);
-                        pseudoPage();
-                    }
-                }
-
-                setState(344);
-                match(T__4);
-                setState(345);
-                ws();
-                setState(347);
-                _errHandler.sync(this);
-                _la = _input.LA(1);
-                if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__6) | (1L << T__13) | (1L << MediaOnly) | (1L << Not) | (1L << And) | (1L << Or) | (1L << From) | (1L << To) | (1L << Variable) | (1L << Ident))) != 0)) {
-                    {
-                        setState(346);
-                        declaration();
-                    }
-                }
-
-                setState(356);
-                _errHandler.sync(this);
-                _la = _input.LA(1);
-                while (_la == T__0) {
-                    {
-                        {
-                            setState(349);
-                            match(T__0);
-                            setState(350);
-                            ws();
-                            setState(352);
-                            _errHandler.sync(this);
-                            _la = _input.LA(1);
-                            if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__6) | (1L << T__13) | (1L << MediaOnly) | (1L << Not) | (1L << And) | (1L << Or) | (1L << From) | (1L << To) | (1L << Variable) | (1L << Ident))) != 0)) {
-                                {
-                                    setState(351);
-                                    declaration();
-                                }
-                            }
-
-                        }
-                    }
-                    setState(358);
-                    _errHandler.sync(this);
-                    _la = _input.LA(1);
-                }
-                setState(359);
-                match(T__5);
-                setState(360);
-                ws();
-            }
-        } catch (RecognitionException re) {
-            _localctx.exception = re;
-            _errHandler.reportError(this, re);
-            _errHandler.recover(this, re);
-        } finally {
-            exitRule();
-        }
-        return _localctx;
-    }
-
-    public static class PseudoPageContext extends ParserRuleContext {
-        public IdentContext ident() {
-            return getRuleContext(IdentContext.class, 0);
-        }
-
-        public WsContext ws() {
-            return getRuleContext(WsContext.class, 0);
-        }
-
-        public PseudoPageContext(ParserRuleContext parent, int invokingState) {
-            super(parent, invokingState);
-        }
-
-        @Override
-        public int getRuleIndex() {
-            return RULE_pseudoPage;
-        }
-
-        @Override
-        public void enterRule(ParseTreeListener listener) {
-            if (listener instanceof CSS3Listener) ((CSS3Listener) listener).enterPseudoPage(this);
-        }
-
-        @Override
-        public void exitRule(ParseTreeListener listener) {
-            if (listener instanceof CSS3Listener) ((CSS3Listener) listener).exitPseudoPage(this);
-        }
-
-        @Override
-        public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-            if (visitor instanceof CSS3Visitor) return ((CSS3Visitor<? extends T>) visitor).visitPseudoPage(this);
-            else return visitor.visitChildren(this);
-        }
-    }
-
-    public final PseudoPageContext pseudoPage() throws RecognitionException {
-        PseudoPageContext _localctx = new PseudoPageContext(_ctx, getState());
-        enterRule(_localctx, 24, RULE_pseudoPage);
-        try {
-            enterOuterAlt(_localctx, 1);
-            {
-                setState(362);
-                match(T__2);
-                setState(363);
-                ident();
-                setState(364);
-                ws();
-            }
-        } catch (RecognitionException re) {
-            _localctx.exception = re;
-            _errHandler.reportError(this, re);
-            _errHandler.recover(this, re);
-        } finally {
-            exitRule();
-        }
-        return _localctx;
-    }
-
-    public static class SelectorGroupContext extends ParserRuleContext {
-        public List<SelectorContext> selector() {
-            return getRuleContexts(SelectorContext.class);
-        }
-
-        public SelectorContext selector(int i) {
-            return getRuleContext(SelectorContext.class, i);
-        }
-
-        public List<TerminalNode> Comma() {
-            return getTokens(CSS3Parser.Comma);
-        }
-
-        public TerminalNode Comma(int i) {
-            return getToken(CSS3Parser.Comma, i);
-        }
-
-        public List<WsContext> ws() {
-            return getRuleContexts(WsContext.class);
-        }
-
-        public WsContext ws(int i) {
-            return getRuleContext(WsContext.class, i);
-        }
-
-        public SelectorGroupContext(ParserRuleContext parent, int invokingState) {
-            super(parent, invokingState);
-        }
-
-        @Override
-        public int getRuleIndex() {
-            return RULE_selectorGroup;
-        }
-
-        @Override
-        public void enterRule(ParseTreeListener listener) {
-            if (listener instanceof CSS3Listener) ((CSS3Listener) listener).enterSelectorGroup(this);
-        }
-
-        @Override
-        public void exitRule(ParseTreeListener listener) {
-            if (listener instanceof CSS3Listener) ((CSS3Listener) listener).exitSelectorGroup(this);
-        }
-
-        @Override
-        public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-            if (visitor instanceof CSS3Visitor) return ((CSS3Visitor<? extends T>) visitor).visitSelectorGroup(this);
-            else return visitor.visitChildren(this);
-        }
-    }
-
-    public final SelectorGroupContext selectorGroup() throws RecognitionException {
-        SelectorGroupContext _localctx = new SelectorGroupContext(_ctx, getState());
-        enterRule(_localctx, 26, RULE_selectorGroup);
-        int _la;
-        try {
-            enterOuterAlt(_localctx, 1);
-            {
-                setState(366);
-                selector();
-                setState(373);
-                _errHandler.sync(this);
-                _la = _input.LA(1);
-                while (_la == Comma) {
-                    {
-                        {
-                            setState(367);
-                            match(Comma);
-                            setState(368);
-                            ws();
-                            setState(369);
-                            selector();
-                        }
-                    }
-                    setState(375);
-                    _errHandler.sync(this);
-                    _la = _input.LA(1);
-                }
-            }
-        } catch (RecognitionException re) {
-            _localctx.exception = re;
-            _errHandler.reportError(this, re);
-            _errHandler.recover(this, re);
-        } finally {
-            exitRule();
-        }
-        return _localctx;
-    }
-
-    public static class SelectorContext extends ParserRuleContext {
-        public List<SimpleSelectorSequenceContext> simpleSelectorSequence() {
-            return getRuleContexts(SimpleSelectorSequenceContext.class);
-        }
-
-        public SimpleSelectorSequenceContext simpleSelectorSequence(int i) {
-            return getRuleContext(SimpleSelectorSequenceContext.class, i);
-        }
-
-        public List<WsContext> ws() {
-            return getRuleContexts(WsContext.class);
-        }
-
-        public WsContext ws(int i) {
-            return getRuleContext(WsContext.class, i);
-        }
-
-        public List<CombinatorContext> combinator() {
-            return getRuleContexts(CombinatorContext.class);
-        }
-
-        public CombinatorContext combinator(int i) {
-            return getRuleContext(CombinatorContext.class, i);
-        }
-
-        public SelectorContext(ParserRuleContext parent, int invokingState) {
-            super(parent, invokingState);
-        }
-
-        @Override
-        public int getRuleIndex() {
-            return RULE_selector;
-        }
-
-        @Override
-        public void enterRule(ParseTreeListener listener) {
-            if (listener instanceof CSS3Listener) ((CSS3Listener) listener).enterSelector(this);
-        }
-
-        @Override
-        public void exitRule(ParseTreeListener listener) {
-            if (listener instanceof CSS3Listener) ((CSS3Listener) listener).exitSelector(this);
-        }
-
-        @Override
-        public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-            if (visitor instanceof CSS3Visitor) return ((CSS3Visitor<? extends T>) visitor).visitSelector(this);
-            else return visitor.visitChildren(this);
-        }
-    }
-
-    public final SelectorContext selector() throws RecognitionException {
-        SelectorContext _localctx = new SelectorContext(_ctx, getState());
-        enterRule(_localctx, 28, RULE_selector);
-        int _la;
-        try {
-            enterOuterAlt(_localctx, 1);
-            {
-                setState(376);
-                simpleSelectorSequence();
-                setState(377);
-                ws();
-                setState(384);
-                _errHandler.sync(this);
-                _la = _input.LA(1);
-                while ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << Space) | (1L << Plus) | (1L << Greater) | (1L << Tilde))) != 0)) {
-                    {
-                        {
-                            setState(378);
-                            combinator();
-                            setState(379);
-                            simpleSelectorSequence();
-                            setState(380);
-                            ws();
-                        }
-                    }
-                    setState(386);
-                    _errHandler.sync(this);
-                    _la = _input.LA(1);
-                }
-            }
-        } catch (RecognitionException re) {
-            _localctx.exception = re;
-            _errHandler.reportError(this, re);
-            _errHandler.recover(this, re);
-        } finally {
-            exitRule();
-        }
-        return _localctx;
-    }
-
-    public static class CombinatorContext extends ParserRuleContext {
-        public TerminalNode Plus() {
-            return getToken(CSS3Parser.Plus, 0);
-        }
-
-        public WsContext ws() {
-            return getRuleContext(WsContext.class, 0);
-        }
-
-        public TerminalNode Greater() {
-            return getToken(CSS3Parser.Greater, 0);
-        }
-
-        public TerminalNode Tilde() {
-            return getToken(CSS3Parser.Tilde, 0);
-        }
-
-        public TerminalNode Space() {
-            return getToken(CSS3Parser.Space, 0);
-        }
-
-        public CombinatorContext(ParserRuleContext parent, int invokingState) {
-            super(parent, invokingState);
-        }
-
-        @Override
-        public int getRuleIndex() {
-            return RULE_combinator;
-        }
-
-        @Override
-        public void enterRule(ParseTreeListener listener) {
-            if (listener instanceof CSS3Listener) ((CSS3Listener) listener).enterCombinator(this);
-        }
-
-        @Override
-        public void exitRule(ParseTreeListener listener) {
-            if (listener instanceof CSS3Listener) ((CSS3Listener) listener).exitCombinator(this);
-        }
-
-        @Override
-        public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-            if (visitor instanceof CSS3Visitor) return ((CSS3Visitor<? extends T>) visitor).visitCombinator(this);
-            else return visitor.visitChildren(this);
-        }
-    }
-
-    public final CombinatorContext combinator() throws RecognitionException {
-        CombinatorContext _localctx = new CombinatorContext(_ctx, getState());
-        enterRule(_localctx, 30, RULE_combinator);
-        try {
-            setState(395);
-            _errHandler.sync(this);
-            switch (_input.LA(1)) {
-                case Plus:
-                    enterOuterAlt(_localctx, 1);
-                {
-                    setState(387);
-                    match(Plus);
-                    setState(388);
-                    ws();
-                }
-                break;
-                case Greater:
-                    enterOuterAlt(_localctx, 2);
-                {
-                    setState(389);
-                    match(Greater);
-                    setState(390);
-                    ws();
-                }
-                break;
-                case Tilde:
-                    enterOuterAlt(_localctx, 3);
-                {
-                    setState(391);
-                    match(Tilde);
-                    setState(392);
-                    ws();
-                }
-                break;
-                case Space:
-                    enterOuterAlt(_localctx, 4);
-                {
-                    setState(393);
-                    match(Space);
-                    setState(394);
-                    ws();
-                }
-                break;
-                default:
-                    throw new NoViableAltException(this);
-            }
-        } catch (RecognitionException re) {
-            _localctx.exception = re;
-            _errHandler.reportError(this, re);
-            _errHandler.recover(this, re);
-        } finally {
-            exitRule();
-        }
-        return _localctx;
-    }
-
-    public static class SimpleSelectorSequenceContext extends ParserRuleContext {
-        public TypeSelectorContext typeSelector() {
-            return getRuleContext(TypeSelectorContext.class, 0);
-        }
-
-        public UniversalContext universal() {
-            return getRuleContext(UniversalContext.class, 0);
-        }
-
-        public List<TerminalNode> Hash() {
-            return getTokens(CSS3Parser.Hash);
-        }
-
-        public TerminalNode Hash(int i) {
-            return getToken(CSS3Parser.Hash, i);
-        }
-
-        public List<ClassNameContext> className() {
-            return getRuleContexts(ClassNameContext.class);
-        }
-
-        public ClassNameContext className(int i) {
-            return getRuleContext(ClassNameContext.class, i);
-        }
-
-        public List<AttribContext> attrib() {
-            return getRuleContexts(AttribContext.class);
-        }
-
-        public AttribContext attrib(int i) {
-            return getRuleContext(AttribContext.class, i);
-        }
-
-        public List<PseudoContext> pseudo() {
-            return getRuleContexts(PseudoContext.class);
-        }
-
-        public PseudoContext pseudo(int i) {
-            return getRuleContext(PseudoContext.class, i);
-        }
-
-        public List<NegationContext> negation() {
-            return getRuleContexts(NegationContext.class);
-        }
-
-        public NegationContext negation(int i) {
-            return getRuleContext(NegationContext.class, i);
-        }
-
-        public SimpleSelectorSequenceContext(ParserRuleContext parent, int invokingState) {
-            super(parent, invokingState);
-        }
-
-        @Override
-        public int getRuleIndex() {
-            return RULE_simpleSelectorSequence;
-        }
-
-        @Override
-        public void enterRule(ParseTreeListener listener) {
-            if (listener instanceof CSS3Listener) ((CSS3Listener) listener).enterSimpleSelectorSequence(this);
-        }
-
-        @Override
-        public void exitRule(ParseTreeListener listener) {
-            if (listener instanceof CSS3Listener) ((CSS3Listener) listener).exitSimpleSelectorSequence(this);
-        }
-
-        @Override
-        public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-            if (visitor instanceof CSS3Visitor)
-                return ((CSS3Visitor<? extends T>) visitor).visitSimpleSelectorSequence(this);
-            else return visitor.visitChildren(this);
-        }
-    }
-
-    public final SimpleSelectorSequenceContext simpleSelectorSequence() throws RecognitionException {
-        SimpleSelectorSequenceContext _localctx = new SimpleSelectorSequenceContext(_ctx, getState());
-        enterRule(_localctx, 32, RULE_simpleSelectorSequence);
-        int _la;
-        try {
-            setState(420);
-            _errHandler.sync(this);
-            switch (_input.LA(1)) {
-                case T__6:
-                case T__7:
-                case MediaOnly:
-                case Not:
-                case And:
-                case Or:
-                case From:
-                case To:
-                case Ident:
-                    enterOuterAlt(_localctx, 1);
-                {
-                    setState(399);
-                    _errHandler.sync(this);
-                    switch (getInterpreter().adaptivePredict(_input, 27, _ctx)) {
-                        case 1: {
-                            setState(397);
-                            typeSelector();
-                        }
-                        break;
-                        case 2: {
-                            setState(398);
-                            universal();
-                        }
-                        break;
-                    }
-                    setState(408);
-                    _errHandler.sync(this);
-                    _la = _input.LA(1);
-                    while ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__2) | (1L << T__8) | (1L << T__9) | (1L << Hash) | (1L << PseudoNot))) != 0)) {
-                        {
-                            setState(406);
-                            _errHandler.sync(this);
-                            switch (_input.LA(1)) {
-                                case Hash: {
-                                    setState(401);
-                                    match(Hash);
-                                }
-                                break;
-                                case T__8: {
-                                    setState(402);
-                                    className();
-                                }
-                                break;
-                                case T__9: {
-                                    setState(403);
-                                    attrib();
-                                }
-                                break;
-                                case T__2: {
-                                    setState(404);
-                                    pseudo();
-                                }
-                                break;
-                                case PseudoNot: {
-                                    setState(405);
-                                    negation();
-                                }
-                                break;
-                                default:
-                                    throw new NoViableAltException(this);
-                            }
-                        }
-                        setState(410);
-                        _errHandler.sync(this);
-                        _la = _input.LA(1);
-                    }
-                }
-                break;
-                case T__2:
-                case T__8:
-                case T__9:
-                case Hash:
-                case PseudoNot:
-                    enterOuterAlt(_localctx, 2);
-                {
-                    setState(416);
-                    _errHandler.sync(this);
-                    _la = _input.LA(1);
-                    do {
-                        {
-                            setState(416);
-                            _errHandler.sync(this);
-                            switch (_input.LA(1)) {
-                                case Hash: {
-                                    setState(411);
-                                    match(Hash);
-                                }
-                                break;
-                                case T__8: {
-                                    setState(412);
-                                    className();
-                                }
-                                break;
-                                case T__9: {
-                                    setState(413);
-                                    attrib();
-                                }
-                                break;
-                                case T__2: {
-                                    setState(414);
-                                    pseudo();
-                                }
-                                break;
-                                case PseudoNot: {
-                                    setState(415);
-                                    negation();
-                                }
-                                break;
-                                default:
-                                    throw new NoViableAltException(this);
-                            }
-                        }
-                        setState(418);
-                        _errHandler.sync(this);
-                        _la = _input.LA(1);
-                    } while ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__2) | (1L << T__8) | (1L << T__9) | (1L << Hash) | (1L << PseudoNot))) != 0));
-                }
-                break;
-                default:
-                    throw new NoViableAltException(this);
-            }
-        } catch (RecognitionException re) {
-            _localctx.exception = re;
-            _errHandler.reportError(this, re);
-            _errHandler.recover(this, re);
-        } finally {
-            exitRule();
-        }
-        return _localctx;
-    }
-
-    public static class TypeSelectorContext extends ParserRuleContext {
-        public ElementNameContext elementName() {
-            return getRuleContext(ElementNameContext.class, 0);
-        }
-
-        public TypeNamespacePrefixContext typeNamespacePrefix() {
-            return getRuleContext(TypeNamespacePrefixContext.class, 0);
-        }
-
-        public TypeSelectorContext(ParserRuleContext parent, int invokingState) {
-            super(parent, invokingState);
-        }
-
-        @Override
-        public int getRuleIndex() {
-            return RULE_typeSelector;
-        }
-
-        @Override
-        public void enterRule(ParseTreeListener listener) {
-            if (listener instanceof CSS3Listener) ((CSS3Listener) listener).enterTypeSelector(this);
-        }
-
-        @Override
-        public void exitRule(ParseTreeListener listener) {
-            if (listener instanceof CSS3Listener) ((CSS3Listener) listener).exitTypeSelector(this);
-        }
-
-        @Override
-        public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-            if (visitor instanceof CSS3Visitor) return ((CSS3Visitor<? extends T>) visitor).visitTypeSelector(this);
-            else return visitor.visitChildren(this);
-        }
-    }
-
-    public final TypeSelectorContext typeSelector() throws RecognitionException {
-        TypeSelectorContext _localctx = new TypeSelectorContext(_ctx, getState());
-        enterRule(_localctx, 34, RULE_typeSelector);
-        try {
-            enterOuterAlt(_localctx, 1);
-            {
-                setState(423);
-                _errHandler.sync(this);
-                switch (getInterpreter().adaptivePredict(_input, 33, _ctx)) {
-                    case 1: {
-                        setState(422);
-                        typeNamespacePrefix();
-                    }
-                    break;
-                }
-                setState(425);
-                elementName();
-            }
-        } catch (RecognitionException re) {
-            _localctx.exception = re;
-            _errHandler.reportError(this, re);
-            _errHandler.recover(this, re);
-        } finally {
-            exitRule();
-        }
-        return _localctx;
-    }
-
-    public static class TypeNamespacePrefixContext extends ParserRuleContext {
-        public IdentContext ident() {
-            return getRuleContext(IdentContext.class, 0);
-        }
-
-        public TypeNamespacePrefixContext(ParserRuleContext parent, int invokingState) {
-            super(parent, invokingState);
-        }
-
-        @Override
-        public int getRuleIndex() {
-            return RULE_typeNamespacePrefix;
-        }
-
-        @Override
-        public void enterRule(ParseTreeListener listener) {
-            if (listener instanceof CSS3Listener) ((CSS3Listener) listener).enterTypeNamespacePrefix(this);
-        }
-
-        @Override
-        public void exitRule(ParseTreeListener listener) {
-            if (listener instanceof CSS3Listener) ((CSS3Listener) listener).exitTypeNamespacePrefix(this);
-        }
-
-        @Override
-        public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-            if (visitor instanceof CSS3Visitor)
-                return ((CSS3Visitor<? extends T>) visitor).visitTypeNamespacePrefix(this);
-            else return visitor.visitChildren(this);
-        }
-    }
-
-    public final TypeNamespacePrefixContext typeNamespacePrefix() throws RecognitionException {
-        TypeNamespacePrefixContext _localctx = new TypeNamespacePrefixContext(_ctx, getState());
-        enterRule(_localctx, 36, RULE_typeNamespacePrefix);
-        try {
-            enterOuterAlt(_localctx, 1);
-            {
-                setState(429);
-                _errHandler.sync(this);
-                switch (_input.LA(1)) {
-                    case MediaOnly:
-                    case Not:
-                    case And:
-                    case Or:
-                    case From:
-                    case To:
-                    case Ident: {
-                        setState(427);
-                        ident();
-                    }
-                    break;
-                    case T__6: {
-                        setState(428);
-                        match(T__6);
-                    }
-                    break;
-                    case T__7:
-                        break;
-                    default:
-                        break;
-                }
-                setState(431);
-                match(T__7);
-            }
-        } catch (RecognitionException re) {
-            _localctx.exception = re;
-            _errHandler.reportError(this, re);
-            _errHandler.recover(this, re);
-        } finally {
-            exitRule();
-        }
-        return _localctx;
-    }
-
-    public static class ElementNameContext extends ParserRuleContext {
-        public IdentContext ident() {
-            return getRuleContext(IdentContext.class, 0);
-        }
-
-        public ElementNameContext(ParserRuleContext parent, int invokingState) {
-            super(parent, invokingState);
-        }
-
-        @Override
-        public int getRuleIndex() {
-            return RULE_elementName;
-        }
-
-        @Override
-        public void enterRule(ParseTreeListener listener) {
-            if (listener instanceof CSS3Listener) ((CSS3Listener) listener).enterElementName(this);
-        }
-
-        @Override
-        public void exitRule(ParseTreeListener listener) {
-            if (listener instanceof CSS3Listener) ((CSS3Listener) listener).exitElementName(this);
-        }
-
-        @Override
-        public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-            if (visitor instanceof CSS3Visitor) return ((CSS3Visitor<? extends T>) visitor).visitElementName(this);
-            else return visitor.visitChildren(this);
-        }
-    }
-
-    public final ElementNameContext elementName() throws RecognitionException {
-        ElementNameContext _localctx = new ElementNameContext(_ctx, getState());
-        enterRule(_localctx, 38, RULE_elementName);
-        try {
-            enterOuterAlt(_localctx, 1);
-            {
-                setState(433);
-                ident();
-            }
-        } catch (RecognitionException re) {
-            _localctx.exception = re;
-            _errHandler.reportError(this, re);
-            _errHandler.recover(this, re);
-        } finally {
-            exitRule();
-        }
-        return _localctx;
-    }
-
-    public static class UniversalContext extends ParserRuleContext {
-        public TypeNamespacePrefixContext typeNamespacePrefix() {
-            return getRuleContext(TypeNamespacePrefixContext.class, 0);
-        }
-
-        public UniversalContext(ParserRuleContext parent, int invokingState) {
-            super(parent, invokingState);
-        }
-
-        @Override
-        public int getRuleIndex() {
-            return RULE_universal;
-        }
-
-        @Override
-        public void enterRule(ParseTreeListener listener) {
-            if (listener instanceof CSS3Listener) ((CSS3Listener) listener).enterUniversal(this);
-        }
-
-        @Override
-        public void exitRule(ParseTreeListener listener) {
-            if (listener instanceof CSS3Listener) ((CSS3Listener) listener).exitUniversal(this);
-        }
-
-        @Override
-        public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-            if (visitor instanceof CSS3Visitor) return ((CSS3Visitor<? extends T>) visitor).visitUniversal(this);
-            else return visitor.visitChildren(this);
-        }
-    }
-
-    public final UniversalContext universal() throws RecognitionException {
-        UniversalContext _localctx = new UniversalContext(_ctx, getState());
-        enterRule(_localctx, 40, RULE_universal);
-        try {
-            enterOuterAlt(_localctx, 1);
-            {
-                setState(436);
-                _errHandler.sync(this);
-                switch (getInterpreter().adaptivePredict(_input, 35, _ctx)) {
-                    case 1: {
-                        setState(435);
-                        typeNamespacePrefix();
-                    }
-                    break;
-                }
-                setState(438);
-                match(T__6);
-            }
-        } catch (RecognitionException re) {
-            _localctx.exception = re;
-            _errHandler.reportError(this, re);
-            _errHandler.recover(this, re);
-        } finally {
-            exitRule();
-        }
-        return _localctx;
-    }
-
-    public static class ClassNameContext extends ParserRuleContext {
-        public IdentContext ident() {
-            return getRuleContext(IdentContext.class, 0);
-        }
-
-        public ClassNameContext(ParserRuleContext parent, int invokingState) {
-            super(parent, invokingState);
-        }
-
-        @Override
-        public int getRuleIndex() {
-            return RULE_className;
-        }
-
-        @Override
-        public void enterRule(ParseTreeListener listener) {
-            if (listener instanceof CSS3Listener) ((CSS3Listener) listener).enterClassName(this);
-        }
-
-        @Override
-        public void exitRule(ParseTreeListener listener) {
-            if (listener instanceof CSS3Listener) ((CSS3Listener) listener).exitClassName(this);
-        }
-
-        @Override
-        public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-            if (visitor instanceof CSS3Visitor) return ((CSS3Visitor<? extends T>) visitor).visitClassName(this);
-            else return visitor.visitChildren(this);
-        }
-    }
-
-    public final ClassNameContext className() throws RecognitionException {
-        ClassNameContext _localctx = new ClassNameContext(_ctx, getState());
-        enterRule(_localctx, 42, RULE_className);
-        try {
-            enterOuterAlt(_localctx, 1);
-            {
-                setState(440);
-                match(T__8);
-                setState(441);
-                ident();
-            }
-        } catch (RecognitionException re) {
-            _localctx.exception = re;
-            _errHandler.reportError(this, re);
-            _errHandler.recover(this, re);
-        } finally {
-            exitRule();
-        }
-        return _localctx;
-    }
-
-    public static class AttribContext extends ParserRuleContext {
-        public List<WsContext> ws() {
-            return getRuleContexts(WsContext.class);
-        }
-
-        public WsContext ws(int i) {
-            return getRuleContext(WsContext.class, i);
-        }
-
-        public List<IdentContext> ident() {
-            return getRuleContexts(IdentContext.class);
-        }
-
-        public IdentContext ident(int i) {
-            return getRuleContext(IdentContext.class, i);
-        }
-
-        public TypeNamespacePrefixContext typeNamespacePrefix() {
-            return getRuleContext(TypeNamespacePrefixContext.class, 0);
-        }
-
-        public TerminalNode PrefixMatch() {
-            return getToken(CSS3Parser.PrefixMatch, 0);
-        }
-
-        public TerminalNode SuffixMatch() {
-            return getToken(CSS3Parser.SuffixMatch, 0);
-        }
-
-        public TerminalNode SubstringMatch() {
-            return getToken(CSS3Parser.SubstringMatch, 0);
-        }
-
-        public TerminalNode Includes() {
-            return getToken(CSS3Parser.Includes, 0);
-        }
-
-        public TerminalNode DashMatch() {
-            return getToken(CSS3Parser.DashMatch, 0);
-        }
-
-        public TerminalNode String() {
-            return getToken(CSS3Parser.String, 0);
-        }
-
-        public AttribContext(ParserRuleContext parent, int invokingState) {
-            super(parent, invokingState);
-        }
-
-        @Override
-        public int getRuleIndex() {
-            return RULE_attrib;
-        }
-
-        @Override
-        public void enterRule(ParseTreeListener listener) {
-            if (listener instanceof CSS3Listener) ((CSS3Listener) listener).enterAttrib(this);
-        }
-
-        @Override
-        public void exitRule(ParseTreeListener listener) {
-            if (listener instanceof CSS3Listener) ((CSS3Listener) listener).exitAttrib(this);
-        }
-
-        @Override
-        public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-            if (visitor instanceof CSS3Visitor) return ((CSS3Visitor<? extends T>) visitor).visitAttrib(this);
-            else return visitor.visitChildren(this);
-        }
-    }
-
-    public final AttribContext attrib() throws RecognitionException {
-        AttribContext _localctx = new AttribContext(_ctx, getState());
-        enterRule(_localctx, 44, RULE_attrib);
-        int _la;
-        try {
-            enterOuterAlt(_localctx, 1);
-            {
-                setState(443);
-                match(T__9);
-                setState(444);
-                ws();
-                setState(446);
-                _errHandler.sync(this);
-                switch (getInterpreter().adaptivePredict(_input, 36, _ctx)) {
-                    case 1: {
-                        setState(445);
-                        typeNamespacePrefix();
-                    }
-                    break;
-                }
-                setState(448);
-                ident();
-                setState(449);
-                ws();
-                setState(458);
-                _errHandler.sync(this);
-                _la = _input.LA(1);
-                if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__10) | (1L << Includes) | (1L << DashMatch) | (1L << PrefixMatch) | (1L << SuffixMatch) | (1L << SubstringMatch))) != 0)) {
-                    {
-                        setState(450);
-                        _la = _input.LA(1);
-                        if (!((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__10) | (1L << Includes) | (1L << DashMatch) | (1L << PrefixMatch) | (1L << SuffixMatch) | (1L << SubstringMatch))) != 0))) {
-                            _errHandler.recoverInline(this);
-                        } else {
-                            if (_input.LA(1) == Token.EOF) matchedEOF = true;
-                            _errHandler.reportMatch(this);
-                            consume();
-                        }
-                        setState(451);
-                        ws();
-                        setState(454);
-                        _errHandler.sync(this);
-                        switch (_input.LA(1)) {
-                            case MediaOnly:
-                            case Not:
-                            case And:
-                            case Or:
-                            case From:
-                            case To:
-                            case Ident: {
-                                setState(452);
-                                ident();
-                            }
-                            break;
-                            case String: {
-                                setState(453);
-                                match(String);
-                            }
-                            break;
-                            default:
-                                throw new NoViableAltException(this);
-                        }
-                        setState(456);
-                        ws();
-                    }
-                }
-
-                setState(460);
-                match(T__11);
-            }
-        } catch (RecognitionException re) {
-            _localctx.exception = re;
-            _errHandler.reportError(this, re);
-            _errHandler.recover(this, re);
-        } finally {
-            exitRule();
-        }
-        return _localctx;
-    }
-
-    public static class PseudoContext extends ParserRuleContext {
-        public IdentContext ident() {
-            return getRuleContext(IdentContext.class, 0);
-        }
-
-        public FunctionalPseudoContext functionalPseudo() {
-            return getRuleContext(FunctionalPseudoContext.class, 0);
-        }
-
-        public PseudoContext(ParserRuleContext parent, int invokingState) {
-            super(parent, invokingState);
-        }
-
-        @Override
-        public int getRuleIndex() {
-            return RULE_pseudo;
-        }
-
-        @Override
-        public void enterRule(ParseTreeListener listener) {
-            if (listener instanceof CSS3Listener) ((CSS3Listener) listener).enterPseudo(this);
-        }
-
-        @Override
-        public void exitRule(ParseTreeListener listener) {
-            if (listener instanceof CSS3Listener) ((CSS3Listener) listener).exitPseudo(this);
-        }
-
-        @Override
-        public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-            if (visitor instanceof CSS3Visitor) return ((CSS3Visitor<? extends T>) visitor).visitPseudo(this);
-            else return visitor.visitChildren(this);
-        }
-    }
-
-    public final PseudoContext pseudo() throws RecognitionException {
-        PseudoContext _localctx = new PseudoContext(_ctx, getState());
-        enterRule(_localctx, 46, RULE_pseudo);
-        int _la;
-        try {
-            enterOuterAlt(_localctx, 1);
-            {
-                setState(462);
-                match(T__2);
-                setState(464);
-                _errHandler.sync(this);
-                _la = _input.LA(1);
-                if (_la == T__2) {
-                    {
-                        setState(463);
-                        match(T__2);
-                    }
-                }
-
-                setState(468);
-                _errHandler.sync(this);
-                switch (_input.LA(1)) {
-                    case MediaOnly:
-                    case Not:
-                    case And:
-                    case Or:
-                    case From:
-                    case To:
-                    case Ident: {
-                        setState(466);
-                        ident();
-                    }
-                    break;
-                    case Function: {
-                        setState(467);
-                        functionalPseudo();
-                    }
-                    break;
-                    default:
-                        throw new NoViableAltException(this);
-                }
-            }
-        } catch (RecognitionException re) {
-            _localctx.exception = re;
-            _errHandler.reportError(this, re);
-            _errHandler.recover(this, re);
-        } finally {
-            exitRule();
-        }
-        return _localctx;
-    }
-
-    public static class FunctionalPseudoContext extends ParserRuleContext {
-        public TerminalNode Function() {
-            return getToken(CSS3Parser.Function, 0);
-        }
-
-        public WsContext ws() {
-            return getRuleContext(WsContext.class, 0);
-        }
-
-        public ExpressionContext expression() {
-            return getRuleContext(ExpressionContext.class, 0);
-        }
-
-        public FunctionalPseudoContext(ParserRuleContext parent, int invokingState) {
-            super(parent, invokingState);
-        }
-
-        @Override
-        public int getRuleIndex() {
-            return RULE_functionalPseudo;
-        }
-
-        @Override
-        public void enterRule(ParseTreeListener listener) {
-            if (listener instanceof CSS3Listener) ((CSS3Listener) listener).enterFunctionalPseudo(this);
-        }
-
-        @Override
-        public void exitRule(ParseTreeListener listener) {
-            if (listener instanceof CSS3Listener) ((CSS3Listener) listener).exitFunctionalPseudo(this);
-        }
-
-        @Override
-        public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-            if (visitor instanceof CSS3Visitor) return ((CSS3Visitor<? extends T>) visitor).visitFunctionalPseudo(this);
-            else return visitor.visitChildren(this);
-        }
-    }
-
-    public final FunctionalPseudoContext functionalPseudo() throws RecognitionException {
-        FunctionalPseudoContext _localctx = new FunctionalPseudoContext(_ctx, getState());
-        enterRule(_localctx, 48, RULE_functionalPseudo);
-        try {
-            enterOuterAlt(_localctx, 1);
-            {
-                setState(470);
-                match(Function);
-                setState(471);
-                ws();
-                setState(472);
-                expression();
-                setState(473);
-                match(T__3);
-            }
-        } catch (RecognitionException re) {
-            _localctx.exception = re;
-            _errHandler.reportError(this, re);
-            _errHandler.recover(this, re);
-        } finally {
-            exitRule();
-        }
-        return _localctx;
-    }
-
-    public static class ExpressionContext extends ParserRuleContext {
-        public List<WsContext> ws() {
-            return getRuleContexts(WsContext.class);
-        }
-
-        public WsContext ws(int i) {
-            return getRuleContext(WsContext.class, i);
-        }
-
-        public List<TerminalNode> Plus() {
-            return getTokens(CSS3Parser.Plus);
-        }
-
-        public TerminalNode Plus(int i) {
-            return getToken(CSS3Parser.Plus, i);
-        }
-
-        public List<TerminalNode> Minus() {
-            return getTokens(CSS3Parser.Minus);
-        }
-
-        public TerminalNode Minus(int i) {
-            return getToken(CSS3Parser.Minus, i);
-        }
-
-        public List<TerminalNode> Dimension() {
-            return getTokens(CSS3Parser.Dimension);
-        }
-
-        public TerminalNode Dimension(int i) {
-            return getToken(CSS3Parser.Dimension, i);
-        }
-
-        public List<TerminalNode> UnknownDimension() {
-            return getTokens(CSS3Parser.UnknownDimension);
-        }
-
-        public TerminalNode UnknownDimension(int i) {
-            return getToken(CSS3Parser.UnknownDimension, i);
-        }
-
-        public List<TerminalNode> Number() {
-            return getTokens(CSS3Parser.Number);
-        }
-
-        public TerminalNode Number(int i) {
-            return getToken(CSS3Parser.Number, i);
-        }
-
-        public List<TerminalNode> String() {
-            return getTokens(CSS3Parser.String);
-        }
-
-        public TerminalNode String(int i) {
-            return getToken(CSS3Parser.String, i);
-        }
-
-        public List<IdentContext> ident() {
-            return getRuleContexts(IdentContext.class);
-        }
-
-        public IdentContext ident(int i) {
-            return getRuleContext(IdentContext.class, i);
-        }
-
-        public ExpressionContext(ParserRuleContext parent, int invokingState) {
-            super(parent, invokingState);
-        }
-
-        @Override
-        public int getRuleIndex() {
-            return RULE_expression;
-        }
-
-        @Override
-        public void enterRule(ParseTreeListener listener) {
-            if (listener instanceof CSS3Listener) ((CSS3Listener) listener).enterExpression(this);
-        }
-
-        @Override
-        public void exitRule(ParseTreeListener listener) {
-            if (listener instanceof CSS3Listener) ((CSS3Listener) listener).exitExpression(this);
-        }
-
-        @Override
-        public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-            if (visitor instanceof CSS3Visitor) return ((CSS3Visitor<? extends T>) visitor).visitExpression(this);
-            else return visitor.visitChildren(this);
-        }
-    }
-
-    public final ExpressionContext expression() throws RecognitionException {
-        ExpressionContext _localctx = new ExpressionContext(_ctx, getState());
-        enterRule(_localctx, 50, RULE_expression);
-        int _la;
-        try {
-            enterOuterAlt(_localctx, 1);
-            {
-                setState(485);
-                _errHandler.sync(this);
-                _la = _input.LA(1);
-                do {
-                    {
-                        {
-                            setState(482);
-                            _errHandler.sync(this);
-                            switch (_input.LA(1)) {
-                                case Plus: {
-                                    setState(475);
-                                    match(Plus);
-                                }
-                                break;
-                                case Minus: {
-                                    setState(476);
-                                    match(Minus);
-                                }
-                                break;
-                                case Dimension: {
-                                    setState(477);
-                                    match(Dimension);
-                                }
-                                break;
-                                case UnknownDimension: {
-                                    setState(478);
-                                    match(UnknownDimension);
-                                }
-                                break;
-                                case Number: {
-                                    setState(479);
-                                    match(Number);
-                                }
-                                break;
-                                case String: {
-                                    setState(480);
-                                    match(String);
-                                }
-                                break;
-                                case MediaOnly:
-                                case Not:
-                                case And:
-                                case Or:
-                                case From:
-                                case To:
-                                case Ident: {
-                                    setState(481);
-                                    ident();
-                                }
-                                break;
-                                default:
-                                    throw new NoViableAltException(this);
-                            }
-                            setState(484);
-                            ws();
-                        }
-                    }
-                    setState(487);
-                    _errHandler.sync(this);
-                    _la = _input.LA(1);
-                } while ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << MediaOnly) | (1L << Not) | (1L << And) | (1L << Dimension) | (1L << UnknownDimension) | (1L << Plus) | (1L << Minus) | (1L << Number) | (1L << String) | (1L << Or) | (1L << From) | (1L << To) | (1L << Ident))) != 0));
-            }
-        } catch (RecognitionException re) {
-            _localctx.exception = re;
-            _errHandler.reportError(this, re);
-            _errHandler.recover(this, re);
-        } finally {
-            exitRule();
-        }
-        return _localctx;
-    }
-
-    public static class NegationContext extends ParserRuleContext {
-        public TerminalNode PseudoNot() {
-            return getToken(CSS3Parser.PseudoNot, 0);
-        }
-
-        public List<WsContext> ws() {
-            return getRuleContexts(WsContext.class);
-        }
-
-        public WsContext ws(int i) {
-            return getRuleContext(WsContext.class, i);
-        }
-
-        public NegationArgContext negationArg() {
-            return getRuleContext(NegationArgContext.class, 0);
-        }
-
-        public NegationContext(ParserRuleContext parent, int invokingState) {
-            super(parent, invokingState);
-        }
-
-        @Override
-        public int getRuleIndex() {
-            return RULE_negation;
-        }
-
-        @Override
-        public void enterRule(ParseTreeListener listener) {
-            if (listener instanceof CSS3Listener) ((CSS3Listener) listener).enterNegation(this);
-        }
-
-        @Override
-        public void exitRule(ParseTreeListener listener) {
-            if (listener instanceof CSS3Listener) ((CSS3Listener) listener).exitNegation(this);
-        }
-
-        @Override
-        public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-            if (visitor instanceof CSS3Visitor) return ((CSS3Visitor<? extends T>) visitor).visitNegation(this);
-            else return visitor.visitChildren(this);
-        }
-    }
-
-    public final NegationContext negation() throws RecognitionException {
-        NegationContext _localctx = new NegationContext(_ctx, getState());
-        enterRule(_localctx, 52, RULE_negation);
-        try {
-            enterOuterAlt(_localctx, 1);
-            {
-                setState(489);
-                match(PseudoNot);
-                setState(490);
-                ws();
-                setState(491);
-                negationArg();
-                setState(492);
-                ws();
-                setState(493);
-                match(T__3);
-            }
-        } catch (RecognitionException re) {
-            _localctx.exception = re;
-            _errHandler.reportError(this, re);
-            _errHandler.recover(this, re);
-        } finally {
-            exitRule();
-        }
-        return _localctx;
-    }
-
-    public static class NegationArgContext extends ParserRuleContext {
-        public TypeSelectorContext typeSelector() {
-            return getRuleContext(TypeSelectorContext.class, 0);
-        }
-
-        public UniversalContext universal() {
-            return getRuleContext(UniversalContext.class, 0);
-        }
-
-        public TerminalNode Hash() {
-            return getToken(CSS3Parser.Hash, 0);
-        }
-
-        public ClassNameContext className() {
-            return getRuleContext(ClassNameContext.class, 0);
-        }
-
-        public AttribContext attrib() {
-            return getRuleContext(AttribContext.class, 0);
-        }
-
-        public PseudoContext pseudo() {
-            return getRuleContext(PseudoContext.class, 0);
-        }
-
-        public NegationArgContext(ParserRuleContext parent, int invokingState) {
-            super(parent, invokingState);
-        }
-
-        @Override
-        public int getRuleIndex() {
-            return RULE_negationArg;
-        }
-
-        @Override
-        public void enterRule(ParseTreeListener listener) {
-            if (listener instanceof CSS3Listener) ((CSS3Listener) listener).enterNegationArg(this);
-        }
-
-        @Override
-        public void exitRule(ParseTreeListener listener) {
-            if (listener instanceof CSS3Listener) ((CSS3Listener) listener).exitNegationArg(this);
-        }
-
-        @Override
-        public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-            if (visitor instanceof CSS3Visitor) return ((CSS3Visitor<? extends T>) visitor).visitNegationArg(this);
-            else return visitor.visitChildren(this);
-        }
-    }
-
-    public final NegationArgContext negationArg() throws RecognitionException {
-        NegationArgContext _localctx = new NegationArgContext(_ctx, getState());
-        enterRule(_localctx, 54, RULE_negationArg);
-        try {
-            setState(501);
-            _errHandler.sync(this);
-            switch (getInterpreter().adaptivePredict(_input, 43, _ctx)) {
-                case 1:
-                    enterOuterAlt(_localctx, 1);
-                {
-                    setState(495);
-                    typeSelector();
-                }
-                break;
-                case 2:
-                    enterOuterAlt(_localctx, 2);
-                {
-                    setState(496);
-                    universal();
-                }
-                break;
-                case 3:
-                    enterOuterAlt(_localctx, 3);
-                {
-                    setState(497);
-                    match(Hash);
-                }
-                break;
-                case 4:
-                    enterOuterAlt(_localctx, 4);
-                {
-                    setState(498);
-                    className();
-                }
-                break;
-                case 5:
-                    enterOuterAlt(_localctx, 5);
-                {
-                    setState(499);
-                    attrib();
-                }
-                break;
-                case 6:
-                    enterOuterAlt(_localctx, 6);
-                {
-                    setState(500);
-                    pseudo();
-                }
-                break;
-            }
-        } catch (RecognitionException re) {
-            _localctx.exception = re;
-            _errHandler.reportError(this, re);
-            _errHandler.recover(this, re);
-        } finally {
-            exitRule();
-        }
-        return _localctx;
-    }
-
-    public static class OperatorContext extends ParserRuleContext {
-        public OperatorContext(ParserRuleContext parent, int invokingState) {
-            super(parent, invokingState);
-        }
-
-        @Override
-        public int getRuleIndex() {
-            return RULE_operator;
-        }
-
-        public OperatorContext() {
-        }
-
-        public void copyFrom(OperatorContext ctx) {
-            super.copyFrom(ctx);
-        }
-    }
-
-    public static class BadOperatorContext extends OperatorContext {
-        public WsContext ws() {
-            return getRuleContext(WsContext.class, 0);
-        }
-
-        public BadOperatorContext(OperatorContext ctx) {
-            copyFrom(ctx);
-        }
-
-        @Override
-        public void enterRule(ParseTreeListener listener) {
-            if (listener instanceof CSS3Listener) ((CSS3Listener) listener).enterBadOperator(this);
-        }
-
-        @Override
-        public void exitRule(ParseTreeListener listener) {
-            if (listener instanceof CSS3Listener) ((CSS3Listener) listener).exitBadOperator(this);
-        }
-
-        @Override
-        public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-            if (visitor instanceof CSS3Visitor) return ((CSS3Visitor<? extends T>) visitor).visitBadOperator(this);
-            else return visitor.visitChildren(this);
-        }
-    }
-
-    public static class GoodOperatorContext extends OperatorContext {
-        public WsContext ws() {
-            return getRuleContext(WsContext.class, 0);
-        }
-
-        public TerminalNode Comma() {
-            return getToken(CSS3Parser.Comma, 0);
-        }
-
-        public TerminalNode Space() {
-            return getToken(CSS3Parser.Space, 0);
-        }
-
-        public GoodOperatorContext(OperatorContext ctx) {
-            copyFrom(ctx);
-        }
-
-        @Override
-        public void enterRule(ParseTreeListener listener) {
-            if (listener instanceof CSS3Listener) ((CSS3Listener) listener).enterGoodOperator(this);
-        }
-
-        @Override
-        public void exitRule(ParseTreeListener listener) {
-            if (listener instanceof CSS3Listener) ((CSS3Listener) listener).exitGoodOperator(this);
-        }
-
-        @Override
-        public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-            if (visitor instanceof CSS3Visitor) return ((CSS3Visitor<? extends T>) visitor).visitGoodOperator(this);
-            else return visitor.visitChildren(this);
-        }
-    }
-
-    public final OperatorContext operator() throws RecognitionException {
-        OperatorContext _localctx = new OperatorContext(_ctx, getState());
-        enterRule(_localctx, 56, RULE_operator);
-        try {
-            setState(511);
-            _errHandler.sync(this);
-            switch (_input.LA(1)) {
-                case T__12:
-                    _localctx = new GoodOperatorContext(_localctx);
-                    enterOuterAlt(_localctx, 1);
-                {
-                    setState(503);
-                    match(T__12);
-                    setState(504);
-                    ws();
-                }
-                break;
-                case Comma:
-                    _localctx = new GoodOperatorContext(_localctx);
-                    enterOuterAlt(_localctx, 2);
-                {
-                    setState(505);
-                    match(Comma);
-                    setState(506);
-                    ws();
-                }
-                break;
-                case Space:
-                    _localctx = new GoodOperatorContext(_localctx);
-                    enterOuterAlt(_localctx, 3);
-                {
-                    setState(507);
-                    match(Space);
-                    setState(508);
-                    ws();
-                }
-                break;
-                case T__10:
-                    _localctx = new BadOperatorContext(_localctx);
-                    enterOuterAlt(_localctx, 4);
-                {
-                    setState(509);
-                    match(T__10);
-                    setState(510);
-                    ws();
-                }
-                break;
-                default:
-                    throw new NoViableAltException(this);
-            }
-        } catch (RecognitionException re) {
-            _localctx.exception = re;
-            _errHandler.reportError(this, re);
-            _errHandler.recover(this, re);
-        } finally {
-            exitRule();
-        }
-        return _localctx;
-    }
-
-    public static class PropertyContext extends ParserRuleContext {
-        public PropertyContext(ParserRuleContext parent, int invokingState) {
-            super(parent, invokingState);
-        }
-
-        @Override
-        public int getRuleIndex() {
-            return RULE_property;
-        }
-
-        public PropertyContext() {
-        }
-
-        public void copyFrom(PropertyContext ctx) {
-            super.copyFrom(ctx);
-        }
-    }
-
-    public static class BadPropertyContext extends PropertyContext {
-        public IdentContext ident() {
-            return getRuleContext(IdentContext.class, 0);
-        }
-
-        public BadPropertyContext(PropertyContext ctx) {
-            copyFrom(ctx);
-        }
-
-        @Override
-        public void enterRule(ParseTreeListener listener) {
-            if (listener instanceof CSS3Listener) ((CSS3Listener) listener).enterBadProperty(this);
-        }
-
-        @Override
-        public void exitRule(ParseTreeListener listener) {
-            if (listener instanceof CSS3Listener) ((CSS3Listener) listener).exitBadProperty(this);
-        }
-
-        @Override
-        public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-            if (visitor instanceof CSS3Visitor) return ((CSS3Visitor<? extends T>) visitor).visitBadProperty(this);
-            else return visitor.visitChildren(this);
-        }
-    }
-
-    public static class GoodPropertyContext extends PropertyContext {
-        public IdentContext ident() {
-            return getRuleContext(IdentContext.class, 0);
-        }
-
-        public WsContext ws() {
-            return getRuleContext(WsContext.class, 0);
-        }
-
-        public TerminalNode Variable() {
-            return getToken(CSS3Parser.Variable, 0);
-        }
-
-        public GoodPropertyContext(PropertyContext ctx) {
-            copyFrom(ctx);
-        }
-
-        @Override
-        public void enterRule(ParseTreeListener listener) {
-            if (listener instanceof CSS3Listener) ((CSS3Listener) listener).enterGoodProperty(this);
-        }
-
-        @Override
-        public void exitRule(ParseTreeListener listener) {
-            if (listener instanceof CSS3Listener) ((CSS3Listener) listener).exitGoodProperty(this);
-        }
-
-        @Override
-        public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-            if (visitor instanceof CSS3Visitor) return ((CSS3Visitor<? extends T>) visitor).visitGoodProperty(this);
-            else return visitor.visitChildren(this);
-        }
-    }
-
-    public final PropertyContext property() throws RecognitionException {
-        PropertyContext _localctx = new PropertyContext(_ctx, getState());
-        enterRule(_localctx, 58, RULE_property);
-        try {
-            setState(522);
-            _errHandler.sync(this);
-            switch (_input.LA(1)) {
-                case MediaOnly:
-                case Not:
-                case And:
-                case Or:
-                case From:
-                case To:
-                case Ident:
-                    _localctx = new GoodPropertyContext(_localctx);
-                    enterOuterAlt(_localctx, 1);
-                {
-                    setState(513);
-                    ident();
-                    setState(514);
-                    ws();
-                }
-                break;
-                case Variable:
-                    _localctx = new GoodPropertyContext(_localctx);
-                    enterOuterAlt(_localctx, 2);
-                {
-                    setState(516);
-                    match(Variable);
-                    setState(517);
-                    ws();
-                }
-                break;
-                case T__6:
-                    _localctx = new BadPropertyContext(_localctx);
-                    enterOuterAlt(_localctx, 3);
-                {
-                    setState(518);
-                    match(T__6);
-                    setState(519);
-                    ident();
-                }
-                break;
-                case T__13:
-                    _localctx = new BadPropertyContext(_localctx);
-                    enterOuterAlt(_localctx, 4);
-                {
-                    setState(520);
-                    match(T__13);
-                    setState(521);
-                    ident();
-                }
-                break;
-                default:
-                    throw new NoViableAltException(this);
-            }
-        } catch (RecognitionException re) {
-            _localctx.exception = re;
-            _errHandler.reportError(this, re);
-            _errHandler.recover(this, re);
-        } finally {
-            exitRule();
-        }
-        return _localctx;
-    }
-
-    public static class RulesetContext extends ParserRuleContext {
-        public RulesetContext(ParserRuleContext parent, int invokingState) {
-            super(parent, invokingState);
-        }
-
-        @Override
-        public int getRuleIndex() {
-            return RULE_ruleset;
-        }
-
-        public RulesetContext() {
-        }
-
-        public void copyFrom(RulesetContext ctx) {
-            super.copyFrom(ctx);
-        }
-    }
-
-    public static class UnknownRulesetContext extends RulesetContext {
-        public List<WsContext> ws() {
-            return getRuleContexts(WsContext.class);
-        }
-
-        public WsContext ws(int i) {
-            return getRuleContext(WsContext.class, i);
-        }
-
-        public List<AnyContext> any() {
-            return getRuleContexts(AnyContext.class);
-        }
-
-        public AnyContext any(int i) {
-            return getRuleContext(AnyContext.class, i);
-        }
-
-        public DeclarationListContext declarationList() {
-            return getRuleContext(DeclarationListContext.class, 0);
-        }
-
-        public UnknownRulesetContext(RulesetContext ctx) {
-            copyFrom(ctx);
-        }
-
-        @Override
-        public void enterRule(ParseTreeListener listener) {
-            if (listener instanceof CSS3Listener) ((CSS3Listener) listener).enterUnknownRuleset(this);
-        }
-
-        @Override
-        public void exitRule(ParseTreeListener listener) {
-            if (listener instanceof CSS3Listener) ((CSS3Listener) listener).exitUnknownRuleset(this);
-        }
-
-        @Override
-        public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-            if (visitor instanceof CSS3Visitor) return ((CSS3Visitor<? extends T>) visitor).visitUnknownRuleset(this);
-            else return visitor.visitChildren(this);
-        }
-    }
-
-    public static class KnownRulesetContext extends RulesetContext {
-        public SelectorGroupContext selectorGroup() {
-            return getRuleContext(SelectorGroupContext.class, 0);
-        }
-
-        public List<WsContext> ws() {
-            return getRuleContexts(WsContext.class);
-        }
-
-        public WsContext ws(int i) {
-            return getRuleContext(WsContext.class, i);
-        }
-
-        public DeclarationListContext declarationList() {
-            return getRuleContext(DeclarationListContext.class, 0);
-        }
-
-        public KnownRulesetContext(RulesetContext ctx) {
-            copyFrom(ctx);
-        }
-
-        @Override
-        public void enterRule(ParseTreeListener listener) {
-            if (listener instanceof CSS3Listener) ((CSS3Listener) listener).enterKnownRuleset(this);
-        }
-
-        @Override
-        public void exitRule(ParseTreeListener listener) {
-            if (listener instanceof CSS3Listener) ((CSS3Listener) listener).exitKnownRuleset(this);
-        }
-
-        @Override
-        public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-            if (visitor instanceof CSS3Visitor) return ((CSS3Visitor<? extends T>) visitor).visitKnownRuleset(this);
-            else return visitor.visitChildren(this);
-        }
-    }
-
-    public final RulesetContext ruleset() throws RecognitionException {
-        RulesetContext _localctx = new RulesetContext(_ctx, getState());
-        enterRule(_localctx, 60, RULE_ruleset);
-        int _la;
-        try {
-            setState(547);
-            _errHandler.sync(this);
-            switch (getInterpreter().adaptivePredict(_input, 49, _ctx)) {
-                case 1:
-                    _localctx = new KnownRulesetContext(_localctx);
-                    enterOuterAlt(_localctx, 1);
-                {
-                    setState(524);
-                    selectorGroup();
-                    setState(525);
-                    match(T__4);
-                    setState(526);
-                    ws();
-                    setState(528);
-                    _errHandler.sync(this);
-                    _la = _input.LA(1);
-                    if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__0) | (1L << T__6) | (1L << T__13) | (1L << MediaOnly) | (1L << Not) | (1L << And) | (1L << Or) | (1L << From) | (1L << To) | (1L << Variable) | (1L << Ident))) != 0)) {
-                        {
-                            setState(527);
-                            declarationList();
-                        }
-                    }
-
-                    setState(530);
-                    match(T__5);
-                    setState(531);
-                    ws();
-                }
-                break;
-                case 2:
-                    _localctx = new UnknownRulesetContext(_localctx);
-                    enterOuterAlt(_localctx, 2);
-                {
-                    setState(536);
-                    _errHandler.sync(this);
-                    _la = _input.LA(1);
-                    while ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__1) | (1L << T__2) | (1L << T__9) | (1L << Includes) | (1L << DashMatch) | (1L << Hash) | (1L << Percentage) | (1L << Uri) | (1L << UnicodeRange) | (1L << MediaOnly) | (1L << Not) | (1L << And) | (1L << Dimension) | (1L << UnknownDimension) | (1L << Plus) | (1L << Minus) | (1L << Number) | (1L << String) | (1L << Or) | (1L << From) | (1L << To) | (1L << Ident) | (1L << Function))) != 0)) {
-                        {
-                            {
-                                setState(533);
-                                any();
-                            }
-                        }
-                        setState(538);
-                        _errHandler.sync(this);
-                        _la = _input.LA(1);
-                    }
-                    setState(539);
-                    match(T__4);
-                    setState(540);
-                    ws();
-                    setState(542);
-                    _errHandler.sync(this);
-                    _la = _input.LA(1);
-                    if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__0) | (1L << T__6) | (1L << T__13) | (1L << MediaOnly) | (1L << Not) | (1L << And) | (1L << Or) | (1L << From) | (1L << To) | (1L << Variable) | (1L << Ident))) != 0)) {
-                        {
-                            setState(541);
-                            declarationList();
-                        }
-                    }
-
-                    setState(544);
-                    match(T__5);
-                    setState(545);
-                    ws();
-                }
-                break;
-            }
-        } catch (RecognitionException re) {
-            _localctx.exception = re;
-            _errHandler.reportError(this, re);
-            _errHandler.recover(this, re);
-        } finally {
-            exitRule();
-        }
-        return _localctx;
-    }
-
-    public static class DeclarationListContext extends ParserRuleContext {
-        public List<DeclarationContext> declaration() {
-            return getRuleContexts(DeclarationContext.class);
-        }
-
-        public DeclarationContext declaration(int i) {
-            return getRuleContext(DeclarationContext.class, i);
-        }
-
-        public List<WsContext> ws() {
-            return getRuleContexts(WsContext.class);
-        }
-
-        public WsContext ws(int i) {
-            return getRuleContext(WsContext.class, i);
-        }
-
-        public DeclarationListContext(ParserRuleContext parent, int invokingState) {
-            super(parent, invokingState);
-        }
-
-        @Override
-        public int getRuleIndex() {
-            return RULE_declarationList;
-        }
-
-        @Override
-        public void enterRule(ParseTreeListener listener) {
-            if (listener instanceof CSS3Listener) ((CSS3Listener) listener).enterDeclarationList(this);
-        }
-
-        @Override
-        public void exitRule(ParseTreeListener listener) {
-            if (listener instanceof CSS3Listener) ((CSS3Listener) listener).exitDeclarationList(this);
-        }
-
-        @Override
-        public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-            if (visitor instanceof CSS3Visitor) return ((CSS3Visitor<? extends T>) visitor).visitDeclarationList(this);
-            else return visitor.visitChildren(this);
-        }
-    }
-
-    public final DeclarationListContext declarationList() throws RecognitionException {
-        DeclarationListContext _localctx = new DeclarationListContext(_ctx, getState());
-        enterRule(_localctx, 62, RULE_declarationList);
-        int _la;
-        try {
-            int _alt;
-            enterOuterAlt(_localctx, 1);
-            {
-                setState(553);
-                _errHandler.sync(this);
-                _la = _input.LA(1);
-                while (_la == T__0) {
-                    {
-                        {
-                            setState(549);
-                            match(T__0);
-                            setState(550);
-                            ws();
-                        }
-                    }
-                    setState(555);
-                    _errHandler.sync(this);
-                    _la = _input.LA(1);
-                }
-                setState(556);
-                declaration();
-                setState(557);
-                ws();
-                setState(565);
-                _errHandler.sync(this);
-                _alt = getInterpreter().adaptivePredict(_input, 52, _ctx);
-                while (_alt != 2 && _alt != org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER) {
-                    if (_alt == 1) {
-                        {
-                            {
-                                setState(558);
-                                match(T__0);
-                                setState(559);
-                                ws();
-                                setState(561);
-                                _errHandler.sync(this);
-                                switch (getInterpreter().adaptivePredict(_input, 51, _ctx)) {
-                                    case 1: {
-                                        setState(560);
-                                        declaration();
-                                    }
-                                    break;
-                                }
-                            }
-                        }
-                    }
-                    setState(567);
-                    _errHandler.sync(this);
-                    _alt = getInterpreter().adaptivePredict(_input, 52, _ctx);
-                }
-            }
-        } catch (RecognitionException re) {
-            _localctx.exception = re;
-            _errHandler.reportError(this, re);
-            _errHandler.recover(this, re);
-        } finally {
-            exitRule();
-        }
-        return _localctx;
-    }
-
-    public static class DeclarationContext extends ParserRuleContext {
-        public DeclarationContext(ParserRuleContext parent, int invokingState) {
-            super(parent, invokingState);
-        }
-
-        @Override
-        public int getRuleIndex() {
-            return RULE_declaration;
-        }
-
-        public DeclarationContext() {
-        }
-
-        public void copyFrom(DeclarationContext ctx) {
-            super.copyFrom(ctx);
-        }
-    }
-
-    public static class UnknownDeclarationContext extends DeclarationContext {
-        public PropertyContext property() {
-            return getRuleContext(PropertyContext.class, 0);
-        }
-
-        public WsContext ws() {
-            return getRuleContext(WsContext.class, 0);
-        }
-
-        public ValueContext value() {
-            return getRuleContext(ValueContext.class, 0);
-        }
-
-        public UnknownDeclarationContext(DeclarationContext ctx) {
-            copyFrom(ctx);
-        }
-
-        @Override
-        public void enterRule(ParseTreeListener listener) {
-            if (listener instanceof CSS3Listener) ((CSS3Listener) listener).enterUnknownDeclaration(this);
-        }
-
-        @Override
-        public void exitRule(ParseTreeListener listener) {
-            if (listener instanceof CSS3Listener) ((CSS3Listener) listener).exitUnknownDeclaration(this);
-        }
-
-        @Override
-        public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-            if (visitor instanceof CSS3Visitor)
-                return ((CSS3Visitor<? extends T>) visitor).visitUnknownDeclaration(this);
-            else return visitor.visitChildren(this);
-        }
-    }
-
-    public static class KnownDeclarationContext extends DeclarationContext {
-        public PropertyContext property() {
-            return getRuleContext(PropertyContext.class, 0);
-        }
-
-        public WsContext ws() {
-            return getRuleContext(WsContext.class, 0);
-        }
-
-        public ExprContext expr() {
-            return getRuleContext(ExprContext.class, 0);
-        }
-
-        public PrioContext prio() {
-            return getRuleContext(PrioContext.class, 0);
-        }
-
-        public KnownDeclarationContext(DeclarationContext ctx) {
-            copyFrom(ctx);
-        }
-
-        @Override
-        public void enterRule(ParseTreeListener listener) {
-            if (listener instanceof CSS3Listener) ((CSS3Listener) listener).enterKnownDeclaration(this);
-        }
-
-        @Override
-        public void exitRule(ParseTreeListener listener) {
-            if (listener instanceof CSS3Listener) ((CSS3Listener) listener).exitKnownDeclaration(this);
-        }
-
-        @Override
-        public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-            if (visitor instanceof CSS3Visitor) return ((CSS3Visitor<? extends T>) visitor).visitKnownDeclaration(this);
-            else return visitor.visitChildren(this);
-        }
-    }
-
-    public final DeclarationContext declaration() throws RecognitionException {
-        DeclarationContext _localctx = new DeclarationContext(_ctx, getState());
-        enterRule(_localctx, 64, RULE_declaration);
-        int _la;
-        try {
-            setState(580);
-            _errHandler.sync(this);
-            switch (getInterpreter().adaptivePredict(_input, 54, _ctx)) {
-                case 1:
-                    _localctx = new KnownDeclarationContext(_localctx);
-                    enterOuterAlt(_localctx, 1);
-                {
-                    setState(568);
-                    property();
-                    setState(569);
-                    match(T__2);
-                    setState(570);
-                    ws();
-                    setState(571);
-                    expr();
-                    setState(573);
-                    _errHandler.sync(this);
-                    _la = _input.LA(1);
-                    if (_la == Important) {
-                        {
-                            setState(572);
-                            prio();
-                        }
-                    }
-
-                }
-                break;
-                case 2:
-                    _localctx = new UnknownDeclarationContext(_localctx);
-                    enterOuterAlt(_localctx, 2);
-                {
-                    setState(575);
-                    property();
-                    setState(576);
-                    match(T__2);
-                    setState(577);
-                    ws();
-                    setState(578);
-                    value();
-                }
-                break;
-            }
-        } catch (RecognitionException re) {
-            _localctx.exception = re;
-            _errHandler.reportError(this, re);
-            _errHandler.recover(this, re);
-        } finally {
-            exitRule();
-        }
-        return _localctx;
-    }
-
-    public static class PrioContext extends ParserRuleContext {
-        public TerminalNode Important() {
-            return getToken(CSS3Parser.Important, 0);
-        }
-
-        public WsContext ws() {
-            return getRuleContext(WsContext.class, 0);
-        }
-
-        public PrioContext(ParserRuleContext parent, int invokingState) {
-            super(parent, invokingState);
-        }
-
-        @Override
-        public int getRuleIndex() {
-            return RULE_prio;
-        }
-
-        @Override
-        public void enterRule(ParseTreeListener listener) {
-            if (listener instanceof CSS3Listener) ((CSS3Listener) listener).enterPrio(this);
-        }
-
-        @Override
-        public void exitRule(ParseTreeListener listener) {
-            if (listener instanceof CSS3Listener) ((CSS3Listener) listener).exitPrio(this);
-        }
-
-        @Override
-        public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-            if (visitor instanceof CSS3Visitor) return ((CSS3Visitor<? extends T>) visitor).visitPrio(this);
-            else return visitor.visitChildren(this);
-        }
-    }
-
-    public final PrioContext prio() throws RecognitionException {
-        PrioContext _localctx = new PrioContext(_ctx, getState());
-        enterRule(_localctx, 66, RULE_prio);
-        try {
-            enterOuterAlt(_localctx, 1);
-            {
-                setState(582);
-                match(Important);
-                setState(583);
-                ws();
-            }
-        } catch (RecognitionException re) {
-            _localctx.exception = re;
-            _errHandler.reportError(this, re);
-            _errHandler.recover(this, re);
-        } finally {
-            exitRule();
-        }
-        return _localctx;
-    }
-
-    public static class ValueContext extends ParserRuleContext {
-        public List<AnyContext> any() {
-            return getRuleContexts(AnyContext.class);
-        }
-
-        public AnyContext any(int i) {
-            return getRuleContext(AnyContext.class, i);
-        }
-
-        public List<BlockContext> block() {
-            return getRuleContexts(BlockContext.class);
-        }
-
-        public BlockContext block(int i) {
-            return getRuleContext(BlockContext.class, i);
-        }
-
-        public List<AtKeywordContext> atKeyword() {
-            return getRuleContexts(AtKeywordContext.class);
-        }
-
-        public AtKeywordContext atKeyword(int i) {
-            return getRuleContext(AtKeywordContext.class, i);
-        }
-
-        public List<WsContext> ws() {
-            return getRuleContexts(WsContext.class);
-        }
-
-        public WsContext ws(int i) {
-            return getRuleContext(WsContext.class, i);
-        }
-
-        public ValueContext(ParserRuleContext parent, int invokingState) {
-            super(parent, invokingState);
-        }
-
-        @Override
-        public int getRuleIndex() {
-            return RULE_value;
-        }
-
-        @Override
-        public void enterRule(ParseTreeListener listener) {
-            if (listener instanceof CSS3Listener) ((CSS3Listener) listener).enterValue(this);
-        }
-
-        @Override
-        public void exitRule(ParseTreeListener listener) {
-            if (listener instanceof CSS3Listener) ((CSS3Listener) listener).exitValue(this);
-        }
-
-        @Override
-        public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-            if (visitor instanceof CSS3Visitor) return ((CSS3Visitor<? extends T>) visitor).visitValue(this);
-            else return visitor.visitChildren(this);
-        }
-    }
-
-    public final ValueContext value() throws RecognitionException {
-        ValueContext _localctx = new ValueContext(_ctx, getState());
-        enterRule(_localctx, 68, RULE_value);
-        try {
-            int _alt;
-            enterOuterAlt(_localctx, 1);
-            {
-                setState(590);
-                _errHandler.sync(this);
-                _alt = 1;
-                do {
-                    switch (_alt) {
-                        case 1: {
-                            setState(590);
-                            _errHandler.sync(this);
-                            switch (_input.LA(1)) {
-                                case T__1:
-                                case T__2:
-                                case T__9:
-                                case Includes:
-                                case DashMatch:
-                                case Hash:
-                                case Percentage:
-                                case Uri:
-                                case UnicodeRange:
-                                case MediaOnly:
-                                case Not:
-                                case And:
-                                case Dimension:
-                                case UnknownDimension:
-                                case Plus:
-                                case Minus:
-                                case Number:
-                                case String:
-                                case Or:
-                                case From:
-                                case To:
-                                case Ident:
-                                case Function: {
-                                    setState(585);
-                                    any();
-                                }
-                                break;
-                                case T__4: {
-                                    setState(586);
-                                    block();
-                                }
-                                break;
-                                case T__14: {
-                                    setState(587);
-                                    atKeyword();
-                                    setState(588);
-                                    ws();
-                                }
-                                break;
-                                default:
-                                    throw new NoViableAltException(this);
-                            }
-                        }
-                        break;
-                        default:
-                            throw new NoViableAltException(this);
-                    }
-                    setState(592);
-                    _errHandler.sync(this);
-                    _alt = getInterpreter().adaptivePredict(_input, 56, _ctx);
-                } while (_alt != 2 && _alt != org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER);
-            }
-        } catch (RecognitionException re) {
-            _localctx.exception = re;
-            _errHandler.reportError(this, re);
-            _errHandler.recover(this, re);
-        } finally {
-            exitRule();
-        }
-        return _localctx;
-    }
-
-    public static class ExprContext extends ParserRuleContext {
-        public List<TermContext> term() {
-            return getRuleContexts(TermContext.class);
-        }
-
-        public TermContext term(int i) {
-            return getRuleContext(TermContext.class, i);
-        }
-
-        public List<OperatorContext> operator() {
-            return getRuleContexts(OperatorContext.class);
-        }
-
-        public OperatorContext operator(int i) {
-            return getRuleContext(OperatorContext.class, i);
-        }
-
-        public ExprContext(ParserRuleContext parent, int invokingState) {
-            super(parent, invokingState);
-        }
-
-        @Override
-        public int getRuleIndex() {
-            return RULE_expr;
-        }
-
-        @Override
-        public void enterRule(ParseTreeListener listener) {
-            if (listener instanceof CSS3Listener) ((CSS3Listener) listener).enterExpr(this);
-        }
-
-        @Override
-        public void exitRule(ParseTreeListener listener) {
-            if (listener instanceof CSS3Listener) ((CSS3Listener) listener).exitExpr(this);
-        }
-
-        @Override
-        public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-            if (visitor instanceof CSS3Visitor) return ((CSS3Visitor<? extends T>) visitor).visitExpr(this);
-            else return visitor.visitChildren(this);
-        }
-    }
-
-    public final ExprContext expr() throws RecognitionException {
-        ExprContext _localctx = new ExprContext(_ctx, getState());
-        enterRule(_localctx, 70, RULE_expr);
-        int _la;
-        try {
-            int _alt;
-            enterOuterAlt(_localctx, 1);
-            {
-                setState(594);
-                term();
-                setState(601);
-                _errHandler.sync(this);
-                _alt = getInterpreter().adaptivePredict(_input, 58, _ctx);
-                while (_alt != 2 && _alt != org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER) {
-                    if (_alt == 1) {
-                        {
-                            {
-                                setState(596);
-                                _errHandler.sync(this);
-                                _la = _input.LA(1);
-                                if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__10) | (1L << T__12) | (1L << Space) | (1L << Comma))) != 0)) {
-                                    {
-                                        setState(595);
-                                        operator();
-                                    }
-                                }
-
-                                setState(598);
-                                term();
-                            }
-                        }
-                    }
-                    setState(603);
-                    _errHandler.sync(this);
-                    _alt = getInterpreter().adaptivePredict(_input, 58, _ctx);
-                }
-            }
-        } catch (RecognitionException re) {
-            _localctx.exception = re;
-            _errHandler.reportError(this, re);
-            _errHandler.recover(this, re);
-        } finally {
-            exitRule();
-        }
-        return _localctx;
-    }
-
-    public static class TermContext extends ParserRuleContext {
-        public TermContext(ParserRuleContext parent, int invokingState) {
-            super(parent, invokingState);
-        }
-
-        @Override
-        public int getRuleIndex() {
-            return RULE_term;
-        }
-
-        public TermContext() {
-        }
-
-        public void copyFrom(TermContext ctx) {
-            super.copyFrom(ctx);
-        }
-    }
-
-    public static class BadTermContext extends TermContext {
-        public DxImageTransformContext dxImageTransform() {
-            return getRuleContext(DxImageTransformContext.class, 0);
-        }
-
-        public BadTermContext(TermContext ctx) {
-            copyFrom(ctx);
-        }
-
-        @Override
-        public void enterRule(ParseTreeListener listener) {
-            if (listener instanceof CSS3Listener) ((CSS3Listener) listener).enterBadTerm(this);
-        }
-
-        @Override
-        public void exitRule(ParseTreeListener listener) {
-            if (listener instanceof CSS3Listener) ((CSS3Listener) listener).exitBadTerm(this);
-        }
-
-        @Override
-        public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-            if (visitor instanceof CSS3Visitor) return ((CSS3Visitor<? extends T>) visitor).visitBadTerm(this);
-            else return visitor.visitChildren(this);
-        }
-    }
-
-    public static class KnownTermContext extends TermContext {
-        public NumberContext number() {
-            return getRuleContext(NumberContext.class, 0);
-        }
-
-        public WsContext ws() {
-            return getRuleContext(WsContext.class, 0);
-        }
-
-        public PercentageContext percentage() {
-            return getRuleContext(PercentageContext.class, 0);
-        }
-
-        public DimensionContext dimension() {
-            return getRuleContext(DimensionContext.class, 0);
-        }
-
-        public TerminalNode String() {
-            return getToken(CSS3Parser.String, 0);
-        }
-
-        public TerminalNode UnicodeRange() {
-            return getToken(CSS3Parser.UnicodeRange, 0);
-        }
-
-        public IdentContext ident() {
-            return getRuleContext(IdentContext.class, 0);
-        }
-
-        public VarContext var() {
-            return getRuleContext(VarContext.class, 0);
-        }
-
-        public TerminalNode Uri() {
-            return getToken(CSS3Parser.Uri, 0);
-        }
-
-        public HexcolorContext hexcolor() {
-            return getRuleContext(HexcolorContext.class, 0);
-        }
-
-        public CalcContext calc() {
-            return getRuleContext(CalcContext.class, 0);
-        }
-
-        public FunctionContext function() {
-            return getRuleContext(FunctionContext.class, 0);
-        }
-
-        public KnownTermContext(TermContext ctx) {
-            copyFrom(ctx);
-        }
-
-        @Override
-        public void enterRule(ParseTreeListener listener) {
-            if (listener instanceof CSS3Listener) ((CSS3Listener) listener).enterKnownTerm(this);
-        }
-
-        @Override
-        public void exitRule(ParseTreeListener listener) {
-            if (listener instanceof CSS3Listener) ((CSS3Listener) listener).exitKnownTerm(this);
-        }
-
-        @Override
-        public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-            if (visitor instanceof CSS3Visitor) return ((CSS3Visitor<? extends T>) visitor).visitKnownTerm(this);
-            else return visitor.visitChildren(this);
-        }
-    }
-
-    public static class UnknownTermContext extends TermContext {
-        public UnknownDimensionContext unknownDimension() {
-            return getRuleContext(UnknownDimensionContext.class, 0);
-        }
-
-        public WsContext ws() {
-            return getRuleContext(WsContext.class, 0);
-        }
-
-        public UnknownTermContext(TermContext ctx) {
-            copyFrom(ctx);
-        }
-
-        @Override
-        public void enterRule(ParseTreeListener listener) {
-            if (listener instanceof CSS3Listener) ((CSS3Listener) listener).enterUnknownTerm(this);
-        }
-
-        @Override
-        public void exitRule(ParseTreeListener listener) {
-            if (listener instanceof CSS3Listener) ((CSS3Listener) listener).exitUnknownTerm(this);
-        }
-
-        @Override
-        public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-            if (visitor instanceof CSS3Visitor) return ((CSS3Visitor<? extends T>) visitor).visitUnknownTerm(this);
-            else return visitor.visitChildren(this);
-        }
-    }
-
-    public final TermContext term() throws RecognitionException {
-        TermContext _localctx = new TermContext(_ctx, getState());
-        enterRule(_localctx, 72, RULE_term);
-        try {
-            setState(630);
-            _errHandler.sync(this);
-            switch (getInterpreter().adaptivePredict(_input, 59, _ctx)) {
-                case 1:
-                    _localctx = new KnownTermContext(_localctx);
-                    enterOuterAlt(_localctx, 1);
-                {
-                    setState(604);
-                    number();
-                    setState(605);
-                    ws();
-                }
-                break;
-                case 2:
-                    _localctx = new KnownTermContext(_localctx);
-                    enterOuterAlt(_localctx, 2);
-                {
-                    setState(607);
-                    percentage();
-                    setState(608);
-                    ws();
-                }
-                break;
-                case 3:
-                    _localctx = new KnownTermContext(_localctx);
-                    enterOuterAlt(_localctx, 3);
-                {
-                    setState(610);
-                    dimension();
-                    setState(611);
-                    ws();
-                }
-                break;
-                case 4:
-                    _localctx = new KnownTermContext(_localctx);
-                    enterOuterAlt(_localctx, 4);
-                {
-                    setState(613);
-                    match(String);
-                    setState(614);
-                    ws();
-                }
-                break;
-                case 5:
-                    _localctx = new KnownTermContext(_localctx);
-                    enterOuterAlt(_localctx, 5);
-                {
-                    setState(615);
-                    match(UnicodeRange);
-                    setState(616);
-                    ws();
-                }
-                break;
-                case 6:
-                    _localctx = new KnownTermContext(_localctx);
-                    enterOuterAlt(_localctx, 6);
-                {
-                    setState(617);
-                    ident();
-                    setState(618);
-                    ws();
-                }
-                break;
-                case 7:
-                    _localctx = new KnownTermContext(_localctx);
-                    enterOuterAlt(_localctx, 7);
-                {
-                    setState(620);
-                    var();
-                }
-                break;
-                case 8:
-                    _localctx = new KnownTermContext(_localctx);
-                    enterOuterAlt(_localctx, 8);
-                {
-                    setState(621);
-                    match(Uri);
-                    setState(622);
-                    ws();
-                }
-                break;
-                case 9:
-                    _localctx = new KnownTermContext(_localctx);
-                    enterOuterAlt(_localctx, 9);
-                {
-                    setState(623);
-                    hexcolor();
-                }
-                break;
-                case 10:
-                    _localctx = new KnownTermContext(_localctx);
-                    enterOuterAlt(_localctx, 10);
-                {
-                    setState(624);
-                    calc();
-                }
-                break;
-                case 11:
-                    _localctx = new KnownTermContext(_localctx);
-                    enterOuterAlt(_localctx, 11);
-                {
-                    setState(625);
-                    function();
-                }
-                break;
-                case 12:
-                    _localctx = new UnknownTermContext(_localctx);
-                    enterOuterAlt(_localctx, 12);
-                {
-                    setState(626);
-                    unknownDimension();
-                    setState(627);
-                    ws();
-                }
-                break;
-                case 13:
-                    _localctx = new BadTermContext(_localctx);
-                    enterOuterAlt(_localctx, 13);
-                {
-                    setState(629);
-                    dxImageTransform();
-                }
-                break;
-            }
-        } catch (RecognitionException re) {
-            _localctx.exception = re;
-            _errHandler.reportError(this, re);
-            _errHandler.recover(this, re);
-        } finally {
-            exitRule();
-        }
-        return _localctx;
-    }
-
-    public static class FunctionContext extends ParserRuleContext {
-        public TerminalNode Function() {
-            return getToken(CSS3Parser.Function, 0);
-        }
-
-        public List<WsContext> ws() {
-            return getRuleContexts(WsContext.class);
-        }
-
-        public WsContext ws(int i) {
-            return getRuleContext(WsContext.class, i);
-        }
-
-        public ExprContext expr() {
-            return getRuleContext(ExprContext.class, 0);
-        }
-
-        public FunctionContext(ParserRuleContext parent, int invokingState) {
-            super(parent, invokingState);
-        }
-
-        @Override
-        public int getRuleIndex() {
-            return RULE_function;
-        }
-
-        @Override
-        public void enterRule(ParseTreeListener listener) {
-            if (listener instanceof CSS3Listener) ((CSS3Listener) listener).enterFunction(this);
-        }
-
-        @Override
-        public void exitRule(ParseTreeListener listener) {
-            if (listener instanceof CSS3Listener) ((CSS3Listener) listener).exitFunction(this);
-        }
-
-        @Override
-        public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-            if (visitor instanceof CSS3Visitor) return ((CSS3Visitor<? extends T>) visitor).visitFunction(this);
-            else return visitor.visitChildren(this);
-        }
-    }
-
-    public final FunctionContext function() throws RecognitionException {
-        FunctionContext _localctx = new FunctionContext(_ctx, getState());
-        enterRule(_localctx, 74, RULE_function);
-        try {
-            enterOuterAlt(_localctx, 1);
-            {
-                setState(632);
-                match(Function);
-                setState(633);
-                ws();
-                setState(634);
-                expr();
-                setState(635);
-                match(T__3);
-                setState(636);
-                ws();
-            }
-        } catch (RecognitionException re) {
-            _localctx.exception = re;
-            _errHandler.reportError(this, re);
-            _errHandler.recover(this, re);
-        } finally {
-            exitRule();
-        }
-        return _localctx;
-    }
-
-    public static class DxImageTransformContext extends ParserRuleContext {
-        public TerminalNode DxImageTransform() {
-            return getToken(CSS3Parser.DxImageTransform, 0);
-        }
-
-        public List<WsContext> ws() {
-            return getRuleContexts(WsContext.class);
-        }
-
-        public WsContext ws(int i) {
-            return getRuleContext(WsContext.class, i);
-        }
-
-        public ExprContext expr() {
-            return getRuleContext(ExprContext.class, 0);
-        }
-
-        public DxImageTransformContext(ParserRuleContext parent, int invokingState) {
-            super(parent, invokingState);
-        }
-
-        @Override
-        public int getRuleIndex() {
-            return RULE_dxImageTransform;
-        }
-
-        @Override
-        public void enterRule(ParseTreeListener listener) {
-            if (listener instanceof CSS3Listener) ((CSS3Listener) listener).enterDxImageTransform(this);
-        }
-
-        @Override
-        public void exitRule(ParseTreeListener listener) {
-            if (listener instanceof CSS3Listener) ((CSS3Listener) listener).exitDxImageTransform(this);
-        }
-
-        @Override
-        public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-            if (visitor instanceof CSS3Visitor) return ((CSS3Visitor<? extends T>) visitor).visitDxImageTransform(this);
-            else return visitor.visitChildren(this);
-        }
-    }
-
-    public final DxImageTransformContext dxImageTransform() throws RecognitionException {
-        DxImageTransformContext _localctx = new DxImageTransformContext(_ctx, getState());
-        enterRule(_localctx, 76, RULE_dxImageTransform);
-        try {
-            enterOuterAlt(_localctx, 1);
-            {
-                setState(638);
-                match(DxImageTransform);
-                setState(639);
-                ws();
-                setState(640);
-                expr();
-                setState(641);
-                match(T__3);
-                setState(642);
-                ws();
-            }
-        } catch (RecognitionException re) {
-            _localctx.exception = re;
-            _errHandler.reportError(this, re);
-            _errHandler.recover(this, re);
-        } finally {
-            exitRule();
-        }
-        return _localctx;
-    }
-
-    public static class HexcolorContext extends ParserRuleContext {
-        public TerminalNode Hash() {
-            return getToken(CSS3Parser.Hash, 0);
-        }
-
-        public WsContext ws() {
-            return getRuleContext(WsContext.class, 0);
-        }
-
-        public HexcolorContext(ParserRuleContext parent, int invokingState) {
-            super(parent, invokingState);
-        }
-
-        @Override
-        public int getRuleIndex() {
-            return RULE_hexcolor;
-        }
-
-        @Override
-        public void enterRule(ParseTreeListener listener) {
-            if (listener instanceof CSS3Listener) ((CSS3Listener) listener).enterHexcolor(this);
-        }
-
-        @Override
-        public void exitRule(ParseTreeListener listener) {
-            if (listener instanceof CSS3Listener) ((CSS3Listener) listener).exitHexcolor(this);
-        }
-
-        @Override
-        public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-            if (visitor instanceof CSS3Visitor) return ((CSS3Visitor<? extends T>) visitor).visitHexcolor(this);
-            else return visitor.visitChildren(this);
-        }
-    }
-
-    public final HexcolorContext hexcolor() throws RecognitionException {
-        HexcolorContext _localctx = new HexcolorContext(_ctx, getState());
-        enterRule(_localctx, 78, RULE_hexcolor);
-        try {
-            enterOuterAlt(_localctx, 1);
-            {
-                setState(644);
-                match(Hash);
-                setState(645);
-                ws();
-            }
-        } catch (RecognitionException re) {
-            _localctx.exception = re;
-            _errHandler.reportError(this, re);
-            _errHandler.recover(this, re);
-        } finally {
-            exitRule();
-        }
-        return _localctx;
-    }
-
-    public static class NumberContext extends ParserRuleContext {
-        public TerminalNode Number() {
-            return getToken(CSS3Parser.Number, 0);
-        }
-
-        public TerminalNode Plus() {
-            return getToken(CSS3Parser.Plus, 0);
-        }
-
-        public TerminalNode Minus() {
-            return getToken(CSS3Parser.Minus, 0);
-        }
-
-        public NumberContext(ParserRuleContext parent, int invokingState) {
-            super(parent, invokingState);
-        }
-
-        @Override
-        public int getRuleIndex() {
-            return RULE_number;
-        }
-
-        @Override
-        public void enterRule(ParseTreeListener listener) {
-            if (listener instanceof CSS3Listener) ((CSS3Listener) listener).enterNumber(this);
-        }
-
-        @Override
-        public void exitRule(ParseTreeListener listener) {
-            if (listener instanceof CSS3Listener) ((CSS3Listener) listener).exitNumber(this);
-        }
-
-        @Override
-        public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-            if (visitor instanceof CSS3Visitor) return ((CSS3Visitor<? extends T>) visitor).visitNumber(this);
-            else return visitor.visitChildren(this);
-        }
-    }
-
-    public final NumberContext number() throws RecognitionException {
-        NumberContext _localctx = new NumberContext(_ctx, getState());
-        enterRule(_localctx, 80, RULE_number);
-        int _la;
-        try {
-            enterOuterAlt(_localctx, 1);
-            {
-                setState(648);
-                _errHandler.sync(this);
-                _la = _input.LA(1);
-                if (_la == Plus || _la == Minus) {
-                    {
-                        setState(647);
-                        _la = _input.LA(1);
-                        if (!(_la == Plus || _la == Minus)) {
-                            _errHandler.recoverInline(this);
-                        } else {
-                            if (_input.LA(1) == Token.EOF) matchedEOF = true;
-                            _errHandler.reportMatch(this);
-                            consume();
-                        }
-                    }
-                }
-
-                setState(650);
-                match(Number);
-            }
-        } catch (RecognitionException re) {
-            _localctx.exception = re;
-            _errHandler.reportError(this, re);
-            _errHandler.recover(this, re);
-        } finally {
-            exitRule();
-        }
-        return _localctx;
-    }
-
-    public static class PercentageContext extends ParserRuleContext {
-        public TerminalNode Percentage() {
-            return getToken(CSS3Parser.Percentage, 0);
-        }
-
-        public TerminalNode Plus() {
-            return getToken(CSS3Parser.Plus, 0);
-        }
-
-        public TerminalNode Minus() {
-            return getToken(CSS3Parser.Minus, 0);
-        }
-
-        public PercentageContext(ParserRuleContext parent, int invokingState) {
-            super(parent, invokingState);
-        }
-
-        @Override
-        public int getRuleIndex() {
-            return RULE_percentage;
-        }
-
-        @Override
-        public void enterRule(ParseTreeListener listener) {
-            if (listener instanceof CSS3Listener) ((CSS3Listener) listener).enterPercentage(this);
-        }
-
-        @Override
-        public void exitRule(ParseTreeListener listener) {
-            if (listener instanceof CSS3Listener) ((CSS3Listener) listener).exitPercentage(this);
-        }
-
-        @Override
-        public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-            if (visitor instanceof CSS3Visitor) return ((CSS3Visitor<? extends T>) visitor).visitPercentage(this);
-            else return visitor.visitChildren(this);
-        }
-    }
-
-    public final PercentageContext percentage() throws RecognitionException {
-        PercentageContext _localctx = new PercentageContext(_ctx, getState());
-        enterRule(_localctx, 82, RULE_percentage);
-        int _la;
-        try {
-            enterOuterAlt(_localctx, 1);
-            {
-                setState(653);
-                _errHandler.sync(this);
-                _la = _input.LA(1);
-                if (_la == Plus || _la == Minus) {
-                    {
-                        setState(652);
-                        _la = _input.LA(1);
-                        if (!(_la == Plus || _la == Minus)) {
-                            _errHandler.recoverInline(this);
-                        } else {
-                            if (_input.LA(1) == Token.EOF) matchedEOF = true;
-                            _errHandler.reportMatch(this);
-                            consume();
-                        }
-                    }
-                }
-
-                setState(655);
-                match(Percentage);
-            }
-        } catch (RecognitionException re) {
-            _localctx.exception = re;
-            _errHandler.reportError(this, re);
-            _errHandler.recover(this, re);
-        } finally {
-            exitRule();
-        }
-        return _localctx;
-    }
-
-    public static class DimensionContext extends ParserRuleContext {
-        public TerminalNode Dimension() {
-            return getToken(CSS3Parser.Dimension, 0);
-        }
-
-        public TerminalNode Plus() {
-            return getToken(CSS3Parser.Plus, 0);
-        }
-
-        public TerminalNode Minus() {
-            return getToken(CSS3Parser.Minus, 0);
-        }
-
-        public DimensionContext(ParserRuleContext parent, int invokingState) {
-            super(parent, invokingState);
-        }
-
-        @Override
-        public int getRuleIndex() {
-            return RULE_dimension;
-        }
-
-        @Override
-        public void enterRule(ParseTreeListener listener) {
-            if (listener instanceof CSS3Listener) ((CSS3Listener) listener).enterDimension(this);
-        }
-
-        @Override
-        public void exitRule(ParseTreeListener listener) {
-            if (listener instanceof CSS3Listener) ((CSS3Listener) listener).exitDimension(this);
-        }
-
-        @Override
-        public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-            if (visitor instanceof CSS3Visitor) return ((CSS3Visitor<? extends T>) visitor).visitDimension(this);
-            else return visitor.visitChildren(this);
-        }
-    }
-
-    public final DimensionContext dimension() throws RecognitionException {
-        DimensionContext _localctx = new DimensionContext(_ctx, getState());
-        enterRule(_localctx, 84, RULE_dimension);
-        int _la;
-        try {
-            enterOuterAlt(_localctx, 1);
-            {
-                setState(658);
-                _errHandler.sync(this);
-                _la = _input.LA(1);
-                if (_la == Plus || _la == Minus) {
-                    {
-                        setState(657);
-                        _la = _input.LA(1);
-                        if (!(_la == Plus || _la == Minus)) {
-                            _errHandler.recoverInline(this);
-                        } else {
-                            if (_input.LA(1) == Token.EOF) matchedEOF = true;
-                            _errHandler.reportMatch(this);
-                            consume();
-                        }
-                    }
-                }
-
-                setState(660);
-                match(Dimension);
-            }
-        } catch (RecognitionException re) {
-            _localctx.exception = re;
-            _errHandler.reportError(this, re);
-            _errHandler.recover(this, re);
-        } finally {
-            exitRule();
-        }
-        return _localctx;
-    }
-
-    public static class UnknownDimensionContext extends ParserRuleContext {
-        public TerminalNode UnknownDimension() {
-            return getToken(CSS3Parser.UnknownDimension, 0);
-        }
-
-        public TerminalNode Plus() {
-            return getToken(CSS3Parser.Plus, 0);
-        }
-
-        public TerminalNode Minus() {
-            return getToken(CSS3Parser.Minus, 0);
-        }
-
-        public UnknownDimensionContext(ParserRuleContext parent, int invokingState) {
-            super(parent, invokingState);
-        }
-
-        @Override
-        public int getRuleIndex() {
-            return RULE_unknownDimension;
-        }
-
-        @Override
-        public void enterRule(ParseTreeListener listener) {
-            if (listener instanceof CSS3Listener) ((CSS3Listener) listener).enterUnknownDimension(this);
-        }
-
-        @Override
-        public void exitRule(ParseTreeListener listener) {
-            if (listener instanceof CSS3Listener) ((CSS3Listener) listener).exitUnknownDimension(this);
-        }
-
-        @Override
-        public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-            if (visitor instanceof CSS3Visitor) return ((CSS3Visitor<? extends T>) visitor).visitUnknownDimension(this);
-            else return visitor.visitChildren(this);
-        }
-    }
-
-    public final UnknownDimensionContext unknownDimension() throws RecognitionException {
-        UnknownDimensionContext _localctx = new UnknownDimensionContext(_ctx, getState());
-        enterRule(_localctx, 86, RULE_unknownDimension);
-        int _la;
-        try {
-            enterOuterAlt(_localctx, 1);
-            {
-                setState(663);
-                _errHandler.sync(this);
-                _la = _input.LA(1);
-                if (_la == Plus || _la == Minus) {
-                    {
-                        setState(662);
-                        _la = _input.LA(1);
-                        if (!(_la == Plus || _la == Minus)) {
-                            _errHandler.recoverInline(this);
-                        } else {
-                            if (_input.LA(1) == Token.EOF) matchedEOF = true;
-                            _errHandler.reportMatch(this);
-                            consume();
-                        }
-                    }
-                }
-
-                setState(665);
-                match(UnknownDimension);
-            }
-        } catch (RecognitionException re) {
-            _localctx.exception = re;
-            _errHandler.reportError(this, re);
-            _errHandler.recover(this, re);
-        } finally {
-            exitRule();
-        }
-        return _localctx;
-    }
-
-    public static class AnyContext extends ParserRuleContext {
-        public IdentContext ident() {
-            return getRuleContext(IdentContext.class, 0);
-        }
-
-        public List<WsContext> ws() {
-            return getRuleContexts(WsContext.class);
-        }
-
-        public WsContext ws(int i) {
-            return getRuleContext(WsContext.class, i);
-        }
-
-        public NumberContext number() {
-            return getRuleContext(NumberContext.class, 0);
-        }
-
-        public PercentageContext percentage() {
-            return getRuleContext(PercentageContext.class, 0);
-        }
-
-        public DimensionContext dimension() {
-            return getRuleContext(DimensionContext.class, 0);
-        }
-
-        public UnknownDimensionContext unknownDimension() {
-            return getRuleContext(UnknownDimensionContext.class, 0);
-        }
-
-        public TerminalNode String() {
-            return getToken(CSS3Parser.String, 0);
-        }
-
-        public TerminalNode Uri() {
-            return getToken(CSS3Parser.Uri, 0);
-        }
-
-        public TerminalNode Hash() {
-            return getToken(CSS3Parser.Hash, 0);
-        }
-
-        public TerminalNode UnicodeRange() {
-            return getToken(CSS3Parser.UnicodeRange, 0);
-        }
-
-        public TerminalNode Includes() {
-            return getToken(CSS3Parser.Includes, 0);
-        }
-
-        public TerminalNode DashMatch() {
-            return getToken(CSS3Parser.DashMatch, 0);
-        }
-
-        public TerminalNode Function() {
-            return getToken(CSS3Parser.Function, 0);
-        }
-
-        public List<AnyContext> any() {
-            return getRuleContexts(AnyContext.class);
-        }
-
-        public AnyContext any(int i) {
-            return getRuleContext(AnyContext.class, i);
-        }
-
-        public List<UnusedContext> unused() {
-            return getRuleContexts(UnusedContext.class);
-        }
-
-        public UnusedContext unused(int i) {
-            return getRuleContext(UnusedContext.class, i);
-        }
-
-        public AnyContext(ParserRuleContext parent, int invokingState) {
-            super(parent, invokingState);
-        }
-
-        @Override
-        public int getRuleIndex() {
-            return RULE_any;
-        }
-
-        @Override
-        public void enterRule(ParseTreeListener listener) {
-            if (listener instanceof CSS3Listener) ((CSS3Listener) listener).enterAny(this);
-        }
-
-        @Override
-        public void exitRule(ParseTreeListener listener) {
-            if (listener instanceof CSS3Listener) ((CSS3Listener) listener).exitAny(this);
-        }
-
-        @Override
-        public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-            if (visitor instanceof CSS3Visitor) return ((CSS3Visitor<? extends T>) visitor).visitAny(this);
-            else return visitor.visitChildren(this);
-        }
-    }
-
-    public final AnyContext any() throws RecognitionException {
-        AnyContext _localctx = new AnyContext(_ctx, getState());
-        enterRule(_localctx, 88, RULE_any);
-        int _la;
-        try {
-            setState(732);
-            _errHandler.sync(this);
-            switch (getInterpreter().adaptivePredict(_input, 70, _ctx)) {
-                case 1:
-                    enterOuterAlt(_localctx, 1);
-                {
-                    setState(667);
-                    ident();
-                    setState(668);
-                    ws();
-                }
-                break;
-                case 2:
-                    enterOuterAlt(_localctx, 2);
-                {
-                    setState(670);
-                    number();
-                    setState(671);
-                    ws();
-                }
-                break;
-                case 3:
-                    enterOuterAlt(_localctx, 3);
-                {
-                    setState(673);
-                    percentage();
-                    setState(674);
-                    ws();
-                }
-                break;
-                case 4:
-                    enterOuterAlt(_localctx, 4);
-                {
-                    setState(676);
-                    dimension();
-                    setState(677);
-                    ws();
-                }
-                break;
-                case 5:
-                    enterOuterAlt(_localctx, 5);
-                {
-                    setState(679);
-                    unknownDimension();
-                    setState(680);
-                    ws();
-                }
-                break;
-                case 6:
-                    enterOuterAlt(_localctx, 6);
-                {
-                    setState(682);
-                    match(String);
-                    setState(683);
-                    ws();
-                }
-                break;
-                case 7:
-                    enterOuterAlt(_localctx, 7);
-                {
-                    setState(684);
-                    match(Uri);
-                    setState(685);
-                    ws();
-                }
-                break;
-                case 8:
-                    enterOuterAlt(_localctx, 8);
-                {
-                    setState(686);
-                    match(Hash);
-                    setState(687);
-                    ws();
-                }
-                break;
-                case 9:
-                    enterOuterAlt(_localctx, 9);
-                {
-                    setState(688);
-                    match(UnicodeRange);
-                    setState(689);
-                    ws();
-                }
-                break;
-                case 10:
-                    enterOuterAlt(_localctx, 10);
-                {
-                    setState(690);
-                    match(Includes);
-                    setState(691);
-                    ws();
-                }
-                break;
-                case 11:
-                    enterOuterAlt(_localctx, 11);
-                {
-                    setState(692);
-                    match(DashMatch);
-                    setState(693);
-                    ws();
-                }
-                break;
-                case 12:
-                    enterOuterAlt(_localctx, 12);
-                {
-                    setState(694);
-                    match(T__2);
-                    setState(695);
-                    ws();
-                }
-                break;
-                case 13:
-                    enterOuterAlt(_localctx, 13);
-                {
-                    setState(696);
-                    match(Function);
-                    setState(697);
-                    ws();
-                    setState(702);
-                    _errHandler.sync(this);
-                    _la = _input.LA(1);
-                    while ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__0) | (1L << T__1) | (1L << T__2) | (1L << T__4) | (1L << T__9) | (1L << T__14) | (1L << Cdo) | (1L << Cdc) | (1L << Includes) | (1L << DashMatch) | (1L << Hash) | (1L << Percentage) | (1L << Uri) | (1L << UnicodeRange) | (1L << MediaOnly) | (1L << Not) | (1L << And) | (1L << Dimension) | (1L << UnknownDimension) | (1L << Plus) | (1L << Minus) | (1L << Number) | (1L << String) | (1L << Or) | (1L << From) | (1L << To) | (1L << Ident) | (1L << Function))) != 0)) {
-                        {
-                            setState(700);
-                            _errHandler.sync(this);
-                            switch (_input.LA(1)) {
-                                case T__1:
-                                case T__2:
-                                case T__9:
-                                case Includes:
-                                case DashMatch:
-                                case Hash:
-                                case Percentage:
-                                case Uri:
-                                case UnicodeRange:
-                                case MediaOnly:
-                                case Not:
-                                case And:
-                                case Dimension:
-                                case UnknownDimension:
-                                case Plus:
-                                case Minus:
-                                case Number:
-                                case String:
-                                case Or:
-                                case From:
-                                case To:
-                                case Ident:
-                                case Function: {
-                                    setState(698);
-                                    any();
-                                }
-                                break;
-                                case T__0:
-                                case T__4:
-                                case T__14:
-                                case Cdo:
-                                case Cdc: {
-                                    setState(699);
-                                    unused();
-                                }
-                                break;
-                                default:
-                                    throw new NoViableAltException(this);
-                            }
-                        }
-                        setState(704);
-                        _errHandler.sync(this);
-                        _la = _input.LA(1);
-                    }
-                    setState(705);
-                    match(T__3);
-                    setState(706);
-                    ws();
-                }
-                break;
-                case 14:
-                    enterOuterAlt(_localctx, 14);
-                {
-                    setState(708);
-                    match(T__1);
-                    setState(709);
-                    ws();
-                    setState(714);
-                    _errHandler.sync(this);
-                    _la = _input.LA(1);
-                    while ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__0) | (1L << T__1) | (1L << T__2) | (1L << T__4) | (1L << T__9) | (1L << T__14) | (1L << Cdo) | (1L << Cdc) | (1L << Includes) | (1L << DashMatch) | (1L << Hash) | (1L << Percentage) | (1L << Uri) | (1L << UnicodeRange) | (1L << MediaOnly) | (1L << Not) | (1L << And) | (1L << Dimension) | (1L << UnknownDimension) | (1L << Plus) | (1L << Minus) | (1L << Number) | (1L << String) | (1L << Or) | (1L << From) | (1L << To) | (1L << Ident) | (1L << Function))) != 0)) {
-                        {
-                            setState(712);
-                            _errHandler.sync(this);
-                            switch (_input.LA(1)) {
-                                case T__1:
-                                case T__2:
-                                case T__9:
-                                case Includes:
-                                case DashMatch:
-                                case Hash:
-                                case Percentage:
-                                case Uri:
-                                case UnicodeRange:
-                                case MediaOnly:
-                                case Not:
-                                case And:
-                                case Dimension:
-                                case UnknownDimension:
-                                case Plus:
-                                case Minus:
-                                case Number:
-                                case String:
-                                case Or:
-                                case From:
-                                case To:
-                                case Ident:
-                                case Function: {
-                                    setState(710);
-                                    any();
-                                }
-                                break;
-                                case T__0:
-                                case T__4:
-                                case T__14:
-                                case Cdo:
-                                case Cdc: {
-                                    setState(711);
-                                    unused();
-                                }
-                                break;
-                                default:
-                                    throw new NoViableAltException(this);
-                            }
-                        }
-                        setState(716);
-                        _errHandler.sync(this);
-                        _la = _input.LA(1);
-                    }
-                    setState(717);
-                    match(T__3);
-                    setState(718);
-                    ws();
-                }
-                break;
-                case 15:
-                    enterOuterAlt(_localctx, 15);
-                {
-                    setState(720);
-                    match(T__9);
-                    setState(721);
-                    ws();
-                    setState(726);
-                    _errHandler.sync(this);
-                    _la = _input.LA(1);
-                    while ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__0) | (1L << T__1) | (1L << T__2) | (1L << T__4) | (1L << T__9) | (1L << T__14) | (1L << Cdo) | (1L << Cdc) | (1L << Includes) | (1L << DashMatch) | (1L << Hash) | (1L << Percentage) | (1L << Uri) | (1L << UnicodeRange) | (1L << MediaOnly) | (1L << Not) | (1L << And) | (1L << Dimension) | (1L << UnknownDimension) | (1L << Plus) | (1L << Minus) | (1L << Number) | (1L << String) | (1L << Or) | (1L << From) | (1L << To) | (1L << Ident) | (1L << Function))) != 0)) {
-                        {
-                            setState(724);
-                            _errHandler.sync(this);
-                            switch (_input.LA(1)) {
-                                case T__1:
-                                case T__2:
-                                case T__9:
-                                case Includes:
-                                case DashMatch:
-                                case Hash:
-                                case Percentage:
-                                case Uri:
-                                case UnicodeRange:
-                                case MediaOnly:
-                                case Not:
-                                case And:
-                                case Dimension:
-                                case UnknownDimension:
-                                case Plus:
-                                case Minus:
-                                case Number:
-                                case String:
-                                case Or:
-                                case From:
-                                case To:
-                                case Ident:
-                                case Function: {
-                                    setState(722);
-                                    any();
-                                }
-                                break;
-                                case T__0:
-                                case T__4:
-                                case T__14:
-                                case Cdo:
-                                case Cdc: {
-                                    setState(723);
-                                    unused();
-                                }
-                                break;
-                                default:
-                                    throw new NoViableAltException(this);
-                            }
-                        }
-                        setState(728);
-                        _errHandler.sync(this);
-                        _la = _input.LA(1);
-                    }
-                    setState(729);
-                    match(T__11);
-                    setState(730);
-                    ws();
-                }
-                break;
-            }
-        } catch (RecognitionException re) {
-            _localctx.exception = re;
-            _errHandler.reportError(this, re);
-            _errHandler.recover(this, re);
-        } finally {
-            exitRule();
-        }
-        return _localctx;
-    }
-
-    public static class AtRuleContext extends ParserRuleContext {
-        public AtRuleContext(ParserRuleContext parent, int invokingState) {
-            super(parent, invokingState);
-        }
-
-        @Override
-        public int getRuleIndex() {
-            return RULE_atRule;
-        }
-
-        public AtRuleContext() {
-        }
-
-        public void copyFrom(AtRuleContext ctx) {
-            super.copyFrom(ctx);
-        }
-    }
-
-    public static class UnknownAtRuleContext extends AtRuleContext {
-        public AtKeywordContext atKeyword() {
-            return getRuleContext(AtKeywordContext.class, 0);
-        }
-
-        public List<WsContext> ws() {
-            return getRuleContexts(WsContext.class);
-        }
-
-        public WsContext ws(int i) {
-            return getRuleContext(WsContext.class, i);
-        }
-
-        public BlockContext block() {
-            return getRuleContext(BlockContext.class, 0);
-        }
-
-        public List<AnyContext> any() {
-            return getRuleContexts(AnyContext.class);
-        }
-
-        public AnyContext any(int i) {
-            return getRuleContext(AnyContext.class, i);
-        }
-
-        public UnknownAtRuleContext(AtRuleContext ctx) {
-            copyFrom(ctx);
-        }
-
-        @Override
-        public void enterRule(ParseTreeListener listener) {
-            if (listener instanceof CSS3Listener) ((CSS3Listener) listener).enterUnknownAtRule(this);
-        }
-
-        @Override
-        public void exitRule(ParseTreeListener listener) {
-            if (listener instanceof CSS3Listener) ((CSS3Listener) listener).exitUnknownAtRule(this);
-        }
-
-        @Override
-        public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-            if (visitor instanceof CSS3Visitor) return ((CSS3Visitor<? extends T>) visitor).visitUnknownAtRule(this);
-            else return visitor.visitChildren(this);
-        }
-    }
-
-    public final AtRuleContext atRule() throws RecognitionException {
-        AtRuleContext _localctx = new AtRuleContext(_ctx, getState());
-        enterRule(_localctx, 90, RULE_atRule);
-        int _la;
-        try {
-            _localctx = new UnknownAtRuleContext(_localctx);
-            enterOuterAlt(_localctx, 1);
-            {
-                setState(734);
-                atKeyword();
-                setState(735);
-                ws();
-                setState(739);
-                _errHandler.sync(this);
-                _la = _input.LA(1);
-                while ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__1) | (1L << T__2) | (1L << T__9) | (1L << Includes) | (1L << DashMatch) | (1L << Hash) | (1L << Percentage) | (1L << Uri) | (1L << UnicodeRange) | (1L << MediaOnly) | (1L << Not) | (1L << And) | (1L << Dimension) | (1L << UnknownDimension) | (1L << Plus) | (1L << Minus) | (1L << Number) | (1L << String) | (1L << Or) | (1L << From) | (1L << To) | (1L << Ident) | (1L << Function))) != 0)) {
-                    {
-                        {
-                            setState(736);
-                            any();
-                        }
-                    }
-                    setState(741);
-                    _errHandler.sync(this);
-                    _la = _input.LA(1);
-                }
-                setState(745);
-                _errHandler.sync(this);
-                switch (_input.LA(1)) {
-                    case T__4: {
-                        setState(742);
-                        block();
-                    }
-                    break;
-                    case T__0: {
-                        setState(743);
-                        match(T__0);
-                        setState(744);
-                        ws();
-                    }
-                    break;
-                    default:
-                        throw new NoViableAltException(this);
-                }
-            }
-        } catch (RecognitionException re) {
-            _localctx.exception = re;
-            _errHandler.reportError(this, re);
-            _errHandler.recover(this, re);
-        } finally {
-            exitRule();
-        }
-        return _localctx;
-    }
-
-    public static class AtKeywordContext extends ParserRuleContext {
-        public IdentContext ident() {
-            return getRuleContext(IdentContext.class, 0);
-        }
-
-        public AtKeywordContext(ParserRuleContext parent, int invokingState) {
-            super(parent, invokingState);
-        }
-
-        @Override
-        public int getRuleIndex() {
-            return RULE_atKeyword;
-        }
-
-        @Override
-        public void enterRule(ParseTreeListener listener) {
-            if (listener instanceof CSS3Listener) ((CSS3Listener) listener).enterAtKeyword(this);
-        }
-
-        @Override
-        public void exitRule(ParseTreeListener listener) {
-            if (listener instanceof CSS3Listener) ((CSS3Listener) listener).exitAtKeyword(this);
-        }
-
-        @Override
-        public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-            if (visitor instanceof CSS3Visitor) return ((CSS3Visitor<? extends T>) visitor).visitAtKeyword(this);
-            else return visitor.visitChildren(this);
-        }
-    }
-
-    public final AtKeywordContext atKeyword() throws RecognitionException {
-        AtKeywordContext _localctx = new AtKeywordContext(_ctx, getState());
-        enterRule(_localctx, 92, RULE_atKeyword);
-        try {
-            enterOuterAlt(_localctx, 1);
-            {
-                setState(747);
-                match(T__14);
-                setState(748);
-                ident();
-            }
-        } catch (RecognitionException re) {
-            _localctx.exception = re;
-            _errHandler.reportError(this, re);
-            _errHandler.recover(this, re);
-        } finally {
-            exitRule();
-        }
-        return _localctx;
-    }
-
-    public static class UnusedContext extends ParserRuleContext {
-        public BlockContext block() {
-            return getRuleContext(BlockContext.class, 0);
-        }
-
-        public AtKeywordContext atKeyword() {
-            return getRuleContext(AtKeywordContext.class, 0);
-        }
-
-        public WsContext ws() {
-            return getRuleContext(WsContext.class, 0);
-        }
-
-        public TerminalNode Cdo() {
-            return getToken(CSS3Parser.Cdo, 0);
-        }
-
-        public TerminalNode Cdc() {
-            return getToken(CSS3Parser.Cdc, 0);
-        }
-
-        public UnusedContext(ParserRuleContext parent, int invokingState) {
-            super(parent, invokingState);
-        }
-
-        @Override
-        public int getRuleIndex() {
-            return RULE_unused;
-        }
-
-        @Override
-        public void enterRule(ParseTreeListener listener) {
-            if (listener instanceof CSS3Listener) ((CSS3Listener) listener).enterUnused(this);
-        }
-
-        @Override
-        public void exitRule(ParseTreeListener listener) {
-            if (listener instanceof CSS3Listener) ((CSS3Listener) listener).exitUnused(this);
-        }
-
-        @Override
-        public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-            if (visitor instanceof CSS3Visitor) return ((CSS3Visitor<? extends T>) visitor).visitUnused(this);
-            else return visitor.visitChildren(this);
-        }
-    }
-
-    public final UnusedContext unused() throws RecognitionException {
-        UnusedContext _localctx = new UnusedContext(_ctx, getState());
-        enterRule(_localctx, 94, RULE_unused);
-        try {
-            setState(760);
-            _errHandler.sync(this);
-            switch (_input.LA(1)) {
-                case T__4:
-                    enterOuterAlt(_localctx, 1);
-                {
-                    setState(750);
-                    block();
-                }
-                break;
-                case T__14:
-                    enterOuterAlt(_localctx, 2);
-                {
-                    setState(751);
-                    atKeyword();
-                    setState(752);
-                    ws();
-                }
-                break;
-                case T__0:
-                    enterOuterAlt(_localctx, 3);
-                {
-                    setState(754);
-                    match(T__0);
-                    setState(755);
-                    ws();
-                }
-                break;
-                case Cdo:
-                    enterOuterAlt(_localctx, 4);
-                {
-                    setState(756);
-                    match(Cdo);
-                    setState(757);
-                    ws();
-                }
-                break;
-                case Cdc:
-                    enterOuterAlt(_localctx, 5);
-                {
-                    setState(758);
-                    match(Cdc);
-                    setState(759);
-                    ws();
-                }
-                break;
-                default:
-                    throw new NoViableAltException(this);
-            }
-        } catch (RecognitionException re) {
-            _localctx.exception = re;
-            _errHandler.reportError(this, re);
-            _errHandler.recover(this, re);
-        } finally {
-            exitRule();
-        }
-        return _localctx;
-    }
-
-    public static class BlockContext extends ParserRuleContext {
-        public List<WsContext> ws() {
-            return getRuleContexts(WsContext.class);
-        }
-
-        public WsContext ws(int i) {
-            return getRuleContext(WsContext.class, i);
-        }
-
-        public List<DeclarationListContext> declarationList() {
-            return getRuleContexts(DeclarationListContext.class);
-        }
-
-        public DeclarationListContext declarationList(int i) {
-            return getRuleContext(DeclarationListContext.class, i);
-        }
-
-        public List<NestedStatementContext> nestedStatement() {
-            return getRuleContexts(NestedStatementContext.class);
-        }
-
-        public NestedStatementContext nestedStatement(int i) {
-            return getRuleContext(NestedStatementContext.class, i);
-        }
-
-        public List<AnyContext> any() {
-            return getRuleContexts(AnyContext.class);
-        }
-
-        public AnyContext any(int i) {
-            return getRuleContext(AnyContext.class, i);
-        }
-
-        public List<BlockContext> block() {
-            return getRuleContexts(BlockContext.class);
-        }
-
-        public BlockContext block(int i) {
-            return getRuleContext(BlockContext.class, i);
-        }
-
-        public List<AtKeywordContext> atKeyword() {
-            return getRuleContexts(AtKeywordContext.class);
-        }
-
-        public AtKeywordContext atKeyword(int i) {
-            return getRuleContext(AtKeywordContext.class, i);
-        }
-
-        public BlockContext(ParserRuleContext parent, int invokingState) {
-            super(parent, invokingState);
-        }
-
-        @Override
-        public int getRuleIndex() {
-            return RULE_block;
-        }
-
-        @Override
-        public void enterRule(ParseTreeListener listener) {
-            if (listener instanceof CSS3Listener) ((CSS3Listener) listener).enterBlock(this);
-        }
-
-        @Override
-        public void exitRule(ParseTreeListener listener) {
-            if (listener instanceof CSS3Listener) ((CSS3Listener) listener).exitBlock(this);
-        }
-
-        @Override
-        public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-            if (visitor instanceof CSS3Visitor) return ((CSS3Visitor<? extends T>) visitor).visitBlock(this);
-            else return visitor.visitChildren(this);
-        }
-    }
-
-    public final BlockContext block() throws RecognitionException {
-        BlockContext _localctx = new BlockContext(_ctx, getState());
-        enterRule(_localctx, 96, RULE_block);
-        int _la;
-        try {
-            enterOuterAlt(_localctx, 1);
-            {
-                setState(762);
-                match(T__4);
-                setState(763);
-                ws();
-                setState(775);
-                _errHandler.sync(this);
-                _la = _input.LA(1);
-                while ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__0) | (1L << T__1) | (1L << T__2) | (1L << T__4) | (1L << T__6) | (1L << T__7) | (1L << T__8) | (1L << T__9) | (1L << T__13) | (1L << T__14) | (1L << Includes) | (1L << DashMatch) | (1L << Hash) | (1L << Page) | (1L << Media) | (1L << Percentage) | (1L << Uri) | (1L << UnicodeRange) | (1L << MediaOnly) | (1L << Not) | (1L << And) | (1L << Dimension) | (1L << UnknownDimension) | (1L << Plus) | (1L << Minus) | (1L << PseudoNot) | (1L << Number) | (1L << String) | (1L << FontFace) | (1L << Supports) | (1L << Or) | (1L << Keyframes) | (1L << From) | (1L << To) | (1L << Viewport) | (1L << CounterStyle) | (1L << FontFeatureValues) | (1L << Variable) | (1L << Ident) | (1L << Function))) != 0)) {
-                    {
-                        setState(773);
-                        _errHandler.sync(this);
-                        switch (getInterpreter().adaptivePredict(_input, 74, _ctx)) {
-                            case 1: {
-                                setState(764);
-                                declarationList();
-                            }
-                            break;
-                            case 2: {
-                                setState(765);
-                                nestedStatement();
-                            }
-                            break;
-                            case 3: {
-                                setState(766);
-                                any();
-                            }
-                            break;
-                            case 4: {
-                                setState(767);
-                                block();
-                            }
-                            break;
-                            case 5: {
-                                setState(768);
-                                atKeyword();
-                                setState(769);
-                                ws();
-                            }
-                            break;
-                            case 6: {
-                                setState(771);
-                                match(T__0);
-                                setState(772);
-                                ws();
-                            }
-                            break;
-                        }
-                    }
-                    setState(777);
-                    _errHandler.sync(this);
-                    _la = _input.LA(1);
-                }
-                setState(778);
-                match(T__5);
-                setState(779);
-                ws();
-            }
-        } catch (RecognitionException re) {
-            _localctx.exception = re;
-            _errHandler.reportError(this, re);
-            _errHandler.recover(this, re);
-        } finally {
-            exitRule();
-        }
-        return _localctx;
-    }
-
-    public static class NestedStatementContext extends ParserRuleContext {
-        public RulesetContext ruleset() {
-            return getRuleContext(RulesetContext.class, 0);
-        }
-
-        public MediaContext media() {
-            return getRuleContext(MediaContext.class, 0);
-        }
-
-        public PageContext page() {
-            return getRuleContext(PageContext.class, 0);
-        }
-
-        public FontFaceRuleContext fontFaceRule() {
-            return getRuleContext(FontFaceRuleContext.class, 0);
-        }
-
-        public KeyframesRuleContext keyframesRule() {
-            return getRuleContext(KeyframesRuleContext.class, 0);
-        }
-
-        public SupportsRuleContext supportsRule() {
-            return getRuleContext(SupportsRuleContext.class, 0);
-        }
-
-        public ViewportContext viewport() {
-            return getRuleContext(ViewportContext.class, 0);
-        }
-
-        public CounterStyleContext counterStyle() {
-            return getRuleContext(CounterStyleContext.class, 0);
-        }
-
-        public FontFeatureValuesRuleContext fontFeatureValuesRule() {
-            return getRuleContext(FontFeatureValuesRuleContext.class, 0);
-        }
-
-        public AtRuleContext atRule() {
-            return getRuleContext(AtRuleContext.class, 0);
-        }
-
-        public NestedStatementContext(ParserRuleContext parent, int invokingState) {
-            super(parent, invokingState);
-        }
-
-        @Override
-        public int getRuleIndex() {
-            return RULE_nestedStatement;
-        }
-
-        @Override
-        public void enterRule(ParseTreeListener listener) {
-            if (listener instanceof CSS3Listener) ((CSS3Listener) listener).enterNestedStatement(this);
-        }
-
-        @Override
-        public void exitRule(ParseTreeListener listener) {
-            if (listener instanceof CSS3Listener) ((CSS3Listener) listener).exitNestedStatement(this);
-        }
-
-        @Override
-        public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-            if (visitor instanceof CSS3Visitor) return ((CSS3Visitor<? extends T>) visitor).visitNestedStatement(this);
-            else return visitor.visitChildren(this);
-        }
-    }
-
-    public final NestedStatementContext nestedStatement() throws RecognitionException {
-        NestedStatementContext _localctx = new NestedStatementContext(_ctx, getState());
-        enterRule(_localctx, 98, RULE_nestedStatement);
-        try {
-            setState(791);
-            _errHandler.sync(this);
-            switch (_input.LA(1)) {
-                case T__1:
-                case T__2:
-                case T__4:
-                case T__6:
-                case T__7:
-                case T__8:
-                case T__9:
-                case Includes:
-                case DashMatch:
-                case Hash:
-                case Percentage:
-                case Uri:
-                case UnicodeRange:
-                case MediaOnly:
-                case Not:
-                case And:
-                case Dimension:
-                case UnknownDimension:
-                case Plus:
-                case Minus:
-                case PseudoNot:
-                case Number:
-                case String:
-                case Or:
-                case From:
-                case To:
-                case Ident:
-                case Function:
-                    enterOuterAlt(_localctx, 1);
-                {
-                    setState(781);
-                    ruleset();
-                }
-                break;
-                case Media:
-                    enterOuterAlt(_localctx, 2);
-                {
-                    setState(782);
-                    media();
-                }
-                break;
-                case Page:
-                    enterOuterAlt(_localctx, 3);
-                {
-                    setState(783);
-                    page();
-                }
-                break;
-                case FontFace:
-                    enterOuterAlt(_localctx, 4);
-                {
-                    setState(784);
-                    fontFaceRule();
-                }
-                break;
-                case Keyframes:
-                    enterOuterAlt(_localctx, 5);
-                {
-                    setState(785);
-                    keyframesRule();
-                }
-                break;
-                case Supports:
-                    enterOuterAlt(_localctx, 6);
-                {
-                    setState(786);
-                    supportsRule();
-                }
-                break;
-                case Viewport:
-                    enterOuterAlt(_localctx, 7);
-                {
-                    setState(787);
-                    viewport();
-                }
-                break;
-                case CounterStyle:
-                    enterOuterAlt(_localctx, 8);
-                {
-                    setState(788);
-                    counterStyle();
-                }
-                break;
-                case FontFeatureValues:
-                    enterOuterAlt(_localctx, 9);
-                {
-                    setState(789);
-                    fontFeatureValuesRule();
-                }
-                break;
-                case T__14:
-                    enterOuterAlt(_localctx, 10);
-                {
-                    setState(790);
-                    atRule();
-                }
-                break;
-                default:
-                    throw new NoViableAltException(this);
-            }
-        } catch (RecognitionException re) {
-            _localctx.exception = re;
-            _errHandler.reportError(this, re);
-            _errHandler.recover(this, re);
-        } finally {
-            exitRule();
-        }
-        return _localctx;
-    }
-
-    public static class GroupRuleBodyContext extends ParserRuleContext {
-        public List<WsContext> ws() {
-            return getRuleContexts(WsContext.class);
-        }
-
-        public WsContext ws(int i) {
-            return getRuleContext(WsContext.class, i);
-        }
-
-        public List<NestedStatementContext> nestedStatement() {
-            return getRuleContexts(NestedStatementContext.class);
-        }
-
-        public NestedStatementContext nestedStatement(int i) {
-            return getRuleContext(NestedStatementContext.class, i);
-        }
-
-        public GroupRuleBodyContext(ParserRuleContext parent, int invokingState) {
-            super(parent, invokingState);
-        }
-
-        @Override
-        public int getRuleIndex() {
-            return RULE_groupRuleBody;
-        }
-
-        @Override
-        public void enterRule(ParseTreeListener listener) {
-            if (listener instanceof CSS3Listener) ((CSS3Listener) listener).enterGroupRuleBody(this);
-        }
-
-        @Override
-        public void exitRule(ParseTreeListener listener) {
-            if (listener instanceof CSS3Listener) ((CSS3Listener) listener).exitGroupRuleBody(this);
-        }
-
-        @Override
-        public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-            if (visitor instanceof CSS3Visitor) return ((CSS3Visitor<? extends T>) visitor).visitGroupRuleBody(this);
-            else return visitor.visitChildren(this);
-        }
-    }
-
-    public final GroupRuleBodyContext groupRuleBody() throws RecognitionException {
-        GroupRuleBodyContext _localctx = new GroupRuleBodyContext(_ctx, getState());
-        enterRule(_localctx, 100, RULE_groupRuleBody);
-        int _la;
-        try {
-            enterOuterAlt(_localctx, 1);
-            {
-                setState(793);
-                match(T__4);
-                setState(794);
-                ws();
-                setState(798);
-                _errHandler.sync(this);
-                _la = _input.LA(1);
-                while ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__1) | (1L << T__2) | (1L << T__4) | (1L << T__6) | (1L << T__7) | (1L << T__8) | (1L << T__9) | (1L << T__14) | (1L << Includes) | (1L << DashMatch) | (1L << Hash) | (1L << Page) | (1L << Media) | (1L << Percentage) | (1L << Uri) | (1L << UnicodeRange) | (1L << MediaOnly) | (1L << Not) | (1L << And) | (1L << Dimension) | (1L << UnknownDimension) | (1L << Plus) | (1L << Minus) | (1L << PseudoNot) | (1L << Number) | (1L << String) | (1L << FontFace) | (1L << Supports) | (1L << Or) | (1L << Keyframes) | (1L << From) | (1L << To) | (1L << Viewport) | (1L << CounterStyle) | (1L << FontFeatureValues) | (1L << Ident) | (1L << Function))) != 0)) {
-                    {
-                        {
-                            setState(795);
-                            nestedStatement();
-                        }
-                    }
-                    setState(800);
-                    _errHandler.sync(this);
-                    _la = _input.LA(1);
-                }
-                setState(801);
-                match(T__5);
-                setState(802);
-                ws();
-            }
-        } catch (RecognitionException re) {
-            _localctx.exception = re;
-            _errHandler.reportError(this, re);
-            _errHandler.recover(this, re);
-        } finally {
-            exitRule();
-        }
-        return _localctx;
-    }
-
-    public static class SupportsRuleContext extends ParserRuleContext {
-        public TerminalNode Supports() {
-            return getToken(CSS3Parser.Supports, 0);
-        }
-
-        public List<WsContext> ws() {
-            return getRuleContexts(WsContext.class);
-        }
-
-        public WsContext ws(int i) {
-            return getRuleContext(WsContext.class, i);
-        }
-
-        public SupportsConditionContext supportsCondition() {
-            return getRuleContext(SupportsConditionContext.class, 0);
-        }
-
-        public GroupRuleBodyContext groupRuleBody() {
-            return getRuleContext(GroupRuleBodyContext.class, 0);
-        }
-
-        public SupportsRuleContext(ParserRuleContext parent, int invokingState) {
-            super(parent, invokingState);
-        }
-
-        @Override
-        public int getRuleIndex() {
-            return RULE_supportsRule;
-        }
-
-        @Override
-        public void enterRule(ParseTreeListener listener) {
-            if (listener instanceof CSS3Listener) ((CSS3Listener) listener).enterSupportsRule(this);
-        }
-
-        @Override
-        public void exitRule(ParseTreeListener listener) {
-            if (listener instanceof CSS3Listener) ((CSS3Listener) listener).exitSupportsRule(this);
-        }
-
-        @Override
-        public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-            if (visitor instanceof CSS3Visitor) return ((CSS3Visitor<? extends T>) visitor).visitSupportsRule(this);
-            else return visitor.visitChildren(this);
-        }
-    }
-
-    public final SupportsRuleContext supportsRule() throws RecognitionException {
-        SupportsRuleContext _localctx = new SupportsRuleContext(_ctx, getState());
-        enterRule(_localctx, 102, RULE_supportsRule);
-        try {
-            enterOuterAlt(_localctx, 1);
-            {
-                setState(804);
-                match(Supports);
-                setState(805);
-                ws();
-                setState(806);
-                supportsCondition();
-                setState(807);
-                ws();
-                setState(808);
-                groupRuleBody();
-            }
-        } catch (RecognitionException re) {
-            _localctx.exception = re;
-            _errHandler.reportError(this, re);
-            _errHandler.recover(this, re);
-        } finally {
-            exitRule();
-        }
-        return _localctx;
-    }
-
-    public static class SupportsConditionContext extends ParserRuleContext {
-        public SupportsNegationContext supportsNegation() {
-            return getRuleContext(SupportsNegationContext.class, 0);
-        }
-
-        public SupportsConjunctionContext supportsConjunction() {
-            return getRuleContext(SupportsConjunctionContext.class, 0);
-        }
-
-        public SupportsDisjunctionContext supportsDisjunction() {
-            return getRuleContext(SupportsDisjunctionContext.class, 0);
-        }
-
-        public SupportsConditionInParensContext supportsConditionInParens() {
-            return getRuleContext(SupportsConditionInParensContext.class, 0);
-        }
-
-        public SupportsConditionContext(ParserRuleContext parent, int invokingState) {
-            super(parent, invokingState);
-        }
-
-        @Override
-        public int getRuleIndex() {
-            return RULE_supportsCondition;
-        }
-
-        @Override
-        public void enterRule(ParseTreeListener listener) {
-            if (listener instanceof CSS3Listener) ((CSS3Listener) listener).enterSupportsCondition(this);
-        }
-
-        @Override
-        public void exitRule(ParseTreeListener listener) {
-            if (listener instanceof CSS3Listener) ((CSS3Listener) listener).exitSupportsCondition(this);
-        }
-
-        @Override
-        public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-            if (visitor instanceof CSS3Visitor)
-                return ((CSS3Visitor<? extends T>) visitor).visitSupportsCondition(this);
-            else return visitor.visitChildren(this);
-        }
-    }
-
-    public final SupportsConditionContext supportsCondition() throws RecognitionException {
-        SupportsConditionContext _localctx = new SupportsConditionContext(_ctx, getState());
-        enterRule(_localctx, 104, RULE_supportsCondition);
-        try {
-            setState(814);
-            _errHandler.sync(this);
-            switch (getInterpreter().adaptivePredict(_input, 78, _ctx)) {
-                case 1:
-                    enterOuterAlt(_localctx, 1);
-                {
-                    setState(810);
-                    supportsNegation();
-                }
-                break;
-                case 2:
-                    enterOuterAlt(_localctx, 2);
-                {
-                    setState(811);
-                    supportsConjunction();
-                }
-                break;
-                case 3:
-                    enterOuterAlt(_localctx, 3);
-                {
-                    setState(812);
-                    supportsDisjunction();
-                }
-                break;
-                case 4:
-                    enterOuterAlt(_localctx, 4);
-                {
-                    setState(813);
-                    supportsConditionInParens();
-                }
-                break;
-            }
-        } catch (RecognitionException re) {
-            _localctx.exception = re;
-            _errHandler.reportError(this, re);
-            _errHandler.recover(this, re);
-        } finally {
-            exitRule();
-        }
-        return _localctx;
-    }
-
-    public static class SupportsConditionInParensContext extends ParserRuleContext {
-        public List<WsContext> ws() {
-            return getRuleContexts(WsContext.class);
-        }
-
-        public WsContext ws(int i) {
-            return getRuleContext(WsContext.class, i);
-        }
-
-        public SupportsConditionContext supportsCondition() {
-            return getRuleContext(SupportsConditionContext.class, 0);
-        }
-
-        public SupportsDeclarationConditionContext supportsDeclarationCondition() {
-            return getRuleContext(SupportsDeclarationConditionContext.class, 0);
-        }
-
-        public GeneralEnclosedContext generalEnclosed() {
-            return getRuleContext(GeneralEnclosedContext.class, 0);
-        }
-
-        public SupportsConditionInParensContext(ParserRuleContext parent, int invokingState) {
-            super(parent, invokingState);
-        }
-
-        @Override
-        public int getRuleIndex() {
-            return RULE_supportsConditionInParens;
-        }
-
-        @Override
-        public void enterRule(ParseTreeListener listener) {
-            if (listener instanceof CSS3Listener) ((CSS3Listener) listener).enterSupportsConditionInParens(this);
-        }
-
-        @Override
-        public void exitRule(ParseTreeListener listener) {
-            if (listener instanceof CSS3Listener) ((CSS3Listener) listener).exitSupportsConditionInParens(this);
-        }
-
-        @Override
-        public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-            if (visitor instanceof CSS3Visitor)
-                return ((CSS3Visitor<? extends T>) visitor).visitSupportsConditionInParens(this);
-            else return visitor.visitChildren(this);
-        }
-    }
-
-    public final SupportsConditionInParensContext supportsConditionInParens() throws RecognitionException {
-        SupportsConditionInParensContext _localctx = new SupportsConditionInParensContext(_ctx, getState());
-        enterRule(_localctx, 106, RULE_supportsConditionInParens);
-        try {
-            setState(824);
-            _errHandler.sync(this);
-            switch (getInterpreter().adaptivePredict(_input, 79, _ctx)) {
-                case 1:
-                    enterOuterAlt(_localctx, 1);
-                {
-                    setState(816);
-                    match(T__1);
-                    setState(817);
-                    ws();
-                    setState(818);
-                    supportsCondition();
-                    setState(819);
-                    ws();
-                    setState(820);
-                    match(T__3);
-                }
-                break;
-                case 2:
-                    enterOuterAlt(_localctx, 2);
-                {
-                    setState(822);
-                    supportsDeclarationCondition();
-                }
-                break;
-                case 3:
-                    enterOuterAlt(_localctx, 3);
-                {
-                    setState(823);
-                    generalEnclosed();
-                }
-                break;
-            }
-        } catch (RecognitionException re) {
-            _localctx.exception = re;
-            _errHandler.reportError(this, re);
-            _errHandler.recover(this, re);
-        } finally {
-            exitRule();
-        }
-        return _localctx;
-    }
-
-    public static class SupportsNegationContext extends ParserRuleContext {
-        public TerminalNode Not() {
-            return getToken(CSS3Parser.Not, 0);
-        }
-
-        public List<WsContext> ws() {
-            return getRuleContexts(WsContext.class);
-        }
-
-        public WsContext ws(int i) {
-            return getRuleContext(WsContext.class, i);
-        }
-
-        public TerminalNode Space() {
-            return getToken(CSS3Parser.Space, 0);
-        }
-
-        public SupportsConditionInParensContext supportsConditionInParens() {
-            return getRuleContext(SupportsConditionInParensContext.class, 0);
-        }
-
-        public SupportsNegationContext(ParserRuleContext parent, int invokingState) {
-            super(parent, invokingState);
-        }
-
-        @Override
-        public int getRuleIndex() {
-            return RULE_supportsNegation;
-        }
-
-        @Override
-        public void enterRule(ParseTreeListener listener) {
-            if (listener instanceof CSS3Listener) ((CSS3Listener) listener).enterSupportsNegation(this);
-        }
-
-        @Override
-        public void exitRule(ParseTreeListener listener) {
-            if (listener instanceof CSS3Listener) ((CSS3Listener) listener).exitSupportsNegation(this);
-        }
-
-        @Override
-        public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-            if (visitor instanceof CSS3Visitor) return ((CSS3Visitor<? extends T>) visitor).visitSupportsNegation(this);
-            else return visitor.visitChildren(this);
-        }
-    }
-
-    public final SupportsNegationContext supportsNegation() throws RecognitionException {
-        SupportsNegationContext _localctx = new SupportsNegationContext(_ctx, getState());
-        enterRule(_localctx, 108, RULE_supportsNegation);
-        try {
-            enterOuterAlt(_localctx, 1);
-            {
-                setState(826);
-                match(Not);
-                setState(827);
-                ws();
-                setState(828);
-                match(Space);
-                setState(829);
-                ws();
-                setState(830);
-                supportsConditionInParens();
-            }
-        } catch (RecognitionException re) {
-            _localctx.exception = re;
-            _errHandler.reportError(this, re);
-            _errHandler.recover(this, re);
-        } finally {
-            exitRule();
-        }
-        return _localctx;
-    }
-
-    public static class SupportsConjunctionContext extends ParserRuleContext {
-        public List<SupportsConditionInParensContext> supportsConditionInParens() {
-            return getRuleContexts(SupportsConditionInParensContext.class);
-        }
-
-        public SupportsConditionInParensContext supportsConditionInParens(int i) {
-            return getRuleContext(SupportsConditionInParensContext.class, i);
-        }
-
-        public List<WsContext> ws() {
-            return getRuleContexts(WsContext.class);
-        }
-
-        public WsContext ws(int i) {
-            return getRuleContext(WsContext.class, i);
-        }
-
-        public List<TerminalNode> Space() {
-            return getTokens(CSS3Parser.Space);
-        }
-
-        public TerminalNode Space(int i) {
-            return getToken(CSS3Parser.Space, i);
-        }
-
-        public List<TerminalNode> And() {
-            return getTokens(CSS3Parser.And);
-        }
-
-        public TerminalNode And(int i) {
-            return getToken(CSS3Parser.And, i);
-        }
-
-        public SupportsConjunctionContext(ParserRuleContext parent, int invokingState) {
-            super(parent, invokingState);
-        }
-
-        @Override
-        public int getRuleIndex() {
-            return RULE_supportsConjunction;
-        }
-
-        @Override
-        public void enterRule(ParseTreeListener listener) {
-            if (listener instanceof CSS3Listener) ((CSS3Listener) listener).enterSupportsConjunction(this);
-        }
-
-        @Override
-        public void exitRule(ParseTreeListener listener) {
-            if (listener instanceof CSS3Listener) ((CSS3Listener) listener).exitSupportsConjunction(this);
-        }
-
-        @Override
-        public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-            if (visitor instanceof CSS3Visitor)
-                return ((CSS3Visitor<? extends T>) visitor).visitSupportsConjunction(this);
-            else return visitor.visitChildren(this);
-        }
-    }
-
-    public final SupportsConjunctionContext supportsConjunction() throws RecognitionException {
-        SupportsConjunctionContext _localctx = new SupportsConjunctionContext(_ctx, getState());
-        enterRule(_localctx, 110, RULE_supportsConjunction);
-        try {
-            int _alt;
-            enterOuterAlt(_localctx, 1);
-            {
-                setState(832);
-                supportsConditionInParens();
-                setState(842);
-                _errHandler.sync(this);
-                _alt = 1;
-                do {
-                    switch (_alt) {
-                        case 1: {
-                            {
-                                setState(833);
-                                ws();
-                                setState(834);
-                                match(Space);
-                                setState(835);
-                                ws();
-                                setState(836);
-                                match(And);
-                                setState(837);
-                                ws();
-                                setState(838);
-                                match(Space);
-                                setState(839);
-                                ws();
-                                setState(840);
-                                supportsConditionInParens();
-                            }
-                        }
-                        break;
-                        default:
-                            throw new NoViableAltException(this);
-                    }
-                    setState(844);
-                    _errHandler.sync(this);
-                    _alt = getInterpreter().adaptivePredict(_input, 80, _ctx);
-                } while (_alt != 2 && _alt != org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER);
-            }
-        } catch (RecognitionException re) {
-            _localctx.exception = re;
-            _errHandler.reportError(this, re);
-            _errHandler.recover(this, re);
-        } finally {
-            exitRule();
-        }
-        return _localctx;
-    }
-
-    public static class SupportsDisjunctionContext extends ParserRuleContext {
-        public List<SupportsConditionInParensContext> supportsConditionInParens() {
-            return getRuleContexts(SupportsConditionInParensContext.class);
-        }
-
-        public SupportsConditionInParensContext supportsConditionInParens(int i) {
-            return getRuleContext(SupportsConditionInParensContext.class, i);
-        }
-
-        public List<WsContext> ws() {
-            return getRuleContexts(WsContext.class);
-        }
-
-        public WsContext ws(int i) {
-            return getRuleContext(WsContext.class, i);
-        }
-
-        public List<TerminalNode> Space() {
-            return getTokens(CSS3Parser.Space);
-        }
-
-        public TerminalNode Space(int i) {
-            return getToken(CSS3Parser.Space, i);
-        }
-
-        public List<TerminalNode> Or() {
-            return getTokens(CSS3Parser.Or);
-        }
-
-        public TerminalNode Or(int i) {
-            return getToken(CSS3Parser.Or, i);
-        }
-
-        public SupportsDisjunctionContext(ParserRuleContext parent, int invokingState) {
-            super(parent, invokingState);
-        }
-
-        @Override
-        public int getRuleIndex() {
-            return RULE_supportsDisjunction;
-        }
-
-        @Override
-        public void enterRule(ParseTreeListener listener) {
-            if (listener instanceof CSS3Listener) ((CSS3Listener) listener).enterSupportsDisjunction(this);
-        }
-
-        @Override
-        public void exitRule(ParseTreeListener listener) {
-            if (listener instanceof CSS3Listener) ((CSS3Listener) listener).exitSupportsDisjunction(this);
-        }
-
-        @Override
-        public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-            if (visitor instanceof CSS3Visitor)
-                return ((CSS3Visitor<? extends T>) visitor).visitSupportsDisjunction(this);
-            else return visitor.visitChildren(this);
-        }
-    }
-
-    public final SupportsDisjunctionContext supportsDisjunction() throws RecognitionException {
-        SupportsDisjunctionContext _localctx = new SupportsDisjunctionContext(_ctx, getState());
-        enterRule(_localctx, 112, RULE_supportsDisjunction);
-        try {
-            int _alt;
-            enterOuterAlt(_localctx, 1);
-            {
-                setState(846);
-                supportsConditionInParens();
-                setState(856);
-                _errHandler.sync(this);
-                _alt = 1;
-                do {
-                    switch (_alt) {
-                        case 1: {
-                            {
-                                setState(847);
-                                ws();
-                                setState(848);
-                                match(Space);
-                                setState(849);
-                                ws();
-                                setState(850);
-                                match(Or);
-                                setState(851);
-                                ws();
-                                setState(852);
-                                match(Space);
-                                setState(853);
-                                ws();
-                                setState(854);
-                                supportsConditionInParens();
-                            }
-                        }
-                        break;
-                        default:
-                            throw new NoViableAltException(this);
-                    }
-                    setState(858);
-                    _errHandler.sync(this);
-                    _alt = getInterpreter().adaptivePredict(_input, 81, _ctx);
-                } while (_alt != 2 && _alt != org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER);
-            }
-        } catch (RecognitionException re) {
-            _localctx.exception = re;
-            _errHandler.reportError(this, re);
-            _errHandler.recover(this, re);
-        } finally {
-            exitRule();
-        }
-        return _localctx;
-    }
-
-    public static class SupportsDeclarationConditionContext extends ParserRuleContext {
-        public WsContext ws() {
-            return getRuleContext(WsContext.class, 0);
-        }
-
-        public DeclarationContext declaration() {
-            return getRuleContext(DeclarationContext.class, 0);
-        }
-
-        public SupportsDeclarationConditionContext(ParserRuleContext parent, int invokingState) {
-            super(parent, invokingState);
-        }
-
-        @Override
-        public int getRuleIndex() {
-            return RULE_supportsDeclarationCondition;
-        }
-
-        @Override
-        public void enterRule(ParseTreeListener listener) {
-            if (listener instanceof CSS3Listener) ((CSS3Listener) listener).enterSupportsDeclarationCondition(this);
-        }
-
-        @Override
-        public void exitRule(ParseTreeListener listener) {
-            if (listener instanceof CSS3Listener) ((CSS3Listener) listener).exitSupportsDeclarationCondition(this);
-        }
-
-        @Override
-        public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-            if (visitor instanceof CSS3Visitor)
-                return ((CSS3Visitor<? extends T>) visitor).visitSupportsDeclarationCondition(this);
-            else return visitor.visitChildren(this);
-        }
-    }
-
-    public final SupportsDeclarationConditionContext supportsDeclarationCondition() throws RecognitionException {
-        SupportsDeclarationConditionContext _localctx = new SupportsDeclarationConditionContext(_ctx, getState());
-        enterRule(_localctx, 114, RULE_supportsDeclarationCondition);
-        try {
-            enterOuterAlt(_localctx, 1);
-            {
-                setState(860);
-                match(T__1);
-                setState(861);
-                ws();
-                setState(862);
-                declaration();
-                setState(863);
-                match(T__3);
-            }
-        } catch (RecognitionException re) {
-            _localctx.exception = re;
-            _errHandler.reportError(this, re);
-            _errHandler.recover(this, re);
-        } finally {
-            exitRule();
-        }
-        return _localctx;
-    }
-
-    public static class GeneralEnclosedContext extends ParserRuleContext {
-        public TerminalNode Function() {
-            return getToken(CSS3Parser.Function, 0);
-        }
-
-        public List<AnyContext> any() {
-            return getRuleContexts(AnyContext.class);
-        }
-
-        public AnyContext any(int i) {
-            return getRuleContext(AnyContext.class, i);
-        }
-
-        public List<UnusedContext> unused() {
-            return getRuleContexts(UnusedContext.class);
-        }
-
-        public UnusedContext unused(int i) {
-            return getRuleContext(UnusedContext.class, i);
-        }
-
-        public GeneralEnclosedContext(ParserRuleContext parent, int invokingState) {
-            super(parent, invokingState);
-        }
-
-        @Override
-        public int getRuleIndex() {
-            return RULE_generalEnclosed;
-        }
-
-        @Override
-        public void enterRule(ParseTreeListener listener) {
-            if (listener instanceof CSS3Listener) ((CSS3Listener) listener).enterGeneralEnclosed(this);
-        }
-
-        @Override
-        public void exitRule(ParseTreeListener listener) {
-            if (listener instanceof CSS3Listener) ((CSS3Listener) listener).exitGeneralEnclosed(this);
-        }
-
-        @Override
-        public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-            if (visitor instanceof CSS3Visitor) return ((CSS3Visitor<? extends T>) visitor).visitGeneralEnclosed(this);
-            else return visitor.visitChildren(this);
-        }
-    }
-
-    public final GeneralEnclosedContext generalEnclosed() throws RecognitionException {
-        GeneralEnclosedContext _localctx = new GeneralEnclosedContext(_ctx, getState());
-        enterRule(_localctx, 116, RULE_generalEnclosed);
-        int _la;
-        try {
-            enterOuterAlt(_localctx, 1);
-            {
-                setState(865);
-                _la = _input.LA(1);
-                if (!(_la == T__1 || _la == Function)) {
-                    _errHandler.recoverInline(this);
-                } else {
-                    if (_input.LA(1) == Token.EOF) matchedEOF = true;
-                    _errHandler.reportMatch(this);
-                    consume();
-                }
-                setState(870);
-                _errHandler.sync(this);
-                _la = _input.LA(1);
-                while ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__0) | (1L << T__1) | (1L << T__2) | (1L << T__4) | (1L << T__9) | (1L << T__14) | (1L << Cdo) | (1L << Cdc) | (1L << Includes) | (1L << DashMatch) | (1L << Hash) | (1L << Percentage) | (1L << Uri) | (1L << UnicodeRange) | (1L << MediaOnly) | (1L << Not) | (1L << And) | (1L << Dimension) | (1L << UnknownDimension) | (1L << Plus) | (1L << Minus) | (1L << Number) | (1L << String) | (1L << Or) | (1L << From) | (1L << To) | (1L << Ident) | (1L << Function))) != 0)) {
-                    {
-                        setState(868);
-                        _errHandler.sync(this);
-                        switch (_input.LA(1)) {
-                            case T__1:
-                            case T__2:
-                            case T__9:
-                            case Includes:
-                            case DashMatch:
-                            case Hash:
-                            case Percentage:
-                            case Uri:
-                            case UnicodeRange:
-                            case MediaOnly:
-                            case Not:
-                            case And:
-                            case Dimension:
-                            case UnknownDimension:
-                            case Plus:
-                            case Minus:
-                            case Number:
-                            case String:
-                            case Or:
-                            case From:
-                            case To:
-                            case Ident:
-                            case Function: {
-                                setState(866);
-                                any();
-                            }
-                            break;
-                            case T__0:
-                            case T__4:
-                            case T__14:
-                            case Cdo:
-                            case Cdc: {
-                                setState(867);
-                                unused();
-                            }
-                            break;
-                            default:
-                                throw new NoViableAltException(this);
-                        }
-                    }
-                    setState(872);
-                    _errHandler.sync(this);
-                    _la = _input.LA(1);
-                }
-                setState(873);
-                match(T__3);
-            }
-        } catch (RecognitionException re) {
-            _localctx.exception = re;
-            _errHandler.reportError(this, re);
-            _errHandler.recover(this, re);
-        } finally {
-            exitRule();
-        }
-        return _localctx;
-    }
-
-    public static class VarContext extends ParserRuleContext {
-        public TerminalNode Var() {
-            return getToken(CSS3Parser.Var, 0);
-        }
-
-        public List<WsContext> ws() {
-            return getRuleContexts(WsContext.class);
-        }
-
-        public WsContext ws(int i) {
-            return getRuleContext(WsContext.class, i);
-        }
-
-        public TerminalNode Variable() {
-            return getToken(CSS3Parser.Variable, 0);
-        }
-
-        public VarContext(ParserRuleContext parent, int invokingState) {
-            super(parent, invokingState);
-        }
-
-        @Override
-        public int getRuleIndex() {
-            return RULE_var;
-        }
-
-        @Override
-        public void enterRule(ParseTreeListener listener) {
-            if (listener instanceof CSS3Listener) ((CSS3Listener) listener).enterVar(this);
-        }
-
-        @Override
-        public void exitRule(ParseTreeListener listener) {
-            if (listener instanceof CSS3Listener) ((CSS3Listener) listener).exitVar(this);
-        }
-
-        @Override
-        public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-            if (visitor instanceof CSS3Visitor) return ((CSS3Visitor<? extends T>) visitor).visitVar(this);
-            else return visitor.visitChildren(this);
-        }
-    }
-
-    public final VarContext var() throws RecognitionException {
-        VarContext _localctx = new VarContext(_ctx, getState());
-        enterRule(_localctx, 118, RULE_var);
-        try {
-            enterOuterAlt(_localctx, 1);
-            {
-                setState(875);
-                match(Var);
-                setState(876);
-                ws();
-                setState(877);
-                match(Variable);
-                setState(878);
-                ws();
-                setState(879);
-                match(T__3);
-                setState(880);
-                ws();
-            }
-        } catch (RecognitionException re) {
-            _localctx.exception = re;
-            _errHandler.reportError(this, re);
-            _errHandler.recover(this, re);
-        } finally {
-            exitRule();
-        }
-        return _localctx;
-    }
-
-    public static class CalcContext extends ParserRuleContext {
-        public TerminalNode Calc() {
-            return getToken(CSS3Parser.Calc, 0);
-        }
-
-        public List<WsContext> ws() {
-            return getRuleContexts(WsContext.class);
-        }
-
-        public WsContext ws(int i) {
-            return getRuleContext(WsContext.class, i);
-        }
-
-        public CalcSumContext calcSum() {
-            return getRuleContext(CalcSumContext.class, 0);
-        }
-
-        public CalcContext(ParserRuleContext parent, int invokingState) {
-            super(parent, invokingState);
-        }
-
-        @Override
-        public int getRuleIndex() {
-            return RULE_calc;
-        }
-
-        @Override
-        public void enterRule(ParseTreeListener listener) {
-            if (listener instanceof CSS3Listener) ((CSS3Listener) listener).enterCalc(this);
-        }
-
-        @Override
-        public void exitRule(ParseTreeListener listener) {
-            if (listener instanceof CSS3Listener) ((CSS3Listener) listener).exitCalc(this);
-        }
-
-        @Override
-        public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-            if (visitor instanceof CSS3Visitor) return ((CSS3Visitor<? extends T>) visitor).visitCalc(this);
-            else return visitor.visitChildren(this);
-        }
-    }
-
-    public final CalcContext calc() throws RecognitionException {
-        CalcContext _localctx = new CalcContext(_ctx, getState());
-        enterRule(_localctx, 120, RULE_calc);
-        try {
-            enterOuterAlt(_localctx, 1);
-            {
-                setState(882);
-                match(Calc);
-                setState(883);
-                ws();
-                setState(884);
-                calcSum();
-                setState(885);
-                match(T__3);
-                setState(886);
-                ws();
-            }
-        } catch (RecognitionException re) {
-            _localctx.exception = re;
-            _errHandler.reportError(this, re);
-            _errHandler.recover(this, re);
-        } finally {
-            exitRule();
-        }
-        return _localctx;
-    }
-
-    public static class CalcSumContext extends ParserRuleContext {
-        public List<CalcProductContext> calcProduct() {
-            return getRuleContexts(CalcProductContext.class);
-        }
-
-        public CalcProductContext calcProduct(int i) {
-            return getRuleContext(CalcProductContext.class, i);
-        }
-
-        public List<TerminalNode> Space() {
-            return getTokens(CSS3Parser.Space);
-        }
-
-        public TerminalNode Space(int i) {
-            return getToken(CSS3Parser.Space, i);
-        }
-
-        public List<WsContext> ws() {
-            return getRuleContexts(WsContext.class);
-        }
-
-        public WsContext ws(int i) {
-            return getRuleContext(WsContext.class, i);
-        }
-
-        public List<TerminalNode> Plus() {
-            return getTokens(CSS3Parser.Plus);
-        }
-
-        public TerminalNode Plus(int i) {
-            return getToken(CSS3Parser.Plus, i);
-        }
-
-        public List<TerminalNode> Minus() {
-            return getTokens(CSS3Parser.Minus);
-        }
-
-        public TerminalNode Minus(int i) {
-            return getToken(CSS3Parser.Minus, i);
-        }
-
-        public CalcSumContext(ParserRuleContext parent, int invokingState) {
-            super(parent, invokingState);
-        }
-
-        @Override
-        public int getRuleIndex() {
-            return RULE_calcSum;
-        }
-
-        @Override
-        public void enterRule(ParseTreeListener listener) {
-            if (listener instanceof CSS3Listener) ((CSS3Listener) listener).enterCalcSum(this);
-        }
-
-        @Override
-        public void exitRule(ParseTreeListener listener) {
-            if (listener instanceof CSS3Listener) ((CSS3Listener) listener).exitCalcSum(this);
-        }
-
-        @Override
-        public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-            if (visitor instanceof CSS3Visitor) return ((CSS3Visitor<? extends T>) visitor).visitCalcSum(this);
-            else return visitor.visitChildren(this);
-        }
-    }
-
-    public final CalcSumContext calcSum() throws RecognitionException {
-        CalcSumContext _localctx = new CalcSumContext(_ctx, getState());
-        enterRule(_localctx, 122, RULE_calcSum);
-        int _la;
-        try {
-            enterOuterAlt(_localctx, 1);
-            {
-                setState(888);
-                calcProduct();
-                setState(899);
-                _errHandler.sync(this);
-                _la = _input.LA(1);
-                while (_la == Space) {
-                    {
-                        {
-                            setState(889);
-                            match(Space);
-                            setState(890);
-                            ws();
-                            setState(891);
-                            _la = _input.LA(1);
-                            if (!(_la == Plus || _la == Minus)) {
-                                _errHandler.recoverInline(this);
-                            } else {
-                                if (_input.LA(1) == Token.EOF) matchedEOF = true;
-                                _errHandler.reportMatch(this);
-                                consume();
-                            }
-                            setState(892);
-                            ws();
-                            setState(893);
-                            match(Space);
-                            setState(894);
-                            ws();
-                            setState(895);
-                            calcProduct();
-                        }
-                    }
-                    setState(901);
-                    _errHandler.sync(this);
-                    _la = _input.LA(1);
-                }
-            }
-        } catch (RecognitionException re) {
-            _localctx.exception = re;
-            _errHandler.reportError(this, re);
-            _errHandler.recover(this, re);
-        } finally {
-            exitRule();
-        }
-        return _localctx;
-    }
-
-    public static class CalcProductContext extends ParserRuleContext {
-        public List<CalcValueContext> calcValue() {
-            return getRuleContexts(CalcValueContext.class);
-        }
-
-        public CalcValueContext calcValue(int i) {
-            return getRuleContext(CalcValueContext.class, i);
-        }
-
-        public List<WsContext> ws() {
-            return getRuleContexts(WsContext.class);
-        }
-
-        public WsContext ws(int i) {
-            return getRuleContext(WsContext.class, i);
-        }
-
-        public List<NumberContext> number() {
-            return getRuleContexts(NumberContext.class);
-        }
-
-        public NumberContext number(int i) {
-            return getRuleContext(NumberContext.class, i);
-        }
-
-        public CalcProductContext(ParserRuleContext parent, int invokingState) {
-            super(parent, invokingState);
-        }
-
-        @Override
-        public int getRuleIndex() {
-            return RULE_calcProduct;
-        }
-
-        @Override
-        public void enterRule(ParseTreeListener listener) {
-            if (listener instanceof CSS3Listener) ((CSS3Listener) listener).enterCalcProduct(this);
-        }
-
-        @Override
-        public void exitRule(ParseTreeListener listener) {
-            if (listener instanceof CSS3Listener) ((CSS3Listener) listener).exitCalcProduct(this);
-        }
-
-        @Override
-        public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-            if (visitor instanceof CSS3Visitor) return ((CSS3Visitor<? extends T>) visitor).visitCalcProduct(this);
-            else return visitor.visitChildren(this);
-        }
-    }
-
-    public final CalcProductContext calcProduct() throws RecognitionException {
-        CalcProductContext _localctx = new CalcProductContext(_ctx, getState());
-        enterRule(_localctx, 124, RULE_calcProduct);
-        int _la;
-        try {
-            enterOuterAlt(_localctx, 1);
-            {
-                setState(902);
-                calcValue();
-                setState(914);
-                _errHandler.sync(this);
-                _la = _input.LA(1);
-                while (_la == T__6 || _la == T__12) {
-                    {
-                        setState(912);
-                        _errHandler.sync(this);
-                        switch (_input.LA(1)) {
-                            case T__6: {
-                                setState(903);
-                                match(T__6);
-                                setState(904);
-                                ws();
-                                setState(905);
-                                calcValue();
-                            }
-                            break;
-                            case T__12: {
-                                setState(907);
-                                match(T__12);
-                                setState(908);
-                                ws();
-                                setState(909);
-                                number();
-                                setState(910);
-                                ws();
-                            }
-                            break;
-                            default:
-                                throw new NoViableAltException(this);
-                        }
-                    }
-                    setState(916);
-                    _errHandler.sync(this);
-                    _la = _input.LA(1);
-                }
-            }
-        } catch (RecognitionException re) {
-            _localctx.exception = re;
-            _errHandler.reportError(this, re);
-            _errHandler.recover(this, re);
-        } finally {
-            exitRule();
-        }
-        return _localctx;
-    }
-
-    public static class CalcValueContext extends ParserRuleContext {
-        public NumberContext number() {
-            return getRuleContext(NumberContext.class, 0);
-        }
-
-        public List<WsContext> ws() {
-            return getRuleContexts(WsContext.class);
-        }
-
-        public WsContext ws(int i) {
-            return getRuleContext(WsContext.class, i);
-        }
-
-        public DimensionContext dimension() {
-            return getRuleContext(DimensionContext.class, 0);
-        }
-
-        public UnknownDimensionContext unknownDimension() {
-            return getRuleContext(UnknownDimensionContext.class, 0);
-        }
-
-        public PercentageContext percentage() {
-            return getRuleContext(PercentageContext.class, 0);
-        }
-
-        public CalcSumContext calcSum() {
-            return getRuleContext(CalcSumContext.class, 0);
-        }
-
-        public CalcValueContext(ParserRuleContext parent, int invokingState) {
-            super(parent, invokingState);
-        }
-
-        @Override
-        public int getRuleIndex() {
-            return RULE_calcValue;
-        }
-
-        @Override
-        public void enterRule(ParseTreeListener listener) {
-            if (listener instanceof CSS3Listener) ((CSS3Listener) listener).enterCalcValue(this);
-        }
-
-        @Override
-        public void exitRule(ParseTreeListener listener) {
-            if (listener instanceof CSS3Listener) ((CSS3Listener) listener).exitCalcValue(this);
-        }
-
-        @Override
-        public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-            if (visitor instanceof CSS3Visitor) return ((CSS3Visitor<? extends T>) visitor).visitCalcValue(this);
-            else return visitor.visitChildren(this);
-        }
-    }
-
-    public final CalcValueContext calcValue() throws RecognitionException {
-        CalcValueContext _localctx = new CalcValueContext(_ctx, getState());
-        enterRule(_localctx, 126, RULE_calcValue);
-        try {
-            setState(935);
-            _errHandler.sync(this);
-            switch (getInterpreter().adaptivePredict(_input, 87, _ctx)) {
-                case 1:
-                    enterOuterAlt(_localctx, 1);
-                {
-                    setState(917);
-                    number();
-                    setState(918);
-                    ws();
-                }
-                break;
-                case 2:
-                    enterOuterAlt(_localctx, 2);
-                {
-                    setState(920);
-                    dimension();
-                    setState(921);
-                    ws();
-                }
-                break;
-                case 3:
-                    enterOuterAlt(_localctx, 3);
-                {
-                    setState(923);
-                    unknownDimension();
-                    setState(924);
-                    ws();
-                }
-                break;
-                case 4:
-                    enterOuterAlt(_localctx, 4);
-                {
-                    setState(926);
-                    percentage();
-                    setState(927);
-                    ws();
-                }
-                break;
-                case 5:
-                    enterOuterAlt(_localctx, 5);
-                {
-                    setState(929);
-                    match(T__1);
-                    setState(930);
-                    ws();
-                    setState(931);
-                    calcSum();
-                    setState(932);
-                    match(T__3);
-                    setState(933);
-                    ws();
-                }
-                break;
-            }
-        } catch (RecognitionException re) {
-            _localctx.exception = re;
-            _errHandler.reportError(this, re);
-            _errHandler.recover(this, re);
-        } finally {
-            exitRule();
-        }
-        return _localctx;
-    }
-
-    public static class FontFaceRuleContext extends ParserRuleContext {
-        public TerminalNode FontFace() {
-            return getToken(CSS3Parser.FontFace, 0);
-        }
-
-        public List<WsContext> ws() {
-            return getRuleContexts(WsContext.class);
-        }
-
-        public WsContext ws(int i) {
-            return getRuleContext(WsContext.class, i);
-        }
-
-        public List<FontFaceDeclarationContext> fontFaceDeclaration() {
-            return getRuleContexts(FontFaceDeclarationContext.class);
-        }
-
-        public FontFaceDeclarationContext fontFaceDeclaration(int i) {
-            return getRuleContext(FontFaceDeclarationContext.class, i);
-        }
-
-        public FontFaceRuleContext(ParserRuleContext parent, int invokingState) {
-            super(parent, invokingState);
-        }
-
-        @Override
-        public int getRuleIndex() {
-            return RULE_fontFaceRule;
-        }
-
-        @Override
-        public void enterRule(ParseTreeListener listener) {
-            if (listener instanceof CSS3Listener) ((CSS3Listener) listener).enterFontFaceRule(this);
-        }
-
-        @Override
-        public void exitRule(ParseTreeListener listener) {
-            if (listener instanceof CSS3Listener) ((CSS3Listener) listener).exitFontFaceRule(this);
-        }
-
-        @Override
-        public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-            if (visitor instanceof CSS3Visitor) return ((CSS3Visitor<? extends T>) visitor).visitFontFaceRule(this);
-            else return visitor.visitChildren(this);
-        }
-    }
-
-    public final FontFaceRuleContext fontFaceRule() throws RecognitionException {
-        FontFaceRuleContext _localctx = new FontFaceRuleContext(_ctx, getState());
-        enterRule(_localctx, 128, RULE_fontFaceRule);
-        int _la;
-        try {
-            enterOuterAlt(_localctx, 1);
-            {
-                setState(937);
-                match(FontFace);
-                setState(938);
-                ws();
-                setState(939);
-                match(T__4);
-                setState(940);
-                ws();
-                setState(942);
-                _errHandler.sync(this);
-                _la = _input.LA(1);
-                if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__6) | (1L << T__13) | (1L << MediaOnly) | (1L << Not) | (1L << And) | (1L << Or) | (1L << From) | (1L << To) | (1L << Variable) | (1L << Ident))) != 0)) {
-                    {
-                        setState(941);
-                        fontFaceDeclaration();
-                    }
-                }
-
-                setState(951);
-                _errHandler.sync(this);
-                _la = _input.LA(1);
-                while (_la == T__0) {
-                    {
-                        {
-                            setState(944);
-                            match(T__0);
-                            setState(945);
-                            ws();
-                            setState(947);
-                            _errHandler.sync(this);
-                            _la = _input.LA(1);
-                            if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__6) | (1L << T__13) | (1L << MediaOnly) | (1L << Not) | (1L << And) | (1L << Or) | (1L << From) | (1L << To) | (1L << Variable) | (1L << Ident))) != 0)) {
-                                {
-                                    setState(946);
-                                    fontFaceDeclaration();
-                                }
-                            }
-
-                        }
-                    }
-                    setState(953);
-                    _errHandler.sync(this);
-                    _la = _input.LA(1);
-                }
-                setState(954);
-                match(T__5);
-                setState(955);
-                ws();
-            }
-        } catch (RecognitionException re) {
-            _localctx.exception = re;
-            _errHandler.reportError(this, re);
-            _errHandler.recover(this, re);
-        } finally {
-            exitRule();
-        }
-        return _localctx;
-    }
-
-    public static class FontFaceDeclarationContext extends ParserRuleContext {
-        public FontFaceDeclarationContext(ParserRuleContext parent, int invokingState) {
-            super(parent, invokingState);
-        }
-
-        @Override
-        public int getRuleIndex() {
-            return RULE_fontFaceDeclaration;
-        }
-
-        public FontFaceDeclarationContext() {
-        }
-
-        public void copyFrom(FontFaceDeclarationContext ctx) {
-            super.copyFrom(ctx);
-        }
-    }
-
-    public static class KnownFontFaceDeclarationContext extends FontFaceDeclarationContext {
-        public PropertyContext property() {
-            return getRuleContext(PropertyContext.class, 0);
-        }
-
-        public WsContext ws() {
-            return getRuleContext(WsContext.class, 0);
-        }
-
-        public ExprContext expr() {
-            return getRuleContext(ExprContext.class, 0);
-        }
-
-        public KnownFontFaceDeclarationContext(FontFaceDeclarationContext ctx) {
-            copyFrom(ctx);
-        }
-
-        @Override
-        public void enterRule(ParseTreeListener listener) {
-            if (listener instanceof CSS3Listener) ((CSS3Listener) listener).enterKnownFontFaceDeclaration(this);
-        }
-
-        @Override
-        public void exitRule(ParseTreeListener listener) {
-            if (listener instanceof CSS3Listener) ((CSS3Listener) listener).exitKnownFontFaceDeclaration(this);
-        }
-
-        @Override
-        public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-            if (visitor instanceof CSS3Visitor)
-                return ((CSS3Visitor<? extends T>) visitor).visitKnownFontFaceDeclaration(this);
-            else return visitor.visitChildren(this);
-        }
-    }
-
-    public static class UnknownFontFaceDeclarationContext extends FontFaceDeclarationContext {
-        public PropertyContext property() {
-            return getRuleContext(PropertyContext.class, 0);
-        }
-
-        public WsContext ws() {
-            return getRuleContext(WsContext.class, 0);
-        }
-
-        public ValueContext value() {
-            return getRuleContext(ValueContext.class, 0);
-        }
-
-        public UnknownFontFaceDeclarationContext(FontFaceDeclarationContext ctx) {
-            copyFrom(ctx);
-        }
-
-        @Override
-        public void enterRule(ParseTreeListener listener) {
-            if (listener instanceof CSS3Listener) ((CSS3Listener) listener).enterUnknownFontFaceDeclaration(this);
-        }
-
-        @Override
-        public void exitRule(ParseTreeListener listener) {
-            if (listener instanceof CSS3Listener) ((CSS3Listener) listener).exitUnknownFontFaceDeclaration(this);
-        }
-
-        @Override
-        public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-            if (visitor instanceof CSS3Visitor)
-                return ((CSS3Visitor<? extends T>) visitor).visitUnknownFontFaceDeclaration(this);
-            else return visitor.visitChildren(this);
-        }
-    }
-
-    public final FontFaceDeclarationContext fontFaceDeclaration() throws RecognitionException {
-        FontFaceDeclarationContext _localctx = new FontFaceDeclarationContext(_ctx, getState());
-        enterRule(_localctx, 130, RULE_fontFaceDeclaration);
-        try {
-            setState(967);
-            _errHandler.sync(this);
-            switch (getInterpreter().adaptivePredict(_input, 91, _ctx)) {
-                case 1:
-                    _localctx = new KnownFontFaceDeclarationContext(_localctx);
-                    enterOuterAlt(_localctx, 1);
-                {
-                    setState(957);
-                    property();
-                    setState(958);
-                    match(T__2);
-                    setState(959);
-                    ws();
-                    setState(960);
-                    expr();
-                }
-                break;
-                case 2:
-                    _localctx = new UnknownFontFaceDeclarationContext(_localctx);
-                    enterOuterAlt(_localctx, 2);
-                {
-                    setState(962);
-                    property();
-                    setState(963);
-                    match(T__2);
-                    setState(964);
-                    ws();
-                    setState(965);
-                    value();
-                }
-                break;
-            }
-        } catch (RecognitionException re) {
-            _localctx.exception = re;
-            _errHandler.reportError(this, re);
-            _errHandler.recover(this, re);
-        } finally {
-            exitRule();
-        }
-        return _localctx;
-    }
-
-    public static class KeyframesRuleContext extends ParserRuleContext {
-        public TerminalNode Keyframes() {
-            return getToken(CSS3Parser.Keyframes, 0);
-        }
-
-        public List<WsContext> ws() {
-            return getRuleContexts(WsContext.class);
-        }
-
-        public WsContext ws(int i) {
-            return getRuleContext(WsContext.class, i);
-        }
-
-        public TerminalNode Space() {
-            return getToken(CSS3Parser.Space, 0);
-        }
-
-        public IdentContext ident() {
-            return getRuleContext(IdentContext.class, 0);
-        }
-
-        public KeyframesBlocksContext keyframesBlocks() {
-            return getRuleContext(KeyframesBlocksContext.class, 0);
-        }
-
-        public KeyframesRuleContext(ParserRuleContext parent, int invokingState) {
-            super(parent, invokingState);
-        }
-
-        @Override
-        public int getRuleIndex() {
-            return RULE_keyframesRule;
-        }
-
-        @Override
-        public void enterRule(ParseTreeListener listener) {
-            if (listener instanceof CSS3Listener) ((CSS3Listener) listener).enterKeyframesRule(this);
-        }
-
-        @Override
-        public void exitRule(ParseTreeListener listener) {
-            if (listener instanceof CSS3Listener) ((CSS3Listener) listener).exitKeyframesRule(this);
-        }
-
-        @Override
-        public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-            if (visitor instanceof CSS3Visitor) return ((CSS3Visitor<? extends T>) visitor).visitKeyframesRule(this);
-            else return visitor.visitChildren(this);
-        }
-    }
-
-    public final KeyframesRuleContext keyframesRule() throws RecognitionException {
-        KeyframesRuleContext _localctx = new KeyframesRuleContext(_ctx, getState());
-        enterRule(_localctx, 132, RULE_keyframesRule);
-        try {
-            enterOuterAlt(_localctx, 1);
-            {
-                setState(969);
-                match(Keyframes);
-                setState(970);
-                ws();
-                setState(971);
-                match(Space);
-                setState(972);
-                ws();
-                setState(973);
-                ident();
-                setState(974);
-                ws();
-                setState(975);
-                match(T__4);
-                setState(976);
-                ws();
-                setState(977);
-                keyframesBlocks();
-                setState(978);
-                match(T__5);
-                setState(979);
-                ws();
-            }
-        } catch (RecognitionException re) {
-            _localctx.exception = re;
-            _errHandler.reportError(this, re);
-            _errHandler.recover(this, re);
-        } finally {
-            exitRule();
-        }
-        return _localctx;
-    }
-
-    public static class KeyframesBlocksContext extends ParserRuleContext {
-        public List<KeyframeSelectorContext> keyframeSelector() {
-            return getRuleContexts(KeyframeSelectorContext.class);
-        }
-
-        public KeyframeSelectorContext keyframeSelector(int i) {
-            return getRuleContext(KeyframeSelectorContext.class, i);
-        }
-
-        public List<WsContext> ws() {
-            return getRuleContexts(WsContext.class);
-        }
-
-        public WsContext ws(int i) {
-            return getRuleContext(WsContext.class, i);
-        }
-
-        public List<DeclarationListContext> declarationList() {
-            return getRuleContexts(DeclarationListContext.class);
-        }
-
-        public DeclarationListContext declarationList(int i) {
-            return getRuleContext(DeclarationListContext.class, i);
-        }
-
-        public KeyframesBlocksContext(ParserRuleContext parent, int invokingState) {
-            super(parent, invokingState);
-        }
-
-        @Override
-        public int getRuleIndex() {
-            return RULE_keyframesBlocks;
-        }
-
-        @Override
-        public void enterRule(ParseTreeListener listener) {
-            if (listener instanceof CSS3Listener) ((CSS3Listener) listener).enterKeyframesBlocks(this);
-        }
-
-        @Override
-        public void exitRule(ParseTreeListener listener) {
-            if (listener instanceof CSS3Listener) ((CSS3Listener) listener).exitKeyframesBlocks(this);
-        }
-
-        @Override
-        public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-            if (visitor instanceof CSS3Visitor) return ((CSS3Visitor<? extends T>) visitor).visitKeyframesBlocks(this);
-            else return visitor.visitChildren(this);
-        }
-    }
-
-    public final KeyframesBlocksContext keyframesBlocks() throws RecognitionException {
-        KeyframesBlocksContext _localctx = new KeyframesBlocksContext(_ctx, getState());
-        enterRule(_localctx, 134, RULE_keyframesBlocks);
-        int _la;
-        try {
-            enterOuterAlt(_localctx, 1);
-            {
-                setState(992);
-                _errHandler.sync(this);
-                _la = _input.LA(1);
-                while ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << Percentage) | (1L << From) | (1L << To))) != 0)) {
-                    {
-                        {
-                            setState(981);
-                            keyframeSelector();
-                            setState(982);
-                            match(T__4);
-                            setState(983);
-                            ws();
-                            setState(985);
-                            _errHandler.sync(this);
-                            _la = _input.LA(1);
-                            if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__0) | (1L << T__6) | (1L << T__13) | (1L << MediaOnly) | (1L << Not) | (1L << And) | (1L << Or) | (1L << From) | (1L << To) | (1L << Variable) | (1L << Ident))) != 0)) {
-                                {
-                                    setState(984);
-                                    declarationList();
-                                }
-                            }
-
-                            setState(987);
-                            match(T__5);
-                            setState(988);
-                            ws();
-                        }
-                    }
-                    setState(994);
-                    _errHandler.sync(this);
-                    _la = _input.LA(1);
-                }
-            }
-        } catch (RecognitionException re) {
-            _localctx.exception = re;
-            _errHandler.reportError(this, re);
-            _errHandler.recover(this, re);
-        } finally {
-            exitRule();
-        }
-        return _localctx;
-    }
-
-    public static class KeyframeSelectorContext extends ParserRuleContext {
-        public List<WsContext> ws() {
-            return getRuleContexts(WsContext.class);
-        }
-
-        public WsContext ws(int i) {
-            return getRuleContext(WsContext.class, i);
-        }
-
-        public List<TerminalNode> From() {
-            return getTokens(CSS3Parser.From);
-        }
-
-        public TerminalNode From(int i) {
-            return getToken(CSS3Parser.From, i);
-        }
-
-        public List<TerminalNode> To() {
-            return getTokens(CSS3Parser.To);
-        }
-
-        public TerminalNode To(int i) {
-            return getToken(CSS3Parser.To, i);
-        }
-
-        public List<TerminalNode> Percentage() {
-            return getTokens(CSS3Parser.Percentage);
-        }
-
-        public TerminalNode Percentage(int i) {
-            return getToken(CSS3Parser.Percentage, i);
-        }
-
-        public List<TerminalNode> Comma() {
-            return getTokens(CSS3Parser.Comma);
-        }
-
-        public TerminalNode Comma(int i) {
-            return getToken(CSS3Parser.Comma, i);
-        }
-
-        public KeyframeSelectorContext(ParserRuleContext parent, int invokingState) {
-            super(parent, invokingState);
-        }
-
-        @Override
-        public int getRuleIndex() {
-            return RULE_keyframeSelector;
-        }
-
-        @Override
-        public void enterRule(ParseTreeListener listener) {
-            if (listener instanceof CSS3Listener) ((CSS3Listener) listener).enterKeyframeSelector(this);
-        }
-
-        @Override
-        public void exitRule(ParseTreeListener listener) {
-            if (listener instanceof CSS3Listener) ((CSS3Listener) listener).exitKeyframeSelector(this);
-        }
-
-        @Override
-        public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-            if (visitor instanceof CSS3Visitor) return ((CSS3Visitor<? extends T>) visitor).visitKeyframeSelector(this);
-            else return visitor.visitChildren(this);
-        }
-    }
-
-    public final KeyframeSelectorContext keyframeSelector() throws RecognitionException {
-        KeyframeSelectorContext _localctx = new KeyframeSelectorContext(_ctx, getState());
-        enterRule(_localctx, 136, RULE_keyframeSelector);
-        int _la;
-        try {
-            enterOuterAlt(_localctx, 1);
-            {
-                setState(995);
-                _la = _input.LA(1);
-                if (!((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << Percentage) | (1L << From) | (1L << To))) != 0))) {
-                    _errHandler.recoverInline(this);
-                } else {
-                    if (_input.LA(1) == Token.EOF) matchedEOF = true;
-                    _errHandler.reportMatch(this);
-                    consume();
-                }
-                setState(996);
-                ws();
-                setState(1004);
-                _errHandler.sync(this);
-                _la = _input.LA(1);
-                while (_la == Comma) {
-                    {
-                        {
-                            setState(997);
-                            match(Comma);
-                            setState(998);
-                            ws();
-                            setState(999);
-                            _la = _input.LA(1);
-                            if (!((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << Percentage) | (1L << From) | (1L << To))) != 0))) {
-                                _errHandler.recoverInline(this);
-                            } else {
-                                if (_input.LA(1) == Token.EOF) matchedEOF = true;
-                                _errHandler.reportMatch(this);
-                                consume();
-                            }
-                            setState(1000);
-                            ws();
-                        }
-                    }
-                    setState(1006);
-                    _errHandler.sync(this);
-                    _la = _input.LA(1);
-                }
-            }
-        } catch (RecognitionException re) {
-            _localctx.exception = re;
-            _errHandler.reportError(this, re);
-            _errHandler.recover(this, re);
-        } finally {
-            exitRule();
-        }
-        return _localctx;
-    }
-
-    public static class ViewportContext extends ParserRuleContext {
-        public TerminalNode Viewport() {
-            return getToken(CSS3Parser.Viewport, 0);
-        }
-
-        public List<WsContext> ws() {
-            return getRuleContexts(WsContext.class);
-        }
-
-        public WsContext ws(int i) {
-            return getRuleContext(WsContext.class, i);
-        }
-
-        public DeclarationListContext declarationList() {
-            return getRuleContext(DeclarationListContext.class, 0);
-        }
-
-        public ViewportContext(ParserRuleContext parent, int invokingState) {
-            super(parent, invokingState);
-        }
-
-        @Override
-        public int getRuleIndex() {
-            return RULE_viewport;
-        }
-
-        @Override
-        public void enterRule(ParseTreeListener listener) {
-            if (listener instanceof CSS3Listener) ((CSS3Listener) listener).enterViewport(this);
-        }
-
-        @Override
-        public void exitRule(ParseTreeListener listener) {
-            if (listener instanceof CSS3Listener) ((CSS3Listener) listener).exitViewport(this);
-        }
-
-        @Override
-        public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-            if (visitor instanceof CSS3Visitor) return ((CSS3Visitor<? extends T>) visitor).visitViewport(this);
-            else return visitor.visitChildren(this);
-        }
-    }
-
-    public final ViewportContext viewport() throws RecognitionException {
-        ViewportContext _localctx = new ViewportContext(_ctx, getState());
-        enterRule(_localctx, 138, RULE_viewport);
-        int _la;
-        try {
-            enterOuterAlt(_localctx, 1);
-            {
-                setState(1007);
-                match(Viewport);
-                setState(1008);
-                ws();
-                setState(1009);
-                match(T__4);
-                setState(1010);
-                ws();
-                setState(1012);
-                _errHandler.sync(this);
-                _la = _input.LA(1);
-                if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__0) | (1L << T__6) | (1L << T__13) | (1L << MediaOnly) | (1L << Not) | (1L << And) | (1L << Or) | (1L << From) | (1L << To) | (1L << Variable) | (1L << Ident))) != 0)) {
-                    {
-                        setState(1011);
-                        declarationList();
-                    }
-                }
-
-                setState(1014);
-                match(T__5);
-                setState(1015);
-                ws();
-            }
-        } catch (RecognitionException re) {
-            _localctx.exception = re;
-            _errHandler.reportError(this, re);
-            _errHandler.recover(this, re);
-        } finally {
-            exitRule();
-        }
-        return _localctx;
-    }
-
-    public static class CounterStyleContext extends ParserRuleContext {
-        public TerminalNode CounterStyle() {
-            return getToken(CSS3Parser.CounterStyle, 0);
-        }
-
-        public List<WsContext> ws() {
-            return getRuleContexts(WsContext.class);
-        }
-
-        public WsContext ws(int i) {
-            return getRuleContext(WsContext.class, i);
-        }
-
-        public IdentContext ident() {
-            return getRuleContext(IdentContext.class, 0);
-        }
-
-        public DeclarationListContext declarationList() {
-            return getRuleContext(DeclarationListContext.class, 0);
-        }
-
-        public CounterStyleContext(ParserRuleContext parent, int invokingState) {
-            super(parent, invokingState);
-        }
-
-        @Override
-        public int getRuleIndex() {
-            return RULE_counterStyle;
-        }
-
-        @Override
-        public void enterRule(ParseTreeListener listener) {
-            if (listener instanceof CSS3Listener) ((CSS3Listener) listener).enterCounterStyle(this);
-        }
-
-        @Override
-        public void exitRule(ParseTreeListener listener) {
-            if (listener instanceof CSS3Listener) ((CSS3Listener) listener).exitCounterStyle(this);
-        }
-
-        @Override
-        public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-            if (visitor instanceof CSS3Visitor) return ((CSS3Visitor<? extends T>) visitor).visitCounterStyle(this);
-            else return visitor.visitChildren(this);
-        }
-    }
-
-    public final CounterStyleContext counterStyle() throws RecognitionException {
-        CounterStyleContext _localctx = new CounterStyleContext(_ctx, getState());
-        enterRule(_localctx, 140, RULE_counterStyle);
-        int _la;
-        try {
-            enterOuterAlt(_localctx, 1);
-            {
-                setState(1017);
-                match(CounterStyle);
-                setState(1018);
-                ws();
-                setState(1019);
-                ident();
-                setState(1020);
-                ws();
-                setState(1021);
-                match(T__4);
-                setState(1022);
-                ws();
-                setState(1024);
-                _errHandler.sync(this);
-                _la = _input.LA(1);
-                if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__0) | (1L << T__6) | (1L << T__13) | (1L << MediaOnly) | (1L << Not) | (1L << And) | (1L << Or) | (1L << From) | (1L << To) | (1L << Variable) | (1L << Ident))) != 0)) {
-                    {
-                        setState(1023);
-                        declarationList();
-                    }
-                }
-
-                setState(1026);
-                match(T__5);
-                setState(1027);
-                ws();
-            }
-        } catch (RecognitionException re) {
-            _localctx.exception = re;
-            _errHandler.reportError(this, re);
-            _errHandler.recover(this, re);
-        } finally {
-            exitRule();
-        }
-        return _localctx;
-    }
-
-    public static class FontFeatureValuesRuleContext extends ParserRuleContext {
-        public TerminalNode FontFeatureValues() {
-            return getToken(CSS3Parser.FontFeatureValues, 0);
-        }
-
-        public List<WsContext> ws() {
-            return getRuleContexts(WsContext.class);
-        }
-
-        public WsContext ws(int i) {
-            return getRuleContext(WsContext.class, i);
-        }
-
-        public FontFamilyNameListContext fontFamilyNameList() {
-            return getRuleContext(FontFamilyNameListContext.class, 0);
-        }
-
-        public List<FeatureValueBlockContext> featureValueBlock() {
-            return getRuleContexts(FeatureValueBlockContext.class);
-        }
-
-        public FeatureValueBlockContext featureValueBlock(int i) {
-            return getRuleContext(FeatureValueBlockContext.class, i);
-        }
-
-        public FontFeatureValuesRuleContext(ParserRuleContext parent, int invokingState) {
-            super(parent, invokingState);
-        }
-
-        @Override
-        public int getRuleIndex() {
-            return RULE_fontFeatureValuesRule;
-        }
-
-        @Override
-        public void enterRule(ParseTreeListener listener) {
-            if (listener instanceof CSS3Listener) ((CSS3Listener) listener).enterFontFeatureValuesRule(this);
-        }
-
-        @Override
-        public void exitRule(ParseTreeListener listener) {
-            if (listener instanceof CSS3Listener) ((CSS3Listener) listener).exitFontFeatureValuesRule(this);
-        }
-
-        @Override
-        public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-            if (visitor instanceof CSS3Visitor)
-                return ((CSS3Visitor<? extends T>) visitor).visitFontFeatureValuesRule(this);
-            else return visitor.visitChildren(this);
-        }
-    }
-
-    public final FontFeatureValuesRuleContext fontFeatureValuesRule() throws RecognitionException {
-        FontFeatureValuesRuleContext _localctx = new FontFeatureValuesRuleContext(_ctx, getState());
-        enterRule(_localctx, 142, RULE_fontFeatureValuesRule);
-        int _la;
-        try {
-            enterOuterAlt(_localctx, 1);
-            {
-                setState(1029);
-                match(FontFeatureValues);
-                setState(1030);
-                ws();
-                setState(1031);
-                fontFamilyNameList();
-                setState(1032);
-                ws();
-                setState(1033);
-                match(T__4);
-                setState(1034);
-                ws();
-                setState(1038);
-                _errHandler.sync(this);
-                _la = _input.LA(1);
-                while (_la == T__14) {
-                    {
-                        {
-                            setState(1035);
-                            featureValueBlock();
-                        }
-                    }
-                    setState(1040);
-                    _errHandler.sync(this);
-                    _la = _input.LA(1);
-                }
-                setState(1041);
-                match(T__5);
-                setState(1042);
-                ws();
-            }
-        } catch (RecognitionException re) {
-            _localctx.exception = re;
-            _errHandler.reportError(this, re);
-            _errHandler.recover(this, re);
-        } finally {
-            exitRule();
-        }
-        return _localctx;
-    }
-
-    public static class FontFamilyNameListContext extends ParserRuleContext {
-        public List<FontFamilyNameContext> fontFamilyName() {
-            return getRuleContexts(FontFamilyNameContext.class);
-        }
-
-        public FontFamilyNameContext fontFamilyName(int i) {
-            return getRuleContext(FontFamilyNameContext.class, i);
-        }
-
-        public List<WsContext> ws() {
-            return getRuleContexts(WsContext.class);
-        }
-
-        public WsContext ws(int i) {
-            return getRuleContext(WsContext.class, i);
-        }
-
-        public List<TerminalNode> Comma() {
-            return getTokens(CSS3Parser.Comma);
-        }
-
-        public TerminalNode Comma(int i) {
-            return getToken(CSS3Parser.Comma, i);
-        }
-
-        public FontFamilyNameListContext(ParserRuleContext parent, int invokingState) {
-            super(parent, invokingState);
-        }
-
-        @Override
-        public int getRuleIndex() {
-            return RULE_fontFamilyNameList;
-        }
-
-        @Override
-        public void enterRule(ParseTreeListener listener) {
-            if (listener instanceof CSS3Listener) ((CSS3Listener) listener).enterFontFamilyNameList(this);
-        }
-
-        @Override
-        public void exitRule(ParseTreeListener listener) {
-            if (listener instanceof CSS3Listener) ((CSS3Listener) listener).exitFontFamilyNameList(this);
-        }
-
-        @Override
-        public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-            if (visitor instanceof CSS3Visitor)
-                return ((CSS3Visitor<? extends T>) visitor).visitFontFamilyNameList(this);
-            else return visitor.visitChildren(this);
-        }
-    }
-
-    public final FontFamilyNameListContext fontFamilyNameList() throws RecognitionException {
-        FontFamilyNameListContext _localctx = new FontFamilyNameListContext(_ctx, getState());
-        enterRule(_localctx, 144, RULE_fontFamilyNameList);
-        try {
-            int _alt;
-            enterOuterAlt(_localctx, 1);
-            {
-                setState(1044);
-                fontFamilyName();
-                setState(1052);
-                _errHandler.sync(this);
-                _alt = getInterpreter().adaptivePredict(_input, 98, _ctx);
-                while (_alt != 2 && _alt != org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER) {
-                    if (_alt == 1) {
-                        {
-                            {
-                                setState(1045);
-                                ws();
-                                setState(1046);
-                                match(Comma);
-                                setState(1047);
-                                ws();
-                                setState(1048);
-                                fontFamilyName();
-                            }
-                        }
-                    }
-                    setState(1054);
-                    _errHandler.sync(this);
-                    _alt = getInterpreter().adaptivePredict(_input, 98, _ctx);
-                }
-            }
-        } catch (RecognitionException re) {
-            _localctx.exception = re;
-            _errHandler.reportError(this, re);
-            _errHandler.recover(this, re);
-        } finally {
-            exitRule();
-        }
-        return _localctx;
-    }
-
-    public static class FontFamilyNameContext extends ParserRuleContext {
-        public TerminalNode String() {
-            return getToken(CSS3Parser.String, 0);
-        }
-
-        public List<IdentContext> ident() {
-            return getRuleContexts(IdentContext.class);
-        }
-
-        public IdentContext ident(int i) {
-            return getRuleContext(IdentContext.class, i);
-        }
-
-        public List<WsContext> ws() {
-            return getRuleContexts(WsContext.class);
-        }
-
-        public WsContext ws(int i) {
-            return getRuleContext(WsContext.class, i);
-        }
-
-        public FontFamilyNameContext(ParserRuleContext parent, int invokingState) {
-            super(parent, invokingState);
-        }
-
-        @Override
-        public int getRuleIndex() {
-            return RULE_fontFamilyName;
-        }
-
-        @Override
-        public void enterRule(ParseTreeListener listener) {
-            if (listener instanceof CSS3Listener) ((CSS3Listener) listener).enterFontFamilyName(this);
-        }
-
-        @Override
-        public void exitRule(ParseTreeListener listener) {
-            if (listener instanceof CSS3Listener) ((CSS3Listener) listener).exitFontFamilyName(this);
-        }
-
-        @Override
-        public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-            if (visitor instanceof CSS3Visitor) return ((CSS3Visitor<? extends T>) visitor).visitFontFamilyName(this);
-            else return visitor.visitChildren(this);
-        }
-    }
-
-    public final FontFamilyNameContext fontFamilyName() throws RecognitionException {
-        FontFamilyNameContext _localctx = new FontFamilyNameContext(_ctx, getState());
-        enterRule(_localctx, 146, RULE_fontFamilyName);
-        try {
-            int _alt;
-            setState(1065);
-            _errHandler.sync(this);
-            switch (_input.LA(1)) {
-                case String:
-                    enterOuterAlt(_localctx, 1);
-                {
-                    setState(1055);
-                    match(String);
-                }
-                break;
-                case MediaOnly:
-                case Not:
-                case And:
-                case Or:
-                case From:
-                case To:
-                case Ident:
-                    enterOuterAlt(_localctx, 2);
-                {
-                    setState(1056);
-                    ident();
-                    setState(1062);
-                    _errHandler.sync(this);
-                    _alt = getInterpreter().adaptivePredict(_input, 99, _ctx);
-                    while (_alt != 2 && _alt != org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER) {
-                        if (_alt == 1) {
-                            {
-                                {
-                                    setState(1057);
-                                    ws();
-                                    setState(1058);
-                                    ident();
-                                }
-                            }
-                        }
-                        setState(1064);
-                        _errHandler.sync(this);
-                        _alt = getInterpreter().adaptivePredict(_input, 99, _ctx);
-                    }
-                }
-                break;
-                default:
-                    throw new NoViableAltException(this);
-            }
-        } catch (RecognitionException re) {
-            _localctx.exception = re;
-            _errHandler.reportError(this, re);
-            _errHandler.recover(this, re);
-        } finally {
-            exitRule();
-        }
-        return _localctx;
-    }
-
-    public static class FeatureValueBlockContext extends ParserRuleContext {
-        public FeatureTypeContext featureType() {
-            return getRuleContext(FeatureTypeContext.class, 0);
-        }
-
-        public List<WsContext> ws() {
-            return getRuleContexts(WsContext.class);
-        }
-
-        public WsContext ws(int i) {
-            return getRuleContext(WsContext.class, i);
-        }
-
-        public List<FeatureValueDefinitionContext> featureValueDefinition() {
-            return getRuleContexts(FeatureValueDefinitionContext.class);
-        }
-
-        public FeatureValueDefinitionContext featureValueDefinition(int i) {
-            return getRuleContext(FeatureValueDefinitionContext.class, i);
-        }
-
-        public FeatureValueBlockContext(ParserRuleContext parent, int invokingState) {
-            super(parent, invokingState);
-        }
-
-        @Override
-        public int getRuleIndex() {
-            return RULE_featureValueBlock;
-        }
-
-        @Override
-        public void enterRule(ParseTreeListener listener) {
-            if (listener instanceof CSS3Listener) ((CSS3Listener) listener).enterFeatureValueBlock(this);
-        }
-
-        @Override
-        public void exitRule(ParseTreeListener listener) {
-            if (listener instanceof CSS3Listener) ((CSS3Listener) listener).exitFeatureValueBlock(this);
-        }
-
-        @Override
-        public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-            if (visitor instanceof CSS3Visitor)
-                return ((CSS3Visitor<? extends T>) visitor).visitFeatureValueBlock(this);
-            else return visitor.visitChildren(this);
-        }
-    }
-
-    public final FeatureValueBlockContext featureValueBlock() throws RecognitionException {
-        FeatureValueBlockContext _localctx = new FeatureValueBlockContext(_ctx, getState());
-        enterRule(_localctx, 148, RULE_featureValueBlock);
-        int _la;
-        try {
-            enterOuterAlt(_localctx, 1);
-            {
-                setState(1067);
-                featureType();
-                setState(1068);
-                ws();
-                setState(1069);
-                match(T__4);
-                setState(1070);
-                ws();
-                setState(1072);
-                _errHandler.sync(this);
-                _la = _input.LA(1);
-                if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << MediaOnly) | (1L << Not) | (1L << And) | (1L << Or) | (1L << From) | (1L << To) | (1L << Ident))) != 0)) {
-                    {
-                        setState(1071);
-                        featureValueDefinition();
-                    }
-                }
-
-                setState(1082);
-                _errHandler.sync(this);
-                _la = _input.LA(1);
-                while ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__0) | (1L << Comment) | (1L << Space))) != 0)) {
-                    {
-                        {
-                            setState(1074);
-                            ws();
-                            setState(1075);
-                            match(T__0);
-                            setState(1076);
-                            ws();
-                            setState(1078);
-                            _errHandler.sync(this);
-                            _la = _input.LA(1);
-                            if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << MediaOnly) | (1L << Not) | (1L << And) | (1L << Or) | (1L << From) | (1L << To) | (1L << Ident))) != 0)) {
-                                {
-                                    setState(1077);
-                                    featureValueDefinition();
-                                }
-                            }
-
-                        }
-                    }
-                    setState(1084);
-                    _errHandler.sync(this);
-                    _la = _input.LA(1);
-                }
-                setState(1085);
-                match(T__5);
-                setState(1086);
-                ws();
-            }
-        } catch (RecognitionException re) {
-            _localctx.exception = re;
-            _errHandler.reportError(this, re);
-            _errHandler.recover(this, re);
-        } finally {
-            exitRule();
-        }
-        return _localctx;
-    }
-
-    public static class FeatureTypeContext extends ParserRuleContext {
-        public AtKeywordContext atKeyword() {
-            return getRuleContext(AtKeywordContext.class, 0);
-        }
-
-        public FeatureTypeContext(ParserRuleContext parent, int invokingState) {
-            super(parent, invokingState);
-        }
-
-        @Override
-        public int getRuleIndex() {
-            return RULE_featureType;
-        }
-
-        @Override
-        public void enterRule(ParseTreeListener listener) {
-            if (listener instanceof CSS3Listener) ((CSS3Listener) listener).enterFeatureType(this);
-        }
-
-        @Override
-        public void exitRule(ParseTreeListener listener) {
-            if (listener instanceof CSS3Listener) ((CSS3Listener) listener).exitFeatureType(this);
-        }
-
-        @Override
-        public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-            if (visitor instanceof CSS3Visitor) return ((CSS3Visitor<? extends T>) visitor).visitFeatureType(this);
-            else return visitor.visitChildren(this);
-        }
-    }
-
-    public final FeatureTypeContext featureType() throws RecognitionException {
-        FeatureTypeContext _localctx = new FeatureTypeContext(_ctx, getState());
-        enterRule(_localctx, 150, RULE_featureType);
-        try {
-            enterOuterAlt(_localctx, 1);
-            {
-                setState(1088);
-                atKeyword();
-            }
-        } catch (RecognitionException re) {
-            _localctx.exception = re;
-            _errHandler.reportError(this, re);
-            _errHandler.recover(this, re);
-        } finally {
-            exitRule();
-        }
-        return _localctx;
-    }
-
-    public static class FeatureValueDefinitionContext extends ParserRuleContext {
-        public IdentContext ident() {
-            return getRuleContext(IdentContext.class, 0);
-        }
-
-        public List<WsContext> ws() {
-            return getRuleContexts(WsContext.class);
-        }
-
-        public WsContext ws(int i) {
-            return getRuleContext(WsContext.class, i);
-        }
-
-        public List<NumberContext> number() {
-            return getRuleContexts(NumberContext.class);
-        }
-
-        public NumberContext number(int i) {
-            return getRuleContext(NumberContext.class, i);
-        }
-
-        public FeatureValueDefinitionContext(ParserRuleContext parent, int invokingState) {
-            super(parent, invokingState);
-        }
-
-        @Override
-        public int getRuleIndex() {
-            return RULE_featureValueDefinition;
-        }
-
-        @Override
-        public void enterRule(ParseTreeListener listener) {
-            if (listener instanceof CSS3Listener) ((CSS3Listener) listener).enterFeatureValueDefinition(this);
-        }
-
-        @Override
-        public void exitRule(ParseTreeListener listener) {
-            if (listener instanceof CSS3Listener) ((CSS3Listener) listener).exitFeatureValueDefinition(this);
-        }
-
-        @Override
-        public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-            if (visitor instanceof CSS3Visitor)
-                return ((CSS3Visitor<? extends T>) visitor).visitFeatureValueDefinition(this);
-            else return visitor.visitChildren(this);
-        }
-    }
-
-    public final FeatureValueDefinitionContext featureValueDefinition() throws RecognitionException {
-        FeatureValueDefinitionContext _localctx = new FeatureValueDefinitionContext(_ctx, getState());
-        enterRule(_localctx, 152, RULE_featureValueDefinition);
-        try {
-            int _alt;
-            enterOuterAlt(_localctx, 1);
-            {
-                setState(1090);
-                ident();
-                setState(1091);
-                ws();
-                setState(1092);
-                match(T__2);
-                setState(1093);
-                ws();
-                setState(1094);
-                number();
-                setState(1100);
-                _errHandler.sync(this);
-                _alt = getInterpreter().adaptivePredict(_input, 104, _ctx);
-                while (_alt != 2 && _alt != org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER) {
-                    if (_alt == 1) {
-                        {
-                            {
-                                setState(1095);
-                                ws();
-                                setState(1096);
-                                number();
-                            }
-                        }
-                    }
-                    setState(1102);
-                    _errHandler.sync(this);
-                    _alt = getInterpreter().adaptivePredict(_input, 104, _ctx);
-                }
-            }
-        } catch (RecognitionException re) {
-            _localctx.exception = re;
-            _errHandler.reportError(this, re);
-            _errHandler.recover(this, re);
-        } finally {
-            exitRule();
-        }
-        return _localctx;
-    }
-
-    public static class IdentContext extends ParserRuleContext {
-        public TerminalNode Ident() {
-            return getToken(CSS3Parser.Ident, 0);
-        }
-
-        public TerminalNode MediaOnly() {
-            return getToken(CSS3Parser.MediaOnly, 0);
-        }
-
-        public TerminalNode Not() {
-            return getToken(CSS3Parser.Not, 0);
-        }
-
-        public TerminalNode And() {
-            return getToken(CSS3Parser.And, 0);
-        }
-
-        public TerminalNode Or() {
-            return getToken(CSS3Parser.Or, 0);
-        }
-
-        public TerminalNode From() {
-            return getToken(CSS3Parser.From, 0);
-        }
-
-        public TerminalNode To() {
-            return getToken(CSS3Parser.To, 0);
-        }
-
-        public IdentContext(ParserRuleContext parent, int invokingState) {
-            super(parent, invokingState);
-        }
-
-        @Override
-        public int getRuleIndex() {
-            return RULE_ident;
-        }
-
-        @Override
-        public void enterRule(ParseTreeListener listener) {
-            if (listener instanceof CSS3Listener) ((CSS3Listener) listener).enterIdent(this);
-        }
-
-        @Override
-        public void exitRule(ParseTreeListener listener) {
-            if (listener instanceof CSS3Listener) ((CSS3Listener) listener).exitIdent(this);
-        }
-
-        @Override
-        public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-            if (visitor instanceof CSS3Visitor) return ((CSS3Visitor<? extends T>) visitor).visitIdent(this);
-            else return visitor.visitChildren(this);
-        }
-    }
-
-    public final IdentContext ident() throws RecognitionException {
-        IdentContext _localctx = new IdentContext(_ctx, getState());
-        enterRule(_localctx, 154, RULE_ident);
-        int _la;
-        try {
-            enterOuterAlt(_localctx, 1);
-            {
-                setState(1103);
-                _la = _input.LA(1);
-                if (!((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << MediaOnly) | (1L << Not) | (1L << And) | (1L << Or) | (1L << From) | (1L << To) | (1L << Ident))) != 0))) {
-                    _errHandler.recoverInline(this);
-                } else {
-                    if (_input.LA(1) == Token.EOF) matchedEOF = true;
-                    _errHandler.reportMatch(this);
-                    consume();
-                }
-            }
-        } catch (RecognitionException re) {
-            _localctx.exception = re;
-            _errHandler.reportError(this, re);
-            _errHandler.recover(this, re);
-        } finally {
-            exitRule();
-        }
-        return _localctx;
-    }
-
-    public static class WsContext extends ParserRuleContext {
-        public List<TerminalNode> Comment() {
-            return getTokens(CSS3Parser.Comment);
-        }
-
-        public TerminalNode Comment(int i) {
-            return getToken(CSS3Parser.Comment, i);
-        }
-
-        public List<TerminalNode> Space() {
-            return getTokens(CSS3Parser.Space);
-        }
-
-        public TerminalNode Space(int i) {
-            return getToken(CSS3Parser.Space, i);
-        }
-
-        public WsContext(ParserRuleContext parent, int invokingState) {
-            super(parent, invokingState);
-        }
-
-        @Override
-        public int getRuleIndex() {
-            return RULE_ws;
-        }
-
-        @Override
-        public void enterRule(ParseTreeListener listener) {
-            if (listener instanceof CSS3Listener) ((CSS3Listener) listener).enterWs(this);
-        }
-
-        @Override
-        public void exitRule(ParseTreeListener listener) {
-            if (listener instanceof CSS3Listener) ((CSS3Listener) listener).exitWs(this);
-        }
-
-        @Override
-        public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-            if (visitor instanceof CSS3Visitor) return ((CSS3Visitor<? extends T>) visitor).visitWs(this);
-            else return visitor.visitChildren(this);
-        }
-    }
-
-    public final WsContext ws() throws RecognitionException {
-        WsContext _localctx = new WsContext(_ctx, getState());
-        enterRule(_localctx, 156, RULE_ws);
-        int _la;
-        try {
-            int _alt;
-            enterOuterAlt(_localctx, 1);
-            {
-                setState(1108);
-                _errHandler.sync(this);
-                _alt = getInterpreter().adaptivePredict(_input, 105, _ctx);
-                while (_alt != 2 && _alt != org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER) {
-                    if (_alt == 1) {
-                        {
-                            {
-                                setState(1105);
-                                _la = _input.LA(1);
-                                if (!(_la == Comment || _la == Space)) {
-                                    _errHandler.recoverInline(this);
-                                } else {
-                                    if (_input.LA(1) == Token.EOF) matchedEOF = true;
-                                    _errHandler.reportMatch(this);
-                                    consume();
-                                }
-                            }
-                        }
-                    }
-                    setState(1110);
-                    _errHandler.sync(this);
-                    _alt = getInterpreter().adaptivePredict(_input, 105, _ctx);
-                }
-            }
-        } catch (RecognitionException re) {
-            _localctx.exception = re;
-            _errHandler.reportError(this, re);
-            _errHandler.recover(this, re);
-        } finally {
-            exitRule();
-        }
-        return _localctx;
-    }
-
     public static final String _serializedATN =
             "\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3@\u045a\4\2\t\2\4" +
                     "\3\t\3\4\4\t\4\4\5\t\5\4\6\t\6\4\7\t\7\4\b\t\b\4\t\t\t\4\n\t\n\4\13\t" +
@@ -9230,11 +505,9386 @@ public class CSS3Parser extends Parser {
                     "\u042b\u0432\u0438\u043c\u044e\u0456";
     public static final ATN _ATN =
             new ATNDeserializer().deserialize(_serializedATN.toCharArray());
+    protected static final DFA[] _decisionToDFA;
+    protected static final PredictionContextCache _sharedContextCache =
+            new PredictionContextCache();
+    private static final String[] _LITERAL_NAMES = {
+            null, "';'", "'('", "':'", "')'", "'{'", "'}'", "'*'", "'|'", "'.'", "'['",
+            "'='", "']'", "'/'", "'_'", "'@'", null, null, "'<!--'", "'-->'", "'~='",
+            "'|='", null, null, null, null, null, "'@charset '", null, null, null,
+            null, null, null, null, null, null, "'+'", "'-'", "'>'", "','", "'~'",
+            null, null, null, "'^='", "'$='", "'*='", null, null, null, null, null,
+            null, "'calc('", null, null, null, null, null, "'var('"
+    };
+    private static final String[] _SYMBOLIC_NAMES = {
+            null, null, null, null, null, null, null, null, null, null, null, null,
+            null, null, null, null, "Comment", "Space", "Cdo", "Cdc", "Includes",
+            "DashMatch", "Hash", "Import", "Page", "Media", "Namespace", "Charset",
+            "Important", "Percentage", "Uri", "UnicodeRange", "MediaOnly", "Not",
+            "And", "Dimension", "UnknownDimension", "Plus", "Minus", "Greater", "Comma",
+            "Tilde", "PseudoNot", "Number", "String", "PrefixMatch", "SuffixMatch",
+            "SubstringMatch", "FontFace", "Supports", "Or", "Keyframes", "From", "To",
+            "Calc", "Viewport", "CounterStyle", "FontFeatureValues", "DxImageTransform",
+            "Variable", "Var", "Ident", "Function"
+    };
+    public static final Vocabulary VOCABULARY = new VocabularyImpl(_LITERAL_NAMES, _SYMBOLIC_NAMES);
+
+    static {
+        RuntimeMetaData.checkVersion("4.7", RuntimeMetaData.VERSION);
+    }
+
+    static {
+        tokenNames = new String[_SYMBOLIC_NAMES.length];
+        for (int i = 0; i < tokenNames.length; i++) {
+            tokenNames[i] = VOCABULARY.getLiteralName(i);
+            if (tokenNames[i] == null) {
+                tokenNames[i] = VOCABULARY.getSymbolicName(i);
+            }
+
+            if (tokenNames[i] == null) {
+                tokenNames[i] = "<INVALID>";
+            }
+        }
+    }
 
     static {
         _decisionToDFA = new DFA[_ATN.getNumberOfDecisions()];
         for (int i = 0; i < _ATN.getNumberOfDecisions(); i++) {
             _decisionToDFA[i] = new DFA(_ATN.getDecisionState(i), i);
+        }
+    }
+
+    public CSS3Parser(TokenStream input) {
+        super(input);
+        _interp = new ParserATNSimulator(this, _ATN, _decisionToDFA, _sharedContextCache);
+    }
+
+    @Override
+    @Deprecated
+    public String[] getTokenNames() {
+        return tokenNames;
+    }
+
+    @Override
+
+    public Vocabulary getVocabulary() {
+        return VOCABULARY;
+    }
+
+    @Override
+    public String getGrammarFileName() {
+        return "CSS3.g4";
+    }
+
+    @Override
+    public String[] getRuleNames() {
+        return ruleNames;
+    }
+
+    @Override
+    public String getSerializedATN() {
+        return _serializedATN;
+    }
+
+    @Override
+    public ATN getATN() {
+        return _ATN;
+    }
+
+    public final StylesheetContext stylesheet() throws RecognitionException {
+        StylesheetContext _localctx = new StylesheetContext(_ctx, getState());
+        enterRule(_localctx, 0, RULE_stylesheet);
+        int _la;
+        try {
+            enterOuterAlt(_localctx, 1);
+            {
+                setState(158);
+                ws();
+                setState(168);
+                _errHandler.sync(this);
+                _la = _input.LA(1);
+                while (_la == Charset) {
+                    {
+                        {
+                            setState(159);
+                            charset();
+                            setState(163);
+                            _errHandler.sync(this);
+                            _la = _input.LA(1);
+                            while ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << Comment) | (1L << Space) | (1L << Cdo) | (1L << Cdc))) != 0)) {
+                                {
+                                    {
+                                        setState(160);
+                                        _la = _input.LA(1);
+                                        if (!((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << Comment) | (1L << Space) | (1L << Cdo) | (1L << Cdc))) != 0))) {
+                                            _errHandler.recoverInline(this);
+                                        } else {
+                                            if (_input.LA(1) == Token.EOF) {
+                                                matchedEOF = true;
+                                            }
+                                            _errHandler.reportMatch(this);
+                                            consume();
+                                        }
+                                    }
+                                }
+                                setState(165);
+                                _errHandler.sync(this);
+                                _la = _input.LA(1);
+                            }
+                        }
+                    }
+                    setState(170);
+                    _errHandler.sync(this);
+                    _la = _input.LA(1);
+                }
+                setState(180);
+                _errHandler.sync(this);
+                _la = _input.LA(1);
+                while (_la == Import) {
+                    {
+                        {
+                            setState(171);
+                            imports();
+                            setState(175);
+                            _errHandler.sync(this);
+                            _la = _input.LA(1);
+                            while ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << Comment) | (1L << Space) | (1L << Cdo) | (1L << Cdc))) != 0)) {
+                                {
+                                    {
+                                        setState(172);
+                                        _la = _input.LA(1);
+                                        if (!((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << Comment) | (1L << Space) | (1L << Cdo) | (1L << Cdc))) != 0))) {
+                                            _errHandler.recoverInline(this);
+                                        } else {
+                                            if (_input.LA(1) == Token.EOF) {
+                                                matchedEOF = true;
+                                            }
+                                            _errHandler.reportMatch(this);
+                                            consume();
+                                        }
+                                    }
+                                }
+                                setState(177);
+                                _errHandler.sync(this);
+                                _la = _input.LA(1);
+                            }
+                        }
+                    }
+                    setState(182);
+                    _errHandler.sync(this);
+                    _la = _input.LA(1);
+                }
+                setState(192);
+                _errHandler.sync(this);
+                _la = _input.LA(1);
+                while (_la == Namespace) {
+                    {
+                        {
+                            setState(183);
+                            namespace();
+                            setState(187);
+                            _errHandler.sync(this);
+                            _la = _input.LA(1);
+                            while ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << Comment) | (1L << Space) | (1L << Cdo) | (1L << Cdc))) != 0)) {
+                                {
+                                    {
+                                        setState(184);
+                                        _la = _input.LA(1);
+                                        if (!((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << Comment) | (1L << Space) | (1L << Cdo) | (1L << Cdc))) != 0))) {
+                                            _errHandler.recoverInline(this);
+                                        } else {
+                                            if (_input.LA(1) == Token.EOF) {
+                                                matchedEOF = true;
+                                            }
+                                            _errHandler.reportMatch(this);
+                                            consume();
+                                        }
+                                    }
+                                }
+                                setState(189);
+                                _errHandler.sync(this);
+                                _la = _input.LA(1);
+                            }
+                        }
+                    }
+                    setState(194);
+                    _errHandler.sync(this);
+                    _la = _input.LA(1);
+                }
+                setState(204);
+                _errHandler.sync(this);
+                _la = _input.LA(1);
+                while ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__1) | (1L << T__2) | (1L << T__4) | (1L << T__6) | (1L << T__7) | (1L << T__8) | (1L << T__9) | (1L << T__14) | (1L << Includes) | (1L << DashMatch) | (1L << Hash) | (1L << Page) | (1L << Media) | (1L << Percentage) | (1L << Uri) | (1L << UnicodeRange) | (1L << MediaOnly) | (1L << Not) | (1L << And) | (1L << Dimension) | (1L << UnknownDimension) | (1L << Plus) | (1L << Minus) | (1L << PseudoNot) | (1L << Number) | (1L << String) | (1L << FontFace) | (1L << Supports) | (1L << Or) | (1L << Keyframes) | (1L << From) | (1L << To) | (1L << Viewport) | (1L << CounterStyle) | (1L << FontFeatureValues) | (1L << Ident) | (1L << Function))) != 0)) {
+                    {
+                        {
+                            setState(195);
+                            nestedStatement();
+                            setState(199);
+                            _errHandler.sync(this);
+                            _la = _input.LA(1);
+                            while ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << Comment) | (1L << Space) | (1L << Cdo) | (1L << Cdc))) != 0)) {
+                                {
+                                    {
+                                        setState(196);
+                                        _la = _input.LA(1);
+                                        if (!((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << Comment) | (1L << Space) | (1L << Cdo) | (1L << Cdc))) != 0))) {
+                                            _errHandler.recoverInline(this);
+                                        } else {
+                                            if (_input.LA(1) == Token.EOF) {
+                                                matchedEOF = true;
+                                            }
+                                            _errHandler.reportMatch(this);
+                                            consume();
+                                        }
+                                    }
+                                }
+                                setState(201);
+                                _errHandler.sync(this);
+                                _la = _input.LA(1);
+                            }
+                        }
+                    }
+                    setState(206);
+                    _errHandler.sync(this);
+                    _la = _input.LA(1);
+                }
+            }
+        } catch (RecognitionException re) {
+            _localctx.exception = re;
+            _errHandler.reportError(this, re);
+            _errHandler.recover(this, re);
+        } finally {
+            exitRule();
+        }
+        return _localctx;
+    }
+
+    public final CharsetContext charset() throws RecognitionException {
+        CharsetContext _localctx = new CharsetContext(_ctx, getState());
+        enterRule(_localctx, 2, RULE_charset);
+        try {
+            setState(219);
+            _errHandler.sync(this);
+            switch (getInterpreter().adaptivePredict(_input, 8, _ctx)) {
+                case 1:
+                    _localctx = new GoodCharsetContext(_localctx);
+                    enterOuterAlt(_localctx, 1);
+                {
+                    setState(207);
+                    match(Charset);
+                    setState(208);
+                    ws();
+                    setState(209);
+                    match(String);
+                    setState(210);
+                    ws();
+                    setState(211);
+                    match(T__0);
+                    setState(212);
+                    ws();
+                }
+                break;
+                case 2:
+                    _localctx = new BadCharsetContext(_localctx);
+                    enterOuterAlt(_localctx, 2);
+                {
+                    setState(214);
+                    match(Charset);
+                    setState(215);
+                    ws();
+                    setState(216);
+                    match(String);
+                    setState(217);
+                    ws();
+                }
+                break;
+            }
+        } catch (RecognitionException re) {
+            _localctx.exception = re;
+            _errHandler.reportError(this, re);
+            _errHandler.recover(this, re);
+        } finally {
+            exitRule();
+        }
+        return _localctx;
+    }
+
+    public final ImportsContext imports() throws RecognitionException {
+        ImportsContext _localctx = new ImportsContext(_ctx, getState());
+        enterRule(_localctx, 4, RULE_imports);
+        int _la;
+        try {
+            setState(247);
+            _errHandler.sync(this);
+            switch (getInterpreter().adaptivePredict(_input, 9, _ctx)) {
+                case 1:
+                    _localctx = new GoodImportContext(_localctx);
+                    enterOuterAlt(_localctx, 1);
+                {
+                    setState(221);
+                    match(Import);
+                    setState(222);
+                    ws();
+                    setState(223);
+                    _la = _input.LA(1);
+                    if (!(_la == Uri || _la == String)) {
+                        _errHandler.recoverInline(this);
+                    } else {
+                        if (_input.LA(1) == Token.EOF) {
+                            matchedEOF = true;
+                        }
+                        _errHandler.reportMatch(this);
+                        consume();
+                    }
+                    setState(224);
+                    ws();
+                    setState(225);
+                    mediaQueryList();
+                    setState(226);
+                    match(T__0);
+                    setState(227);
+                    ws();
+                }
+                break;
+                case 2:
+                    _localctx = new GoodImportContext(_localctx);
+                    enterOuterAlt(_localctx, 2);
+                {
+                    setState(229);
+                    match(Import);
+                    setState(230);
+                    ws();
+                    setState(231);
+                    _la = _input.LA(1);
+                    if (!(_la == Uri || _la == String)) {
+                        _errHandler.recoverInline(this);
+                    } else {
+                        if (_input.LA(1) == Token.EOF) {
+                            matchedEOF = true;
+                        }
+                        _errHandler.reportMatch(this);
+                        consume();
+                    }
+                    setState(232);
+                    ws();
+                    setState(233);
+                    match(T__0);
+                    setState(234);
+                    ws();
+                }
+                break;
+                case 3:
+                    _localctx = new BadImportContext(_localctx);
+                    enterOuterAlt(_localctx, 3);
+                {
+                    setState(236);
+                    match(Import);
+                    setState(237);
+                    ws();
+                    setState(238);
+                    _la = _input.LA(1);
+                    if (!(_la == Uri || _la == String)) {
+                        _errHandler.recoverInline(this);
+                    } else {
+                        if (_input.LA(1) == Token.EOF) {
+                            matchedEOF = true;
+                        }
+                        _errHandler.reportMatch(this);
+                        consume();
+                    }
+                    setState(239);
+                    ws();
+                    setState(240);
+                    mediaQueryList();
+                }
+                break;
+                case 4:
+                    _localctx = new BadImportContext(_localctx);
+                    enterOuterAlt(_localctx, 4);
+                {
+                    setState(242);
+                    match(Import);
+                    setState(243);
+                    ws();
+                    setState(244);
+                    _la = _input.LA(1);
+                    if (!(_la == Uri || _la == String)) {
+                        _errHandler.recoverInline(this);
+                    } else {
+                        if (_input.LA(1) == Token.EOF) {
+                            matchedEOF = true;
+                        }
+                        _errHandler.reportMatch(this);
+                        consume();
+                    }
+                    setState(245);
+                    ws();
+                }
+                break;
+            }
+        } catch (RecognitionException re) {
+            _localctx.exception = re;
+            _errHandler.reportError(this, re);
+            _errHandler.recover(this, re);
+        } finally {
+            exitRule();
+        }
+        return _localctx;
+    }
+
+    public final NamespaceContext namespace() throws RecognitionException {
+        NamespaceContext _localctx = new NamespaceContext(_ctx, getState());
+        enterRule(_localctx, 6, RULE_namespace);
+        int _la;
+        try {
+            setState(271);
+            _errHandler.sync(this);
+            switch (getInterpreter().adaptivePredict(_input, 12, _ctx)) {
+                case 1:
+                    _localctx = new GoodNamespaceContext(_localctx);
+                    enterOuterAlt(_localctx, 1);
+                {
+                    setState(249);
+                    match(Namespace);
+                    setState(250);
+                    ws();
+                    setState(254);
+                    _errHandler.sync(this);
+                    _la = _input.LA(1);
+                    if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << MediaOnly) | (1L << Not) | (1L << And) | (1L << Or) | (1L << From) | (1L << To) | (1L << Ident))) != 0)) {
+                        {
+                            setState(251);
+                            namespacePrefix();
+                            setState(252);
+                            ws();
+                        }
+                    }
+
+                    setState(256);
+                    _la = _input.LA(1);
+                    if (!(_la == Uri || _la == String)) {
+                        _errHandler.recoverInline(this);
+                    } else {
+                        if (_input.LA(1) == Token.EOF) {
+                            matchedEOF = true;
+                        }
+                        _errHandler.reportMatch(this);
+                        consume();
+                    }
+                    setState(257);
+                    ws();
+                    setState(258);
+                    match(T__0);
+                    setState(259);
+                    ws();
+                }
+                break;
+                case 2:
+                    _localctx = new BadNamespaceContext(_localctx);
+                    enterOuterAlt(_localctx, 2);
+                {
+                    setState(261);
+                    match(Namespace);
+                    setState(262);
+                    ws();
+                    setState(266);
+                    _errHandler.sync(this);
+                    _la = _input.LA(1);
+                    if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << MediaOnly) | (1L << Not) | (1L << And) | (1L << Or) | (1L << From) | (1L << To) | (1L << Ident))) != 0)) {
+                        {
+                            setState(263);
+                            namespacePrefix();
+                            setState(264);
+                            ws();
+                        }
+                    }
+
+                    setState(268);
+                    _la = _input.LA(1);
+                    if (!(_la == Uri || _la == String)) {
+                        _errHandler.recoverInline(this);
+                    } else {
+                        if (_input.LA(1) == Token.EOF) {
+                            matchedEOF = true;
+                        }
+                        _errHandler.reportMatch(this);
+                        consume();
+                    }
+                    setState(269);
+                    ws();
+                }
+                break;
+            }
+        } catch (RecognitionException re) {
+            _localctx.exception = re;
+            _errHandler.reportError(this, re);
+            _errHandler.recover(this, re);
+        } finally {
+            exitRule();
+        }
+        return _localctx;
+    }
+
+    public final NamespacePrefixContext namespacePrefix() throws RecognitionException {
+        NamespacePrefixContext _localctx = new NamespacePrefixContext(_ctx, getState());
+        enterRule(_localctx, 8, RULE_namespacePrefix);
+        try {
+            enterOuterAlt(_localctx, 1);
+            {
+                setState(273);
+                ident();
+            }
+        } catch (RecognitionException re) {
+            _localctx.exception = re;
+            _errHandler.reportError(this, re);
+            _errHandler.recover(this, re);
+        } finally {
+            exitRule();
+        }
+        return _localctx;
+    }
+
+    public final MediaContext media() throws RecognitionException {
+        MediaContext _localctx = new MediaContext(_ctx, getState());
+        enterRule(_localctx, 10, RULE_media);
+        try {
+            enterOuterAlt(_localctx, 1);
+            {
+                setState(275);
+                match(Media);
+                setState(276);
+                ws();
+                setState(277);
+                mediaQueryList();
+                setState(278);
+                groupRuleBody();
+                setState(279);
+                ws();
+            }
+        } catch (RecognitionException re) {
+            _localctx.exception = re;
+            _errHandler.reportError(this, re);
+            _errHandler.recover(this, re);
+        } finally {
+            exitRule();
+        }
+        return _localctx;
+    }
+
+    public final MediaQueryListContext mediaQueryList() throws RecognitionException {
+        MediaQueryListContext _localctx = new MediaQueryListContext(_ctx, getState());
+        enterRule(_localctx, 12, RULE_mediaQueryList);
+        int _la;
+        try {
+            enterOuterAlt(_localctx, 1);
+            {
+                setState(291);
+                _errHandler.sync(this);
+                switch (getInterpreter().adaptivePredict(_input, 14, _ctx)) {
+                    case 1: {
+                        setState(281);
+                        mediaQuery();
+                        setState(288);
+                        _errHandler.sync(this);
+                        _la = _input.LA(1);
+                        while (_la == Comma) {
+                            {
+                                {
+                                    setState(282);
+                                    match(Comma);
+                                    setState(283);
+                                    ws();
+                                    setState(284);
+                                    mediaQuery();
+                                }
+                            }
+                            setState(290);
+                            _errHandler.sync(this);
+                            _la = _input.LA(1);
+                        }
+                    }
+                    break;
+                }
+                setState(293);
+                ws();
+            }
+        } catch (RecognitionException re) {
+            _localctx.exception = re;
+            _errHandler.reportError(this, re);
+            _errHandler.recover(this, re);
+        } finally {
+            exitRule();
+        }
+        return _localctx;
+    }
+
+    public final MediaQueryContext mediaQuery() throws RecognitionException {
+        MediaQueryContext _localctx = new MediaQueryContext(_ctx, getState());
+        enterRule(_localctx, 14, RULE_mediaQuery);
+        int _la;
+        try {
+            int _alt;
+            setState(320);
+            _errHandler.sync(this);
+            switch (_input.LA(1)) {
+                case Comment:
+                case Space:
+                case MediaOnly:
+                case Not:
+                case And:
+                case Or:
+                case From:
+                case To:
+                case Ident:
+                    enterOuterAlt(_localctx, 1);
+                {
+                    setState(296);
+                    _errHandler.sync(this);
+                    switch (getInterpreter().adaptivePredict(_input, 15, _ctx)) {
+                        case 1: {
+                            setState(295);
+                            _la = _input.LA(1);
+                            if (!(_la == MediaOnly || _la == Not)) {
+                                _errHandler.recoverInline(this);
+                            } else {
+                                if (_input.LA(1) == Token.EOF) {
+                                    matchedEOF = true;
+                                }
+                                _errHandler.reportMatch(this);
+                                consume();
+                            }
+                        }
+                        break;
+                    }
+                    setState(298);
+                    ws();
+                    setState(299);
+                    mediaType();
+                    setState(300);
+                    ws();
+                    setState(307);
+                    _errHandler.sync(this);
+                    _alt = getInterpreter().adaptivePredict(_input, 16, _ctx);
+                    while (_alt != 2 && _alt != org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER) {
+                        if (_alt == 1) {
+                            {
+                                {
+                                    setState(301);
+                                    match(And);
+                                    setState(302);
+                                    ws();
+                                    setState(303);
+                                    mediaExpression();
+                                }
+                            }
+                        }
+                        setState(309);
+                        _errHandler.sync(this);
+                        _alt = getInterpreter().adaptivePredict(_input, 16, _ctx);
+                    }
+                }
+                break;
+                case T__1:
+                    enterOuterAlt(_localctx, 2);
+                {
+                    setState(310);
+                    mediaExpression();
+                    setState(317);
+                    _errHandler.sync(this);
+                    _alt = getInterpreter().adaptivePredict(_input, 17, _ctx);
+                    while (_alt != 2 && _alt != org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER) {
+                        if (_alt == 1) {
+                            {
+                                {
+                                    setState(311);
+                                    match(And);
+                                    setState(312);
+                                    ws();
+                                    setState(313);
+                                    mediaExpression();
+                                }
+                            }
+                        }
+                        setState(319);
+                        _errHandler.sync(this);
+                        _alt = getInterpreter().adaptivePredict(_input, 17, _ctx);
+                    }
+                }
+                break;
+                default:
+                    throw new NoViableAltException(this);
+            }
+        } catch (RecognitionException re) {
+            _localctx.exception = re;
+            _errHandler.reportError(this, re);
+            _errHandler.recover(this, re);
+        } finally {
+            exitRule();
+        }
+        return _localctx;
+    }
+
+    public final MediaTypeContext mediaType() throws RecognitionException {
+        MediaTypeContext _localctx = new MediaTypeContext(_ctx, getState());
+        enterRule(_localctx, 16, RULE_mediaType);
+        try {
+            enterOuterAlt(_localctx, 1);
+            {
+                setState(322);
+                ident();
+            }
+        } catch (RecognitionException re) {
+            _localctx.exception = re;
+            _errHandler.reportError(this, re);
+            _errHandler.recover(this, re);
+        } finally {
+            exitRule();
+        }
+        return _localctx;
+    }
+
+    public final MediaExpressionContext mediaExpression() throws RecognitionException {
+        MediaExpressionContext _localctx = new MediaExpressionContext(_ctx, getState());
+        enterRule(_localctx, 18, RULE_mediaExpression);
+        int _la;
+        try {
+            enterOuterAlt(_localctx, 1);
+            {
+                setState(324);
+                match(T__1);
+                setState(325);
+                ws();
+                setState(326);
+                mediaFeature();
+                setState(331);
+                _errHandler.sync(this);
+                _la = _input.LA(1);
+                if (_la == T__2) {
+                    {
+                        setState(327);
+                        match(T__2);
+                        setState(328);
+                        ws();
+                        setState(329);
+                        expr();
+                    }
+                }
+
+                setState(333);
+                match(T__3);
+                setState(334);
+                ws();
+            }
+        } catch (RecognitionException re) {
+            _localctx.exception = re;
+            _errHandler.reportError(this, re);
+            _errHandler.recover(this, re);
+        } finally {
+            exitRule();
+        }
+        return _localctx;
+    }
+
+    public final MediaFeatureContext mediaFeature() throws RecognitionException {
+        MediaFeatureContext _localctx = new MediaFeatureContext(_ctx, getState());
+        enterRule(_localctx, 20, RULE_mediaFeature);
+        try {
+            enterOuterAlt(_localctx, 1);
+            {
+                setState(336);
+                ident();
+                setState(337);
+                ws();
+            }
+        } catch (RecognitionException re) {
+            _localctx.exception = re;
+            _errHandler.reportError(this, re);
+            _errHandler.recover(this, re);
+        } finally {
+            exitRule();
+        }
+        return _localctx;
+    }
+
+    public final PageContext page() throws RecognitionException {
+        PageContext _localctx = new PageContext(_ctx, getState());
+        enterRule(_localctx, 22, RULE_page);
+        int _la;
+        try {
+            enterOuterAlt(_localctx, 1);
+            {
+                setState(339);
+                match(Page);
+                setState(340);
+                ws();
+                setState(342);
+                _errHandler.sync(this);
+                _la = _input.LA(1);
+                if (_la == T__2) {
+                    {
+                        setState(341);
+                        pseudoPage();
+                    }
+                }
+
+                setState(344);
+                match(T__4);
+                setState(345);
+                ws();
+                setState(347);
+                _errHandler.sync(this);
+                _la = _input.LA(1);
+                if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__6) | (1L << T__13) | (1L << MediaOnly) | (1L << Not) | (1L << And) | (1L << Or) | (1L << From) | (1L << To) | (1L << Variable) | (1L << Ident))) != 0)) {
+                    {
+                        setState(346);
+                        declaration();
+                    }
+                }
+
+                setState(356);
+                _errHandler.sync(this);
+                _la = _input.LA(1);
+                while (_la == T__0) {
+                    {
+                        {
+                            setState(349);
+                            match(T__0);
+                            setState(350);
+                            ws();
+                            setState(352);
+                            _errHandler.sync(this);
+                            _la = _input.LA(1);
+                            if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__6) | (1L << T__13) | (1L << MediaOnly) | (1L << Not) | (1L << And) | (1L << Or) | (1L << From) | (1L << To) | (1L << Variable) | (1L << Ident))) != 0)) {
+                                {
+                                    setState(351);
+                                    declaration();
+                                }
+                            }
+
+                        }
+                    }
+                    setState(358);
+                    _errHandler.sync(this);
+                    _la = _input.LA(1);
+                }
+                setState(359);
+                match(T__5);
+                setState(360);
+                ws();
+            }
+        } catch (RecognitionException re) {
+            _localctx.exception = re;
+            _errHandler.reportError(this, re);
+            _errHandler.recover(this, re);
+        } finally {
+            exitRule();
+        }
+        return _localctx;
+    }
+
+    public final PseudoPageContext pseudoPage() throws RecognitionException {
+        PseudoPageContext _localctx = new PseudoPageContext(_ctx, getState());
+        enterRule(_localctx, 24, RULE_pseudoPage);
+        try {
+            enterOuterAlt(_localctx, 1);
+            {
+                setState(362);
+                match(T__2);
+                setState(363);
+                ident();
+                setState(364);
+                ws();
+            }
+        } catch (RecognitionException re) {
+            _localctx.exception = re;
+            _errHandler.reportError(this, re);
+            _errHandler.recover(this, re);
+        } finally {
+            exitRule();
+        }
+        return _localctx;
+    }
+
+    public final SelectorGroupContext selectorGroup() throws RecognitionException {
+        SelectorGroupContext _localctx = new SelectorGroupContext(_ctx, getState());
+        enterRule(_localctx, 26, RULE_selectorGroup);
+        int _la;
+        try {
+            enterOuterAlt(_localctx, 1);
+            {
+                setState(366);
+                selector();
+                setState(373);
+                _errHandler.sync(this);
+                _la = _input.LA(1);
+                while (_la == Comma) {
+                    {
+                        {
+                            setState(367);
+                            match(Comma);
+                            setState(368);
+                            ws();
+                            setState(369);
+                            selector();
+                        }
+                    }
+                    setState(375);
+                    _errHandler.sync(this);
+                    _la = _input.LA(1);
+                }
+            }
+        } catch (RecognitionException re) {
+            _localctx.exception = re;
+            _errHandler.reportError(this, re);
+            _errHandler.recover(this, re);
+        } finally {
+            exitRule();
+        }
+        return _localctx;
+    }
+
+    public final SelectorContext selector() throws RecognitionException {
+        SelectorContext _localctx = new SelectorContext(_ctx, getState());
+        enterRule(_localctx, 28, RULE_selector);
+        int _la;
+        try {
+            enterOuterAlt(_localctx, 1);
+            {
+                setState(376);
+                simpleSelectorSequence();
+                setState(377);
+                ws();
+                setState(384);
+                _errHandler.sync(this);
+                _la = _input.LA(1);
+                while ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << Space) | (1L << Plus) | (1L << Greater) | (1L << Tilde))) != 0)) {
+                    {
+                        {
+                            setState(378);
+                            combinator();
+                            setState(379);
+                            simpleSelectorSequence();
+                            setState(380);
+                            ws();
+                        }
+                    }
+                    setState(386);
+                    _errHandler.sync(this);
+                    _la = _input.LA(1);
+                }
+            }
+        } catch (RecognitionException re) {
+            _localctx.exception = re;
+            _errHandler.reportError(this, re);
+            _errHandler.recover(this, re);
+        } finally {
+            exitRule();
+        }
+        return _localctx;
+    }
+
+    public final CombinatorContext combinator() throws RecognitionException {
+        CombinatorContext _localctx = new CombinatorContext(_ctx, getState());
+        enterRule(_localctx, 30, RULE_combinator);
+        try {
+            setState(395);
+            _errHandler.sync(this);
+            switch (_input.LA(1)) {
+                case Plus:
+                    enterOuterAlt(_localctx, 1);
+                {
+                    setState(387);
+                    match(Plus);
+                    setState(388);
+                    ws();
+                }
+                break;
+                case Greater:
+                    enterOuterAlt(_localctx, 2);
+                {
+                    setState(389);
+                    match(Greater);
+                    setState(390);
+                    ws();
+                }
+                break;
+                case Tilde:
+                    enterOuterAlt(_localctx, 3);
+                {
+                    setState(391);
+                    match(Tilde);
+                    setState(392);
+                    ws();
+                }
+                break;
+                case Space:
+                    enterOuterAlt(_localctx, 4);
+                {
+                    setState(393);
+                    match(Space);
+                    setState(394);
+                    ws();
+                }
+                break;
+                default:
+                    throw new NoViableAltException(this);
+            }
+        } catch (RecognitionException re) {
+            _localctx.exception = re;
+            _errHandler.reportError(this, re);
+            _errHandler.recover(this, re);
+        } finally {
+            exitRule();
+        }
+        return _localctx;
+    }
+
+    public final SimpleSelectorSequenceContext simpleSelectorSequence() throws RecognitionException {
+        SimpleSelectorSequenceContext _localctx = new SimpleSelectorSequenceContext(_ctx, getState());
+        enterRule(_localctx, 32, RULE_simpleSelectorSequence);
+        int _la;
+        try {
+            setState(420);
+            _errHandler.sync(this);
+            switch (_input.LA(1)) {
+                case T__6:
+                case T__7:
+                case MediaOnly:
+                case Not:
+                case And:
+                case Or:
+                case From:
+                case To:
+                case Ident:
+                    enterOuterAlt(_localctx, 1);
+                {
+                    setState(399);
+                    _errHandler.sync(this);
+                    switch (getInterpreter().adaptivePredict(_input, 27, _ctx)) {
+                        case 1: {
+                            setState(397);
+                            typeSelector();
+                        }
+                        break;
+                        case 2: {
+                            setState(398);
+                            universal();
+                        }
+                        break;
+                    }
+                    setState(408);
+                    _errHandler.sync(this);
+                    _la = _input.LA(1);
+                    while ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__2) | (1L << T__8) | (1L << T__9) | (1L << Hash) | (1L << PseudoNot))) != 0)) {
+                        {
+                            setState(406);
+                            _errHandler.sync(this);
+                            switch (_input.LA(1)) {
+                                case Hash: {
+                                    setState(401);
+                                    match(Hash);
+                                }
+                                break;
+                                case T__8: {
+                                    setState(402);
+                                    className();
+                                }
+                                break;
+                                case T__9: {
+                                    setState(403);
+                                    attrib();
+                                }
+                                break;
+                                case T__2: {
+                                    setState(404);
+                                    pseudo();
+                                }
+                                break;
+                                case PseudoNot: {
+                                    setState(405);
+                                    negation();
+                                }
+                                break;
+                                default:
+                                    throw new NoViableAltException(this);
+                            }
+                        }
+                        setState(410);
+                        _errHandler.sync(this);
+                        _la = _input.LA(1);
+                    }
+                }
+                break;
+                case T__2:
+                case T__8:
+                case T__9:
+                case Hash:
+                case PseudoNot:
+                    enterOuterAlt(_localctx, 2);
+                {
+                    setState(416);
+                    _errHandler.sync(this);
+                    _la = _input.LA(1);
+                    do {
+                        {
+                            setState(416);
+                            _errHandler.sync(this);
+                            switch (_input.LA(1)) {
+                                case Hash: {
+                                    setState(411);
+                                    match(Hash);
+                                }
+                                break;
+                                case T__8: {
+                                    setState(412);
+                                    className();
+                                }
+                                break;
+                                case T__9: {
+                                    setState(413);
+                                    attrib();
+                                }
+                                break;
+                                case T__2: {
+                                    setState(414);
+                                    pseudo();
+                                }
+                                break;
+                                case PseudoNot: {
+                                    setState(415);
+                                    negation();
+                                }
+                                break;
+                                default:
+                                    throw new NoViableAltException(this);
+                            }
+                        }
+                        setState(418);
+                        _errHandler.sync(this);
+                        _la = _input.LA(1);
+                    } while ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__2) | (1L << T__8) | (1L << T__9) | (1L << Hash) | (1L << PseudoNot))) != 0));
+                }
+                break;
+                default:
+                    throw new NoViableAltException(this);
+            }
+        } catch (RecognitionException re) {
+            _localctx.exception = re;
+            _errHandler.reportError(this, re);
+            _errHandler.recover(this, re);
+        } finally {
+            exitRule();
+        }
+        return _localctx;
+    }
+
+    public final TypeSelectorContext typeSelector() throws RecognitionException {
+        TypeSelectorContext _localctx = new TypeSelectorContext(_ctx, getState());
+        enterRule(_localctx, 34, RULE_typeSelector);
+        try {
+            enterOuterAlt(_localctx, 1);
+            {
+                setState(423);
+                _errHandler.sync(this);
+                switch (getInterpreter().adaptivePredict(_input, 33, _ctx)) {
+                    case 1: {
+                        setState(422);
+                        typeNamespacePrefix();
+                    }
+                    break;
+                }
+                setState(425);
+                elementName();
+            }
+        } catch (RecognitionException re) {
+            _localctx.exception = re;
+            _errHandler.reportError(this, re);
+            _errHandler.recover(this, re);
+        } finally {
+            exitRule();
+        }
+        return _localctx;
+    }
+
+    public final TypeNamespacePrefixContext typeNamespacePrefix() throws RecognitionException {
+        TypeNamespacePrefixContext _localctx = new TypeNamespacePrefixContext(_ctx, getState());
+        enterRule(_localctx, 36, RULE_typeNamespacePrefix);
+        try {
+            enterOuterAlt(_localctx, 1);
+            {
+                setState(429);
+                _errHandler.sync(this);
+                switch (_input.LA(1)) {
+                    case MediaOnly:
+                    case Not:
+                    case And:
+                    case Or:
+                    case From:
+                    case To:
+                    case Ident: {
+                        setState(427);
+                        ident();
+                    }
+                    break;
+                    case T__6: {
+                        setState(428);
+                        match(T__6);
+                    }
+                    break;
+                    case T__7:
+                        break;
+                    default:
+                        break;
+                }
+                setState(431);
+                match(T__7);
+            }
+        } catch (RecognitionException re) {
+            _localctx.exception = re;
+            _errHandler.reportError(this, re);
+            _errHandler.recover(this, re);
+        } finally {
+            exitRule();
+        }
+        return _localctx;
+    }
+
+    public final ElementNameContext elementName() throws RecognitionException {
+        ElementNameContext _localctx = new ElementNameContext(_ctx, getState());
+        enterRule(_localctx, 38, RULE_elementName);
+        try {
+            enterOuterAlt(_localctx, 1);
+            {
+                setState(433);
+                ident();
+            }
+        } catch (RecognitionException re) {
+            _localctx.exception = re;
+            _errHandler.reportError(this, re);
+            _errHandler.recover(this, re);
+        } finally {
+            exitRule();
+        }
+        return _localctx;
+    }
+
+    public final UniversalContext universal() throws RecognitionException {
+        UniversalContext _localctx = new UniversalContext(_ctx, getState());
+        enterRule(_localctx, 40, RULE_universal);
+        try {
+            enterOuterAlt(_localctx, 1);
+            {
+                setState(436);
+                _errHandler.sync(this);
+                switch (getInterpreter().adaptivePredict(_input, 35, _ctx)) {
+                    case 1: {
+                        setState(435);
+                        typeNamespacePrefix();
+                    }
+                    break;
+                }
+                setState(438);
+                match(T__6);
+            }
+        } catch (RecognitionException re) {
+            _localctx.exception = re;
+            _errHandler.reportError(this, re);
+            _errHandler.recover(this, re);
+        } finally {
+            exitRule();
+        }
+        return _localctx;
+    }
+
+    public final ClassNameContext className() throws RecognitionException {
+        ClassNameContext _localctx = new ClassNameContext(_ctx, getState());
+        enterRule(_localctx, 42, RULE_className);
+        try {
+            enterOuterAlt(_localctx, 1);
+            {
+                setState(440);
+                match(T__8);
+                setState(441);
+                ident();
+            }
+        } catch (RecognitionException re) {
+            _localctx.exception = re;
+            _errHandler.reportError(this, re);
+            _errHandler.recover(this, re);
+        } finally {
+            exitRule();
+        }
+        return _localctx;
+    }
+
+    public final AttribContext attrib() throws RecognitionException {
+        AttribContext _localctx = new AttribContext(_ctx, getState());
+        enterRule(_localctx, 44, RULE_attrib);
+        int _la;
+        try {
+            enterOuterAlt(_localctx, 1);
+            {
+                setState(443);
+                match(T__9);
+                setState(444);
+                ws();
+                setState(446);
+                _errHandler.sync(this);
+                switch (getInterpreter().adaptivePredict(_input, 36, _ctx)) {
+                    case 1: {
+                        setState(445);
+                        typeNamespacePrefix();
+                    }
+                    break;
+                }
+                setState(448);
+                ident();
+                setState(449);
+                ws();
+                setState(458);
+                _errHandler.sync(this);
+                _la = _input.LA(1);
+                if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__10) | (1L << Includes) | (1L << DashMatch) | (1L << PrefixMatch) | (1L << SuffixMatch) | (1L << SubstringMatch))) != 0)) {
+                    {
+                        setState(450);
+                        _la = _input.LA(1);
+                        if (!((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__10) | (1L << Includes) | (1L << DashMatch) | (1L << PrefixMatch) | (1L << SuffixMatch) | (1L << SubstringMatch))) != 0))) {
+                            _errHandler.recoverInline(this);
+                        } else {
+                            if (_input.LA(1) == Token.EOF) {
+                                matchedEOF = true;
+                            }
+                            _errHandler.reportMatch(this);
+                            consume();
+                        }
+                        setState(451);
+                        ws();
+                        setState(454);
+                        _errHandler.sync(this);
+                        switch (_input.LA(1)) {
+                            case MediaOnly:
+                            case Not:
+                            case And:
+                            case Or:
+                            case From:
+                            case To:
+                            case Ident: {
+                                setState(452);
+                                ident();
+                            }
+                            break;
+                            case String: {
+                                setState(453);
+                                match(String);
+                            }
+                            break;
+                            default:
+                                throw new NoViableAltException(this);
+                        }
+                        setState(456);
+                        ws();
+                    }
+                }
+
+                setState(460);
+                match(T__11);
+            }
+        } catch (RecognitionException re) {
+            _localctx.exception = re;
+            _errHandler.reportError(this, re);
+            _errHandler.recover(this, re);
+        } finally {
+            exitRule();
+        }
+        return _localctx;
+    }
+
+    public final PseudoContext pseudo() throws RecognitionException {
+        PseudoContext _localctx = new PseudoContext(_ctx, getState());
+        enterRule(_localctx, 46, RULE_pseudo);
+        int _la;
+        try {
+            enterOuterAlt(_localctx, 1);
+            {
+                setState(462);
+                match(T__2);
+                setState(464);
+                _errHandler.sync(this);
+                _la = _input.LA(1);
+                if (_la == T__2) {
+                    {
+                        setState(463);
+                        match(T__2);
+                    }
+                }
+
+                setState(468);
+                _errHandler.sync(this);
+                switch (_input.LA(1)) {
+                    case MediaOnly:
+                    case Not:
+                    case And:
+                    case Or:
+                    case From:
+                    case To:
+                    case Ident: {
+                        setState(466);
+                        ident();
+                    }
+                    break;
+                    case Function: {
+                        setState(467);
+                        functionalPseudo();
+                    }
+                    break;
+                    default:
+                        throw new NoViableAltException(this);
+                }
+            }
+        } catch (RecognitionException re) {
+            _localctx.exception = re;
+            _errHandler.reportError(this, re);
+            _errHandler.recover(this, re);
+        } finally {
+            exitRule();
+        }
+        return _localctx;
+    }
+
+    public final FunctionalPseudoContext functionalPseudo() throws RecognitionException {
+        FunctionalPseudoContext _localctx = new FunctionalPseudoContext(_ctx, getState());
+        enterRule(_localctx, 48, RULE_functionalPseudo);
+        try {
+            enterOuterAlt(_localctx, 1);
+            {
+                setState(470);
+                match(Function);
+                setState(471);
+                ws();
+                setState(472);
+                expression();
+                setState(473);
+                match(T__3);
+            }
+        } catch (RecognitionException re) {
+            _localctx.exception = re;
+            _errHandler.reportError(this, re);
+            _errHandler.recover(this, re);
+        } finally {
+            exitRule();
+        }
+        return _localctx;
+    }
+
+    public final ExpressionContext expression() throws RecognitionException {
+        ExpressionContext _localctx = new ExpressionContext(_ctx, getState());
+        enterRule(_localctx, 50, RULE_expression);
+        int _la;
+        try {
+            enterOuterAlt(_localctx, 1);
+            {
+                setState(485);
+                _errHandler.sync(this);
+                _la = _input.LA(1);
+                do {
+                    {
+                        {
+                            setState(482);
+                            _errHandler.sync(this);
+                            switch (_input.LA(1)) {
+                                case Plus: {
+                                    setState(475);
+                                    match(Plus);
+                                }
+                                break;
+                                case Minus: {
+                                    setState(476);
+                                    match(Minus);
+                                }
+                                break;
+                                case Dimension: {
+                                    setState(477);
+                                    match(Dimension);
+                                }
+                                break;
+                                case UnknownDimension: {
+                                    setState(478);
+                                    match(UnknownDimension);
+                                }
+                                break;
+                                case Number: {
+                                    setState(479);
+                                    match(Number);
+                                }
+                                break;
+                                case String: {
+                                    setState(480);
+                                    match(String);
+                                }
+                                break;
+                                case MediaOnly:
+                                case Not:
+                                case And:
+                                case Or:
+                                case From:
+                                case To:
+                                case Ident: {
+                                    setState(481);
+                                    ident();
+                                }
+                                break;
+                                default:
+                                    throw new NoViableAltException(this);
+                            }
+                            setState(484);
+                            ws();
+                        }
+                    }
+                    setState(487);
+                    _errHandler.sync(this);
+                    _la = _input.LA(1);
+                } while ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << MediaOnly) | (1L << Not) | (1L << And) | (1L << Dimension) | (1L << UnknownDimension) | (1L << Plus) | (1L << Minus) | (1L << Number) | (1L << String) | (1L << Or) | (1L << From) | (1L << To) | (1L << Ident))) != 0));
+            }
+        } catch (RecognitionException re) {
+            _localctx.exception = re;
+            _errHandler.reportError(this, re);
+            _errHandler.recover(this, re);
+        } finally {
+            exitRule();
+        }
+        return _localctx;
+    }
+
+    public final NegationContext negation() throws RecognitionException {
+        NegationContext _localctx = new NegationContext(_ctx, getState());
+        enterRule(_localctx, 52, RULE_negation);
+        try {
+            enterOuterAlt(_localctx, 1);
+            {
+                setState(489);
+                match(PseudoNot);
+                setState(490);
+                ws();
+                setState(491);
+                negationArg();
+                setState(492);
+                ws();
+                setState(493);
+                match(T__3);
+            }
+        } catch (RecognitionException re) {
+            _localctx.exception = re;
+            _errHandler.reportError(this, re);
+            _errHandler.recover(this, re);
+        } finally {
+            exitRule();
+        }
+        return _localctx;
+    }
+
+    public final NegationArgContext negationArg() throws RecognitionException {
+        NegationArgContext _localctx = new NegationArgContext(_ctx, getState());
+        enterRule(_localctx, 54, RULE_negationArg);
+        try {
+            setState(501);
+            _errHandler.sync(this);
+            switch (getInterpreter().adaptivePredict(_input, 43, _ctx)) {
+                case 1:
+                    enterOuterAlt(_localctx, 1);
+                {
+                    setState(495);
+                    typeSelector();
+                }
+                break;
+                case 2:
+                    enterOuterAlt(_localctx, 2);
+                {
+                    setState(496);
+                    universal();
+                }
+                break;
+                case 3:
+                    enterOuterAlt(_localctx, 3);
+                {
+                    setState(497);
+                    match(Hash);
+                }
+                break;
+                case 4:
+                    enterOuterAlt(_localctx, 4);
+                {
+                    setState(498);
+                    className();
+                }
+                break;
+                case 5:
+                    enterOuterAlt(_localctx, 5);
+                {
+                    setState(499);
+                    attrib();
+                }
+                break;
+                case 6:
+                    enterOuterAlt(_localctx, 6);
+                {
+                    setState(500);
+                    pseudo();
+                }
+                break;
+            }
+        } catch (RecognitionException re) {
+            _localctx.exception = re;
+            _errHandler.reportError(this, re);
+            _errHandler.recover(this, re);
+        } finally {
+            exitRule();
+        }
+        return _localctx;
+    }
+
+    public final OperatorContext operator() throws RecognitionException {
+        OperatorContext _localctx = new OperatorContext(_ctx, getState());
+        enterRule(_localctx, 56, RULE_operator);
+        try {
+            setState(511);
+            _errHandler.sync(this);
+            switch (_input.LA(1)) {
+                case T__12:
+                    _localctx = new GoodOperatorContext(_localctx);
+                    enterOuterAlt(_localctx, 1);
+                {
+                    setState(503);
+                    match(T__12);
+                    setState(504);
+                    ws();
+                }
+                break;
+                case Comma:
+                    _localctx = new GoodOperatorContext(_localctx);
+                    enterOuterAlt(_localctx, 2);
+                {
+                    setState(505);
+                    match(Comma);
+                    setState(506);
+                    ws();
+                }
+                break;
+                case Space:
+                    _localctx = new GoodOperatorContext(_localctx);
+                    enterOuterAlt(_localctx, 3);
+                {
+                    setState(507);
+                    match(Space);
+                    setState(508);
+                    ws();
+                }
+                break;
+                case T__10:
+                    _localctx = new BadOperatorContext(_localctx);
+                    enterOuterAlt(_localctx, 4);
+                {
+                    setState(509);
+                    match(T__10);
+                    setState(510);
+                    ws();
+                }
+                break;
+                default:
+                    throw new NoViableAltException(this);
+            }
+        } catch (RecognitionException re) {
+            _localctx.exception = re;
+            _errHandler.reportError(this, re);
+            _errHandler.recover(this, re);
+        } finally {
+            exitRule();
+        }
+        return _localctx;
+    }
+
+    public final PropertyContext property() throws RecognitionException {
+        PropertyContext _localctx = new PropertyContext(_ctx, getState());
+        enterRule(_localctx, 58, RULE_property);
+        try {
+            setState(522);
+            _errHandler.sync(this);
+            switch (_input.LA(1)) {
+                case MediaOnly:
+                case Not:
+                case And:
+                case Or:
+                case From:
+                case To:
+                case Ident:
+                    _localctx = new GoodPropertyContext(_localctx);
+                    enterOuterAlt(_localctx, 1);
+                {
+                    setState(513);
+                    ident();
+                    setState(514);
+                    ws();
+                }
+                break;
+                case Variable:
+                    _localctx = new GoodPropertyContext(_localctx);
+                    enterOuterAlt(_localctx, 2);
+                {
+                    setState(516);
+                    match(Variable);
+                    setState(517);
+                    ws();
+                }
+                break;
+                case T__6:
+                    _localctx = new BadPropertyContext(_localctx);
+                    enterOuterAlt(_localctx, 3);
+                {
+                    setState(518);
+                    match(T__6);
+                    setState(519);
+                    ident();
+                }
+                break;
+                case T__13:
+                    _localctx = new BadPropertyContext(_localctx);
+                    enterOuterAlt(_localctx, 4);
+                {
+                    setState(520);
+                    match(T__13);
+                    setState(521);
+                    ident();
+                }
+                break;
+                default:
+                    throw new NoViableAltException(this);
+            }
+        } catch (RecognitionException re) {
+            _localctx.exception = re;
+            _errHandler.reportError(this, re);
+            _errHandler.recover(this, re);
+        } finally {
+            exitRule();
+        }
+        return _localctx;
+    }
+
+    public final RulesetContext ruleset() throws RecognitionException {
+        RulesetContext _localctx = new RulesetContext(_ctx, getState());
+        enterRule(_localctx, 60, RULE_ruleset);
+        int _la;
+        try {
+            setState(547);
+            _errHandler.sync(this);
+            switch (getInterpreter().adaptivePredict(_input, 49, _ctx)) {
+                case 1:
+                    _localctx = new KnownRulesetContext(_localctx);
+                    enterOuterAlt(_localctx, 1);
+                {
+                    setState(524);
+                    selectorGroup();
+                    setState(525);
+                    match(T__4);
+                    setState(526);
+                    ws();
+                    setState(528);
+                    _errHandler.sync(this);
+                    _la = _input.LA(1);
+                    if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__0) | (1L << T__6) | (1L << T__13) | (1L << MediaOnly) | (1L << Not) | (1L << And) | (1L << Or) | (1L << From) | (1L << To) | (1L << Variable) | (1L << Ident))) != 0)) {
+                        {
+                            setState(527);
+                            declarationList();
+                        }
+                    }
+
+                    setState(530);
+                    match(T__5);
+                    setState(531);
+                    ws();
+                }
+                break;
+                case 2:
+                    _localctx = new UnknownRulesetContext(_localctx);
+                    enterOuterAlt(_localctx, 2);
+                {
+                    setState(536);
+                    _errHandler.sync(this);
+                    _la = _input.LA(1);
+                    while ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__1) | (1L << T__2) | (1L << T__9) | (1L << Includes) | (1L << DashMatch) | (1L << Hash) | (1L << Percentage) | (1L << Uri) | (1L << UnicodeRange) | (1L << MediaOnly) | (1L << Not) | (1L << And) | (1L << Dimension) | (1L << UnknownDimension) | (1L << Plus) | (1L << Minus) | (1L << Number) | (1L << String) | (1L << Or) | (1L << From) | (1L << To) | (1L << Ident) | (1L << Function))) != 0)) {
+                        {
+                            {
+                                setState(533);
+                                any();
+                            }
+                        }
+                        setState(538);
+                        _errHandler.sync(this);
+                        _la = _input.LA(1);
+                    }
+                    setState(539);
+                    match(T__4);
+                    setState(540);
+                    ws();
+                    setState(542);
+                    _errHandler.sync(this);
+                    _la = _input.LA(1);
+                    if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__0) | (1L << T__6) | (1L << T__13) | (1L << MediaOnly) | (1L << Not) | (1L << And) | (1L << Or) | (1L << From) | (1L << To) | (1L << Variable) | (1L << Ident))) != 0)) {
+                        {
+                            setState(541);
+                            declarationList();
+                        }
+                    }
+
+                    setState(544);
+                    match(T__5);
+                    setState(545);
+                    ws();
+                }
+                break;
+            }
+        } catch (RecognitionException re) {
+            _localctx.exception = re;
+            _errHandler.reportError(this, re);
+            _errHandler.recover(this, re);
+        } finally {
+            exitRule();
+        }
+        return _localctx;
+    }
+
+    public final DeclarationListContext declarationList() throws RecognitionException {
+        DeclarationListContext _localctx = new DeclarationListContext(_ctx, getState());
+        enterRule(_localctx, 62, RULE_declarationList);
+        int _la;
+        try {
+            int _alt;
+            enterOuterAlt(_localctx, 1);
+            {
+                setState(553);
+                _errHandler.sync(this);
+                _la = _input.LA(1);
+                while (_la == T__0) {
+                    {
+                        {
+                            setState(549);
+                            match(T__0);
+                            setState(550);
+                            ws();
+                        }
+                    }
+                    setState(555);
+                    _errHandler.sync(this);
+                    _la = _input.LA(1);
+                }
+                setState(556);
+                declaration();
+                setState(557);
+                ws();
+                setState(565);
+                _errHandler.sync(this);
+                _alt = getInterpreter().adaptivePredict(_input, 52, _ctx);
+                while (_alt != 2 && _alt != org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER) {
+                    if (_alt == 1) {
+                        {
+                            {
+                                setState(558);
+                                match(T__0);
+                                setState(559);
+                                ws();
+                                setState(561);
+                                _errHandler.sync(this);
+                                switch (getInterpreter().adaptivePredict(_input, 51, _ctx)) {
+                                    case 1: {
+                                        setState(560);
+                                        declaration();
+                                    }
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                    setState(567);
+                    _errHandler.sync(this);
+                    _alt = getInterpreter().adaptivePredict(_input, 52, _ctx);
+                }
+            }
+        } catch (RecognitionException re) {
+            _localctx.exception = re;
+            _errHandler.reportError(this, re);
+            _errHandler.recover(this, re);
+        } finally {
+            exitRule();
+        }
+        return _localctx;
+    }
+
+    public final DeclarationContext declaration() throws RecognitionException {
+        DeclarationContext _localctx = new DeclarationContext(_ctx, getState());
+        enterRule(_localctx, 64, RULE_declaration);
+        int _la;
+        try {
+            setState(580);
+            _errHandler.sync(this);
+            switch (getInterpreter().adaptivePredict(_input, 54, _ctx)) {
+                case 1:
+                    _localctx = new KnownDeclarationContext(_localctx);
+                    enterOuterAlt(_localctx, 1);
+                {
+                    setState(568);
+                    property();
+                    setState(569);
+                    match(T__2);
+                    setState(570);
+                    ws();
+                    setState(571);
+                    expr();
+                    setState(573);
+                    _errHandler.sync(this);
+                    _la = _input.LA(1);
+                    if (_la == Important) {
+                        {
+                            setState(572);
+                            prio();
+                        }
+                    }
+
+                }
+                break;
+                case 2:
+                    _localctx = new UnknownDeclarationContext(_localctx);
+                    enterOuterAlt(_localctx, 2);
+                {
+                    setState(575);
+                    property();
+                    setState(576);
+                    match(T__2);
+                    setState(577);
+                    ws();
+                    setState(578);
+                    value();
+                }
+                break;
+            }
+        } catch (RecognitionException re) {
+            _localctx.exception = re;
+            _errHandler.reportError(this, re);
+            _errHandler.recover(this, re);
+        } finally {
+            exitRule();
+        }
+        return _localctx;
+    }
+
+    public final PrioContext prio() throws RecognitionException {
+        PrioContext _localctx = new PrioContext(_ctx, getState());
+        enterRule(_localctx, 66, RULE_prio);
+        try {
+            enterOuterAlt(_localctx, 1);
+            {
+                setState(582);
+                match(Important);
+                setState(583);
+                ws();
+            }
+        } catch (RecognitionException re) {
+            _localctx.exception = re;
+            _errHandler.reportError(this, re);
+            _errHandler.recover(this, re);
+        } finally {
+            exitRule();
+        }
+        return _localctx;
+    }
+
+    public final ValueContext value() throws RecognitionException {
+        ValueContext _localctx = new ValueContext(_ctx, getState());
+        enterRule(_localctx, 68, RULE_value);
+        try {
+            int _alt;
+            enterOuterAlt(_localctx, 1);
+            {
+                setState(590);
+                _errHandler.sync(this);
+                _alt = 1;
+                do {
+                    switch (_alt) {
+                        case 1: {
+                            setState(590);
+                            _errHandler.sync(this);
+                            switch (_input.LA(1)) {
+                                case T__1:
+                                case T__2:
+                                case T__9:
+                                case Includes:
+                                case DashMatch:
+                                case Hash:
+                                case Percentage:
+                                case Uri:
+                                case UnicodeRange:
+                                case MediaOnly:
+                                case Not:
+                                case And:
+                                case Dimension:
+                                case UnknownDimension:
+                                case Plus:
+                                case Minus:
+                                case Number:
+                                case String:
+                                case Or:
+                                case From:
+                                case To:
+                                case Ident:
+                                case Function: {
+                                    setState(585);
+                                    any();
+                                }
+                                break;
+                                case T__4: {
+                                    setState(586);
+                                    block();
+                                }
+                                break;
+                                case T__14: {
+                                    setState(587);
+                                    atKeyword();
+                                    setState(588);
+                                    ws();
+                                }
+                                break;
+                                default:
+                                    throw new NoViableAltException(this);
+                            }
+                        }
+                        break;
+                        default:
+                            throw new NoViableAltException(this);
+                    }
+                    setState(592);
+                    _errHandler.sync(this);
+                    _alt = getInterpreter().adaptivePredict(_input, 56, _ctx);
+                } while (_alt != 2 && _alt != org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER);
+            }
+        } catch (RecognitionException re) {
+            _localctx.exception = re;
+            _errHandler.reportError(this, re);
+            _errHandler.recover(this, re);
+        } finally {
+            exitRule();
+        }
+        return _localctx;
+    }
+
+    public final ExprContext expr() throws RecognitionException {
+        ExprContext _localctx = new ExprContext(_ctx, getState());
+        enterRule(_localctx, 70, RULE_expr);
+        int _la;
+        try {
+            int _alt;
+            enterOuterAlt(_localctx, 1);
+            {
+                setState(594);
+                term();
+                setState(601);
+                _errHandler.sync(this);
+                _alt = getInterpreter().adaptivePredict(_input, 58, _ctx);
+                while (_alt != 2 && _alt != org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER) {
+                    if (_alt == 1) {
+                        {
+                            {
+                                setState(596);
+                                _errHandler.sync(this);
+                                _la = _input.LA(1);
+                                if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__10) | (1L << T__12) | (1L << Space) | (1L << Comma))) != 0)) {
+                                    {
+                                        setState(595);
+                                        operator();
+                                    }
+                                }
+
+                                setState(598);
+                                term();
+                            }
+                        }
+                    }
+                    setState(603);
+                    _errHandler.sync(this);
+                    _alt = getInterpreter().adaptivePredict(_input, 58, _ctx);
+                }
+            }
+        } catch (RecognitionException re) {
+            _localctx.exception = re;
+            _errHandler.reportError(this, re);
+            _errHandler.recover(this, re);
+        } finally {
+            exitRule();
+        }
+        return _localctx;
+    }
+
+    public final TermContext term() throws RecognitionException {
+        TermContext _localctx = new TermContext(_ctx, getState());
+        enterRule(_localctx, 72, RULE_term);
+        try {
+            setState(630);
+            _errHandler.sync(this);
+            switch (getInterpreter().adaptivePredict(_input, 59, _ctx)) {
+                case 1:
+                    _localctx = new KnownTermContext(_localctx);
+                    enterOuterAlt(_localctx, 1);
+                {
+                    setState(604);
+                    number();
+                    setState(605);
+                    ws();
+                }
+                break;
+                case 2:
+                    _localctx = new KnownTermContext(_localctx);
+                    enterOuterAlt(_localctx, 2);
+                {
+                    setState(607);
+                    percentage();
+                    setState(608);
+                    ws();
+                }
+                break;
+                case 3:
+                    _localctx = new KnownTermContext(_localctx);
+                    enterOuterAlt(_localctx, 3);
+                {
+                    setState(610);
+                    dimension();
+                    setState(611);
+                    ws();
+                }
+                break;
+                case 4:
+                    _localctx = new KnownTermContext(_localctx);
+                    enterOuterAlt(_localctx, 4);
+                {
+                    setState(613);
+                    match(String);
+                    setState(614);
+                    ws();
+                }
+                break;
+                case 5:
+                    _localctx = new KnownTermContext(_localctx);
+                    enterOuterAlt(_localctx, 5);
+                {
+                    setState(615);
+                    match(UnicodeRange);
+                    setState(616);
+                    ws();
+                }
+                break;
+                case 6:
+                    _localctx = new KnownTermContext(_localctx);
+                    enterOuterAlt(_localctx, 6);
+                {
+                    setState(617);
+                    ident();
+                    setState(618);
+                    ws();
+                }
+                break;
+                case 7:
+                    _localctx = new KnownTermContext(_localctx);
+                    enterOuterAlt(_localctx, 7);
+                {
+                    setState(620);
+                    var();
+                }
+                break;
+                case 8:
+                    _localctx = new KnownTermContext(_localctx);
+                    enterOuterAlt(_localctx, 8);
+                {
+                    setState(621);
+                    match(Uri);
+                    setState(622);
+                    ws();
+                }
+                break;
+                case 9:
+                    _localctx = new KnownTermContext(_localctx);
+                    enterOuterAlt(_localctx, 9);
+                {
+                    setState(623);
+                    hexcolor();
+                }
+                break;
+                case 10:
+                    _localctx = new KnownTermContext(_localctx);
+                    enterOuterAlt(_localctx, 10);
+                {
+                    setState(624);
+                    calc();
+                }
+                break;
+                case 11:
+                    _localctx = new KnownTermContext(_localctx);
+                    enterOuterAlt(_localctx, 11);
+                {
+                    setState(625);
+                    function();
+                }
+                break;
+                case 12:
+                    _localctx = new UnknownTermContext(_localctx);
+                    enterOuterAlt(_localctx, 12);
+                {
+                    setState(626);
+                    unknownDimension();
+                    setState(627);
+                    ws();
+                }
+                break;
+                case 13:
+                    _localctx = new BadTermContext(_localctx);
+                    enterOuterAlt(_localctx, 13);
+                {
+                    setState(629);
+                    dxImageTransform();
+                }
+                break;
+            }
+        } catch (RecognitionException re) {
+            _localctx.exception = re;
+            _errHandler.reportError(this, re);
+            _errHandler.recover(this, re);
+        } finally {
+            exitRule();
+        }
+        return _localctx;
+    }
+
+    public final FunctionContext function() throws RecognitionException {
+        FunctionContext _localctx = new FunctionContext(_ctx, getState());
+        enterRule(_localctx, 74, RULE_function);
+        try {
+            enterOuterAlt(_localctx, 1);
+            {
+                setState(632);
+                match(Function);
+                setState(633);
+                ws();
+                setState(634);
+                expr();
+                setState(635);
+                match(T__3);
+                setState(636);
+                ws();
+            }
+        } catch (RecognitionException re) {
+            _localctx.exception = re;
+            _errHandler.reportError(this, re);
+            _errHandler.recover(this, re);
+        } finally {
+            exitRule();
+        }
+        return _localctx;
+    }
+
+    public final DxImageTransformContext dxImageTransform() throws RecognitionException {
+        DxImageTransformContext _localctx = new DxImageTransformContext(_ctx, getState());
+        enterRule(_localctx, 76, RULE_dxImageTransform);
+        try {
+            enterOuterAlt(_localctx, 1);
+            {
+                setState(638);
+                match(DxImageTransform);
+                setState(639);
+                ws();
+                setState(640);
+                expr();
+                setState(641);
+                match(T__3);
+                setState(642);
+                ws();
+            }
+        } catch (RecognitionException re) {
+            _localctx.exception = re;
+            _errHandler.reportError(this, re);
+            _errHandler.recover(this, re);
+        } finally {
+            exitRule();
+        }
+        return _localctx;
+    }
+
+    public final HexcolorContext hexcolor() throws RecognitionException {
+        HexcolorContext _localctx = new HexcolorContext(_ctx, getState());
+        enterRule(_localctx, 78, RULE_hexcolor);
+        try {
+            enterOuterAlt(_localctx, 1);
+            {
+                setState(644);
+                match(Hash);
+                setState(645);
+                ws();
+            }
+        } catch (RecognitionException re) {
+            _localctx.exception = re;
+            _errHandler.reportError(this, re);
+            _errHandler.recover(this, re);
+        } finally {
+            exitRule();
+        }
+        return _localctx;
+    }
+
+    public final NumberContext number() throws RecognitionException {
+        NumberContext _localctx = new NumberContext(_ctx, getState());
+        enterRule(_localctx, 80, RULE_number);
+        int _la;
+        try {
+            enterOuterAlt(_localctx, 1);
+            {
+                setState(648);
+                _errHandler.sync(this);
+                _la = _input.LA(1);
+                if (_la == Plus || _la == Minus) {
+                    {
+                        setState(647);
+                        _la = _input.LA(1);
+                        if (!(_la == Plus || _la == Minus)) {
+                            _errHandler.recoverInline(this);
+                        } else {
+                            if (_input.LA(1) == Token.EOF) {
+                                matchedEOF = true;
+                            }
+                            _errHandler.reportMatch(this);
+                            consume();
+                        }
+                    }
+                }
+
+                setState(650);
+                match(Number);
+            }
+        } catch (RecognitionException re) {
+            _localctx.exception = re;
+            _errHandler.reportError(this, re);
+            _errHandler.recover(this, re);
+        } finally {
+            exitRule();
+        }
+        return _localctx;
+    }
+
+    public final PercentageContext percentage() throws RecognitionException {
+        PercentageContext _localctx = new PercentageContext(_ctx, getState());
+        enterRule(_localctx, 82, RULE_percentage);
+        int _la;
+        try {
+            enterOuterAlt(_localctx, 1);
+            {
+                setState(653);
+                _errHandler.sync(this);
+                _la = _input.LA(1);
+                if (_la == Plus || _la == Minus) {
+                    {
+                        setState(652);
+                        _la = _input.LA(1);
+                        if (!(_la == Plus || _la == Minus)) {
+                            _errHandler.recoverInline(this);
+                        } else {
+                            if (_input.LA(1) == Token.EOF) {
+                                matchedEOF = true;
+                            }
+                            _errHandler.reportMatch(this);
+                            consume();
+                        }
+                    }
+                }
+
+                setState(655);
+                match(Percentage);
+            }
+        } catch (RecognitionException re) {
+            _localctx.exception = re;
+            _errHandler.reportError(this, re);
+            _errHandler.recover(this, re);
+        } finally {
+            exitRule();
+        }
+        return _localctx;
+    }
+
+    public final DimensionContext dimension() throws RecognitionException {
+        DimensionContext _localctx = new DimensionContext(_ctx, getState());
+        enterRule(_localctx, 84, RULE_dimension);
+        int _la;
+        try {
+            enterOuterAlt(_localctx, 1);
+            {
+                setState(658);
+                _errHandler.sync(this);
+                _la = _input.LA(1);
+                if (_la == Plus || _la == Minus) {
+                    {
+                        setState(657);
+                        _la = _input.LA(1);
+                        if (!(_la == Plus || _la == Minus)) {
+                            _errHandler.recoverInline(this);
+                        } else {
+                            if (_input.LA(1) == Token.EOF) {
+                                matchedEOF = true;
+                            }
+                            _errHandler.reportMatch(this);
+                            consume();
+                        }
+                    }
+                }
+
+                setState(660);
+                match(Dimension);
+            }
+        } catch (RecognitionException re) {
+            _localctx.exception = re;
+            _errHandler.reportError(this, re);
+            _errHandler.recover(this, re);
+        } finally {
+            exitRule();
+        }
+        return _localctx;
+    }
+
+    public final UnknownDimensionContext unknownDimension() throws RecognitionException {
+        UnknownDimensionContext _localctx = new UnknownDimensionContext(_ctx, getState());
+        enterRule(_localctx, 86, RULE_unknownDimension);
+        int _la;
+        try {
+            enterOuterAlt(_localctx, 1);
+            {
+                setState(663);
+                _errHandler.sync(this);
+                _la = _input.LA(1);
+                if (_la == Plus || _la == Minus) {
+                    {
+                        setState(662);
+                        _la = _input.LA(1);
+                        if (!(_la == Plus || _la == Minus)) {
+                            _errHandler.recoverInline(this);
+                        } else {
+                            if (_input.LA(1) == Token.EOF) {
+                                matchedEOF = true;
+                            }
+                            _errHandler.reportMatch(this);
+                            consume();
+                        }
+                    }
+                }
+
+                setState(665);
+                match(UnknownDimension);
+            }
+        } catch (RecognitionException re) {
+            _localctx.exception = re;
+            _errHandler.reportError(this, re);
+            _errHandler.recover(this, re);
+        } finally {
+            exitRule();
+        }
+        return _localctx;
+    }
+
+    public final AnyContext any() throws RecognitionException {
+        AnyContext _localctx = new AnyContext(_ctx, getState());
+        enterRule(_localctx, 88, RULE_any);
+        int _la;
+        try {
+            setState(732);
+            _errHandler.sync(this);
+            switch (getInterpreter().adaptivePredict(_input, 70, _ctx)) {
+                case 1:
+                    enterOuterAlt(_localctx, 1);
+                {
+                    setState(667);
+                    ident();
+                    setState(668);
+                    ws();
+                }
+                break;
+                case 2:
+                    enterOuterAlt(_localctx, 2);
+                {
+                    setState(670);
+                    number();
+                    setState(671);
+                    ws();
+                }
+                break;
+                case 3:
+                    enterOuterAlt(_localctx, 3);
+                {
+                    setState(673);
+                    percentage();
+                    setState(674);
+                    ws();
+                }
+                break;
+                case 4:
+                    enterOuterAlt(_localctx, 4);
+                {
+                    setState(676);
+                    dimension();
+                    setState(677);
+                    ws();
+                }
+                break;
+                case 5:
+                    enterOuterAlt(_localctx, 5);
+                {
+                    setState(679);
+                    unknownDimension();
+                    setState(680);
+                    ws();
+                }
+                break;
+                case 6:
+                    enterOuterAlt(_localctx, 6);
+                {
+                    setState(682);
+                    match(String);
+                    setState(683);
+                    ws();
+                }
+                break;
+                case 7:
+                    enterOuterAlt(_localctx, 7);
+                {
+                    setState(684);
+                    match(Uri);
+                    setState(685);
+                    ws();
+                }
+                break;
+                case 8:
+                    enterOuterAlt(_localctx, 8);
+                {
+                    setState(686);
+                    match(Hash);
+                    setState(687);
+                    ws();
+                }
+                break;
+                case 9:
+                    enterOuterAlt(_localctx, 9);
+                {
+                    setState(688);
+                    match(UnicodeRange);
+                    setState(689);
+                    ws();
+                }
+                break;
+                case 10:
+                    enterOuterAlt(_localctx, 10);
+                {
+                    setState(690);
+                    match(Includes);
+                    setState(691);
+                    ws();
+                }
+                break;
+                case 11:
+                    enterOuterAlt(_localctx, 11);
+                {
+                    setState(692);
+                    match(DashMatch);
+                    setState(693);
+                    ws();
+                }
+                break;
+                case 12:
+                    enterOuterAlt(_localctx, 12);
+                {
+                    setState(694);
+                    match(T__2);
+                    setState(695);
+                    ws();
+                }
+                break;
+                case 13:
+                    enterOuterAlt(_localctx, 13);
+                {
+                    setState(696);
+                    match(Function);
+                    setState(697);
+                    ws();
+                    setState(702);
+                    _errHandler.sync(this);
+                    _la = _input.LA(1);
+                    while ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__0) | (1L << T__1) | (1L << T__2) | (1L << T__4) | (1L << T__9) | (1L << T__14) | (1L << Cdo) | (1L << Cdc) | (1L << Includes) | (1L << DashMatch) | (1L << Hash) | (1L << Percentage) | (1L << Uri) | (1L << UnicodeRange) | (1L << MediaOnly) | (1L << Not) | (1L << And) | (1L << Dimension) | (1L << UnknownDimension) | (1L << Plus) | (1L << Minus) | (1L << Number) | (1L << String) | (1L << Or) | (1L << From) | (1L << To) | (1L << Ident) | (1L << Function))) != 0)) {
+                        {
+                            setState(700);
+                            _errHandler.sync(this);
+                            switch (_input.LA(1)) {
+                                case T__1:
+                                case T__2:
+                                case T__9:
+                                case Includes:
+                                case DashMatch:
+                                case Hash:
+                                case Percentage:
+                                case Uri:
+                                case UnicodeRange:
+                                case MediaOnly:
+                                case Not:
+                                case And:
+                                case Dimension:
+                                case UnknownDimension:
+                                case Plus:
+                                case Minus:
+                                case Number:
+                                case String:
+                                case Or:
+                                case From:
+                                case To:
+                                case Ident:
+                                case Function: {
+                                    setState(698);
+                                    any();
+                                }
+                                break;
+                                case T__0:
+                                case T__4:
+                                case T__14:
+                                case Cdo:
+                                case Cdc: {
+                                    setState(699);
+                                    unused();
+                                }
+                                break;
+                                default:
+                                    throw new NoViableAltException(this);
+                            }
+                        }
+                        setState(704);
+                        _errHandler.sync(this);
+                        _la = _input.LA(1);
+                    }
+                    setState(705);
+                    match(T__3);
+                    setState(706);
+                    ws();
+                }
+                break;
+                case 14:
+                    enterOuterAlt(_localctx, 14);
+                {
+                    setState(708);
+                    match(T__1);
+                    setState(709);
+                    ws();
+                    setState(714);
+                    _errHandler.sync(this);
+                    _la = _input.LA(1);
+                    while ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__0) | (1L << T__1) | (1L << T__2) | (1L << T__4) | (1L << T__9) | (1L << T__14) | (1L << Cdo) | (1L << Cdc) | (1L << Includes) | (1L << DashMatch) | (1L << Hash) | (1L << Percentage) | (1L << Uri) | (1L << UnicodeRange) | (1L << MediaOnly) | (1L << Not) | (1L << And) | (1L << Dimension) | (1L << UnknownDimension) | (1L << Plus) | (1L << Minus) | (1L << Number) | (1L << String) | (1L << Or) | (1L << From) | (1L << To) | (1L << Ident) | (1L << Function))) != 0)) {
+                        {
+                            setState(712);
+                            _errHandler.sync(this);
+                            switch (_input.LA(1)) {
+                                case T__1:
+                                case T__2:
+                                case T__9:
+                                case Includes:
+                                case DashMatch:
+                                case Hash:
+                                case Percentage:
+                                case Uri:
+                                case UnicodeRange:
+                                case MediaOnly:
+                                case Not:
+                                case And:
+                                case Dimension:
+                                case UnknownDimension:
+                                case Plus:
+                                case Minus:
+                                case Number:
+                                case String:
+                                case Or:
+                                case From:
+                                case To:
+                                case Ident:
+                                case Function: {
+                                    setState(710);
+                                    any();
+                                }
+                                break;
+                                case T__0:
+                                case T__4:
+                                case T__14:
+                                case Cdo:
+                                case Cdc: {
+                                    setState(711);
+                                    unused();
+                                }
+                                break;
+                                default:
+                                    throw new NoViableAltException(this);
+                            }
+                        }
+                        setState(716);
+                        _errHandler.sync(this);
+                        _la = _input.LA(1);
+                    }
+                    setState(717);
+                    match(T__3);
+                    setState(718);
+                    ws();
+                }
+                break;
+                case 15:
+                    enterOuterAlt(_localctx, 15);
+                {
+                    setState(720);
+                    match(T__9);
+                    setState(721);
+                    ws();
+                    setState(726);
+                    _errHandler.sync(this);
+                    _la = _input.LA(1);
+                    while ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__0) | (1L << T__1) | (1L << T__2) | (1L << T__4) | (1L << T__9) | (1L << T__14) | (1L << Cdo) | (1L << Cdc) | (1L << Includes) | (1L << DashMatch) | (1L << Hash) | (1L << Percentage) | (1L << Uri) | (1L << UnicodeRange) | (1L << MediaOnly) | (1L << Not) | (1L << And) | (1L << Dimension) | (1L << UnknownDimension) | (1L << Plus) | (1L << Minus) | (1L << Number) | (1L << String) | (1L << Or) | (1L << From) | (1L << To) | (1L << Ident) | (1L << Function))) != 0)) {
+                        {
+                            setState(724);
+                            _errHandler.sync(this);
+                            switch (_input.LA(1)) {
+                                case T__1:
+                                case T__2:
+                                case T__9:
+                                case Includes:
+                                case DashMatch:
+                                case Hash:
+                                case Percentage:
+                                case Uri:
+                                case UnicodeRange:
+                                case MediaOnly:
+                                case Not:
+                                case And:
+                                case Dimension:
+                                case UnknownDimension:
+                                case Plus:
+                                case Minus:
+                                case Number:
+                                case String:
+                                case Or:
+                                case From:
+                                case To:
+                                case Ident:
+                                case Function: {
+                                    setState(722);
+                                    any();
+                                }
+                                break;
+                                case T__0:
+                                case T__4:
+                                case T__14:
+                                case Cdo:
+                                case Cdc: {
+                                    setState(723);
+                                    unused();
+                                }
+                                break;
+                                default:
+                                    throw new NoViableAltException(this);
+                            }
+                        }
+                        setState(728);
+                        _errHandler.sync(this);
+                        _la = _input.LA(1);
+                    }
+                    setState(729);
+                    match(T__11);
+                    setState(730);
+                    ws();
+                }
+                break;
+            }
+        } catch (RecognitionException re) {
+            _localctx.exception = re;
+            _errHandler.reportError(this, re);
+            _errHandler.recover(this, re);
+        } finally {
+            exitRule();
+        }
+        return _localctx;
+    }
+
+    public final AtRuleContext atRule() throws RecognitionException {
+        AtRuleContext _localctx = new AtRuleContext(_ctx, getState());
+        enterRule(_localctx, 90, RULE_atRule);
+        int _la;
+        try {
+            _localctx = new UnknownAtRuleContext(_localctx);
+            enterOuterAlt(_localctx, 1);
+            {
+                setState(734);
+                atKeyword();
+                setState(735);
+                ws();
+                setState(739);
+                _errHandler.sync(this);
+                _la = _input.LA(1);
+                while ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__1) | (1L << T__2) | (1L << T__9) | (1L << Includes) | (1L << DashMatch) | (1L << Hash) | (1L << Percentage) | (1L << Uri) | (1L << UnicodeRange) | (1L << MediaOnly) | (1L << Not) | (1L << And) | (1L << Dimension) | (1L << UnknownDimension) | (1L << Plus) | (1L << Minus) | (1L << Number) | (1L << String) | (1L << Or) | (1L << From) | (1L << To) | (1L << Ident) | (1L << Function))) != 0)) {
+                    {
+                        {
+                            setState(736);
+                            any();
+                        }
+                    }
+                    setState(741);
+                    _errHandler.sync(this);
+                    _la = _input.LA(1);
+                }
+                setState(745);
+                _errHandler.sync(this);
+                switch (_input.LA(1)) {
+                    case T__4: {
+                        setState(742);
+                        block();
+                    }
+                    break;
+                    case T__0: {
+                        setState(743);
+                        match(T__0);
+                        setState(744);
+                        ws();
+                    }
+                    break;
+                    default:
+                        throw new NoViableAltException(this);
+                }
+            }
+        } catch (RecognitionException re) {
+            _localctx.exception = re;
+            _errHandler.reportError(this, re);
+            _errHandler.recover(this, re);
+        } finally {
+            exitRule();
+        }
+        return _localctx;
+    }
+
+    public final AtKeywordContext atKeyword() throws RecognitionException {
+        AtKeywordContext _localctx = new AtKeywordContext(_ctx, getState());
+        enterRule(_localctx, 92, RULE_atKeyword);
+        try {
+            enterOuterAlt(_localctx, 1);
+            {
+                setState(747);
+                match(T__14);
+                setState(748);
+                ident();
+            }
+        } catch (RecognitionException re) {
+            _localctx.exception = re;
+            _errHandler.reportError(this, re);
+            _errHandler.recover(this, re);
+        } finally {
+            exitRule();
+        }
+        return _localctx;
+    }
+
+    public final UnusedContext unused() throws RecognitionException {
+        UnusedContext _localctx = new UnusedContext(_ctx, getState());
+        enterRule(_localctx, 94, RULE_unused);
+        try {
+            setState(760);
+            _errHandler.sync(this);
+            switch (_input.LA(1)) {
+                case T__4:
+                    enterOuterAlt(_localctx, 1);
+                {
+                    setState(750);
+                    block();
+                }
+                break;
+                case T__14:
+                    enterOuterAlt(_localctx, 2);
+                {
+                    setState(751);
+                    atKeyword();
+                    setState(752);
+                    ws();
+                }
+                break;
+                case T__0:
+                    enterOuterAlt(_localctx, 3);
+                {
+                    setState(754);
+                    match(T__0);
+                    setState(755);
+                    ws();
+                }
+                break;
+                case Cdo:
+                    enterOuterAlt(_localctx, 4);
+                {
+                    setState(756);
+                    match(Cdo);
+                    setState(757);
+                    ws();
+                }
+                break;
+                case Cdc:
+                    enterOuterAlt(_localctx, 5);
+                {
+                    setState(758);
+                    match(Cdc);
+                    setState(759);
+                    ws();
+                }
+                break;
+                default:
+                    throw new NoViableAltException(this);
+            }
+        } catch (RecognitionException re) {
+            _localctx.exception = re;
+            _errHandler.reportError(this, re);
+            _errHandler.recover(this, re);
+        } finally {
+            exitRule();
+        }
+        return _localctx;
+    }
+
+    public final BlockContext block() throws RecognitionException {
+        BlockContext _localctx = new BlockContext(_ctx, getState());
+        enterRule(_localctx, 96, RULE_block);
+        int _la;
+        try {
+            enterOuterAlt(_localctx, 1);
+            {
+                setState(762);
+                match(T__4);
+                setState(763);
+                ws();
+                setState(775);
+                _errHandler.sync(this);
+                _la = _input.LA(1);
+                while ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__0) | (1L << T__1) | (1L << T__2) | (1L << T__4) | (1L << T__6) | (1L << T__7) | (1L << T__8) | (1L << T__9) | (1L << T__13) | (1L << T__14) | (1L << Includes) | (1L << DashMatch) | (1L << Hash) | (1L << Page) | (1L << Media) | (1L << Percentage) | (1L << Uri) | (1L << UnicodeRange) | (1L << MediaOnly) | (1L << Not) | (1L << And) | (1L << Dimension) | (1L << UnknownDimension) | (1L << Plus) | (1L << Minus) | (1L << PseudoNot) | (1L << Number) | (1L << String) | (1L << FontFace) | (1L << Supports) | (1L << Or) | (1L << Keyframes) | (1L << From) | (1L << To) | (1L << Viewport) | (1L << CounterStyle) | (1L << FontFeatureValues) | (1L << Variable) | (1L << Ident) | (1L << Function))) != 0)) {
+                    {
+                        setState(773);
+                        _errHandler.sync(this);
+                        switch (getInterpreter().adaptivePredict(_input, 74, _ctx)) {
+                            case 1: {
+                                setState(764);
+                                declarationList();
+                            }
+                            break;
+                            case 2: {
+                                setState(765);
+                                nestedStatement();
+                            }
+                            break;
+                            case 3: {
+                                setState(766);
+                                any();
+                            }
+                            break;
+                            case 4: {
+                                setState(767);
+                                block();
+                            }
+                            break;
+                            case 5: {
+                                setState(768);
+                                atKeyword();
+                                setState(769);
+                                ws();
+                            }
+                            break;
+                            case 6: {
+                                setState(771);
+                                match(T__0);
+                                setState(772);
+                                ws();
+                            }
+                            break;
+                        }
+                    }
+                    setState(777);
+                    _errHandler.sync(this);
+                    _la = _input.LA(1);
+                }
+                setState(778);
+                match(T__5);
+                setState(779);
+                ws();
+            }
+        } catch (RecognitionException re) {
+            _localctx.exception = re;
+            _errHandler.reportError(this, re);
+            _errHandler.recover(this, re);
+        } finally {
+            exitRule();
+        }
+        return _localctx;
+    }
+
+    public final NestedStatementContext nestedStatement() throws RecognitionException {
+        NestedStatementContext _localctx = new NestedStatementContext(_ctx, getState());
+        enterRule(_localctx, 98, RULE_nestedStatement);
+        try {
+            setState(791);
+            _errHandler.sync(this);
+            switch (_input.LA(1)) {
+                case T__1:
+                case T__2:
+                case T__4:
+                case T__6:
+                case T__7:
+                case T__8:
+                case T__9:
+                case Includes:
+                case DashMatch:
+                case Hash:
+                case Percentage:
+                case Uri:
+                case UnicodeRange:
+                case MediaOnly:
+                case Not:
+                case And:
+                case Dimension:
+                case UnknownDimension:
+                case Plus:
+                case Minus:
+                case PseudoNot:
+                case Number:
+                case String:
+                case Or:
+                case From:
+                case To:
+                case Ident:
+                case Function:
+                    enterOuterAlt(_localctx, 1);
+                {
+                    setState(781);
+                    ruleset();
+                }
+                break;
+                case Media:
+                    enterOuterAlt(_localctx, 2);
+                {
+                    setState(782);
+                    media();
+                }
+                break;
+                case Page:
+                    enterOuterAlt(_localctx, 3);
+                {
+                    setState(783);
+                    page();
+                }
+                break;
+                case FontFace:
+                    enterOuterAlt(_localctx, 4);
+                {
+                    setState(784);
+                    fontFaceRule();
+                }
+                break;
+                case Keyframes:
+                    enterOuterAlt(_localctx, 5);
+                {
+                    setState(785);
+                    keyframesRule();
+                }
+                break;
+                case Supports:
+                    enterOuterAlt(_localctx, 6);
+                {
+                    setState(786);
+                    supportsRule();
+                }
+                break;
+                case Viewport:
+                    enterOuterAlt(_localctx, 7);
+                {
+                    setState(787);
+                    viewport();
+                }
+                break;
+                case CounterStyle:
+                    enterOuterAlt(_localctx, 8);
+                {
+                    setState(788);
+                    counterStyle();
+                }
+                break;
+                case FontFeatureValues:
+                    enterOuterAlt(_localctx, 9);
+                {
+                    setState(789);
+                    fontFeatureValuesRule();
+                }
+                break;
+                case T__14:
+                    enterOuterAlt(_localctx, 10);
+                {
+                    setState(790);
+                    atRule();
+                }
+                break;
+                default:
+                    throw new NoViableAltException(this);
+            }
+        } catch (RecognitionException re) {
+            _localctx.exception = re;
+            _errHandler.reportError(this, re);
+            _errHandler.recover(this, re);
+        } finally {
+            exitRule();
+        }
+        return _localctx;
+    }
+
+    public final GroupRuleBodyContext groupRuleBody() throws RecognitionException {
+        GroupRuleBodyContext _localctx = new GroupRuleBodyContext(_ctx, getState());
+        enterRule(_localctx, 100, RULE_groupRuleBody);
+        int _la;
+        try {
+            enterOuterAlt(_localctx, 1);
+            {
+                setState(793);
+                match(T__4);
+                setState(794);
+                ws();
+                setState(798);
+                _errHandler.sync(this);
+                _la = _input.LA(1);
+                while ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__1) | (1L << T__2) | (1L << T__4) | (1L << T__6) | (1L << T__7) | (1L << T__8) | (1L << T__9) | (1L << T__14) | (1L << Includes) | (1L << DashMatch) | (1L << Hash) | (1L << Page) | (1L << Media) | (1L << Percentage) | (1L << Uri) | (1L << UnicodeRange) | (1L << MediaOnly) | (1L << Not) | (1L << And) | (1L << Dimension) | (1L << UnknownDimension) | (1L << Plus) | (1L << Minus) | (1L << PseudoNot) | (1L << Number) | (1L << String) | (1L << FontFace) | (1L << Supports) | (1L << Or) | (1L << Keyframes) | (1L << From) | (1L << To) | (1L << Viewport) | (1L << CounterStyle) | (1L << FontFeatureValues) | (1L << Ident) | (1L << Function))) != 0)) {
+                    {
+                        {
+                            setState(795);
+                            nestedStatement();
+                        }
+                    }
+                    setState(800);
+                    _errHandler.sync(this);
+                    _la = _input.LA(1);
+                }
+                setState(801);
+                match(T__5);
+                setState(802);
+                ws();
+            }
+        } catch (RecognitionException re) {
+            _localctx.exception = re;
+            _errHandler.reportError(this, re);
+            _errHandler.recover(this, re);
+        } finally {
+            exitRule();
+        }
+        return _localctx;
+    }
+
+    public final SupportsRuleContext supportsRule() throws RecognitionException {
+        SupportsRuleContext _localctx = new SupportsRuleContext(_ctx, getState());
+        enterRule(_localctx, 102, RULE_supportsRule);
+        try {
+            enterOuterAlt(_localctx, 1);
+            {
+                setState(804);
+                match(Supports);
+                setState(805);
+                ws();
+                setState(806);
+                supportsCondition();
+                setState(807);
+                ws();
+                setState(808);
+                groupRuleBody();
+            }
+        } catch (RecognitionException re) {
+            _localctx.exception = re;
+            _errHandler.reportError(this, re);
+            _errHandler.recover(this, re);
+        } finally {
+            exitRule();
+        }
+        return _localctx;
+    }
+
+    public final SupportsConditionContext supportsCondition() throws RecognitionException {
+        SupportsConditionContext _localctx = new SupportsConditionContext(_ctx, getState());
+        enterRule(_localctx, 104, RULE_supportsCondition);
+        try {
+            setState(814);
+            _errHandler.sync(this);
+            switch (getInterpreter().adaptivePredict(_input, 78, _ctx)) {
+                case 1:
+                    enterOuterAlt(_localctx, 1);
+                {
+                    setState(810);
+                    supportsNegation();
+                }
+                break;
+                case 2:
+                    enterOuterAlt(_localctx, 2);
+                {
+                    setState(811);
+                    supportsConjunction();
+                }
+                break;
+                case 3:
+                    enterOuterAlt(_localctx, 3);
+                {
+                    setState(812);
+                    supportsDisjunction();
+                }
+                break;
+                case 4:
+                    enterOuterAlt(_localctx, 4);
+                {
+                    setState(813);
+                    supportsConditionInParens();
+                }
+                break;
+            }
+        } catch (RecognitionException re) {
+            _localctx.exception = re;
+            _errHandler.reportError(this, re);
+            _errHandler.recover(this, re);
+        } finally {
+            exitRule();
+        }
+        return _localctx;
+    }
+
+    public final SupportsConditionInParensContext supportsConditionInParens() throws RecognitionException {
+        SupportsConditionInParensContext _localctx = new SupportsConditionInParensContext(_ctx, getState());
+        enterRule(_localctx, 106, RULE_supportsConditionInParens);
+        try {
+            setState(824);
+            _errHandler.sync(this);
+            switch (getInterpreter().adaptivePredict(_input, 79, _ctx)) {
+                case 1:
+                    enterOuterAlt(_localctx, 1);
+                {
+                    setState(816);
+                    match(T__1);
+                    setState(817);
+                    ws();
+                    setState(818);
+                    supportsCondition();
+                    setState(819);
+                    ws();
+                    setState(820);
+                    match(T__3);
+                }
+                break;
+                case 2:
+                    enterOuterAlt(_localctx, 2);
+                {
+                    setState(822);
+                    supportsDeclarationCondition();
+                }
+                break;
+                case 3:
+                    enterOuterAlt(_localctx, 3);
+                {
+                    setState(823);
+                    generalEnclosed();
+                }
+                break;
+            }
+        } catch (RecognitionException re) {
+            _localctx.exception = re;
+            _errHandler.reportError(this, re);
+            _errHandler.recover(this, re);
+        } finally {
+            exitRule();
+        }
+        return _localctx;
+    }
+
+    public final SupportsNegationContext supportsNegation() throws RecognitionException {
+        SupportsNegationContext _localctx = new SupportsNegationContext(_ctx, getState());
+        enterRule(_localctx, 108, RULE_supportsNegation);
+        try {
+            enterOuterAlt(_localctx, 1);
+            {
+                setState(826);
+                match(Not);
+                setState(827);
+                ws();
+                setState(828);
+                match(Space);
+                setState(829);
+                ws();
+                setState(830);
+                supportsConditionInParens();
+            }
+        } catch (RecognitionException re) {
+            _localctx.exception = re;
+            _errHandler.reportError(this, re);
+            _errHandler.recover(this, re);
+        } finally {
+            exitRule();
+        }
+        return _localctx;
+    }
+
+    public final SupportsConjunctionContext supportsConjunction() throws RecognitionException {
+        SupportsConjunctionContext _localctx = new SupportsConjunctionContext(_ctx, getState());
+        enterRule(_localctx, 110, RULE_supportsConjunction);
+        try {
+            int _alt;
+            enterOuterAlt(_localctx, 1);
+            {
+                setState(832);
+                supportsConditionInParens();
+                setState(842);
+                _errHandler.sync(this);
+                _alt = 1;
+                do {
+                    switch (_alt) {
+                        case 1: {
+                            {
+                                setState(833);
+                                ws();
+                                setState(834);
+                                match(Space);
+                                setState(835);
+                                ws();
+                                setState(836);
+                                match(And);
+                                setState(837);
+                                ws();
+                                setState(838);
+                                match(Space);
+                                setState(839);
+                                ws();
+                                setState(840);
+                                supportsConditionInParens();
+                            }
+                        }
+                        break;
+                        default:
+                            throw new NoViableAltException(this);
+                    }
+                    setState(844);
+                    _errHandler.sync(this);
+                    _alt = getInterpreter().adaptivePredict(_input, 80, _ctx);
+                } while (_alt != 2 && _alt != org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER);
+            }
+        } catch (RecognitionException re) {
+            _localctx.exception = re;
+            _errHandler.reportError(this, re);
+            _errHandler.recover(this, re);
+        } finally {
+            exitRule();
+        }
+        return _localctx;
+    }
+
+    public final SupportsDisjunctionContext supportsDisjunction() throws RecognitionException {
+        SupportsDisjunctionContext _localctx = new SupportsDisjunctionContext(_ctx, getState());
+        enterRule(_localctx, 112, RULE_supportsDisjunction);
+        try {
+            int _alt;
+            enterOuterAlt(_localctx, 1);
+            {
+                setState(846);
+                supportsConditionInParens();
+                setState(856);
+                _errHandler.sync(this);
+                _alt = 1;
+                do {
+                    switch (_alt) {
+                        case 1: {
+                            {
+                                setState(847);
+                                ws();
+                                setState(848);
+                                match(Space);
+                                setState(849);
+                                ws();
+                                setState(850);
+                                match(Or);
+                                setState(851);
+                                ws();
+                                setState(852);
+                                match(Space);
+                                setState(853);
+                                ws();
+                                setState(854);
+                                supportsConditionInParens();
+                            }
+                        }
+                        break;
+                        default:
+                            throw new NoViableAltException(this);
+                    }
+                    setState(858);
+                    _errHandler.sync(this);
+                    _alt = getInterpreter().adaptivePredict(_input, 81, _ctx);
+                } while (_alt != 2 && _alt != org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER);
+            }
+        } catch (RecognitionException re) {
+            _localctx.exception = re;
+            _errHandler.reportError(this, re);
+            _errHandler.recover(this, re);
+        } finally {
+            exitRule();
+        }
+        return _localctx;
+    }
+
+    public final SupportsDeclarationConditionContext supportsDeclarationCondition() throws RecognitionException {
+        SupportsDeclarationConditionContext _localctx = new SupportsDeclarationConditionContext(_ctx, getState());
+        enterRule(_localctx, 114, RULE_supportsDeclarationCondition);
+        try {
+            enterOuterAlt(_localctx, 1);
+            {
+                setState(860);
+                match(T__1);
+                setState(861);
+                ws();
+                setState(862);
+                declaration();
+                setState(863);
+                match(T__3);
+            }
+        } catch (RecognitionException re) {
+            _localctx.exception = re;
+            _errHandler.reportError(this, re);
+            _errHandler.recover(this, re);
+        } finally {
+            exitRule();
+        }
+        return _localctx;
+    }
+
+    public final GeneralEnclosedContext generalEnclosed() throws RecognitionException {
+        GeneralEnclosedContext _localctx = new GeneralEnclosedContext(_ctx, getState());
+        enterRule(_localctx, 116, RULE_generalEnclosed);
+        int _la;
+        try {
+            enterOuterAlt(_localctx, 1);
+            {
+                setState(865);
+                _la = _input.LA(1);
+                if (!(_la == T__1 || _la == Function)) {
+                    _errHandler.recoverInline(this);
+                } else {
+                    if (_input.LA(1) == Token.EOF) {
+                        matchedEOF = true;
+                    }
+                    _errHandler.reportMatch(this);
+                    consume();
+                }
+                setState(870);
+                _errHandler.sync(this);
+                _la = _input.LA(1);
+                while ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__0) | (1L << T__1) | (1L << T__2) | (1L << T__4) | (1L << T__9) | (1L << T__14) | (1L << Cdo) | (1L << Cdc) | (1L << Includes) | (1L << DashMatch) | (1L << Hash) | (1L << Percentage) | (1L << Uri) | (1L << UnicodeRange) | (1L << MediaOnly) | (1L << Not) | (1L << And) | (1L << Dimension) | (1L << UnknownDimension) | (1L << Plus) | (1L << Minus) | (1L << Number) | (1L << String) | (1L << Or) | (1L << From) | (1L << To) | (1L << Ident) | (1L << Function))) != 0)) {
+                    {
+                        setState(868);
+                        _errHandler.sync(this);
+                        switch (_input.LA(1)) {
+                            case T__1:
+                            case T__2:
+                            case T__9:
+                            case Includes:
+                            case DashMatch:
+                            case Hash:
+                            case Percentage:
+                            case Uri:
+                            case UnicodeRange:
+                            case MediaOnly:
+                            case Not:
+                            case And:
+                            case Dimension:
+                            case UnknownDimension:
+                            case Plus:
+                            case Minus:
+                            case Number:
+                            case String:
+                            case Or:
+                            case From:
+                            case To:
+                            case Ident:
+                            case Function: {
+                                setState(866);
+                                any();
+                            }
+                            break;
+                            case T__0:
+                            case T__4:
+                            case T__14:
+                            case Cdo:
+                            case Cdc: {
+                                setState(867);
+                                unused();
+                            }
+                            break;
+                            default:
+                                throw new NoViableAltException(this);
+                        }
+                    }
+                    setState(872);
+                    _errHandler.sync(this);
+                    _la = _input.LA(1);
+                }
+                setState(873);
+                match(T__3);
+            }
+        } catch (RecognitionException re) {
+            _localctx.exception = re;
+            _errHandler.reportError(this, re);
+            _errHandler.recover(this, re);
+        } finally {
+            exitRule();
+        }
+        return _localctx;
+    }
+
+    public final VarContext var() throws RecognitionException {
+        VarContext _localctx = new VarContext(_ctx, getState());
+        enterRule(_localctx, 118, RULE_var);
+        try {
+            enterOuterAlt(_localctx, 1);
+            {
+                setState(875);
+                match(Var);
+                setState(876);
+                ws();
+                setState(877);
+                match(Variable);
+                setState(878);
+                ws();
+                setState(879);
+                match(T__3);
+                setState(880);
+                ws();
+            }
+        } catch (RecognitionException re) {
+            _localctx.exception = re;
+            _errHandler.reportError(this, re);
+            _errHandler.recover(this, re);
+        } finally {
+            exitRule();
+        }
+        return _localctx;
+    }
+
+    public final CalcContext calc() throws RecognitionException {
+        CalcContext _localctx = new CalcContext(_ctx, getState());
+        enterRule(_localctx, 120, RULE_calc);
+        try {
+            enterOuterAlt(_localctx, 1);
+            {
+                setState(882);
+                match(Calc);
+                setState(883);
+                ws();
+                setState(884);
+                calcSum();
+                setState(885);
+                match(T__3);
+                setState(886);
+                ws();
+            }
+        } catch (RecognitionException re) {
+            _localctx.exception = re;
+            _errHandler.reportError(this, re);
+            _errHandler.recover(this, re);
+        } finally {
+            exitRule();
+        }
+        return _localctx;
+    }
+
+    public final CalcSumContext calcSum() throws RecognitionException {
+        CalcSumContext _localctx = new CalcSumContext(_ctx, getState());
+        enterRule(_localctx, 122, RULE_calcSum);
+        int _la;
+        try {
+            enterOuterAlt(_localctx, 1);
+            {
+                setState(888);
+                calcProduct();
+                setState(899);
+                _errHandler.sync(this);
+                _la = _input.LA(1);
+                while (_la == Space) {
+                    {
+                        {
+                            setState(889);
+                            match(Space);
+                            setState(890);
+                            ws();
+                            setState(891);
+                            _la = _input.LA(1);
+                            if (!(_la == Plus || _la == Minus)) {
+                                _errHandler.recoverInline(this);
+                            } else {
+                                if (_input.LA(1) == Token.EOF) {
+                                    matchedEOF = true;
+                                }
+                                _errHandler.reportMatch(this);
+                                consume();
+                            }
+                            setState(892);
+                            ws();
+                            setState(893);
+                            match(Space);
+                            setState(894);
+                            ws();
+                            setState(895);
+                            calcProduct();
+                        }
+                    }
+                    setState(901);
+                    _errHandler.sync(this);
+                    _la = _input.LA(1);
+                }
+            }
+        } catch (RecognitionException re) {
+            _localctx.exception = re;
+            _errHandler.reportError(this, re);
+            _errHandler.recover(this, re);
+        } finally {
+            exitRule();
+        }
+        return _localctx;
+    }
+
+    public final CalcProductContext calcProduct() throws RecognitionException {
+        CalcProductContext _localctx = new CalcProductContext(_ctx, getState());
+        enterRule(_localctx, 124, RULE_calcProduct);
+        int _la;
+        try {
+            enterOuterAlt(_localctx, 1);
+            {
+                setState(902);
+                calcValue();
+                setState(914);
+                _errHandler.sync(this);
+                _la = _input.LA(1);
+                while (_la == T__6 || _la == T__12) {
+                    {
+                        setState(912);
+                        _errHandler.sync(this);
+                        switch (_input.LA(1)) {
+                            case T__6: {
+                                setState(903);
+                                match(T__6);
+                                setState(904);
+                                ws();
+                                setState(905);
+                                calcValue();
+                            }
+                            break;
+                            case T__12: {
+                                setState(907);
+                                match(T__12);
+                                setState(908);
+                                ws();
+                                setState(909);
+                                number();
+                                setState(910);
+                                ws();
+                            }
+                            break;
+                            default:
+                                throw new NoViableAltException(this);
+                        }
+                    }
+                    setState(916);
+                    _errHandler.sync(this);
+                    _la = _input.LA(1);
+                }
+            }
+        } catch (RecognitionException re) {
+            _localctx.exception = re;
+            _errHandler.reportError(this, re);
+            _errHandler.recover(this, re);
+        } finally {
+            exitRule();
+        }
+        return _localctx;
+    }
+
+    public final CalcValueContext calcValue() throws RecognitionException {
+        CalcValueContext _localctx = new CalcValueContext(_ctx, getState());
+        enterRule(_localctx, 126, RULE_calcValue);
+        try {
+            setState(935);
+            _errHandler.sync(this);
+            switch (getInterpreter().adaptivePredict(_input, 87, _ctx)) {
+                case 1:
+                    enterOuterAlt(_localctx, 1);
+                {
+                    setState(917);
+                    number();
+                    setState(918);
+                    ws();
+                }
+                break;
+                case 2:
+                    enterOuterAlt(_localctx, 2);
+                {
+                    setState(920);
+                    dimension();
+                    setState(921);
+                    ws();
+                }
+                break;
+                case 3:
+                    enterOuterAlt(_localctx, 3);
+                {
+                    setState(923);
+                    unknownDimension();
+                    setState(924);
+                    ws();
+                }
+                break;
+                case 4:
+                    enterOuterAlt(_localctx, 4);
+                {
+                    setState(926);
+                    percentage();
+                    setState(927);
+                    ws();
+                }
+                break;
+                case 5:
+                    enterOuterAlt(_localctx, 5);
+                {
+                    setState(929);
+                    match(T__1);
+                    setState(930);
+                    ws();
+                    setState(931);
+                    calcSum();
+                    setState(932);
+                    match(T__3);
+                    setState(933);
+                    ws();
+                }
+                break;
+            }
+        } catch (RecognitionException re) {
+            _localctx.exception = re;
+            _errHandler.reportError(this, re);
+            _errHandler.recover(this, re);
+        } finally {
+            exitRule();
+        }
+        return _localctx;
+    }
+
+    public final FontFaceRuleContext fontFaceRule() throws RecognitionException {
+        FontFaceRuleContext _localctx = new FontFaceRuleContext(_ctx, getState());
+        enterRule(_localctx, 128, RULE_fontFaceRule);
+        int _la;
+        try {
+            enterOuterAlt(_localctx, 1);
+            {
+                setState(937);
+                match(FontFace);
+                setState(938);
+                ws();
+                setState(939);
+                match(T__4);
+                setState(940);
+                ws();
+                setState(942);
+                _errHandler.sync(this);
+                _la = _input.LA(1);
+                if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__6) | (1L << T__13) | (1L << MediaOnly) | (1L << Not) | (1L << And) | (1L << Or) | (1L << From) | (1L << To) | (1L << Variable) | (1L << Ident))) != 0)) {
+                    {
+                        setState(941);
+                        fontFaceDeclaration();
+                    }
+                }
+
+                setState(951);
+                _errHandler.sync(this);
+                _la = _input.LA(1);
+                while (_la == T__0) {
+                    {
+                        {
+                            setState(944);
+                            match(T__0);
+                            setState(945);
+                            ws();
+                            setState(947);
+                            _errHandler.sync(this);
+                            _la = _input.LA(1);
+                            if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__6) | (1L << T__13) | (1L << MediaOnly) | (1L << Not) | (1L << And) | (1L << Or) | (1L << From) | (1L << To) | (1L << Variable) | (1L << Ident))) != 0)) {
+                                {
+                                    setState(946);
+                                    fontFaceDeclaration();
+                                }
+                            }
+
+                        }
+                    }
+                    setState(953);
+                    _errHandler.sync(this);
+                    _la = _input.LA(1);
+                }
+                setState(954);
+                match(T__5);
+                setState(955);
+                ws();
+            }
+        } catch (RecognitionException re) {
+            _localctx.exception = re;
+            _errHandler.reportError(this, re);
+            _errHandler.recover(this, re);
+        } finally {
+            exitRule();
+        }
+        return _localctx;
+    }
+
+    public final FontFaceDeclarationContext fontFaceDeclaration() throws RecognitionException {
+        FontFaceDeclarationContext _localctx = new FontFaceDeclarationContext(_ctx, getState());
+        enterRule(_localctx, 130, RULE_fontFaceDeclaration);
+        try {
+            setState(967);
+            _errHandler.sync(this);
+            switch (getInterpreter().adaptivePredict(_input, 91, _ctx)) {
+                case 1:
+                    _localctx = new KnownFontFaceDeclarationContext(_localctx);
+                    enterOuterAlt(_localctx, 1);
+                {
+                    setState(957);
+                    property();
+                    setState(958);
+                    match(T__2);
+                    setState(959);
+                    ws();
+                    setState(960);
+                    expr();
+                }
+                break;
+                case 2:
+                    _localctx = new UnknownFontFaceDeclarationContext(_localctx);
+                    enterOuterAlt(_localctx, 2);
+                {
+                    setState(962);
+                    property();
+                    setState(963);
+                    match(T__2);
+                    setState(964);
+                    ws();
+                    setState(965);
+                    value();
+                }
+                break;
+            }
+        } catch (RecognitionException re) {
+            _localctx.exception = re;
+            _errHandler.reportError(this, re);
+            _errHandler.recover(this, re);
+        } finally {
+            exitRule();
+        }
+        return _localctx;
+    }
+
+    public final KeyframesRuleContext keyframesRule() throws RecognitionException {
+        KeyframesRuleContext _localctx = new KeyframesRuleContext(_ctx, getState());
+        enterRule(_localctx, 132, RULE_keyframesRule);
+        try {
+            enterOuterAlt(_localctx, 1);
+            {
+                setState(969);
+                match(Keyframes);
+                setState(970);
+                ws();
+                setState(971);
+                match(Space);
+                setState(972);
+                ws();
+                setState(973);
+                ident();
+                setState(974);
+                ws();
+                setState(975);
+                match(T__4);
+                setState(976);
+                ws();
+                setState(977);
+                keyframesBlocks();
+                setState(978);
+                match(T__5);
+                setState(979);
+                ws();
+            }
+        } catch (RecognitionException re) {
+            _localctx.exception = re;
+            _errHandler.reportError(this, re);
+            _errHandler.recover(this, re);
+        } finally {
+            exitRule();
+        }
+        return _localctx;
+    }
+
+    public final KeyframesBlocksContext keyframesBlocks() throws RecognitionException {
+        KeyframesBlocksContext _localctx = new KeyframesBlocksContext(_ctx, getState());
+        enterRule(_localctx, 134, RULE_keyframesBlocks);
+        int _la;
+        try {
+            enterOuterAlt(_localctx, 1);
+            {
+                setState(992);
+                _errHandler.sync(this);
+                _la = _input.LA(1);
+                while ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << Percentage) | (1L << From) | (1L << To))) != 0)) {
+                    {
+                        {
+                            setState(981);
+                            keyframeSelector();
+                            setState(982);
+                            match(T__4);
+                            setState(983);
+                            ws();
+                            setState(985);
+                            _errHandler.sync(this);
+                            _la = _input.LA(1);
+                            if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__0) | (1L << T__6) | (1L << T__13) | (1L << MediaOnly) | (1L << Not) | (1L << And) | (1L << Or) | (1L << From) | (1L << To) | (1L << Variable) | (1L << Ident))) != 0)) {
+                                {
+                                    setState(984);
+                                    declarationList();
+                                }
+                            }
+
+                            setState(987);
+                            match(T__5);
+                            setState(988);
+                            ws();
+                        }
+                    }
+                    setState(994);
+                    _errHandler.sync(this);
+                    _la = _input.LA(1);
+                }
+            }
+        } catch (RecognitionException re) {
+            _localctx.exception = re;
+            _errHandler.reportError(this, re);
+            _errHandler.recover(this, re);
+        } finally {
+            exitRule();
+        }
+        return _localctx;
+    }
+
+    public final KeyframeSelectorContext keyframeSelector() throws RecognitionException {
+        KeyframeSelectorContext _localctx = new KeyframeSelectorContext(_ctx, getState());
+        enterRule(_localctx, 136, RULE_keyframeSelector);
+        int _la;
+        try {
+            enterOuterAlt(_localctx, 1);
+            {
+                setState(995);
+                _la = _input.LA(1);
+                if (!((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << Percentage) | (1L << From) | (1L << To))) != 0))) {
+                    _errHandler.recoverInline(this);
+                } else {
+                    if (_input.LA(1) == Token.EOF) {
+                        matchedEOF = true;
+                    }
+                    _errHandler.reportMatch(this);
+                    consume();
+                }
+                setState(996);
+                ws();
+                setState(1004);
+                _errHandler.sync(this);
+                _la = _input.LA(1);
+                while (_la == Comma) {
+                    {
+                        {
+                            setState(997);
+                            match(Comma);
+                            setState(998);
+                            ws();
+                            setState(999);
+                            _la = _input.LA(1);
+                            if (!((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << Percentage) | (1L << From) | (1L << To))) != 0))) {
+                                _errHandler.recoverInline(this);
+                            } else {
+                                if (_input.LA(1) == Token.EOF) {
+                                    matchedEOF = true;
+                                }
+                                _errHandler.reportMatch(this);
+                                consume();
+                            }
+                            setState(1000);
+                            ws();
+                        }
+                    }
+                    setState(1006);
+                    _errHandler.sync(this);
+                    _la = _input.LA(1);
+                }
+            }
+        } catch (RecognitionException re) {
+            _localctx.exception = re;
+            _errHandler.reportError(this, re);
+            _errHandler.recover(this, re);
+        } finally {
+            exitRule();
+        }
+        return _localctx;
+    }
+
+    public final ViewportContext viewport() throws RecognitionException {
+        ViewportContext _localctx = new ViewportContext(_ctx, getState());
+        enterRule(_localctx, 138, RULE_viewport);
+        int _la;
+        try {
+            enterOuterAlt(_localctx, 1);
+            {
+                setState(1007);
+                match(Viewport);
+                setState(1008);
+                ws();
+                setState(1009);
+                match(T__4);
+                setState(1010);
+                ws();
+                setState(1012);
+                _errHandler.sync(this);
+                _la = _input.LA(1);
+                if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__0) | (1L << T__6) | (1L << T__13) | (1L << MediaOnly) | (1L << Not) | (1L << And) | (1L << Or) | (1L << From) | (1L << To) | (1L << Variable) | (1L << Ident))) != 0)) {
+                    {
+                        setState(1011);
+                        declarationList();
+                    }
+                }
+
+                setState(1014);
+                match(T__5);
+                setState(1015);
+                ws();
+            }
+        } catch (RecognitionException re) {
+            _localctx.exception = re;
+            _errHandler.reportError(this, re);
+            _errHandler.recover(this, re);
+        } finally {
+            exitRule();
+        }
+        return _localctx;
+    }
+
+    public final CounterStyleContext counterStyle() throws RecognitionException {
+        CounterStyleContext _localctx = new CounterStyleContext(_ctx, getState());
+        enterRule(_localctx, 140, RULE_counterStyle);
+        int _la;
+        try {
+            enterOuterAlt(_localctx, 1);
+            {
+                setState(1017);
+                match(CounterStyle);
+                setState(1018);
+                ws();
+                setState(1019);
+                ident();
+                setState(1020);
+                ws();
+                setState(1021);
+                match(T__4);
+                setState(1022);
+                ws();
+                setState(1024);
+                _errHandler.sync(this);
+                _la = _input.LA(1);
+                if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__0) | (1L << T__6) | (1L << T__13) | (1L << MediaOnly) | (1L << Not) | (1L << And) | (1L << Or) | (1L << From) | (1L << To) | (1L << Variable) | (1L << Ident))) != 0)) {
+                    {
+                        setState(1023);
+                        declarationList();
+                    }
+                }
+
+                setState(1026);
+                match(T__5);
+                setState(1027);
+                ws();
+            }
+        } catch (RecognitionException re) {
+            _localctx.exception = re;
+            _errHandler.reportError(this, re);
+            _errHandler.recover(this, re);
+        } finally {
+            exitRule();
+        }
+        return _localctx;
+    }
+
+    public final FontFeatureValuesRuleContext fontFeatureValuesRule() throws RecognitionException {
+        FontFeatureValuesRuleContext _localctx = new FontFeatureValuesRuleContext(_ctx, getState());
+        enterRule(_localctx, 142, RULE_fontFeatureValuesRule);
+        int _la;
+        try {
+            enterOuterAlt(_localctx, 1);
+            {
+                setState(1029);
+                match(FontFeatureValues);
+                setState(1030);
+                ws();
+                setState(1031);
+                fontFamilyNameList();
+                setState(1032);
+                ws();
+                setState(1033);
+                match(T__4);
+                setState(1034);
+                ws();
+                setState(1038);
+                _errHandler.sync(this);
+                _la = _input.LA(1);
+                while (_la == T__14) {
+                    {
+                        {
+                            setState(1035);
+                            featureValueBlock();
+                        }
+                    }
+                    setState(1040);
+                    _errHandler.sync(this);
+                    _la = _input.LA(1);
+                }
+                setState(1041);
+                match(T__5);
+                setState(1042);
+                ws();
+            }
+        } catch (RecognitionException re) {
+            _localctx.exception = re;
+            _errHandler.reportError(this, re);
+            _errHandler.recover(this, re);
+        } finally {
+            exitRule();
+        }
+        return _localctx;
+    }
+
+    public final FontFamilyNameListContext fontFamilyNameList() throws RecognitionException {
+        FontFamilyNameListContext _localctx = new FontFamilyNameListContext(_ctx, getState());
+        enterRule(_localctx, 144, RULE_fontFamilyNameList);
+        try {
+            int _alt;
+            enterOuterAlt(_localctx, 1);
+            {
+                setState(1044);
+                fontFamilyName();
+                setState(1052);
+                _errHandler.sync(this);
+                _alt = getInterpreter().adaptivePredict(_input, 98, _ctx);
+                while (_alt != 2 && _alt != org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER) {
+                    if (_alt == 1) {
+                        {
+                            {
+                                setState(1045);
+                                ws();
+                                setState(1046);
+                                match(Comma);
+                                setState(1047);
+                                ws();
+                                setState(1048);
+                                fontFamilyName();
+                            }
+                        }
+                    }
+                    setState(1054);
+                    _errHandler.sync(this);
+                    _alt = getInterpreter().adaptivePredict(_input, 98, _ctx);
+                }
+            }
+        } catch (RecognitionException re) {
+            _localctx.exception = re;
+            _errHandler.reportError(this, re);
+            _errHandler.recover(this, re);
+        } finally {
+            exitRule();
+        }
+        return _localctx;
+    }
+
+    public final FontFamilyNameContext fontFamilyName() throws RecognitionException {
+        FontFamilyNameContext _localctx = new FontFamilyNameContext(_ctx, getState());
+        enterRule(_localctx, 146, RULE_fontFamilyName);
+        try {
+            int _alt;
+            setState(1065);
+            _errHandler.sync(this);
+            switch (_input.LA(1)) {
+                case String:
+                    enterOuterAlt(_localctx, 1);
+                {
+                    setState(1055);
+                    match(String);
+                }
+                break;
+                case MediaOnly:
+                case Not:
+                case And:
+                case Or:
+                case From:
+                case To:
+                case Ident:
+                    enterOuterAlt(_localctx, 2);
+                {
+                    setState(1056);
+                    ident();
+                    setState(1062);
+                    _errHandler.sync(this);
+                    _alt = getInterpreter().adaptivePredict(_input, 99, _ctx);
+                    while (_alt != 2 && _alt != org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER) {
+                        if (_alt == 1) {
+                            {
+                                {
+                                    setState(1057);
+                                    ws();
+                                    setState(1058);
+                                    ident();
+                                }
+                            }
+                        }
+                        setState(1064);
+                        _errHandler.sync(this);
+                        _alt = getInterpreter().adaptivePredict(_input, 99, _ctx);
+                    }
+                }
+                break;
+                default:
+                    throw new NoViableAltException(this);
+            }
+        } catch (RecognitionException re) {
+            _localctx.exception = re;
+            _errHandler.reportError(this, re);
+            _errHandler.recover(this, re);
+        } finally {
+            exitRule();
+        }
+        return _localctx;
+    }
+
+    public final FeatureValueBlockContext featureValueBlock() throws RecognitionException {
+        FeatureValueBlockContext _localctx = new FeatureValueBlockContext(_ctx, getState());
+        enterRule(_localctx, 148, RULE_featureValueBlock);
+        int _la;
+        try {
+            enterOuterAlt(_localctx, 1);
+            {
+                setState(1067);
+                featureType();
+                setState(1068);
+                ws();
+                setState(1069);
+                match(T__4);
+                setState(1070);
+                ws();
+                setState(1072);
+                _errHandler.sync(this);
+                _la = _input.LA(1);
+                if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << MediaOnly) | (1L << Not) | (1L << And) | (1L << Or) | (1L << From) | (1L << To) | (1L << Ident))) != 0)) {
+                    {
+                        setState(1071);
+                        featureValueDefinition();
+                    }
+                }
+
+                setState(1082);
+                _errHandler.sync(this);
+                _la = _input.LA(1);
+                while ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__0) | (1L << Comment) | (1L << Space))) != 0)) {
+                    {
+                        {
+                            setState(1074);
+                            ws();
+                            setState(1075);
+                            match(T__0);
+                            setState(1076);
+                            ws();
+                            setState(1078);
+                            _errHandler.sync(this);
+                            _la = _input.LA(1);
+                            if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << MediaOnly) | (1L << Not) | (1L << And) | (1L << Or) | (1L << From) | (1L << To) | (1L << Ident))) != 0)) {
+                                {
+                                    setState(1077);
+                                    featureValueDefinition();
+                                }
+                            }
+
+                        }
+                    }
+                    setState(1084);
+                    _errHandler.sync(this);
+                    _la = _input.LA(1);
+                }
+                setState(1085);
+                match(T__5);
+                setState(1086);
+                ws();
+            }
+        } catch (RecognitionException re) {
+            _localctx.exception = re;
+            _errHandler.reportError(this, re);
+            _errHandler.recover(this, re);
+        } finally {
+            exitRule();
+        }
+        return _localctx;
+    }
+
+    public final FeatureTypeContext featureType() throws RecognitionException {
+        FeatureTypeContext _localctx = new FeatureTypeContext(_ctx, getState());
+        enterRule(_localctx, 150, RULE_featureType);
+        try {
+            enterOuterAlt(_localctx, 1);
+            {
+                setState(1088);
+                atKeyword();
+            }
+        } catch (RecognitionException re) {
+            _localctx.exception = re;
+            _errHandler.reportError(this, re);
+            _errHandler.recover(this, re);
+        } finally {
+            exitRule();
+        }
+        return _localctx;
+    }
+
+    public final FeatureValueDefinitionContext featureValueDefinition() throws RecognitionException {
+        FeatureValueDefinitionContext _localctx = new FeatureValueDefinitionContext(_ctx, getState());
+        enterRule(_localctx, 152, RULE_featureValueDefinition);
+        try {
+            int _alt;
+            enterOuterAlt(_localctx, 1);
+            {
+                setState(1090);
+                ident();
+                setState(1091);
+                ws();
+                setState(1092);
+                match(T__2);
+                setState(1093);
+                ws();
+                setState(1094);
+                number();
+                setState(1100);
+                _errHandler.sync(this);
+                _alt = getInterpreter().adaptivePredict(_input, 104, _ctx);
+                while (_alt != 2 && _alt != org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER) {
+                    if (_alt == 1) {
+                        {
+                            {
+                                setState(1095);
+                                ws();
+                                setState(1096);
+                                number();
+                            }
+                        }
+                    }
+                    setState(1102);
+                    _errHandler.sync(this);
+                    _alt = getInterpreter().adaptivePredict(_input, 104, _ctx);
+                }
+            }
+        } catch (RecognitionException re) {
+            _localctx.exception = re;
+            _errHandler.reportError(this, re);
+            _errHandler.recover(this, re);
+        } finally {
+            exitRule();
+        }
+        return _localctx;
+    }
+
+    public final IdentContext ident() throws RecognitionException {
+        IdentContext _localctx = new IdentContext(_ctx, getState());
+        enterRule(_localctx, 154, RULE_ident);
+        int _la;
+        try {
+            enterOuterAlt(_localctx, 1);
+            {
+                setState(1103);
+                _la = _input.LA(1);
+                if (!((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << MediaOnly) | (1L << Not) | (1L << And) | (1L << Or) | (1L << From) | (1L << To) | (1L << Ident))) != 0))) {
+                    _errHandler.recoverInline(this);
+                } else {
+                    if (_input.LA(1) == Token.EOF) {
+                        matchedEOF = true;
+                    }
+                    _errHandler.reportMatch(this);
+                    consume();
+                }
+            }
+        } catch (RecognitionException re) {
+            _localctx.exception = re;
+            _errHandler.reportError(this, re);
+            _errHandler.recover(this, re);
+        } finally {
+            exitRule();
+        }
+        return _localctx;
+    }
+
+    public final WsContext ws() throws RecognitionException {
+        WsContext _localctx = new WsContext(_ctx, getState());
+        enterRule(_localctx, 156, RULE_ws);
+        int _la;
+        try {
+            int _alt;
+            enterOuterAlt(_localctx, 1);
+            {
+                setState(1108);
+                _errHandler.sync(this);
+                _alt = getInterpreter().adaptivePredict(_input, 105, _ctx);
+                while (_alt != 2 && _alt != org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER) {
+                    if (_alt == 1) {
+                        {
+                            {
+                                setState(1105);
+                                _la = _input.LA(1);
+                                if (!(_la == Comment || _la == Space)) {
+                                    _errHandler.recoverInline(this);
+                                } else {
+                                    if (_input.LA(1) == Token.EOF) {
+                                        matchedEOF = true;
+                                    }
+                                    _errHandler.reportMatch(this);
+                                    consume();
+                                }
+                            }
+                        }
+                    }
+                    setState(1110);
+                    _errHandler.sync(this);
+                    _alt = getInterpreter().adaptivePredict(_input, 105, _ctx);
+                }
+            }
+        } catch (RecognitionException re) {
+            _localctx.exception = re;
+            _errHandler.reportError(this, re);
+            _errHandler.recover(this, re);
+        } finally {
+            exitRule();
+        }
+        return _localctx;
+    }
+
+    public static class StylesheetContext extends ParserRuleContext {
+        public StylesheetContext(ParserRuleContext parent, int invokingState) {
+            super(parent, invokingState);
+        }
+
+        public WsContext ws() {
+            return getRuleContext(WsContext.class, 0);
+        }
+
+        public List<CharsetContext> charset() {
+            return getRuleContexts(CharsetContext.class);
+        }
+
+        public CharsetContext charset(int i) {
+            return getRuleContext(CharsetContext.class, i);
+        }
+
+        public List<ImportsContext> imports() {
+            return getRuleContexts(ImportsContext.class);
+        }
+
+        public ImportsContext imports(int i) {
+            return getRuleContext(ImportsContext.class, i);
+        }
+
+        public List<NamespaceContext> namespace() {
+            return getRuleContexts(NamespaceContext.class);
+        }
+
+        public NamespaceContext namespace(int i) {
+            return getRuleContext(NamespaceContext.class, i);
+        }
+
+        public List<NestedStatementContext> nestedStatement() {
+            return getRuleContexts(NestedStatementContext.class);
+        }
+
+        public NestedStatementContext nestedStatement(int i) {
+            return getRuleContext(NestedStatementContext.class, i);
+        }
+
+        public List<TerminalNode> Comment() {
+            return getTokens(CSS3Parser.Comment);
+        }
+
+        public TerminalNode Comment(int i) {
+            return getToken(CSS3Parser.Comment, i);
+        }
+
+        public List<TerminalNode> Space() {
+            return getTokens(CSS3Parser.Space);
+        }
+
+        public TerminalNode Space(int i) {
+            return getToken(CSS3Parser.Space, i);
+        }
+
+        public List<TerminalNode> Cdo() {
+            return getTokens(CSS3Parser.Cdo);
+        }
+
+        public TerminalNode Cdo(int i) {
+            return getToken(CSS3Parser.Cdo, i);
+        }
+
+        public List<TerminalNode> Cdc() {
+            return getTokens(CSS3Parser.Cdc);
+        }
+
+        public TerminalNode Cdc(int i) {
+            return getToken(CSS3Parser.Cdc, i);
+        }
+
+        @Override
+        public int getRuleIndex() {
+            return RULE_stylesheet;
+        }
+
+        @Override
+        public void enterRule(ParseTreeListener listener) {
+            if (listener instanceof CSS3Listener) {
+                ((CSS3Listener) listener).enterStylesheet(this);
+            }
+        }
+
+        @Override
+        public void exitRule(ParseTreeListener listener) {
+            if (listener instanceof CSS3Listener) {
+                ((CSS3Listener) listener).exitStylesheet(this);
+            }
+        }
+
+        @Override
+        public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+            if (visitor instanceof CSS3Visitor) {
+                return ((CSS3Visitor<? extends T>) visitor).visitStylesheet(this);
+            } else {
+                return visitor.visitChildren(this);
+            }
+        }
+    }
+
+    public static class CharsetContext extends ParserRuleContext {
+        public CharsetContext(ParserRuleContext parent, int invokingState) {
+            super(parent, invokingState);
+        }
+
+        public CharsetContext() {
+        }
+
+        @Override
+        public int getRuleIndex() {
+            return RULE_charset;
+        }
+
+        public void copyFrom(CharsetContext ctx) {
+            super.copyFrom(ctx);
+        }
+    }
+
+    public static class BadCharsetContext extends CharsetContext {
+        public BadCharsetContext(CharsetContext ctx) {
+            copyFrom(ctx);
+        }
+
+        public TerminalNode Charset() {
+            return getToken(CSS3Parser.Charset, 0);
+        }
+
+        public List<WsContext> ws() {
+            return getRuleContexts(WsContext.class);
+        }
+
+        public WsContext ws(int i) {
+            return getRuleContext(WsContext.class, i);
+        }
+
+        public TerminalNode String() {
+            return getToken(CSS3Parser.String, 0);
+        }
+
+        @Override
+        public void enterRule(ParseTreeListener listener) {
+            if (listener instanceof CSS3Listener) {
+                ((CSS3Listener) listener).enterBadCharset(this);
+            }
+        }
+
+        @Override
+        public void exitRule(ParseTreeListener listener) {
+            if (listener instanceof CSS3Listener) {
+                ((CSS3Listener) listener).exitBadCharset(this);
+            }
+        }
+
+        @Override
+        public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+            if (visitor instanceof CSS3Visitor) {
+                return ((CSS3Visitor<? extends T>) visitor).visitBadCharset(this);
+            } else {
+                return visitor.visitChildren(this);
+            }
+        }
+    }
+
+    public static class GoodCharsetContext extends CharsetContext {
+        public GoodCharsetContext(CharsetContext ctx) {
+            copyFrom(ctx);
+        }
+
+        public TerminalNode Charset() {
+            return getToken(CSS3Parser.Charset, 0);
+        }
+
+        public List<WsContext> ws() {
+            return getRuleContexts(WsContext.class);
+        }
+
+        public WsContext ws(int i) {
+            return getRuleContext(WsContext.class, i);
+        }
+
+        public TerminalNode String() {
+            return getToken(CSS3Parser.String, 0);
+        }
+
+        @Override
+        public void enterRule(ParseTreeListener listener) {
+            if (listener instanceof CSS3Listener) {
+                ((CSS3Listener) listener).enterGoodCharset(this);
+            }
+        }
+
+        @Override
+        public void exitRule(ParseTreeListener listener) {
+            if (listener instanceof CSS3Listener) {
+                ((CSS3Listener) listener).exitGoodCharset(this);
+            }
+        }
+
+        @Override
+        public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+            if (visitor instanceof CSS3Visitor) {
+                return ((CSS3Visitor<? extends T>) visitor).visitGoodCharset(this);
+            } else {
+                return visitor.visitChildren(this);
+            }
+        }
+    }
+
+    public static class ImportsContext extends ParserRuleContext {
+        public ImportsContext(ParserRuleContext parent, int invokingState) {
+            super(parent, invokingState);
+        }
+
+        public ImportsContext() {
+        }
+
+        @Override
+        public int getRuleIndex() {
+            return RULE_imports;
+        }
+
+        public void copyFrom(ImportsContext ctx) {
+            super.copyFrom(ctx);
+        }
+    }
+
+    public static class BadImportContext extends ImportsContext {
+        public BadImportContext(ImportsContext ctx) {
+            copyFrom(ctx);
+        }
+
+        public TerminalNode Import() {
+            return getToken(CSS3Parser.Import, 0);
+        }
+
+        public List<WsContext> ws() {
+            return getRuleContexts(WsContext.class);
+        }
+
+        public WsContext ws(int i) {
+            return getRuleContext(WsContext.class, i);
+        }
+
+        public MediaQueryListContext mediaQueryList() {
+            return getRuleContext(MediaQueryListContext.class, 0);
+        }
+
+        public TerminalNode String() {
+            return getToken(CSS3Parser.String, 0);
+        }
+
+        public TerminalNode Uri() {
+            return getToken(CSS3Parser.Uri, 0);
+        }
+
+        @Override
+        public void enterRule(ParseTreeListener listener) {
+            if (listener instanceof CSS3Listener) {
+                ((CSS3Listener) listener).enterBadImport(this);
+            }
+        }
+
+        @Override
+        public void exitRule(ParseTreeListener listener) {
+            if (listener instanceof CSS3Listener) {
+                ((CSS3Listener) listener).exitBadImport(this);
+            }
+        }
+
+        @Override
+        public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+            if (visitor instanceof CSS3Visitor) {
+                return ((CSS3Visitor<? extends T>) visitor).visitBadImport(this);
+            } else {
+                return visitor.visitChildren(this);
+            }
+        }
+    }
+
+    public static class GoodImportContext extends ImportsContext {
+        public GoodImportContext(ImportsContext ctx) {
+            copyFrom(ctx);
+        }
+
+        public TerminalNode Import() {
+            return getToken(CSS3Parser.Import, 0);
+        }
+
+        public List<WsContext> ws() {
+            return getRuleContexts(WsContext.class);
+        }
+
+        public WsContext ws(int i) {
+            return getRuleContext(WsContext.class, i);
+        }
+
+        public MediaQueryListContext mediaQueryList() {
+            return getRuleContext(MediaQueryListContext.class, 0);
+        }
+
+        public TerminalNode String() {
+            return getToken(CSS3Parser.String, 0);
+        }
+
+        public TerminalNode Uri() {
+            return getToken(CSS3Parser.Uri, 0);
+        }
+
+        @Override
+        public void enterRule(ParseTreeListener listener) {
+            if (listener instanceof CSS3Listener) {
+                ((CSS3Listener) listener).enterGoodImport(this);
+            }
+        }
+
+        @Override
+        public void exitRule(ParseTreeListener listener) {
+            if (listener instanceof CSS3Listener) {
+                ((CSS3Listener) listener).exitGoodImport(this);
+            }
+        }
+
+        @Override
+        public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+            if (visitor instanceof CSS3Visitor) {
+                return ((CSS3Visitor<? extends T>) visitor).visitGoodImport(this);
+            } else {
+                return visitor.visitChildren(this);
+            }
+        }
+    }
+
+    public static class NamespaceContext extends ParserRuleContext {
+        public NamespaceContext(ParserRuleContext parent, int invokingState) {
+            super(parent, invokingState);
+        }
+
+        public NamespaceContext() {
+        }
+
+        @Override
+        public int getRuleIndex() {
+            return RULE_namespace;
+        }
+
+        public void copyFrom(NamespaceContext ctx) {
+            super.copyFrom(ctx);
+        }
+    }
+
+    public static class GoodNamespaceContext extends NamespaceContext {
+        public GoodNamespaceContext(NamespaceContext ctx) {
+            copyFrom(ctx);
+        }
+
+        public TerminalNode Namespace() {
+            return getToken(CSS3Parser.Namespace, 0);
+        }
+
+        public List<WsContext> ws() {
+            return getRuleContexts(WsContext.class);
+        }
+
+        public WsContext ws(int i) {
+            return getRuleContext(WsContext.class, i);
+        }
+
+        public TerminalNode String() {
+            return getToken(CSS3Parser.String, 0);
+        }
+
+        public TerminalNode Uri() {
+            return getToken(CSS3Parser.Uri, 0);
+        }
+
+        public NamespacePrefixContext namespacePrefix() {
+            return getRuleContext(NamespacePrefixContext.class, 0);
+        }
+
+        @Override
+        public void enterRule(ParseTreeListener listener) {
+            if (listener instanceof CSS3Listener) {
+                ((CSS3Listener) listener).enterGoodNamespace(this);
+            }
+        }
+
+        @Override
+        public void exitRule(ParseTreeListener listener) {
+            if (listener instanceof CSS3Listener) {
+                ((CSS3Listener) listener).exitGoodNamespace(this);
+            }
+        }
+
+        @Override
+        public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+            if (visitor instanceof CSS3Visitor) {
+                return ((CSS3Visitor<? extends T>) visitor).visitGoodNamespace(this);
+            } else {
+                return visitor.visitChildren(this);
+            }
+        }
+    }
+
+    public static class BadNamespaceContext extends NamespaceContext {
+        public BadNamespaceContext(NamespaceContext ctx) {
+            copyFrom(ctx);
+        }
+
+        public TerminalNode Namespace() {
+            return getToken(CSS3Parser.Namespace, 0);
+        }
+
+        public List<WsContext> ws() {
+            return getRuleContexts(WsContext.class);
+        }
+
+        public WsContext ws(int i) {
+            return getRuleContext(WsContext.class, i);
+        }
+
+        public TerminalNode String() {
+            return getToken(CSS3Parser.String, 0);
+        }
+
+        public TerminalNode Uri() {
+            return getToken(CSS3Parser.Uri, 0);
+        }
+
+        public NamespacePrefixContext namespacePrefix() {
+            return getRuleContext(NamespacePrefixContext.class, 0);
+        }
+
+        @Override
+        public void enterRule(ParseTreeListener listener) {
+            if (listener instanceof CSS3Listener) {
+                ((CSS3Listener) listener).enterBadNamespace(this);
+            }
+        }
+
+        @Override
+        public void exitRule(ParseTreeListener listener) {
+            if (listener instanceof CSS3Listener) {
+                ((CSS3Listener) listener).exitBadNamespace(this);
+            }
+        }
+
+        @Override
+        public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+            if (visitor instanceof CSS3Visitor) {
+                return ((CSS3Visitor<? extends T>) visitor).visitBadNamespace(this);
+            } else {
+                return visitor.visitChildren(this);
+            }
+        }
+    }
+
+    public static class NamespacePrefixContext extends ParserRuleContext {
+        public NamespacePrefixContext(ParserRuleContext parent, int invokingState) {
+            super(parent, invokingState);
+        }
+
+        public IdentContext ident() {
+            return getRuleContext(IdentContext.class, 0);
+        }
+
+        @Override
+        public int getRuleIndex() {
+            return RULE_namespacePrefix;
+        }
+
+        @Override
+        public void enterRule(ParseTreeListener listener) {
+            if (listener instanceof CSS3Listener) {
+                ((CSS3Listener) listener).enterNamespacePrefix(this);
+            }
+        }
+
+        @Override
+        public void exitRule(ParseTreeListener listener) {
+            if (listener instanceof CSS3Listener) {
+                ((CSS3Listener) listener).exitNamespacePrefix(this);
+            }
+        }
+
+        @Override
+        public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+            if (visitor instanceof CSS3Visitor) {
+                return ((CSS3Visitor<? extends T>) visitor).visitNamespacePrefix(this);
+            } else {
+                return visitor.visitChildren(this);
+            }
+        }
+    }
+
+    public static class MediaContext extends ParserRuleContext {
+        public MediaContext(ParserRuleContext parent, int invokingState) {
+            super(parent, invokingState);
+        }
+
+        public TerminalNode Media() {
+            return getToken(CSS3Parser.Media, 0);
+        }
+
+        public List<WsContext> ws() {
+            return getRuleContexts(WsContext.class);
+        }
+
+        public WsContext ws(int i) {
+            return getRuleContext(WsContext.class, i);
+        }
+
+        public MediaQueryListContext mediaQueryList() {
+            return getRuleContext(MediaQueryListContext.class, 0);
+        }
+
+        public GroupRuleBodyContext groupRuleBody() {
+            return getRuleContext(GroupRuleBodyContext.class, 0);
+        }
+
+        @Override
+        public int getRuleIndex() {
+            return RULE_media;
+        }
+
+        @Override
+        public void enterRule(ParseTreeListener listener) {
+            if (listener instanceof CSS3Listener) {
+                ((CSS3Listener) listener).enterMedia(this);
+            }
+        }
+
+        @Override
+        public void exitRule(ParseTreeListener listener) {
+            if (listener instanceof CSS3Listener) {
+                ((CSS3Listener) listener).exitMedia(this);
+            }
+        }
+
+        @Override
+        public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+            if (visitor instanceof CSS3Visitor) {
+                return ((CSS3Visitor<? extends T>) visitor).visitMedia(this);
+            } else {
+                return visitor.visitChildren(this);
+            }
+        }
+    }
+
+    public static class MediaQueryListContext extends ParserRuleContext {
+        public MediaQueryListContext(ParserRuleContext parent, int invokingState) {
+            super(parent, invokingState);
+        }
+
+        public List<WsContext> ws() {
+            return getRuleContexts(WsContext.class);
+        }
+
+        public WsContext ws(int i) {
+            return getRuleContext(WsContext.class, i);
+        }
+
+        public List<MediaQueryContext> mediaQuery() {
+            return getRuleContexts(MediaQueryContext.class);
+        }
+
+        public MediaQueryContext mediaQuery(int i) {
+            return getRuleContext(MediaQueryContext.class, i);
+        }
+
+        public List<TerminalNode> Comma() {
+            return getTokens(CSS3Parser.Comma);
+        }
+
+        public TerminalNode Comma(int i) {
+            return getToken(CSS3Parser.Comma, i);
+        }
+
+        @Override
+        public int getRuleIndex() {
+            return RULE_mediaQueryList;
+        }
+
+        @Override
+        public void enterRule(ParseTreeListener listener) {
+            if (listener instanceof CSS3Listener) {
+                ((CSS3Listener) listener).enterMediaQueryList(this);
+            }
+        }
+
+        @Override
+        public void exitRule(ParseTreeListener listener) {
+            if (listener instanceof CSS3Listener) {
+                ((CSS3Listener) listener).exitMediaQueryList(this);
+            }
+        }
+
+        @Override
+        public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+            if (visitor instanceof CSS3Visitor) {
+                return ((CSS3Visitor<? extends T>) visitor).visitMediaQueryList(this);
+            } else {
+                return visitor.visitChildren(this);
+            }
+        }
+    }
+
+    public static class MediaQueryContext extends ParserRuleContext {
+        public MediaQueryContext(ParserRuleContext parent, int invokingState) {
+            super(parent, invokingState);
+        }
+
+        public List<WsContext> ws() {
+            return getRuleContexts(WsContext.class);
+        }
+
+        public WsContext ws(int i) {
+            return getRuleContext(WsContext.class, i);
+        }
+
+        public MediaTypeContext mediaType() {
+            return getRuleContext(MediaTypeContext.class, 0);
+        }
+
+        public List<TerminalNode> And() {
+            return getTokens(CSS3Parser.And);
+        }
+
+        public TerminalNode And(int i) {
+            return getToken(CSS3Parser.And, i);
+        }
+
+        public List<MediaExpressionContext> mediaExpression() {
+            return getRuleContexts(MediaExpressionContext.class);
+        }
+
+        public MediaExpressionContext mediaExpression(int i) {
+            return getRuleContext(MediaExpressionContext.class, i);
+        }
+
+        public TerminalNode MediaOnly() {
+            return getToken(CSS3Parser.MediaOnly, 0);
+        }
+
+        public TerminalNode Not() {
+            return getToken(CSS3Parser.Not, 0);
+        }
+
+        @Override
+        public int getRuleIndex() {
+            return RULE_mediaQuery;
+        }
+
+        @Override
+        public void enterRule(ParseTreeListener listener) {
+            if (listener instanceof CSS3Listener) {
+                ((CSS3Listener) listener).enterMediaQuery(this);
+            }
+        }
+
+        @Override
+        public void exitRule(ParseTreeListener listener) {
+            if (listener instanceof CSS3Listener) {
+                ((CSS3Listener) listener).exitMediaQuery(this);
+            }
+        }
+
+        @Override
+        public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+            if (visitor instanceof CSS3Visitor) {
+                return ((CSS3Visitor<? extends T>) visitor).visitMediaQuery(this);
+            } else {
+                return visitor.visitChildren(this);
+            }
+        }
+    }
+
+    public static class MediaTypeContext extends ParserRuleContext {
+        public MediaTypeContext(ParserRuleContext parent, int invokingState) {
+            super(parent, invokingState);
+        }
+
+        public IdentContext ident() {
+            return getRuleContext(IdentContext.class, 0);
+        }
+
+        @Override
+        public int getRuleIndex() {
+            return RULE_mediaType;
+        }
+
+        @Override
+        public void enterRule(ParseTreeListener listener) {
+            if (listener instanceof CSS3Listener) {
+                ((CSS3Listener) listener).enterMediaType(this);
+            }
+        }
+
+        @Override
+        public void exitRule(ParseTreeListener listener) {
+            if (listener instanceof CSS3Listener) {
+                ((CSS3Listener) listener).exitMediaType(this);
+            }
+        }
+
+        @Override
+        public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+            if (visitor instanceof CSS3Visitor) {
+                return ((CSS3Visitor<? extends T>) visitor).visitMediaType(this);
+            } else {
+                return visitor.visitChildren(this);
+            }
+        }
+    }
+
+    public static class MediaExpressionContext extends ParserRuleContext {
+        public MediaExpressionContext(ParserRuleContext parent, int invokingState) {
+            super(parent, invokingState);
+        }
+
+        public List<WsContext> ws() {
+            return getRuleContexts(WsContext.class);
+        }
+
+        public WsContext ws(int i) {
+            return getRuleContext(WsContext.class, i);
+        }
+
+        public MediaFeatureContext mediaFeature() {
+            return getRuleContext(MediaFeatureContext.class, 0);
+        }
+
+        public ExprContext expr() {
+            return getRuleContext(ExprContext.class, 0);
+        }
+
+        @Override
+        public int getRuleIndex() {
+            return RULE_mediaExpression;
+        }
+
+        @Override
+        public void enterRule(ParseTreeListener listener) {
+            if (listener instanceof CSS3Listener) {
+                ((CSS3Listener) listener).enterMediaExpression(this);
+            }
+        }
+
+        @Override
+        public void exitRule(ParseTreeListener listener) {
+            if (listener instanceof CSS3Listener) {
+                ((CSS3Listener) listener).exitMediaExpression(this);
+            }
+        }
+
+        @Override
+        public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+            if (visitor instanceof CSS3Visitor) {
+                return ((CSS3Visitor<? extends T>) visitor).visitMediaExpression(this);
+            } else {
+                return visitor.visitChildren(this);
+            }
+        }
+    }
+
+    public static class MediaFeatureContext extends ParserRuleContext {
+        public MediaFeatureContext(ParserRuleContext parent, int invokingState) {
+            super(parent, invokingState);
+        }
+
+        public IdentContext ident() {
+            return getRuleContext(IdentContext.class, 0);
+        }
+
+        public WsContext ws() {
+            return getRuleContext(WsContext.class, 0);
+        }
+
+        @Override
+        public int getRuleIndex() {
+            return RULE_mediaFeature;
+        }
+
+        @Override
+        public void enterRule(ParseTreeListener listener) {
+            if (listener instanceof CSS3Listener) {
+                ((CSS3Listener) listener).enterMediaFeature(this);
+            }
+        }
+
+        @Override
+        public void exitRule(ParseTreeListener listener) {
+            if (listener instanceof CSS3Listener) {
+                ((CSS3Listener) listener).exitMediaFeature(this);
+            }
+        }
+
+        @Override
+        public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+            if (visitor instanceof CSS3Visitor) {
+                return ((CSS3Visitor<? extends T>) visitor).visitMediaFeature(this);
+            } else {
+                return visitor.visitChildren(this);
+            }
+        }
+    }
+
+    public static class PageContext extends ParserRuleContext {
+        public PageContext(ParserRuleContext parent, int invokingState) {
+            super(parent, invokingState);
+        }
+
+        public TerminalNode Page() {
+            return getToken(CSS3Parser.Page, 0);
+        }
+
+        public List<WsContext> ws() {
+            return getRuleContexts(WsContext.class);
+        }
+
+        public WsContext ws(int i) {
+            return getRuleContext(WsContext.class, i);
+        }
+
+        public PseudoPageContext pseudoPage() {
+            return getRuleContext(PseudoPageContext.class, 0);
+        }
+
+        public List<DeclarationContext> declaration() {
+            return getRuleContexts(DeclarationContext.class);
+        }
+
+        public DeclarationContext declaration(int i) {
+            return getRuleContext(DeclarationContext.class, i);
+        }
+
+        @Override
+        public int getRuleIndex() {
+            return RULE_page;
+        }
+
+        @Override
+        public void enterRule(ParseTreeListener listener) {
+            if (listener instanceof CSS3Listener) {
+                ((CSS3Listener) listener).enterPage(this);
+            }
+        }
+
+        @Override
+        public void exitRule(ParseTreeListener listener) {
+            if (listener instanceof CSS3Listener) {
+                ((CSS3Listener) listener).exitPage(this);
+            }
+        }
+
+        @Override
+        public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+            if (visitor instanceof CSS3Visitor) {
+                return ((CSS3Visitor<? extends T>) visitor).visitPage(this);
+            } else {
+                return visitor.visitChildren(this);
+            }
+        }
+    }
+
+    public static class PseudoPageContext extends ParserRuleContext {
+        public PseudoPageContext(ParserRuleContext parent, int invokingState) {
+            super(parent, invokingState);
+        }
+
+        public IdentContext ident() {
+            return getRuleContext(IdentContext.class, 0);
+        }
+
+        public WsContext ws() {
+            return getRuleContext(WsContext.class, 0);
+        }
+
+        @Override
+        public int getRuleIndex() {
+            return RULE_pseudoPage;
+        }
+
+        @Override
+        public void enterRule(ParseTreeListener listener) {
+            if (listener instanceof CSS3Listener) {
+                ((CSS3Listener) listener).enterPseudoPage(this);
+            }
+        }
+
+        @Override
+        public void exitRule(ParseTreeListener listener) {
+            if (listener instanceof CSS3Listener) {
+                ((CSS3Listener) listener).exitPseudoPage(this);
+            }
+        }
+
+        @Override
+        public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+            if (visitor instanceof CSS3Visitor) {
+                return ((CSS3Visitor<? extends T>) visitor).visitPseudoPage(this);
+            } else {
+                return visitor.visitChildren(this);
+            }
+        }
+    }
+
+    public static class SelectorGroupContext extends ParserRuleContext {
+        public SelectorGroupContext(ParserRuleContext parent, int invokingState) {
+            super(parent, invokingState);
+        }
+
+        public List<SelectorContext> selector() {
+            return getRuleContexts(SelectorContext.class);
+        }
+
+        public SelectorContext selector(int i) {
+            return getRuleContext(SelectorContext.class, i);
+        }
+
+        public List<TerminalNode> Comma() {
+            return getTokens(CSS3Parser.Comma);
+        }
+
+        public TerminalNode Comma(int i) {
+            return getToken(CSS3Parser.Comma, i);
+        }
+
+        public List<WsContext> ws() {
+            return getRuleContexts(WsContext.class);
+        }
+
+        public WsContext ws(int i) {
+            return getRuleContext(WsContext.class, i);
+        }
+
+        @Override
+        public int getRuleIndex() {
+            return RULE_selectorGroup;
+        }
+
+        @Override
+        public void enterRule(ParseTreeListener listener) {
+            if (listener instanceof CSS3Listener) {
+                ((CSS3Listener) listener).enterSelectorGroup(this);
+            }
+        }
+
+        @Override
+        public void exitRule(ParseTreeListener listener) {
+            if (listener instanceof CSS3Listener) {
+                ((CSS3Listener) listener).exitSelectorGroup(this);
+            }
+        }
+
+        @Override
+        public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+            if (visitor instanceof CSS3Visitor) {
+                return ((CSS3Visitor<? extends T>) visitor).visitSelectorGroup(this);
+            } else {
+                return visitor.visitChildren(this);
+            }
+        }
+    }
+
+    public static class SelectorContext extends ParserRuleContext {
+        public SelectorContext(ParserRuleContext parent, int invokingState) {
+            super(parent, invokingState);
+        }
+
+        public List<SimpleSelectorSequenceContext> simpleSelectorSequence() {
+            return getRuleContexts(SimpleSelectorSequenceContext.class);
+        }
+
+        public SimpleSelectorSequenceContext simpleSelectorSequence(int i) {
+            return getRuleContext(SimpleSelectorSequenceContext.class, i);
+        }
+
+        public List<WsContext> ws() {
+            return getRuleContexts(WsContext.class);
+        }
+
+        public WsContext ws(int i) {
+            return getRuleContext(WsContext.class, i);
+        }
+
+        public List<CombinatorContext> combinator() {
+            return getRuleContexts(CombinatorContext.class);
+        }
+
+        public CombinatorContext combinator(int i) {
+            return getRuleContext(CombinatorContext.class, i);
+        }
+
+        @Override
+        public int getRuleIndex() {
+            return RULE_selector;
+        }
+
+        @Override
+        public void enterRule(ParseTreeListener listener) {
+            if (listener instanceof CSS3Listener) {
+                ((CSS3Listener) listener).enterSelector(this);
+            }
+        }
+
+        @Override
+        public void exitRule(ParseTreeListener listener) {
+            if (listener instanceof CSS3Listener) {
+                ((CSS3Listener) listener).exitSelector(this);
+            }
+        }
+
+        @Override
+        public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+            if (visitor instanceof CSS3Visitor) {
+                return ((CSS3Visitor<? extends T>) visitor).visitSelector(this);
+            } else {
+                return visitor.visitChildren(this);
+            }
+        }
+    }
+
+    public static class CombinatorContext extends ParserRuleContext {
+        public CombinatorContext(ParserRuleContext parent, int invokingState) {
+            super(parent, invokingState);
+        }
+
+        public TerminalNode Plus() {
+            return getToken(CSS3Parser.Plus, 0);
+        }
+
+        public WsContext ws() {
+            return getRuleContext(WsContext.class, 0);
+        }
+
+        public TerminalNode Greater() {
+            return getToken(CSS3Parser.Greater, 0);
+        }
+
+        public TerminalNode Tilde() {
+            return getToken(CSS3Parser.Tilde, 0);
+        }
+
+        public TerminalNode Space() {
+            return getToken(CSS3Parser.Space, 0);
+        }
+
+        @Override
+        public int getRuleIndex() {
+            return RULE_combinator;
+        }
+
+        @Override
+        public void enterRule(ParseTreeListener listener) {
+            if (listener instanceof CSS3Listener) {
+                ((CSS3Listener) listener).enterCombinator(this);
+            }
+        }
+
+        @Override
+        public void exitRule(ParseTreeListener listener) {
+            if (listener instanceof CSS3Listener) {
+                ((CSS3Listener) listener).exitCombinator(this);
+            }
+        }
+
+        @Override
+        public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+            if (visitor instanceof CSS3Visitor) {
+                return ((CSS3Visitor<? extends T>) visitor).visitCombinator(this);
+            } else {
+                return visitor.visitChildren(this);
+            }
+        }
+    }
+
+    public static class SimpleSelectorSequenceContext extends ParserRuleContext {
+        public SimpleSelectorSequenceContext(ParserRuleContext parent, int invokingState) {
+            super(parent, invokingState);
+        }
+
+        public TypeSelectorContext typeSelector() {
+            return getRuleContext(TypeSelectorContext.class, 0);
+        }
+
+        public UniversalContext universal() {
+            return getRuleContext(UniversalContext.class, 0);
+        }
+
+        public List<TerminalNode> Hash() {
+            return getTokens(CSS3Parser.Hash);
+        }
+
+        public TerminalNode Hash(int i) {
+            return getToken(CSS3Parser.Hash, i);
+        }
+
+        public List<ClassNameContext> className() {
+            return getRuleContexts(ClassNameContext.class);
+        }
+
+        public ClassNameContext className(int i) {
+            return getRuleContext(ClassNameContext.class, i);
+        }
+
+        public List<AttribContext> attrib() {
+            return getRuleContexts(AttribContext.class);
+        }
+
+        public AttribContext attrib(int i) {
+            return getRuleContext(AttribContext.class, i);
+        }
+
+        public List<PseudoContext> pseudo() {
+            return getRuleContexts(PseudoContext.class);
+        }
+
+        public PseudoContext pseudo(int i) {
+            return getRuleContext(PseudoContext.class, i);
+        }
+
+        public List<NegationContext> negation() {
+            return getRuleContexts(NegationContext.class);
+        }
+
+        public NegationContext negation(int i) {
+            return getRuleContext(NegationContext.class, i);
+        }
+
+        @Override
+        public int getRuleIndex() {
+            return RULE_simpleSelectorSequence;
+        }
+
+        @Override
+        public void enterRule(ParseTreeListener listener) {
+            if (listener instanceof CSS3Listener) {
+                ((CSS3Listener) listener).enterSimpleSelectorSequence(this);
+            }
+        }
+
+        @Override
+        public void exitRule(ParseTreeListener listener) {
+            if (listener instanceof CSS3Listener) {
+                ((CSS3Listener) listener).exitSimpleSelectorSequence(this);
+            }
+        }
+
+        @Override
+        public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+            if (visitor instanceof CSS3Visitor) {
+                return ((CSS3Visitor<? extends T>) visitor).visitSimpleSelectorSequence(this);
+            } else {
+                return visitor.visitChildren(this);
+            }
+        }
+    }
+
+    public static class TypeSelectorContext extends ParserRuleContext {
+        public TypeSelectorContext(ParserRuleContext parent, int invokingState) {
+            super(parent, invokingState);
+        }
+
+        public ElementNameContext elementName() {
+            return getRuleContext(ElementNameContext.class, 0);
+        }
+
+        public TypeNamespacePrefixContext typeNamespacePrefix() {
+            return getRuleContext(TypeNamespacePrefixContext.class, 0);
+        }
+
+        @Override
+        public int getRuleIndex() {
+            return RULE_typeSelector;
+        }
+
+        @Override
+        public void enterRule(ParseTreeListener listener) {
+            if (listener instanceof CSS3Listener) {
+                ((CSS3Listener) listener).enterTypeSelector(this);
+            }
+        }
+
+        @Override
+        public void exitRule(ParseTreeListener listener) {
+            if (listener instanceof CSS3Listener) {
+                ((CSS3Listener) listener).exitTypeSelector(this);
+            }
+        }
+
+        @Override
+        public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+            if (visitor instanceof CSS3Visitor) {
+                return ((CSS3Visitor<? extends T>) visitor).visitTypeSelector(this);
+            } else {
+                return visitor.visitChildren(this);
+            }
+        }
+    }
+
+    public static class TypeNamespacePrefixContext extends ParserRuleContext {
+        public TypeNamespacePrefixContext(ParserRuleContext parent, int invokingState) {
+            super(parent, invokingState);
+        }
+
+        public IdentContext ident() {
+            return getRuleContext(IdentContext.class, 0);
+        }
+
+        @Override
+        public int getRuleIndex() {
+            return RULE_typeNamespacePrefix;
+        }
+
+        @Override
+        public void enterRule(ParseTreeListener listener) {
+            if (listener instanceof CSS3Listener) {
+                ((CSS3Listener) listener).enterTypeNamespacePrefix(this);
+            }
+        }
+
+        @Override
+        public void exitRule(ParseTreeListener listener) {
+            if (listener instanceof CSS3Listener) {
+                ((CSS3Listener) listener).exitTypeNamespacePrefix(this);
+            }
+        }
+
+        @Override
+        public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+            if (visitor instanceof CSS3Visitor) {
+                return ((CSS3Visitor<? extends T>) visitor).visitTypeNamespacePrefix(this);
+            } else {
+                return visitor.visitChildren(this);
+            }
+        }
+    }
+
+    public static class ElementNameContext extends ParserRuleContext {
+        public ElementNameContext(ParserRuleContext parent, int invokingState) {
+            super(parent, invokingState);
+        }
+
+        public IdentContext ident() {
+            return getRuleContext(IdentContext.class, 0);
+        }
+
+        @Override
+        public int getRuleIndex() {
+            return RULE_elementName;
+        }
+
+        @Override
+        public void enterRule(ParseTreeListener listener) {
+            if (listener instanceof CSS3Listener) {
+                ((CSS3Listener) listener).enterElementName(this);
+            }
+        }
+
+        @Override
+        public void exitRule(ParseTreeListener listener) {
+            if (listener instanceof CSS3Listener) {
+                ((CSS3Listener) listener).exitElementName(this);
+            }
+        }
+
+        @Override
+        public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+            if (visitor instanceof CSS3Visitor) {
+                return ((CSS3Visitor<? extends T>) visitor).visitElementName(this);
+            } else {
+                return visitor.visitChildren(this);
+            }
+        }
+    }
+
+    public static class UniversalContext extends ParserRuleContext {
+        public UniversalContext(ParserRuleContext parent, int invokingState) {
+            super(parent, invokingState);
+        }
+
+        public TypeNamespacePrefixContext typeNamespacePrefix() {
+            return getRuleContext(TypeNamespacePrefixContext.class, 0);
+        }
+
+        @Override
+        public int getRuleIndex() {
+            return RULE_universal;
+        }
+
+        @Override
+        public void enterRule(ParseTreeListener listener) {
+            if (listener instanceof CSS3Listener) {
+                ((CSS3Listener) listener).enterUniversal(this);
+            }
+        }
+
+        @Override
+        public void exitRule(ParseTreeListener listener) {
+            if (listener instanceof CSS3Listener) {
+                ((CSS3Listener) listener).exitUniversal(this);
+            }
+        }
+
+        @Override
+        public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+            if (visitor instanceof CSS3Visitor) {
+                return ((CSS3Visitor<? extends T>) visitor).visitUniversal(this);
+            } else {
+                return visitor.visitChildren(this);
+            }
+        }
+    }
+
+    public static class ClassNameContext extends ParserRuleContext {
+        public ClassNameContext(ParserRuleContext parent, int invokingState) {
+            super(parent, invokingState);
+        }
+
+        public IdentContext ident() {
+            return getRuleContext(IdentContext.class, 0);
+        }
+
+        @Override
+        public int getRuleIndex() {
+            return RULE_className;
+        }
+
+        @Override
+        public void enterRule(ParseTreeListener listener) {
+            if (listener instanceof CSS3Listener) {
+                ((CSS3Listener) listener).enterClassName(this);
+            }
+        }
+
+        @Override
+        public void exitRule(ParseTreeListener listener) {
+            if (listener instanceof CSS3Listener) {
+                ((CSS3Listener) listener).exitClassName(this);
+            }
+        }
+
+        @Override
+        public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+            if (visitor instanceof CSS3Visitor) {
+                return ((CSS3Visitor<? extends T>) visitor).visitClassName(this);
+            } else {
+                return visitor.visitChildren(this);
+            }
+        }
+    }
+
+    public static class AttribContext extends ParserRuleContext {
+        public AttribContext(ParserRuleContext parent, int invokingState) {
+            super(parent, invokingState);
+        }
+
+        public List<WsContext> ws() {
+            return getRuleContexts(WsContext.class);
+        }
+
+        public WsContext ws(int i) {
+            return getRuleContext(WsContext.class, i);
+        }
+
+        public List<IdentContext> ident() {
+            return getRuleContexts(IdentContext.class);
+        }
+
+        public IdentContext ident(int i) {
+            return getRuleContext(IdentContext.class, i);
+        }
+
+        public TypeNamespacePrefixContext typeNamespacePrefix() {
+            return getRuleContext(TypeNamespacePrefixContext.class, 0);
+        }
+
+        public TerminalNode PrefixMatch() {
+            return getToken(CSS3Parser.PrefixMatch, 0);
+        }
+
+        public TerminalNode SuffixMatch() {
+            return getToken(CSS3Parser.SuffixMatch, 0);
+        }
+
+        public TerminalNode SubstringMatch() {
+            return getToken(CSS3Parser.SubstringMatch, 0);
+        }
+
+        public TerminalNode Includes() {
+            return getToken(CSS3Parser.Includes, 0);
+        }
+
+        public TerminalNode DashMatch() {
+            return getToken(CSS3Parser.DashMatch, 0);
+        }
+
+        public TerminalNode String() {
+            return getToken(CSS3Parser.String, 0);
+        }
+
+        @Override
+        public int getRuleIndex() {
+            return RULE_attrib;
+        }
+
+        @Override
+        public void enterRule(ParseTreeListener listener) {
+            if (listener instanceof CSS3Listener) {
+                ((CSS3Listener) listener).enterAttrib(this);
+            }
+        }
+
+        @Override
+        public void exitRule(ParseTreeListener listener) {
+            if (listener instanceof CSS3Listener) {
+                ((CSS3Listener) listener).exitAttrib(this);
+            }
+        }
+
+        @Override
+        public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+            if (visitor instanceof CSS3Visitor) {
+                return ((CSS3Visitor<? extends T>) visitor).visitAttrib(this);
+            } else {
+                return visitor.visitChildren(this);
+            }
+        }
+    }
+
+    public static class PseudoContext extends ParserRuleContext {
+        public PseudoContext(ParserRuleContext parent, int invokingState) {
+            super(parent, invokingState);
+        }
+
+        public IdentContext ident() {
+            return getRuleContext(IdentContext.class, 0);
+        }
+
+        public FunctionalPseudoContext functionalPseudo() {
+            return getRuleContext(FunctionalPseudoContext.class, 0);
+        }
+
+        @Override
+        public int getRuleIndex() {
+            return RULE_pseudo;
+        }
+
+        @Override
+        public void enterRule(ParseTreeListener listener) {
+            if (listener instanceof CSS3Listener) {
+                ((CSS3Listener) listener).enterPseudo(this);
+            }
+        }
+
+        @Override
+        public void exitRule(ParseTreeListener listener) {
+            if (listener instanceof CSS3Listener) {
+                ((CSS3Listener) listener).exitPseudo(this);
+            }
+        }
+
+        @Override
+        public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+            if (visitor instanceof CSS3Visitor) {
+                return ((CSS3Visitor<? extends T>) visitor).visitPseudo(this);
+            } else {
+                return visitor.visitChildren(this);
+            }
+        }
+    }
+
+    public static class FunctionalPseudoContext extends ParserRuleContext {
+        public FunctionalPseudoContext(ParserRuleContext parent, int invokingState) {
+            super(parent, invokingState);
+        }
+
+        public TerminalNode Function() {
+            return getToken(CSS3Parser.Function, 0);
+        }
+
+        public WsContext ws() {
+            return getRuleContext(WsContext.class, 0);
+        }
+
+        public ExpressionContext expression() {
+            return getRuleContext(ExpressionContext.class, 0);
+        }
+
+        @Override
+        public int getRuleIndex() {
+            return RULE_functionalPseudo;
+        }
+
+        @Override
+        public void enterRule(ParseTreeListener listener) {
+            if (listener instanceof CSS3Listener) {
+                ((CSS3Listener) listener).enterFunctionalPseudo(this);
+            }
+        }
+
+        @Override
+        public void exitRule(ParseTreeListener listener) {
+            if (listener instanceof CSS3Listener) {
+                ((CSS3Listener) listener).exitFunctionalPseudo(this);
+            }
+        }
+
+        @Override
+        public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+            if (visitor instanceof CSS3Visitor) {
+                return ((CSS3Visitor<? extends T>) visitor).visitFunctionalPseudo(this);
+            } else {
+                return visitor.visitChildren(this);
+            }
+        }
+    }
+
+    public static class ExpressionContext extends ParserRuleContext {
+        public ExpressionContext(ParserRuleContext parent, int invokingState) {
+            super(parent, invokingState);
+        }
+
+        public List<WsContext> ws() {
+            return getRuleContexts(WsContext.class);
+        }
+
+        public WsContext ws(int i) {
+            return getRuleContext(WsContext.class, i);
+        }
+
+        public List<TerminalNode> Plus() {
+            return getTokens(CSS3Parser.Plus);
+        }
+
+        public TerminalNode Plus(int i) {
+            return getToken(CSS3Parser.Plus, i);
+        }
+
+        public List<TerminalNode> Minus() {
+            return getTokens(CSS3Parser.Minus);
+        }
+
+        public TerminalNode Minus(int i) {
+            return getToken(CSS3Parser.Minus, i);
+        }
+
+        public List<TerminalNode> Dimension() {
+            return getTokens(CSS3Parser.Dimension);
+        }
+
+        public TerminalNode Dimension(int i) {
+            return getToken(CSS3Parser.Dimension, i);
+        }
+
+        public List<TerminalNode> UnknownDimension() {
+            return getTokens(CSS3Parser.UnknownDimension);
+        }
+
+        public TerminalNode UnknownDimension(int i) {
+            return getToken(CSS3Parser.UnknownDimension, i);
+        }
+
+        public List<TerminalNode> Number() {
+            return getTokens(CSS3Parser.Number);
+        }
+
+        public TerminalNode Number(int i) {
+            return getToken(CSS3Parser.Number, i);
+        }
+
+        public List<TerminalNode> String() {
+            return getTokens(CSS3Parser.String);
+        }
+
+        public TerminalNode String(int i) {
+            return getToken(CSS3Parser.String, i);
+        }
+
+        public List<IdentContext> ident() {
+            return getRuleContexts(IdentContext.class);
+        }
+
+        public IdentContext ident(int i) {
+            return getRuleContext(IdentContext.class, i);
+        }
+
+        @Override
+        public int getRuleIndex() {
+            return RULE_expression;
+        }
+
+        @Override
+        public void enterRule(ParseTreeListener listener) {
+            if (listener instanceof CSS3Listener) {
+                ((CSS3Listener) listener).enterExpression(this);
+            }
+        }
+
+        @Override
+        public void exitRule(ParseTreeListener listener) {
+            if (listener instanceof CSS3Listener) {
+                ((CSS3Listener) listener).exitExpression(this);
+            }
+        }
+
+        @Override
+        public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+            if (visitor instanceof CSS3Visitor) {
+                return ((CSS3Visitor<? extends T>) visitor).visitExpression(this);
+            } else {
+                return visitor.visitChildren(this);
+            }
+        }
+    }
+
+    public static class NegationContext extends ParserRuleContext {
+        public NegationContext(ParserRuleContext parent, int invokingState) {
+            super(parent, invokingState);
+        }
+
+        public TerminalNode PseudoNot() {
+            return getToken(CSS3Parser.PseudoNot, 0);
+        }
+
+        public List<WsContext> ws() {
+            return getRuleContexts(WsContext.class);
+        }
+
+        public WsContext ws(int i) {
+            return getRuleContext(WsContext.class, i);
+        }
+
+        public NegationArgContext negationArg() {
+            return getRuleContext(NegationArgContext.class, 0);
+        }
+
+        @Override
+        public int getRuleIndex() {
+            return RULE_negation;
+        }
+
+        @Override
+        public void enterRule(ParseTreeListener listener) {
+            if (listener instanceof CSS3Listener) {
+                ((CSS3Listener) listener).enterNegation(this);
+            }
+        }
+
+        @Override
+        public void exitRule(ParseTreeListener listener) {
+            if (listener instanceof CSS3Listener) {
+                ((CSS3Listener) listener).exitNegation(this);
+            }
+        }
+
+        @Override
+        public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+            if (visitor instanceof CSS3Visitor) {
+                return ((CSS3Visitor<? extends T>) visitor).visitNegation(this);
+            } else {
+                return visitor.visitChildren(this);
+            }
+        }
+    }
+
+    public static class NegationArgContext extends ParserRuleContext {
+        public NegationArgContext(ParserRuleContext parent, int invokingState) {
+            super(parent, invokingState);
+        }
+
+        public TypeSelectorContext typeSelector() {
+            return getRuleContext(TypeSelectorContext.class, 0);
+        }
+
+        public UniversalContext universal() {
+            return getRuleContext(UniversalContext.class, 0);
+        }
+
+        public TerminalNode Hash() {
+            return getToken(CSS3Parser.Hash, 0);
+        }
+
+        public ClassNameContext className() {
+            return getRuleContext(ClassNameContext.class, 0);
+        }
+
+        public AttribContext attrib() {
+            return getRuleContext(AttribContext.class, 0);
+        }
+
+        public PseudoContext pseudo() {
+            return getRuleContext(PseudoContext.class, 0);
+        }
+
+        @Override
+        public int getRuleIndex() {
+            return RULE_negationArg;
+        }
+
+        @Override
+        public void enterRule(ParseTreeListener listener) {
+            if (listener instanceof CSS3Listener) {
+                ((CSS3Listener) listener).enterNegationArg(this);
+            }
+        }
+
+        @Override
+        public void exitRule(ParseTreeListener listener) {
+            if (listener instanceof CSS3Listener) {
+                ((CSS3Listener) listener).exitNegationArg(this);
+            }
+        }
+
+        @Override
+        public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+            if (visitor instanceof CSS3Visitor) {
+                return ((CSS3Visitor<? extends T>) visitor).visitNegationArg(this);
+            } else {
+                return visitor.visitChildren(this);
+            }
+        }
+    }
+
+    public static class OperatorContext extends ParserRuleContext {
+        public OperatorContext(ParserRuleContext parent, int invokingState) {
+            super(parent, invokingState);
+        }
+
+        public OperatorContext() {
+        }
+
+        @Override
+        public int getRuleIndex() {
+            return RULE_operator;
+        }
+
+        public void copyFrom(OperatorContext ctx) {
+            super.copyFrom(ctx);
+        }
+    }
+
+    public static class BadOperatorContext extends OperatorContext {
+        public BadOperatorContext(OperatorContext ctx) {
+            copyFrom(ctx);
+        }
+
+        public WsContext ws() {
+            return getRuleContext(WsContext.class, 0);
+        }
+
+        @Override
+        public void enterRule(ParseTreeListener listener) {
+            if (listener instanceof CSS3Listener) {
+                ((CSS3Listener) listener).enterBadOperator(this);
+            }
+        }
+
+        @Override
+        public void exitRule(ParseTreeListener listener) {
+            if (listener instanceof CSS3Listener) {
+                ((CSS3Listener) listener).exitBadOperator(this);
+            }
+        }
+
+        @Override
+        public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+            if (visitor instanceof CSS3Visitor) {
+                return ((CSS3Visitor<? extends T>) visitor).visitBadOperator(this);
+            } else {
+                return visitor.visitChildren(this);
+            }
+        }
+    }
+
+    public static class GoodOperatorContext extends OperatorContext {
+        public GoodOperatorContext(OperatorContext ctx) {
+            copyFrom(ctx);
+        }
+
+        public WsContext ws() {
+            return getRuleContext(WsContext.class, 0);
+        }
+
+        public TerminalNode Comma() {
+            return getToken(CSS3Parser.Comma, 0);
+        }
+
+        public TerminalNode Space() {
+            return getToken(CSS3Parser.Space, 0);
+        }
+
+        @Override
+        public void enterRule(ParseTreeListener listener) {
+            if (listener instanceof CSS3Listener) {
+                ((CSS3Listener) listener).enterGoodOperator(this);
+            }
+        }
+
+        @Override
+        public void exitRule(ParseTreeListener listener) {
+            if (listener instanceof CSS3Listener) {
+                ((CSS3Listener) listener).exitGoodOperator(this);
+            }
+        }
+
+        @Override
+        public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+            if (visitor instanceof CSS3Visitor) {
+                return ((CSS3Visitor<? extends T>) visitor).visitGoodOperator(this);
+            } else {
+                return visitor.visitChildren(this);
+            }
+        }
+    }
+
+    public static class PropertyContext extends ParserRuleContext {
+        public PropertyContext(ParserRuleContext parent, int invokingState) {
+            super(parent, invokingState);
+        }
+
+        public PropertyContext() {
+        }
+
+        @Override
+        public int getRuleIndex() {
+            return RULE_property;
+        }
+
+        public void copyFrom(PropertyContext ctx) {
+            super.copyFrom(ctx);
+        }
+    }
+
+    public static class BadPropertyContext extends PropertyContext {
+        public BadPropertyContext(PropertyContext ctx) {
+            copyFrom(ctx);
+        }
+
+        public IdentContext ident() {
+            return getRuleContext(IdentContext.class, 0);
+        }
+
+        @Override
+        public void enterRule(ParseTreeListener listener) {
+            if (listener instanceof CSS3Listener) {
+                ((CSS3Listener) listener).enterBadProperty(this);
+            }
+        }
+
+        @Override
+        public void exitRule(ParseTreeListener listener) {
+            if (listener instanceof CSS3Listener) {
+                ((CSS3Listener) listener).exitBadProperty(this);
+            }
+        }
+
+        @Override
+        public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+            if (visitor instanceof CSS3Visitor) {
+                return ((CSS3Visitor<? extends T>) visitor).visitBadProperty(this);
+            } else {
+                return visitor.visitChildren(this);
+            }
+        }
+    }
+
+    public static class GoodPropertyContext extends PropertyContext {
+        public GoodPropertyContext(PropertyContext ctx) {
+            copyFrom(ctx);
+        }
+
+        public IdentContext ident() {
+            return getRuleContext(IdentContext.class, 0);
+        }
+
+        public WsContext ws() {
+            return getRuleContext(WsContext.class, 0);
+        }
+
+        public TerminalNode Variable() {
+            return getToken(CSS3Parser.Variable, 0);
+        }
+
+        @Override
+        public void enterRule(ParseTreeListener listener) {
+            if (listener instanceof CSS3Listener) {
+                ((CSS3Listener) listener).enterGoodProperty(this);
+            }
+        }
+
+        @Override
+        public void exitRule(ParseTreeListener listener) {
+            if (listener instanceof CSS3Listener) {
+                ((CSS3Listener) listener).exitGoodProperty(this);
+            }
+        }
+
+        @Override
+        public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+            if (visitor instanceof CSS3Visitor) {
+                return ((CSS3Visitor<? extends T>) visitor).visitGoodProperty(this);
+            } else {
+                return visitor.visitChildren(this);
+            }
+        }
+    }
+
+    public static class RulesetContext extends ParserRuleContext {
+        public RulesetContext(ParserRuleContext parent, int invokingState) {
+            super(parent, invokingState);
+        }
+
+        public RulesetContext() {
+        }
+
+        @Override
+        public int getRuleIndex() {
+            return RULE_ruleset;
+        }
+
+        public void copyFrom(RulesetContext ctx) {
+            super.copyFrom(ctx);
+        }
+    }
+
+    public static class UnknownRulesetContext extends RulesetContext {
+        public UnknownRulesetContext(RulesetContext ctx) {
+            copyFrom(ctx);
+        }
+
+        public List<WsContext> ws() {
+            return getRuleContexts(WsContext.class);
+        }
+
+        public WsContext ws(int i) {
+            return getRuleContext(WsContext.class, i);
+        }
+
+        public List<AnyContext> any() {
+            return getRuleContexts(AnyContext.class);
+        }
+
+        public AnyContext any(int i) {
+            return getRuleContext(AnyContext.class, i);
+        }
+
+        public DeclarationListContext declarationList() {
+            return getRuleContext(DeclarationListContext.class, 0);
+        }
+
+        @Override
+        public void enterRule(ParseTreeListener listener) {
+            if (listener instanceof CSS3Listener) {
+                ((CSS3Listener) listener).enterUnknownRuleset(this);
+            }
+        }
+
+        @Override
+        public void exitRule(ParseTreeListener listener) {
+            if (listener instanceof CSS3Listener) {
+                ((CSS3Listener) listener).exitUnknownRuleset(this);
+            }
+        }
+
+        @Override
+        public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+            if (visitor instanceof CSS3Visitor) {
+                return ((CSS3Visitor<? extends T>) visitor).visitUnknownRuleset(this);
+            } else {
+                return visitor.visitChildren(this);
+            }
+        }
+    }
+
+    public static class KnownRulesetContext extends RulesetContext {
+        public KnownRulesetContext(RulesetContext ctx) {
+            copyFrom(ctx);
+        }
+
+        public SelectorGroupContext selectorGroup() {
+            return getRuleContext(SelectorGroupContext.class, 0);
+        }
+
+        public List<WsContext> ws() {
+            return getRuleContexts(WsContext.class);
+        }
+
+        public WsContext ws(int i) {
+            return getRuleContext(WsContext.class, i);
+        }
+
+        public DeclarationListContext declarationList() {
+            return getRuleContext(DeclarationListContext.class, 0);
+        }
+
+        @Override
+        public void enterRule(ParseTreeListener listener) {
+            if (listener instanceof CSS3Listener) {
+                ((CSS3Listener) listener).enterKnownRuleset(this);
+            }
+        }
+
+        @Override
+        public void exitRule(ParseTreeListener listener) {
+            if (listener instanceof CSS3Listener) {
+                ((CSS3Listener) listener).exitKnownRuleset(this);
+            }
+        }
+
+        @Override
+        public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+            if (visitor instanceof CSS3Visitor) {
+                return ((CSS3Visitor<? extends T>) visitor).visitKnownRuleset(this);
+            } else {
+                return visitor.visitChildren(this);
+            }
+        }
+    }
+
+    public static class DeclarationListContext extends ParserRuleContext {
+        public DeclarationListContext(ParserRuleContext parent, int invokingState) {
+            super(parent, invokingState);
+        }
+
+        public List<DeclarationContext> declaration() {
+            return getRuleContexts(DeclarationContext.class);
+        }
+
+        public DeclarationContext declaration(int i) {
+            return getRuleContext(DeclarationContext.class, i);
+        }
+
+        public List<WsContext> ws() {
+            return getRuleContexts(WsContext.class);
+        }
+
+        public WsContext ws(int i) {
+            return getRuleContext(WsContext.class, i);
+        }
+
+        @Override
+        public int getRuleIndex() {
+            return RULE_declarationList;
+        }
+
+        @Override
+        public void enterRule(ParseTreeListener listener) {
+            if (listener instanceof CSS3Listener) {
+                ((CSS3Listener) listener).enterDeclarationList(this);
+            }
+        }
+
+        @Override
+        public void exitRule(ParseTreeListener listener) {
+            if (listener instanceof CSS3Listener) {
+                ((CSS3Listener) listener).exitDeclarationList(this);
+            }
+        }
+
+        @Override
+        public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+            if (visitor instanceof CSS3Visitor) {
+                return ((CSS3Visitor<? extends T>) visitor).visitDeclarationList(this);
+            } else {
+                return visitor.visitChildren(this);
+            }
+        }
+    }
+
+    public static class DeclarationContext extends ParserRuleContext {
+        public DeclarationContext(ParserRuleContext parent, int invokingState) {
+            super(parent, invokingState);
+        }
+
+        public DeclarationContext() {
+        }
+
+        @Override
+        public int getRuleIndex() {
+            return RULE_declaration;
+        }
+
+        public void copyFrom(DeclarationContext ctx) {
+            super.copyFrom(ctx);
+        }
+    }
+
+    public static class UnknownDeclarationContext extends DeclarationContext {
+        public UnknownDeclarationContext(DeclarationContext ctx) {
+            copyFrom(ctx);
+        }
+
+        public PropertyContext property() {
+            return getRuleContext(PropertyContext.class, 0);
+        }
+
+        public WsContext ws() {
+            return getRuleContext(WsContext.class, 0);
+        }
+
+        public ValueContext value() {
+            return getRuleContext(ValueContext.class, 0);
+        }
+
+        @Override
+        public void enterRule(ParseTreeListener listener) {
+            if (listener instanceof CSS3Listener) {
+                ((CSS3Listener) listener).enterUnknownDeclaration(this);
+            }
+        }
+
+        @Override
+        public void exitRule(ParseTreeListener listener) {
+            if (listener instanceof CSS3Listener) {
+                ((CSS3Listener) listener).exitUnknownDeclaration(this);
+            }
+        }
+
+        @Override
+        public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+            if (visitor instanceof CSS3Visitor) {
+                return ((CSS3Visitor<? extends T>) visitor).visitUnknownDeclaration(this);
+            } else {
+                return visitor.visitChildren(this);
+            }
+        }
+    }
+
+    public static class KnownDeclarationContext extends DeclarationContext {
+        public KnownDeclarationContext(DeclarationContext ctx) {
+            copyFrom(ctx);
+        }
+
+        public PropertyContext property() {
+            return getRuleContext(PropertyContext.class, 0);
+        }
+
+        public WsContext ws() {
+            return getRuleContext(WsContext.class, 0);
+        }
+
+        public ExprContext expr() {
+            return getRuleContext(ExprContext.class, 0);
+        }
+
+        public PrioContext prio() {
+            return getRuleContext(PrioContext.class, 0);
+        }
+
+        @Override
+        public void enterRule(ParseTreeListener listener) {
+            if (listener instanceof CSS3Listener) {
+                ((CSS3Listener) listener).enterKnownDeclaration(this);
+            }
+        }
+
+        @Override
+        public void exitRule(ParseTreeListener listener) {
+            if (listener instanceof CSS3Listener) {
+                ((CSS3Listener) listener).exitKnownDeclaration(this);
+            }
+        }
+
+        @Override
+        public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+            if (visitor instanceof CSS3Visitor) {
+                return ((CSS3Visitor<? extends T>) visitor).visitKnownDeclaration(this);
+            } else {
+                return visitor.visitChildren(this);
+            }
+        }
+    }
+
+    public static class PrioContext extends ParserRuleContext {
+        public PrioContext(ParserRuleContext parent, int invokingState) {
+            super(parent, invokingState);
+        }
+
+        public TerminalNode Important() {
+            return getToken(CSS3Parser.Important, 0);
+        }
+
+        public WsContext ws() {
+            return getRuleContext(WsContext.class, 0);
+        }
+
+        @Override
+        public int getRuleIndex() {
+            return RULE_prio;
+        }
+
+        @Override
+        public void enterRule(ParseTreeListener listener) {
+            if (listener instanceof CSS3Listener) {
+                ((CSS3Listener) listener).enterPrio(this);
+            }
+        }
+
+        @Override
+        public void exitRule(ParseTreeListener listener) {
+            if (listener instanceof CSS3Listener) {
+                ((CSS3Listener) listener).exitPrio(this);
+            }
+        }
+
+        @Override
+        public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+            if (visitor instanceof CSS3Visitor) {
+                return ((CSS3Visitor<? extends T>) visitor).visitPrio(this);
+            } else {
+                return visitor.visitChildren(this);
+            }
+        }
+    }
+
+    public static class ValueContext extends ParserRuleContext {
+        public ValueContext(ParserRuleContext parent, int invokingState) {
+            super(parent, invokingState);
+        }
+
+        public List<AnyContext> any() {
+            return getRuleContexts(AnyContext.class);
+        }
+
+        public AnyContext any(int i) {
+            return getRuleContext(AnyContext.class, i);
+        }
+
+        public List<BlockContext> block() {
+            return getRuleContexts(BlockContext.class);
+        }
+
+        public BlockContext block(int i) {
+            return getRuleContext(BlockContext.class, i);
+        }
+
+        public List<AtKeywordContext> atKeyword() {
+            return getRuleContexts(AtKeywordContext.class);
+        }
+
+        public AtKeywordContext atKeyword(int i) {
+            return getRuleContext(AtKeywordContext.class, i);
+        }
+
+        public List<WsContext> ws() {
+            return getRuleContexts(WsContext.class);
+        }
+
+        public WsContext ws(int i) {
+            return getRuleContext(WsContext.class, i);
+        }
+
+        @Override
+        public int getRuleIndex() {
+            return RULE_value;
+        }
+
+        @Override
+        public void enterRule(ParseTreeListener listener) {
+            if (listener instanceof CSS3Listener) {
+                ((CSS3Listener) listener).enterValue(this);
+            }
+        }
+
+        @Override
+        public void exitRule(ParseTreeListener listener) {
+            if (listener instanceof CSS3Listener) {
+                ((CSS3Listener) listener).exitValue(this);
+            }
+        }
+
+        @Override
+        public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+            if (visitor instanceof CSS3Visitor) {
+                return ((CSS3Visitor<? extends T>) visitor).visitValue(this);
+            } else {
+                return visitor.visitChildren(this);
+            }
+        }
+    }
+
+    public static class ExprContext extends ParserRuleContext {
+        public ExprContext(ParserRuleContext parent, int invokingState) {
+            super(parent, invokingState);
+        }
+
+        public List<TermContext> term() {
+            return getRuleContexts(TermContext.class);
+        }
+
+        public TermContext term(int i) {
+            return getRuleContext(TermContext.class, i);
+        }
+
+        public List<OperatorContext> operator() {
+            return getRuleContexts(OperatorContext.class);
+        }
+
+        public OperatorContext operator(int i) {
+            return getRuleContext(OperatorContext.class, i);
+        }
+
+        @Override
+        public int getRuleIndex() {
+            return RULE_expr;
+        }
+
+        @Override
+        public void enterRule(ParseTreeListener listener) {
+            if (listener instanceof CSS3Listener) {
+                ((CSS3Listener) listener).enterExpr(this);
+            }
+        }
+
+        @Override
+        public void exitRule(ParseTreeListener listener) {
+            if (listener instanceof CSS3Listener) {
+                ((CSS3Listener) listener).exitExpr(this);
+            }
+        }
+
+        @Override
+        public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+            if (visitor instanceof CSS3Visitor) {
+                return ((CSS3Visitor<? extends T>) visitor).visitExpr(this);
+            } else {
+                return visitor.visitChildren(this);
+            }
+        }
+    }
+
+    public static class TermContext extends ParserRuleContext {
+        public TermContext(ParserRuleContext parent, int invokingState) {
+            super(parent, invokingState);
+        }
+
+        public TermContext() {
+        }
+
+        @Override
+        public int getRuleIndex() {
+            return RULE_term;
+        }
+
+        public void copyFrom(TermContext ctx) {
+            super.copyFrom(ctx);
+        }
+    }
+
+    public static class BadTermContext extends TermContext {
+        public BadTermContext(TermContext ctx) {
+            copyFrom(ctx);
+        }
+
+        public DxImageTransformContext dxImageTransform() {
+            return getRuleContext(DxImageTransformContext.class, 0);
+        }
+
+        @Override
+        public void enterRule(ParseTreeListener listener) {
+            if (listener instanceof CSS3Listener) {
+                ((CSS3Listener) listener).enterBadTerm(this);
+            }
+        }
+
+        @Override
+        public void exitRule(ParseTreeListener listener) {
+            if (listener instanceof CSS3Listener) {
+                ((CSS3Listener) listener).exitBadTerm(this);
+            }
+        }
+
+        @Override
+        public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+            if (visitor instanceof CSS3Visitor) {
+                return ((CSS3Visitor<? extends T>) visitor).visitBadTerm(this);
+            } else {
+                return visitor.visitChildren(this);
+            }
+        }
+    }
+
+    public static class KnownTermContext extends TermContext {
+        public KnownTermContext(TermContext ctx) {
+            copyFrom(ctx);
+        }
+
+        public NumberContext number() {
+            return getRuleContext(NumberContext.class, 0);
+        }
+
+        public WsContext ws() {
+            return getRuleContext(WsContext.class, 0);
+        }
+
+        public PercentageContext percentage() {
+            return getRuleContext(PercentageContext.class, 0);
+        }
+
+        public DimensionContext dimension() {
+            return getRuleContext(DimensionContext.class, 0);
+        }
+
+        public TerminalNode String() {
+            return getToken(CSS3Parser.String, 0);
+        }
+
+        public TerminalNode UnicodeRange() {
+            return getToken(CSS3Parser.UnicodeRange, 0);
+        }
+
+        public IdentContext ident() {
+            return getRuleContext(IdentContext.class, 0);
+        }
+
+        public VarContext var() {
+            return getRuleContext(VarContext.class, 0);
+        }
+
+        public TerminalNode Uri() {
+            return getToken(CSS3Parser.Uri, 0);
+        }
+
+        public HexcolorContext hexcolor() {
+            return getRuleContext(HexcolorContext.class, 0);
+        }
+
+        public CalcContext calc() {
+            return getRuleContext(CalcContext.class, 0);
+        }
+
+        public FunctionContext function() {
+            return getRuleContext(FunctionContext.class, 0);
+        }
+
+        @Override
+        public void enterRule(ParseTreeListener listener) {
+            if (listener instanceof CSS3Listener) {
+                ((CSS3Listener) listener).enterKnownTerm(this);
+            }
+        }
+
+        @Override
+        public void exitRule(ParseTreeListener listener) {
+            if (listener instanceof CSS3Listener) {
+                ((CSS3Listener) listener).exitKnownTerm(this);
+            }
+        }
+
+        @Override
+        public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+            if (visitor instanceof CSS3Visitor) {
+                return ((CSS3Visitor<? extends T>) visitor).visitKnownTerm(this);
+            } else {
+                return visitor.visitChildren(this);
+            }
+        }
+    }
+
+    public static class UnknownTermContext extends TermContext {
+        public UnknownTermContext(TermContext ctx) {
+            copyFrom(ctx);
+        }
+
+        public UnknownDimensionContext unknownDimension() {
+            return getRuleContext(UnknownDimensionContext.class, 0);
+        }
+
+        public WsContext ws() {
+            return getRuleContext(WsContext.class, 0);
+        }
+
+        @Override
+        public void enterRule(ParseTreeListener listener) {
+            if (listener instanceof CSS3Listener) {
+                ((CSS3Listener) listener).enterUnknownTerm(this);
+            }
+        }
+
+        @Override
+        public void exitRule(ParseTreeListener listener) {
+            if (listener instanceof CSS3Listener) {
+                ((CSS3Listener) listener).exitUnknownTerm(this);
+            }
+        }
+
+        @Override
+        public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+            if (visitor instanceof CSS3Visitor) {
+                return ((CSS3Visitor<? extends T>) visitor).visitUnknownTerm(this);
+            } else {
+                return visitor.visitChildren(this);
+            }
+        }
+    }
+
+    public static class FunctionContext extends ParserRuleContext {
+        public FunctionContext(ParserRuleContext parent, int invokingState) {
+            super(parent, invokingState);
+        }
+
+        public TerminalNode Function() {
+            return getToken(CSS3Parser.Function, 0);
+        }
+
+        public List<WsContext> ws() {
+            return getRuleContexts(WsContext.class);
+        }
+
+        public WsContext ws(int i) {
+            return getRuleContext(WsContext.class, i);
+        }
+
+        public ExprContext expr() {
+            return getRuleContext(ExprContext.class, 0);
+        }
+
+        @Override
+        public int getRuleIndex() {
+            return RULE_function;
+        }
+
+        @Override
+        public void enterRule(ParseTreeListener listener) {
+            if (listener instanceof CSS3Listener) {
+                ((CSS3Listener) listener).enterFunction(this);
+            }
+        }
+
+        @Override
+        public void exitRule(ParseTreeListener listener) {
+            if (listener instanceof CSS3Listener) {
+                ((CSS3Listener) listener).exitFunction(this);
+            }
+        }
+
+        @Override
+        public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+            if (visitor instanceof CSS3Visitor) {
+                return ((CSS3Visitor<? extends T>) visitor).visitFunction(this);
+            } else {
+                return visitor.visitChildren(this);
+            }
+        }
+    }
+
+    public static class DxImageTransformContext extends ParserRuleContext {
+        public DxImageTransformContext(ParserRuleContext parent, int invokingState) {
+            super(parent, invokingState);
+        }
+
+        public TerminalNode DxImageTransform() {
+            return getToken(CSS3Parser.DxImageTransform, 0);
+        }
+
+        public List<WsContext> ws() {
+            return getRuleContexts(WsContext.class);
+        }
+
+        public WsContext ws(int i) {
+            return getRuleContext(WsContext.class, i);
+        }
+
+        public ExprContext expr() {
+            return getRuleContext(ExprContext.class, 0);
+        }
+
+        @Override
+        public int getRuleIndex() {
+            return RULE_dxImageTransform;
+        }
+
+        @Override
+        public void enterRule(ParseTreeListener listener) {
+            if (listener instanceof CSS3Listener) {
+                ((CSS3Listener) listener).enterDxImageTransform(this);
+            }
+        }
+
+        @Override
+        public void exitRule(ParseTreeListener listener) {
+            if (listener instanceof CSS3Listener) {
+                ((CSS3Listener) listener).exitDxImageTransform(this);
+            }
+        }
+
+        @Override
+        public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+            if (visitor instanceof CSS3Visitor) {
+                return ((CSS3Visitor<? extends T>) visitor).visitDxImageTransform(this);
+            } else {
+                return visitor.visitChildren(this);
+            }
+        }
+    }
+
+    public static class HexcolorContext extends ParserRuleContext {
+        public HexcolorContext(ParserRuleContext parent, int invokingState) {
+            super(parent, invokingState);
+        }
+
+        public TerminalNode Hash() {
+            return getToken(CSS3Parser.Hash, 0);
+        }
+
+        public WsContext ws() {
+            return getRuleContext(WsContext.class, 0);
+        }
+
+        @Override
+        public int getRuleIndex() {
+            return RULE_hexcolor;
+        }
+
+        @Override
+        public void enterRule(ParseTreeListener listener) {
+            if (listener instanceof CSS3Listener) {
+                ((CSS3Listener) listener).enterHexcolor(this);
+            }
+        }
+
+        @Override
+        public void exitRule(ParseTreeListener listener) {
+            if (listener instanceof CSS3Listener) {
+                ((CSS3Listener) listener).exitHexcolor(this);
+            }
+        }
+
+        @Override
+        public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+            if (visitor instanceof CSS3Visitor) {
+                return ((CSS3Visitor<? extends T>) visitor).visitHexcolor(this);
+            } else {
+                return visitor.visitChildren(this);
+            }
+        }
+    }
+
+    public static class NumberContext extends ParserRuleContext {
+        public NumberContext(ParserRuleContext parent, int invokingState) {
+            super(parent, invokingState);
+        }
+
+        public TerminalNode Number() {
+            return getToken(CSS3Parser.Number, 0);
+        }
+
+        public TerminalNode Plus() {
+            return getToken(CSS3Parser.Plus, 0);
+        }
+
+        public TerminalNode Minus() {
+            return getToken(CSS3Parser.Minus, 0);
+        }
+
+        @Override
+        public int getRuleIndex() {
+            return RULE_number;
+        }
+
+        @Override
+        public void enterRule(ParseTreeListener listener) {
+            if (listener instanceof CSS3Listener) {
+                ((CSS3Listener) listener).enterNumber(this);
+            }
+        }
+
+        @Override
+        public void exitRule(ParseTreeListener listener) {
+            if (listener instanceof CSS3Listener) {
+                ((CSS3Listener) listener).exitNumber(this);
+            }
+        }
+
+        @Override
+        public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+            if (visitor instanceof CSS3Visitor) {
+                return ((CSS3Visitor<? extends T>) visitor).visitNumber(this);
+            } else {
+                return visitor.visitChildren(this);
+            }
+        }
+    }
+
+    public static class PercentageContext extends ParserRuleContext {
+        public PercentageContext(ParserRuleContext parent, int invokingState) {
+            super(parent, invokingState);
+        }
+
+        public TerminalNode Percentage() {
+            return getToken(CSS3Parser.Percentage, 0);
+        }
+
+        public TerminalNode Plus() {
+            return getToken(CSS3Parser.Plus, 0);
+        }
+
+        public TerminalNode Minus() {
+            return getToken(CSS3Parser.Minus, 0);
+        }
+
+        @Override
+        public int getRuleIndex() {
+            return RULE_percentage;
+        }
+
+        @Override
+        public void enterRule(ParseTreeListener listener) {
+            if (listener instanceof CSS3Listener) {
+                ((CSS3Listener) listener).enterPercentage(this);
+            }
+        }
+
+        @Override
+        public void exitRule(ParseTreeListener listener) {
+            if (listener instanceof CSS3Listener) {
+                ((CSS3Listener) listener).exitPercentage(this);
+            }
+        }
+
+        @Override
+        public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+            if (visitor instanceof CSS3Visitor) {
+                return ((CSS3Visitor<? extends T>) visitor).visitPercentage(this);
+            } else {
+                return visitor.visitChildren(this);
+            }
+        }
+    }
+
+    public static class DimensionContext extends ParserRuleContext {
+        public DimensionContext(ParserRuleContext parent, int invokingState) {
+            super(parent, invokingState);
+        }
+
+        public TerminalNode Dimension() {
+            return getToken(CSS3Parser.Dimension, 0);
+        }
+
+        public TerminalNode Plus() {
+            return getToken(CSS3Parser.Plus, 0);
+        }
+
+        public TerminalNode Minus() {
+            return getToken(CSS3Parser.Minus, 0);
+        }
+
+        @Override
+        public int getRuleIndex() {
+            return RULE_dimension;
+        }
+
+        @Override
+        public void enterRule(ParseTreeListener listener) {
+            if (listener instanceof CSS3Listener) {
+                ((CSS3Listener) listener).enterDimension(this);
+            }
+        }
+
+        @Override
+        public void exitRule(ParseTreeListener listener) {
+            if (listener instanceof CSS3Listener) {
+                ((CSS3Listener) listener).exitDimension(this);
+            }
+        }
+
+        @Override
+        public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+            if (visitor instanceof CSS3Visitor) {
+                return ((CSS3Visitor<? extends T>) visitor).visitDimension(this);
+            } else {
+                return visitor.visitChildren(this);
+            }
+        }
+    }
+
+    public static class UnknownDimensionContext extends ParserRuleContext {
+        public UnknownDimensionContext(ParserRuleContext parent, int invokingState) {
+            super(parent, invokingState);
+        }
+
+        public TerminalNode UnknownDimension() {
+            return getToken(CSS3Parser.UnknownDimension, 0);
+        }
+
+        public TerminalNode Plus() {
+            return getToken(CSS3Parser.Plus, 0);
+        }
+
+        public TerminalNode Minus() {
+            return getToken(CSS3Parser.Minus, 0);
+        }
+
+        @Override
+        public int getRuleIndex() {
+            return RULE_unknownDimension;
+        }
+
+        @Override
+        public void enterRule(ParseTreeListener listener) {
+            if (listener instanceof CSS3Listener) {
+                ((CSS3Listener) listener).enterUnknownDimension(this);
+            }
+        }
+
+        @Override
+        public void exitRule(ParseTreeListener listener) {
+            if (listener instanceof CSS3Listener) {
+                ((CSS3Listener) listener).exitUnknownDimension(this);
+            }
+        }
+
+        @Override
+        public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+            if (visitor instanceof CSS3Visitor) {
+                return ((CSS3Visitor<? extends T>) visitor).visitUnknownDimension(this);
+            } else {
+                return visitor.visitChildren(this);
+            }
+        }
+    }
+
+    public static class AnyContext extends ParserRuleContext {
+        public AnyContext(ParserRuleContext parent, int invokingState) {
+            super(parent, invokingState);
+        }
+
+        public IdentContext ident() {
+            return getRuleContext(IdentContext.class, 0);
+        }
+
+        public List<WsContext> ws() {
+            return getRuleContexts(WsContext.class);
+        }
+
+        public WsContext ws(int i) {
+            return getRuleContext(WsContext.class, i);
+        }
+
+        public NumberContext number() {
+            return getRuleContext(NumberContext.class, 0);
+        }
+
+        public PercentageContext percentage() {
+            return getRuleContext(PercentageContext.class, 0);
+        }
+
+        public DimensionContext dimension() {
+            return getRuleContext(DimensionContext.class, 0);
+        }
+
+        public UnknownDimensionContext unknownDimension() {
+            return getRuleContext(UnknownDimensionContext.class, 0);
+        }
+
+        public TerminalNode String() {
+            return getToken(CSS3Parser.String, 0);
+        }
+
+        public TerminalNode Uri() {
+            return getToken(CSS3Parser.Uri, 0);
+        }
+
+        public TerminalNode Hash() {
+            return getToken(CSS3Parser.Hash, 0);
+        }
+
+        public TerminalNode UnicodeRange() {
+            return getToken(CSS3Parser.UnicodeRange, 0);
+        }
+
+        public TerminalNode Includes() {
+            return getToken(CSS3Parser.Includes, 0);
+        }
+
+        public TerminalNode DashMatch() {
+            return getToken(CSS3Parser.DashMatch, 0);
+        }
+
+        public TerminalNode Function() {
+            return getToken(CSS3Parser.Function, 0);
+        }
+
+        public List<AnyContext> any() {
+            return getRuleContexts(AnyContext.class);
+        }
+
+        public AnyContext any(int i) {
+            return getRuleContext(AnyContext.class, i);
+        }
+
+        public List<UnusedContext> unused() {
+            return getRuleContexts(UnusedContext.class);
+        }
+
+        public UnusedContext unused(int i) {
+            return getRuleContext(UnusedContext.class, i);
+        }
+
+        @Override
+        public int getRuleIndex() {
+            return RULE_any;
+        }
+
+        @Override
+        public void enterRule(ParseTreeListener listener) {
+            if (listener instanceof CSS3Listener) {
+                ((CSS3Listener) listener).enterAny(this);
+            }
+        }
+
+        @Override
+        public void exitRule(ParseTreeListener listener) {
+            if (listener instanceof CSS3Listener) {
+                ((CSS3Listener) listener).exitAny(this);
+            }
+        }
+
+        @Override
+        public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+            if (visitor instanceof CSS3Visitor) {
+                return ((CSS3Visitor<? extends T>) visitor).visitAny(this);
+            } else {
+                return visitor.visitChildren(this);
+            }
+        }
+    }
+
+    public static class AtRuleContext extends ParserRuleContext {
+        public AtRuleContext(ParserRuleContext parent, int invokingState) {
+            super(parent, invokingState);
+        }
+
+        public AtRuleContext() {
+        }
+
+        @Override
+        public int getRuleIndex() {
+            return RULE_atRule;
+        }
+
+        public void copyFrom(AtRuleContext ctx) {
+            super.copyFrom(ctx);
+        }
+    }
+
+    public static class UnknownAtRuleContext extends AtRuleContext {
+        public UnknownAtRuleContext(AtRuleContext ctx) {
+            copyFrom(ctx);
+        }
+
+        public AtKeywordContext atKeyword() {
+            return getRuleContext(AtKeywordContext.class, 0);
+        }
+
+        public List<WsContext> ws() {
+            return getRuleContexts(WsContext.class);
+        }
+
+        public WsContext ws(int i) {
+            return getRuleContext(WsContext.class, i);
+        }
+
+        public BlockContext block() {
+            return getRuleContext(BlockContext.class, 0);
+        }
+
+        public List<AnyContext> any() {
+            return getRuleContexts(AnyContext.class);
+        }
+
+        public AnyContext any(int i) {
+            return getRuleContext(AnyContext.class, i);
+        }
+
+        @Override
+        public void enterRule(ParseTreeListener listener) {
+            if (listener instanceof CSS3Listener) {
+                ((CSS3Listener) listener).enterUnknownAtRule(this);
+            }
+        }
+
+        @Override
+        public void exitRule(ParseTreeListener listener) {
+            if (listener instanceof CSS3Listener) {
+                ((CSS3Listener) listener).exitUnknownAtRule(this);
+            }
+        }
+
+        @Override
+        public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+            if (visitor instanceof CSS3Visitor) {
+                return ((CSS3Visitor<? extends T>) visitor).visitUnknownAtRule(this);
+            } else {
+                return visitor.visitChildren(this);
+            }
+        }
+    }
+
+    public static class AtKeywordContext extends ParserRuleContext {
+        public AtKeywordContext(ParserRuleContext parent, int invokingState) {
+            super(parent, invokingState);
+        }
+
+        public IdentContext ident() {
+            return getRuleContext(IdentContext.class, 0);
+        }
+
+        @Override
+        public int getRuleIndex() {
+            return RULE_atKeyword;
+        }
+
+        @Override
+        public void enterRule(ParseTreeListener listener) {
+            if (listener instanceof CSS3Listener) {
+                ((CSS3Listener) listener).enterAtKeyword(this);
+            }
+        }
+
+        @Override
+        public void exitRule(ParseTreeListener listener) {
+            if (listener instanceof CSS3Listener) {
+                ((CSS3Listener) listener).exitAtKeyword(this);
+            }
+        }
+
+        @Override
+        public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+            if (visitor instanceof CSS3Visitor) {
+                return ((CSS3Visitor<? extends T>) visitor).visitAtKeyword(this);
+            } else {
+                return visitor.visitChildren(this);
+            }
+        }
+    }
+
+    public static class UnusedContext extends ParserRuleContext {
+        public UnusedContext(ParserRuleContext parent, int invokingState) {
+            super(parent, invokingState);
+        }
+
+        public BlockContext block() {
+            return getRuleContext(BlockContext.class, 0);
+        }
+
+        public AtKeywordContext atKeyword() {
+            return getRuleContext(AtKeywordContext.class, 0);
+        }
+
+        public WsContext ws() {
+            return getRuleContext(WsContext.class, 0);
+        }
+
+        public TerminalNode Cdo() {
+            return getToken(CSS3Parser.Cdo, 0);
+        }
+
+        public TerminalNode Cdc() {
+            return getToken(CSS3Parser.Cdc, 0);
+        }
+
+        @Override
+        public int getRuleIndex() {
+            return RULE_unused;
+        }
+
+        @Override
+        public void enterRule(ParseTreeListener listener) {
+            if (listener instanceof CSS3Listener) {
+                ((CSS3Listener) listener).enterUnused(this);
+            }
+        }
+
+        @Override
+        public void exitRule(ParseTreeListener listener) {
+            if (listener instanceof CSS3Listener) {
+                ((CSS3Listener) listener).exitUnused(this);
+            }
+        }
+
+        @Override
+        public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+            if (visitor instanceof CSS3Visitor) {
+                return ((CSS3Visitor<? extends T>) visitor).visitUnused(this);
+            } else {
+                return visitor.visitChildren(this);
+            }
+        }
+    }
+
+    public static class BlockContext extends ParserRuleContext {
+        public BlockContext(ParserRuleContext parent, int invokingState) {
+            super(parent, invokingState);
+        }
+
+        public List<WsContext> ws() {
+            return getRuleContexts(WsContext.class);
+        }
+
+        public WsContext ws(int i) {
+            return getRuleContext(WsContext.class, i);
+        }
+
+        public List<DeclarationListContext> declarationList() {
+            return getRuleContexts(DeclarationListContext.class);
+        }
+
+        public DeclarationListContext declarationList(int i) {
+            return getRuleContext(DeclarationListContext.class, i);
+        }
+
+        public List<NestedStatementContext> nestedStatement() {
+            return getRuleContexts(NestedStatementContext.class);
+        }
+
+        public NestedStatementContext nestedStatement(int i) {
+            return getRuleContext(NestedStatementContext.class, i);
+        }
+
+        public List<AnyContext> any() {
+            return getRuleContexts(AnyContext.class);
+        }
+
+        public AnyContext any(int i) {
+            return getRuleContext(AnyContext.class, i);
+        }
+
+        public List<BlockContext> block() {
+            return getRuleContexts(BlockContext.class);
+        }
+
+        public BlockContext block(int i) {
+            return getRuleContext(BlockContext.class, i);
+        }
+
+        public List<AtKeywordContext> atKeyword() {
+            return getRuleContexts(AtKeywordContext.class);
+        }
+
+        public AtKeywordContext atKeyword(int i) {
+            return getRuleContext(AtKeywordContext.class, i);
+        }
+
+        @Override
+        public int getRuleIndex() {
+            return RULE_block;
+        }
+
+        @Override
+        public void enterRule(ParseTreeListener listener) {
+            if (listener instanceof CSS3Listener) {
+                ((CSS3Listener) listener).enterBlock(this);
+            }
+        }
+
+        @Override
+        public void exitRule(ParseTreeListener listener) {
+            if (listener instanceof CSS3Listener) {
+                ((CSS3Listener) listener).exitBlock(this);
+            }
+        }
+
+        @Override
+        public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+            if (visitor instanceof CSS3Visitor) {
+                return ((CSS3Visitor<? extends T>) visitor).visitBlock(this);
+            } else {
+                return visitor.visitChildren(this);
+            }
+        }
+    }
+
+    public static class NestedStatementContext extends ParserRuleContext {
+        public NestedStatementContext(ParserRuleContext parent, int invokingState) {
+            super(parent, invokingState);
+        }
+
+        public RulesetContext ruleset() {
+            return getRuleContext(RulesetContext.class, 0);
+        }
+
+        public MediaContext media() {
+            return getRuleContext(MediaContext.class, 0);
+        }
+
+        public PageContext page() {
+            return getRuleContext(PageContext.class, 0);
+        }
+
+        public FontFaceRuleContext fontFaceRule() {
+            return getRuleContext(FontFaceRuleContext.class, 0);
+        }
+
+        public KeyframesRuleContext keyframesRule() {
+            return getRuleContext(KeyframesRuleContext.class, 0);
+        }
+
+        public SupportsRuleContext supportsRule() {
+            return getRuleContext(SupportsRuleContext.class, 0);
+        }
+
+        public ViewportContext viewport() {
+            return getRuleContext(ViewportContext.class, 0);
+        }
+
+        public CounterStyleContext counterStyle() {
+            return getRuleContext(CounterStyleContext.class, 0);
+        }
+
+        public FontFeatureValuesRuleContext fontFeatureValuesRule() {
+            return getRuleContext(FontFeatureValuesRuleContext.class, 0);
+        }
+
+        public AtRuleContext atRule() {
+            return getRuleContext(AtRuleContext.class, 0);
+        }
+
+        @Override
+        public int getRuleIndex() {
+            return RULE_nestedStatement;
+        }
+
+        @Override
+        public void enterRule(ParseTreeListener listener) {
+            if (listener instanceof CSS3Listener) {
+                ((CSS3Listener) listener).enterNestedStatement(this);
+            }
+        }
+
+        @Override
+        public void exitRule(ParseTreeListener listener) {
+            if (listener instanceof CSS3Listener) {
+                ((CSS3Listener) listener).exitNestedStatement(this);
+            }
+        }
+
+        @Override
+        public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+            if (visitor instanceof CSS3Visitor) {
+                return ((CSS3Visitor<? extends T>) visitor).visitNestedStatement(this);
+            } else {
+                return visitor.visitChildren(this);
+            }
+        }
+    }
+
+    public static class GroupRuleBodyContext extends ParserRuleContext {
+        public GroupRuleBodyContext(ParserRuleContext parent, int invokingState) {
+            super(parent, invokingState);
+        }
+
+        public List<WsContext> ws() {
+            return getRuleContexts(WsContext.class);
+        }
+
+        public WsContext ws(int i) {
+            return getRuleContext(WsContext.class, i);
+        }
+
+        public List<NestedStatementContext> nestedStatement() {
+            return getRuleContexts(NestedStatementContext.class);
+        }
+
+        public NestedStatementContext nestedStatement(int i) {
+            return getRuleContext(NestedStatementContext.class, i);
+        }
+
+        @Override
+        public int getRuleIndex() {
+            return RULE_groupRuleBody;
+        }
+
+        @Override
+        public void enterRule(ParseTreeListener listener) {
+            if (listener instanceof CSS3Listener) {
+                ((CSS3Listener) listener).enterGroupRuleBody(this);
+            }
+        }
+
+        @Override
+        public void exitRule(ParseTreeListener listener) {
+            if (listener instanceof CSS3Listener) {
+                ((CSS3Listener) listener).exitGroupRuleBody(this);
+            }
+        }
+
+        @Override
+        public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+            if (visitor instanceof CSS3Visitor) {
+                return ((CSS3Visitor<? extends T>) visitor).visitGroupRuleBody(this);
+            } else {
+                return visitor.visitChildren(this);
+            }
+        }
+    }
+
+    public static class SupportsRuleContext extends ParserRuleContext {
+        public SupportsRuleContext(ParserRuleContext parent, int invokingState) {
+            super(parent, invokingState);
+        }
+
+        public TerminalNode Supports() {
+            return getToken(CSS3Parser.Supports, 0);
+        }
+
+        public List<WsContext> ws() {
+            return getRuleContexts(WsContext.class);
+        }
+
+        public WsContext ws(int i) {
+            return getRuleContext(WsContext.class, i);
+        }
+
+        public SupportsConditionContext supportsCondition() {
+            return getRuleContext(SupportsConditionContext.class, 0);
+        }
+
+        public GroupRuleBodyContext groupRuleBody() {
+            return getRuleContext(GroupRuleBodyContext.class, 0);
+        }
+
+        @Override
+        public int getRuleIndex() {
+            return RULE_supportsRule;
+        }
+
+        @Override
+        public void enterRule(ParseTreeListener listener) {
+            if (listener instanceof CSS3Listener) {
+                ((CSS3Listener) listener).enterSupportsRule(this);
+            }
+        }
+
+        @Override
+        public void exitRule(ParseTreeListener listener) {
+            if (listener instanceof CSS3Listener) {
+                ((CSS3Listener) listener).exitSupportsRule(this);
+            }
+        }
+
+        @Override
+        public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+            if (visitor instanceof CSS3Visitor) {
+                return ((CSS3Visitor<? extends T>) visitor).visitSupportsRule(this);
+            } else {
+                return visitor.visitChildren(this);
+            }
+        }
+    }
+
+    public static class SupportsConditionContext extends ParserRuleContext {
+        public SupportsConditionContext(ParserRuleContext parent, int invokingState) {
+            super(parent, invokingState);
+        }
+
+        public SupportsNegationContext supportsNegation() {
+            return getRuleContext(SupportsNegationContext.class, 0);
+        }
+
+        public SupportsConjunctionContext supportsConjunction() {
+            return getRuleContext(SupportsConjunctionContext.class, 0);
+        }
+
+        public SupportsDisjunctionContext supportsDisjunction() {
+            return getRuleContext(SupportsDisjunctionContext.class, 0);
+        }
+
+        public SupportsConditionInParensContext supportsConditionInParens() {
+            return getRuleContext(SupportsConditionInParensContext.class, 0);
+        }
+
+        @Override
+        public int getRuleIndex() {
+            return RULE_supportsCondition;
+        }
+
+        @Override
+        public void enterRule(ParseTreeListener listener) {
+            if (listener instanceof CSS3Listener) {
+                ((CSS3Listener) listener).enterSupportsCondition(this);
+            }
+        }
+
+        @Override
+        public void exitRule(ParseTreeListener listener) {
+            if (listener instanceof CSS3Listener) {
+                ((CSS3Listener) listener).exitSupportsCondition(this);
+            }
+        }
+
+        @Override
+        public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+            if (visitor instanceof CSS3Visitor) {
+                return ((CSS3Visitor<? extends T>) visitor).visitSupportsCondition(this);
+            } else {
+                return visitor.visitChildren(this);
+            }
+        }
+    }
+
+    public static class SupportsConditionInParensContext extends ParserRuleContext {
+        public SupportsConditionInParensContext(ParserRuleContext parent, int invokingState) {
+            super(parent, invokingState);
+        }
+
+        public List<WsContext> ws() {
+            return getRuleContexts(WsContext.class);
+        }
+
+        public WsContext ws(int i) {
+            return getRuleContext(WsContext.class, i);
+        }
+
+        public SupportsConditionContext supportsCondition() {
+            return getRuleContext(SupportsConditionContext.class, 0);
+        }
+
+        public SupportsDeclarationConditionContext supportsDeclarationCondition() {
+            return getRuleContext(SupportsDeclarationConditionContext.class, 0);
+        }
+
+        public GeneralEnclosedContext generalEnclosed() {
+            return getRuleContext(GeneralEnclosedContext.class, 0);
+        }
+
+        @Override
+        public int getRuleIndex() {
+            return RULE_supportsConditionInParens;
+        }
+
+        @Override
+        public void enterRule(ParseTreeListener listener) {
+            if (listener instanceof CSS3Listener) {
+                ((CSS3Listener) listener).enterSupportsConditionInParens(this);
+            }
+        }
+
+        @Override
+        public void exitRule(ParseTreeListener listener) {
+            if (listener instanceof CSS3Listener) {
+                ((CSS3Listener) listener).exitSupportsConditionInParens(this);
+            }
+        }
+
+        @Override
+        public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+            if (visitor instanceof CSS3Visitor) {
+                return ((CSS3Visitor<? extends T>) visitor).visitSupportsConditionInParens(this);
+            } else {
+                return visitor.visitChildren(this);
+            }
+        }
+    }
+
+    public static class SupportsNegationContext extends ParserRuleContext {
+        public SupportsNegationContext(ParserRuleContext parent, int invokingState) {
+            super(parent, invokingState);
+        }
+
+        public TerminalNode Not() {
+            return getToken(CSS3Parser.Not, 0);
+        }
+
+        public List<WsContext> ws() {
+            return getRuleContexts(WsContext.class);
+        }
+
+        public WsContext ws(int i) {
+            return getRuleContext(WsContext.class, i);
+        }
+
+        public TerminalNode Space() {
+            return getToken(CSS3Parser.Space, 0);
+        }
+
+        public SupportsConditionInParensContext supportsConditionInParens() {
+            return getRuleContext(SupportsConditionInParensContext.class, 0);
+        }
+
+        @Override
+        public int getRuleIndex() {
+            return RULE_supportsNegation;
+        }
+
+        @Override
+        public void enterRule(ParseTreeListener listener) {
+            if (listener instanceof CSS3Listener) {
+                ((CSS3Listener) listener).enterSupportsNegation(this);
+            }
+        }
+
+        @Override
+        public void exitRule(ParseTreeListener listener) {
+            if (listener instanceof CSS3Listener) {
+                ((CSS3Listener) listener).exitSupportsNegation(this);
+            }
+        }
+
+        @Override
+        public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+            if (visitor instanceof CSS3Visitor) {
+                return ((CSS3Visitor<? extends T>) visitor).visitSupportsNegation(this);
+            } else {
+                return visitor.visitChildren(this);
+            }
+        }
+    }
+
+    public static class SupportsConjunctionContext extends ParserRuleContext {
+        public SupportsConjunctionContext(ParserRuleContext parent, int invokingState) {
+            super(parent, invokingState);
+        }
+
+        public List<SupportsConditionInParensContext> supportsConditionInParens() {
+            return getRuleContexts(SupportsConditionInParensContext.class);
+        }
+
+        public SupportsConditionInParensContext supportsConditionInParens(int i) {
+            return getRuleContext(SupportsConditionInParensContext.class, i);
+        }
+
+        public List<WsContext> ws() {
+            return getRuleContexts(WsContext.class);
+        }
+
+        public WsContext ws(int i) {
+            return getRuleContext(WsContext.class, i);
+        }
+
+        public List<TerminalNode> Space() {
+            return getTokens(CSS3Parser.Space);
+        }
+
+        public TerminalNode Space(int i) {
+            return getToken(CSS3Parser.Space, i);
+        }
+
+        public List<TerminalNode> And() {
+            return getTokens(CSS3Parser.And);
+        }
+
+        public TerminalNode And(int i) {
+            return getToken(CSS3Parser.And, i);
+        }
+
+        @Override
+        public int getRuleIndex() {
+            return RULE_supportsConjunction;
+        }
+
+        @Override
+        public void enterRule(ParseTreeListener listener) {
+            if (listener instanceof CSS3Listener) {
+                ((CSS3Listener) listener).enterSupportsConjunction(this);
+            }
+        }
+
+        @Override
+        public void exitRule(ParseTreeListener listener) {
+            if (listener instanceof CSS3Listener) {
+                ((CSS3Listener) listener).exitSupportsConjunction(this);
+            }
+        }
+
+        @Override
+        public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+            if (visitor instanceof CSS3Visitor) {
+                return ((CSS3Visitor<? extends T>) visitor).visitSupportsConjunction(this);
+            } else {
+                return visitor.visitChildren(this);
+            }
+        }
+    }
+
+    public static class SupportsDisjunctionContext extends ParserRuleContext {
+        public SupportsDisjunctionContext(ParserRuleContext parent, int invokingState) {
+            super(parent, invokingState);
+        }
+
+        public List<SupportsConditionInParensContext> supportsConditionInParens() {
+            return getRuleContexts(SupportsConditionInParensContext.class);
+        }
+
+        public SupportsConditionInParensContext supportsConditionInParens(int i) {
+            return getRuleContext(SupportsConditionInParensContext.class, i);
+        }
+
+        public List<WsContext> ws() {
+            return getRuleContexts(WsContext.class);
+        }
+
+        public WsContext ws(int i) {
+            return getRuleContext(WsContext.class, i);
+        }
+
+        public List<TerminalNode> Space() {
+            return getTokens(CSS3Parser.Space);
+        }
+
+        public TerminalNode Space(int i) {
+            return getToken(CSS3Parser.Space, i);
+        }
+
+        public List<TerminalNode> Or() {
+            return getTokens(CSS3Parser.Or);
+        }
+
+        public TerminalNode Or(int i) {
+            return getToken(CSS3Parser.Or, i);
+        }
+
+        @Override
+        public int getRuleIndex() {
+            return RULE_supportsDisjunction;
+        }
+
+        @Override
+        public void enterRule(ParseTreeListener listener) {
+            if (listener instanceof CSS3Listener) {
+                ((CSS3Listener) listener).enterSupportsDisjunction(this);
+            }
+        }
+
+        @Override
+        public void exitRule(ParseTreeListener listener) {
+            if (listener instanceof CSS3Listener) {
+                ((CSS3Listener) listener).exitSupportsDisjunction(this);
+            }
+        }
+
+        @Override
+        public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+            if (visitor instanceof CSS3Visitor) {
+                return ((CSS3Visitor<? extends T>) visitor).visitSupportsDisjunction(this);
+            } else {
+                return visitor.visitChildren(this);
+            }
+        }
+    }
+
+    public static class SupportsDeclarationConditionContext extends ParserRuleContext {
+        public SupportsDeclarationConditionContext(ParserRuleContext parent, int invokingState) {
+            super(parent, invokingState);
+        }
+
+        public WsContext ws() {
+            return getRuleContext(WsContext.class, 0);
+        }
+
+        public DeclarationContext declaration() {
+            return getRuleContext(DeclarationContext.class, 0);
+        }
+
+        @Override
+        public int getRuleIndex() {
+            return RULE_supportsDeclarationCondition;
+        }
+
+        @Override
+        public void enterRule(ParseTreeListener listener) {
+            if (listener instanceof CSS3Listener) {
+                ((CSS3Listener) listener).enterSupportsDeclarationCondition(this);
+            }
+        }
+
+        @Override
+        public void exitRule(ParseTreeListener listener) {
+            if (listener instanceof CSS3Listener) {
+                ((CSS3Listener) listener).exitSupportsDeclarationCondition(this);
+            }
+        }
+
+        @Override
+        public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+            if (visitor instanceof CSS3Visitor) {
+                return ((CSS3Visitor<? extends T>) visitor).visitSupportsDeclarationCondition(this);
+            } else {
+                return visitor.visitChildren(this);
+            }
+        }
+    }
+
+    public static class GeneralEnclosedContext extends ParserRuleContext {
+        public GeneralEnclosedContext(ParserRuleContext parent, int invokingState) {
+            super(parent, invokingState);
+        }
+
+        public TerminalNode Function() {
+            return getToken(CSS3Parser.Function, 0);
+        }
+
+        public List<AnyContext> any() {
+            return getRuleContexts(AnyContext.class);
+        }
+
+        public AnyContext any(int i) {
+            return getRuleContext(AnyContext.class, i);
+        }
+
+        public List<UnusedContext> unused() {
+            return getRuleContexts(UnusedContext.class);
+        }
+
+        public UnusedContext unused(int i) {
+            return getRuleContext(UnusedContext.class, i);
+        }
+
+        @Override
+        public int getRuleIndex() {
+            return RULE_generalEnclosed;
+        }
+
+        @Override
+        public void enterRule(ParseTreeListener listener) {
+            if (listener instanceof CSS3Listener) {
+                ((CSS3Listener) listener).enterGeneralEnclosed(this);
+            }
+        }
+
+        @Override
+        public void exitRule(ParseTreeListener listener) {
+            if (listener instanceof CSS3Listener) {
+                ((CSS3Listener) listener).exitGeneralEnclosed(this);
+            }
+        }
+
+        @Override
+        public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+            if (visitor instanceof CSS3Visitor) {
+                return ((CSS3Visitor<? extends T>) visitor).visitGeneralEnclosed(this);
+            } else {
+                return visitor.visitChildren(this);
+            }
+        }
+    }
+
+    public static class VarContext extends ParserRuleContext {
+        public VarContext(ParserRuleContext parent, int invokingState) {
+            super(parent, invokingState);
+        }
+
+        public TerminalNode Var() {
+            return getToken(CSS3Parser.Var, 0);
+        }
+
+        public List<WsContext> ws() {
+            return getRuleContexts(WsContext.class);
+        }
+
+        public WsContext ws(int i) {
+            return getRuleContext(WsContext.class, i);
+        }
+
+        public TerminalNode Variable() {
+            return getToken(CSS3Parser.Variable, 0);
+        }
+
+        @Override
+        public int getRuleIndex() {
+            return RULE_var;
+        }
+
+        @Override
+        public void enterRule(ParseTreeListener listener) {
+            if (listener instanceof CSS3Listener) {
+                ((CSS3Listener) listener).enterVar(this);
+            }
+        }
+
+        @Override
+        public void exitRule(ParseTreeListener listener) {
+            if (listener instanceof CSS3Listener) {
+                ((CSS3Listener) listener).exitVar(this);
+            }
+        }
+
+        @Override
+        public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+            if (visitor instanceof CSS3Visitor) {
+                return ((CSS3Visitor<? extends T>) visitor).visitVar(this);
+            } else {
+                return visitor.visitChildren(this);
+            }
+        }
+    }
+
+    public static class CalcContext extends ParserRuleContext {
+        public CalcContext(ParserRuleContext parent, int invokingState) {
+            super(parent, invokingState);
+        }
+
+        public TerminalNode Calc() {
+            return getToken(CSS3Parser.Calc, 0);
+        }
+
+        public List<WsContext> ws() {
+            return getRuleContexts(WsContext.class);
+        }
+
+        public WsContext ws(int i) {
+            return getRuleContext(WsContext.class, i);
+        }
+
+        public CalcSumContext calcSum() {
+            return getRuleContext(CalcSumContext.class, 0);
+        }
+
+        @Override
+        public int getRuleIndex() {
+            return RULE_calc;
+        }
+
+        @Override
+        public void enterRule(ParseTreeListener listener) {
+            if (listener instanceof CSS3Listener) {
+                ((CSS3Listener) listener).enterCalc(this);
+            }
+        }
+
+        @Override
+        public void exitRule(ParseTreeListener listener) {
+            if (listener instanceof CSS3Listener) {
+                ((CSS3Listener) listener).exitCalc(this);
+            }
+        }
+
+        @Override
+        public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+            if (visitor instanceof CSS3Visitor) {
+                return ((CSS3Visitor<? extends T>) visitor).visitCalc(this);
+            } else {
+                return visitor.visitChildren(this);
+            }
+        }
+    }
+
+    public static class CalcSumContext extends ParserRuleContext {
+        public CalcSumContext(ParserRuleContext parent, int invokingState) {
+            super(parent, invokingState);
+        }
+
+        public List<CalcProductContext> calcProduct() {
+            return getRuleContexts(CalcProductContext.class);
+        }
+
+        public CalcProductContext calcProduct(int i) {
+            return getRuleContext(CalcProductContext.class, i);
+        }
+
+        public List<TerminalNode> Space() {
+            return getTokens(CSS3Parser.Space);
+        }
+
+        public TerminalNode Space(int i) {
+            return getToken(CSS3Parser.Space, i);
+        }
+
+        public List<WsContext> ws() {
+            return getRuleContexts(WsContext.class);
+        }
+
+        public WsContext ws(int i) {
+            return getRuleContext(WsContext.class, i);
+        }
+
+        public List<TerminalNode> Plus() {
+            return getTokens(CSS3Parser.Plus);
+        }
+
+        public TerminalNode Plus(int i) {
+            return getToken(CSS3Parser.Plus, i);
+        }
+
+        public List<TerminalNode> Minus() {
+            return getTokens(CSS3Parser.Minus);
+        }
+
+        public TerminalNode Minus(int i) {
+            return getToken(CSS3Parser.Minus, i);
+        }
+
+        @Override
+        public int getRuleIndex() {
+            return RULE_calcSum;
+        }
+
+        @Override
+        public void enterRule(ParseTreeListener listener) {
+            if (listener instanceof CSS3Listener) {
+                ((CSS3Listener) listener).enterCalcSum(this);
+            }
+        }
+
+        @Override
+        public void exitRule(ParseTreeListener listener) {
+            if (listener instanceof CSS3Listener) {
+                ((CSS3Listener) listener).exitCalcSum(this);
+            }
+        }
+
+        @Override
+        public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+            if (visitor instanceof CSS3Visitor) {
+                return ((CSS3Visitor<? extends T>) visitor).visitCalcSum(this);
+            } else {
+                return visitor.visitChildren(this);
+            }
+        }
+    }
+
+    public static class CalcProductContext extends ParserRuleContext {
+        public CalcProductContext(ParserRuleContext parent, int invokingState) {
+            super(parent, invokingState);
+        }
+
+        public List<CalcValueContext> calcValue() {
+            return getRuleContexts(CalcValueContext.class);
+        }
+
+        public CalcValueContext calcValue(int i) {
+            return getRuleContext(CalcValueContext.class, i);
+        }
+
+        public List<WsContext> ws() {
+            return getRuleContexts(WsContext.class);
+        }
+
+        public WsContext ws(int i) {
+            return getRuleContext(WsContext.class, i);
+        }
+
+        public List<NumberContext> number() {
+            return getRuleContexts(NumberContext.class);
+        }
+
+        public NumberContext number(int i) {
+            return getRuleContext(NumberContext.class, i);
+        }
+
+        @Override
+        public int getRuleIndex() {
+            return RULE_calcProduct;
+        }
+
+        @Override
+        public void enterRule(ParseTreeListener listener) {
+            if (listener instanceof CSS3Listener) {
+                ((CSS3Listener) listener).enterCalcProduct(this);
+            }
+        }
+
+        @Override
+        public void exitRule(ParseTreeListener listener) {
+            if (listener instanceof CSS3Listener) {
+                ((CSS3Listener) listener).exitCalcProduct(this);
+            }
+        }
+
+        @Override
+        public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+            if (visitor instanceof CSS3Visitor) {
+                return ((CSS3Visitor<? extends T>) visitor).visitCalcProduct(this);
+            } else {
+                return visitor.visitChildren(this);
+            }
+        }
+    }
+
+    public static class CalcValueContext extends ParserRuleContext {
+        public CalcValueContext(ParserRuleContext parent, int invokingState) {
+            super(parent, invokingState);
+        }
+
+        public NumberContext number() {
+            return getRuleContext(NumberContext.class, 0);
+        }
+
+        public List<WsContext> ws() {
+            return getRuleContexts(WsContext.class);
+        }
+
+        public WsContext ws(int i) {
+            return getRuleContext(WsContext.class, i);
+        }
+
+        public DimensionContext dimension() {
+            return getRuleContext(DimensionContext.class, 0);
+        }
+
+        public UnknownDimensionContext unknownDimension() {
+            return getRuleContext(UnknownDimensionContext.class, 0);
+        }
+
+        public PercentageContext percentage() {
+            return getRuleContext(PercentageContext.class, 0);
+        }
+
+        public CalcSumContext calcSum() {
+            return getRuleContext(CalcSumContext.class, 0);
+        }
+
+        @Override
+        public int getRuleIndex() {
+            return RULE_calcValue;
+        }
+
+        @Override
+        public void enterRule(ParseTreeListener listener) {
+            if (listener instanceof CSS3Listener) {
+                ((CSS3Listener) listener).enterCalcValue(this);
+            }
+        }
+
+        @Override
+        public void exitRule(ParseTreeListener listener) {
+            if (listener instanceof CSS3Listener) {
+                ((CSS3Listener) listener).exitCalcValue(this);
+            }
+        }
+
+        @Override
+        public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+            if (visitor instanceof CSS3Visitor) {
+                return ((CSS3Visitor<? extends T>) visitor).visitCalcValue(this);
+            } else {
+                return visitor.visitChildren(this);
+            }
+        }
+    }
+
+    public static class FontFaceRuleContext extends ParserRuleContext {
+        public FontFaceRuleContext(ParserRuleContext parent, int invokingState) {
+            super(parent, invokingState);
+        }
+
+        public TerminalNode FontFace() {
+            return getToken(CSS3Parser.FontFace, 0);
+        }
+
+        public List<WsContext> ws() {
+            return getRuleContexts(WsContext.class);
+        }
+
+        public WsContext ws(int i) {
+            return getRuleContext(WsContext.class, i);
+        }
+
+        public List<FontFaceDeclarationContext> fontFaceDeclaration() {
+            return getRuleContexts(FontFaceDeclarationContext.class);
+        }
+
+        public FontFaceDeclarationContext fontFaceDeclaration(int i) {
+            return getRuleContext(FontFaceDeclarationContext.class, i);
+        }
+
+        @Override
+        public int getRuleIndex() {
+            return RULE_fontFaceRule;
+        }
+
+        @Override
+        public void enterRule(ParseTreeListener listener) {
+            if (listener instanceof CSS3Listener) {
+                ((CSS3Listener) listener).enterFontFaceRule(this);
+            }
+        }
+
+        @Override
+        public void exitRule(ParseTreeListener listener) {
+            if (listener instanceof CSS3Listener) {
+                ((CSS3Listener) listener).exitFontFaceRule(this);
+            }
+        }
+
+        @Override
+        public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+            if (visitor instanceof CSS3Visitor) {
+                return ((CSS3Visitor<? extends T>) visitor).visitFontFaceRule(this);
+            } else {
+                return visitor.visitChildren(this);
+            }
+        }
+    }
+
+    public static class FontFaceDeclarationContext extends ParserRuleContext {
+        public FontFaceDeclarationContext(ParserRuleContext parent, int invokingState) {
+            super(parent, invokingState);
+        }
+
+        public FontFaceDeclarationContext() {
+        }
+
+        @Override
+        public int getRuleIndex() {
+            return RULE_fontFaceDeclaration;
+        }
+
+        public void copyFrom(FontFaceDeclarationContext ctx) {
+            super.copyFrom(ctx);
+        }
+    }
+
+    public static class KnownFontFaceDeclarationContext extends FontFaceDeclarationContext {
+        public KnownFontFaceDeclarationContext(FontFaceDeclarationContext ctx) {
+            copyFrom(ctx);
+        }
+
+        public PropertyContext property() {
+            return getRuleContext(PropertyContext.class, 0);
+        }
+
+        public WsContext ws() {
+            return getRuleContext(WsContext.class, 0);
+        }
+
+        public ExprContext expr() {
+            return getRuleContext(ExprContext.class, 0);
+        }
+
+        @Override
+        public void enterRule(ParseTreeListener listener) {
+            if (listener instanceof CSS3Listener) {
+                ((CSS3Listener) listener).enterKnownFontFaceDeclaration(this);
+            }
+        }
+
+        @Override
+        public void exitRule(ParseTreeListener listener) {
+            if (listener instanceof CSS3Listener) {
+                ((CSS3Listener) listener).exitKnownFontFaceDeclaration(this);
+            }
+        }
+
+        @Override
+        public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+            if (visitor instanceof CSS3Visitor) {
+                return ((CSS3Visitor<? extends T>) visitor).visitKnownFontFaceDeclaration(this);
+            } else {
+                return visitor.visitChildren(this);
+            }
+        }
+    }
+
+    public static class UnknownFontFaceDeclarationContext extends FontFaceDeclarationContext {
+        public UnknownFontFaceDeclarationContext(FontFaceDeclarationContext ctx) {
+            copyFrom(ctx);
+        }
+
+        public PropertyContext property() {
+            return getRuleContext(PropertyContext.class, 0);
+        }
+
+        public WsContext ws() {
+            return getRuleContext(WsContext.class, 0);
+        }
+
+        public ValueContext value() {
+            return getRuleContext(ValueContext.class, 0);
+        }
+
+        @Override
+        public void enterRule(ParseTreeListener listener) {
+            if (listener instanceof CSS3Listener) {
+                ((CSS3Listener) listener).enterUnknownFontFaceDeclaration(this);
+            }
+        }
+
+        @Override
+        public void exitRule(ParseTreeListener listener) {
+            if (listener instanceof CSS3Listener) {
+                ((CSS3Listener) listener).exitUnknownFontFaceDeclaration(this);
+            }
+        }
+
+        @Override
+        public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+            if (visitor instanceof CSS3Visitor) {
+                return ((CSS3Visitor<? extends T>) visitor).visitUnknownFontFaceDeclaration(this);
+            } else {
+                return visitor.visitChildren(this);
+            }
+        }
+    }
+
+    public static class KeyframesRuleContext extends ParserRuleContext {
+        public KeyframesRuleContext(ParserRuleContext parent, int invokingState) {
+            super(parent, invokingState);
+        }
+
+        public TerminalNode Keyframes() {
+            return getToken(CSS3Parser.Keyframes, 0);
+        }
+
+        public List<WsContext> ws() {
+            return getRuleContexts(WsContext.class);
+        }
+
+        public WsContext ws(int i) {
+            return getRuleContext(WsContext.class, i);
+        }
+
+        public TerminalNode Space() {
+            return getToken(CSS3Parser.Space, 0);
+        }
+
+        public IdentContext ident() {
+            return getRuleContext(IdentContext.class, 0);
+        }
+
+        public KeyframesBlocksContext keyframesBlocks() {
+            return getRuleContext(KeyframesBlocksContext.class, 0);
+        }
+
+        @Override
+        public int getRuleIndex() {
+            return RULE_keyframesRule;
+        }
+
+        @Override
+        public void enterRule(ParseTreeListener listener) {
+            if (listener instanceof CSS3Listener) {
+                ((CSS3Listener) listener).enterKeyframesRule(this);
+            }
+        }
+
+        @Override
+        public void exitRule(ParseTreeListener listener) {
+            if (listener instanceof CSS3Listener) {
+                ((CSS3Listener) listener).exitKeyframesRule(this);
+            }
+        }
+
+        @Override
+        public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+            if (visitor instanceof CSS3Visitor) {
+                return ((CSS3Visitor<? extends T>) visitor).visitKeyframesRule(this);
+            } else {
+                return visitor.visitChildren(this);
+            }
+        }
+    }
+
+    public static class KeyframesBlocksContext extends ParserRuleContext {
+        public KeyframesBlocksContext(ParserRuleContext parent, int invokingState) {
+            super(parent, invokingState);
+        }
+
+        public List<KeyframeSelectorContext> keyframeSelector() {
+            return getRuleContexts(KeyframeSelectorContext.class);
+        }
+
+        public KeyframeSelectorContext keyframeSelector(int i) {
+            return getRuleContext(KeyframeSelectorContext.class, i);
+        }
+
+        public List<WsContext> ws() {
+            return getRuleContexts(WsContext.class);
+        }
+
+        public WsContext ws(int i) {
+            return getRuleContext(WsContext.class, i);
+        }
+
+        public List<DeclarationListContext> declarationList() {
+            return getRuleContexts(DeclarationListContext.class);
+        }
+
+        public DeclarationListContext declarationList(int i) {
+            return getRuleContext(DeclarationListContext.class, i);
+        }
+
+        @Override
+        public int getRuleIndex() {
+            return RULE_keyframesBlocks;
+        }
+
+        @Override
+        public void enterRule(ParseTreeListener listener) {
+            if (listener instanceof CSS3Listener) {
+                ((CSS3Listener) listener).enterKeyframesBlocks(this);
+            }
+        }
+
+        @Override
+        public void exitRule(ParseTreeListener listener) {
+            if (listener instanceof CSS3Listener) {
+                ((CSS3Listener) listener).exitKeyframesBlocks(this);
+            }
+        }
+
+        @Override
+        public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+            if (visitor instanceof CSS3Visitor) {
+                return ((CSS3Visitor<? extends T>) visitor).visitKeyframesBlocks(this);
+            } else {
+                return visitor.visitChildren(this);
+            }
+        }
+    }
+
+    public static class KeyframeSelectorContext extends ParserRuleContext {
+        public KeyframeSelectorContext(ParserRuleContext parent, int invokingState) {
+            super(parent, invokingState);
+        }
+
+        public List<WsContext> ws() {
+            return getRuleContexts(WsContext.class);
+        }
+
+        public WsContext ws(int i) {
+            return getRuleContext(WsContext.class, i);
+        }
+
+        public List<TerminalNode> From() {
+            return getTokens(CSS3Parser.From);
+        }
+
+        public TerminalNode From(int i) {
+            return getToken(CSS3Parser.From, i);
+        }
+
+        public List<TerminalNode> To() {
+            return getTokens(CSS3Parser.To);
+        }
+
+        public TerminalNode To(int i) {
+            return getToken(CSS3Parser.To, i);
+        }
+
+        public List<TerminalNode> Percentage() {
+            return getTokens(CSS3Parser.Percentage);
+        }
+
+        public TerminalNode Percentage(int i) {
+            return getToken(CSS3Parser.Percentage, i);
+        }
+
+        public List<TerminalNode> Comma() {
+            return getTokens(CSS3Parser.Comma);
+        }
+
+        public TerminalNode Comma(int i) {
+            return getToken(CSS3Parser.Comma, i);
+        }
+
+        @Override
+        public int getRuleIndex() {
+            return RULE_keyframeSelector;
+        }
+
+        @Override
+        public void enterRule(ParseTreeListener listener) {
+            if (listener instanceof CSS3Listener) {
+                ((CSS3Listener) listener).enterKeyframeSelector(this);
+            }
+        }
+
+        @Override
+        public void exitRule(ParseTreeListener listener) {
+            if (listener instanceof CSS3Listener) {
+                ((CSS3Listener) listener).exitKeyframeSelector(this);
+            }
+        }
+
+        @Override
+        public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+            if (visitor instanceof CSS3Visitor) {
+                return ((CSS3Visitor<? extends T>) visitor).visitKeyframeSelector(this);
+            } else {
+                return visitor.visitChildren(this);
+            }
+        }
+    }
+
+    public static class ViewportContext extends ParserRuleContext {
+        public ViewportContext(ParserRuleContext parent, int invokingState) {
+            super(parent, invokingState);
+        }
+
+        public TerminalNode Viewport() {
+            return getToken(CSS3Parser.Viewport, 0);
+        }
+
+        public List<WsContext> ws() {
+            return getRuleContexts(WsContext.class);
+        }
+
+        public WsContext ws(int i) {
+            return getRuleContext(WsContext.class, i);
+        }
+
+        public DeclarationListContext declarationList() {
+            return getRuleContext(DeclarationListContext.class, 0);
+        }
+
+        @Override
+        public int getRuleIndex() {
+            return RULE_viewport;
+        }
+
+        @Override
+        public void enterRule(ParseTreeListener listener) {
+            if (listener instanceof CSS3Listener) {
+                ((CSS3Listener) listener).enterViewport(this);
+            }
+        }
+
+        @Override
+        public void exitRule(ParseTreeListener listener) {
+            if (listener instanceof CSS3Listener) {
+                ((CSS3Listener) listener).exitViewport(this);
+            }
+        }
+
+        @Override
+        public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+            if (visitor instanceof CSS3Visitor) {
+                return ((CSS3Visitor<? extends T>) visitor).visitViewport(this);
+            } else {
+                return visitor.visitChildren(this);
+            }
+        }
+    }
+
+    public static class CounterStyleContext extends ParserRuleContext {
+        public CounterStyleContext(ParserRuleContext parent, int invokingState) {
+            super(parent, invokingState);
+        }
+
+        public TerminalNode CounterStyle() {
+            return getToken(CSS3Parser.CounterStyle, 0);
+        }
+
+        public List<WsContext> ws() {
+            return getRuleContexts(WsContext.class);
+        }
+
+        public WsContext ws(int i) {
+            return getRuleContext(WsContext.class, i);
+        }
+
+        public IdentContext ident() {
+            return getRuleContext(IdentContext.class, 0);
+        }
+
+        public DeclarationListContext declarationList() {
+            return getRuleContext(DeclarationListContext.class, 0);
+        }
+
+        @Override
+        public int getRuleIndex() {
+            return RULE_counterStyle;
+        }
+
+        @Override
+        public void enterRule(ParseTreeListener listener) {
+            if (listener instanceof CSS3Listener) {
+                ((CSS3Listener) listener).enterCounterStyle(this);
+            }
+        }
+
+        @Override
+        public void exitRule(ParseTreeListener listener) {
+            if (listener instanceof CSS3Listener) {
+                ((CSS3Listener) listener).exitCounterStyle(this);
+            }
+        }
+
+        @Override
+        public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+            if (visitor instanceof CSS3Visitor) {
+                return ((CSS3Visitor<? extends T>) visitor).visitCounterStyle(this);
+            } else {
+                return visitor.visitChildren(this);
+            }
+        }
+    }
+
+    public static class FontFeatureValuesRuleContext extends ParserRuleContext {
+        public FontFeatureValuesRuleContext(ParserRuleContext parent, int invokingState) {
+            super(parent, invokingState);
+        }
+
+        public TerminalNode FontFeatureValues() {
+            return getToken(CSS3Parser.FontFeatureValues, 0);
+        }
+
+        public List<WsContext> ws() {
+            return getRuleContexts(WsContext.class);
+        }
+
+        public WsContext ws(int i) {
+            return getRuleContext(WsContext.class, i);
+        }
+
+        public FontFamilyNameListContext fontFamilyNameList() {
+            return getRuleContext(FontFamilyNameListContext.class, 0);
+        }
+
+        public List<FeatureValueBlockContext> featureValueBlock() {
+            return getRuleContexts(FeatureValueBlockContext.class);
+        }
+
+        public FeatureValueBlockContext featureValueBlock(int i) {
+            return getRuleContext(FeatureValueBlockContext.class, i);
+        }
+
+        @Override
+        public int getRuleIndex() {
+            return RULE_fontFeatureValuesRule;
+        }
+
+        @Override
+        public void enterRule(ParseTreeListener listener) {
+            if (listener instanceof CSS3Listener) {
+                ((CSS3Listener) listener).enterFontFeatureValuesRule(this);
+            }
+        }
+
+        @Override
+        public void exitRule(ParseTreeListener listener) {
+            if (listener instanceof CSS3Listener) {
+                ((CSS3Listener) listener).exitFontFeatureValuesRule(this);
+            }
+        }
+
+        @Override
+        public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+            if (visitor instanceof CSS3Visitor) {
+                return ((CSS3Visitor<? extends T>) visitor).visitFontFeatureValuesRule(this);
+            } else {
+                return visitor.visitChildren(this);
+            }
+        }
+    }
+
+    public static class FontFamilyNameListContext extends ParserRuleContext {
+        public FontFamilyNameListContext(ParserRuleContext parent, int invokingState) {
+            super(parent, invokingState);
+        }
+
+        public List<FontFamilyNameContext> fontFamilyName() {
+            return getRuleContexts(FontFamilyNameContext.class);
+        }
+
+        public FontFamilyNameContext fontFamilyName(int i) {
+            return getRuleContext(FontFamilyNameContext.class, i);
+        }
+
+        public List<WsContext> ws() {
+            return getRuleContexts(WsContext.class);
+        }
+
+        public WsContext ws(int i) {
+            return getRuleContext(WsContext.class, i);
+        }
+
+        public List<TerminalNode> Comma() {
+            return getTokens(CSS3Parser.Comma);
+        }
+
+        public TerminalNode Comma(int i) {
+            return getToken(CSS3Parser.Comma, i);
+        }
+
+        @Override
+        public int getRuleIndex() {
+            return RULE_fontFamilyNameList;
+        }
+
+        @Override
+        public void enterRule(ParseTreeListener listener) {
+            if (listener instanceof CSS3Listener) {
+                ((CSS3Listener) listener).enterFontFamilyNameList(this);
+            }
+        }
+
+        @Override
+        public void exitRule(ParseTreeListener listener) {
+            if (listener instanceof CSS3Listener) {
+                ((CSS3Listener) listener).exitFontFamilyNameList(this);
+            }
+        }
+
+        @Override
+        public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+            if (visitor instanceof CSS3Visitor) {
+                return ((CSS3Visitor<? extends T>) visitor).visitFontFamilyNameList(this);
+            } else {
+                return visitor.visitChildren(this);
+            }
+        }
+    }
+
+    public static class FontFamilyNameContext extends ParserRuleContext {
+        public FontFamilyNameContext(ParserRuleContext parent, int invokingState) {
+            super(parent, invokingState);
+        }
+
+        public TerminalNode String() {
+            return getToken(CSS3Parser.String, 0);
+        }
+
+        public List<IdentContext> ident() {
+            return getRuleContexts(IdentContext.class);
+        }
+
+        public IdentContext ident(int i) {
+            return getRuleContext(IdentContext.class, i);
+        }
+
+        public List<WsContext> ws() {
+            return getRuleContexts(WsContext.class);
+        }
+
+        public WsContext ws(int i) {
+            return getRuleContext(WsContext.class, i);
+        }
+
+        @Override
+        public int getRuleIndex() {
+            return RULE_fontFamilyName;
+        }
+
+        @Override
+        public void enterRule(ParseTreeListener listener) {
+            if (listener instanceof CSS3Listener) {
+                ((CSS3Listener) listener).enterFontFamilyName(this);
+            }
+        }
+
+        @Override
+        public void exitRule(ParseTreeListener listener) {
+            if (listener instanceof CSS3Listener) {
+                ((CSS3Listener) listener).exitFontFamilyName(this);
+            }
+        }
+
+        @Override
+        public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+            if (visitor instanceof CSS3Visitor) {
+                return ((CSS3Visitor<? extends T>) visitor).visitFontFamilyName(this);
+            } else {
+                return visitor.visitChildren(this);
+            }
+        }
+    }
+
+    public static class FeatureValueBlockContext extends ParserRuleContext {
+        public FeatureValueBlockContext(ParserRuleContext parent, int invokingState) {
+            super(parent, invokingState);
+        }
+
+        public FeatureTypeContext featureType() {
+            return getRuleContext(FeatureTypeContext.class, 0);
+        }
+
+        public List<WsContext> ws() {
+            return getRuleContexts(WsContext.class);
+        }
+
+        public WsContext ws(int i) {
+            return getRuleContext(WsContext.class, i);
+        }
+
+        public List<FeatureValueDefinitionContext> featureValueDefinition() {
+            return getRuleContexts(FeatureValueDefinitionContext.class);
+        }
+
+        public FeatureValueDefinitionContext featureValueDefinition(int i) {
+            return getRuleContext(FeatureValueDefinitionContext.class, i);
+        }
+
+        @Override
+        public int getRuleIndex() {
+            return RULE_featureValueBlock;
+        }
+
+        @Override
+        public void enterRule(ParseTreeListener listener) {
+            if (listener instanceof CSS3Listener) {
+                ((CSS3Listener) listener).enterFeatureValueBlock(this);
+            }
+        }
+
+        @Override
+        public void exitRule(ParseTreeListener listener) {
+            if (listener instanceof CSS3Listener) {
+                ((CSS3Listener) listener).exitFeatureValueBlock(this);
+            }
+        }
+
+        @Override
+        public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+            if (visitor instanceof CSS3Visitor) {
+                return ((CSS3Visitor<? extends T>) visitor).visitFeatureValueBlock(this);
+            } else {
+                return visitor.visitChildren(this);
+            }
+        }
+    }
+
+    public static class FeatureTypeContext extends ParserRuleContext {
+        public FeatureTypeContext(ParserRuleContext parent, int invokingState) {
+            super(parent, invokingState);
+        }
+
+        public AtKeywordContext atKeyword() {
+            return getRuleContext(AtKeywordContext.class, 0);
+        }
+
+        @Override
+        public int getRuleIndex() {
+            return RULE_featureType;
+        }
+
+        @Override
+        public void enterRule(ParseTreeListener listener) {
+            if (listener instanceof CSS3Listener) {
+                ((CSS3Listener) listener).enterFeatureType(this);
+            }
+        }
+
+        @Override
+        public void exitRule(ParseTreeListener listener) {
+            if (listener instanceof CSS3Listener) {
+                ((CSS3Listener) listener).exitFeatureType(this);
+            }
+        }
+
+        @Override
+        public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+            if (visitor instanceof CSS3Visitor) {
+                return ((CSS3Visitor<? extends T>) visitor).visitFeatureType(this);
+            } else {
+                return visitor.visitChildren(this);
+            }
+        }
+    }
+
+    public static class FeatureValueDefinitionContext extends ParserRuleContext {
+        public FeatureValueDefinitionContext(ParserRuleContext parent, int invokingState) {
+            super(parent, invokingState);
+        }
+
+        public IdentContext ident() {
+            return getRuleContext(IdentContext.class, 0);
+        }
+
+        public List<WsContext> ws() {
+            return getRuleContexts(WsContext.class);
+        }
+
+        public WsContext ws(int i) {
+            return getRuleContext(WsContext.class, i);
+        }
+
+        public List<NumberContext> number() {
+            return getRuleContexts(NumberContext.class);
+        }
+
+        public NumberContext number(int i) {
+            return getRuleContext(NumberContext.class, i);
+        }
+
+        @Override
+        public int getRuleIndex() {
+            return RULE_featureValueDefinition;
+        }
+
+        @Override
+        public void enterRule(ParseTreeListener listener) {
+            if (listener instanceof CSS3Listener) {
+                ((CSS3Listener) listener).enterFeatureValueDefinition(this);
+            }
+        }
+
+        @Override
+        public void exitRule(ParseTreeListener listener) {
+            if (listener instanceof CSS3Listener) {
+                ((CSS3Listener) listener).exitFeatureValueDefinition(this);
+            }
+        }
+
+        @Override
+        public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+            if (visitor instanceof CSS3Visitor) {
+                return ((CSS3Visitor<? extends T>) visitor).visitFeatureValueDefinition(this);
+            } else {
+                return visitor.visitChildren(this);
+            }
+        }
+    }
+
+    public static class IdentContext extends ParserRuleContext {
+        public IdentContext(ParserRuleContext parent, int invokingState) {
+            super(parent, invokingState);
+        }
+
+        public TerminalNode Ident() {
+            return getToken(CSS3Parser.Ident, 0);
+        }
+
+        public TerminalNode MediaOnly() {
+            return getToken(CSS3Parser.MediaOnly, 0);
+        }
+
+        public TerminalNode Not() {
+            return getToken(CSS3Parser.Not, 0);
+        }
+
+        public TerminalNode And() {
+            return getToken(CSS3Parser.And, 0);
+        }
+
+        public TerminalNode Or() {
+            return getToken(CSS3Parser.Or, 0);
+        }
+
+        public TerminalNode From() {
+            return getToken(CSS3Parser.From, 0);
+        }
+
+        public TerminalNode To() {
+            return getToken(CSS3Parser.To, 0);
+        }
+
+        @Override
+        public int getRuleIndex() {
+            return RULE_ident;
+        }
+
+        @Override
+        public void enterRule(ParseTreeListener listener) {
+            if (listener instanceof CSS3Listener) {
+                ((CSS3Listener) listener).enterIdent(this);
+            }
+        }
+
+        @Override
+        public void exitRule(ParseTreeListener listener) {
+            if (listener instanceof CSS3Listener) {
+                ((CSS3Listener) listener).exitIdent(this);
+            }
+        }
+
+        @Override
+        public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+            if (visitor instanceof CSS3Visitor) {
+                return ((CSS3Visitor<? extends T>) visitor).visitIdent(this);
+            } else {
+                return visitor.visitChildren(this);
+            }
+        }
+    }
+
+    public static class WsContext extends ParserRuleContext {
+        public WsContext(ParserRuleContext parent, int invokingState) {
+            super(parent, invokingState);
+        }
+
+        public List<TerminalNode> Comment() {
+            return getTokens(CSS3Parser.Comment);
+        }
+
+        public TerminalNode Comment(int i) {
+            return getToken(CSS3Parser.Comment, i);
+        }
+
+        public List<TerminalNode> Space() {
+            return getTokens(CSS3Parser.Space);
+        }
+
+        public TerminalNode Space(int i) {
+            return getToken(CSS3Parser.Space, i);
+        }
+
+        @Override
+        public int getRuleIndex() {
+            return RULE_ws;
+        }
+
+        @Override
+        public void enterRule(ParseTreeListener listener) {
+            if (listener instanceof CSS3Listener) {
+                ((CSS3Listener) listener).enterWs(this);
+            }
+        }
+
+        @Override
+        public void exitRule(ParseTreeListener listener) {
+            if (listener instanceof CSS3Listener) {
+                ((CSS3Listener) listener).exitWs(this);
+            }
+        }
+
+        @Override
+        public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+            if (visitor instanceof CSS3Visitor) {
+                return ((CSS3Visitor<? extends T>) visitor).visitWs(this);
+            } else {
+                return visitor.visitChildren(this);
+            }
         }
     }
 }

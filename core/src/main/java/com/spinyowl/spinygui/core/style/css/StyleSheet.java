@@ -42,7 +42,9 @@ public class StyleSheet {
         Objects.requireNonNull(elementTree);
         Objects.requireNonNull(selector);
 
-        if (selector.test(elementTree)) elements.add(elementTree);
+        if (selector.test(elementTree)) {
+            elements.add(elementTree);
+        }
 
         elementTree.getChildNodes().stream()
                 .filter(n -> n instanceof Element).map(n -> (Element) n)

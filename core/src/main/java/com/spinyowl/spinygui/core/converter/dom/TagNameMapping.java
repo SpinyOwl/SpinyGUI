@@ -2,8 +2,8 @@ package com.spinyowl.spinygui.core.converter.dom;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
-import com.spinyowl.spinygui.core.node.base.Node;
 import com.spinyowl.spinygui.core.converter.NodeConverter;
+import com.spinyowl.spinygui.core.node.base.Node;
 import com.spinyowl.spinygui.core.node.element.*;
 
 /**

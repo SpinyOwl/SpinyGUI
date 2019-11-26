@@ -17,10 +17,14 @@ public class ImmediateNextSelector implements StyleSelector {
     @Override
     public boolean test(Element t) {
         boolean secondTest = second.test(t);
-        if (!secondTest) return false;
+        if (!secondTest) {
+            return false;
+        }
 
         Element parent = t.getParent();
-        if (parent == null) return false;
+        if (parent == null) {
+            return false;
+        }
 
         List<Element> siblings = parent.getChildElements();
         int indexOfComponent = siblings.indexOf(t);
@@ -32,8 +36,12 @@ public class ImmediateNextSelector implements StyleSelector {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         ImmediateNextSelector that = (ImmediateNextSelector) o;
         return Objects.equals(first, that.first) &&
                 Objects.equals(second, that.second);

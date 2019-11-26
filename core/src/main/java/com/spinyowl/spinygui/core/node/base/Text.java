@@ -3,9 +3,6 @@ package com.spinyowl.spinygui.core.node.base;
 
 import com.google.common.base.Objects;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
 import java.util.StringJoiner;
 
 public final class Text extends Node {
@@ -112,8 +109,12 @@ public final class Text extends Node {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         Text that = (Text) o;
         return Objects.equal(text, that.text);
     }

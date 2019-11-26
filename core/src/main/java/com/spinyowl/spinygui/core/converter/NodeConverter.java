@@ -1,9 +1,9 @@
 package com.spinyowl.spinygui.core.converter;
 
 import com.spinyowl.spinygui.core.converter.dom.RawProcessor;
+import com.spinyowl.spinygui.core.converter.dom.TagNameMapping;
 import com.spinyowl.spinygui.core.node.base.Node;
 import com.spinyowl.spinygui.core.node.base.Text;
-import com.spinyowl.spinygui.core.converter.dom.TagNameMapping;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jdom2.Content;
@@ -82,8 +82,9 @@ public class NodeConverter {
     // unmarshaller section
 
     public static Node fromXml(String xml) throws Exception {
-        if (xml == null || xml.isEmpty())
+        if (xml == null || xml.isEmpty()) {
             return null;
+        }
         return createNodeFromContent(new SAXBuilder().build(new StringReader(xml)).getRootElement());
     }
 
