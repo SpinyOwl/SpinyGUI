@@ -34,7 +34,7 @@ public class StyleSheetConverterTest {
                 "   width: 50%;" +
                 "   top: 50%;" +
                 "   top: 50px;" +
-                "   top: 50.2;" +
+                "   top: 50.2%;" +
                 "}";
 
         var stylesheet = StyleSheetConverter.createFromCSS(css);
