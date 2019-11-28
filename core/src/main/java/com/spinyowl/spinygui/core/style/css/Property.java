@@ -165,5 +165,8 @@ public abstract class Property {
      *
      * @return true if value is valid. By default returns false.
      */
-    public abstract boolean isValid();
+    public boolean isValid() {
+        return value.equalsIgnoreCase(INHERIT) || value.equalsIgnoreCase(INITIAL);
+    }
+
 }

@@ -1,11 +1,31 @@
 package com.spinyowl.spinygui.core.style.types;
 
+import com.spinyowl.spinygui.core.style.types.length.Length;
+
 import java.util.Objects;
 import java.util.StringJoiner;
 
 public class Background {
 
     private Color color;
+    private Length backgroundPositionX;
+    private Length backgroundPositionY;
+
+    public Length getBackgroundPositionX() {
+        return backgroundPositionX;
+    }
+
+    public void setBackgroundPositionX(Length backgroundPositionX) {
+        this.backgroundPositionX = backgroundPositionX;
+    }
+
+    public Length getBackgroundPositionY() {
+        return backgroundPositionY;
+    }
+
+    public void setBackgroundPositionY(Length backgroundPositionY) {
+        this.backgroundPositionY = backgroundPositionY;
+    }
 
     public Color getColor() {
         return color;

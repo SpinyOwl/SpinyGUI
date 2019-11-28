@@ -12,7 +12,7 @@ public class WidthProperty extends Property {
     private ValueExtractor<Unit> unitValueExtractor = ValueExtractors.getInstance().getValueExtractor(Unit.class);
 
     public WidthProperty() {
-        super(Properties.WIDTH, null, false, true);
+        super(Properties.WIDTH, "auto", false, true);
     }
 
     public WidthProperty(String value) {
@@ -37,6 +37,6 @@ public class WidthProperty extends Property {
      */
     @Override
     public boolean isValid() {
-        return unitValueExtractor.isValid(value);
+        return super.isValid() || unitValueExtractor.isValid(value);
     }
 }

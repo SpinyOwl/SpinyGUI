@@ -27,7 +27,7 @@ public class PaddingTopProperty extends Property {
      */
     @Override
     protected void updateNodeStyle(NodeStyle nodeStyle) {
-        nodeStyle.setPaddingTop(lengthValueExtractor.extract(value));
+        nodeStyle.getPadding().setTop(lengthValueExtractor.extract(value));
     }
 
     /**
@@ -37,6 +37,6 @@ public class PaddingTopProperty extends Property {
      */
     @Override
     public boolean isValid() {
-        return lengthValueExtractor.isValid(value);
+        return super.isValid() || lengthValueExtractor.isValid(value);
     }
 }

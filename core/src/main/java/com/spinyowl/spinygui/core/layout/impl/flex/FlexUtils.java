@@ -109,19 +109,19 @@ final class FlexUtils {
     }
 
     public static void setPadding(long node, NodeStyle style) {
-        Length paddingLeft = style.getPaddingLeft();
+        Length paddingLeft = style.getPadding().getLeft();
         if (paddingLeft != null) {
             applyPadding(node, Yoga.YGEdgeLeft, paddingLeft);
         }
-        Length paddingTop = style.getPaddingTop();
+        Length paddingTop = style.getPadding().getTop();
         if (paddingTop != null) {
             applyPadding(node, Yoga.YGEdgeTop, paddingTop);
         }
-        Length paddingRight = style.getPaddingRight();
+        Length paddingRight = style.getPadding().getRight();
         if (paddingRight != null) {
             applyPadding(node, Yoga.YGEdgeRight, paddingRight);
         }
-        Length paddingBottom = style.getPaddingBottom();
+        Length paddingBottom = style.getPadding().getBottom();
         if (paddingBottom != null) {
             applyPadding(node, Yoga.YGEdgeBottom, paddingBottom);
         }

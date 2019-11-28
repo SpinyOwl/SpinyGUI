@@ -68,6 +68,9 @@ public class MarginProperty extends Property {
      */
     @Override
     public boolean isValid() {
+        if (super.isValid()) {
+            return true;
+        }
         String value = getValue();
         String[] values = value.split("\\s+");
         if (values.length <= 0 || values.length > 4) {

@@ -12,7 +12,7 @@ public class HeightProperty extends Property {
     private ValueExtractor<Unit> unitValueExtractor = ValueExtractors.getInstance().getValueExtractor(Unit.class);
 
     public HeightProperty() {
-        super(Properties.HEIGHT, null, false, true);
+        super(Properties.HEIGHT, "auto", false, true);
     }
 
     public HeightProperty(String value) {
@@ -37,6 +37,6 @@ public class HeightProperty extends Property {
      */
     @Override
     public boolean isValid() {
-        return unitValueExtractor.isValid(value);
+        return super.isValid() || unitValueExtractor.isValid(value);
     }
 }

@@ -31,25 +31,25 @@ public class PaddingProperty extends Property {
         String[] values = value.split("\\s+");
         switch (values.length) {
             case 1:
-                nodeStyle.setPadding(
+                nodeStyle.getPadding().set(
                         lengthValueExtractor.extract(values[0])
                 );
                 break;
             case 2:
-                nodeStyle.setPadding(
+                nodeStyle.getPadding().set(
                         lengthValueExtractor.extract(values[0]),
                         lengthValueExtractor.extract(values[1])
                 );
                 break;
             case 3:
-                nodeStyle.setPadding(
+                nodeStyle.getPadding().set(
                         lengthValueExtractor.extract(values[0]),
                         lengthValueExtractor.extract(values[1]),
                         lengthValueExtractor.extract(values[2])
                 );
                 break;
             case 4:
-                nodeStyle.setPadding(
+                nodeStyle.getPadding().set(
                         lengthValueExtractor.extract(values[0]),
                         lengthValueExtractor.extract(values[1]),
                         lengthValueExtractor.extract(values[2]),
@@ -68,6 +68,10 @@ public class PaddingProperty extends Property {
      */
     @Override
     public boolean isValid() {
+        if (super.isValid()) {
+            return true;
+        }
+
         String value = getValue();
         String[] values = value.split("\\s+");
         if (values.length <= 0 || values.length > 4) {

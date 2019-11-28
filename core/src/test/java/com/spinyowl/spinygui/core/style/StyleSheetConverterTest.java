@@ -56,7 +56,7 @@ public class StyleSheetConverterTest {
 
         StyleManagerProvider.getInstance().recalculateStyles(frame);
 
-        Assert.assertEquals(testLabel.getCalculatedStyle().getColor(), Color.RED);
+        Assert.assertEquals(Color.RED, testLabel.getCalculatedStyle().getColor());
     }
 
     @Test

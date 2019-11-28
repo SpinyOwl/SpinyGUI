@@ -12,7 +12,7 @@ public class MinHeightProperty extends Property {
     private ValueExtractor<Length> lengthValueExtractor = ValueExtractors.getInstance().getValueExtractor(Length.class);
 
     public MinHeightProperty() {
-        super(Properties.HEIGHT, null, false, true);
+        super(Properties.HEIGHT, "0px", false, true);
     }
 
     public MinHeightProperty(String value) {
@@ -41,6 +41,6 @@ public class MinHeightProperty extends Property {
      */
     @Override
     public boolean isValid() {
-        return value.equalsIgnoreCase("none") || lengthValueExtractor.isValid(value);
+        return super.isValid() || value.equalsIgnoreCase("none") || lengthValueExtractor.isValid(value);
     }
 }

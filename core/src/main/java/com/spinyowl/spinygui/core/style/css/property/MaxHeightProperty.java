@@ -12,7 +12,7 @@ public class MaxHeightProperty extends Property {
     private ValueExtractor<Length> lengthValueExtractor = ValueExtractors.getInstance().getValueExtractor(Length.class);
 
     public MaxHeightProperty() {
-        super(Properties.HEIGHT, null, false, true);
+        super(Properties.HEIGHT, "none", false, true);
     }
 
     public MaxHeightProperty(String value) {
@@ -41,6 +41,6 @@ public class MaxHeightProperty extends Property {
      */
     @Override
     public boolean isValid() {
-        return value.equalsIgnoreCase("none") || lengthValueExtractor.isValid(value);
+        return super.isValid() || value.equalsIgnoreCase("none") || lengthValueExtractor.isValid(value);
     }
 }

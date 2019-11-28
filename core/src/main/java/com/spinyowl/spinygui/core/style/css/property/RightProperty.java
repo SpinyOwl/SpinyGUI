@@ -1,4 +1,4 @@
-package com.spinyowl.spinygui.core.style.css.property.padding;
+package com.spinyowl.spinygui.core.style.css.property;
 
 import com.spinyowl.spinygui.core.style.NodeStyle;
 import com.spinyowl.spinygui.core.style.css.Properties;
@@ -7,15 +7,15 @@ import com.spinyowl.spinygui.core.style.css.ValueExtractor;
 import com.spinyowl.spinygui.core.style.css.ValueExtractors;
 import com.spinyowl.spinygui.core.style.types.length.Length;
 
-public class PaddingBottomProperty extends Property {
+public class RightProperty extends Property {
 
     private ValueExtractor<Length> lengthValueExtractor = ValueExtractors.getInstance().getValueExtractor(Length.class);
 
-    public PaddingBottomProperty() {
-        super(Properties.PADDING_BOTTOM, null, false, true);
+    public RightProperty() {
+        super(Properties.RIGHT, "auto", false, true);
     }
 
-    public PaddingBottomProperty(String value) {
+    public RightProperty(String value) {
         this();
         setValue(value);
     }
@@ -27,7 +27,7 @@ public class PaddingBottomProperty extends Property {
      */
     @Override
     protected void updateNodeStyle(NodeStyle nodeStyle) {
-        nodeStyle.getPadding().setBottom(lengthValueExtractor.extract(value));
+        nodeStyle.setRight(lengthValueExtractor.extract(value));
     }
 
     /**

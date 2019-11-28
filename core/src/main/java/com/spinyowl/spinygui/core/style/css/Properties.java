@@ -67,6 +67,11 @@ public final class Properties {
         addSupportedProperty(MAX_WIDTH, MaxWidthProperty::new);
         addSupportedProperty(MAX_HEIGHT, MaxHeightProperty::new);
 
+        addSupportedProperty(TOP, TopProperty::new);
+        addSupportedProperty(RIGHT, RightProperty::new);
+        addSupportedProperty(BOTTOM, BottomProperty::new);
+        addSupportedProperty(LEFT, LeftProperty::new);
+
 //        BORDER
 //        WIDTH
 //        HEIGHT

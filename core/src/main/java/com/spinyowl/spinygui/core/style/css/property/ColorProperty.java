@@ -42,6 +42,6 @@ public class ColorProperty extends Property {
      */
     @Override
     public boolean isValid() {
-        return colorValueExtractor.isValid(getValue());
+        return super.isValid() || colorValueExtractor.isValid(getValue());
     }
 }

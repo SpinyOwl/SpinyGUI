@@ -12,7 +12,7 @@ public class MinWidthProperty extends Property {
     private ValueExtractor<Length> lengthValueExtractor = ValueExtractors.getInstance().getValueExtractor(Length.class);
 
     public MinWidthProperty() {
-        super(Properties.WIDTH, null, false, true);
+        super(Properties.WIDTH, "0px", false, true);
     }
 
     public MinWidthProperty(String value) {
@@ -41,6 +41,6 @@ public class MinWidthProperty extends Property {
      */
     @Override
     public boolean isValid() {
-        return value.equalsIgnoreCase("none") || lengthValueExtractor.isValid(value);
+        return super.isValid() || value.equalsIgnoreCase("none") || lengthValueExtractor.isValid(value);
     }
 }

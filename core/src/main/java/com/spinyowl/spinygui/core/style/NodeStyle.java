@@ -14,6 +14,8 @@ public class NodeStyle {
     private final BorderRadius borderRadius = new BorderRadius();
 
     // FLEX SECTION
+    // BACKGROUND properties
+    private final Padding padding = new Padding();
     /**
      * Specifies the direction of the flexible items
      */
@@ -50,21 +52,8 @@ public class NodeStyle {
      * The length of the item. Legal values: a number in px.
      */
     private float flexBasis;
-
     // font related properties
     private Color color;
-
-    // BACKGROUND properties
-    private Color backgroundColor;
-
-    private Length backgroundPositionX;
-    private Length backgroundPositionY;
-
-    private Length paddingTop;
-    private Length paddingBottom;
-    private Length paddingRight;
-    private Length paddingLeft;
-
     private Unit marginTop;
     private Unit marginBottom;
     private Unit marginRight;
@@ -75,14 +64,17 @@ public class NodeStyle {
 
     private Length minWidth;
     private Length minHeight;
+
     private Length maxWidth;
     private Length maxHeight;
-    private Display display = Display.BLOCK;
-    private Position position = Position.RELATIVE;
+
     private Length top;
     private Length bottom;
     private Length right;
     private Length left;
+
+    private Display display = Display.BLOCK;
+    private Position position = Position.RELATIVE;
     private WhiteSpace whiteSpace = WhiteSpace.NORMAL;
 
     // initialize with default values
@@ -187,41 +179,13 @@ public class NodeStyle {
         setFlexBasis(flexBasis);
     }
 
+    public Padding getPadding() {
+        return padding;
+    }
+
     public void setFlexFlow(FlexDirection flexDirection, FlexWrap flexWrap) {
         setFlexDirection(flexDirection);
         setFlexWrap(flexWrap);
-    }
-
-    public Length getPaddingTop() {
-        return paddingTop;
-    }
-
-    public void setPaddingTop(Length paddingTop) {
-        this.paddingTop = paddingTop;
-    }
-
-    public Length getPaddingBottom() {
-        return paddingBottom;
-    }
-
-    public void setPaddingBottom(Length paddingBottom) {
-        this.paddingBottom = paddingBottom;
-    }
-
-    public Length getPaddingRight() {
-        return paddingRight;
-    }
-
-    public void setPaddingRight(Length paddingRight) {
-        this.paddingRight = paddingRight;
-    }
-
-    public Length getPaddingLeft() {
-        return paddingLeft;
-    }
-
-    public void setPaddingLeft(Length paddingLeft) {
-        this.paddingLeft = paddingLeft;
     }
 
 
@@ -275,30 +239,6 @@ public class NodeStyle {
 
     public void setMaxHeight(Length maxHeight) {
         this.maxHeight = maxHeight;
-    }
-
-    public void setPadding(Length padding) {
-        this.paddingTop = this.paddingBottom = this.paddingLeft = this.paddingRight = padding;
-    }
-
-    public void setPadding(Length paddingTopBottom, Length paddingRightLeft) {
-        this.paddingTop = this.paddingBottom = paddingTopBottom;
-        this.paddingLeft = this.paddingRight = paddingRightLeft;
-    }
-
-
-    public void setPadding(Length paddingTop, Length paddingRightLeft, Length paddingBottom) {
-        this.paddingTop = paddingTop;
-        this.paddingLeft = this.paddingRight = paddingRightLeft;
-        this.paddingBottom = paddingBottom;
-    }
-
-
-    public void setPadding(Length paddingTop, Length paddingRight, Length paddingBottom, Length paddingLeft) {
-        this.paddingTop = paddingTop;
-        this.paddingLeft = paddingLeft;
-        this.paddingBottom = paddingBottom;
-        this.paddingRight = paddingRight;
     }
 
     public void setMargin(Unit margin) {

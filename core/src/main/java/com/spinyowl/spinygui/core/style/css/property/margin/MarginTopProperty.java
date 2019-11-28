@@ -37,6 +37,6 @@ public class MarginTopProperty extends Property {
      */
     @Override
     public boolean isValid() {
-        return unitValueExtractor.isValid(value);
+        return super.isValid() || unitValueExtractor.isValid(value);
     }
 }
