@@ -16,6 +16,7 @@ public class NodeStyle {
     // FLEX SECTION
     // BACKGROUND properties
     private final Padding padding = new Padding();
+    private final Margin margin = new Margin();
     /**
      * Specifies the direction of the flexible items
      */
@@ -54,11 +55,6 @@ public class NodeStyle {
     private float flexBasis;
     // font related properties
     private Color color;
-    private Unit marginTop;
-    private Unit marginBottom;
-    private Unit marginRight;
-    private Unit marginLeft;
-
     private Unit width;
     private Unit height;
 
@@ -241,62 +237,6 @@ public class NodeStyle {
         this.maxHeight = maxHeight;
     }
 
-    public void setMargin(Unit margin) {
-        this.marginTop = this.marginBottom = this.marginLeft = this.marginRight = margin;
-    }
-
-    public void setMargin(Unit marginTopBottom, Unit marginRightLeft) {
-        this.marginTop = this.marginBottom = marginTopBottom;
-        this.marginLeft = this.marginRight = marginRightLeft;
-    }
-
-
-    public void setMargin(Unit marginTop, Unit marginRightLeft, Unit marginBottom) {
-        this.marginTop = marginTop;
-        this.marginLeft = this.marginRight = marginRightLeft;
-        this.marginBottom = marginBottom;
-    }
-
-
-    public void setMargin(Unit marginTop, Unit marginRight, Unit marginBottom, Unit marginLeft) {
-        this.marginTop = marginTop;
-        this.marginLeft = marginLeft;
-        this.marginBottom = marginBottom;
-        this.marginRight = marginRight;
-    }
-
-    public Unit getMarginTop() {
-        return marginTop;
-    }
-
-    public void setMarginTop(Unit marginTop) {
-        this.marginTop = marginTop;
-    }
-
-    public Unit getMarginBottom() {
-        return marginBottom;
-    }
-
-    public void setMarginBottom(Unit marginBottom) {
-        this.marginBottom = marginBottom;
-    }
-
-    public Unit getMarginRight() {
-        return marginRight;
-    }
-
-    public void setMarginRight(Unit marginRight) {
-        this.marginRight = marginRight;
-    }
-
-    public Unit getMarginLeft() {
-        return marginLeft;
-    }
-
-    public void setMarginLeft(Unit marginLeft) {
-        this.marginLeft = marginLeft;
-    }
-
     public Display getDisplay() {
         return display;
     }
@@ -371,4 +311,7 @@ public class NodeStyle {
         }
     }
 
+    public Margin getMargin() {
+        return margin;
+    }
 }

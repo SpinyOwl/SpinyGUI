@@ -27,7 +27,7 @@ public class MarginRightProperty extends Property {
      */
     @Override
     protected void updateNodeStyle(NodeStyle nodeStyle) {
-        nodeStyle.setMarginRight(unitValueExtractor.extract(value));
+        nodeStyle.getMargin().setRight(unitValueExtractor.extract(value));
     }
 
     /**

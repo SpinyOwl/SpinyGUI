@@ -31,25 +31,25 @@ public class MarginProperty extends Property {
         String[] values = value.split("\\s+");
         switch (values.length) {
             case 1:
-                nodeStyle.setMargin(
+                nodeStyle.getMargin().set(
                         unitValueExtractor.extract(values[0])
                 );
                 break;
             case 2:
-                nodeStyle.setMargin(
+                nodeStyle.getMargin().set(
                         unitValueExtractor.extract(values[0]),
                         unitValueExtractor.extract(values[1])
                 );
                 break;
             case 3:
-                nodeStyle.setMargin(
+                nodeStyle.getMargin().set(
                         unitValueExtractor.extract(values[0]),
                         unitValueExtractor.extract(values[1]),
                         unitValueExtractor.extract(values[2])
                 );
                 break;
             case 4:
-                nodeStyle.setMargin(
+                nodeStyle.getMargin().set(
                         unitValueExtractor.extract(values[0]),
                         unitValueExtractor.extract(values[1]),
                         unitValueExtractor.extract(values[2]),

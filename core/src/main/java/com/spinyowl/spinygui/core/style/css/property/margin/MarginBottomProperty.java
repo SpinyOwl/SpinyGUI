@@ -27,7 +27,7 @@ public class MarginBottomProperty extends Property {
      */
     @Override
     protected void updateNodeStyle(NodeStyle nodeStyle) {
-        nodeStyle.setMarginBottom(unitValueExtractor.extract(value));
+        nodeStyle.getMargin().setBottom(unitValueExtractor.extract(value));
     }
 
     /**

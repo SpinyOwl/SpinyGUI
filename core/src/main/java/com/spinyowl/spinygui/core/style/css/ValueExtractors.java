@@ -1,8 +1,10 @@
 package com.spinyowl.spinygui.core.style.css;
 
 import com.spinyowl.spinygui.core.style.css.extractor.ColorValueExtractor;
+import com.spinyowl.spinygui.core.style.css.extractor.LengthValueExtractor;
 import com.spinyowl.spinygui.core.style.css.extractor.UnitValueExtractor;
 import com.spinyowl.spinygui.core.style.types.Color;
+import com.spinyowl.spinygui.core.style.types.length.Length;
 import com.spinyowl.spinygui.core.style.types.length.Unit;
 
 import java.util.Map;
@@ -17,6 +19,7 @@ public final class ValueExtractors {
     private ValueExtractors() {
         addValueExtractor(Color.class, new ColorValueExtractor());
         addValueExtractor(Unit.class, new UnitValueExtractor());
+        addValueExtractor(Length.class, new LengthValueExtractor());
     }
 
     /** Getter for instance. */

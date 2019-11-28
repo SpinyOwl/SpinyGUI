@@ -27,7 +27,7 @@ public class MarginTopProperty extends Property {
      */
     @Override
     protected void updateNodeStyle(NodeStyle nodeStyle) {
-        nodeStyle.setMarginTop(unitValueExtractor.extract(value));
+        nodeStyle.getMargin().setTop(unitValueExtractor.extract(value));
     }
 
     /**

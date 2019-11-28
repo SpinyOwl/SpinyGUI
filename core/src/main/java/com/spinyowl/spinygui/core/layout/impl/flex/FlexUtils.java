@@ -128,19 +128,19 @@ final class FlexUtils {
     }
 
     public static void setMargin(long node, NodeStyle style) {
-        Unit marginLeft = style.getMarginLeft();
+        Unit marginLeft = style.getMargin().getLeft();
         if (marginLeft != null) {
             applyMargin(node, Yoga.YGEdgeLeft, marginLeft);
         }
-        Unit marginTop = style.getMarginTop();
+        Unit marginTop = style.getMargin().getTop();
         if (marginTop != null) {
             applyMargin(node, Yoga.YGEdgeTop, marginTop);
         }
-        Unit marginRight = style.getMarginRight();
+        Unit marginRight = style.getMargin().getRight();
         if (marginRight != null) {
             applyMargin(node, Yoga.YGEdgeRight, marginRight);
         }
-        Unit marginBottom = style.getMarginBottom();
+        Unit marginBottom = style.getMargin().getBottom();
         if (marginBottom != null) {
             applyMargin(node, Yoga.YGEdgeBottom, marginBottom);
         }

@@ -5,7 +5,7 @@ import com.spinyowl.spinygui.core.style.types.length.Length;
 
 import static com.spinyowl.spinygui.core.style.css.extractor.UnitValueExtractor.getLength;
 
-public class LengthValueExtractor implements ValueExtractor<Length<Float>> {
+public class LengthValueExtractor implements ValueExtractor<Length> {
 
     @Override
     public boolean isValid(String value) {
@@ -13,7 +13,7 @@ public class LengthValueExtractor implements ValueExtractor<Length<Float>> {
     }
 
     @Override
-    public Length<Float> extract(String value) {
+    public Length extract(String value) {
         return getLength(value);
     }
 }
