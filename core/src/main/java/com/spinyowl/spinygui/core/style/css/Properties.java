@@ -1,8 +1,14 @@
 package com.spinyowl.spinygui.core.style.css;
 
 import com.spinyowl.spinygui.core.style.css.property.*;
+import com.spinyowl.spinygui.core.style.css.property.dimension.*;
 import com.spinyowl.spinygui.core.style.css.property.margin.*;
 import com.spinyowl.spinygui.core.style.css.property.padding.*;
+import com.spinyowl.spinygui.core.style.css.property.position.BottomProperty;
+import com.spinyowl.spinygui.core.style.css.property.position.LeftProperty;
+import com.spinyowl.spinygui.core.style.css.property.position.RightProperty;
+import com.spinyowl.spinygui.core.style.css.property.UnsupportedProperty;
+import com.spinyowl.spinygui.core.style.css.property.position.TopProperty;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -73,18 +79,8 @@ public final class Properties {
         addSupportedProperty(LEFT, LeftProperty::new);
 
 //        BORDER
-//        WIDTH
-//        HEIGHT
-//        MIN_WIDTH
-//        MIN_HEIGHT
-//        MAX_WIDTH
-//        MAX_HEIGHT
 //        DISPLAY
 //        POSITION
-//        TOP
-//        BOTTOM
-//        RIGHT
-//        LEFT
 //        WHITE_SPACE
     }
 
@@ -126,7 +122,8 @@ public final class Properties {
         } else {
             property = new UnsupportedProperty(propertyName);
         }
-        property.setValue(propertyValue);
+        // todo: check that there is no any side effects on property value to lower case
+        property.setValue(propertyValue.toLowerCase());
         return property;
     }
 

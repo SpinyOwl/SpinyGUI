@@ -1,5 +1,6 @@
 package com.spinyowl.spinygui.core.style.css;
 
+import com.spinyowl.spinygui.core.node.base.Element;
 import com.spinyowl.spinygui.core.style.NodeStyle;
 
 import java.util.Collections;
@@ -145,20 +146,20 @@ public abstract class Property {
     /**
      * Used to update node style with this property if value is valid.
      *
-     * @param nodeStyle node style to update.
+     * @param element element to update calculated style
      */
-    public void updateStyle(NodeStyle nodeStyle) {
+    public void updateElementStyle(Element element) {
         if (isValid()) {
-            updateNodeStyle(nodeStyle);
+            updateNodeStyle(element);
         }
     }
 
     /**
-     * Used to update node style with this property.
+     * Used to update calculated node style of specified element.
      *
-     * @param nodeStyle node style to update.
+     * @param element element to update calculated style.
      */
-    protected abstract void updateNodeStyle(NodeStyle nodeStyle);
+    protected abstract void updateNodeStyle(Element element);
 
     /**
      * Used to check if value is valid or not.

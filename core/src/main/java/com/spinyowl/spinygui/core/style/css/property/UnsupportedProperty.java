@@ -1,6 +1,6 @@
 package com.spinyowl.spinygui.core.style.css.property;
 
-import com.spinyowl.spinygui.core.style.NodeStyle;
+import com.spinyowl.spinygui.core.node.base.Element;
 import com.spinyowl.spinygui.core.style.css.Property;
 
 public class UnsupportedProperty extends Property {
@@ -9,12 +9,12 @@ public class UnsupportedProperty extends Property {
     }
 
     /**
-     * Used to update node style with this property.
+     * Used to update calculated node style of specified element.
      *
-     * @param nodeStyle node style to update.
+     * @param element element to update calculated style.
      */
     @Override
-    protected void updateNodeStyle(NodeStyle nodeStyle) {
+    protected void updateNodeStyle(Element element) {
         // do nothing because property not supported.
     }
 

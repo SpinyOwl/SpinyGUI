@@ -1,5 +1,6 @@
 package com.spinyowl.spinygui.core.style.css.property.margin;
 
+import com.spinyowl.spinygui.core.node.base.Element;
 import com.spinyowl.spinygui.core.style.NodeStyle;
 import com.spinyowl.spinygui.core.style.css.Properties;
 import com.spinyowl.spinygui.core.style.css.Property;
@@ -21,12 +22,17 @@ public class MarginProperty extends Property {
     }
 
     /**
-     * Used to update node style with this property.
+     * Used to update calculated node style of specified element.
      *
-     * @param nodeStyle node style to update.
+     * @param element element to update calculated style.
      */
     @Override
-    protected void updateNodeStyle(NodeStyle nodeStyle) {
+    protected void updateNodeStyle(Element element) {
+        NodeStyle nodeStyle = element.getCalculatedStyle();
+        if (INITIAL.equalsIgnoreCase(value) || INHERIT.equalsIgnoreCase(value)) {
+            // todo: add implementation for initial and inherit values
+            return;
+        }
         String value = this.getValue();
         String[] values = value.split("\\s+");
         switch (values.length) {

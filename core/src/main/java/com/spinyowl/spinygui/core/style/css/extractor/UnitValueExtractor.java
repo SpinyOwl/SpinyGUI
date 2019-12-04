@@ -11,10 +11,10 @@ public class UnitValueExtractor implements ValueExtractor<Unit> {
     public static final String PIXEL_REGEX = "-?\\d+px";
     public static final String AUTO_REGEX = "auto";
 
-    public static Length<Float> getLength(String value) {
+    public static Length getLength(String value) {
         if (value.matches(PIXEL_REGEX)) {
             String pixelValue = value.substring(0, value.length() - 2);
-            return Length.pixel(Float.parseFloat(pixelValue));
+            return Length.pixel(Integer.parseInt(pixelValue));
         }
 
         if (value.matches(PERCENTAGE_REGEX)) {

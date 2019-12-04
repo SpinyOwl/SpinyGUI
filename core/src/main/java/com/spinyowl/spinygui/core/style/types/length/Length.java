@@ -17,7 +17,7 @@ public class Length<T> extends Unit {
         this.type = type;
     }
 
-    public static Length<Float> pixel(float value) {
+    public static Length<Integer> pixel(int value) {
         return new Length<>(value, PIXEL);
     }
 
@@ -51,12 +51,12 @@ public class Length<T> extends Unit {
     }
 
     public static final class Type<T> {
-        public static final Type<Float> PIXEL = new Type<>("PIXEL", Float.class, (l, n) -> l.value);
+        public static final Type<Integer> PIXEL = new Type<>("PIXEL", Integer.class, (l, n) -> l.value);
         public static final Type<Float> PERCENT = new Type<>("PERCENT", Float.class, (l, n) -> l.value * n);
 
         private final String name;
         private final Class<T> type;
-        private Converter converter;
+        private Converter<T> converter;
 
         public Type(String name, Class<T> type, Converter<T> converter) {
             this.name = name;
@@ -79,7 +79,7 @@ public class Length<T> extends Unit {
             return new Length<>(value, this);
         }
 
-        public Converter converter() {
+        public Converter<T> converter() {
             return converter;
         }
 

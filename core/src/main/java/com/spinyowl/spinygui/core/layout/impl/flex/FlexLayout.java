@@ -109,10 +109,10 @@ public class FlexLayout implements Layout {
      */
     private void prepareNode(Element component, long node) {
         NodeStyle style = component.getStyle();
-        setFlexDirection(node, style.getFlexDirection());
-        setJustifyContent(node, style.getJustifyContent(), component);
-        setAlignItems(node, style.getAlignItems(), component);
-        setAlignSelf(node, style.getAlignSelf(), component);
+        setFlexDirection(node, style.getFlex().getFlexDirection());
+        setJustifyContent(node, style.getFlex().getJustifyContent(), component);
+        setAlignItems(node, style.getFlex().getAlignItems(), component);
+        setAlignSelf(node, style.getFlex().getAlignSelf(), component);
 
         setMinWidth(node, style);
         setMinHeight(node, style);
@@ -128,15 +128,15 @@ public class FlexLayout implements Layout {
         setPosition(node, style.getRight(), Yoga.YGEdgeRight);
         setPosition(node, style.getLeft(), Yoga.YGEdgeLeft);
 
-        Yoga.YGNodeStyleSetFlexBasis(node, style.getFlexBasis());
+        Yoga.YGNodeStyleSetFlexBasis(node, style.getFlex().getFlexBasis());
 
         setPadding(node, style);
         setMargin(node, style);
 
         Yoga.YGNodeStyleSetPositionType(node, style.getPosition() == Position.RELATIVE ? Yoga.YGPositionTypeRelative : Yoga.YGPositionTypeAbsolute);
 
-        Yoga.YGNodeStyleSetFlexGrow(node, style.getFlexGrow());
-        Yoga.YGNodeStyleSetFlexShrink(node, style.getFlexShrink());
+        Yoga.YGNodeStyleSetFlexGrow(node, style.getFlex().getFlexGrow());
+        Yoga.YGNodeStyleSetFlexShrink(node, style.getFlex().getFlexShrink());
     }
 
     private void setPosition(long node, Length distance, int edge) {

@@ -3,10 +3,7 @@ package com.spinyowl.spinygui.core.style.css;
 import com.spinyowl.spinygui.core.node.base.Element;
 import com.spinyowl.spinygui.core.style.css.selector.StyleSelector;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 public class StyleSheet {
     private List<RuleSet> ruleSets;
@@ -29,6 +26,29 @@ public class StyleSheet {
         var selectors = ruleSet.getSelectors();
         selectors.forEach(selector -> inspectElementTree(elementTree, selector, nodes));
         return nodes;
+    }
+
+    /**
+     * Used to search rules in stylesheet that are correspond to specified element.
+     *
+     * @param styleSheet stylesheet to search for rules applicable to specified element.
+     * @param element    element to search rules.
+     * @return set of rules that are correspond to specified element.
+     */
+    public static List<RuleSet> searchRules(StyleSheet styleSheet, Element element) {
+        Objects.requireNonNull(styleSheet);
+        Objects.requireNonNull(element);
+
+        ArrayList<RuleSet> result = new ArrayList<>();
+        for (RuleSet ruleSet : styleSheet.ruleSets) {
+            for (StyleSelector selector : ruleSet.getSelectors()) {
+                if (selector.test(element)) {
+                    result.add(ruleSet);
+                    break;
+                }
+            }
+        }
+        return result;
     }
 
     /**
