@@ -7,9 +7,9 @@ def commons_version = '3.4'
 dependencies {
     api project(':core')
 
-    compile group: 'org.apache.commons', name: 'commons-lang3', version: commons_version, changing: false
+    implementation group: 'org.apache.commons', name: 'commons-lang3', version: commons_version, changing: false
 
-    testCompile group: 'junit', name: 'junit', version: junit_version
+    testImplementation group: 'junit', name: 'junit', version: junit_version
 }
 
 ext.moduleName = 'com.spinyowl.spinygui.backend.core'

@@ -2,6 +2,7 @@ package com.spinyowl.spinygui.demo;
 
 import com.spinyowl.spinygui.core.api.Frame;
 import com.spinyowl.spinygui.core.converter.NodeConverter;
+import com.spinyowl.spinygui.core.node.base.Element;
 import com.spinyowl.spinygui.core.node.base.Node;
 import com.spinyowl.spinygui.core.node.element.Div;
 import com.spinyowl.spinygui.core.node.element.Input;
@@ -24,10 +25,10 @@ public class Main {
 
         LOGGER.info("a core message");
 
-        Monitor monitor = Monitor.getPrimaryMonitor();
-        Window window = Window.createWindow("Example window", 800, 600, monitor);
+//        Monitor monitor = Monitor.getPrimaryMonitor();
+//        Window window = Window.createWindow("Example window", 800, 600, monitor);
 
-        window.addCloseEventListener(Window.EXIT_ON_CLOSE);
+//        window.addCloseEventListener(Window.EXIT_ON_CLOSE);
 
         Input input = new Input();
         input.setName("password");
@@ -39,7 +40,7 @@ public class Main {
         RadioButton radioButton = new RadioButton();
         Node element = div(button, input, radioButton).position(100, 100).build();
 
-        Frame frame = window.getFrame();
+        Frame frame = new Frame();// window.getFrame();
         frame.getContainer().addChild(element);
 
 
@@ -70,6 +71,8 @@ public class Main {
                 "</div>";
         Node unmarshal = NodeConverter.fromXml(xml2);
 
+        LOGGER.info("UNMARSHALLING IS FINISHED");
+        LOGGER.info(unmarshal instanceof Element);
 
 //        window.setVisible(true);
     }

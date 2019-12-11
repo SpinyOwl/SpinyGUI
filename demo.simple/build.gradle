@@ -9,7 +9,7 @@ plugins {
 dependencies {
     implementation project(':spinygui')
 
-    testCompile group: 'junit', name: 'junit', version: junit_version
+    testImplementation group: 'junit', name: 'junit', version: junit_version
 }
 
 ext.moduleName = 'com.spinyowl.spinygui.demo'

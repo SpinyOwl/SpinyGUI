@@ -4,24 +4,16 @@ plugins {
 
 dependencies {
     api project(':core')
-    // https://mvnrepository.com/artifact/io.github.classgraph/classgraph
-    compile group: 'io.github.classgraph', name: 'classgraph', version: classgraph_version
 
-    compile group: 'commons-logging', name: 'commons-logging', version: '1.2'
+    api group: 'commons-logging', name: 'commons-logging', version: '1.2'
+    api group: 'org.joml', name: 'joml', version: joml_version
 
-    // https://mvnrepository.com/artifact/org.jdom/jdom2
-    compile group: 'org.jdom', name: 'jdom2', version: jdom_version
+    implementation group: 'io.github.classgraph', name: 'classgraph', version: classgraph_version
+    implementation group: 'org.jdom', name: 'jdom2', version: jdom_version
+    implementation group: 'com.google.guava', name: 'guava-collections', version: guava_collections_version
+    implementation group: 'org.antlr', name: 'antlr4-runtime', version: antlr4_version
 
-    // https://mvnrepository.com/artifact/com.google.guava/guava-collections
-    compile group: 'com.google.guava', name: 'guava-collections', version: guava_collections_version
-
-    // https://mvnrepository.com/artifact/org.antlr/antlr4-runtime
-    compile group: 'org.antlr', name: 'antlr4-runtime', version: antlr4_version
-
-    // https://mvnrepository.com/artifact/org.joml/joml
-    compile group: 'org.joml', name: 'joml', version: joml_version
-
-    testCompile group: 'junit', name: 'junit', version: junit_version
+    testImplementation group: 'junit', name: 'junit', version: junit_version
 }
 
 ext.moduleName = 'com.spinyowl.spinygui.core.window'

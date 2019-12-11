@@ -4,12 +4,16 @@ plugins {
 
 project.group = 'com.spinyowl'
 
-println "##################################################"
-println "# Project info:                                  #"
-println sprintf("#     group:    %-33s#", project.group)
-println sprintf("#     name:     %-33s#", project.name)
-println sprintf("#     version:  %-33s#", project.version)
-println "##################################################"
+printProjectInfo()
+
+private void printProjectInfo() {
+    println "##################################################"
+    println "# Project info:                                  #"
+    println sprintf("#     group:    %-33s#", project.group)
+    println sprintf("#     name:     %-33s#", project.name)
+    println sprintf("#     version:  %-33s#", project.version)
+    println "##################################################"
+}
 
 subprojects {
 
