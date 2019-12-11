@@ -1,8 +1,7 @@
-name: Java CI
-
+name: Nightly Build
 on: 
   schedule:
-    - cron: '*/15 * * * *'
+    - cron: '0 0 * * *'
 
 jobs:
   build:
