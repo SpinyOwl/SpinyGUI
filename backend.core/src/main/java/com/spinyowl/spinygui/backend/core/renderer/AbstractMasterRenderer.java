@@ -6,9 +6,7 @@ import com.spinyowl.spinygui.core.api.LayerContainer;
 import com.spinyowl.spinygui.core.system.context.Context;
 
 public abstract class AbstractMasterRenderer implements MasterRenderer {
-
-
-    protected abstract boolean isInitialized();
+protected abstract boolean isInitialized();
 
     protected abstract boolean isDestroyed();
 

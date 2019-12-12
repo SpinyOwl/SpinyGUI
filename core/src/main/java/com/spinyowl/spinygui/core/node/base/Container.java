@@ -1,6 +1,4 @@
 package com.spinyowl.spinygui.core.node.base;
-
-
 import com.google.common.base.Objects;
 import com.spinyowl.spinygui.core.util.Reference;
 

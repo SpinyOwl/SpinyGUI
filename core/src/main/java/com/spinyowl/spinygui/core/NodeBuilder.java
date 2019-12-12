@@ -25,9 +25,7 @@ public final class NodeBuilder {
     public static Button button(Map<String, String> attributes, Node... nodes) {
         return addAttributes(button(Collections.emptyMap(), nodes), attributes);
     }
-
-
-    public static Text text(String text) {
+public static Text text(String text) {
         return new Text(text);
     }
 

@@ -1,27 +1,23 @@
 plugins {
-    id 'java-library'
+    id 'java'
 }
 
 dependencies {
-    api group: 'org.jdom', name: 'jdom2', version: jdom_version
     api group: 'org.joml', name: 'joml', version: joml_version
+    api group: 'org.jdom', name: 'jdom2', version: jdom_version
     api group: 'commons-logging', name: 'commons-logging', version: commons_logging_version
     api group: 'org.antlr', name: 'antlr4-runtime', version: antlr4_version
 
-    implementation group: 'io.github.classgraph', name: 'classgraph', version: classgraph_version
-    implementation group: 'com.google.guava', name: 'guava-collections', version: guava_collections_version
+    api group: 'io.github.classgraph', name: 'classgraph', version: classgraph_version
+    api group: 'com.google.guava', name: 'guava-collections', version: guava_collections_version
 
-    implementation group: 'org.lwjgl', name: 'lwjgl', version: lwjgl_version
-    implementation group: 'org.lwjgl', name: 'lwjgl', version: lwjgl_version, classifier: 'natives-windows'
-    implementation group: 'org.lwjgl', name: 'lwjgl', version: lwjgl_version, classifier: 'natives-linux'
-    implementation group: 'org.lwjgl', name: 'lwjgl', version: lwjgl_version, classifier: 'natives-macos'
+    api group: 'org.lwjgl', name: 'lwjgl', version: lwjgl_version
+    api group: 'org.lwjgl', name: 'lwjgl', version: lwjgl_version, classifier: 'natives-windows'
+    api group: 'org.lwjgl', name: 'lwjgl', version: lwjgl_version, classifier: 'natives-linux'
+    api group: 'org.lwjgl', name: 'lwjgl', version: lwjgl_version, classifier: 'natives-macos'
 
-    implementation group: 'org.lwjgl', name: 'lwjgl-yoga', version: lwjgl_version
-    implementation group: 'org.lwjgl', name: 'lwjgl-yoga', version: lwjgl_version, classifier: 'natives-windows'
-    implementation group: 'org.lwjgl', name: 'lwjgl-yoga', version: lwjgl_version, classifier: 'natives-linux'
-    implementation group: 'org.lwjgl', name: 'lwjgl-yoga', version: lwjgl_version, classifier: 'natives-macos'
-
-    testImplementation group: 'junit', name: 'junit', version: junit_version
+    api group: 'org.lwjgl', name: 'lwjgl-yoga', version: lwjgl_version
+    api group: 'org.lwjgl', name: 'lwjgl-yoga', version: lwjgl_version, classifier: 'natives-windows'
+    api group: 'org.lwjgl', name: 'lwjgl-yoga', version: lwjgl_version, classifier: 'natives-linux'
+    api group: 'org.lwjgl', name: 'lwjgl-yoga', version: lwjgl_version, classifier: 'natives-macos'
 }
-
-ext.moduleName = 'com.spinyowl.spinygui.core'

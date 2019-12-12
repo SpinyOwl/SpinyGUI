@@ -60,9 +60,7 @@ public class NvgMasterRenderer extends AbstractMasterRenderer {
         Vector2ic windowSize = context.getWindowSize();
         nvgBeginFrame(nvgContext, windowSize.x(), windowSize.y(), context.getPixelRatio());
     }
-
-
-    @Override
+@Override
     protected void postRender(Context context) {
         nvgEndFrame(nvgContext);
 

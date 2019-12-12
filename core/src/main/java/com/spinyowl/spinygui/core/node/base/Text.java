@@ -1,6 +1,4 @@
 package com.spinyowl.spinygui.core.node.base;
-
-
 import com.google.common.base.Objects;
 
 import java.util.StringJoiner;
@@ -10,9 +8,7 @@ public final class Text extends Node {
             = "Attribute operations are not supported for Text";
     public static final String CHILD_OPERATIONS_ARE_NOT_SUPPORTED
             = "Child operations are not supported for Text";
-
-
-    private String text;
+private String text;
 
     public Text() {
     }

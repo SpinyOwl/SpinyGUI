@@ -11,9 +11,7 @@ public class SpinyGuiOpenGL32ClipboardService implements ClipboardService {
     static {
         SpinyGuiOpenGL32Service.getInstance().startService();
     }
-
-
-    private SpinyGuiOpenGL32ClipboardService() {
+private SpinyGuiOpenGL32ClipboardService() {
     }
 
     public static SpinyGuiOpenGL32ClipboardService getInstance() {

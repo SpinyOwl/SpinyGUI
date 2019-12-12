@@ -65,9 +65,7 @@ public class Frame {
 
         setSize(width, height);
     }
-
-
-    /**
+/**
      * Returns list of stylesheets attached to frame.
      *
      * @return list of stylesheets attached to frame.
@@ -86,9 +84,7 @@ public class Frame {
     public final Container getContainer() {
         return defaultLayer;
     }
-
-
-    /**
+/**
      * Used to set layer containers size. NOTE: All LayerContainers will be resized to specified size!
      *
      * @param size frame size.

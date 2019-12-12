@@ -1,6 +1,4 @@
 package com.spinyowl.spinygui.core.node.base;
-
-
 import com.spinyowl.spinygui.core.node.intersection.Intersection;
 import com.spinyowl.spinygui.core.node.intersection.Intersections;
 import org.joml.Vector2f;
@@ -311,9 +309,7 @@ public abstract class Node {
 //     * @param key attribute name.
 //     */
 //    public abstract void removeAttribute(String key);
-
-
-    @Override
+@Override
     public String toString() {
         return new StringJoiner(", ", getClass().getSimpleName() + "[", "]")
                 .add("position=" + position)

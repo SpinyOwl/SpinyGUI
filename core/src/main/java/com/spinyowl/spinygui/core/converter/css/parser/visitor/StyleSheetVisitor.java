@@ -7,9 +7,7 @@ import com.spinyowl.spinygui.core.style.css.StyleSheet;
 import java.util.stream.Collectors;
 
 public class StyleSheetVisitor extends CSS3BaseVisitor<StyleSheet> {
-
-
-    @Override
+@Override
     public StyleSheet visitStylesheet(CSS3Parser.StylesheetContext ctx) {
         var ruleSetList = ctx.nestedStatement()
                 .stream().map(nCtx -> new RulesetVisitor().visit(nCtx))

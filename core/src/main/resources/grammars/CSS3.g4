@@ -259,8 +259,6 @@ atRule
 atKeyword
     : '@' ident
     ;
-
-
 unused
     : block
     | atKeyword ws

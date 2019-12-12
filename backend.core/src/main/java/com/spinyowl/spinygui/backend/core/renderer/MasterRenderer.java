@@ -7,9 +7,7 @@ import com.spinyowl.spinygui.core.system.context.Context;
  * Master renderer interface. Defines behavior of
  */
 public interface MasterRenderer {
-
-
-    /**
+/**
      * Defines initialization method which runs once during master renderer life cycle. Second call should do nothing.
      */
     void initialize();

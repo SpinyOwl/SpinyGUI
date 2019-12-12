@@ -23,9 +23,7 @@ public final class Display {
      * Displays an element as a block element. It starts on a new line, and takes up the whole width.
      */
     public static final Display BLOCK = new Display("block");
-
-
-    private static final Map<String, Display> VALUES = new ConcurrentHashMap<>();
+private static final Map<String, Display> VALUES = new ConcurrentHashMap<>();
 
     /**
      * Name of display type (should be same as in css specification)

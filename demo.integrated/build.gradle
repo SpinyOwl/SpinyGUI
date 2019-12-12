@@ -6,35 +6,27 @@ plugins {
 }
 
 dependencies {
-    implementation group: 'org.lwjgl', name: 'lwjgl', version: lwjgl_version, changing: true
-    implementation group: 'org.lwjgl', name: 'lwjgl', version: lwjgl_version, changing: true, classifier: 'natives-windows'
-    implementation group: 'org.lwjgl', name: 'lwjgl', version: lwjgl_version, changing: true, classifier: 'natives-linux'
-    implementation group: 'org.lwjgl', name: 'lwjgl', version: lwjgl_version, changing: true, classifier: 'natives-macos'
+    api group: 'org.lwjgl', name: 'lwjgl', version: lwjgl_version, changing: true
+    api group: 'org.lwjgl', name: 'lwjgl', version: lwjgl_version, changing: true, classifier: 'natives-windows'
+    api group: 'org.lwjgl', name: 'lwjgl', version: lwjgl_version, changing: true, classifier: 'natives-linux'
+    api group: 'org.lwjgl', name: 'lwjgl', version: lwjgl_version, changing: true, classifier: 'natives-macos'
 
-    implementation group: 'org.lwjgl', name: 'lwjgl-glfw', version: lwjgl_version, changing: true
-    implementation group: 'org.lwjgl', name: 'lwjgl-glfw', version: lwjgl_version, changing: true, classifier: 'natives-windows'
-    implementation group: 'org.lwjgl', name: 'lwjgl-glfw', version: lwjgl_version, changing: true, classifier: 'natives-linux'
-    implementation group: 'org.lwjgl', name: 'lwjgl-glfw', version: lwjgl_version, changing: true, classifier: 'natives-macos'
+    api group: 'org.lwjgl', name: 'lwjgl-glfw', version: lwjgl_version, changing: true
+    api group: 'org.lwjgl', name: 'lwjgl-glfw', version: lwjgl_version, changing: true, classifier: 'natives-windows'
+    api group: 'org.lwjgl', name: 'lwjgl-glfw', version: lwjgl_version, changing: true, classifier: 'natives-linux'
+    api group: 'org.lwjgl', name: 'lwjgl-glfw', version: lwjgl_version, changing: true, classifier: 'natives-macos'
 
-    implementation group: 'org.lwjgl', name: 'lwjgl-opengl', version: lwjgl_version, changing: true
-    implementation group: 'org.lwjgl', name: 'lwjgl-opengl', version: lwjgl_version, changing: true, classifier: 'natives-windows'
-    implementation group: 'org.lwjgl', name: 'lwjgl-opengl', version: lwjgl_version, changing: true, classifier: 'natives-linux'
-    implementation group: 'org.lwjgl', name: 'lwjgl-opengl', version: lwjgl_version, changing: true, classifier: 'natives-macos'
+    api group: 'org.lwjgl', name: 'lwjgl-opengl', version: lwjgl_version, changing: true
+    api group: 'org.lwjgl', name: 'lwjgl-opengl', version: lwjgl_version, changing: true, classifier: 'natives-windows'
+    api group: 'org.lwjgl', name: 'lwjgl-opengl', version: lwjgl_version, changing: true, classifier: 'natives-linux'
+    api group: 'org.lwjgl', name: 'lwjgl-opengl', version: lwjgl_version, changing: true, classifier: 'natives-macos'
 
     implementation project(':core')
     implementation project(':backend.core')
     implementation project(':backend.glfwutil')
     implementation project(':backend.opengl32')
-
-    testImplementation group: 'junit', name: 'junit', version: junit_version
 }
-
-ext.moduleName = 'com.spinyowl.spinygui.demo.integrated'
-
-
 mainClassName = "$moduleName/Main"
-
-
 run {
     inputs.property("moduleName", moduleName)
     doFirst {

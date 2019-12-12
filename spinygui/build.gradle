@@ -1,13 +1,7 @@
-plugins {
-    id 'java-library'
-}
-
 dependencies {
-    api project(':core')
-    api project(':core.window')
-//    api project(':backend.core')
-//    api project(':backend.glfwutil')
-//    api project(':backend.opengl32')
+    implementation project(':core')
+    implementation project(':core.window')
+//    implementation project(':backend.core')
+//    implementation project(':backend.glfwutil')
+//    implementation project(':backend.opengl32')
 }
-
-ext.moduleName = 'com.spinyowl.spinygui'

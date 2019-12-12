@@ -23,9 +23,7 @@ import java.util.Map;
 import java.util.Set;
 
 public class StyleSheetConverterTest {
-
-
-    @Test
+@Test
     public void createFromCSS() throws StyleSheetException {
         String css = "div > button .test" +
                 "{" +
@@ -89,15 +87,11 @@ public class StyleSheetConverterTest {
         for (Node node : labels) {
             Assert.assertEquals(Label.class, node.getClass());
         }
-
-
-        Set<Element> test = StyleSheet.searchElements(ruleSets.get(1), componentTree);
+Set<Element> test = StyleSheet.searchElements(ruleSets.get(1), componentTree);
         for (Element node : test) {
             Assert.assertEquals("test", node.getAttribute("class"));
         }
-
-
-        Set<Element> buttons = StyleSheet.searchElements(ruleSets.get(2), componentTree);
+Set<Element> buttons = StyleSheet.searchElements(ruleSets.get(2), componentTree);
         for (Node node : buttons) {
             Assert.assertEquals(Button.class, node.getClass());
         }

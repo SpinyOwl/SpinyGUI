@@ -7,9 +7,7 @@ import java.util.List;
  * Defines node that can not contain child elements.
  */
 public abstract class EmptyElement extends Element {
-
-
-    /**
+/**
      * Used to get child nodes.
      *
      * For empty node returns empty list.
@@ -20,9 +18,7 @@ public abstract class EmptyElement extends Element {
     public List<Node> getChildNodes() {
         return Collections.emptyList();
     }
-
-
-    /**
+/**
      * Child operations are not supported for {@link EmptyElement}.
      *
      * @param node node.

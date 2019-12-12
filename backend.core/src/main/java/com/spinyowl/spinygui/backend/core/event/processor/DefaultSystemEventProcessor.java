@@ -24,14 +24,10 @@ public class DefaultSystemEventProcessor implements SystemEventProcessor {
         }
         eventQueue.removeAll(events);
     }
-
-
-    private void processEvent(SystemEvent event) {
+private void processEvent(SystemEvent event) {
         SystemEventHandler<SystemEvent> handler = SystemEvent.getEventHandler(event);
         if (handler != null) {
             handler.handle(event);
         }
     }
-
-
 }

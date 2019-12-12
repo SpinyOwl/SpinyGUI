@@ -1,6 +1,4 @@
 package com.spinyowl.spinygui.core.animation;
-
-
 /**
  * Animation processor.
  *

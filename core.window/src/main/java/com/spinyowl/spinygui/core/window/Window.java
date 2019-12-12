@@ -11,8 +11,6 @@ import org.joml.Vector2ic;
 
 import java.util.List;
 import java.util.Objects;
-
-
 /**
  * Window class. Represents OS window.
  * <br>

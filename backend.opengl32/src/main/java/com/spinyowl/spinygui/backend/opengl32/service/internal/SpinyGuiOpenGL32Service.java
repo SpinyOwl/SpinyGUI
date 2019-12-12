@@ -26,9 +26,7 @@ public class SpinyGuiOpenGL32Service {
     public static SpinyGuiOpenGL32Service getInstance() {
         return INSTANCE;
     }
-
-
-    public void startService() {
+public void startService() {
         if (started.compareAndSet(false, true)) {
             MasterRendererProvider.setRenderer(new NvgMasterRenderer());
             // register shutdown hook to release resources.

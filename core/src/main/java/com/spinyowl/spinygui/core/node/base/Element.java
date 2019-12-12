@@ -58,9 +58,7 @@ public abstract class Element extends Node implements EventTarget {
         return getChildNodes().stream().filter(n -> n instanceof Element)
                 .map(n -> (Element) n).collect(Collectors.toUnmodifiableList());
     }
-
-
-    /**
+/**
      * Returns unmodifiable collection of node attributes.
      *
      * @return unmodifiable collection of node attributes.
@@ -126,9 +124,7 @@ public abstract class Element extends Node implements EventTarget {
     public NodeStyle getCalculatedStyle() {
         return calculatedStyle;
     }
-
-
-    /**
+/**
      * Returns the number of elements in this node.  If this node contains
      * more than {@code Integer.MAX_VALUE} elements, returns
      * {@code Integer.MAX_VALUE}.

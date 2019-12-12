@@ -132,9 +132,7 @@ public abstract class Property {
         Objects.requireNonNull(value);
         this.value = value.toLowerCase();
     }
-
-
-    /**
+/**
      * Returns a set of constant property values allowed to use or an empty set (if there are no static values for propery).
      *
      * @return set of constant values or null.

@@ -1,6 +1,4 @@
 package com.spinyowl.spinygui.core.animation;
-
-
 /**
  * Animation processor.
  *
@@ -26,6 +24,4 @@ public interface Animator {
      * @param animation animation to remove.
      */
     void removeAnimation(Animation animation);
-
-
 }

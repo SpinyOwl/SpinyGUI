@@ -144,6 +144,4 @@ public interface CallbackKeeper {
      * @return chain char callback.
      */
     IChainWindowMaximizeCallback getChainWindowMaximizeCallback();
-
-
 }

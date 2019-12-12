@@ -6,7 +6,5 @@ public class SystemCursorPosEventHandler implements SystemEventHandler<SystemCur
     @Override
     public void handle(SystemCursorPosEvent event) {
 //        Services.
-
-
-    }
+}
 }

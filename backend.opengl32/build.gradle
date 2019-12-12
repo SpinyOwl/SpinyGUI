@@ -3,34 +3,31 @@ plugins {
 }
 
 dependencies {
-    api project(':core')
-    api project(':backend.core')
-    api project(':backend.glfwutil')
+    implementation project(':core')
+    implementation project(':backend.core')
+    implementation project(':backend.glfwutil')
 
     // https://mvnrepository.com/artifact/com.google.guava/guava-collections
-    implementation group: 'com.google.guava', name: 'guava-collections', version: guava_collections_version
+    api group: 'com.google.guava', name: 'guava-collections', version: guava_collections_version
 
-    implementation group: 'org.lwjgl', name: 'lwjgl', version: lwjgl_version
-    implementation group: 'org.lwjgl', name: 'lwjgl', version: lwjgl_version, changing: true, classifier: 'natives-windows'
-    implementation group: 'org.lwjgl', name: 'lwjgl', version: lwjgl_version, changing: true, classifier: 'natives-linux'
-    implementation group: 'org.lwjgl', name: 'lwjgl', version: lwjgl_version, changing: true, classifier: 'natives-macos'
+    api group: 'org.lwjgl', name: 'lwjgl', version: lwjgl_version
+    api group: 'org.lwjgl', name: 'lwjgl', version: lwjgl_version, changing: true, classifier: 'natives-windows'
+    api group: 'org.lwjgl', name: 'lwjgl', version: lwjgl_version, changing: true, classifier: 'natives-linux'
+    api group: 'org.lwjgl', name: 'lwjgl', version: lwjgl_version, changing: true, classifier: 'natives-macos'
 
-    implementation group: 'org.lwjgl', name: 'lwjgl-opengl', version: lwjgl_version
-    implementation group: 'org.lwjgl', name: 'lwjgl-opengl', version: lwjgl_version, changing: true, classifier: 'natives-windows'
-    implementation group: 'org.lwjgl', name: 'lwjgl-opengl', version: lwjgl_version, changing: true, classifier: 'natives-linux'
-    implementation group: 'org.lwjgl', name: 'lwjgl-opengl', version: lwjgl_version, changing: true, classifier: 'natives-macos'
+    api group: 'org.lwjgl', name: 'lwjgl-opengl', version: lwjgl_version
+    api group: 'org.lwjgl', name: 'lwjgl-opengl', version: lwjgl_version, changing: true, classifier: 'natives-windows'
+    api group: 'org.lwjgl', name: 'lwjgl-opengl', version: lwjgl_version, changing: true, classifier: 'natives-linux'
+    api group: 'org.lwjgl', name: 'lwjgl-opengl', version: lwjgl_version, changing: true, classifier: 'natives-macos'
 
-    implementation group: 'org.lwjgl', name: 'lwjgl-glfw', version: lwjgl_version
-    implementation group: 'org.lwjgl', name: 'lwjgl-glfw', version: lwjgl_version, changing: true, classifier: 'natives-windows'
-    implementation group: 'org.lwjgl', name: 'lwjgl-glfw', version: lwjgl_version, changing: true, classifier: 'natives-linux'
-    implementation group: 'org.lwjgl', name: 'lwjgl-glfw', version: lwjgl_version, changing: true, classifier: 'natives-macos'
+    api group: 'org.lwjgl', name: 'lwjgl-glfw', version: lwjgl_version
+    api group: 'org.lwjgl', name: 'lwjgl-glfw', version: lwjgl_version, changing: true, classifier: 'natives-windows'
+    api group: 'org.lwjgl', name: 'lwjgl-glfw', version: lwjgl_version, changing: true, classifier: 'natives-linux'
+    api group: 'org.lwjgl', name: 'lwjgl-glfw', version: lwjgl_version, changing: true, classifier: 'natives-macos'
 
-    implementation group: 'org.lwjgl', name: 'lwjgl-nanovg', version: lwjgl_version, changing: true
-    implementation group: 'org.lwjgl', name: 'lwjgl-nanovg', version: lwjgl_version, changing: true, classifier: 'natives-windows'
-    implementation group: 'org.lwjgl', name: 'lwjgl-nanovg', version: lwjgl_version, changing: true, classifier: 'natives-linux'
-    implementation group: 'org.lwjgl', name: 'lwjgl-nanovg', version: lwjgl_version, changing: true, classifier: 'natives-macos'
-
-    testImplementation group: 'junit', name: 'junit', version: junit_version
+    api group: 'org.lwjgl', name: 'lwjgl-nanovg', version: lwjgl_version, changing: true
+    api group: 'org.lwjgl', name: 'lwjgl-nanovg', version: lwjgl_version, changing: true, classifier: 'natives-windows'
+    api group: 'org.lwjgl', name: 'lwjgl-nanovg', version: lwjgl_version, changing: true, classifier: 'natives-linux'
+    api group: 'org.lwjgl', name: 'lwjgl-nanovg', version: lwjgl_version, changing: true, classifier: 'natives-macos'
 }
 
-ext.moduleName = 'com.spinyowl.spinygui.backend.opengl32'

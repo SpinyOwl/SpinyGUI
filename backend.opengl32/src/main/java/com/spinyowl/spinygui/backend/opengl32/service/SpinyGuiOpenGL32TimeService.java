@@ -5,17 +5,13 @@ import org.lwjgl.glfw.GLFW;
 
 public class SpinyGuiOpenGL32TimeService implements TimeService {
     private static final SpinyGuiOpenGL32TimeService INSTANCE = new SpinyGuiOpenGL32TimeService();
-
-
-    private SpinyGuiOpenGL32TimeService() {
+private SpinyGuiOpenGL32TimeService() {
     }
 
     public static SpinyGuiOpenGL32TimeService getInstance() {
         return INSTANCE;
     }
-
-
-    @Override
+@Override
     public double getTime() {
         return GLFW.glfwGetTime();
     }

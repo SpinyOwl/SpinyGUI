@@ -24,9 +24,7 @@ import static com.spinyowl.spinygui.core.layout.impl.flex.FlexUtils.*;
  * @author Aliaksandr_Shcherbin.
  */
 public class FlexLayout implements Layout {
-
-
-    public static final float THRESHOLD = 0.0001f;
+public static final float THRESHOLD = 0.0001f;
 
     /**
      * Used to lay out child components for parent component.
@@ -224,6 +222,4 @@ public class FlexLayout implements Layout {
             }
         }
     }
-
-
 }

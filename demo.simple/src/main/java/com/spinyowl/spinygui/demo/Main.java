@@ -42,15 +42,11 @@ public class Main {
 
         Frame frame = new Frame();// window.getFrame();
         frame.getContainer().addChild(element);
-
-
-        System.out.println(NodeUtilities.getFrame(input) == frame);
+System.out.println(NodeUtilities.getFrame(input) == frame);
 //        window.getContainer().addChild(element);
 
         String xml = NodeConverter.toXml(element, false);
-
-
-        String xml2 = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+String xml2 = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
                 "<div>\n" +
                 "  <button>asdfasdfasd</button>" +
                 "  <button>\n" +

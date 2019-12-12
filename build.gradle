@@ -1,5 +1,6 @@
 plugins {
     id "org.sonarqube" version "2.7"
+    id "org.javamodularity.moduleplugin" version "1.6.0" apply false
 }
 
 project.group = 'com.spinyowl'
@@ -16,59 +17,35 @@ private void printProjectInfo() {
 }
 
 subprojects {
+    apply plugin: 'java'
+    apply plugin: 'org.javamodularity.moduleplugin'
+
+    group = 'com.spinyowl'
+    version = rootProject.version
 
     buildDir = new File(rootProject.projectDir, "build/" + project.name)
 
-    afterEvaluate {
-        group = 'com.spinyowl'
-        version = rootProject.version
+    sourceCompatibility = 1.12
+    targetCompatibility = 1.12
 
-        repositories {
-            mavenCentral()
-            jcenter()
-            maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
-            maven { url "https://raw.githubusercontent.com/LiquidEngine/repo/snapshots" }
-            maven { url "https://raw.githubusercontent.com/LiquidEngine/repo/releases" }
+    repositories {
+        mavenCentral()
+        jcenter()
+        maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
+    }
 
+    test {
+        useJUnitPlatform()
+
+        testLogging {
+            events 'PASSED', 'FAILED', 'SKIPPED'
         }
+    }
 
-        sourceCompatibility = 1.12
-        targetCompatibility = 1.12
-
-        compileJava {
-            doFirst {
-                options.compilerArgs = [
-                        '--module-path', classpath.asPath,
-                ]
-                classpath = files()
-            }
-        }
-
-        compileTestJava {
-            inputs.property("moduleName", moduleName)
-            doFirst {
-                options.compilerArgs = [
-                        '--module-path', classpath.asPath,
-                        '--add-modules', 'junit',
-                        '--add-reads', "$moduleName=junit",
-                        '--patch-module', "$moduleName=" + files(sourceSets.test.java.srcDirs).asPath,
-                ]
-                classpath = files()
-            }
-        }
-
-        test {
-            inputs.property("moduleName", moduleName)
-            doFirst {
-                jvmArgs = [
-                        '--module-path', classpath.asPath,
-                        '--add-modules', 'ALL-MODULE-PATH',
-                        '--add-reads', "$moduleName=junit",
-                        '--patch-module', "$moduleName=" + files(sourceSets.test.java.outputDir).asPath,
-                ]
-                classpath = files()
-            }
-        }
+    dependencies {
+        testImplementation 'org.junit.jupiter:junit-jupiter-api:5.3.1'
+        testImplementation 'org.junit.jupiter:junit-jupiter-params:5.3.1'
+        testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.3.1'
     }
 }
 

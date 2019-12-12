@@ -1,9 +1,7 @@
 package com.spinyowl.spinygui.core.style.css;
 
 public final class SupportedCssProperties {
-
-
-    private SupportedCssProperties() {
+private SupportedCssProperties() {
     }
 
     /**
@@ -12,9 +10,7 @@ public final class SupportedCssProperties {
     public static SupportedCssProperties getInstance() {
         return PropertiesHolder.instance;
     }
-
-
-    /**
+/**
      * Instance holder.
      */
     private static class PropertiesHolder {

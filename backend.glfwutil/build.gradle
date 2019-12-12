@@ -3,12 +3,11 @@ plugins {
 }
 
 dependencies {
-    api project(':backend.core')
+    implementation project(':backend.core')
 
-    implementation group: 'org.lwjgl', name: 'lwjgl-glfw', version: lwjgl_version
-    implementation group: 'org.lwjgl', name: 'lwjgl-glfw', version: lwjgl_version, changing: true, classifier: 'natives-windows'
-    implementation group: 'org.lwjgl', name: 'lwjgl-glfw', version: lwjgl_version, changing: true, classifier: 'natives-linux'
-    implementation group: 'org.lwjgl', name: 'lwjgl-glfw', version: lwjgl_version, changing: true, classifier: 'natives-macos'
+    api group: 'org.lwjgl', name: 'lwjgl-glfw', version: lwjgl_version
+    api group: 'org.lwjgl', name: 'lwjgl-glfw', version: lwjgl_version, changing: true, classifier: 'natives-windows'
+    api group: 'org.lwjgl', name: 'lwjgl-glfw', version: lwjgl_version, changing: true, classifier: 'natives-linux'
+    api group: 'org.lwjgl', name: 'lwjgl-glfw', version: lwjgl_version, changing: true, classifier: 'natives-macos'
 }
 
-ext.moduleName = 'com.spinyowl.spinygui.backend.glfwutil'

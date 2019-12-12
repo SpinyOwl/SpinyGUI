@@ -25,9 +25,7 @@ public class SpinyGuiOpenGL32MonitorService implements MonitorService {
     static {
         SpinyGuiOpenGL32Service.getInstance().startService();
     }
-
-
-    private SpinyGuiOpenGL32MonitorService() {
+private SpinyGuiOpenGL32MonitorService() {
     }
 
     public static SpinyGuiOpenGL32MonitorService getInstance() {

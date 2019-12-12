@@ -8,9 +8,7 @@ public class Padding {
     private Length bottom;
     private Length right;
     private Length left;
-
-
-    public Length getTop() {
+public Length getTop() {
         return top;
     }
 
@@ -50,16 +48,12 @@ public class Padding {
         this.top = this.bottom = paddingTopBottom;
         this.left = this.right = paddingRightLeft;
     }
-
-
-    public void set(Length paddingTop, Length paddingRightLeft, Length paddingBottom) {
+public void set(Length paddingTop, Length paddingRightLeft, Length paddingBottom) {
         this.top = paddingTop;
         this.left = this.right = paddingRightLeft;
         this.bottom = paddingBottom;
     }
-
-
-    public void set(Length paddingTop, Length paddingRight, Length paddingBottom, Length paddingLeft) {
+public void set(Length paddingTop, Length paddingRight, Length paddingBottom, Length paddingLeft) {
         this.top = paddingTop;
         this.left = paddingLeft;
         this.bottom = paddingBottom;

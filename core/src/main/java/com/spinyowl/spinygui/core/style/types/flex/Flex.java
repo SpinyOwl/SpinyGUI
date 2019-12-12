@@ -47,9 +47,7 @@ public class Flex {
         this.alignContent = AlignContent.STRETCH;
         this.alignSelf = AlignSelf.AUTO;
     }
-
-
-    public void setFlex(int flexGrow, int flexShrink, float flexBasis) {
+public void setFlex(int flexGrow, int flexShrink, float flexBasis) {
         setFlexGrow(flexGrow);
         setFlexShrink(flexShrink);
         setFlexBasis(flexBasis);

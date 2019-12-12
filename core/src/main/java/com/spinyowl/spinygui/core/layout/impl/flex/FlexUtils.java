@@ -1,6 +1,4 @@
 package com.spinyowl.spinygui.core.layout.impl.flex;
-
-
 import com.spinyowl.spinygui.core.node.base.Element;
 import com.spinyowl.spinygui.core.style.NodeStyle;
 import com.spinyowl.spinygui.core.style.types.flex.AlignItems;

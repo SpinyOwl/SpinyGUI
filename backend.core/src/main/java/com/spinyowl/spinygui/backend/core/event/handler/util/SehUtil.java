@@ -48,9 +48,7 @@ public final class SehUtil {
         }
         return newtarget;
     }
-
-
-    /**
+/**
      * Used to search all components (under point) in node.
      *
      * @param container root container to search.
@@ -63,9 +61,7 @@ public final class SehUtil {
         recursiveTargetComponentListSearch(container, targetList, x, y);
         return targetList;
     }
-
-
-    /**
+/**
      * Used to search all components (under point) in node. New located target node will be added to target list.
      *
      * @param node       source node to search target.
