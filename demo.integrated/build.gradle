@@ -21,10 +21,10 @@ dependencies {
     api group: 'org.lwjgl', name: 'lwjgl-opengl', version: lwjgl_version, changing: true, classifier: 'natives-linux'
     api group: 'org.lwjgl', name: 'lwjgl-opengl', version: lwjgl_version, changing: true, classifier: 'natives-macos'
 
-    implementation project(':core')
-    implementation project(':backend.core')
-    implementation project(':backend.glfwutil')
-    implementation project(':backend.opengl32')
+    api project(':core')
+    api project(':backend.core')
+    api project(':backend.glfwutil')
+    api project(':backend.opengl32')
 }
 mainClassName = "$moduleName/Main"
 run {

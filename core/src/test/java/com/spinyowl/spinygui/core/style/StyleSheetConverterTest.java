@@ -15,8 +15,8 @@ import com.spinyowl.spinygui.core.node.base.Node;
 import com.spinyowl.spinygui.core.style.css.selector.StyleSelector;
 import com.spinyowl.spinygui.core.style.manager.StyleManagerProvider;
 import com.spinyowl.spinygui.core.style.types.Color;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 import java.util.Map;
@@ -45,8 +45,8 @@ public class StyleSheetConverterTest {
         RuleSet ruleSet = ruleSets.get(0);
         List<StyleSelector> selectors = ruleSet.getSelectors();
 
-        Assert.assertFalse(selectors.get(0).test(div));
-        Assert.assertTrue(selectors.get(0).test(testLabel));
+        Assertions.assertFalse(selectors.get(0).test(div));
+        Assertions.assertTrue(selectors.get(0).test(testLabel));
 
         Frame frame = new Frame();
         frame.getStyleSheets().add(stylesheet);
@@ -54,7 +54,7 @@ public class StyleSheetConverterTest {
 
         StyleManagerProvider.getInstance().recalculateStyles(frame);
 
-        Assert.assertEquals(Color.RED, testLabel.getCalculatedStyle().getColor());
+        Assertions.assertEquals(Color.RED, testLabel.getCalculatedStyle().getColor());
     }
 
     @Test
@@ -85,15 +85,15 @@ public class StyleSheetConverterTest {
 
         Set<Element> labels = StyleSheet.searchElements(ruleSets.get(0), componentTree);
         for (Node node : labels) {
-            Assert.assertEquals(Label.class, node.getClass());
+            Assertions.assertEquals(Label.class, node.getClass());
         }
 Set<Element> test = StyleSheet.searchElements(ruleSets.get(1), componentTree);
         for (Element node : test) {
-            Assert.assertEquals("test", node.getAttribute("class"));
+            Assertions.assertEquals("test", node.getAttribute("class"));
         }
 Set<Element> buttons = StyleSheet.searchElements(ruleSets.get(2), componentTree);
         for (Node node : buttons) {
-            Assert.assertEquals(Button.class, node.getClass());
+            Assertions.assertEquals(Button.class, node.getClass());
         }
 
     }

@@ -3,7 +3,7 @@ plugins {
 }
 
 dependencies {
-    implementation project(':backend.core')
+    api project(':backend.core')
 
     api group: 'org.lwjgl', name: 'lwjgl-glfw', version: lwjgl_version
     api group: 'org.lwjgl', name: 'lwjgl-glfw', version: lwjgl_version, changing: true, classifier: 'natives-windows'

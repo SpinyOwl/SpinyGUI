@@ -3,9 +3,9 @@ plugins {
 }
 
 dependencies {
-    implementation project(':core')
-    implementation project(':backend.core')
-    implementation project(':backend.glfwutil')
+    api project(':core')
+    api project(':backend.core')
+    api project(':backend.glfwutil')
 
     // https://mvnrepository.com/artifact/com.google.guava/guava-collections
     api group: 'com.google.guava', name: 'guava-collections', version: guava_collections_version
