@@ -13,7 +13,7 @@ public class MinWidthProperty extends Property {
     private ValueExtractor<Length> lengthValueExtractor = ValueExtractors.getInstance().getValueExtractor(Length.class);
 
     public MinWidthProperty() {
-        super(Properties.WIDTH, "0px", false, true);
+        super(Properties.MIN_WIDTH, "0px", false, true);
     }
 
     public MinWidthProperty(String value) {

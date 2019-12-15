@@ -13,7 +13,7 @@ public class MarginProperty extends Property {
     private ValueExtractor<Unit> unitValueExtractor = ValueExtractors.getInstance().getValueExtractor(Unit.class);
 
     public MarginProperty() {
-        super(Properties.MARGIN, null, false, true);
+        super(Properties.MARGIN, "0", false, true);
     }
 
     public MarginProperty(String value) {

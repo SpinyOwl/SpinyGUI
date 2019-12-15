@@ -10,6 +10,7 @@ public class UnitValueExtractor implements ValueExtractor<Unit> {
     public static final String PERCENTAGE_REGEX = "-?(\\d+(\\.\\d*)?|\\.\\d+)%";
     public static final String PIXEL_REGEX = "-?\\d+px";
     public static final String AUTO_REGEX = "auto";
+    public static final String ZERO_REGEX = "0+";
 
     public static Length getLength(String value) {
         if (value.matches(PIXEL_REGEX)) {
@@ -21,12 +22,20 @@ public class UnitValueExtractor implements ValueExtractor<Unit> {
             String percentageValue = value.substring(0, value.length() - 1);
             return Length.percent(Float.parseFloat(percentageValue));
         }
+
+        if (value.matches(ZERO_REGEX)) {
+            return Length.pixel(0);
+        }
+
         return null;
     }
 
     @Override
     public boolean isValid(String value) {
-        return value.matches(PERCENTAGE_REGEX) || value.matches(PIXEL_REGEX) || value.matches(AUTO_REGEX);
+        return value.matches(PERCENTAGE_REGEX) ||
+                value.matches(PIXEL_REGEX) ||
+                value.matches(AUTO_REGEX) ||
+                value.matches(UnitValueExtractor.ZERO_REGEX);
     }
 
     @Override

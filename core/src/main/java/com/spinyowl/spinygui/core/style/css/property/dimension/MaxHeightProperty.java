@@ -13,7 +13,7 @@ public class MaxHeightProperty extends Property {
     private ValueExtractor<Length> lengthValueExtractor = ValueExtractors.getInstance().getValueExtractor(Length.class);
 
     public MaxHeightProperty() {
-        super(Properties.HEIGHT, "none", false, true);
+        super(Properties.MAX_HEIGHT, "none", false, true);
     }
 
     public MaxHeightProperty(String value) {

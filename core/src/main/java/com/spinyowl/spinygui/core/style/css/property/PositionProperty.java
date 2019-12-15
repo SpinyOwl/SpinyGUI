@@ -6,19 +6,20 @@ import com.spinyowl.spinygui.core.style.NodeStyle;
 import com.spinyowl.spinygui.core.style.css.Properties;
 import com.spinyowl.spinygui.core.style.css.Property;
 import com.spinyowl.spinygui.core.style.types.Display;
+import com.spinyowl.spinygui.core.style.types.Position;
 
 import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public class DisplayProperty extends Property {
+public class PositionProperty extends Property {
 
-    public DisplayProperty() {
-        super(Properties.DISPLAY, Display.BLOCK.getName(), true, true);
+    public PositionProperty() {
+        super(Properties.POSITION, Position.RELATIVE.getName(), true, true);
     }
 
-    public DisplayProperty(String value) {
-        super(Properties.DISPLAY, Display.BLOCK.getName(), true, true, value);
+    public PositionProperty(String value) {
+        super(Properties.POSITION, Position.RELATIVE.getName(), true, true, value);
     }
 
     /**
@@ -32,17 +33,17 @@ public class DisplayProperty extends Property {
 
         if (value != null) {
             if (INITIAL.equalsIgnoreCase(value)) {
-                nodeStyle.setDisplay(Display.BLOCK);
+                nodeStyle.setPosition(Position.RELATIVE);
             } else if (INHERIT.equalsIgnoreCase(value)) {
                 Container parent = element.getParent();
                 if (parent != null) {
-                    Display pd = parent.getCalculatedStyle().getDisplay();
-                    nodeStyle.setDisplay(pd == null ? Display.BLOCK : pd);
+                    Position pd = parent.getCalculatedStyle().getPosition();
+                    nodeStyle.setPosition(pd == null ? Position.RELATIVE : pd);
                 } else {
-                    nodeStyle.setDisplay(Display.BLOCK);
+                    nodeStyle.setPosition(Position.RELATIVE);
                 }
-            } else if (Display.contains(value)) {
-                nodeStyle.setDisplay(Display.of(value));
+            } else if (Position.contains(value)) {
+                nodeStyle.setPosition(Position.of(value));
             }
         }
     }
@@ -54,12 +55,12 @@ public class DisplayProperty extends Property {
      */
     @Override
     public boolean isValid() {
-        return super.isValid() || Display.contains(value);
+        return super.isValid() || Position.contains(value);
     }
 
     @Override
     public Set<String> allowedValues() {
-        var values = Display.values().stream().map(Display::getName).collect(Collectors.toCollection(HashSet::new));
+        var values = Position.values().stream().map(Position::getName).collect(Collectors.toCollection(HashSet::new));
         values.add(INITIAL);
         values.add(INHERIT);
         return values;

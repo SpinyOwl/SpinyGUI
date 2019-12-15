@@ -1,7 +1,6 @@
 package com.spinyowl.spinygui.core.style.css;
 
 import com.spinyowl.spinygui.core.node.base.Element;
-import com.spinyowl.spinygui.core.style.NodeStyle;
 
 import java.util.Collections;
 import java.util.Objects;
@@ -9,7 +8,7 @@ import java.util.Set;
 
 /**
  * Root class that describes property.
- * Should be used to create new classes which implement {@link Property#updateNodeStyle(NodeStyle)} and {@link Property#isValid()}.
+ * Should be used to create new classes which implement {@link Property#updateElementStyle(Element)} and {@link Property#isValid()}.
  */
 public abstract class Property {
     public static final String INHERIT = "inherit";
@@ -132,7 +131,8 @@ public abstract class Property {
         Objects.requireNonNull(value);
         this.value = value.toLowerCase();
     }
-/**
+
+    /**
      * Returns a set of constant property values allowed to use or an empty set (if there are no static values for propery).
      *
      * @return set of constant values or null.
@@ -168,4 +168,64 @@ public abstract class Property {
         return INHERIT.equalsIgnoreCase(value) || INITIAL.equalsIgnoreCase(value);
     }
 
+    public boolean isInitial() {
+        return INITIAL.equalsIgnoreCase(value);
+    }
+
+    public boolean isInherit() {
+        return INHERIT.equalsIgnoreCase(value);
+    }
+
+    /**
+     * Returns property name.
+     *
+     * @return property name.
+     */
+    public String getName() {
+        return name;
+    }
+
+    /**
+     * Returns property default value.
+     *
+     * @return property default value.
+     */
+    public String getDefaultValue() {
+        return defaultValue;
+    }
+
+    /**
+     * Defines if css property for element should be inherited from parent element.
+     * <br>
+     * When no value for an inherited property has been specified on an element,
+     * the element gets the computed value of that property on its parent element.
+     * Only the root element of the document gets the initial value given in the property's summary.
+     * <br>
+     * When no value for a non-inherited property has been specified on an element,
+     * the element gets the initial value of that property (as specified in the property's summary).
+     * <br>
+     * The <b>inherit</b> keyword allows authors to explicitly specify inheritance.
+     * It works on both inherited and non-inherited properties.
+     *
+     * @return true if this property inherit value from parent by default.
+     */
+    public boolean isInherited() {
+        return inherited;
+    }
+
+    /**
+     * Returns true if css property could be animated.
+     *
+     * @return true if css property could be animated.
+     */
+    public boolean isAnimatable() {
+        return animatable;
+    }
+
+    /**
+     * Used to reset property value to default.
+     */
+    public void resetToDefault() {
+        this.value = defaultValue;
+    }
 }

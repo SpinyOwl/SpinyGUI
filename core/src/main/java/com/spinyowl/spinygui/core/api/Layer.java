@@ -96,7 +96,8 @@ public class Layer extends Container {
 
         addListener(WindowCloseEvent.class, listener);
     }
-public void removeWindowCloseEventListener(EventListener<WindowCloseEvent> listener) {
+
+    public void removeWindowCloseEventListener(EventListener<WindowCloseEvent> listener) {
         Objects.requireNonNull(listener);
 
         removeListener(WindowCloseEvent.class, listener);

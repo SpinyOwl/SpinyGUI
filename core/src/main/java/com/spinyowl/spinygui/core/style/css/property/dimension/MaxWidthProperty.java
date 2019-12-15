@@ -13,7 +13,7 @@ public class MaxWidthProperty extends Property {
     private ValueExtractor<Length> lengthValueExtractor = ValueExtractors.getInstance().getValueExtractor(Length.class);
 
     public MaxWidthProperty() {
-        super(Properties.WIDTH, "none", false, true);
+        super(Properties.MAX_WIDTH, "none", false, true);
     }
 
     public MaxWidthProperty(String value) {

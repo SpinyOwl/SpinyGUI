@@ -13,7 +13,7 @@ public class PaddingBottomProperty extends Property {
     private ValueExtractor<Length> lengthValueExtractor = ValueExtractors.getInstance().getValueExtractor(Length.class);
 
     public PaddingBottomProperty() {
-        super(Properties.PADDING_BOTTOM, null, false, true);
+        super(Properties.PADDING_BOTTOM, "0", false, true);
     }
 
     public PaddingBottomProperty(String value) {

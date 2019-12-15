@@ -78,9 +78,10 @@ public final class Properties {
         addSupportedProperty(BOTTOM, BottomProperty::new);
         addSupportedProperty(LEFT, LeftProperty::new);
 
+        addSupportedProperty(DISPLAY, DisplayProperty::new);
+        addSupportedProperty(POSITION, PositionProperty::new);
+
 //        BORDER
-//        DISPLAY
-//        POSITION
 //        WHITE_SPACE
     }
 

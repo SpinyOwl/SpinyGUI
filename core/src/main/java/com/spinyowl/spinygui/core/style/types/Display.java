@@ -11,19 +11,22 @@ import java.util.stream.Collectors;
  * CSS display.
  */
 public final class Display {
+    private static final Map<String, Display> VALUES = new ConcurrentHashMap<>();
+
     /**
      * Displays an element as a block-level flex container.
      */
-    public static final Display FLEX = new Display("flex");
+    public static final Display FLEX = Display.of("flex");
+
     /**
      * The element is completely removed.
      */
-    public static final Display NONE = new Display("none");
+    public static final Display NONE = Display.of("none");
+
     /**
      * Displays an element as a block element. It starts on a new line, and takes up the whole width.
      */
-    public static final Display BLOCK = new Display("block");
-private static final Map<String, Display> VALUES = new ConcurrentHashMap<>();
+    public static final Display BLOCK = Display.of("block");
 
     /**
      * Name of display type (should be same as in css specification)
@@ -49,14 +52,24 @@ private static final Map<String, Display> VALUES = new ConcurrentHashMap<>();
      */
     public static Display of(String name) {
         Objects.requireNonNull(name);
-        String nameToUse = name.toLowerCase();
-        return VALUES.computeIfAbsent(nameToUse, Display::new);
+        return VALUES.computeIfAbsent(name.toLowerCase(), Display::new);
     }
 
+    /**
+     * Returns set of all available display values.
+     *
+     * @return set of all available display values.
+     */
     public static Set<Display> values() {
         return Set.copyOf(VALUES.values());
     }
 
+    /**
+     * Returns true there is a display value wth specified name.
+     *
+     * @param name display name.
+     * @return true there is a display value wth specified name.
+     */
     public static boolean contains(String name) {
         if (name == null) {
             return false;
@@ -64,6 +77,11 @@ private static final Map<String, Display> VALUES = new ConcurrentHashMap<>();
         return values().stream().map(Display::getName).collect(Collectors.toSet()).contains(name.toLowerCase());
     }
 
+    /**
+     * Name of Display.
+     *
+     * @return
+     */
     public String getName() {
         return name;
     }
