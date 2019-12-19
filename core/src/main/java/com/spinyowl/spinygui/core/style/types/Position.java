@@ -22,21 +22,29 @@ public final class Position {
      */
     public static final Position RELATIVE = Position.of("relative");
 
-//    /** Default value. Elements render in order, as they appear in the document flow. */
-//    STATIC,
-//    /** The element is positioned relative to the browser window. */
-//    FIXED,
-//    /** The element is positioned based on the user's scroll position
-//     *
-//     *  A sticky element toggles between relative and fixed, depending on the scroll position. It is positioned relative until a given offset position is met in the viewport - then it "sticks" in place (like position:fixed).
-//     *  Note: Not supported in IE/Edge 15 or earlier. Supported in Safari from version 6.1 with a -webkit- prefix.
-//     */
-//    STICKY
+    /**
+     * Default value. Elements render in order, as they appear in the document flow.
+     */
+    public static final Position STATIC = Position.of("static");
+
+    /**
+     * The element is positioned relative to the browser window.
+     */
+    public static final Position FIXED = Position.of("fixed");
+
+    /**
+     * The element is positioned based on the user's scroll position
+     *
+     * A sticky element toggles between relative and fixed, depending on the scroll position. It is positioned relative until a given offset position is met in the viewport - then it "sticks" in place (like position:fixed).
+     * Note: Not supported in IE/Edge 15 or earlier. Supported in Safari from version 6.1 with a -webkit- prefix.
+     */
+    public static final Position STICKY = Position.of("sticky");
+
 
     /**
      * Name of position type (should be same as in css specification)
      */
-    private String name;
+    private final String name;
 
     /**
      * Creates position element with specified name.

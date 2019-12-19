@@ -29,9 +29,19 @@ public final class Display {
     public static final Display BLOCK = Display.of("block");
 
     /**
+     * Inherits display property from parent element.
+     */
+    public static final Display INHERIT = Display.of("inherit");
+
+    /**
+     * Used initial display property.
+     */
+    public static final Display INITIAL = Display.of("initial");
+
+    /**
      * Name of display type (should be same as in css specification)
      */
-    private String name;
+    private final String name;
 
     /**
      * Creates display element with specified name.
