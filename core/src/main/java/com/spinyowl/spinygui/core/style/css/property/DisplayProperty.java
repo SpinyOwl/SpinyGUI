@@ -5,6 +5,7 @@ import com.spinyowl.spinygui.core.node.base.Element;
 import com.spinyowl.spinygui.core.style.NodeStyle;
 import com.spinyowl.spinygui.core.style.css.Properties;
 import com.spinyowl.spinygui.core.style.css.Property;
+import com.spinyowl.spinygui.core.style.css.util.StyleUtils;
 import com.spinyowl.spinygui.core.style.types.Display;
 
 import java.util.HashSet;
@@ -34,9 +35,9 @@ public class DisplayProperty extends Property {
             if (INITIAL.equalsIgnoreCase(value)) {
                 nodeStyle.setDisplay(Display.BLOCK);
             } else if (INHERIT.equalsIgnoreCase(value)) {
-                Container parent = element.getParent();
-                if (parent != null) {
-                    Display pd = parent.getCalculatedStyle().getDisplay();
+                NodeStyle parentStyle = StyleUtils.getParentCalculatedStyle(element);
+                if (parentStyle != null) {
+                    Display pd = parentStyle.getDisplay();
                     nodeStyle.setDisplay(pd == null ? Display.BLOCK : pd);
                 } else {
                     nodeStyle.setDisplay(Display.BLOCK);

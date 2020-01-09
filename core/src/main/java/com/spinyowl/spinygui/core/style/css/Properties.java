@@ -1,6 +1,7 @@
 package com.spinyowl.spinygui.core.style.css;
 
 import com.spinyowl.spinygui.core.style.css.property.*;
+import com.spinyowl.spinygui.core.style.css.property.border.BorderLeftWidthProperty;
 import com.spinyowl.spinygui.core.style.css.property.dimension.*;
 import com.spinyowl.spinygui.core.style.css.property.margin.*;
 import com.spinyowl.spinygui.core.style.css.property.padding.*;
@@ -15,33 +16,62 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Supplier;
 
 public final class Properties {
-    //@formatter:off
-    public static final String COLOR          = "color";
+    public static final String COLOR = "color";
+
     public static final String PADDING        = "padding";
     public static final String PADDING_TOP    = "padding-top";
     public static final String PADDING_RIGHT  = "padding-right";
     public static final String PADDING_BOTTOM = "padding-bottom";
     public static final String PADDING_LEFT   = "padding-left";
-    public static final String MARGIN         = "margin";
-    public static final String MARGIN_TOP     = "margin-top";
-    public static final String MARGIN_RIGHT   = "margin-right";
-    public static final String MARGIN_BOTTOM  = "margin-bottom";
-    public static final String MARGIN_LEFT    = "margin-left";
-    public static final String BORDER         = "border";
-    public static final String WIDTH          = "width";
-    public static final String HEIGHT         = "height";
-    public static final String MIN_WIDTH      = "min-width";
-    public static final String MIN_HEIGHT     = "min-height";
-    public static final String MAX_WIDTH      = "max-width";
-    public static final String MAX_HEIGHT     = "max-height";
-    public static final String DISPLAY        = "display";
-    public static final String POSITION       = "position";
-    public static final String TOP            = "top";
-    public static final String BOTTOM         = "bottom";
-    public static final String RIGHT          = "right";
-    public static final String LEFT           = "left";
-    public static final String WHITE_SPACE    = "white-space";
-    //@formatter:on
+
+    public static final String MARGIN        = "margin";
+    public static final String MARGIN_TOP    = "margin-top";
+    public static final String MARGIN_RIGHT  = "margin-right";
+    public static final String MARGIN_BOTTOM = "margin-bottom";
+    public static final String MARGIN_LEFT   = "margin-left";
+
+    public static final String BORDER       = "border";
+    public static final String BORDER_WIDTH = "border-width";
+    public static final String BORDER_COLOR = "border-color";
+    public static final String BORDER_STYLE = "border-style";
+
+    public static final String BORDER_LEFT   = "border-left";
+    public static final String BORDER_RIGHT  = "border-right";
+    public static final String BORDER_TOP    = "border-top";
+    public static final String BORDER_BOTTOM = "border-bottom";
+
+    public static final String BORDER_LEFT_WIDTH   = "border-left-width";
+    public static final String BORDER_RIGHT_WIDTH  = "border-right-width";
+    public static final String BORDER_TOP_WIDTH    = "border-top-width";
+    public static final String BORDER_BOTTOM_WIDTH = "border-bottom-width";
+
+    public static final String BORDER_LEFT_COLOR   = "border-left-color";
+    public static final String BORDER_RIGHT_COLOR  = "border-right-color";
+    public static final String BORDER_TOP_COLOR    = "border-top-color";
+    public static final String BORDER_BOTTOM_COLOR = "border-bottom-color";
+
+    public static final String BORDER_LEFT_STYLE   = "border-left-style";
+    public static final String BORDER_RIGHT_STYLE  = "border-right-style";
+    public static final String BORDER_TOP_STYLE    = "border-top-style";
+    public static final String BORDER_BOTTOM_STYLE = "border-bottom-style";
+
+    public static final String WIDTH      = "width";
+    public static final String HEIGHT     = "height";
+    public static final String MIN_WIDTH  = "min-width";
+    public static final String MIN_HEIGHT = "min-height";
+    public static final String MAX_WIDTH  = "max-width";
+    public static final String MAX_HEIGHT = "max-height";
+
+    public static final String DISPLAY  = "display";
+    public static final String POSITION = "position";
+
+    public static final String TOP    = "top";
+    public static final String BOTTOM = "bottom";
+    public static final String RIGHT  = "right";
+    public static final String LEFT   = "left";
+
+    public static final String WHITE_SPACE = "white-space";
+
     private List<String> supportedProperties = new ArrayList<>();
 
     private Map<String, Supplier<Property>> propertySupplierMap = new ConcurrentHashMap<>();
@@ -81,8 +111,11 @@ public final class Properties {
         addSupportedProperty(DISPLAY, DisplayProperty::new);
         addSupportedProperty(POSITION, PositionProperty::new);
 
+        addSupportedProperty(WHITE_SPACE, WhiteSpaceProperty::new);
+
+        addSupportedProperty(BORDER_LEFT_WIDTH, BorderLeftWidthProperty::new);
+
 //        BORDER
-//        WHITE_SPACE
     }
 
     //@formatter:off

@@ -5,6 +5,7 @@ import com.spinyowl.spinygui.core.node.base.Element;
 import com.spinyowl.spinygui.core.style.NodeStyle;
 import com.spinyowl.spinygui.core.style.css.Properties;
 import com.spinyowl.spinygui.core.style.css.Property;
+import com.spinyowl.spinygui.core.style.css.util.StyleUtils;
 import com.spinyowl.spinygui.core.style.types.WhiteSpace;
 
 import java.util.HashSet;
@@ -34,9 +35,9 @@ public class WhiteSpaceProperty extends Property {
             if (INITIAL.equalsIgnoreCase(value)) {
                 nodeStyle.setWhiteSpace(WhiteSpace.NORMAL);
             } else if (INHERIT.equalsIgnoreCase(value)) {
-                Container parent = element.getParent();
-                if (parent != null) {
-                    WhiteSpace pd = parent.getCalculatedStyle().getWhiteSpace();
+                NodeStyle parentStyle = StyleUtils.getParentCalculatedStyle(element);
+                if (parentStyle != null) {
+                    WhiteSpace pd = parentStyle.getWhiteSpace();
                     nodeStyle.setWhiteSpace(pd == null ? WhiteSpace.NORMAL : pd);
                 } else {
                     nodeStyle.setWhiteSpace(WhiteSpace.NORMAL);

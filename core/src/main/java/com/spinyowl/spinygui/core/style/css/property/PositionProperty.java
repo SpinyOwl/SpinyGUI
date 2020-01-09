@@ -5,6 +5,7 @@ import com.spinyowl.spinygui.core.node.base.Element;
 import com.spinyowl.spinygui.core.style.NodeStyle;
 import com.spinyowl.spinygui.core.style.css.Properties;
 import com.spinyowl.spinygui.core.style.css.Property;
+import com.spinyowl.spinygui.core.style.css.util.StyleUtils;
 import com.spinyowl.spinygui.core.style.types.Display;
 import com.spinyowl.spinygui.core.style.types.Position;
 
@@ -35,9 +36,9 @@ public class PositionProperty extends Property {
             if (INITIAL.equalsIgnoreCase(value)) {
                 nodeStyle.setPosition(Position.RELATIVE);
             } else if (INHERIT.equalsIgnoreCase(value)) {
-                Container parent = element.getParent();
-                if (parent != null) {
-                    Position pd = parent.getCalculatedStyle().getPosition();
+                NodeStyle parentStyle = StyleUtils.getParentCalculatedStyle(element);
+                if (parentStyle != null) {
+                    Position pd = parentStyle.getPosition();
                     nodeStyle.setPosition(pd == null ? Position.RELATIVE : pd);
                 } else {
                     nodeStyle.setPosition(Position.RELATIVE);

@@ -97,7 +97,7 @@ public abstract class Property {
         this.defaultValue = defaultValue;
         this.inherited = inherited;
         this.animatable = animatable;
-        this.value = value;
+        setValue(value);
     }
 
     /**
