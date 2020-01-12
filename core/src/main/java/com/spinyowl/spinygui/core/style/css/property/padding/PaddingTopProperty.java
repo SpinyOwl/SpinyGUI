@@ -30,12 +30,14 @@ public class PaddingTopProperty extends Property {
     @Override
     protected void updateNodeStyle(Element element) {
         NodeStyle nodeStyle = element.getCalculatedStyle();
-        if (INITIAL.equalsIgnoreCase(value)) {
+        if (INITIAL.equals(value)) {
             nodeStyle.getPadding().setTop(Length.pixel(0));
-        } else if (INHERIT.equalsIgnoreCase(value)) {
+        } else if (INHERIT.equals(value)) {
             NodeStyle pStyle = StyleUtils.getParentCalculatedStyle(element);
             if (pStyle != null) {
                 nodeStyle.getPadding().setTop(pStyle.getPadding().getTop());
+            } else {
+                nodeStyle.getPadding().setTop(Length.pixel(0));
             }
         }
         nodeStyle.getPadding().setTop(lengthValueExtractor.extract(value));

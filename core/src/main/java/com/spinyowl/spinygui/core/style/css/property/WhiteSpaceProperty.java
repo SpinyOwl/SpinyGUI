@@ -32,9 +32,9 @@ public class WhiteSpaceProperty extends Property {
         NodeStyle nodeStyle = element.getCalculatedStyle();
 
         if (value != null) {
-            if (INITIAL.equalsIgnoreCase(value)) {
+            if (INITIAL.equals(value)) {
                 nodeStyle.setWhiteSpace(WhiteSpace.NORMAL);
-            } else if (INHERIT.equalsIgnoreCase(value)) {
+            } else if (INHERIT.equals(value)) {
                 NodeStyle parentStyle = StyleUtils.getParentCalculatedStyle(element);
                 if (parentStyle != null) {
                     WhiteSpace pd = parentStyle.getWhiteSpace();

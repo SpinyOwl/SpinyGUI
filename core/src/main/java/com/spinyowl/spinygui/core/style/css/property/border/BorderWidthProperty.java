@@ -43,9 +43,9 @@ public class BorderWidthProperty extends Property {
     }
 
     static boolean isValidBorderWidthValue(String borderWidth, ValueExtractor<Length> lengthValueExtractor) {
-        return THIN.equalsIgnoreCase(borderWidth) ||
-                MEDIUM.equalsIgnoreCase(borderWidth) ||
-                THICK.equalsIgnoreCase(borderWidth) ||
+        return THIN.equals(borderWidth) ||
+                MEDIUM.equals(borderWidth) ||
+                THICK.equals(borderWidth) ||
                 lengthValueExtractor.isValid(borderWidth);
     }
 

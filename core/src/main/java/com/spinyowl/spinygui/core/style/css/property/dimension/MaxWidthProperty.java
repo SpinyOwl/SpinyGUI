@@ -29,11 +29,11 @@ public class MaxWidthProperty extends Property {
     @Override
     protected void updateNodeStyle(Element element) {
         NodeStyle nodeStyle = element.getCalculatedStyle();
-        if (INITIAL.equalsIgnoreCase(value) || INHERIT.equalsIgnoreCase(value)) {
+        if (INITIAL.equals(value) || INHERIT.equals(value)) {
             // todo: add implementation for initial and inherit values
             return;
         }
-        if (value.equalsIgnoreCase("none")) {
+        if (value.equals("none")) {
             nodeStyle.setMaxWidth(null);
         } else {
             nodeStyle.setMaxWidth(lengthValueExtractor.extract(value));
@@ -47,6 +47,6 @@ public class MaxWidthProperty extends Property {
      */
     @Override
     public boolean isValid() {
-        return super.isValid() || value.equalsIgnoreCase("none") || lengthValueExtractor.isValid(value);
+        return super.isValid() || value.equals("none") || lengthValueExtractor.isValid(value);
     }
 }

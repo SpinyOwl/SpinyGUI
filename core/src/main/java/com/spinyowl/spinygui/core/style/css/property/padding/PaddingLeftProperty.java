@@ -30,12 +30,14 @@ public class PaddingLeftProperty extends Property {
     @Override
     protected void updateNodeStyle(Element element) {
         NodeStyle nodeStyle = element.getCalculatedStyle();
-        if (INITIAL.equalsIgnoreCase(value)) {
+        if (INITIAL.equals(value)) {
             nodeStyle.getPadding().setLeft(Length.pixel(0));
-        } else if (INHERIT.equalsIgnoreCase(value)) {
+        } else if (INHERIT.equals(value)) {
             NodeStyle pStyle = StyleUtils.getParentCalculatedStyle(element);
             if (pStyle != null) {
                 nodeStyle.getPadding().setLeft(pStyle.getPadding().getLeft());
+            } else {
+                nodeStyle.getPadding().setLeft(Length.pixel(0));
             }
         }
         nodeStyle.getPadding().setLeft(lengthValueExtractor.extract(value));

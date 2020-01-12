@@ -31,12 +31,14 @@ public class PaddingBottomProperty extends Property {
     @Override
     protected void updateNodeStyle(Element element) {
         NodeStyle nodeStyle = element.getCalculatedStyle();
-        if (INITIAL.equalsIgnoreCase(value)) {
+        if (INITIAL.equals(value)) {
             nodeStyle.getPadding().setBottom(Length.pixel(0));
-        } else if (INHERIT.equalsIgnoreCase(value)) {
+        } else if (INHERIT.equals(value)) {
             NodeStyle pStyle = StyleUtils.getParentCalculatedStyle(element);
             if (pStyle != null) {
                 nodeStyle.getPadding().setBottom(pStyle.getPadding().getBottom());
+            } else {
+                nodeStyle.getPadding().setBottom(Length.pixel(0));
             }
         }
         nodeStyle.getPadding().setBottom(lengthValueExtractor.extract(value));

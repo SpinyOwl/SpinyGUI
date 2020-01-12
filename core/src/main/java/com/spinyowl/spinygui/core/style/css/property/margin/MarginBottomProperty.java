@@ -6,6 +6,9 @@ import com.spinyowl.spinygui.core.style.css.Properties;
 import com.spinyowl.spinygui.core.style.css.Property;
 import com.spinyowl.spinygui.core.style.css.ValueExtractor;
 import com.spinyowl.spinygui.core.style.css.ValueExtractors;
+import com.spinyowl.spinygui.core.style.css.util.StyleUtils;
+import com.spinyowl.spinygui.core.style.types.length.Auto;
+import com.spinyowl.spinygui.core.style.types.length.Length;
 import com.spinyowl.spinygui.core.style.types.length.Unit;
 
 public class MarginBottomProperty extends Property {
@@ -29,9 +32,15 @@ public class MarginBottomProperty extends Property {
     @Override
     protected void updateNodeStyle(Element element) {
         NodeStyle nodeStyle = element.getCalculatedStyle();
-        if (INITIAL.equalsIgnoreCase(value) || INHERIT.equalsIgnoreCase(value)) {
-            // todo: add implementation for initial and inherit values
-            return;
+        if (INITIAL.equals(value)) {
+            nodeStyle.getMargin().setBottom(Auto.AUTO);
+        } else if (INHERIT.equals(value)) {
+            NodeStyle pStyle = StyleUtils.getParentCalculatedStyle(element);
+            if (pStyle != null) {
+                nodeStyle.getMargin().setBottom(pStyle.getMargin().getBottom());
+            } else {
+                nodeStyle.getMargin().setBottom(Auto.AUTO);
+            }
         }
         nodeStyle.getMargin().setBottom(unitValueExtractor.extract(value));
     }

@@ -29,7 +29,7 @@ public class LeftProperty extends Property {
     @Override
     protected void updateNodeStyle(Element element) {
         NodeStyle nodeStyle = element.getCalculatedStyle();
-        if (INITIAL.equalsIgnoreCase(value) || INHERIT.equalsIgnoreCase(value)) {
+        if (INITIAL.equals(value) || INHERIT.equals(value)) {
             // todo: add implementation for initial and inherit values
             return;
         }
