@@ -36,8 +36,7 @@ public class BorderLeftWidthProperty extends Property {
         } else if (INHERIT.equals(value)) {
             NodeStyle parentStyle = StyleUtils.getParentCalculatedStyle(element);
             if (parentStyle != null) {
-                Length parentLeftWidth = parentStyle.getBorder().getLeft().getWidth();
-                nodeStyle.getBorder().getLeft().setWidth(parentLeftWidth == null ? MEDIUM_VALUE : parentLeftWidth);
+                updateLeftBorderWidthFromParent(nodeStyle, parentStyle);
             } else {
                 nodeStyle.getBorder().getLeft().setWidth(MEDIUM_VALUE);
             }

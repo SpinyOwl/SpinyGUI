@@ -6,6 +6,7 @@ import com.spinyowl.spinygui.core.style.css.Properties;
 import com.spinyowl.spinygui.core.style.css.Property;
 import com.spinyowl.spinygui.core.style.css.ValueExtractor;
 import com.spinyowl.spinygui.core.style.css.ValueExtractors;
+import com.spinyowl.spinygui.core.style.css.util.StyleUtils;
 import com.spinyowl.spinygui.core.style.types.length.Length;
 
 public class PaddingRightProperty extends Property {
@@ -29,9 +30,13 @@ public class PaddingRightProperty extends Property {
     @Override
     protected void updateNodeStyle(Element element) {
         NodeStyle nodeStyle = element.getCalculatedStyle();
-        if (INITIAL.equalsIgnoreCase(value) || INHERIT.equalsIgnoreCase(value)) {
-            // todo: add implementation for initial and inherit values
-            return;
+        if (INITIAL.equalsIgnoreCase(value)) {
+            nodeStyle.getPadding().setRight(Length.pixel(0));
+        } else if (INHERIT.equalsIgnoreCase(value)) {
+            NodeStyle pStyle = StyleUtils.getParentCalculatedStyle(element);
+            if (pStyle != null) {
+                nodeStyle.getPadding().setRight(pStyle.getPadding().getRight());
+            }
         }
         nodeStyle.getPadding().setRight(lengthValueExtractor.extract(value));
     }

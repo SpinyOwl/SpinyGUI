@@ -49,6 +49,26 @@ public class BorderWidthProperty extends Property {
                 lengthValueExtractor.isValid(borderWidth);
     }
 
+    static void updateTopBorderWidthFromParent(NodeStyle nodeStyle, NodeStyle parentStyle) {
+        Length parentTopWidth = parentStyle.getBorder().getTop().getWidth();
+        nodeStyle.getBorder().getTop().setWidth(parentTopWidth == null ? MEDIUM_VALUE : parentTopWidth);
+    }
+
+    static void updateBottomBorderWidthFromParent(NodeStyle nodeStyle, NodeStyle parentStyle) {
+        Length parentBottomWidth = parentStyle.getBorder().getBottom().getWidth();
+        nodeStyle.getBorder().getBottom().setWidth(parentBottomWidth == null ? MEDIUM_VALUE : parentBottomWidth);
+    }
+
+    static void updateRightBorderWidthFromParent(NodeStyle nodeStyle, NodeStyle parentStyle) {
+        Length parentRightWidth = parentStyle.getBorder().getRight().getWidth();
+        nodeStyle.getBorder().getRight().setWidth(parentRightWidth == null ? MEDIUM_VALUE : parentRightWidth);
+    }
+
+    static void updateLeftBorderWidthFromParent(NodeStyle nodeStyle, NodeStyle parentStyle) {
+        Length parentLeftWidth = parentStyle.getBorder().getLeft().getWidth();
+        nodeStyle.getBorder().getLeft().setWidth(parentLeftWidth == null ? MEDIUM_VALUE : parentLeftWidth);
+    }
+
     /**
      * Used to update calculated node style of specified element.
      *
@@ -62,14 +82,10 @@ public class BorderWidthProperty extends Property {
         } else if (INHERIT.equals(value)) {
             NodeStyle parentStyle = StyleUtils.getParentCalculatedStyle(element);
             if (parentStyle != null) {
-                Length parentLeftWidth = parentStyle.getBorder().getLeft().getWidth();
-                nodeStyle.getBorder().getLeft().setWidth(parentLeftWidth == null ? MEDIUM_VALUE : parentLeftWidth);
-                Length parentRightWidth = parentStyle.getBorder().getRight().getWidth();
-                nodeStyle.getBorder().getRight().setWidth(parentRightWidth == null ? MEDIUM_VALUE : parentRightWidth);
-                Length parentTopWidth = parentStyle.getBorder().getTop().getWidth();
-                nodeStyle.getBorder().getTop().setWidth(parentTopWidth == null ? MEDIUM_VALUE : parentTopWidth);
-                Length parentBottomWidth = parentStyle.getBorder().getBottom().getWidth();
-                nodeStyle.getBorder().getBottom().setWidth(parentBottomWidth == null ? MEDIUM_VALUE : parentBottomWidth);
+                updateLeftBorderWidthFromParent(nodeStyle, parentStyle);
+                updateRightBorderWidthFromParent(nodeStyle, parentStyle);
+                updateTopBorderWidthFromParent(nodeStyle, parentStyle);
+                updateBottomBorderWidthFromParent(nodeStyle, parentStyle);
             } else {
                 setOne(nodeStyle, MEDIUM_VALUE);
             }

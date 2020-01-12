@@ -3,7 +3,6 @@ package com.spinyowl.spinygui.core.style.css;
 import com.spinyowl.spinygui.core.node.base.Element;
 
 import java.util.Collections;
-import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -69,7 +68,7 @@ public abstract class Property {
      * @param animatable   defines if css property could be animated.
      */
     protected Property(String name, String defaultValue, boolean inherited, boolean animatable) {
-        this(name, defaultValue, inherited, animatable, null);
+        this(name, defaultValue, inherited, animatable, defaultValue);
     }
 
     /**
@@ -128,8 +127,9 @@ public abstract class Property {
      * @param value value to set.
      */
     public void setValue(String value) {
-        Objects.requireNonNull(value);
-        this.value = value.toLowerCase();
+        if (value != null) {
+            this.value = value.toLowerCase();
+        }
     }
 
     /**
