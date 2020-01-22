@@ -3,8 +3,10 @@ package com.spinyowl.spinygui.core.converter.dom;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import com.spinyowl.spinygui.core.converter.NodeConverter;
+import com.spinyowl.spinygui.core.converter.dom.annotations.Tag;
 import com.spinyowl.spinygui.core.node.base.Node;
-import com.spinyowl.spinygui.core.node.element.*;
+import io.github.classgraph.ClassGraph;
+import io.github.classgraph.ClassInfo;
 
 /**
  * Node mapping - contains node to tag mapping for {@link NodeConverter}.
@@ -14,13 +16,20 @@ public final class TagNameMapping {
     private static final BiMap<String, String> tagNameMapping = HashBiMap.create();
 
     static {
-        addMapping(Button.class, "button");
-        addMapping(Input.class, "input");
-        addMapping(Label.class, "label");
-        addMapping(Div.class, "div");
-        addMapping(RadioButton.class, "radioButton");
-    }
+        var scanResult = new ClassGraph().enableAllInfo().scan();
 
+        for (ClassInfo classInfo : scanResult.getClassesWithAnnotation(Tag.class.getName())) {
+            if (classInfo.extendsSuperclass(Node.class.getName())) {
+                Class<Node> clazz = (Class<Node>) classInfo.loadClass();
+                var name = clazz.getAnnotation(Tag.class).value();
+                if (name.isEmpty()) {
+                    name = clazz.getSimpleName().toLowerCase();
+                }
+                addMapping(clazz, name);
+            }
+        }
+
+    }
     private TagNameMapping() {
     }
 
