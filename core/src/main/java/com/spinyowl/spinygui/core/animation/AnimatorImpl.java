@@ -1,5 +1,7 @@
 package com.spinyowl.spinygui.core.animation;
 
+import com.spinyowl.spinygui.core.time.Time;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -31,7 +33,7 @@ public class AnimatorImpl implements Animator {
      * This method used to process animations.
      */
     public void runAnimations() {
-        double currentTime = TimeFunctionProvider.getInstance().getCurrentTime();
+        double currentTime = Time.getCurrentTime();
         double delta = currentTime - previousTime;
 
         List<Animation> initializeList = new ArrayList<>(animationsToInitialize);

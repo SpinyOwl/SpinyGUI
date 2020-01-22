@@ -3,6 +3,7 @@ package com.spinyowl.spinygui.core.layout.impl;
 import com.spinyowl.spinygui.core.api.Frame;
 import com.spinyowl.spinygui.core.layout.Layout;
 import com.spinyowl.spinygui.core.layout.LayoutManager;
+import com.spinyowl.spinygui.core.layout.impl.flex.FlexLayout;
 import com.spinyowl.spinygui.core.node.base.Element;
 import com.spinyowl.spinygui.core.style.types.Display;
 import com.spinyowl.spinygui.core.util.NodeUtilities;
@@ -17,6 +18,7 @@ public class LayoutManagerImpl implements LayoutManager {
 
     public LayoutManagerImpl() {
         registerLayout(Display.NONE, new DisplayNoneLayout());
+        registerLayout(Display.FLEX, new FlexLayout());
     }
 
     @Override

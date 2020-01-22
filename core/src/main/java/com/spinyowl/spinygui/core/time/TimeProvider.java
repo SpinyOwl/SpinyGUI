@@ -1,9 +1,9 @@
-package com.spinyowl.spinygui.core.animation;
+package com.spinyowl.spinygui.core.time;
 
 /**
- * Time function interface. Used to get current time in double representation.
+ * Time provider interface. Used to get current time in double representation.
  */
-public interface TimeFunction {
+public interface TimeProvider {
 
     /**
      * Returns current time in seconds since epoch of 1970-01-01T00:00:00Z.
