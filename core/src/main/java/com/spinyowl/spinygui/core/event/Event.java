@@ -1,6 +1,6 @@
 package com.spinyowl.spinygui.core.event;
 
-import com.spinyowl.spinygui.core.animation.TimeFunctionProvider;
+import com.spinyowl.spinygui.core.time.Time;
 
 public abstract class Event<T extends EventTarget> {
     /**
@@ -17,7 +17,7 @@ public abstract class Event<T extends EventTarget> {
     private final double timeStamp;
 
     public Event(T target) {
-        this(target, TimeFunctionProvider.getInstance().getCurrentTime());
+        this(target, Time.getCurrentTime());
     }
 
     public Event(T target, double timeStamp) {
