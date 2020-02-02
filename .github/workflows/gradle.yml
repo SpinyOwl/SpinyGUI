@@ -20,7 +20,8 @@ jobs:
       env:
         GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
         sonarLogin: ${{secrets.SONAR_TOKEN}}
-      run: ./gradlew clean build test sonarqube --stacktrace --debug -Xmx4096m -XX:MaxPermSize=1024m -XX:ReservedCodeCacheSize=512m
+        JAVA_OPTS: -Xmx4096m -XX:MaxPermSize=1024m -XX:ReservedCodeCacheSize=512m
+      run: ./gradlew clean build test sonarqube --stacktrace --debug
 #  sonarCloudTrigger:
 #    name: SonarCloud Verification
 #    runs-on: ubuntu-latest
