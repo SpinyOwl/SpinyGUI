@@ -43,8 +43,8 @@ open module com.spinyowl.spinygui.core {
 
     exports com.spinyowl.spinygui.core.style.css;
     exports com.spinyowl.spinygui.core.style.css.extractor;
-    exports com.spinyowl.spinygui.core.style.css.property;
-    exports com.spinyowl.spinygui.core.style.css.selector;
+    exports com.spinyowl.spinygui.core.converter.css.property;
+    exports com.spinyowl.spinygui.core.converter.css.selector;
 
     exports com.spinyowl.spinygui.core.style.manager;
 

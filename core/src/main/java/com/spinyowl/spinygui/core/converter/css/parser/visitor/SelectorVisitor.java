@@ -4,9 +4,9 @@ import com.spinyowl.spinygui.core.converter.css.parser.CSS3BaseVisitor;
 import com.spinyowl.spinygui.core.converter.css.parser.CSS3Parser;
 import com.spinyowl.spinygui.core.converter.css.parser.StyleReflectionHandler;
 import com.spinyowl.spinygui.core.converter.dom.TagNameMapping;
-import com.spinyowl.spinygui.core.style.css.selector.ClassNameSelector;
-import com.spinyowl.spinygui.core.style.css.selector.StyleSelector;
-import com.spinyowl.spinygui.core.style.css.selector.TypeSelector;
+import com.spinyowl.spinygui.core.converter.css.selector.ClassNameSelector;
+import com.spinyowl.spinygui.core.converter.css.selector.StyleSelector;
+import com.spinyowl.spinygui.core.converter.css.selector.TypeSelector;
 import org.antlr.v4.runtime.tree.ParseTree;
 
 import java.util.ArrayList;

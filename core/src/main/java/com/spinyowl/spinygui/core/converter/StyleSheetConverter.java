@@ -4,7 +4,7 @@ import com.spinyowl.spinygui.core.converter.css.parser.CSS3Lexer;
 import com.spinyowl.spinygui.core.converter.css.parser.CSS3Parser;
 import com.spinyowl.spinygui.core.converter.css.parser.StyleSheetException;
 import com.spinyowl.spinygui.core.converter.css.parser.visitor.StyleSheetVisitor;
-import com.spinyowl.spinygui.core.style.css.StyleSheet;
+import com.spinyowl.spinygui.core.converter.css.StyleSheet;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.slf4j.Logger;

@@ -1,7 +1,7 @@
 package com.spinyowl.spinygui.core.api;
 
 import com.spinyowl.spinygui.core.node.base.Container;
-import com.spinyowl.spinygui.core.style.css.StyleSheet;
+import com.spinyowl.spinygui.core.converter.css.StyleSheet;
 import org.joml.Vector2f;
 
 import java.util.ArrayList;
