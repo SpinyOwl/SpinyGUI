@@ -20,7 +20,7 @@ jobs:
       env:
         GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
         sonarLogin: ${{secrets.SONAR_TOKEN}}
-      run: ./gradlew clean build test sonarqube
+      run: ./gradlew clean build test sonarqube --stacktrace --scan
 #  sonarCloudTrigger:
 #    name: SonarCloud Verification
 #    runs-on: ubuntu-latest
