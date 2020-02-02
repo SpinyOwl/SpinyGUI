@@ -20,5 +20,5 @@ jobs:
       env:
         GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
         sonarLogin: ${{secrets.SONAR_TOKEN}}
-        JAVA_OPTS: -Xmx4096m -XX:MaxPermSize=1024m -XX:ReservedCodeCacheSize=512m
+        JAVA_OPTS: -Xmx3072m -XX:MaxPermSize=512m -XX:ReservedCodeCacheSize=128m
       run: ./gradlew clean build test sonarqube --stacktrace
