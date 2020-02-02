@@ -11,7 +11,7 @@ jobs:
     name: Build SpinyGUI
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v1
+    - uses: actions/checkout@v2.0.0
     - name: Setup Java Action
       uses: actions/setup-java@v1.0.0
       with:
@@ -20,14 +20,5 @@ jobs:
       env:
         GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
         sonarLogin: ${{secrets.SONAR_TOKEN}}
-      run: ./gradlew clean build test
-  sonarCloudTrigger:
-    name: SonarCloud Verification
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v1
-      - name: SonarCloud Scan
-        uses: sonarsource/sonarcloud-github-action@master
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        JAVA_OPTS: -Xmx4096m -XX:MaxPermSize=1024m -XX:ReservedCodeCacheSize=512m
+      run: ./gradlew clean build test sonarqube
