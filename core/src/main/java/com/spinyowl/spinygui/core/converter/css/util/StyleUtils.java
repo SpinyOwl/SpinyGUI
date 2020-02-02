@@ -1,8 +1,10 @@
 package com.spinyowl.spinygui.core.converter.css.util;
 
+import com.spinyowl.spinygui.core.converter.css.ValueExtractor;
 import com.spinyowl.spinygui.core.node.base.Container;
 import com.spinyowl.spinygui.core.node.base.Element;
 import com.spinyowl.spinygui.core.style.NodeStyle;
+import com.spinyowl.spinygui.core.style.types.length.Length;
 
 public final class StyleUtils {
     private StyleUtils() {
@@ -18,5 +20,19 @@ public final class StyleUtils {
             return null;
         }
         return parent.getCalculatedStyle();
+    }
+
+    public static boolean validOneFourValue(String value, ValueExtractor<?> valueExtractor) {
+        String[] values = value.split("\\s+");
+        if (values.length == 0 || values.length > 4) {
+            return false;
+        }
+        for (String length : values) {
+            if (!valueExtractor.isValid(length)) {
+                return false;
+            }
+        }
+
+        return true;
     }
 }

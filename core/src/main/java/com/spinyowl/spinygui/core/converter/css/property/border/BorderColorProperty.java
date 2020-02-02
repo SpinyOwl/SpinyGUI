@@ -73,19 +73,6 @@ public class BorderColorProperty extends Property {
      */
     @Override
     public boolean isValid() {
-        if (super.isValid()) {
-            return true;
-        }
-        String[] values = value.split("\\s+");
-        if (values.length == 0 || values.length > 4) {
-            return false;
-        }
-        for (String value : values) {
-            if (!colorValueExtractor.isValid(value)) {
-                return false;
-            }
-        }
-
-        return true;
+        return super.isValid() && StyleUtils.validOneFourValue(value, colorValueExtractor);
     }
 }

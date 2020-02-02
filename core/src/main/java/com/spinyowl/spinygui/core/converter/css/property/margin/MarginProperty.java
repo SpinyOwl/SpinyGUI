@@ -82,20 +82,6 @@ public class MarginProperty extends Property {
      */
     @Override
     public boolean isValid() {
-        if (super.isValid()) {
-            return true;
-        }
-        String value = getValue();
-        String[] values = value.split("\\s+");
-        if (values.length == 0 || values.length > 4) {
-            return false;
-        }
-        for (String length : values) {
-            if (!unitValueExtractor.isValid(length)) {
-                return false;
-            }
-        }
-
-        return true;
+        return super.isValid() && StyleUtils.validOneFourValue(value, unitValueExtractor);
     }
 }

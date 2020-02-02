@@ -2,6 +2,7 @@ package com.spinyowl.spinygui.core.converter.css;
 
 import com.spinyowl.spinygui.core.converter.css.property.*;
 import com.spinyowl.spinygui.core.converter.css.property.border.*;
+import com.spinyowl.spinygui.core.converter.css.property.border.radius.*;
 import com.spinyowl.spinygui.core.converter.css.property.dimension.*;
 import com.spinyowl.spinygui.core.converter.css.property.margin.*;
 import com.spinyowl.spinygui.core.converter.css.property.padding.*;
@@ -143,6 +144,12 @@ public final class Properties {
         addSupportedProperty(BORDER_RIGHT, BorderRightProperty::new);
         addSupportedProperty(BORDER_TOP, BorderTopProperty::new);
         addSupportedProperty(BORDER_BOTTOM, BorderBottomProperty::new);
+
+        addSupportedProperty(BORDER_RADIUS, BorderRadiusProperty::new);
+        addSupportedProperty(BORDER_BOTTOM_LEFT_RADIUS, BorderBottomLeftRadiusProperty::new);
+        addSupportedProperty(BORDER_BOTTOM_RIGHT_RADIUS, BorderBottomRightRadiusProperty::new);
+        addSupportedProperty(BORDER_TOP_LEFT_RADIUS, BorderTopLeftRadiusProperty::new);
+        addSupportedProperty(BORDER_TOP_RIGHT_RADIUS, BorderTopRightRadiusProperty::new);
     }
 
     //@formatter:off

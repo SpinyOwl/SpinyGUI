@@ -9,8 +9,4 @@ public interface StyleManager {
 
     void recalculateStyles(Frame frame);
 
-    void recalculateStyles(Element elementTree, StyleSheet styleSheets);
-
-    void recalculateStyles(Element element, Property property);
-
 }

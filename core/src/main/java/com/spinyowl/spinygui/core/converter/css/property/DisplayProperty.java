@@ -1,10 +1,10 @@
 package com.spinyowl.spinygui.core.converter.css.property;
 
-import com.spinyowl.spinygui.core.node.base.Element;
-import com.spinyowl.spinygui.core.style.NodeStyle;
 import com.spinyowl.spinygui.core.converter.css.Properties;
 import com.spinyowl.spinygui.core.converter.css.Property;
 import com.spinyowl.spinygui.core.converter.css.util.StyleUtils;
+import com.spinyowl.spinygui.core.node.base.Element;
+import com.spinyowl.spinygui.core.style.NodeStyle;
 import com.spinyowl.spinygui.core.style.types.Display;
 
 import java.util.HashSet;
@@ -28,6 +28,12 @@ public class DisplayProperty extends Property {
      */
     @Override
     protected void updateNodeStyle(Element element) {
+        update(element, Display.BLOCK, NodeStyle::setDisplay, NodeStyle::getDisplay, v -> {
+            if (Display.contains(v)) {
+                return Display.of(v);
+            }
+            return null;
+        });
         NodeStyle nodeStyle = element.getCalculatedStyle();
 
         if (INITIAL.equals(value)) {

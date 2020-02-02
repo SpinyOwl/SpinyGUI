@@ -41,9 +41,15 @@ open module com.spinyowl.spinygui.core {
 
     exports com.spinyowl.spinygui.core.style;
 
-    exports com.spinyowl.spinygui.core.style.css;
-    exports com.spinyowl.spinygui.core.style.css.extractor;
+    exports com.spinyowl.spinygui.core.converter.css;
+    exports com.spinyowl.spinygui.core.converter.css.extractor;
     exports com.spinyowl.spinygui.core.converter.css.property;
+    exports com.spinyowl.spinygui.core.converter.css.property.border;
+    exports com.spinyowl.spinygui.core.converter.css.property.border.radius;
+    exports com.spinyowl.spinygui.core.converter.css.property.dimension;
+    exports com.spinyowl.spinygui.core.converter.css.property.margin;
+    exports com.spinyowl.spinygui.core.converter.css.property.padding;
+    exports com.spinyowl.spinygui.core.converter.css.property.position;
     exports com.spinyowl.spinygui.core.converter.css.selector;
 
     exports com.spinyowl.spinygui.core.style.manager;
