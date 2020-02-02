@@ -1,14 +1,13 @@
 package com.spinyowl.spinygui.core.style.css;
 
 import com.spinyowl.spinygui.core.style.css.property.*;
-import com.spinyowl.spinygui.core.style.css.property.border.BorderLeftWidthProperty;
+import com.spinyowl.spinygui.core.style.css.property.border.*;
 import com.spinyowl.spinygui.core.style.css.property.dimension.*;
 import com.spinyowl.spinygui.core.style.css.property.margin.*;
 import com.spinyowl.spinygui.core.style.css.property.padding.*;
 import com.spinyowl.spinygui.core.style.css.property.position.BottomProperty;
 import com.spinyowl.spinygui.core.style.css.property.position.LeftProperty;
 import com.spinyowl.spinygui.core.style.css.property.position.RightProperty;
-import com.spinyowl.spinygui.core.style.css.property.UnsupportedProperty;
 import com.spinyowl.spinygui.core.style.css.property.position.TopProperty;
 
 import java.util.*;
@@ -113,9 +112,29 @@ public final class Properties {
 
         addSupportedProperty(WHITE_SPACE, WhiteSpaceProperty::new);
 
+        addSupportedProperty(BORDER_WIDTH, BorderWidthProperty::new);
         addSupportedProperty(BORDER_LEFT_WIDTH, BorderLeftWidthProperty::new);
+        addSupportedProperty(BORDER_TOP_WIDTH, BorderTopWidthProperty::new);
+        addSupportedProperty(BORDER_BOTTOM_WIDTH, BorderBottomWidthProperty::new);
+        addSupportedProperty(BORDER_RIGHT_WIDTH, BorderRightWidthProperty::new);
 
-//        BORDER
+        addSupportedProperty(BORDER_COLOR, BorderColorProperty::new);
+        addSupportedProperty(BORDER_LEFT_COLOR, BorderLeftColorProperty::new);
+        addSupportedProperty(BORDER_TOP_COLOR, BorderTopColorProperty::new);
+        addSupportedProperty(BORDER_BOTTOM_COLOR, BorderBottomColorProperty::new);
+        addSupportedProperty(BORDER_RIGHT_COLOR, BorderRightColorProperty::new);
+
+        addSupportedProperty(BORDER_STYLE, BorderStyleProperty::new);
+        addSupportedProperty(BORDER_LEFT_STYLE, BorderLeftStyleProperty::new);
+        addSupportedProperty(BORDER_TOP_STYLE, BorderTopStyleProperty::new);
+        addSupportedProperty(BORDER_BOTTOM_STYLE, BorderBottomStyleProperty::new);
+        addSupportedProperty(BORDER_RIGHT_STYLE, BorderRightStyleProperty::new);
+
+        addSupportedProperty(BORDER, BorderProperty::new);
+        addSupportedProperty(BORDER_LEFT, BorderLeftProperty::new);
+        addSupportedProperty(BORDER_RIGHT, BorderRightProperty::new);
+        addSupportedProperty(BORDER_TOP, BorderTopProperty::new);
+        addSupportedProperty(BORDER_BOTTOM, BorderBottomProperty::new);
     }
 
     //@formatter:off

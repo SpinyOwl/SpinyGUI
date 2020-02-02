@@ -1,24 +1,24 @@
-package com.spinyowl.spinygui.core.style.css.property.dimension;
+package com.spinyowl.spinygui.core.style.css.property.border;
 
 import com.spinyowl.spinygui.core.node.base.Element;
-import com.spinyowl.spinygui.core.style.NodeStyle;
 import com.spinyowl.spinygui.core.style.css.Properties;
 import com.spinyowl.spinygui.core.style.css.Property;
 import com.spinyowl.spinygui.core.style.css.ValueExtractor;
 import com.spinyowl.spinygui.core.style.css.ValueExtractors;
 import com.spinyowl.spinygui.core.style.types.length.Length;
 
-public class MaxWidthProperty extends Property {
+import static com.spinyowl.spinygui.core.style.css.property.border.BorderWidthProperty.*;
+
+public class BorderRightWidthProperty extends Property {
 
     private ValueExtractor<Length> lengthValueExtractor = ValueExtractors.getInstance().getValueExtractor(Length.class);
 
-    public MaxWidthProperty() {
-        super(Properties.MAX_WIDTH, "none", false, true);
+    public BorderRightWidthProperty() {
+        super(Properties.BORDER_RIGHT_WIDTH, MEDIUM, false, true);
     }
 
-    public MaxWidthProperty(String value) {
-        this();
-        setValue(value);
+    public BorderRightWidthProperty(String value) {
+        super(Properties.BORDER_RIGHT_WIDTH, MEDIUM, false, true, value);
     }
 
     /**
@@ -28,13 +28,10 @@ public class MaxWidthProperty extends Property {
      */
     @Override
     protected void updateNodeStyle(Element element) {
-        this.update(element, (Length) null, NodeStyle::setMaxWidth, NodeStyle::getMaxWidth, (v) -> {
-            if ("none".equals(value)) {
-                return null;
-            } else {
-                return lengthValueExtractor.extract(value);
-            }
-        });
+        this.update(element, MEDIUM_VALUE,
+                (s, v) -> s.getBorder().getRight().setWidth(v),
+                s -> s.getBorder().getRight().getWidth(),
+                (v) -> BorderWidthProperty.getLength(v, lengthValueExtractor));
     }
 
     /**
@@ -44,6 +41,7 @@ public class MaxWidthProperty extends Property {
      */
     @Override
     public boolean isValid() {
-        return super.isValid() || value.equals("none") || lengthValueExtractor.isValid(value);
+        return super.isValid() ||
+                isValidBorderWidthValue(value, lengthValueExtractor);
     }
 }

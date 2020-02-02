@@ -21,11 +21,11 @@ public class BorderWidthProperty extends Property {
     private ValueExtractor<Length> lengthValueExtractor = ValueExtractors.getInstance().getValueExtractor(Length.class);
 
     public BorderWidthProperty() {
-        super(Properties.BORDER_LEFT_WIDTH, MEDIUM, false, true);
+        super(Properties.BORDER_WIDTH, MEDIUM, false, true);
     }
 
     public BorderWidthProperty(String value) {
-        super(Properties.BORDER_LEFT_WIDTH, MEDIUM, false, true, value);
+        super(Properties.BORDER_WIDTH, MEDIUM, false, true, value);
     }
 
     static Length getLength(String value, ValueExtractor<Length> lengthValueExtractor) {
@@ -49,26 +49,6 @@ public class BorderWidthProperty extends Property {
                 lengthValueExtractor.isValid(borderWidth);
     }
 
-    static void updateTopBorderWidthFromParent(NodeStyle nodeStyle, NodeStyle parentStyle) {
-        Length parentTopWidth = parentStyle.getBorder().getTop().getWidth();
-        nodeStyle.getBorder().getTop().setWidth(parentTopWidth == null ? MEDIUM_VALUE : parentTopWidth);
-    }
-
-    static void updateBottomBorderWidthFromParent(NodeStyle nodeStyle, NodeStyle parentStyle) {
-        Length parentBottomWidth = parentStyle.getBorder().getBottom().getWidth();
-        nodeStyle.getBorder().getBottom().setWidth(parentBottomWidth == null ? MEDIUM_VALUE : parentBottomWidth);
-    }
-
-    static void updateRightBorderWidthFromParent(NodeStyle nodeStyle, NodeStyle parentStyle) {
-        Length parentRightWidth = parentStyle.getBorder().getRight().getWidth();
-        nodeStyle.getBorder().getRight().setWidth(parentRightWidth == null ? MEDIUM_VALUE : parentRightWidth);
-    }
-
-    static void updateLeftBorderWidthFromParent(NodeStyle nodeStyle, NodeStyle parentStyle) {
-        Length parentLeftWidth = parentStyle.getBorder().getLeft().getWidth();
-        nodeStyle.getBorder().getLeft().setWidth(parentLeftWidth == null ? MEDIUM_VALUE : parentLeftWidth);
-    }
-
     /**
      * Used to update calculated node style of specified element.
      *
@@ -78,75 +58,40 @@ public class BorderWidthProperty extends Property {
     protected void updateNodeStyle(Element element) {
         NodeStyle nodeStyle = element.getCalculatedStyle();
         if (INITIAL.equals(value)) {
-            setOne(nodeStyle, MEDIUM_VALUE);
+            nodeStyle.getBorder().setWidth(MEDIUM_VALUE);
         } else if (INHERIT.equals(value)) {
             NodeStyle parentStyle = StyleUtils.getParentCalculatedStyle(element);
             if (parentStyle != null) {
-                updateLeftBorderWidthFromParent(nodeStyle, parentStyle);
-                updateRightBorderWidthFromParent(nodeStyle, parentStyle);
-                updateTopBorderWidthFromParent(nodeStyle, parentStyle);
-                updateBottomBorderWidthFromParent(nodeStyle, parentStyle);
+                nodeStyle.getBorder().setWidth(parentStyle.getBorder());
             } else {
-                setOne(nodeStyle, MEDIUM_VALUE);
+                nodeStyle.getBorder().setWidth(MEDIUM_VALUE);
             }
         } else {
             String[] values = value.split("\\s+");
-            switch (values.length) {
-                case 1: {
-                    setOne(nodeStyle, getLength(values[0], lengthValueExtractor));
-                    return;
-                }
-                case 2: {
-                    setTwo(nodeStyle, values);
-                    return;
-                }
-                case 3: {
-                    setThree(nodeStyle, values);
-                    return;
-                }
-                case 4: {
-                    setFour(nodeStyle, values);
-                    return;
-                }
+            if (values.length == 1) {
+                nodeStyle.getBorder().setWidth(
+                        getLength(values[0], lengthValueExtractor)
+                );
+            } else if (values.length == 2) {
+                nodeStyle.getBorder().setWidth(
+                        getLength(values[0], lengthValueExtractor),
+                        getLength(values[1], lengthValueExtractor)
+                );
+            } else if (values.length == 3) {
+                nodeStyle.getBorder().setWidth(
+                        getLength(values[0], lengthValueExtractor),
+                        getLength(values[1], lengthValueExtractor),
+                        getLength(values[2], lengthValueExtractor)
+                );
+            } else if (values.length == 4) {
+                nodeStyle.getBorder().setWidth(
+                        getLength(values[0], lengthValueExtractor),
+                        getLength(values[1], lengthValueExtractor),
+                        getLength(values[2], lengthValueExtractor),
+                        getLength(values[3], lengthValueExtractor)
+                );
             }
         }
-    }
-
-    private void setFour(NodeStyle nodeStyle, String[] values) {
-        Length t = getLength(values[0], lengthValueExtractor);
-        Length r = getLength(values[1], lengthValueExtractor);
-        Length b = getLength(values[2], lengthValueExtractor);
-        Length l = getLength(values[3], lengthValueExtractor);
-        nodeStyle.getBorder().getLeft().setWidth(l);
-        nodeStyle.getBorder().getRight().setWidth(r);
-        nodeStyle.getBorder().getTop().setWidth(t);
-        nodeStyle.getBorder().getBottom().setWidth(b);
-    }
-
-    private void setThree(NodeStyle nodeStyle, String[] values) {
-        Length t = getLength(values[0], lengthValueExtractor);
-        Length lr = getLength(values[1], lengthValueExtractor);
-        Length b = getLength(values[2], lengthValueExtractor);
-        nodeStyle.getBorder().getLeft().setWidth(lr);
-        nodeStyle.getBorder().getRight().setWidth(lr);
-        nodeStyle.getBorder().getTop().setWidth(t);
-        nodeStyle.getBorder().getBottom().setWidth(b);
-    }
-
-    private void setTwo(NodeStyle nodeStyle, String[] values) {
-        Length tb = getLength(values[0], lengthValueExtractor);
-        Length lr = getLength(values[1], lengthValueExtractor);
-        nodeStyle.getBorder().getLeft().setWidth(lr);
-        nodeStyle.getBorder().getRight().setWidth(lr);
-        nodeStyle.getBorder().getTop().setWidth(tb);
-        nodeStyle.getBorder().getBottom().setWidth(tb);
-    }
-
-    private void setOne(NodeStyle nodeStyle, Length value) {
-        nodeStyle.getBorder().getLeft().setWidth(value);
-        nodeStyle.getBorder().getRight().setWidth(value);
-        nodeStyle.getBorder().getTop().setWidth(value);
-        nodeStyle.getBorder().getBottom().setWidth(value);
     }
 
     /**
@@ -160,7 +105,7 @@ public class BorderWidthProperty extends Property {
             return true;
         }
         String[] values = value.split("\\s+");
-        if (values.length <= 0 || values.length > 4) {
+        if (values.length == 0 || values.length > 4) {
             return false;
         }
         for (String borderWidth : values) {

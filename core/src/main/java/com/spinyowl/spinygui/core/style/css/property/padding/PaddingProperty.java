@@ -87,7 +87,7 @@ public class PaddingProperty extends Property {
 
         String value = getValue();
         String[] values = value.split("\\s+");
-        if (values.length <= 0 || values.length > 4) {
+        if (values.length == 0 || values.length > 4) {
             return false;
         }
         for (String length : values) {

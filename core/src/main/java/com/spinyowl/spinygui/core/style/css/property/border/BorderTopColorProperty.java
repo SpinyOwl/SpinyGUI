@@ -1,24 +1,24 @@
-package com.spinyowl.spinygui.core.style.css.property;
+package com.spinyowl.spinygui.core.style.css.property.border;
 
 import com.spinyowl.spinygui.core.node.base.Element;
-import com.spinyowl.spinygui.core.style.NodeStyle;
 import com.spinyowl.spinygui.core.style.css.Properties;
 import com.spinyowl.spinygui.core.style.css.Property;
 import com.spinyowl.spinygui.core.style.css.ValueExtractor;
 import com.spinyowl.spinygui.core.style.css.ValueExtractors;
 import com.spinyowl.spinygui.core.style.types.Color;
 
-public class ColorProperty extends Property {
+import static com.spinyowl.spinygui.core.style.css.property.border.BorderColorProperty.DEFAULT_VALUE;
+
+public class BorderTopColorProperty extends Property {
 
     private ValueExtractor<Color> colorValueExtractor = ValueExtractors.getInstance().getValueExtractor(Color.class);
 
-    public ColorProperty() {
-        super(Properties.COLOR, null, true, true);
+    public BorderTopColorProperty() {
+        super(Properties.BORDER_TOP_COLOR, DEFAULT_VALUE, false, true);
     }
 
-    public ColorProperty(String value) {
-        this();
-        setValue(value);
+    public BorderTopColorProperty(String value) {
+        super(Properties.BORDER_TOP_COLOR, DEFAULT_VALUE, false, true, value);
     }
 
     /**
@@ -28,9 +28,11 @@ public class ColorProperty extends Property {
      */
     @Override
     protected void updateNodeStyle(Element element) {
-        this.<Color>update(element, Color::getInitialColor, NodeStyle::setColor, NodeStyle::getColor, colorValueExtractor::extract);
+        this.update(element, Color.getColorByName(DEFAULT_VALUE),
+                (s, c) -> s.getBorder().getTop().setColor(c),
+                s -> s.getBorder().getTop().getColor(),
+                colorValueExtractor::extract);
     }
-
 
     /**
      * Used to check if value is valid or not.
@@ -39,6 +41,6 @@ public class ColorProperty extends Property {
      */
     @Override
     public boolean isValid() {
-        return super.isValid() || colorValueExtractor.isValid(getValue());
+        return super.isValid() || colorValueExtractor.isValid(value);
     }
 }

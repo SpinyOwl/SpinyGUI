@@ -1,12 +1,10 @@
 package com.spinyowl.spinygui.core.style.css.property.border;
 
 import com.spinyowl.spinygui.core.node.base.Element;
-import com.spinyowl.spinygui.core.style.NodeStyle;
 import com.spinyowl.spinygui.core.style.css.Properties;
 import com.spinyowl.spinygui.core.style.css.Property;
 import com.spinyowl.spinygui.core.style.css.ValueExtractor;
 import com.spinyowl.spinygui.core.style.css.ValueExtractors;
-import com.spinyowl.spinygui.core.style.css.util.StyleUtils;
 import com.spinyowl.spinygui.core.style.types.length.Length;
 
 import static com.spinyowl.spinygui.core.style.css.property.border.BorderWidthProperty.*;
@@ -30,18 +28,10 @@ public class BorderLeftWidthProperty extends Property {
      */
     @Override
     protected void updateNodeStyle(Element element) {
-        NodeStyle nodeStyle = element.getCalculatedStyle();
-        if (INITIAL.equals(value)) {
-            nodeStyle.getBorder().getLeft().setWidth(MEDIUM_VALUE);
-        } else if (INHERIT.equals(value)) {
-            NodeStyle parentStyle = StyleUtils.getParentCalculatedStyle(element);
-            if (parentStyle != null) {
-                updateLeftBorderWidthFromParent(nodeStyle, parentStyle);
-            } else {
-                nodeStyle.getBorder().getLeft().setWidth(MEDIUM_VALUE);
-            }
-        }
-        nodeStyle.getBorder().getLeft().setWidth(getLength(value, lengthValueExtractor));
+        this.update(element, MEDIUM_VALUE,
+                (s, v) -> s.getBorder().getLeft().setWidth(v),
+                s -> s.getBorder().getLeft().getWidth(),
+                (v) -> BorderWidthProperty.getLength(v, lengthValueExtractor));
     }
 
     /**

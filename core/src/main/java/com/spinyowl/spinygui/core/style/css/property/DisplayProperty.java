@@ -1,6 +1,5 @@
 package com.spinyowl.spinygui.core.style.css.property;
 
-import com.spinyowl.spinygui.core.node.base.Container;
 import com.spinyowl.spinygui.core.node.base.Element;
 import com.spinyowl.spinygui.core.style.NodeStyle;
 import com.spinyowl.spinygui.core.style.css.Properties;
@@ -31,20 +30,18 @@ public class DisplayProperty extends Property {
     protected void updateNodeStyle(Element element) {
         NodeStyle nodeStyle = element.getCalculatedStyle();
 
-        if (value != null) {
-            if (INITIAL.equals(value)) {
+        if (INITIAL.equals(value)) {
+            nodeStyle.setDisplay(Display.BLOCK);
+        } else if (INHERIT.equals(value)) {
+            NodeStyle parentStyle = StyleUtils.getParentCalculatedStyle(element);
+            if (parentStyle != null) {
+                Display pd = parentStyle.getDisplay();
+                nodeStyle.setDisplay(pd == null ? Display.BLOCK : pd);
+            } else {
                 nodeStyle.setDisplay(Display.BLOCK);
-            } else if (INHERIT.equals(value)) {
-                NodeStyle parentStyle = StyleUtils.getParentCalculatedStyle(element);
-                if (parentStyle != null) {
-                    Display pd = parentStyle.getDisplay();
-                    nodeStyle.setDisplay(pd == null ? Display.BLOCK : pd);
-                } else {
-                    nodeStyle.setDisplay(Display.BLOCK);
-                }
-            } else if (Display.contains(value)) {
-                nodeStyle.setDisplay(Display.of(value));
             }
+        } else if (value != null && Display.contains(value)) {
+            nodeStyle.setDisplay(Display.of(value));
         }
     }
 

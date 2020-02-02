@@ -28,17 +28,14 @@ public class MaxHeightProperty extends Property {
      */
     @Override
     protected void updateNodeStyle(Element element) {
-        NodeStyle nodeStyle = element.getCalculatedStyle();
-        if (INITIAL.equals(value) || INHERIT.equals(value)) {
-            // todo: add implementation for initial and inherit values
-            return;
-        }
-        if (value.equals("none")) {
-            nodeStyle.setMaxHeight(null);
-        } else {
-            nodeStyle.setMaxHeight(lengthValueExtractor.extract(value));
-        }
-    }
+        this.update(element, (Length) null, NodeStyle::setMaxHeight, NodeStyle::getMaxHeight, (v) -> {
+            if ("none".equals(value)) {
+                return null;
+            } else {
+                return lengthValueExtractor.extract(value);
+            }
+        });
+      }
 
     /**
      * Used to check if value is valid or not.

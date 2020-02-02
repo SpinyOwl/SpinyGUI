@@ -14,7 +14,10 @@ open module com.spinyowl.spinygui.core {
     requires guava.collections.r03;
     requires io.github.classgraph;
     requires org.antlr.antlr4.runtime;
-    requires transitive commons.logging;
+
+    requires transitive org.slf4j;
+    requires transitive ch.qos.logback.core;
+    requires transitive ch.qos.logback.classic;
 
     exports com.spinyowl.spinygui.core.animation;
     exports com.spinyowl.spinygui.core.api;
