@@ -11,6 +11,7 @@ import com.spinyowl.spinygui.core.style.types.Color;
 import com.spinyowl.spinygui.core.style.types.border.BorderStyle;
 import com.spinyowl.spinygui.core.style.types.length.Length;
 
+import static com.spinyowl.spinygui.core.style.css.property.border.BorderProperty.isValidBorderProperty;
 import static com.spinyowl.spinygui.core.style.css.property.border.BorderWidthProperty.MEDIUM_VALUE;
 
 public class BorderBottomProperty extends Property {
@@ -76,25 +77,6 @@ public class BorderBottomProperty extends Property {
      */
     @Override
     public boolean isValid() {
-        if (super.isValid()) {
-            return true;
-        }
-
-        String[] values = value.split("\\s+");
-
-        if (values.length == 0 || values.length > 3) {
-            return false;
-        }
-
-        if (values.length == 1) {
-            return BorderStyle.contains(values[0]);
-        } else if (values.length == 2) {
-            return BorderWidthProperty.isValidBorderWidthValue(values[0], lengthValueExtractor)
-                    && BorderStyle.contains(values[1]) ||
-                    BorderStyle.contains(values[0]) && colorValueExtractor.isValid(values[1]);
-        } else {
-            return BorderWidthProperty.isValidBorderWidthValue(values[0], lengthValueExtractor)
-                    && BorderStyle.contains(values[1]) && colorValueExtractor.isValid(values[2]);
-        }
+        return super.isValid() && isValidBorderProperty(value, lengthValueExtractor, colorValueExtractor);
     }
 }
