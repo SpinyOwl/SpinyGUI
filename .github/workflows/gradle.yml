@@ -20,16 +20,14 @@ jobs:
       env:
         GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
         sonarLogin: ${{secrets.SONAR_TOKEN}}
-        JAVA_OPTS: -Xmx4096m -XX:MaxPermSize=1024m -XX:ReservedCodeCacheSize=512m
-        GIT_COMMIT: git rev-parse HEAD
-      run: ./gradlew clean build test sonarqube --stacktrace --debug
-#  sonarCloudTrigger:
-#    name: SonarCloud Verification
-#    runs-on: ubuntu-latest
-#    steps:
-#      - uses: actions/checkout@v1
-#      - name: SonarCloud Scan
-#        uses: sonarsource/sonarcloud-github-action@master
-#        env:
-#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-#          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      run: ./gradlew clean build test
+  sonarCloudTrigger:
+    name: SonarCloud Verification
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - name: SonarCloud Scan
+        uses: sonarsource/sonarcloud-github-action@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
