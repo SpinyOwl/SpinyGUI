@@ -17,9 +17,9 @@ stages:
 jobs:
   include:
     - stage: build
-      script: ./gradlew clean build test sonarqube -Dsonar.login=$SONAR_LOGIN
+      script: ./gradlew clean build test sonarqube -DsonarLogin=$SONAR_LOGIN
     - stage: build_pull_request
-      script: ./gradlew clean build test sonarqube -Dsonar.login=$SONAR_LOGIN -Dsonar.pullrequest.base=$TRAVIS_BRANCH -Dsonar.pullrequest.branch=$TRAVIS_PULL_REQUEST_BRANCH -Dsonar.pullrequest.key=$TRAVIS_PULL_REQUEST -Dsonar.pullrequest.provider=GitHub -Dsonar.pullrequest.github.repository=SpinyOwl/SpinyGUI
+      script: ./gradlew clean build test sonarqube -DsonarLogin=$SONAR_LOGIN -Dsonar.pullrequest.base=$TRAVIS_BRANCH -Dsonar.pullrequest.branch=$TRAVIS_PULL_REQUEST_BRANCH -Dsonar.pullrequest.key=$TRAVIS_PULL_REQUEST -Dsonar.pullrequest.provider=GitHub -Dsonar.pullrequest.github.repository=SpinyOwl/SpinyGUI
 
 cache:
   directories:

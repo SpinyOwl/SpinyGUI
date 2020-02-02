@@ -15,4 +15,6 @@ jobs:
       with:
         version: 12
     - name: Build with Gradle
-      run: ./gradlew build
+      env:
+        sonarLogin: ${{secrets.SONAR_TOKEN}}
+      run: ./gradlew clean build test sonarqube
