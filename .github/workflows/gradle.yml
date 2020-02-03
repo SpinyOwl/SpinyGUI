@@ -22,4 +22,4 @@ jobs:
         sonarLogin: ${{secrets.SONAR_TOKEN}}
         JAVA_OPTS: -Xmx3072m -XX:MaxPermSize=512m -XX:ReservedCodeCacheSize=128m
         GRADLE_OPTS: -Xmx3800m -XX:ReservedCodeCacheSize=128m -Dorg.gradle.daemon=false
-      run: ./gradlew clean build test sonarqube --stacktrace --debug
+      run: ./gradlew clean build test sonarqube --stacktrace --info
