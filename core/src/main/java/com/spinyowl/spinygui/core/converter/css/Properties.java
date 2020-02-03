@@ -18,6 +18,16 @@ import java.util.function.Supplier;
 public final class Properties {
     public static final String COLOR = "color";
 
+    //    public static final String BACKGROUND            = "background";
+    public static final String BACKGROUND_COLOR = "background-color";
+//    public static final String BACKGROUND_IMAGE      = "background-image";
+//    public static final String BACKGROUND_POSITION   = "background-position";
+//    public static final String BACKGROUND_SIZE       = "background-size";
+//    public static final String BACKGROUND_REPEAT     = "background-repeat";
+//    public static final String BACKGROUND_ORIGIN     = "background-origin";
+//    public static final String BACKGROUND_CLIP       = "background-clip";
+//    public static final String BACKGROUND_ATTACHMENT = "background-attachment";
+
     public static final String BORDER_RADIUS              = "border-radius";
     public static final String BORDER_BOTTOM_LEFT_RADIUS  = "border-bottom-left-radius";
     public static final String BORDER_BOTTOM_RIGHT_RADIUS = "border-bottom-right-radius";
@@ -89,6 +99,7 @@ public final class Properties {
      */
     private Properties() {
         addSupportedProperty(COLOR, ColorProperty::new);
+        addSupportedProperty(BACKGROUND_COLOR, BackgroundColorProperty::new);
 
         addSupportedProperty(PADDING, PaddingProperty::new);
         addSupportedProperty(PADDING_TOP, PaddingTopProperty::new);
