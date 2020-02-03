@@ -1,7 +1,7 @@
 package com.spinyowl.spinygui.core.converter.css.parser.visitor;
 
-import com.spinyowl.spinygui.core.converter.css.parser.CSS3BaseVisitor;
-import com.spinyowl.spinygui.core.converter.css.parser.CSS3Parser;
+import com.spinyowl.spinygui.core.converter.css.parser.antlr.CSS3BaseVisitor;
+import com.spinyowl.spinygui.core.converter.css.parser.antlr.CSS3Parser;
 import com.spinyowl.spinygui.core.converter.css.parser.StyleReflectionHandler;
 import com.spinyowl.spinygui.core.converter.dom.TagNameMapping;
 import com.spinyowl.spinygui.core.converter.css.selector.ClassNameSelector;

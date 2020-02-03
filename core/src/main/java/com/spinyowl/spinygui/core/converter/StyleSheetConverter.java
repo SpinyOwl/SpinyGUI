@@ -1,7 +1,7 @@
 package com.spinyowl.spinygui.core.converter;
 
-import com.spinyowl.spinygui.core.converter.css.parser.CSS3Lexer;
-import com.spinyowl.spinygui.core.converter.css.parser.CSS3Parser;
+import com.spinyowl.spinygui.core.converter.css.parser.antlr.CSS3Lexer;
+import com.spinyowl.spinygui.core.converter.css.parser.antlr.CSS3Parser;
 import com.spinyowl.spinygui.core.converter.css.parser.StyleSheetException;
 import com.spinyowl.spinygui.core.converter.css.parser.visitor.StyleSheetVisitor;
 import com.spinyowl.spinygui.core.converter.css.StyleSheet;

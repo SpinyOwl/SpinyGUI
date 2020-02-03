@@ -1,5 +1,5 @@
 // Generated from C:/Users/Marvin/Documents/SpinyGui/SpinyGUI/core/src/main/resources/grammars\CSS3.g4 by ANTLR 4.7
-package com.spinyowl.spinygui.core.converter.css.parser;
+package com.spinyowl.spinygui.core.converter.css.parser.antlr;
 
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.ErrorNode;
