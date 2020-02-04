@@ -14,7 +14,10 @@ open module com.spinyowl.spinygui.core {
     requires guava.collections.r03;
     requires io.github.classgraph;
     requires org.antlr.antlr4.runtime;
-    requires transitive commons.logging;
+
+    requires transitive org.slf4j;
+    requires transitive ch.qos.logback.core;
+    requires transitive ch.qos.logback.classic;
 
     exports com.spinyowl.spinygui.core.animation;
     exports com.spinyowl.spinygui.core.api;
@@ -38,10 +41,16 @@ open module com.spinyowl.spinygui.core {
 
     exports com.spinyowl.spinygui.core.style;
 
-    exports com.spinyowl.spinygui.core.style.css;
-    exports com.spinyowl.spinygui.core.style.css.extractor;
-    exports com.spinyowl.spinygui.core.style.css.property;
-    exports com.spinyowl.spinygui.core.style.css.selector;
+    exports com.spinyowl.spinygui.core.converter.css;
+    exports com.spinyowl.spinygui.core.converter.css.extractor;
+    exports com.spinyowl.spinygui.core.converter.css.property;
+    exports com.spinyowl.spinygui.core.converter.css.property.border;
+    exports com.spinyowl.spinygui.core.converter.css.property.border.radius;
+    exports com.spinyowl.spinygui.core.converter.css.property.dimension;
+    exports com.spinyowl.spinygui.core.converter.css.property.margin;
+    exports com.spinyowl.spinygui.core.converter.css.property.padding;
+    exports com.spinyowl.spinygui.core.converter.css.property.position;
+    exports com.spinyowl.spinygui.core.converter.css.selector;
 
     exports com.spinyowl.spinygui.core.style.manager;
 

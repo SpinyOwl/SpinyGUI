@@ -15,12 +15,13 @@ public abstract class Element extends Node implements EventTarget {
     /**
      * Used to overload styles from stylesheet.
      */
-    private final NodeStyle style = new NodeStyle();
+    private NodeStyle style           = new NodeStyle();
     /**
      * Styles from stylesheet.
      * Updated by style manager every frame state changes.
      */
-    private final NodeStyle calculatedStyle = new NodeStyle();
+    private NodeStyle calculatedStyle = new NodeStyle();
+
     /**
      * Node attributes.
      */
@@ -58,7 +59,8 @@ public abstract class Element extends Node implements EventTarget {
         return getChildNodes().stream().filter(n -> n instanceof Element)
                 .map(n -> (Element) n).collect(Collectors.toUnmodifiableList());
     }
-/**
+
+    /**
      * Returns unmodifiable collection of node attributes.
      *
      * @return unmodifiable collection of node attributes.
@@ -116,6 +118,12 @@ public abstract class Element extends Node implements EventTarget {
         return style;
     }
 
+    public void setStyle(NodeStyle style) {
+        if (style != null) {
+            this.style = style;
+        }
+    }
+
     /**
      * Returns node style that calculated from stylesheet.
      *
@@ -124,7 +132,14 @@ public abstract class Element extends Node implements EventTarget {
     public NodeStyle getCalculatedStyle() {
         return calculatedStyle;
     }
-/**
+
+    public void setCalculatedStyle(NodeStyle calculatedStyle) {
+        if (calculatedStyle != null) {
+            this.calculatedStyle = calculatedStyle;
+        }
+    }
+
+    /**
      * Returns the number of elements in this node.  If this node contains
      * more than {@code Integer.MAX_VALUE} elements, returns
      * {@code Integer.MAX_VALUE}.

@@ -4,15 +4,15 @@ import static com.spinyowl.spinygui.core.NodeBuilder.*;
 
 import com.spinyowl.spinygui.core.api.Frame;
 import com.spinyowl.spinygui.core.converter.StyleSheetConverter;
-import com.spinyowl.spinygui.core.style.css.RuleSet;
-import com.spinyowl.spinygui.core.style.css.StyleSheet;
+import com.spinyowl.spinygui.core.converter.css.RuleSet;
+import com.spinyowl.spinygui.core.converter.css.StyleSheet;
 import com.spinyowl.spinygui.core.converter.css.parser.StyleSheetException;
 import com.spinyowl.spinygui.core.converter.NodeConverter;
 import com.spinyowl.spinygui.core.node.base.Element;
 import com.spinyowl.spinygui.core.node.element.Button;
 import com.spinyowl.spinygui.core.node.element.Label;
 import com.spinyowl.spinygui.core.node.base.Node;
-import com.spinyowl.spinygui.core.style.css.selector.StyleSelector;
+import com.spinyowl.spinygui.core.converter.css.selector.StyleSelector;
 import com.spinyowl.spinygui.core.style.manager.StyleManagerProvider;
 import com.spinyowl.spinygui.core.style.types.Color;
 import org.junit.jupiter.api.Assertions;
@@ -23,7 +23,7 @@ import java.util.Map;
 import java.util.Set;
 
 public class StyleSheetConverterTest {
-@Test
+    @Test
     public void createFromCSS() throws StyleSheetException {
         String css = "div > button .test" +
                 "{" +
@@ -87,11 +87,11 @@ public class StyleSheetConverterTest {
         for (Node node : labels) {
             Assertions.assertEquals(Label.class, node.getClass());
         }
-Set<Element> test = StyleSheet.searchElements(ruleSets.get(1), componentTree);
+        Set<Element> test = StyleSheet.searchElements(ruleSets.get(1), componentTree);
         for (Element node : test) {
             Assertions.assertEquals("test", node.getAttribute("class"));
         }
-Set<Element> buttons = StyleSheet.searchElements(ruleSets.get(2), componentTree);
+        Set<Element> buttons = StyleSheet.searchElements(ruleSets.get(2), componentTree);
         for (Node node : buttons) {
             Assertions.assertEquals(Button.class, node.getClass());
         }

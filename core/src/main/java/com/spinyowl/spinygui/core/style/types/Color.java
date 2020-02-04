@@ -27,6 +27,8 @@ public class Color {
     private static Map<String, Color> colors = new HashMap<>();
     //@formatter:on
 
+    private static Color initialColor = Color.BLACK;
+
     static {
         colors.put("black", BLACK);
         colors.put("silver", SILVER);
@@ -143,6 +145,16 @@ public class Color {
 
     public static boolean exists(String colorName) {
         return colors.containsKey(colorName.toLowerCase());
+    }
+
+    public static void setInitialColor(Color color) {
+        if (color != null) {
+            initialColor = color;
+        }
+    }
+
+    public static Color getInitialColor() {
+        return initialColor;
     }
 
     public float getRed() {

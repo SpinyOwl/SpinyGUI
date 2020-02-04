@@ -1,18 +1,21 @@
 package com.spinyowl.spinygui.core.converter.css.parser.visitor;
 
-import com.spinyowl.spinygui.core.converter.css.parser.CSS3BaseVisitor;
-import com.spinyowl.spinygui.core.converter.css.parser.CSS3Parser;
+import com.spinyowl.spinygui.core.converter.css.parser.antlr.CSS3BaseVisitor;
+import com.spinyowl.spinygui.core.converter.css.parser.antlr.CSS3Parser;
 import com.spinyowl.spinygui.core.converter.css.parser.StyleReflectionHandler;
 import com.spinyowl.spinygui.core.converter.dom.TagNameMapping;
-import com.spinyowl.spinygui.core.style.css.selector.ClassNameSelector;
-import com.spinyowl.spinygui.core.style.css.selector.StyleSelector;
-import com.spinyowl.spinygui.core.style.css.selector.TypeSelector;
+import com.spinyowl.spinygui.core.converter.css.selector.ClassNameSelector;
+import com.spinyowl.spinygui.core.converter.css.selector.StyleSelector;
+import com.spinyowl.spinygui.core.converter.css.selector.TypeSelector;
 import org.antlr.v4.runtime.tree.ParseTree;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class SelectorVisitor extends CSS3BaseVisitor<List<StyleSelector>> {
+    private static final Logger LOGGER = LoggerFactory.getLogger(SelectorVisitor.class);
 
     @Override
     public List<StyleSelector> visitSelectorGroup(CSS3Parser.SelectorGroupContext ctx) {
@@ -84,7 +87,7 @@ public class SelectorVisitor extends CSS3BaseVisitor<List<StyleSelector>> {
         try {
             list.add((StyleSelector) clazz.getConstructor().newInstance());
         } catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.error(e.getMessage(), e);
         }
         return list;
     }

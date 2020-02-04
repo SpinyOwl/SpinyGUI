@@ -4,14 +4,14 @@ import com.spinyowl.spinygui.core.converter.dom.RawProcessor;
 import com.spinyowl.spinygui.core.converter.dom.TagNameMapping;
 import com.spinyowl.spinygui.core.node.base.Node;
 import com.spinyowl.spinygui.core.node.base.Text;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.jdom2.Content;
 import org.jdom2.Document;
 import org.jdom2.Element;
 import org.jdom2.input.SAXBuilder;
 import org.jdom2.output.Format;
 import org.jdom2.output.XMLOutputter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.StringReader;
 
@@ -20,7 +20,7 @@ import java.io.StringReader;
  * Uses {@link TagNameMapping} to find out tag name or if there is no mapping - uses class canonical name
  */
 public class NodeConverter {
-    private static final Log LOGGER = LogFactory.getLog(NodeConverter.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(NodeConverter.class);
 
     public static String toXml(Node node) {
         return toXml(node, true);

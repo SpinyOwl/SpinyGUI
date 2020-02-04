@@ -151,4 +151,11 @@ public class BorderRadius {
     public void set(Length radius) {
         topLeft = topRight = bottomRight = bottomLeft = radius;
     }
+
+    public void set(BorderRadius radius) {
+        this.topLeft = radius.topLeft;
+        this.topRight = radius.topRight;
+        this.bottomRight = radius.bottomRight;
+        this.bottomLeft = radius.bottomLeft;
+    }
 }
