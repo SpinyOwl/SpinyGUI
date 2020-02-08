@@ -29,18 +29,10 @@ public class PaddingRightProperty extends Property {
      */
     @Override
     protected void updateNodeStyle(Element element) {
-        NodeStyle nodeStyle = element.getCalculatedStyle();
-        if (INITIAL.equals(value)) {
-            nodeStyle.getPadding().setRight(Length.pixel(0));
-        } else if (INHERIT.equals(value)) {
-            NodeStyle pStyle = StyleUtils.getParentCalculatedStyle(element);
-            if (pStyle != null) {
-                nodeStyle.getPadding().setRight(pStyle.getPadding().getRight());
-            } else {
-                nodeStyle.getPadding().setRight(Length.pixel(0));
-            }
-        }
-        nodeStyle.getPadding().setRight(lengthValueExtractor.extract(value));
+        update(element, Length.pixel(0),
+                (s, v) -> s.getPadding().setRight(v),
+                s -> s.getPadding().getRight(),
+                lengthValueExtractor::extract);
     }
 
     /**

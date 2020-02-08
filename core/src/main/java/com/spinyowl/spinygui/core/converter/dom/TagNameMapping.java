@@ -4,65 +4,71 @@ import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import com.spinyowl.spinygui.core.converter.NodeConverter;
 import com.spinyowl.spinygui.core.converter.dom.annotations.Tag;
+import com.spinyowl.spinygui.core.node.base.Element;
 import com.spinyowl.spinygui.core.node.base.Node;
 import io.github.classgraph.ClassGraph;
 import io.github.classgraph.ClassInfo;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Node mapping - contains node to tag mapping for {@link NodeConverter}.
  */
 public final class TagNameMapping {
-    private static final BiMap<Class<? extends Node>, String> tagMapping = HashBiMap.create();
-    private static final BiMap<String, String> tagNameMapping = HashBiMap.create();
+    private static final Logger                                  LOGGER     = LoggerFactory.getLogger(TagNameMapping.class);
+    private static final BiMap<String, Class<? extends Element>> tagMapping = HashBiMap.create();
 
     static {
-        var scanResult = new ClassGraph().enableAllInfo().scan();
+        var scanResult = new ClassGraph()
+                .whitelistPackages("com.spinyowl.spinygui")
+                .enableAllInfo()
+                .scan();
 
         for (ClassInfo classInfo : scanResult.getClassesWithAnnotation(Tag.class.getName())) {
-            if (classInfo.extendsSuperclass(Node.class.getName())) {
-                Class<Node> clazz = (Class<Node>) classInfo.loadClass();
-                var name = clazz.getAnnotation(Tag.class).value();
+            if (classInfo.extendsSuperclass(Element.class.getName())) {
+                Class<Element> clazz = (Class<Element>) classInfo.loadClass();
+                var name = clazz.getAnnotation(Tag.class).value().toLowerCase();
                 if (name.isEmpty()) {
                     name = clazz.getSimpleName().toLowerCase();
                 }
-                addMapping(clazz, name);
+                addMapping(name, clazz);
+            } else {
+                LOGGER.warn("{} class is annotated with " + Tag.class.getName() + " annotation. " +
+                                "Tag annotation is allowed to use with " + Element.class.getName() + " children.",
+                        classInfo.getName())
+                ;
             }
         }
-
     }
+
     private TagNameMapping() {
     }
 
-    public static void addMapping(Class<? extends Node> aClass, String tagName) {
-        tagMapping.put(aClass, tagName);
-        tagNameMapping.put(tagName.toUpperCase(), tagName);
+    public static void addMapping(String tagName, Class<? extends Element> aClass) {
+        tagMapping.put(tagName, aClass);
     }
 
-    public static boolean containsKey(Class<? extends Node> componentClass) {
-        return tagMapping.containsKey(componentClass);
+    public static boolean containsElement(Class<? extends Element> componentClass) {
+        return tagMapping.containsValue(componentClass);
     }
 
-    public static String get(Class<? extends Node> componentClass) {
-        return tagMapping.get(componentClass);
+    public static String getTagName(Class<? extends Element> componentClass) {
+        return tagMapping.inverse().get(componentClass);
     }
 
     public static boolean containsTag(String name) {
-        return tagNameMapping.containsKey(name.toUpperCase());
+        return tagMapping.containsKey(name.toLowerCase());
     }
 
-    public static Class<? extends Node> getByTag(String tag) {
-        return tagMapping.inverse().get(tagNameMapping.get(tag.toUpperCase()));
+    public static Class<? extends Element> getElement(String tag) {
+        return tagMapping.get(tag.toLowerCase());
     }
 
-    public static void removeMapping(Class<? extends Node> componentClass) {
-        if (tagMapping.containsKey(componentClass)) {
-            tagNameMapping.remove(tagMapping.remove(componentClass).toUpperCase());
-        }
+    public static void removeMapping(Class<? extends Element> componentClass) {
+        tagMapping.inverse().remove(componentClass);
     }
 
     public static void removeMapping(String tag) {
-        if (tagNameMapping.containsKey(tag.toUpperCase())) {
-            tagMapping.inverse().remove(tagNameMapping.remove(tag.toUpperCase()));
-        }
+        tagMapping.remove(tag.toLowerCase());
     }
 }

@@ -13,7 +13,7 @@ public class BottomProperty extends Property {
     private ValueExtractor<Length> lengthValueExtractor = ValueExtractors.getInstance().getValueExtractor(Length.class);
 
     public BottomProperty() {
-        super(Properties.BOTTOM, "auto", false, true);
+        super(Properties.BOTTOM, null, false, true);
     }
 
     public BottomProperty(String value) {
@@ -28,12 +28,10 @@ public class BottomProperty extends Property {
      */
     @Override
     protected void updateNodeStyle(Element element) {
-        NodeStyle nodeStyle = element.getCalculatedStyle();
-        if (INITIAL.equals(value) || INHERIT.equals(value)) {
-            // todo: add implementation for initial and inherit values
-            return;
-        }
-        nodeStyle.setBottom(lengthValueExtractor.extract(value));
+        update(element, (Length<Integer>) null, null,
+                NodeStyle::setBottom,
+                NodeStyle::getBottom,
+                lengthValueExtractor::extract);
     }
 
     /**

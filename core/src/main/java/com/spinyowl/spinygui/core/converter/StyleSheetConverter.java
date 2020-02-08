@@ -40,27 +40,4 @@ public final class StyleSheetConverter {
         }
     }
 
-//    /**
-//     * Used to create StyleSheet from css.
-//     *
-//     * @param css css source
-//     * @return StyleSheet
-//     */
-//    public static List<> createFromCSS(String css) throws StyleSheetException {
-//
-//        try {
-//            var charStream = CharStreams.fromString(css);
-//            var lexer = new CSS3Lexer(charStream);
-//
-//            var tokenStream = new CommonTokenStream(lexer);
-//            var parser = new CSS3Parser(tokenStream);
-//
-//            CSS3Parser.StylesheetContext stylesheet = parser.stylesheet();
-//            return new StyleSheetVisitor().visit(stylesheet);
-//
-//        } catch (Exception e) {
-//            LOGGER.error(e.getMessage());
-//            throw new StyleSheetException(e);
-//        }
-//    }
 }

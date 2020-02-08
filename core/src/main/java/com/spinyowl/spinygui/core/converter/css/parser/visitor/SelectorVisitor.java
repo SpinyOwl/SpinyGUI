@@ -75,7 +75,7 @@ public class SelectorVisitor extends CSS3BaseVisitor<List<StyleSelector>> {
     @Override
     public List<StyleSelector> visitTypeSelector(CSS3Parser.TypeSelectorContext ctx) {
         var list = new ArrayList<StyleSelector>();
-        var clazz = TagNameMapping.getByTag(ctx.getText());
+        var clazz = TagNameMapping.getElement(ctx.getText());
         list.add(new TypeSelector(clazz));
         return list;
     }

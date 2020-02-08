@@ -9,6 +9,9 @@ public class LengthValueExtractor implements ValueExtractor<Length> {
 
     @Override
     public boolean isValid(String value) {
+        if (value == null) {
+            return true;
+        }
         return value.matches(
                 UnitValueExtractor.PERCENTAGE_REGEX) ||
                 value.matches(UnitValueExtractor.PIXEL_REGEX) ||

@@ -28,12 +28,10 @@ public class RightProperty extends Property {
      */
     @Override
     protected void updateNodeStyle(Element element) {
-        NodeStyle nodeStyle = element.getCalculatedStyle();
-        if (INITIAL.equals(value) || INHERIT.equals(value)) {
-            // todo: add implementation for initial and inherit values
-            return;
-        }
-        nodeStyle.setRight(lengthValueExtractor.extract(value));
+        update(element, (Length<Integer>) null, null,
+                NodeStyle::setRight,
+                NodeStyle::getRight,
+                lengthValueExtractor::extract);
     }
 
     /**

@@ -9,6 +9,11 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface PseudoSelector {
 
+    /**
+     * Returns string representation of pseudo selector.
+     *
+     * @return string representation of pseudo selector.
+     */
     String value();
 
 }

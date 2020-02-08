@@ -6,8 +6,10 @@ import com.spinyowl.spinygui.core.api.Frame;
 import com.spinyowl.spinygui.core.converter.StyleSheetConverter;
 import com.spinyowl.spinygui.core.converter.css.RuleSet;
 import com.spinyowl.spinygui.core.converter.css.StyleSheet;
+import com.spinyowl.spinygui.core.converter.css.parser.StyleReflectionHandler;
 import com.spinyowl.spinygui.core.converter.css.parser.StyleSheetException;
 import com.spinyowl.spinygui.core.converter.NodeConverter;
+import com.spinyowl.spinygui.core.converter.dom.TagNameMapping;
 import com.spinyowl.spinygui.core.node.base.Element;
 import com.spinyowl.spinygui.core.node.element.Button;
 import com.spinyowl.spinygui.core.node.element.Label;
@@ -25,6 +27,8 @@ import java.util.Set;
 public class StyleSheetConverterTest {
     @Test
     public void createFromCSS() throws StyleSheetException {
+        StyleReflectionHandler.getPseudoSelector(":hover");
+        Class<? extends Element> aClass = TagNameMapping.getElement("div");
         String css = "div > button .test" +
                 "{" +
                 "   background: #ffff80;" +
