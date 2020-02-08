@@ -6,6 +6,7 @@ import com.spinyowl.spinygui.core.converter.css.Properties;
 import com.spinyowl.spinygui.core.converter.css.Property;
 import com.spinyowl.spinygui.core.converter.css.ValueExtractor;
 import com.spinyowl.spinygui.core.converter.css.ValueExtractors;
+import com.spinyowl.spinygui.core.style.types.length.Auto;
 import com.spinyowl.spinygui.core.style.types.length.Length;
 
 public class MaxHeightProperty extends Property {
@@ -28,13 +29,8 @@ public class MaxHeightProperty extends Property {
      */
     @Override
     protected void updateNodeStyle(Element element) {
-        this.update(element, (Length) null, NodeStyle::setMaxHeight, NodeStyle::getMaxHeight, (v) -> {
-            if ("none".equals(value)) {
-                return null;
-            } else {
-                return lengthValueExtractor.extract(value);
-            }
-        });
+        update(element, (Length) null, NodeStyle::setMaxHeight, NodeStyle::getMaxHeight,
+                (v) -> "none".equals(value) ? null : lengthValueExtractor.extract(value));
       }
 
     /**

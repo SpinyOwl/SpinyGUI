@@ -28,16 +28,8 @@ public class MinHeightProperty extends Property {
      */
     @Override
     protected void updateNodeStyle(Element element) {
-        NodeStyle nodeStyle = element.getCalculatedStyle();
-        if (INITIAL.equals(value) || INHERIT.equals(value)) {
-            // todo: add implementation for initial and inherit values
-            return;
-        }
-        if (value.equals("none")) {
-            nodeStyle.setMinHeight(null);
-        } else {
-            nodeStyle.setMinHeight(lengthValueExtractor.extract(value));
-        }
+        update(element, (Length) null, NodeStyle::setMinHeight, NodeStyle::getMinHeight,
+                (v) -> "none".equals(value) ? null : lengthValueExtractor.extract(value));
     }
 
     /**

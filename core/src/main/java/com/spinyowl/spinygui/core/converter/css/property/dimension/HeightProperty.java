@@ -6,6 +6,8 @@ import com.spinyowl.spinygui.core.converter.css.Properties;
 import com.spinyowl.spinygui.core.converter.css.Property;
 import com.spinyowl.spinygui.core.converter.css.ValueExtractor;
 import com.spinyowl.spinygui.core.converter.css.ValueExtractors;
+import com.spinyowl.spinygui.core.style.types.length.Auto;
+import com.spinyowl.spinygui.core.style.types.length.Length;
 import com.spinyowl.spinygui.core.style.types.length.Unit;
 
 public class HeightProperty extends Property {
@@ -28,12 +30,7 @@ public class HeightProperty extends Property {
      */
     @Override
     protected void updateNodeStyle(Element element) {
-        NodeStyle nodeStyle = element.getCalculatedStyle();
-        if (INITIAL.equals(value) || INHERIT.equals(value)) {
-            // todo: add implementation for initial and inherit values
-            return;
-        }
-        nodeStyle.setHeight(unitValueExtractor.extract(value));
+        update(element, Auto.AUTO, NodeStyle::setHeight, NodeStyle::getHeight, unitValueExtractor::extract);
     }
 
     /**

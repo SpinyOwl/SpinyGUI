@@ -28,16 +28,8 @@ public class MinWidthProperty extends Property {
      */
     @Override
     protected void updateNodeStyle(Element element) {
-        NodeStyle nodeStyle = element.getCalculatedStyle();
-        if (INITIAL.equals(value) || INHERIT.equals(value)) {
-            // todo: add implementation for initial and inherit values
-            return;
-        }
-        if (value.equals("none")) {
-            nodeStyle.setMinWidth(null);
-        } else {
-            nodeStyle.setMinWidth(lengthValueExtractor.extract(value));
-        }
+        update(element, (Length) null, NodeStyle::setMinWidth, NodeStyle::getMinWidth,
+                (v) -> "none".equals(value) ? null : lengthValueExtractor.extract(value));
     }
 
     /**

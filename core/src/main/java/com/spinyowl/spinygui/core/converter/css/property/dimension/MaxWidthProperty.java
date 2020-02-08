@@ -28,13 +28,8 @@ public class MaxWidthProperty extends Property {
      */
     @Override
     protected void updateNodeStyle(Element element) {
-        this.update(element, (Length) null, NodeStyle::setMaxWidth, NodeStyle::getMaxWidth, (v) -> {
-            if ("none".equals(value)) {
-                return null;
-            } else {
-                return lengthValueExtractor.extract(value);
-            }
-        });
+        update(element, (Length) null, NodeStyle::setMaxWidth, NodeStyle::getMaxWidth,
+                (v) -> "none".equals(value) ? null : lengthValueExtractor.extract(value));
     }
 
     /**
