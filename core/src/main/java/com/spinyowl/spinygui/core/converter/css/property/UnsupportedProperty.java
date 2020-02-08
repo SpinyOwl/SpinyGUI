@@ -1,7 +1,7 @@
 package com.spinyowl.spinygui.core.converter.css.property;
 
-import com.spinyowl.spinygui.core.node.base.Element;
 import com.spinyowl.spinygui.core.converter.css.Property;
+import com.spinyowl.spinygui.core.node.base.Element;
 
 public class UnsupportedProperty extends Property {
     public UnsupportedProperty(String name) {

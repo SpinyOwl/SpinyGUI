@@ -1,11 +1,11 @@
 package com.spinyowl.spinygui.core.converter.css.property.margin;
 
-import com.spinyowl.spinygui.core.node.base.Element;
-import com.spinyowl.spinygui.core.style.NodeStyle;
 import com.spinyowl.spinygui.core.converter.css.Properties;
 import com.spinyowl.spinygui.core.converter.css.Property;
 import com.spinyowl.spinygui.core.converter.css.ValueExtractor;
 import com.spinyowl.spinygui.core.converter.css.ValueExtractors;
+import com.spinyowl.spinygui.core.node.base.Element;
+import com.spinyowl.spinygui.core.style.types.length.Auto;
 import com.spinyowl.spinygui.core.style.types.length.Unit;
 
 public class MarginTopProperty extends Property {
@@ -28,12 +28,10 @@ public class MarginTopProperty extends Property {
      */
     @Override
     protected void updateNodeStyle(Element element) {
-        NodeStyle nodeStyle = element.getCalculatedStyle();
-        if (INITIAL.equals(value) || INHERIT.equals(value)) {
-            // todo: add implementation for initial and inherit values
-            return;
-        }
-        nodeStyle.getMargin().setTop(unitValueExtractor.extract(value));
+        update(element, Auto.AUTO,
+                (s, v) -> s.getMargin().setTop(v),
+                s -> s.getMargin().getTop(),
+                unitValueExtractor::extract);
     }
 
     /**

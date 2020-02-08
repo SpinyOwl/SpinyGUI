@@ -1,10 +1,10 @@
 package com.spinyowl.spinygui.core.converter.css.property.border;
 
-import com.spinyowl.spinygui.core.node.base.Element;
-import com.spinyowl.spinygui.core.style.NodeStyle;
 import com.spinyowl.spinygui.core.converter.css.Properties;
 import com.spinyowl.spinygui.core.converter.css.Property;
 import com.spinyowl.spinygui.core.converter.css.util.StyleUtils;
+import com.spinyowl.spinygui.core.node.base.Element;
+import com.spinyowl.spinygui.core.style.NodeStyle;
 import com.spinyowl.spinygui.core.style.types.border.BorderStyle;
 
 public class BorderStyleProperty extends Property {
