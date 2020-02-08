@@ -1,6 +1,7 @@
 package com.spinyowl.spinygui.core.converter.css;
 
 import com.spinyowl.spinygui.core.converter.css.property.*;
+import com.spinyowl.spinygui.core.converter.css.property.background.BackgroundColorProperty;
 import com.spinyowl.spinygui.core.converter.css.property.border.*;
 import com.spinyowl.spinygui.core.converter.css.property.border.radius.*;
 import com.spinyowl.spinygui.core.converter.css.property.dimension.*;

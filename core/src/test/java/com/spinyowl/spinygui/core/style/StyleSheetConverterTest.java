@@ -18,6 +18,7 @@ import com.spinyowl.spinygui.core.converter.css.selector.StyleSelector;
 import com.spinyowl.spinygui.core.style.manager.StyleManagerProvider;
 import com.spinyowl.spinygui.core.style.types.Color;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -25,6 +26,7 @@ import java.util.Map;
 import java.util.Set;
 
 public class StyleSheetConverterTest {
+    @Disabled
     @Test
     public void createFromCSS() throws StyleSheetException {
         StyleReflectionHandler.getPseudoSelector(":hover");
@@ -61,6 +63,7 @@ public class StyleSheetConverterTest {
         Assertions.assertEquals(Color.RED, testLabel.getCalculatedStyle().getColor());
     }
 
+    @Disabled
     @Test
     public void searchComponents() throws Exception {
         var css =
@@ -102,6 +105,7 @@ public class StyleSheetConverterTest {
 
     }
 
+    @Disabled
     @Test
     public void parseText() throws Exception {
 

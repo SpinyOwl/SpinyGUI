@@ -1,4 +1,4 @@
-package com.spinyowl.spinygui.core.converter.css.property;
+package com.spinyowl.spinygui.core.converter.css.property.background;
 
 import com.spinyowl.spinygui.core.converter.css.Properties;
 import com.spinyowl.spinygui.core.converter.css.Property;
