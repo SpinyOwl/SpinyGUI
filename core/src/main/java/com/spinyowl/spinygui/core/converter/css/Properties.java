@@ -5,6 +5,7 @@ import com.spinyowl.spinygui.core.converter.css.property.background.BackgroundCo
 import com.spinyowl.spinygui.core.converter.css.property.border.*;
 import com.spinyowl.spinygui.core.converter.css.property.border.radius.*;
 import com.spinyowl.spinygui.core.converter.css.property.dimension.*;
+import com.spinyowl.spinygui.core.converter.css.property.flex.*;
 import com.spinyowl.spinygui.core.converter.css.property.margin.*;
 import com.spinyowl.spinygui.core.converter.css.property.padding.*;
 import com.spinyowl.spinygui.core.converter.css.property.position.BottomProperty;
@@ -71,6 +72,16 @@ public final class Properties {
     public static final String BORDER_RIGHT_STYLE  = "border-right-style";
     public static final String BORDER_TOP_STYLE    = "border-top-style";
     public static final String BORDER_BOTTOM_STYLE = "border-bottom-style";
+
+    public static final String ALIGN_CONTENT   = "align-content";
+    public static final String ALIGN_ITEMS     = "align-items";
+    public static final String ALIGN_SELF      = "align-self";
+    public static final String FLEX_BASIS      = "flex-basis";
+    public static final String FLEX_DIRECTION  = "flex-direction";
+    public static final String FLEX_GROW       = "flex-grow";
+    public static final String FLEX_SHRINK     = "flex-shrink";
+    public static final String FLEX_WRAP       = "flex-wrap";
+    public static final String JUSTIFY_CONTENT = "justify-content";
 
     public static final String WIDTH  = "width";
     public static final String HEIGHT = "height";
@@ -162,6 +173,14 @@ public final class Properties {
         addSupportedProperty(BORDER_BOTTOM_RIGHT_RADIUS, BorderBottomRightRadiusProperty::new);
         addSupportedProperty(BORDER_TOP_LEFT_RADIUS, BorderTopLeftRadiusProperty::new);
         addSupportedProperty(BORDER_TOP_RIGHT_RADIUS, BorderTopRightRadiusProperty::new);
+
+        addSupportedProperty(ALIGN_CONTENT, AlignContentProperty::new);
+        addSupportedProperty(ALIGN_ITEMS, AlignItemsProperty::new);
+        addSupportedProperty(ALIGN_SELF, AlignSelfProperty::new);
+        addSupportedProperty(FLEX_BASIS, FlexBasisProperty::new);
+        addSupportedProperty(FLEX_DIRECTION, FlexDirectionProperty::new);
+        addSupportedProperty(FLEX_WRAP, FlexWrapProperty::new);
+        addSupportedProperty(JUSTIFY_CONTENT, JustifyContentProperty::new);
     }
 
     //@formatter:off
@@ -202,8 +221,7 @@ public final class Properties {
         } else {
             property = new UnsupportedProperty(propertyName);
         }
-        // todo: check that there is no any side effects on property value to lower case
-        property.setValue(propertyValue.toLowerCase());
+        property.setValue(propertyValue);
         return property;
     }
 
@@ -211,8 +229,7 @@ public final class Properties {
      * Used to add property support.
      *
      * @param property         property to support.
-     * @param propertySupplier property supplier which will be used to create {@link Property} instance
-     *                         by property name.
+     * @param propertySupplier property supplier which will be used to create new {@link Property} instance.
      */
     public void addSupportedProperty(String property, Supplier<Property> propertySupplier) {
         Objects.requireNonNull(property);

@@ -36,9 +36,9 @@ public class DisplayProperty extends Property {
         });
         NodeStyle nodeStyle = element.getCalculatedStyle();
 
-        if (INITIAL.equals(value)) {
+        if (INITIAL.equalsIgnoreCase(value)) {
             nodeStyle.setDisplay(Display.BLOCK);
-        } else if (INHERIT.equals(value)) {
+        } else if (INHERIT.equalsIgnoreCase(value)) {
             NodeStyle parentStyle = StyleUtils.getParentCalculatedStyle(element);
             if (parentStyle != null) {
                 Display pd = parentStyle.getDisplay();

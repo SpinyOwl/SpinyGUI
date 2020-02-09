@@ -1,13 +1,21 @@
 package com.spinyowl.spinygui.core.layout.impl.flex;
+
 import com.spinyowl.spinygui.core.node.base.Element;
 import com.spinyowl.spinygui.core.style.NodeStyle;
-import com.spinyowl.spinygui.core.style.types.flex.AlignItems;
-import com.spinyowl.spinygui.core.style.types.flex.AlignSelf;
-import com.spinyowl.spinygui.core.style.types.flex.FlexDirection;
-import com.spinyowl.spinygui.core.style.types.flex.JustifyContent;
+import com.spinyowl.spinygui.core.style.types.Margin;
+import com.spinyowl.spinygui.core.style.types.Padding;
+import com.spinyowl.spinygui.core.style.types.flex.*;
 import com.spinyowl.spinygui.core.style.types.length.Length;
 import com.spinyowl.spinygui.core.style.types.length.Unit;
 import org.lwjgl.util.yoga.Yoga;
+
+import java.util.function.BiConsumer;
+import java.util.function.LongConsumer;
+
+import static com.spinyowl.spinygui.core.style.types.length.Length.Type.PERCENT;
+import static com.spinyowl.spinygui.core.style.types.length.Length.Type.PIXEL;
+import static org.lwjgl.util.yoga.Yoga.*;
+import static org.lwjgl.util.yoga.Yoga.YGNodeStyleSetPadding;
 
 /**
  * @author Aliaksandr_Shcherbin.
@@ -16,8 +24,6 @@ final class FlexUtils {
 
     private FlexUtils() {
     }
-
-    //@formatter:off
 
     public static void setJustifyContent(long node, JustifyContent justifyContent, Element element) {
         JustifyContent toUse = justifyContent;
@@ -30,29 +36,48 @@ final class FlexUtils {
             }
         }
         if (toUse == JustifyContent.INITIAL || toUse == JustifyContent.FLEX_START) {
-            Yoga.YGNodeStyleSetJustifyContent(node, Yoga.YGJustifyFlexStart);
+            YGNodeStyleSetJustifyContent(node, YGJustifyFlexStart);
         } else if (toUse == JustifyContent.CENTER) {
-            Yoga.YGNodeStyleSetJustifyContent(node, Yoga.YGJustifyCenter);
+            YGNodeStyleSetJustifyContent(node, YGJustifyCenter);
         } else if (toUse == JustifyContent.FLEX_END) {
-            Yoga.YGNodeStyleSetJustifyContent(node, Yoga.YGJustifyFlexEnd);
+            YGNodeStyleSetJustifyContent(node, YGJustifyFlexEnd);
         } else if (toUse == JustifyContent.SPACE_AROUND) {
-            Yoga.YGNodeStyleSetJustifyContent(node, Yoga.YGJustifySpaceAround);
+            YGNodeStyleSetJustifyContent(node, YGJustifySpaceAround);
         } else if (toUse == JustifyContent.SPACE_BETWEEN) {
-            Yoga.YGNodeStyleSetJustifyContent(node, Yoga.YGJustifySpaceBetween);
+            YGNodeStyleSetJustifyContent(node, YGJustifySpaceBetween);
         } else if (toUse == JustifyContent.SPACE_EVENLY) {
-            Yoga.YGNodeStyleSetJustifyContent(node, Yoga.YGJustifySpaceEvenly);
+            YGNodeStyleSetJustifyContent(node, YGJustifySpaceEvenly);
         }
     }
 
     public static void setFlexDirection(long rootNode, FlexDirection flexDirection) {
         if (flexDirection == FlexDirection.ROW) {
-            Yoga.YGNodeStyleSetFlexDirection(rootNode, Yoga.YGFlexDirectionRow);
+            YGNodeStyleSetFlexDirection(rootNode, YGFlexDirectionRow);
         } else if (flexDirection == FlexDirection.COLUMN) {
-            Yoga.YGNodeStyleSetFlexDirection(rootNode, Yoga.YGFlexDirectionColumn);
+            YGNodeStyleSetFlexDirection(rootNode, YGFlexDirectionColumn);
         } else if (flexDirection == FlexDirection.ROW_REVERSE) {
-            Yoga.YGNodeStyleSetFlexDirection(rootNode, Yoga.YGFlexDirectionRowReverse);
+            YGNodeStyleSetFlexDirection(rootNode, YGFlexDirectionRowReverse);
         } else if (flexDirection == FlexDirection.COLUMN_REVERSE) {
-            Yoga.YGNodeStyleSetFlexDirection(rootNode, Yoga.YGFlexDirectionColumnReverse);
+            YGNodeStyleSetFlexDirection(rootNode, YGFlexDirectionColumnReverse);
+        }
+    }
+
+    public static void setFlexWrap(long node, FlexWrap flexWrap, Element element) {
+        FlexWrap toUse = flexWrap;
+        for (Element lp = element; toUse == FlexWrap.INHERIT; lp = lp.getParent()) {
+            if (lp != null) {
+                toUse = lp.getStyle().getFlex().getFlexWrap();
+            } else {
+                toUse = FlexWrap.NOWRAP;
+                break;
+            }
+        }
+        if (toUse == FlexWrap.INITIAL || toUse == FlexWrap.NOWRAP) {
+            YGNodeStyleSetFlexWrap(node, YGWrapNoWrap);
+        } else if (toUse == FlexWrap.WRAP) {
+            YGNodeStyleSetFlexWrap(node, YGWrapWrap);
+        } else if (toUse == FlexWrap.WRAP_REVERSE) {
+            YGNodeStyleSetFlexWrap(node, YGWrapReverse);
         }
     }
 
@@ -67,17 +92,17 @@ final class FlexUtils {
             }
         }
         if (toUse == AlignItems.FLEX_END) {
-            Yoga.YGNodeStyleSetAlignItems(node, Yoga.YGAlignFlexEnd);
+            YGNodeStyleSetAlignItems(node, YGAlignFlexEnd);
         } else if (toUse == AlignItems.CENTER) {
-            Yoga.YGNodeStyleSetAlignItems(node, Yoga.YGAlignCenter);
+            YGNodeStyleSetAlignItems(node, YGAlignCenter);
         } else if (toUse == AlignItems.FLEX_START) {
-            Yoga.YGNodeStyleSetAlignItems(node, Yoga.YGAlignFlexStart);
+            YGNodeStyleSetAlignItems(node, YGAlignFlexStart);
         } else if (toUse == AlignItems.STRETCH) {
-            Yoga.YGNodeStyleSetAlignItems(node, Yoga.YGAlignStretch);
+            YGNodeStyleSetAlignItems(node, YGAlignStretch);
         } else if (toUse == AlignItems.BASELINE) {
-            Yoga.YGNodeStyleSetAlignItems(node, Yoga.YGAlignBaseline);
+            YGNodeStyleSetAlignItems(node, YGAlignBaseline);
         } else if (toUse == AlignItems.AUTO) {
-            Yoga.YGNodeStyleSetAlignItems(node, Yoga.YGAlignAuto);
+            YGNodeStyleSetAlignItems(node, YGAlignAuto);
         }
     }
 
@@ -92,78 +117,101 @@ final class FlexUtils {
             }
         }
         if (toUse == AlignSelf.FLEX_END) {
-            Yoga.YGNodeStyleSetAlignSelf(node, Yoga.YGAlignFlexEnd);
+            YGNodeStyleSetAlignSelf(node, YGAlignFlexEnd);
         } else if (toUse == AlignSelf.CENTER) {
-            Yoga.YGNodeStyleSetAlignSelf(node, Yoga.YGAlignCenter);
+            YGNodeStyleSetAlignSelf(node, YGAlignCenter);
         } else if (toUse == AlignSelf.FLEX_START) {
-            Yoga.YGNodeStyleSetAlignSelf(node, Yoga.YGAlignFlexStart);
+            YGNodeStyleSetAlignSelf(node, YGAlignFlexStart);
         } else if (toUse == AlignSelf.STRETCH) {
-            Yoga.YGNodeStyleSetAlignSelf(node, Yoga.YGAlignStretch);
+            YGNodeStyleSetAlignSelf(node, YGAlignStretch);
         } else if (toUse == AlignSelf.BASELINE) {
-            Yoga.YGNodeStyleSetAlignSelf(node, Yoga.YGAlignBaseline);
+            YGNodeStyleSetAlignSelf(node, YGAlignBaseline);
         } else if (toUse == AlignSelf.AUTO) {
-            Yoga.YGNodeStyleSetAlignSelf(node, Yoga.YGAlignAuto);
+            YGNodeStyleSetAlignSelf(node, YGAlignAuto);
         }
     }
 
     public static void setPadding(long node, NodeStyle style) {
-        Length paddingLeft = style.getPadding().getLeft();
-        if (paddingLeft != null) {
-            applyPadding(node, Yoga.YGEdgeLeft, paddingLeft);
-        }
-        Length paddingTop = style.getPadding().getTop();
-        if (paddingTop != null) {
-            applyPadding(node, Yoga.YGEdgeTop, paddingTop);
-        }
-        Length paddingRight = style.getPadding().getRight();
-        if (paddingRight != null) {
-            applyPadding(node, Yoga.YGEdgeRight, paddingRight);
-        }
-        Length paddingBottom = style.getPadding().getBottom();
-        if (paddingBottom != null) {
-            applyPadding(node, Yoga.YGEdgeBottom, paddingBottom);
-        }
+        Padding padding = style.getPadding();
+        setLength(padding.getLeft(), node, YGEdgeLeft, Yoga::YGNodeStyleSetPadding, Yoga::YGNodeStyleSetPaddingPercent);
+        setLength(padding.getTop(), node, YGEdgeTop, Yoga::YGNodeStyleSetPadding, Yoga::YGNodeStyleSetPaddingPercent);
+        setLength(padding.getRight(), node, YGEdgeRight, Yoga::YGNodeStyleSetPadding, Yoga::YGNodeStyleSetPaddingPercent);
+        setLength(padding.getBottom(), node, YGEdgeBottom, Yoga::YGNodeStyleSetPadding, Yoga::YGNodeStyleSetPaddingPercent);
     }
 
     public static void setMargin(long node, NodeStyle style) {
-        Unit marginLeft = style.getMargin().getLeft();
-        if (marginLeft != null) {
-            applyMargin(node, Yoga.YGEdgeLeft, marginLeft);
-        }
-        Unit marginTop = style.getMargin().getTop();
-        if (marginTop != null) {
-            applyMargin(node, Yoga.YGEdgeTop, marginTop);
-        }
-        Unit marginRight = style.getMargin().getRight();
-        if (marginRight != null) {
-            applyMargin(node, Yoga.YGEdgeRight, marginRight);
-        }
-        Unit marginBottom = style.getMargin().getBottom();
-        if (marginBottom != null) {
-            applyMargin(node, Yoga.YGEdgeBottom, marginBottom);
-        }
+        Margin margin = style.getMargin();
+        setUnit(margin.getLeft(), node, YGEdgeLeft,
+                Yoga::YGNodeStyleSetMarginAuto, Yoga::YGNodeStyleSetMargin, Yoga::YGNodeStyleSetMarginPercent);
+        setUnit(margin.getTop(), node, YGEdgeTop,
+                Yoga::YGNodeStyleSetMarginAuto, Yoga::YGNodeStyleSetMargin, Yoga::YGNodeStyleSetMarginPercent);
+        setUnit(margin.getRight(), node, YGEdgeRight,
+                Yoga::YGNodeStyleSetMarginAuto, Yoga::YGNodeStyleSetMargin, Yoga::YGNodeStyleSetMarginPercent);
+        setUnit(margin.getBottom(), node, YGEdgeBottom,
+                Yoga::YGNodeStyleSetMarginAuto, Yoga::YGNodeStyleSetMargin, Yoga::YGNodeStyleSetMarginPercent);
     }
 
-    private static void applyMargin(long node, int edge, Unit margin) {
-        if (margin.isAuto()) {
-            Yoga.YGNodeStyleSetMarginAuto(node, edge);
-
-        } else if (margin.isLength()) {
-            Length m = margin.asLength();
-            if (Length.Type.PERCENT.equals(m.type())) {
-                Yoga.YGNodeStyleSetMarginPercent(node, edge, Length.Type.PERCENT.type().cast(m.get()));
-            } else if (Length.Type.PIXEL.equals(m.type())) {
-                Yoga.YGNodeStyleSetMargin(node, edge, Length.Type.PIXEL.type().cast(m.get()));
+    public static void setUnit(Unit unit, long node,
+                               LongConsumer autoConsumer,
+                               BiConsumer<Long, Integer> pixelConsumer,
+                               BiConsumer<Long, Float> percentConsumer) {
+        if (unit != null) {
+            if (unit.isAuto()) {
+                autoConsumer.accept(node);
+            } else {
+                Length l = unit.asLength();
+                if (PIXEL.equals(l.type())) {
+                    pixelConsumer.accept(node, (Integer) l.get());
+                } else if (PERCENT.equals(l.type())) {
+                    percentConsumer.accept(node, (Float) l.get());
+                }
             }
         }
     }
 
-    private static void applyPadding(long node, int edge, Length padding) {
-        if (Length.Type.PIXEL.equals(padding.type())) {
-            Yoga.YGNodeStyleSetPadding(node, edge, Length.Type.PIXEL.type().cast(padding.get()));
-        } else if (Length.Type.PERCENT.equals(padding.type())) {
-            Yoga.YGNodeStyleSetPaddingPercent(node, edge, Length.Type.PERCENT.type().cast(padding.get()));
+    public static void setUnit(Unit unit, long node, int side,
+                               BiConsumer<Long, Integer> autoConsumer,
+                               TriConsumer<Long, Integer, Integer> pixelConsumer,
+                               TriConsumer<Long, Integer, Float> percentConsumer) {
+        if (unit != null) {
+            if (unit.isAuto()) {
+                autoConsumer.accept(node, side);
+            } else {
+                Length l = unit.asLength();
+                if (PIXEL.equals(l.type())) {
+                    pixelConsumer.accept(node, side, (Integer) l.get());
+                } else if (PERCENT.equals(l.type())) {
+                    percentConsumer.accept(node, side, (Float) l.get());
+                }
+            }
         }
     }
 
+    public static void setLength(Length length, long node,
+                                 BiConsumer<Long, Integer> pixelConsumer,
+                                 BiConsumer<Long, Float> percentConsumer) {
+        if (length != null) {
+            if (PIXEL.equals(length.type())) {
+                pixelConsumer.accept(node, (Integer) length.get());
+            } else if (PERCENT.equals(length.type())) {
+                percentConsumer.accept(node, (Float) length.get());
+            }
+        }
+    }
+
+    public static void setLength(Length length, long node, int side,
+                                 TriConsumer<Long, Integer, Integer> pixelConsumer,
+                                 TriConsumer<Long, Integer, Float> percentConsumer) {
+        if (length != null) {
+            if (PIXEL.equals(length.type())) {
+                pixelConsumer.accept(node, side, (Integer) length.get());
+            } else if (PERCENT.equals(length.type())) {
+                percentConsumer.accept(node, side, (Float) length.get());
+            }
+        }
+    }
+
+    public interface TriConsumer<T, U, V> {
+        void accept(T t, U u, V v);
+    }
 }

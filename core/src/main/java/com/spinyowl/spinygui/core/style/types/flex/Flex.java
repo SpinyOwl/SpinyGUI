@@ -1,43 +1,53 @@
 package com.spinyowl.spinygui.core.style.types.flex;
 
+import com.spinyowl.spinygui.core.style.types.length.Unit;
+
 public class Flex {
 
     /**
      * Specifies the direction of the flexible items
      */
     private FlexDirection flexDirection;
+
     /**
      * Specifies the alignment between the items inside a flexible container when the items do not use all available space.
      */
     private JustifyContent justifyContent;
+
     /**
      * Specifies the alignment for items inside a flexible container.
      */
     private AlignItems alignItems;
+
     /**
      * Specifies whether the flexible items should wrap or not.
      */
     private FlexWrap flexWrap;
+
     /**
      * Specifies the alignment between the lines inside a flexible container when the items do not use all available space.
      */
     private AlignContent alignContent;
+
     /**
      * Specifies the alignment for selected items inside a flexible container.
      */
     private AlignSelf alignSelf;
+
     /**
      * A number specifying how much the item will grow relative to the rest of the flexible items.
      */
     private int flexGrow;
+
     /**
      * A number specifying how much the item will shrink relative to the rest of the flexible items.
      */
     private int flexShrink;
+
     /**
      * The length of the item. Legal values: a number in px.
      */
-    private float flexBasis;
+    private Unit flexBasis;
 
     public Flex() {
         this.flexDirection = FlexDirection.ROW;
@@ -47,7 +57,8 @@ public class Flex {
         this.alignContent = AlignContent.STRETCH;
         this.alignSelf = AlignSelf.AUTO;
     }
-public void setFlex(int flexGrow, int flexShrink, float flexBasis) {
+
+    public void setFlex(int flexGrow, int flexShrink, Unit flexBasis) {
         setFlexGrow(flexGrow);
         setFlexShrink(flexShrink);
         setFlexBasis(flexBasis);
@@ -82,11 +93,11 @@ public void setFlex(int flexGrow, int flexShrink, float flexBasis) {
         this.flexShrink = flexShrink;
     }
 
-    public float getFlexBasis() {
+    public Unit getFlexBasis() {
         return flexBasis;
     }
 
-    public void setFlexBasis(float flexBasis) {
+    public void setFlexBasis(Unit flexBasis) {
         this.flexBasis = flexBasis;
     }
 

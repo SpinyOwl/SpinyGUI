@@ -108,21 +108,21 @@ public abstract class Property {
     }
 
     /**
-     * Returns true if {@code INHERIT.equals(value)}.
+     * Returns true if {@code INHERIT.equalsIgnoreCase(value)}.
      *
-     * @return true if {@code INHERIT.equals(value)}.
+     * @return true if {@code INHERIT.equalsIgnoreCase(value)}.
      */
     public boolean equalsInherit() {
-        return INHERIT.equals(value);
+        return INHERIT.equalsIgnoreCase(value);
     }
 
     /**
-     * Returns true if {@code INITIAL.equals(value)}.
+     * Returns true if {@code INITIAL.equalsIgnoreCase(value)}.
      *
-     * @return true if {@code INITIAL.equals(value)}.
+     * @return true if {@code INITIAL.equalsIgnoreCase(value)}.
      */
     public boolean equalsInitial() {
-        return INITIAL.equals(value);
+        return INITIAL.equalsIgnoreCase(value);
     }
 
     public String getValue() {
@@ -136,7 +136,7 @@ public abstract class Property {
      */
     public void setValue(String value) {
         if (value != null) {
-            this.value = value.toLowerCase();
+            this.value = value;
         }
     }
 
@@ -243,9 +243,9 @@ public abstract class Property {
                               Function<NodeStyle, T> valueGetter,
                               Function<String, T> declarationExtractor) {
         NodeStyle nodeStyle = element.getCalculatedStyle();
-        if (INITIAL.equals(value)) {
+        if (INITIAL.equalsIgnoreCase(value)) {
             valueSetter.accept(nodeStyle, initialValueSupplier.get());
-        } else if (INHERIT.equals(value)) {
+        } else if (INHERIT.equalsIgnoreCase(value)) {
             NodeStyle parentStyle = StyleUtils.getParentCalculatedStyle(element);
             if (parentStyle != null) {
                 valueSetter.accept(nodeStyle, valueGetter.apply(parentStyle));

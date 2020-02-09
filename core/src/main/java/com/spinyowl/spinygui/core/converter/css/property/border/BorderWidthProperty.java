@@ -30,11 +30,11 @@ public class BorderWidthProperty extends Property {
 
     static Length getLength(String value, ValueExtractor<Length> lengthValueExtractor) {
         Length v = null;
-        if (THIN.equals(value)) {
+        if (THIN.equalsIgnoreCase(value)) {
             v = THIN_VALUE;
-        } else if (MEDIUM.equals(value)) {
+        } else if (MEDIUM.equalsIgnoreCase(value)) {
             v = MEDIUM_VALUE;
-        } else if (THICK.equals(value)) {
+        } else if (THICK.equalsIgnoreCase(value)) {
             v = THICK_VALUE;
         } else {
             v = lengthValueExtractor.extract(value);
@@ -43,9 +43,9 @@ public class BorderWidthProperty extends Property {
     }
 
     static boolean isValidBorderWidthValue(String borderWidth, ValueExtractor<Length> lengthValueExtractor) {
-        return THIN.equals(borderWidth) ||
-                MEDIUM.equals(borderWidth) ||
-                THICK.equals(borderWidth) ||
+        return THIN.equalsIgnoreCase(borderWidth) ||
+                MEDIUM.equalsIgnoreCase(borderWidth) ||
+                THICK.equalsIgnoreCase(borderWidth) ||
                 lengthValueExtractor.isValid(borderWidth);
     }
 
@@ -57,9 +57,9 @@ public class BorderWidthProperty extends Property {
     @Override
     protected void updateNodeStyle(Element element) {
         NodeStyle nodeStyle = element.getCalculatedStyle();
-        if (INITIAL.equals(value)) {
+        if (INITIAL.equalsIgnoreCase(value)) {
             nodeStyle.getBorder().setWidth(MEDIUM_VALUE);
-        } else if (INHERIT.equals(value)) {
+        } else if (INHERIT.equalsIgnoreCase(value)) {
             NodeStyle parentStyle = StyleUtils.getParentCalculatedStyle(element);
             if (parentStyle != null) {
                 nodeStyle.getBorder().setWidth(parentStyle.getBorder());

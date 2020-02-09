@@ -35,11 +35,11 @@ public class BorderBottomProperty extends Property {
     @Override
     protected void updateNodeStyle(Element element) {
         NodeStyle nodeStyle = element.getCalculatedStyle();
-        if (INITIAL.equals(value)) {
+        if (INITIAL.equalsIgnoreCase(value)) {
             nodeStyle.getBorder().getBottom().setWidth(MEDIUM_VALUE);
             nodeStyle.getBorder().getBottom().setStyle(BorderStyle.of(BorderStyleProperty.DEFAULT_VALUE));
             nodeStyle.getBorder().getBottom().setColor(Color.getColorByName(BorderColorProperty.DEFAULT_VALUE));
-        } else if (INHERIT.equals(value)) {
+        } else if (INHERIT.equalsIgnoreCase(value)) {
             NodeStyle parentStyle = StyleUtils.getParentCalculatedStyle(element);
             if (parentStyle != null) {
                 nodeStyle.getBorder().getBottom().setWidth(parentStyle.getBorder().getBottom().getWidth());

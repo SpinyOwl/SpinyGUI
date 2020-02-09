@@ -31,9 +31,9 @@ public class PositionProperty extends Property {
         NodeStyle nodeStyle = element.getCalculatedStyle();
 
         if (value != null) {
-            if (INITIAL.equals(value)) {
+            if (INITIAL.equalsIgnoreCase(value)) {
                 nodeStyle.setPosition(Position.RELATIVE);
-            } else if (INHERIT.equals(value)) {
+            } else if (INHERIT.equalsIgnoreCase(value)) {
                 NodeStyle parentStyle = StyleUtils.getParentCalculatedStyle(element);
                 if (parentStyle != null) {
                     Position pd = parentStyle.getPosition();

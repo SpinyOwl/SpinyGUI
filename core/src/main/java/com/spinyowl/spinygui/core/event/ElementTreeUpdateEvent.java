@@ -1,6 +1,11 @@
 package com.spinyowl.spinygui.core.event;
 
-public class ElementTreeUpdateEvent extends NodeEvent {
+import com.spinyowl.spinygui.core.node.base.Element;
+
+/**
+ * Event, that used only for invalidating tree, so it should be recalculated.
+ */
+public class ElementTreeUpdateEvent extends NodeEvent<Element> {
 
     public ElementTreeUpdateEvent() {
         super(null);

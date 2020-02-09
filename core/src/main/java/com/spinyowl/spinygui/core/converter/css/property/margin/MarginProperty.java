@@ -31,9 +31,9 @@ public class MarginProperty extends Property {
     @Override
     protected void updateNodeStyle(Element element) {
         NodeStyle nodeStyle = element.getCalculatedStyle();
-        if (INITIAL.equals(value)) {
+        if (INITIAL.equalsIgnoreCase(value)) {
             nodeStyle.getMargin().set(Auto.AUTO);
-        } else if (INHERIT.equals(value)) {
+        } else if (INHERIT.equalsIgnoreCase(value)) {
             NodeStyle pStyle = StyleUtils.getParentCalculatedStyle(element);
             if (pStyle != null) {
                 nodeStyle.getMargin().set(pStyle.getMargin());

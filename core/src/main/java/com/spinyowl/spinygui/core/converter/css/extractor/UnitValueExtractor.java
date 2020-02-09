@@ -8,8 +8,8 @@ import com.spinyowl.spinygui.core.style.types.length.Unit;
 public class UnitValueExtractor implements ValueExtractor<Unit> {
 
     public static final String PERCENTAGE_REGEX = "-?(\\d+(\\.\\d*)?|\\.\\d+)%";
-    public static final String PIXEL_REGEX      = "-?\\d+px";
-    public static final String AUTO_REGEX       = "auto";
+    public static final String PIXEL_REGEX      = "-?\\d+[pP][xX]";
+    public static final String AUTO_REGEX       = "[aA][uU][tT][oO]";
     public static final String ZERO_REGEX       = "0+";
 
     public static Length getLength(String value) {

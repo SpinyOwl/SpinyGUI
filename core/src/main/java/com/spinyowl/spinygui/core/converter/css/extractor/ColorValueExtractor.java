@@ -4,7 +4,7 @@ import com.spinyowl.spinygui.core.converter.css.ValueExtractor;
 import com.spinyowl.spinygui.core.style.types.Color;
 
 public class ColorValueExtractor implements ValueExtractor<Color> {
-    private static final String hexStringRegex = "#([0-9a-f]{3}|[0-9a-f]{4}|[0-9a-f]{6}|[0-9a-f]{8})";
+    private static final String hexStringRegex = "#([0-9a-fA-F]{3}|[0-9a-fA-F]{4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})";
 
     private static final String rgbFunctionRegex = "rgb\\x28((2([0-4][0-9]|5[0-5])|[0-1]?[0-9]?[0-9])(\\s*?,\\s*?)){2}(2([0-4][0-9]|5[0-5])|[0-1]?[0-9]?[0-9])\\x29";
     private static final String rgbaFunctionRegex = "rgba\\x28(([2]([0-4][0-9]|[5][0-5])|[0-1]?[0-9]?[0-9])(\\s*?,\\s*?)){3}(1|0(.\\d+)?)\\x29";

@@ -35,11 +35,11 @@ public class BorderTopProperty extends Property {
     @Override
     protected void updateNodeStyle(Element element) {
         NodeStyle nodeStyle = element.getCalculatedStyle();
-        if (INITIAL.equals(value)) {
+        if (INITIAL.equalsIgnoreCase(value)) {
             nodeStyle.getBorder().getTop().setWidth(MEDIUM_VALUE);
             nodeStyle.getBorder().getTop().setStyle(BorderStyle.of(BorderStyleProperty.DEFAULT_VALUE));
             nodeStyle.getBorder().getTop().setColor(Color.getColorByName(BorderColorProperty.DEFAULT_VALUE));
-        } else if (INHERIT.equals(value)) {
+        } else if (INHERIT.equalsIgnoreCase(value)) {
             NodeStyle parentStyle = StyleUtils.getParentCalculatedStyle(element);
             if (parentStyle != null) {
                 nodeStyle.getBorder().getTop().setWidth(parentStyle.getBorder().getTop().getWidth());

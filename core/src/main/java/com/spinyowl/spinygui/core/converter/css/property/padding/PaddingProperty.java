@@ -30,9 +30,9 @@ public class PaddingProperty extends Property {
     @Override
     protected void updateNodeStyle(Element element) {
         NodeStyle nodeStyle = element.getCalculatedStyle();
-        if (INITIAL.equals(value)) {
+        if (INITIAL.equalsIgnoreCase(value)) {
             nodeStyle.getPadding().set(Length.pixel(0));
-        } else if (INHERIT.equals(value)) {
+        } else if (INHERIT.equalsIgnoreCase(value)) {
             NodeStyle pStyle = StyleUtils.getParentCalculatedStyle(element);
             if (pStyle != null) {
                 nodeStyle.getPadding().set(pStyle.getPadding());
