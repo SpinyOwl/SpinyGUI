@@ -11,6 +11,7 @@ import org.lwjgl.util.yoga.Yoga;
 
 import java.util.function.BiConsumer;
 import java.util.function.LongConsumer;
+import java.util.function.ObjIntConsumer;
 
 import static com.spinyowl.spinygui.core.style.types.length.Length.Type.PERCENT;
 import static com.spinyowl.spinygui.core.style.types.length.Length.Type.PIXEL;
@@ -153,7 +154,7 @@ final class FlexUtils {
 
     public static void setUnit(Unit unit, long node,
                                LongConsumer autoConsumer,
-                               BiConsumer<Long, Integer> pixelConsumer,
+                               ObjIntConsumer<Long> pixelConsumer,
                                BiConsumer<Long, Float> percentConsumer) {
         if (unit != null) {
             if (unit.isAuto()) {
@@ -170,7 +171,7 @@ final class FlexUtils {
     }
 
     public static void setUnit(Unit unit, long node, int side,
-                               BiConsumer<Long, Integer> autoConsumer,
+                               ObjIntConsumer<Long> autoConsumer,
                                TriConsumer<Long, Integer, Integer> pixelConsumer,
                                TriConsumer<Long, Integer, Float> percentConsumer) {
         if (unit != null) {
@@ -188,7 +189,7 @@ final class FlexUtils {
     }
 
     public static void setLength(Length length, long node,
-                                 BiConsumer<Long, Integer> pixelConsumer,
+                                 ObjIntConsumer<Long> pixelConsumer,
                                  BiConsumer<Long, Float> percentConsumer) {
         if (length != null) {
             if (PIXEL.equals(length.type())) {

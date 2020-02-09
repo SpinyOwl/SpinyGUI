@@ -2,7 +2,6 @@ package com.spinyowl.spinygui.core.converter.css.property;
 
 import com.spinyowl.spinygui.core.converter.css.Properties;
 import com.spinyowl.spinygui.core.converter.css.Property;
-import com.spinyowl.spinygui.core.converter.css.util.StyleUtils;
 import com.spinyowl.spinygui.core.node.base.Element;
 import com.spinyowl.spinygui.core.style.NodeStyle;
 import com.spinyowl.spinygui.core.style.types.Display;
@@ -33,22 +32,7 @@ public class DisplayProperty extends Property {
                 return Display.of(v);
             }
             return null;
-        });
-        NodeStyle nodeStyle = element.getCalculatedStyle();
-
-        if (INITIAL.equalsIgnoreCase(value)) {
-            nodeStyle.setDisplay(Display.BLOCK);
-        } else if (INHERIT.equalsIgnoreCase(value)) {
-            NodeStyle parentStyle = StyleUtils.getParentCalculatedStyle(element);
-            if (parentStyle != null) {
-                Display pd = parentStyle.getDisplay();
-                nodeStyle.setDisplay(pd == null ? Display.BLOCK : pd);
-            } else {
-                nodeStyle.setDisplay(Display.BLOCK);
-            }
-        } else if (value != null && Display.contains(value)) {
-            nodeStyle.setDisplay(Display.of(value));
-        }
+        }, false);
     }
 
     /**

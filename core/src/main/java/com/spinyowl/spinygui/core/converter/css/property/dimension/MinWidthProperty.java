@@ -29,7 +29,7 @@ public class MinWidthProperty extends Property {
     @Override
     protected void updateNodeStyle(Element element) {
         update(element, (Length) null, NodeStyle::setMinWidth, NodeStyle::getMinWidth,
-                (v) -> "none".equalsIgnoreCase(value) ? null : lengthValueExtractor.extract(value));
+                v -> "none".equalsIgnoreCase(value) ? null : lengthValueExtractor.extract(value));
     }
 
     /**

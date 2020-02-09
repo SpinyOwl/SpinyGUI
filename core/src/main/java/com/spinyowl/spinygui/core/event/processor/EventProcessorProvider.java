@@ -5,6 +5,8 @@ public final class EventProcessorProvider {
         return EPH.instance;
     }
 
+    private EventProcessorProvider(){}
+
     public static void setInstance(EventProcessor eventProcessor) {
         if (eventProcessor != null) {
             EPH.instance = eventProcessor;

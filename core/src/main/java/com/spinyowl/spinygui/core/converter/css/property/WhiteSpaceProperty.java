@@ -2,7 +2,6 @@ package com.spinyowl.spinygui.core.converter.css.property;
 
 import com.spinyowl.spinygui.core.converter.css.Properties;
 import com.spinyowl.spinygui.core.converter.css.Property;
-import com.spinyowl.spinygui.core.converter.css.util.StyleUtils;
 import com.spinyowl.spinygui.core.node.base.Element;
 import com.spinyowl.spinygui.core.style.NodeStyle;
 import com.spinyowl.spinygui.core.style.types.WhiteSpace;
@@ -28,23 +27,12 @@ public class WhiteSpaceProperty extends Property {
      */
     @Override
     protected void updateNodeStyle(Element element) {
-        NodeStyle nodeStyle = element.getCalculatedStyle();
-
-        if (value != null) {
-            if (INITIAL.equalsIgnoreCase(value)) {
-                nodeStyle.setWhiteSpace(WhiteSpace.NORMAL);
-            } else if (INHERIT.equalsIgnoreCase(value)) {
-                NodeStyle parentStyle = StyleUtils.getParentCalculatedStyle(element);
-                if (parentStyle != null) {
-                    WhiteSpace pd = parentStyle.getWhiteSpace();
-                    nodeStyle.setWhiteSpace(pd == null ? WhiteSpace.NORMAL : pd);
-                } else {
-                    nodeStyle.setWhiteSpace(WhiteSpace.NORMAL);
-                }
-            } else if (WhiteSpace.contains(value)) {
-                nodeStyle.setWhiteSpace(WhiteSpace.of(value));
+        update(element, WhiteSpace.NORMAL, NodeStyle::setWhiteSpace, NodeStyle::getWhiteSpace, v -> {
+            if (WhiteSpace.contains(v)) {
+                return WhiteSpace.of(v);
             }
-        }
+            return null;
+        }, false);
     }
 
     /**

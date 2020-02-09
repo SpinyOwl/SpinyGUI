@@ -1,4 +1,5 @@
 package com.spinyowl.spinygui.core.node.base;
+
 import com.spinyowl.spinygui.core.node.intersection.Intersection;
 import com.spinyowl.spinygui.core.node.intersection.Intersections;
 import org.joml.Vector2f;
@@ -20,31 +21,31 @@ public abstract class Node {
     /**
      * Parent node.
      */
-    private Container parent;
+    private Container    parent;
     /**
      * Node position. Assigned to node by layout manager.
      */
-    private Vector2f position = new Vector2f();
+    private Vector2f     position     = new Vector2f();
     /**
      * Node size. Assigned to node by layout manager.
      */
-    private Vector2f size = new Vector2f();
+    private Vector2f     size         = new Vector2f();
     /**
      * Node visibility.
      */
-    private boolean visible;
+    private boolean      visible;
     /**
      * Determines whether this node hovered or not (cursor is over this node).
      */
-    private boolean hovered;
+    private boolean      hovered;
     /**
      * Determines whether this node focused or not.
      */
-    private boolean focused;
+    private boolean      focused;
     /**
      * Determines whether this node pressed or not (Mouse button is down and on this node).
      */
-    private boolean pressed;
+    private boolean      pressed;
     /**
      * Node intersection. During initialization used {@link Intersections#getDefaultIntersection()}.
      * Used to allow detect intersection of point on virtual window surface and node.
@@ -258,58 +259,8 @@ public abstract class Node {
     public void setSize(float width, float height) {
         this.size.set(width, height);
     }
-//
-//    /**
-//     * Used to remove child node.
-//     *
-//     * @param node node to remove.
-//     */
-//    public abstract void removeChild(Node node);
-//
-//    /**
-//     * Used to add a new child node, to an element, as the last child node.
-//     *
-//     * @param node node to add.
-//     */
-//    public abstract void addChild(Node node);
-//
-//    /**
-//     * Used to get child nodes.
-//     *
-//     * @return list of child nodes.
-//     */
-//    public abstract List<Node> getChildNodes();
-//
-//    /**
-//     * Returns unmodifiable collection of node attributes.
-//     *
-//     * @return unmodifiable collection of node attributes.
-//     */
-//    public abstract Map<String, String> getAttributes();
-//
-//    /**
-//     * Used to set attribute.
-//     *
-//     * @param key   attribute name.
-//     * @param value attribute value.
-//     */
-//    public abstract void setAttribute(String key, String value);
-//
-//    /**
-//     * Used to get attribute.
-//     *
-//     * @param key attribute name.
-//     * @return attribute value.
-//     */
-//    public abstract String getAttribute(String key);
-//
-//    /**
-//     * Used to remove attribute.
-//     *
-//     * @param key attribute name.
-//     */
-//    public abstract void removeAttribute(String key);
-@Override
+
+    @Override
     public String toString() {
         return new StringJoiner(", ", getClass().getSimpleName() + "[", "]")
                 .add("position=" + position)

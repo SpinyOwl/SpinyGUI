@@ -10,20 +10,14 @@ import com.spinyowl.spinygui.core.node.base.Node;
 import com.spinyowl.spinygui.core.style.NodeStyle;
 import com.spinyowl.spinygui.core.style.types.Position;
 import com.spinyowl.spinygui.core.style.types.flex.Flex;
-import com.spinyowl.spinygui.core.style.types.length.Length;
-import com.spinyowl.spinygui.core.style.types.length.Unit;
 import org.joml.Vector2f;
 import org.lwjgl.util.yoga.Yoga;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.BiConsumer;
-import java.util.function.LongConsumer;
 import java.util.stream.Collectors;
 
 import static com.spinyowl.spinygui.core.layout.impl.flex.FlexUtils.*;
-import static com.spinyowl.spinygui.core.style.types.length.Length.Type.PERCENT;
-import static com.spinyowl.spinygui.core.style.types.length.Length.Type.PIXEL;
 import static org.lwjgl.util.yoga.Yoga.*;
 
 /**

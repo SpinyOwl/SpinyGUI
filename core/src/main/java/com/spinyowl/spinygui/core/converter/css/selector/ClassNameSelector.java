@@ -18,7 +18,7 @@ public class ClassNameSelector implements StyleSelector {
         var classes = node.getAttribute("class");
         if (classes != null) {
             var classList = classes.split(" ");
-            return Stream.of(classList).anyMatch((clazz) -> clazz.equals(className));
+            return Stream.of(classList).anyMatch(clazz -> clazz.equals(className));
         }
         return false;
     }

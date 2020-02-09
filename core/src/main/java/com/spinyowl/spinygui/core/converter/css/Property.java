@@ -201,7 +201,7 @@ public abstract class Property {
                               Supplier<T> nullParentSupplier,
                               BiConsumer<NodeStyle, T> valueSetter,
                               Function<NodeStyle, T> valueGetter) {
-        update(element, initialValueSupplier, nullParentSupplier, valueSetter, valueGetter, null);
+        update(element, initialValueSupplier, nullParentSupplier, valueSetter, valueGetter, null, false);
     }
 
     /**
@@ -226,6 +226,27 @@ public abstract class Property {
 
     /**
      * Used to update calculated node style of specified element for INITIAL, INHERIT and other values.
+     * If {@code INHERIT.equals(value)} and parent style contains null value - uses initial value supplier to set value.
+     * For other cases initially uses declarationExtractor and if extracted value is null - uses value extractor (when string value!=null).
+     *
+     * @param element              element to update calculated style.
+     * @param initialValueSupplier initial value supplier.
+     * @param valueSetter          node style value setter.
+     * @param valueGetter          node style value getter, used to get style value from parent style.
+     * @param declarationExtractor function to extract value from known declaration.
+     * @param setOnNull            used to set value using setter if extractor returned null.
+     * @param <T>                  type of NodeStyle value.
+     */
+    protected <T> void update(Element element,
+                              Supplier<T> initialValueSupplier,
+                              BiConsumer<NodeStyle, T> valueSetter,
+                              Function<NodeStyle, T> valueGetter,
+                              Function<String, T> declarationExtractor, boolean setOnNull) {
+        update(element, initialValueSupplier, initialValueSupplier, valueSetter, valueGetter, declarationExtractor, setOnNull);
+    }
+
+    /**
+     * Used to update calculated node style of specified element for INITIAL, INHERIT and other values.
      * For other cases initially uses declarationExtractor and if extracted value is null - uses value extractor (when string value!=null).
      *
      * @param element              element to update calculated style.
@@ -242,6 +263,28 @@ public abstract class Property {
                               BiConsumer<NodeStyle, T> valueSetter,
                               Function<NodeStyle, T> valueGetter,
                               Function<String, T> declarationExtractor) {
+        update(element, initialValueSupplier, nullParentSupplier, valueSetter, valueGetter, declarationExtractor, true);
+    }
+
+    /**
+     * Used to update calculated node style of specified element for INITIAL, INHERIT and other values.
+     * For other cases initially uses declarationExtractor and if extracted value is null - uses value extractor (when string value!=null).
+     *
+     * @param element              element to update calculated style.
+     * @param initialValueSupplier initial value supplier.
+     * @param nullParentSupplier   value supplier for case when there is null parent style.
+     * @param valueSetter          node style value setter.
+     * @param valueGetter          node style value getter, used to get style value from parent style.
+     * @param declarationExtractor function to extract value from known declaration.
+     * @param setOnNull            used to set value using setter if extractor returned null.
+     * @param <T>                  type of NodeStyle value.
+     */
+    protected <T> void update(Element element,
+                              Supplier<T> initialValueSupplier,
+                              Supplier<T> nullParentSupplier,
+                              BiConsumer<NodeStyle, T> valueSetter,
+                              Function<NodeStyle, T> valueGetter,
+                              Function<String, T> declarationExtractor, boolean setOnNull) {
         NodeStyle nodeStyle = element.getCalculatedStyle();
         if (INITIAL.equalsIgnoreCase(value)) {
             valueSetter.accept(nodeStyle, initialValueSupplier.get());
@@ -314,6 +357,27 @@ public abstract class Property {
 
     /**
      * Used to update calculated node style of specified element for INITIAL, INHERIT and other values.
+     * If {@code INHERIT.equals(value)} and parent style contains null value - uses initial value supplier to set value.
+     * For other cases initially uses declarationExtractor and if extracted value is null - uses value extractor (when string value!=null).
+     *
+     * @param element              element to update calculated style.
+     * @param initialValue         initial value.
+     * @param valueSetter          node style value setter.
+     * @param valueGetter          node style value getter, used to get style value from parent style.
+     * @param declarationExtractor function to extract value from known declaration.
+     * @param setOnNull            used to set value using setter if extractor returned null.
+     * @param <T>                  type of NodeStyle value.
+     */
+    protected <T> void update(Element element,
+                              T initialValue,
+                              BiConsumer<NodeStyle, T> valueSetter,
+                              Function<NodeStyle, T> valueGetter,
+                              Function<String, T> declarationExtractor, boolean setOnNull) {
+        update(element, initialValue, initialValue, valueSetter, valueGetter, declarationExtractor, setOnNull);
+    }
+
+    /**
+     * Used to update calculated node style of specified element for INITIAL, INHERIT and other values.
      * For other cases initially uses declarationExtractor and if extracted value is null - uses value extractor (when string value!=null).
      *
      * @param element              element to update calculated style.
@@ -331,6 +395,28 @@ public abstract class Property {
                               Function<NodeStyle, T> valueGetter,
                               Function<String, T> declarationExtractor) {
         this.<T>update(element, () -> initialValue, () -> nullParentValue, valueSetter, valueGetter, declarationExtractor);
+    }
+
+    /**
+     * Used to update calculated node style of specified element for INITIAL, INHERIT and other values.
+     * For other cases initially uses declarationExtractor and if extracted value is null - uses value extractor (when string value!=null).
+     *
+     * @param element              element to update calculated style.
+     * @param initialValue         initial value.
+     * @param nullParentValue      value for case when there is null parent style.
+     * @param valueSetter          node style value setter.
+     * @param valueGetter          node style value getter, used to get style value from parent style.
+     * @param declarationExtractor function to extract value from known declaration.
+     * @param setOnNull            used to set value using setter if extractor returned null.
+     * @param <T>                  type of NodeStyle value.
+     */
+    protected <T> void update(Element element,
+                              T initialValue,
+                              T nullParentValue,
+                              BiConsumer<NodeStyle, T> valueSetter,
+                              Function<NodeStyle, T> valueGetter,
+                              Function<String, T> declarationExtractor, boolean setOnNull) {
+        this.<T>update(element, () -> initialValue, () -> nullParentValue, valueSetter, valueGetter, declarationExtractor, setOnNull);
     }
 
     /**

@@ -12,18 +12,18 @@ public final class LayoutManagerProvider {
     }
 
     public static LayoutManager getInstance() {
-        return LMH.INSTANCE;
+        return LMH.instance;
     }
 
     public static void setInstance(LayoutManager instance) {
         Objects.requireNonNull(instance);
-        LMH.INSTANCE = instance;
+        LMH.instance = instance;
     }
 
     /**
      * Instance holder.
      */
     private static class LMH {
-        private static LayoutManager INSTANCE = new LayoutManagerImpl();
+        private static LayoutManager instance = new LayoutManagerImpl();
     }
 }

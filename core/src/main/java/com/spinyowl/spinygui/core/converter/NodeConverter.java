@@ -52,7 +52,7 @@ public final class NodeConverter {
 
     private static Content createContent(Node node) {
         if (node instanceof Text) {
-            return new org.jdom2.Text(((Text) node).getText());
+            return new org.jdom2.Text(((Text) node).getContent());
         } else if (node instanceof Element) {
             return createElement((Element) node);
         } else {

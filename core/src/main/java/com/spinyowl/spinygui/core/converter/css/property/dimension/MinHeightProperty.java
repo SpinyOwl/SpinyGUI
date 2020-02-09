@@ -29,7 +29,7 @@ public class MinHeightProperty extends Property {
     @Override
     protected void updateNodeStyle(Element element) {
         update(element, (Length) null, NodeStyle::setMinHeight, NodeStyle::getMinHeight,
-                (v) -> "none".equalsIgnoreCase(value) ? null : lengthValueExtractor.extract(value));
+                v -> "none".equalsIgnoreCase(value) ? null : lengthValueExtractor.extract(value));
     }
 
     /**

@@ -2,7 +2,6 @@ package com.spinyowl.spinygui.core.converter.css.property;
 
 import com.spinyowl.spinygui.core.converter.css.Properties;
 import com.spinyowl.spinygui.core.converter.css.Property;
-import com.spinyowl.spinygui.core.converter.css.util.StyleUtils;
 import com.spinyowl.spinygui.core.node.base.Element;
 import com.spinyowl.spinygui.core.style.NodeStyle;
 import com.spinyowl.spinygui.core.style.types.Position;
@@ -28,23 +27,12 @@ public class PositionProperty extends Property {
      */
     @Override
     protected void updateNodeStyle(Element element) {
-        NodeStyle nodeStyle = element.getCalculatedStyle();
-
-        if (value != null) {
-            if (INITIAL.equalsIgnoreCase(value)) {
-                nodeStyle.setPosition(Position.RELATIVE);
-            } else if (INHERIT.equalsIgnoreCase(value)) {
-                NodeStyle parentStyle = StyleUtils.getParentCalculatedStyle(element);
-                if (parentStyle != null) {
-                    Position pd = parentStyle.getPosition();
-                    nodeStyle.setPosition(pd == null ? Position.RELATIVE : pd);
-                } else {
-                    nodeStyle.setPosition(Position.RELATIVE);
-                }
-            } else if (Position.contains(value)) {
-                nodeStyle.setPosition(Position.of(value));
+        update(element, Position.RELATIVE, NodeStyle::setPosition, NodeStyle::getPosition, v -> {
+            if (Position.contains(v)) {
+                return Position.of(v);
             }
-        }
+            return null;
+        }, false);
     }
 
     /**
