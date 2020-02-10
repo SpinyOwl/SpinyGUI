@@ -296,7 +296,16 @@ public abstract class Property {
                 valueSetter.accept(nodeStyle, nullParentSupplier.get());
             }
         } else if (value != null && declarationExtractor != null) {
-            valueSetter.accept(nodeStyle, declarationExtractor.apply(value));
+            T apply;
+            try {
+                apply = declarationExtractor.apply(value);
+            } catch (Throwable t) {
+                LOGGER.error("Error during extracting '{}' with '{}' extractor. {}", value, declarationExtractor, t.getMessage());
+                apply = null;
+            }
+            if (setOnNull || apply != null) {
+                valueSetter.accept(nodeStyle, apply);
+            }
         }
     }
 

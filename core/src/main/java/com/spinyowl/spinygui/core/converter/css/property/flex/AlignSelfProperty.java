@@ -4,6 +4,8 @@ import com.spinyowl.spinygui.core.converter.css.Property;
 import com.spinyowl.spinygui.core.node.base.Element;
 import com.spinyowl.spinygui.core.style.types.flex.AlignSelf;
 
+import java.util.Arrays;
+
 import static com.spinyowl.spinygui.core.converter.css.Properties.ALIGN_SELF;
 
 public class AlignSelfProperty extends Property {
@@ -20,5 +22,10 @@ public class AlignSelfProperty extends Property {
     @Override
     protected void updateNodeStyle(Element element) {
         update(element, AlignSelf.AUTO, (s, v) -> s.getFlex().setAlignSelf(v), s -> s.getFlex().getAlignSelf(), AlignSelf::valueOf);
+    }
+
+    @Override
+    public boolean isValid() {
+        return super.isValid() || Arrays.stream(AlignSelf.values()).anyMatch(ac -> ac.name().equalsIgnoreCase(value));
     }
 }

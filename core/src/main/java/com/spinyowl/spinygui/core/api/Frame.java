@@ -1,6 +1,5 @@
 package com.spinyowl.spinygui.core.api;
 
-import com.spinyowl.spinygui.core.node.base.Container;
 import com.spinyowl.spinygui.core.converter.css.StyleSheet;
 import org.joml.Vector2f;
 
@@ -19,7 +18,7 @@ public class Frame {
     /**
      * All other layers added to this list.
      */
-    private final List<Layer> layers = new CopyOnWriteArrayList<>();
+    private final List<Layer>      layers      = new CopyOnWriteArrayList<>();
     /**
      * List of stylesheets attached to frame.
      */
@@ -27,11 +26,11 @@ public class Frame {
     /**
      * Used to hold tooltips.
      */
-    private Layer tooltipLayer;
+    private       Layer            tooltipLayer;
     /**
      * Used to hold components.
      */
-    private Layer defaultLayer;
+    private       Layer            defaultLayer;
 
     /**
      * Used to create frame and initialize layers with specified size.
@@ -65,7 +64,8 @@ public class Frame {
 
         setSize(width, height);
     }
-/**
+
+    /**
      * Returns list of stylesheets attached to frame.
      *
      * @return list of stylesheets attached to frame.
@@ -75,16 +75,6 @@ public class Frame {
     }
 
     /**
-     * Used to retrieve container of default node layer.
-     *
-     * Shortcut for {@link #getDefaultLayer()#getContainer()}.
-     *
-     * @return container of default node layer.
-     */
-    public final Container getContainer() {
-        return defaultLayer;
-    }
-/**
      * Used to set layer containers size. NOTE: All LayerContainers will be resized to specified size!
      *
      * @param size frame size.

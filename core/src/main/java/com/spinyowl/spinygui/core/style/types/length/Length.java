@@ -3,14 +3,14 @@ package com.spinyowl.spinygui.core.style.types.length;
 import java.util.Objects;
 import java.util.StringJoiner;
 
-import static com.spinyowl.spinygui.core.style.types.length.Length.Type.PERCENT;
-import static com.spinyowl.spinygui.core.style.types.length.Length.Type.PIXEL;
+import static com.spinyowl.spinygui.core.style.types.length.Length.LType.PERCENT;
+import static com.spinyowl.spinygui.core.style.types.length.Length.LType.PIXEL;
 
-public class Length<T> extends Unit {
-    private final T value;
-    private final Type<T> type;
+public class Length<T> implements Unit {
+    private final T        value;
+    private final LType<T> type;
 
-    public Length(T value, Type<T> type) {
+    public Length(T value, LType<T> type) {
         Objects.requireNonNull(value);
         Objects.requireNonNull(type);
         this.value = value;
@@ -29,7 +29,7 @@ public class Length<T> extends Unit {
         return value;
     }
 
-    public Type<T> type() {
+    public LType<T> type() {
         return this.type;
     }
 
@@ -50,15 +50,15 @@ public class Length<T> extends Unit {
         float convert(Length<T> original, float baseLength);
     }
 
-    public static final class Type<T> {
-        public static final Type<Integer> PIXEL = new Type<>("PIXEL", Integer.class, (l, n) -> l.value);
-        public static final Type<Float> PERCENT = new Type<>("PERCENT", Float.class, (l, n) -> l.value * n);
+    public static final class LType<T> {
+        public static final LType<Integer> PIXEL   = new LType<>("PIXEL", Integer.class, (l, n) -> l.value);
+        public static final LType<Float>   PERCENT = new LType<>("PERCENT", Float.class, (l, n) -> l.value * n);
 
         private final String name;
         private final Class<T> type;
         private Converter<T> converter;
 
-        public Type(String name, Class<T> type, Converter<T> converter) {
+        public LType(String name, Class<T> type, Converter<T> converter) {
             this.name = name;
             this.type = type;
             this.converter = converter;
@@ -85,7 +85,7 @@ public class Length<T> extends Unit {
 
         @Override
         public String toString() {
-            return new StringJoiner(", ", Type.class.getSimpleName() + "[", "]")
+            return new StringJoiner(", ", LType.class.getSimpleName() + "[", "]")
                     .add("name='" + name + "'")
                     .add("type=" + type)
                     .toString();

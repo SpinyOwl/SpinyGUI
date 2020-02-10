@@ -16,31 +16,31 @@ public final class WhiteSpace {
     /**
      * Sequences of whitespace will collapse into a single whitespace. Text will wrap when necessary. This is default.
      */
-    public final static WhiteSpace NORMAL = WhiteSpace.of("normal");
+    public static final WhiteSpace NORMAL = WhiteSpace.of("normal");
     /**
      * Sequences of whitespace will collapse into a single whitespace. Text will never wrap to the next line. The text continues on the same line until a <br> tag is encountered.
      */
-    public final static WhiteSpace NOWRAP = WhiteSpace.of("nowrap");
+    public static final WhiteSpace NOWRAP = WhiteSpace.of("nowrap");
     /**
      * Whitespace is preserved by the browser. Text will only wrap on line breaks. Acts like the <pre> tag in HTML.
      */
-    public final static WhiteSpace PRE = WhiteSpace.of("pre");
+    public static final WhiteSpace PRE = WhiteSpace.of("pre");
     /**
      * Sequences of whitespace will collapse into a single whitespace. Text will wrap when necessary, and on line breaks.
      */
-    public final static WhiteSpace PRE_LINE = WhiteSpace.of("pre-line");
+    public static final WhiteSpace PRE_LINE = WhiteSpace.of("pre-line");
     /**
      * Whitespace is preserved by the browser. Text will wrap when necessary, and on line breaks.
      */
-    public final static WhiteSpace PRE_WRAP = WhiteSpace.of("pre-wrap");
+    public static final WhiteSpace PRE_WRAP = WhiteSpace.of("pre-wrap");
     /**
      * Sets this property to its default value.
      */
-    public final static WhiteSpace INITIAL = WhiteSpace.of("initial");
+    public static final WhiteSpace INITIAL = WhiteSpace.of("initial");
     /**
      * Inherits this property from its parent element.
      */
-    public final static WhiteSpace INHERIT = WhiteSpace.of("inherit");
+    public static final WhiteSpace INHERIT = WhiteSpace.of("inherit");
 
 
     /**

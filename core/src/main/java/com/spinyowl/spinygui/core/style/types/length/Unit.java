@@ -1,16 +1,16 @@
 package com.spinyowl.spinygui.core.style.types.length;
 
-public abstract class Unit {
+public interface Unit {
 
-    public boolean isLength() {
+    default boolean isLength() {
         return this instanceof Length;
     }
 
-    public boolean isAuto() {
+    default boolean isAuto() {
         return this instanceof Auto;
     }
 
-    public Length asLength() {
+    default Length asLength() {
         return (Length) this;
     }
 }

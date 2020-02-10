@@ -26,4 +26,9 @@ public class FlexBasisProperty extends Property {
         update(element, Auto.AUTO, (s, v) -> s.getFlex().setFlexBasis(v),
                 s -> s.getFlex().getFlexBasis(), unitValueExtractor::extract);
     }
+
+    @Override
+    public boolean isValid() {
+        return super.isValid() || "auto".equalsIgnoreCase(value) || unitValueExtractor.isValid(value);
+    }
 }

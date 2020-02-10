@@ -1,6 +1,7 @@
 package com.spinyowl.spinygui.core.converter.css;
 
 import com.spinyowl.spinygui.core.converter.css.extractor.ColorValueExtractor;
+import com.spinyowl.spinygui.core.converter.css.extractor.IntegerExtractor;
 import com.spinyowl.spinygui.core.converter.css.extractor.LengthValueExtractor;
 import com.spinyowl.spinygui.core.converter.css.extractor.UnitValueExtractor;
 import com.spinyowl.spinygui.core.style.types.Color;
@@ -20,6 +21,7 @@ public final class ValueExtractors {
         addValueExtractor(Color.class, new ColorValueExtractor());
         addValueExtractor(Unit.class, new UnitValueExtractor());
         addValueExtractor(Length.class, new LengthValueExtractor());
+        addValueExtractor(Integer.class, new IntegerExtractor());
     }
 
     /** Getter for instance. */

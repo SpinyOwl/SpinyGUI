@@ -56,7 +56,7 @@ public class StyleSheetConverterTest {
 
         Frame frame = new Frame();
         frame.getStyleSheets().add(stylesheet);
-        frame.getContainer().addChild(div);
+        frame.getDefaultLayer().addChild(div);
 
         StyleManagerProvider.getInstance().recalculateStyles(frame);
 

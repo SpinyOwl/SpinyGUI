@@ -4,6 +4,8 @@ import com.spinyowl.spinygui.core.converter.css.Property;
 import com.spinyowl.spinygui.core.node.base.Element;
 import com.spinyowl.spinygui.core.style.types.flex.FlexWrap;
 
+import java.util.Arrays;
+
 import static com.spinyowl.spinygui.core.converter.css.Properties.FLEX_WRAP;
 
 public class FlexWrapProperty extends Property {
@@ -20,5 +22,10 @@ public class FlexWrapProperty extends Property {
     @Override
     protected void updateNodeStyle(Element element) {
         update(element, FlexWrap.NOWRAP, (s, v) -> s.getFlex().setFlexWrap(v), s -> s.getFlex().getFlexWrap(), FlexWrap::valueOf);
+    }
+
+    @Override
+    public boolean isValid() {
+        return super.isValid() || Arrays.stream(FlexWrap.values()).anyMatch(ac -> ac.name().equalsIgnoreCase(value));
     }
 }

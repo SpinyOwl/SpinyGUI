@@ -178,7 +178,9 @@ public final class Properties {
         addSupportedProperty(ALIGN_ITEMS, AlignItemsProperty::new);
         addSupportedProperty(ALIGN_SELF, AlignSelfProperty::new);
         addSupportedProperty(FLEX_BASIS, FlexBasisProperty::new);
+        addSupportedProperty(FLEX_GROW, FlexGrowProperty::new);
         addSupportedProperty(FLEX_DIRECTION, FlexDirectionProperty::new);
+        addSupportedProperty(FLEX_SHRINK, FlexShrinkProperty::new);
         addSupportedProperty(FLEX_WRAP, FlexWrapProperty::new);
         addSupportedProperty(JUSTIFY_CONTENT, JustifyContentProperty::new);
     }

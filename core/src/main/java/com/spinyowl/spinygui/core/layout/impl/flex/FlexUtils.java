@@ -13,10 +13,9 @@ import java.util.function.BiConsumer;
 import java.util.function.LongConsumer;
 import java.util.function.ObjIntConsumer;
 
-import static com.spinyowl.spinygui.core.style.types.length.Length.Type.PERCENT;
-import static com.spinyowl.spinygui.core.style.types.length.Length.Type.PIXEL;
+import static com.spinyowl.spinygui.core.style.types.length.Length.LType.PERCENT;
+import static com.spinyowl.spinygui.core.style.types.length.Length.LType.PIXEL;
 import static org.lwjgl.util.yoga.Yoga.*;
-import static org.lwjgl.util.yoga.Yoga.YGNodeStyleSetPadding;
 
 /**
  * @author Aliaksandr_Shcherbin.
