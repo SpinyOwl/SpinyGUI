@@ -41,7 +41,7 @@ public class Main {
         Node element = div(button, input, radioButton).position(100, 100).build();
 
         Frame frame = new Frame();// window.getFrame();
-        frame.getContainer().addChild(element);
+        frame.getDefaultLayer().addChild(element);
 System.out.println(NodeUtilities.getFrame(input) == frame);
 //        window.getContainer().addChild(element);
 
