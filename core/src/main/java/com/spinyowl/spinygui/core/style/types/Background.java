@@ -8,6 +8,8 @@ import java.util.StringJoiner;
 public class Background {
 
     private Color color;
+
+    private String image;
     private Length backgroundPositionX;
     private Length backgroundPositionY;
 
@@ -57,5 +59,13 @@ public class Background {
     @Override
     public int hashCode() {
         return Objects.hash(color);
+    }
+
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
     }
 }
