@@ -9,7 +9,7 @@ public class PropertyVisitor extends CSS3BaseVisitor<Property> {
 
     @Override
     public Property visitKnownDeclaration(CSS3Parser.KnownDeclarationContext ctx) {
-        return Properties.getInstance().createProperty(ctx.property().getText(), ctx.expr().getText());
+        return Properties.createProperty(ctx.property().getText(), ctx.expr().getText());
     }
 
 }

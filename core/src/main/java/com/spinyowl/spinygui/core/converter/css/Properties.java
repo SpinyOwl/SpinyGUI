@@ -110,79 +110,79 @@ public final class Properties {
      * Hidden constructor.
      */
     private Properties() {
-        _addProperty(COLOR, ColorProperty::new);
-        _addProperty(BACKGROUND_COLOR, BackgroundColorProperty::new);
+        _addSupportedProperty(COLOR, ColorProperty::new);
+        _addSupportedProperty(BACKGROUND_COLOR, BackgroundColorProperty::new);
 
-        _addProperty(PADDING, PaddingProperty::new);
-        _addProperty(PADDING_TOP, PaddingTopProperty::new);
-        _addProperty(PADDING_RIGHT, PaddingRightProperty::new);
-        _addProperty(PADDING_BOTTOM, PaddingBottomProperty::new);
-        _addProperty(PADDING_LEFT, PaddingLeftProperty::new);
+        _addSupportedProperty(PADDING, PaddingProperty::new);
+        _addSupportedProperty(PADDING_TOP, PaddingTopProperty::new);
+        _addSupportedProperty(PADDING_RIGHT, PaddingRightProperty::new);
+        _addSupportedProperty(PADDING_BOTTOM, PaddingBottomProperty::new);
+        _addSupportedProperty(PADDING_LEFT, PaddingLeftProperty::new);
 
-        _addProperty(MARGIN, MarginProperty::new);
-        _addProperty(MARGIN_TOP, MarginTopProperty::new);
-        _addProperty(MARGIN_RIGHT, MarginRightProperty::new);
-        _addProperty(MARGIN_BOTTOM, MarginBottomProperty::new);
-        _addProperty(MARGIN_LEFT, MarginLeftProperty::new);
+        _addSupportedProperty(MARGIN, MarginProperty::new);
+        _addSupportedProperty(MARGIN_TOP, MarginTopProperty::new);
+        _addSupportedProperty(MARGIN_RIGHT, MarginRightProperty::new);
+        _addSupportedProperty(MARGIN_BOTTOM, MarginBottomProperty::new);
+        _addSupportedProperty(MARGIN_LEFT, MarginLeftProperty::new);
 
-        _addProperty(WIDTH, WidthProperty::new);
-        _addProperty(HEIGHT, HeightProperty::new);
+        _addSupportedProperty(WIDTH, WidthProperty::new);
+        _addSupportedProperty(HEIGHT, HeightProperty::new);
 
-        _addProperty(MIN_WIDTH, MinWidthProperty::new);
-        _addProperty(MIN_HEIGHT, MinHeightProperty::new);
+        _addSupportedProperty(MIN_WIDTH, MinWidthProperty::new);
+        _addSupportedProperty(MIN_HEIGHT, MinHeightProperty::new);
 
-        _addProperty(MAX_WIDTH, MaxWidthProperty::new);
-        _addProperty(MAX_HEIGHT, MaxHeightProperty::new);
+        _addSupportedProperty(MAX_WIDTH, MaxWidthProperty::new);
+        _addSupportedProperty(MAX_HEIGHT, MaxHeightProperty::new);
 
-        _addProperty(TOP, TopProperty::new);
-        _addProperty(RIGHT, RightProperty::new);
-        _addProperty(BOTTOM, BottomProperty::new);
-        _addProperty(LEFT, LeftProperty::new);
+        _addSupportedProperty(TOP, TopProperty::new);
+        _addSupportedProperty(RIGHT, RightProperty::new);
+        _addSupportedProperty(BOTTOM, BottomProperty::new);
+        _addSupportedProperty(LEFT, LeftProperty::new);
 
-        _addProperty(DISPLAY, DisplayProperty::new);
-        _addProperty(POSITION, PositionProperty::new);
+        _addSupportedProperty(DISPLAY, DisplayProperty::new);
+        _addSupportedProperty(POSITION, PositionProperty::new);
 
-        _addProperty(WHITE_SPACE, WhiteSpaceProperty::new);
+        _addSupportedProperty(WHITE_SPACE, WhiteSpaceProperty::new);
 
-        _addProperty(BORDER_WIDTH, BorderWidthProperty::new);
-        _addProperty(BORDER_LEFT_WIDTH, BorderLeftWidthProperty::new);
-        _addProperty(BORDER_TOP_WIDTH, BorderTopWidthProperty::new);
-        _addProperty(BORDER_BOTTOM_WIDTH, BorderBottomWidthProperty::new);
-        _addProperty(BORDER_RIGHT_WIDTH, BorderRightWidthProperty::new);
+        _addSupportedProperty(BORDER_WIDTH, BorderWidthProperty::new);
+        _addSupportedProperty(BORDER_LEFT_WIDTH, BorderLeftWidthProperty::new);
+        _addSupportedProperty(BORDER_TOP_WIDTH, BorderTopWidthProperty::new);
+        _addSupportedProperty(BORDER_BOTTOM_WIDTH, BorderBottomWidthProperty::new);
+        _addSupportedProperty(BORDER_RIGHT_WIDTH, BorderRightWidthProperty::new);
 
-        _addProperty(BORDER_COLOR, BorderColorProperty::new);
-        _addProperty(BORDER_LEFT_COLOR, BorderLeftColorProperty::new);
-        _addProperty(BORDER_TOP_COLOR, BorderTopColorProperty::new);
-        _addProperty(BORDER_BOTTOM_COLOR, BorderBottomColorProperty::new);
-        _addProperty(BORDER_RIGHT_COLOR, BorderRightColorProperty::new);
+        _addSupportedProperty(BORDER_COLOR, BorderColorProperty::new);
+        _addSupportedProperty(BORDER_LEFT_COLOR, BorderLeftColorProperty::new);
+        _addSupportedProperty(BORDER_TOP_COLOR, BorderTopColorProperty::new);
+        _addSupportedProperty(BORDER_BOTTOM_COLOR, BorderBottomColorProperty::new);
+        _addSupportedProperty(BORDER_RIGHT_COLOR, BorderRightColorProperty::new);
 
-        _addProperty(BORDER_STYLE, BorderStyleProperty::new);
-        _addProperty(BORDER_LEFT_STYLE, BorderLeftStyleProperty::new);
-        _addProperty(BORDER_TOP_STYLE, BorderTopStyleProperty::new);
-        _addProperty(BORDER_BOTTOM_STYLE, BorderBottomStyleProperty::new);
-        _addProperty(BORDER_RIGHT_STYLE, BorderRightStyleProperty::new);
+        _addSupportedProperty(BORDER_STYLE, BorderStyleProperty::new);
+        _addSupportedProperty(BORDER_LEFT_STYLE, BorderLeftStyleProperty::new);
+        _addSupportedProperty(BORDER_TOP_STYLE, BorderTopStyleProperty::new);
+        _addSupportedProperty(BORDER_BOTTOM_STYLE, BorderBottomStyleProperty::new);
+        _addSupportedProperty(BORDER_RIGHT_STYLE, BorderRightStyleProperty::new);
 
-        _addProperty(BORDER, BorderProperty::new);
-        _addProperty(BORDER_LEFT, BorderLeftProperty::new);
-        _addProperty(BORDER_RIGHT, BorderRightProperty::new);
-        _addProperty(BORDER_TOP, BorderTopProperty::new);
-        _addProperty(BORDER_BOTTOM, BorderBottomProperty::new);
+        _addSupportedProperty(BORDER, BorderProperty::new);
+        _addSupportedProperty(BORDER_LEFT, BorderLeftProperty::new);
+        _addSupportedProperty(BORDER_RIGHT, BorderRightProperty::new);
+        _addSupportedProperty(BORDER_TOP, BorderTopProperty::new);
+        _addSupportedProperty(BORDER_BOTTOM, BorderBottomProperty::new);
 
-        _addProperty(BORDER_RADIUS, BorderRadiusProperty::new);
-        _addProperty(BORDER_BOTTOM_LEFT_RADIUS, BorderBottomLeftRadiusProperty::new);
-        _addProperty(BORDER_BOTTOM_RIGHT_RADIUS, BorderBottomRightRadiusProperty::new);
-        _addProperty(BORDER_TOP_LEFT_RADIUS, BorderTopLeftRadiusProperty::new);
-        _addProperty(BORDER_TOP_RIGHT_RADIUS, BorderTopRightRadiusProperty::new);
+        _addSupportedProperty(BORDER_RADIUS, BorderRadiusProperty::new);
+        _addSupportedProperty(BORDER_BOTTOM_LEFT_RADIUS, BorderBottomLeftRadiusProperty::new);
+        _addSupportedProperty(BORDER_BOTTOM_RIGHT_RADIUS, BorderBottomRightRadiusProperty::new);
+        _addSupportedProperty(BORDER_TOP_LEFT_RADIUS, BorderTopLeftRadiusProperty::new);
+        _addSupportedProperty(BORDER_TOP_RIGHT_RADIUS, BorderTopRightRadiusProperty::new);
 
-        _addProperty(ALIGN_CONTENT, AlignContentProperty::new);
-        _addProperty(ALIGN_ITEMS, AlignItemsProperty::new);
-        _addProperty(ALIGN_SELF, AlignSelfProperty::new);
-        _addProperty(FLEX_BASIS, FlexBasisProperty::new);
-        _addProperty(FLEX_GROW, FlexGrowProperty::new);
-        _addProperty(FLEX_DIRECTION, FlexDirectionProperty::new);
-        _addProperty(FLEX_SHRINK, FlexShrinkProperty::new);
-        _addProperty(FLEX_WRAP, FlexWrapProperty::new);
-        _addProperty(JUSTIFY_CONTENT, JustifyContentProperty::new);
+        _addSupportedProperty(ALIGN_CONTENT, AlignContentProperty::new);
+        _addSupportedProperty(ALIGN_ITEMS, AlignItemsProperty::new);
+        _addSupportedProperty(ALIGN_SELF, AlignSelfProperty::new);
+        _addSupportedProperty(FLEX_BASIS, FlexBasisProperty::new);
+        _addSupportedProperty(FLEX_GROW, FlexGrowProperty::new);
+        _addSupportedProperty(FLEX_DIRECTION, FlexDirectionProperty::new);
+        _addSupportedProperty(FLEX_SHRINK, FlexShrinkProperty::new);
+        _addSupportedProperty(FLEX_WRAP, FlexWrapProperty::new);
+        _addSupportedProperty(JUSTIFY_CONTENT, JustifyContentProperty::new);
     }
 
     //@formatter:off
@@ -217,8 +217,8 @@ public final class Properties {
      * @param property         property to support.
      * @param propertySupplier property supplier which will be used to create new {@link Property} instance.
      */
-    public static void addProperty(String property, Supplier<Property> propertySupplier) {
-        getInstance()._addProperty(property, propertySupplier);
+    public static void addSupportedProperty(String property, Supplier<Property> propertySupplier) {
+        getInstance()._addSupportedProperty(property, propertySupplier);
     }
 
     public static void removeSupportedProperty(String property) {
@@ -277,7 +277,7 @@ public final class Properties {
      * @param property         property to support.
      * @param propertySupplier property supplier which will be used to create new {@link Property} instance.
      */
-    private void _addProperty(String property, Supplier<Property> propertySupplier) {
+    private void _addSupportedProperty(String property, Supplier<Property> propertySupplier) {
         Objects.requireNonNull(property);
         Objects.requireNonNull(propertySupplier);
 
