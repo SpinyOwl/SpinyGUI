@@ -5,38 +5,39 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.StringJoiner;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.stream.Collectors;
 
 /**
  * CSS display.
  */
 public final class Display {
+
     private static final Map<String, Display> VALUES = new ConcurrentHashMap<>();
 
     /**
      * Displays an element as a block-level flex container.
      */
-    public static final Display FLEX = Display.of("flex");
+    public static final Display FLEX = Display.create("flex");
 
     /**
      * The element is completely removed.
      */
-    public static final Display NONE = Display.of("none");
+    public static final Display NONE = Display.create("none");
 
     /**
-     * Displays an element as a block element. It starts on a new line, and takes up the whole width.
+     * Displays an element as a block element. It starts on a new line, and takes up the whole
+     * width.
      */
-    public static final Display BLOCK = Display.of("block");
+    public static final Display BLOCK = Display.create("block");
 
     /**
      * Inherits display property from parent element.
      */
-    public static final Display INHERIT = Display.of("inherit");
+    public static final Display INHERIT = Display.create("inherit");
 
     /**
      * Used initial display property.
      */
-    public static final Display INITIAL = Display.of("initial");
+    public static final Display INITIAL = Display.create("initial");
 
     /**
      * Name of display type (should be same as in css specification)
@@ -53,16 +54,26 @@ public final class Display {
     }
 
     /**
-     * Used to create new display element with specified name.
-     * Note that name will be converted to lower case
-     * and it should be the same as names of css Display property in css specification.
+     * Used to create new display element with specified name. Note that name will be converted to
+     * lower case and it should be the same as names of css Display property in css specification.
      *
      * @param name name of display element.
      * @return new Display element (or existing one).
      */
-    public static Display of(String name) {
+    public static Display create(String name) {
         Objects.requireNonNull(name);
         return VALUES.computeIfAbsent(name.toLowerCase(), Display::new);
+    }
+
+    /**
+     * Used to find display element with specified name. Note that name will be converted to lower
+     * case and it should be the same as names of css Display property in css specification.
+     *
+     * @param name name of display element.
+     * @return existing Display element or null.
+     */
+    public static Display find(String name) {
+        return VALUES.get(name.toLowerCase());
     }
 
     /**
@@ -84,7 +95,8 @@ public final class Display {
         if (name == null) {
             return false;
         }
-        return values().stream().map(Display::getName).collect(Collectors.toSet()).contains(name.toLowerCase());
+        return values().stream().map(Display::getName)
+            .anyMatch(v -> v.equalsIgnoreCase(name));
     }
 
     /**
@@ -116,7 +128,7 @@ public final class Display {
     @Override
     public String toString() {
         return new StringJoiner(", ", Display.class.getSimpleName() + "[", "]")
-                .add("name='" + name + "'")
-                .toString();
+            .add("name='" + name + "'")
+            .toString();
     }
 }

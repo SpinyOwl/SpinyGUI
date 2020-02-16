@@ -5,82 +5,48 @@ import com.spinyowl.spinygui.core.converter.css.Property;
 import com.spinyowl.spinygui.core.converter.css.ValueExtractor;
 import com.spinyowl.spinygui.core.converter.css.ValueExtractors;
 import com.spinyowl.spinygui.core.converter.css.util.StyleUtils;
-import com.spinyowl.spinygui.core.node.base.Element;
 import com.spinyowl.spinygui.core.style.NodeStyle;
+import com.spinyowl.spinygui.core.style.types.BorderRadius;
 import com.spinyowl.spinygui.core.style.types.length.Length;
 
-public class BorderRadiusProperty extends Property {
+public class BorderRadiusProperty extends Property<BorderRadius> {
 
-    private ValueExtractor<Length> lengthValueExtractor = ValueExtractors.getInstance().getValueExtractor(Length.class);
+    private static ValueExtractor<Length> extractor = ValueExtractors.of(Length.class);
 
     public BorderRadiusProperty() {
-        super(Properties.BORDER_RADIUS, "0", false, true);
+        super(Properties.BORDER_RADIUS, "0", !INHERITED, ANIMATABLE,
+            (s, br) -> s.getBorderRadius().set(br), NodeStyle::getBorderRadius,
+            BorderRadiusProperty::extract, BorderRadiusProperty::test);
     }
 
-    public BorderRadiusProperty(String value) {
-        this();
-        setValue(value);
-    }
-
-    /**
-     * Used to update calculated node style of specified element.
-     *
-     * @param element element to update calculated style.
-     */
-    @Override
-    protected void updateNodeStyle(Element element) {
-        NodeStyle nodeStyle = element.getCalculatedStyle();
-        if (INITIAL.equalsIgnoreCase(value)) {
-            nodeStyle.getBorderRadius().set(Length.pixel(0));
-        } else if (INHERIT.equalsIgnoreCase(value)) {
-            NodeStyle pStyle = StyleUtils.getParentCalculatedStyle(element);
-            if (pStyle != null) {
-                nodeStyle.getBorderRadius().set(pStyle.getBorderRadius());
-            } else {
-                nodeStyle.getBorderRadius().set(Length.pixel(0));
-            }
-        }
-        String value = this.getValue();
-        String[] values = value.split("\\s+");
-        switch (values.length) {
+    private static BorderRadius extract(String value) {
+        BorderRadius borderRadius = new BorderRadius();
+        String[] v = value.split("\\s+");
+        switch (v.length) {
             case 1:
-                nodeStyle.getBorderRadius().set(
-                        lengthValueExtractor.extract(values[0])
-                );
+                borderRadius.set(x(v[0]));
                 break;
             case 2:
-                nodeStyle.getBorderRadius().set(
-                        lengthValueExtractor.extract(values[0]),
-                        lengthValueExtractor.extract(values[1])
-                );
+                borderRadius.set(x(v[0]), x(v[1]));
                 break;
             case 3:
-                nodeStyle.getBorderRadius().set(
-                        lengthValueExtractor.extract(values[0]),
-                        lengthValueExtractor.extract(values[1]),
-                        lengthValueExtractor.extract(values[2])
-                );
+                borderRadius.set(x(v[0]), x(v[1]), x(v[2]));
                 break;
             case 4:
-                nodeStyle.getBorderRadius().set(
-                        lengthValueExtractor.extract(values[0]),
-                        lengthValueExtractor.extract(values[1]),
-                        lengthValueExtractor.extract(values[2]),
-                        lengthValueExtractor.extract(values[3])
-                );
+                borderRadius.set(x(v[0]), x(v[1]), x(v[2]), x(v[3]));
                 break;
             default:
                 break;
         }
+        return borderRadius;
     }
 
-    /**
-     * Used to check if value is valid or not.
-     *
-     * @return true if value is valid. By default returns false.
-     */
-    @Override
-    public boolean isValid() {
-        return super.isValid() && StyleUtils.validOneFourValue(value, lengthValueExtractor);
+    private static Length x(String value1) {
+        return extractor.extract(value1);
+    }
+
+    public static boolean test(String value) {
+        return StyleUtils
+            .testOneFourValue(value, extractor::isValid);
     }
 }

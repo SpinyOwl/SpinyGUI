@@ -5,83 +5,61 @@ import com.spinyowl.spinygui.core.converter.css.Property;
 import com.spinyowl.spinygui.core.converter.css.ValueExtractor;
 import com.spinyowl.spinygui.core.converter.css.ValueExtractors;
 import com.spinyowl.spinygui.core.converter.css.util.StyleUtils;
-import com.spinyowl.spinygui.core.node.base.Element;
 import com.spinyowl.spinygui.core.style.NodeStyle;
+import com.spinyowl.spinygui.core.style.types.Padding;
 import com.spinyowl.spinygui.core.style.types.length.Length;
 
-public class PaddingProperty extends Property {
+public class PaddingProperty extends Property<Padding> {
 
-    private ValueExtractor<Length> lengthValueExtractor = ValueExtractors.getInstance().getValueExtractor(Length.class);
+    private static ValueExtractor<Length> lengthValueExtractor = ValueExtractors.of(Length.class);
 
     public PaddingProperty() {
-        super(Properties.PADDING, "0", false, true);
+        super(Properties.PADDING, "0", !INHERITED, ANIMATABLE,
+            (s, v) -> s.getPadding().set(v), NodeStyle::getPadding,
+            PaddingProperty::extract, PaddingProperty::test);
     }
 
-    public PaddingProperty(String value) {
-        this();
-        setValue(value);
-    }
-
-    /**
-     * Used to update calculated node style of specified element.
-     *
-     * @param element element to update calculated style.
-     */
-    @Override
-    protected void updateNodeStyle(Element element) {
-        NodeStyle nodeStyle = element.getCalculatedStyle();
-        if (INITIAL.equalsIgnoreCase(value)) {
-            nodeStyle.getPadding().set(Length.pixel(0));
-        } else if (INHERIT.equalsIgnoreCase(value)) {
-            NodeStyle pStyle = StyleUtils.getParentCalculatedStyle(element);
-            if (pStyle != null) {
-                nodeStyle.getPadding().set(pStyle.getPadding());
-            } else {
-                nodeStyle.getPadding().set(Length.pixel(0));
-            }
+    public static Padding extract(String value) {
+        if (value == null) {
+            return null;
         }
-        String value = this.getValue();
+        Padding padding = new Padding();
         String[] values = value.split("\\s+");
         switch (values.length) {
+            case 0:
+                return null;
             case 1:
-                nodeStyle.getPadding().set(
-                        lengthValueExtractor.extract(values[0])
+                padding.set(
+                    lengthValueExtractor.extract(values[0])
                 );
                 break;
             case 2:
-                nodeStyle.getPadding().set(
-                        lengthValueExtractor.extract(values[0]),
-                        lengthValueExtractor.extract(values[1])
+                padding.set(
+                    lengthValueExtractor.extract(values[0]),
+                    lengthValueExtractor.extract(values[1])
                 );
                 break;
             case 3:
-                nodeStyle.getPadding().set(
-                        lengthValueExtractor.extract(values[0]),
-                        lengthValueExtractor.extract(values[1]),
-                        lengthValueExtractor.extract(values[2])
+                padding.set(
+                    lengthValueExtractor.extract(values[0]),
+                    lengthValueExtractor.extract(values[1]),
+                    lengthValueExtractor.extract(values[2])
                 );
                 break;
             case 4:
-                nodeStyle.getPadding().set(
-                        lengthValueExtractor.extract(values[0]),
-                        lengthValueExtractor.extract(values[1]),
-                        lengthValueExtractor.extract(values[2]),
-                        lengthValueExtractor.extract(values[3])
+            default:
+                padding.set(
+                    lengthValueExtractor.extract(values[0]),
+                    lengthValueExtractor.extract(values[1]),
+                    lengthValueExtractor.extract(values[2]),
+                    lengthValueExtractor.extract(values[3])
                 );
                 break;
-            default:
-                break;
         }
+        return padding;
     }
 
-    /**
-     * Used to check if value is valid or not.
-     *
-     * @return true if value is valid. By default returns false.
-     */
-    @Override
-    public boolean isValid() {
-        return super.isValid() && StyleUtils.validOneFourValue(value, lengthValueExtractor);
-
+    public static boolean test(String value) {
+        return StyleUtils.testOneFourValue(value, lengthValueExtractor::isValid);
     }
 }

@@ -1,20 +1,20 @@
 package com.spinyowl.spinygui.core.converter.css;
 
 import com.spinyowl.spinygui.core.converter.css.selector.StyleSelector;
-
 import java.util.List;
 
 public class RuleSet {
-    private List<StyleSelector> selectors;
-    private List<Property> properties;
 
-    public RuleSet(List<StyleSelector> selectors, List<Property> properties) {
+    private List<StyleSelector> selectors;
+    private List<Rule> rules;
+
+    public RuleSet(List<StyleSelector> selectors, List<Rule> rules) {
         this.selectors = selectors;
-        this.properties = properties;
+        this.rules = rules;
     }
 
-    public List<Property> getProperties() {
-        return properties;
+    public List<Rule> getRules() {
+        return rules;
     }
 
     public List<StyleSelector> getSelectors() {

@@ -35,7 +35,7 @@ public class Test {
         Class<? extends Element> aClass = TagNameMapping.getElement("div");
         String css = "div > button .test" +
                 "{" +
-                "   background: #ffff80;" +
+                "   background-color: #ffff80;" +
                 "   color: red;" +
                 "   width: 50%;" +
                 "   top: 50%;" +
@@ -67,8 +67,8 @@ public class Test {
 
     public static void searchComponents() throws Exception {
         var css =
-                "div .test label { background: red; }" +
-                        "div .test { background: green; border: 1px, 1px, 2px, 1px }" +
+                "div .test label { background-color: red; }" +
+                        "div .test { background-color: green; border: 1px, 1px, 2px, 1px }" +
                         "button { color: black; }";
 
         var stylesheet = StyleSheetConverter.createFromCSS(css);

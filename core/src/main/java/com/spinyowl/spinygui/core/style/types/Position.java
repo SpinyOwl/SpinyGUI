@@ -5,40 +5,43 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.StringJoiner;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.stream.Collectors;
 
 /**
  * CSS position.
  */
 public final class Position {
+
     private static final Map<String, Position> VALUES = new ConcurrentHashMap<>();
 
     /**
      * The element is positioned relative to its first positioned (not static) ancestor element.
      */
-    public static final Position ABSOLUTE = Position.of("absolute");
+    public static final Position ABSOLUTE = Position.create("absolute");
     /**
-     * The element is positioned relative to its normal position, so "left:20px" adds 20 pixels to the element's LEFT position.
+     * The element is positioned relative to its normal position, so "left:20px" adds 20 pixels to
+     * the element's LEFT position.
      */
-    public static final Position RELATIVE = Position.of("relative");
+    public static final Position RELATIVE = Position.create("relative");
 
     /**
      * Default value. Elements render in order, as they appear in the document flow.
      */
-    public static final Position STATIC = Position.of("static");
+    public static final Position STATIC = Position.create("static");
 
     /**
      * The element is positioned relative to the browser window.
      */
-    public static final Position FIXED = Position.of("fixed");
+    public static final Position FIXED = Position.create("fixed");
 
     /**
      * The element is positioned based on the user's scroll position
-     *
-     * A sticky element toggles between relative and fixed, depending on the scroll position. It is positioned relative until a given offset position is met in the viewport - then it "sticks" in place (like position:fixed).
-     * Note: Not supported in IE/Edge 15 or earlier. Supported in Safari from version 6.1 with a -webkit- prefix.
+     * <p>
+     * A sticky element toggles between relative and fixed, depending on the scroll position. It is
+     * positioned relative until a given offset position is met in the viewport - then it "sticks"
+     * in place (like position:fixed). Note: Not supported in IE/Edge 15 or earlier. Supported in
+     * Safari from version 6.1 with a -webkit- prefix.
      */
-    public static final Position STICKY = Position.of("sticky");
+    public static final Position STICKY = Position.create("sticky");
 
 
     /**
@@ -56,16 +59,27 @@ public final class Position {
     }
 
     /**
-     * Used to create new position element with specified name.
-     * Note that name will be converted to lower case
-     * and it should be the same as names of css position property in css specification.
+     * Used to create new position element with specified name. Note that name will be converted to
+     * lower case and it should be the same as names of css position property in css specification.
      *
      * @param name name of position element.
      * @return new position element (or existing one).
      */
-    public static Position of(String name) {
+    public static Position create(String name) {
         Objects.requireNonNull(name);
         return VALUES.computeIfAbsent(name.toLowerCase(), Position::new);
+    }
+
+    /**
+     * Used to find position element with specified name. Note that name will be converted to lower
+     * case and it should be the same as names of css position property in css specification.
+     *
+     * @param name name of position element.
+     * @return existing Position element or null.
+     */
+    public static Position find(String name) {
+        Objects.requireNonNull(name);
+        return VALUES.get(name.toLowerCase());
     }
 
     /**
@@ -87,7 +101,8 @@ public final class Position {
         if (name == null) {
             return false;
         }
-        return values().stream().map(Position::getName).collect(Collectors.toSet()).contains(name.toLowerCase());
+        return values().stream().map(Position::getName)
+            .anyMatch(v -> v.equalsIgnoreCase(name));
     }
 
     /**
@@ -119,7 +134,7 @@ public final class Position {
     @Override
     public String toString() {
         return new StringJoiner(", ", Position.class.getSimpleName() + "[", "]")
-                .add("name='" + name + "'")
-                .toString();
+            .add("name='" + name + "'")
+            .toString();
     }
 }

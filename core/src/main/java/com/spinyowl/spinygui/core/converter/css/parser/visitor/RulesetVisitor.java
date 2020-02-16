@@ -1,17 +1,15 @@
 package com.spinyowl.spinygui.core.converter.css.parser.visitor;
 
+import com.spinyowl.spinygui.core.converter.css.Rule;
+import com.spinyowl.spinygui.core.converter.css.RuleSet;
 import com.spinyowl.spinygui.core.converter.css.parser.antlr.CSS3BaseVisitor;
 import com.spinyowl.spinygui.core.converter.css.parser.antlr.CSS3Parser;
-import com.spinyowl.spinygui.core.converter.css.Property;
-import com.spinyowl.spinygui.core.converter.css.RuleSet;
-
 import java.util.ArrayList;
 
 public class RulesetVisitor extends CSS3BaseVisitor<RuleSet> {
 
     /**
-     * grammar rule:
-     * selectorGroup '{' ws declarationList? '}' ws    # knownRuleset
+     * grammar rule: selectorGroup '{' ws declarationList? '}' ws    # knownRuleset
      *
      * @param ctx
      * @return
@@ -20,11 +18,11 @@ public class RulesetVisitor extends CSS3BaseVisitor<RuleSet> {
     public RuleSet visitKnownRuleset(CSS3Parser.KnownRulesetContext ctx) {
 
         var selectors = new SelectorVisitor().visit(ctx.selectorGroup());
-        var properties = new ArrayList<Property>();
+        var properties = new ArrayList<Rule>();
         for (CSS3Parser.DeclarationContext declarationCtx : ctx.declarationList().declaration()) {
-            var declaration = new PropertyVisitor().visit(declarationCtx);
-            if (declaration != null) {
-                properties.add(declaration);
+            var rule = new PropertyVisitor().visit(declarationCtx);
+            if (rule != null) {
+                properties.add(rule);
             }
         }
 

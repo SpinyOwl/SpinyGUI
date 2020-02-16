@@ -5,42 +5,45 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.StringJoiner;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.stream.Collectors;
 
 /**
  * CSS white-space.
  */
 public final class WhiteSpace {
+
     private static final Map<String, WhiteSpace> VALUES = new ConcurrentHashMap<>();
 
     /**
-     * Sequences of whitespace will collapse into a single whitespace. Text will wrap when necessary. This is default.
+     * Sequences of whitespace will collapse into a single whitespace. Text will wrap when
+     * necessary. This is default.
      */
-    public static final WhiteSpace NORMAL = WhiteSpace.of("normal");
+    public static final WhiteSpace NORMAL = WhiteSpace.create("normal");
     /**
-     * Sequences of whitespace will collapse into a single whitespace. Text will never wrap to the next line. The text continues on the same line until a <br> tag is encountered.
+     * Sequences of whitespace will collapse into a single whitespace. Text will never wrap to the
+     * next line. The text continues on the same line until a <br> tag is encountered.
      */
-    public static final WhiteSpace NOWRAP = WhiteSpace.of("nowrap");
+    public static final WhiteSpace NOWRAP = WhiteSpace.create("nowrap");
     /**
      * Whitespace is preserved by the browser. Text will only wrap on line breaks. Acts like the <pre> tag in HTML.
      */
-    public static final WhiteSpace PRE = WhiteSpace.of("pre");
+    public static final WhiteSpace PRE = WhiteSpace.create("pre");
     /**
-     * Sequences of whitespace will collapse into a single whitespace. Text will wrap when necessary, and on line breaks.
+     * Sequences of whitespace will collapse into a single whitespace. Text will wrap when
+     * necessary, and on line breaks.
      */
-    public static final WhiteSpace PRE_LINE = WhiteSpace.of("pre-line");
+    public static final WhiteSpace PRE_LINE = WhiteSpace.create("pre-line");
     /**
      * Whitespace is preserved by the browser. Text will wrap when necessary, and on line breaks.
      */
-    public static final WhiteSpace PRE_WRAP = WhiteSpace.of("pre-wrap");
+    public static final WhiteSpace PRE_WRAP = WhiteSpace.create("pre-wrap");
     /**
      * Sets this property to its default value.
      */
-    public static final WhiteSpace INITIAL = WhiteSpace.of("initial");
+    public static final WhiteSpace INITIAL = WhiteSpace.create("initial");
     /**
      * Inherits this property from its parent element.
      */
-    public static final WhiteSpace INHERIT = WhiteSpace.of("inherit");
+    public static final WhiteSpace INHERIT = WhiteSpace.create("inherit");
 
 
     /**
@@ -58,16 +61,29 @@ public final class WhiteSpace {
     }
 
     /**
-     * Used to create new white-space element with specified name.
-     * Note that name will be converted to lower case
-     * and it should be the same as names of css white-space property in css specification.
+     * Used to create new white-space element with specified name. Note that name will be converted
+     * to lower case and it should be the same as names of css white-space property in css
+     * specification.
      *
      * @param name name of white-space element.
      * @return new white-space element (or existing one).
      */
-    public static WhiteSpace of(String name) {
+    public static WhiteSpace create(String name) {
         Objects.requireNonNull(name);
         return VALUES.computeIfAbsent(name.toLowerCase(), WhiteSpace::new);
+    }
+
+    /**
+     * Used to find white-space element with specified name. Note that name will be converted to
+     * lower case and it should be the same as names of css white-space property in css
+     * specification.
+     *
+     * @param name name of white-space element.
+     * @return existing white-space element or null.
+     */
+    public static WhiteSpace find(String name) {
+        Objects.requireNonNull(name);
+        return VALUES.get(name.toLowerCase());
     }
 
     /**
@@ -89,7 +105,8 @@ public final class WhiteSpace {
         if (name == null) {
             return false;
         }
-        return values().stream().map(WhiteSpace::getName).collect(Collectors.toSet()).contains(name.toLowerCase());
+        return values().stream().map(WhiteSpace::getName)
+            .anyMatch(v -> v.equalsIgnoreCase(name));
     }
 
     /**
@@ -121,7 +138,7 @@ public final class WhiteSpace {
     @Override
     public String toString() {
         return new StringJoiner(", ", WhiteSpace.class.getSimpleName() + "[", "]")
-                .add("name='" + name + "'")
-                .toString();
+            .add("name='" + name + "'")
+            .toString();
     }
 }

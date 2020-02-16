@@ -7,40 +7,31 @@ import com.spinyowl.spinygui.core.converter.css.extractor.UnitValueExtractor;
 import com.spinyowl.spinygui.core.style.types.Color;
 import com.spinyowl.spinygui.core.style.types.length.Length;
 import com.spinyowl.spinygui.core.style.types.length.Unit;
-
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 public final class ValueExtractors {
 
-    private Map<Class, ValueExtractor> valueExtractorMap = new ConcurrentHashMap<>();
+    private static final Map<Class, ValueExtractor> valueExtractorMap = new ConcurrentHashMap<>();
 
-    //@formatter:off
-    /** Hidden constructor. */
-    private ValueExtractors() {
-        addValueExtractor(Color.class, new ColorValueExtractor());
-        addValueExtractor(Unit.class, new UnitValueExtractor());
-        addValueExtractor(Length.class, new LengthValueExtractor());
-        addValueExtractor(Integer.class, new IntegerExtractor());
+    static {
+        add(Color.class, new ColorValueExtractor());
+        add(Unit.class, new UnitValueExtractor());
+        add(Length.class, new LengthValueExtractor());
+        add(Integer.class, new IntegerExtractor());
     }
 
-    /** Getter for instance. */
-    public static ValueExtractors getInstance() { return ValueExtractorsHolder.INSTANCE; }
+    private ValueExtractors() {
+    }
 
-    public <T> void addValueExtractor(Class<T> targetValueClass, ValueExtractor<T> valueExtractor) {
+    public static <T> void add(Class<T> targetValueClass,
+        ValueExtractor<T> valueExtractor) {
         valueExtractorMap.put(targetValueClass, valueExtractor);
     }
-    //@formatter:on
 
-    public <T> ValueExtractor<T> getValueExtractor(Class<T> targetValueClass) {
+    public static <T> ValueExtractor<T> of(Class<T> targetValueClass) {
         return valueExtractorMap.get(targetValueClass);
     }
 
-    /**
-     * Instance holder.
-     */
-    private static class ValueExtractorsHolder {
-        private static final ValueExtractors INSTANCE = new ValueExtractors();
-    }
 
 }

@@ -4,42 +4,17 @@ import com.spinyowl.spinygui.core.converter.css.Properties;
 import com.spinyowl.spinygui.core.converter.css.Property;
 import com.spinyowl.spinygui.core.converter.css.ValueExtractor;
 import com.spinyowl.spinygui.core.converter.css.ValueExtractors;
-import com.spinyowl.spinygui.core.node.base.Element;
 import com.spinyowl.spinygui.core.style.types.length.Length;
 
-public class BorderBottomRightRadiusProperty extends Property {
+public class BorderBottomRightRadiusProperty extends Property<Length> {
 
-    private ValueExtractor<Length> lengthValueExtractor = ValueExtractors.getInstance().getValueExtractor(Length.class);
+    public static final ValueExtractor<Length> extractor = ValueExtractors.of(Length.class);
 
     public BorderBottomRightRadiusProperty() {
-        super(Properties.BORDER_BOTTOM_RIGHT_RADIUS, "0", false, true);
+        super(Properties.BORDER_BOTTOM_RIGHT_RADIUS, "0", !INHERITED, ANIMATABLE,
+            (s, l) -> s.getBorderRadius().setBottomRight(l),
+            s -> s.getBorderRadius().getBottomRight(),
+            extractor::extract, extractor::isValid);
     }
 
-    public BorderBottomRightRadiusProperty(String value) {
-        this();
-        setValue(value);
-    }
-
-    /**
-     * Used to update calculated node style of specified element.
-     *
-     * @param element element to update calculated style.
-     */
-    @Override
-    protected void updateNodeStyle(Element element) {
-        update(element, Length.pixel(0),
-                (s, l) -> s.getBorderRadius().setBottomRight(l),
-                s -> s.getBorderRadius().getBottomRight(),
-                lengthValueExtractor::extract);
-    }
-
-    /**
-     * Used to check if value is valid or not.
-     *
-     * @return true if value is valid. By default returns false.
-     */
-    @Override
-    public boolean isValid() {
-        return super.isValid() || lengthValueExtractor.isValid(value);
-    }
 }

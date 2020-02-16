@@ -1,6 +1,13 @@
 package com.spinyowl.spinygui.core.style;
 
-import com.spinyowl.spinygui.core.style.types.*;
+import com.spinyowl.spinygui.core.style.types.Background;
+import com.spinyowl.spinygui.core.style.types.BorderRadius;
+import com.spinyowl.spinygui.core.style.types.Color;
+import com.spinyowl.spinygui.core.style.types.Display;
+import com.spinyowl.spinygui.core.style.types.Margin;
+import com.spinyowl.spinygui.core.style.types.Padding;
+import com.spinyowl.spinygui.core.style.types.Position;
+import com.spinyowl.spinygui.core.style.types.WhiteSpace;
 import com.spinyowl.spinygui.core.style.types.border.Border;
 import com.spinyowl.spinygui.core.style.types.flex.Flex;
 import com.spinyowl.spinygui.core.style.types.length.Length;
@@ -108,6 +115,13 @@ public class NodeStyle {
 
     public Border getBorder() {
         return border;
+    }
+
+    public void setBorder(Border border) {
+        this.border.setTop(border.getTop());
+        this.border.setBottom(border.getBottom());
+        this.border.setRight(border.getRight());
+        this.border.setLeft(border.getLeft());
     }
 
     public Length getTop() {

@@ -1,31 +1,22 @@
 package com.spinyowl.spinygui.core.converter.css.property.flex;
 
-import com.spinyowl.spinygui.core.converter.css.Property;
-import com.spinyowl.spinygui.core.node.base.Element;
-import com.spinyowl.spinygui.core.style.types.flex.AlignSelf;
-
-import java.util.Arrays;
-
 import static com.spinyowl.spinygui.core.converter.css.Properties.ALIGN_SELF;
 
-public class AlignSelfProperty extends Property {
+import com.spinyowl.spinygui.core.converter.css.Property;
+import com.spinyowl.spinygui.core.style.types.flex.AlignSelf;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+public class AlignSelfProperty extends Property<AlignSelf> {
 
     public AlignSelfProperty() {
-        super(ALIGN_SELF, "auto", false, false);
-    }
-
-    /**
-     * Used to update calculated node style of specified element.
-     *
-     * @param element element to update calculated style.
-     */
-    @Override
-    protected void updateNodeStyle(Element element) {
-        update(element, AlignSelf.AUTO, (s, v) -> s.getFlex().setAlignSelf(v), s -> s.getFlex().getAlignSelf(), AlignSelf::valueOf);
+        super(ALIGN_SELF, "auto", !INHERITED, !ANIMATABLE,
+            (s, v) -> s.getFlex().setAlignSelf(v), s -> s.getFlex().getAlignSelf(),
+            AlignSelf::find, AlignSelf::contains);
     }
 
     @Override
-    public boolean isValid() {
-        return super.isValid() || Arrays.stream(AlignSelf.values()).anyMatch(ac -> ac.name().equalsIgnoreCase(value));
+    public Set<String> allowedValues() {
+        return AlignSelf.values().stream().map(AlignSelf::getName).collect(Collectors.toSet());
     }
 }

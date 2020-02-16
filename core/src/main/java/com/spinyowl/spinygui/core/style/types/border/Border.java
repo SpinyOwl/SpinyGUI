@@ -4,25 +4,50 @@ import com.spinyowl.spinygui.core.style.types.Color;
 import com.spinyowl.spinygui.core.style.types.length.Length;
 
 public class Border {
-    private final BorderItem top    = new BorderItem();
-    private final BorderItem right  = new BorderItem();
+
+    private final BorderItem top = new BorderItem();
+    private final BorderItem right = new BorderItem();
     private final BorderItem bottom = new BorderItem();
-    private final BorderItem left   = new BorderItem();
+    private final BorderItem left = new BorderItem();
 
     public BorderItem getTop() {
         return top;
+    }
+
+    public void setTop(BorderItem top) {
+        this.top.setWidth(top.getWidth());
+        this.top.setStyle(top.getStyle());
+        this.top.setColor(top.getColor());
     }
 
     public BorderItem getRight() {
         return right;
     }
 
+    public void setRight(BorderItem right) {
+        this.right.setWidth(right.getWidth());
+        this.right.setStyle(right.getStyle());
+        this.right.setColor(right.getColor());
+    }
+
     public BorderItem getBottom() {
         return bottom;
     }
 
+    public void setBottom(BorderItem bottom) {
+        this.bottom.setWidth(bottom.getWidth());
+        this.bottom.setStyle(bottom.getStyle());
+        this.bottom.setColor(bottom.getColor());
+    }
+
     public BorderItem getLeft() {
         return left;
+    }
+
+    public void setLeft(BorderItem left) {
+        this.left.setWidth(left.getWidth());
+        this.left.setStyle(left.getStyle());
+        this.left.setColor(left.getColor());
     }
 
 
@@ -121,14 +146,16 @@ public class Border {
         this.right.setStyle(styleRightLeft);
     }
 
-    public void setStyle(BorderStyle styleTop, BorderStyle styleRightLeft, BorderStyle styleBottom) {
+    public void setStyle(BorderStyle styleTop, BorderStyle styleRightLeft,
+        BorderStyle styleBottom) {
         this.top.setStyle(styleTop);
         this.left.setStyle(styleRightLeft);
         this.right.setStyle(styleRightLeft);
         this.bottom.setStyle(styleBottom);
     }
 
-    public void setStyle(BorderStyle styleTop, BorderStyle styleRight, BorderStyle styleBottom, BorderStyle styleLeft) {
+    public void setStyle(BorderStyle styleTop, BorderStyle styleRight, BorderStyle styleBottom,
+        BorderStyle styleLeft) {
         this.top.setStyle(styleTop);
         this.left.setStyle(styleLeft);
         this.bottom.setStyle(styleBottom);
