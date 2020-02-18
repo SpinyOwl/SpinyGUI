@@ -33,9 +33,9 @@ public final class TagNameMapping {
                 }
                 addMapping(name, clazz);
             } else {
-                LOGGER.warn("{} class is annotated with " + Tag.class.getName() + " annotation. " +
-                                "Tag annotation is allowed to use with " + Element.class.getName() + " children.",
-                        classInfo.getName())
+                LOGGER.warn("{} class is annotated with {} annotation. " +
+                                "Tag annotation is allowed to use with {} children.",
+                        classInfo.getName(), Tag.class.getName(), Element.class.getName())
                 ;
             }
         }

@@ -3,14 +3,12 @@ package com.spinyowl.spinygui.core.window;
 import com.spinyowl.spinygui.core.api.Frame;
 import com.spinyowl.spinygui.core.event.WindowCloseEvent;
 import com.spinyowl.spinygui.core.event.listener.EventListener;
-import com.spinyowl.spinygui.core.node.base.Container;
 import com.spinyowl.spinygui.core.node.base.Node;
 import com.spinyowl.spinygui.core.window.service.Services;
-import org.joml.Vector2i;
-import org.joml.Vector2ic;
-
 import java.util.List;
 import java.util.Objects;
+import org.joml.Vector2i;
+import org.joml.Vector2ic;
 /**
  * Window class. Represents OS window.
  * <br>

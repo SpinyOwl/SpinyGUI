@@ -21,7 +21,7 @@ public class RawProcessor extends AbstractXMLOutputProcessor {
     @Override
     public void process(Writer out, Format format, Element element) throws IOException {
         Format formatToUse = format;
-        if (Boolean.valueOf(element.getAttributeValue(PREFORMATTED_ATTRIBUTE))) {
+        if (Boolean.parseBoolean(element.getAttributeValue(PREFORMATTED_ATTRIBUTE))) {
             formatToUse = Format.getRawFormat();
         }
         super.process(out, formatToUse, element);
@@ -29,7 +29,7 @@ public class RawProcessor extends AbstractXMLOutputProcessor {
 
     @Override
     protected void printElement(Writer out, FormatStack fstack, NamespaceStack nstack, Element element) throws IOException {
-        if (Boolean.valueOf(element.getAttributeValue(PREFORMATTED_ATTRIBUTE))) {
+        if (Boolean.parseBoolean(element.getAttributeValue(PREFORMATTED_ATTRIBUTE))) {
             fstack.setTextMode(Format.TextMode.PRESERVE);
         }
         super.printElement(out, fstack, nstack, element);

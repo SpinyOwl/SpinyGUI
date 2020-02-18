@@ -1,8 +1,10 @@
 package com.spinyowl.spinygui.core.window.service;
 
-public class Services {
+public final class Services {
     private static WindowService windowService;
     private static MonitorService monitorService;
+
+    private Services(){}
 
     public static WindowService getWindowService() {
         return windowService;

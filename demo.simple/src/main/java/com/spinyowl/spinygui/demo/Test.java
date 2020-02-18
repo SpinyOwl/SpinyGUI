@@ -1,5 +1,9 @@
 package com.spinyowl.spinygui.demo;
 
+import static com.spinyowl.spinygui.core.NodeBuilder.button;
+import static com.spinyowl.spinygui.core.NodeBuilder.div;
+import static com.spinyowl.spinygui.core.NodeBuilder.label;
+
 import com.spinyowl.spinygui.core.api.Frame;
 import com.spinyowl.spinygui.core.converter.NodeConverter;
 import com.spinyowl.spinygui.core.converter.StyleSheetConverter;
@@ -8,22 +12,23 @@ import com.spinyowl.spinygui.core.converter.css.StyleSheet;
 import com.spinyowl.spinygui.core.converter.css.parser.StyleReflectionHandler;
 import com.spinyowl.spinygui.core.converter.css.parser.StyleSheetException;
 import com.spinyowl.spinygui.core.converter.css.selector.StyleSelector;
-import com.spinyowl.spinygui.core.converter.dom.TagNameMapping;
 import com.spinyowl.spinygui.core.node.base.Element;
 import com.spinyowl.spinygui.core.node.base.Node;
 import com.spinyowl.spinygui.core.node.element.Button;
 import com.spinyowl.spinygui.core.node.element.Label;
 import com.spinyowl.spinygui.core.style.manager.StyleManagerProvider;
 import com.spinyowl.spinygui.core.style.types.Color;
-
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
-
-import static com.spinyowl.spinygui.core.NodeBuilder.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class Test {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(Test.class);
+
     public static void main(String[] args) throws Exception {
         createFromCSS();
         searchComponents();
@@ -32,9 +37,8 @@ public class Test {
 
     public static void createFromCSS() throws StyleSheetException {
         StyleReflectionHandler.getPseudoSelector(":hover");
-        Class<? extends Element> aClass = TagNameMapping.getElement("div");
         String css = "div > button .test" +
-                "{" +
+            "{" +
                 "   background-color: #ffff80;" +
                 "   color: red;" +
                 "   width: 50%;" +
@@ -106,11 +110,8 @@ public class Test {
     }
 
     public static void parseText() throws Exception {
-
         var xml = "<div>just a text</div>";
         var componentTree = NodeConverter.fromXml(xml);
-
-        System.out.println(componentTree);
-
+        LOGGER.info(componentTree.toString());
     }
 }

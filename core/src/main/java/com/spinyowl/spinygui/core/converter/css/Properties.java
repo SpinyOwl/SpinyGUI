@@ -157,6 +157,8 @@ public final class Properties {
 
     private static Map<String, Property> propertyMap = new ConcurrentHashMap<>();
 
+    private Properties() {}
+
     static {
         addSupportedProperty(COLOR, new ColorProperty());
         addSupportedProperty(BACKGROUND_COLOR, new BackgroundColorProperty());
