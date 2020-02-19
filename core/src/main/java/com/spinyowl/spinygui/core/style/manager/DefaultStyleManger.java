@@ -14,13 +14,14 @@ public class DefaultStyleManger implements StyleManager {
 
     @Override
     public void recalculateStyles(Frame frame) {
+        // TODO implement styling according to CSS Specificity
+
         for (Layer layer : frame.getAllLayers()) {
             for (StyleSheet styleSheet : frame.getStyleSheets()) {
                 updateStylesFromStyleSheet(layer, styleSheet);
             }
         }
 
-        // TODO get styles from stylesheet and update elements node styles
     }
 
     private void updateStylesFromStyleSheet(Element element, StyleSheet styleSheet) {

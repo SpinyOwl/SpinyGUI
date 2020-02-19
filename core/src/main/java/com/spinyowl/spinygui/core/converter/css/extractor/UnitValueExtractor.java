@@ -1,7 +1,6 @@
 package com.spinyowl.spinygui.core.converter.css.extractor;
 
 import com.spinyowl.spinygui.core.converter.css.ValueExtractor;
-import com.spinyowl.spinygui.core.style.types.length.Auto;
 import com.spinyowl.spinygui.core.style.types.length.Length;
 import com.spinyowl.spinygui.core.style.types.length.Unit;
 
@@ -44,7 +43,7 @@ public class UnitValueExtractor implements ValueExtractor<Unit> {
     @Override
     public Unit extract(String value) {
         if (value.matches(AUTO_REGEX)) {
-            return Auto.AUTO;
+            return Unit.AUTO;
         }
 
         return getLength(value);
