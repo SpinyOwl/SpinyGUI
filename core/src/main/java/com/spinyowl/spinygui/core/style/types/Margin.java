@@ -9,6 +9,31 @@ public class Margin {
     private Unit right;
     private Unit left;
 
+    public Margin() {
+    }
+
+    public Margin(Unit margin) {
+        this.top = this.left = this.bottom = this.right = margin;
+    }
+
+    public Margin(Unit marginTopBottom, Unit marginRightLeft) {
+        this.top = this.bottom = marginTopBottom;
+        this.left = this.right = marginRightLeft;
+    }
+
+    public Margin(Unit marginTop, Unit marginRightLeft, Unit marginBottom) {
+        this.top = marginTop;
+        this.left = this.right = marginRightLeft;
+        this.bottom = marginBottom;
+    }
+
+    public Margin(Unit marginTop, Unit marginRight, Unit marginBottom, Unit marginLeft) {
+        this.top = marginTop;
+        this.left = marginLeft;
+        this.bottom = marginBottom;
+        this.right = marginRight;
+    }
+
     public Unit getTop() {
         return top;
     }
@@ -41,32 +66,4 @@ public class Margin {
         this.left = left;
     }
 
-    public void set(Margin margin) {
-        this.top = margin.top;
-        this.left = margin.left;
-        this.bottom = margin.bottom;
-        this.right = margin.right;
-    }
-
-    public void set(Unit margin) {
-        this.top = this.bottom = this.left = this.right = margin;
-    }
-
-    public void set(Unit marginTopBottom, Unit marginRightLeft) {
-        this.top = this.bottom = marginTopBottom;
-        this.left = this.right = marginRightLeft;
-    }
-
-    public void set(Unit marginTop, Unit marginRightLeft, Unit marginBottom) {
-        this.top = marginTop;
-        this.left = this.right = marginRightLeft;
-        this.bottom = marginBottom;
-    }
-
-    public void set(Unit marginTop, Unit marginRight, Unit marginBottom, Unit marginLeft) {
-        this.top = marginTop;
-        this.left = marginLeft;
-        this.bottom = marginBottom;
-        this.right = marginRight;
-    }
 }

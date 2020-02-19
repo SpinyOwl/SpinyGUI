@@ -24,6 +24,60 @@ public class BorderRadius {
     private Length bottomLeft;
 
     /**
+     * Used to create border radius.
+     */
+    public BorderRadius() {
+    }
+
+    /**
+     * Used to create border radius.
+     *
+     * @param radius radius to set. Sets border radius to all corners.
+     */
+    public BorderRadius(Length radius) {
+        topLeft = topRight = bottomRight = bottomLeft = radius;
+    }
+
+    /**
+     * Used to create border radius.
+     *
+     * @param topLeftBottomRight top left and bottom right radius.
+     * @param topRightBottomLeft top right and bottom left radius.
+     */
+    public BorderRadius(Length topLeftBottomRight, Length topRightBottomLeft) {
+        topLeft = bottomRight = topLeftBottomRight;
+        topRight = bottomLeft = topRightBottomLeft;
+    }
+
+    /**
+     * Used to create border radius.
+     *
+     * @param topLeft            top left radius.
+     * @param bottomRight        bottom right radius.
+     * @param topRightBottomLeft top right and bottom left radius.
+     */
+    public BorderRadius(Length topLeft, Length topRightBottomLeft, Length bottomRight) {
+        this.topLeft = topLeft;
+        this.topRight = this.bottomLeft = topRightBottomLeft;
+        this.bottomRight = bottomRight;
+    }
+
+    /**
+     * Used to create border radius.
+     *
+     * @param topLeft     top left radius.
+     * @param topRight    top right radius.
+     * @param bottomRight bottom right radius.
+     * @param bottomLeft  bottom left radius.
+     */
+    public BorderRadius(Length topLeft, Length topRight, Length bottomRight, Length bottomLeft) {
+        this.topLeft = topLeft;
+        this.topRight = topRight;
+        this.bottomRight = bottomRight;
+        this.bottomLeft = bottomLeft;
+    }
+
+    /**
      * Returns top left border radius.
      *
      * @return top left border radius.
@@ -95,67 +149,5 @@ public class BorderRadius {
         this.bottomLeft = bottomLeft;
     }
 
-    /**
-     * Used to set border radius.
-     *
-     * @param topLeftBottomRight top left and bottom right radius.
-     * @param topRightBottomLeft top right and bottom left radius.
-     */
-    public void set(Length topLeftBottomRight, Length topRightBottomLeft) {
-        topLeft = bottomRight = topLeftBottomRight;
-        topRight = bottomLeft = topRightBottomLeft;
-    }
 
-    /**
-     * Used to set border radius.
-     *
-     * @param topLeft            top left radius.
-     * @param bottomRight        bottom right radius.
-     * @param topRightBottomLeft top right and bottom left radius.
-     */
-    public void set(Length topLeft, Length topRightBottomLeft, Length bottomRight) {
-        this.topLeft = topLeft;
-        this.topRight = this.bottomLeft = topRightBottomLeft;
-        this.bottomRight = bottomRight;
-    }
-
-    /**
-     * Used to set border radius.
-     *
-     * @param topLeft     top left radius.
-     * @param topRight    top right radius.
-     * @param bottomRight bottom right radius.
-     * @param bottomLeft  bottom left radius.
-     */
-    public void set(Length topLeft, Length topRight, Length bottomRight, Length bottomLeft) {
-        this.topLeft = topLeft;
-        this.topRight = topRight;
-        this.bottomRight = bottomRight;
-        this.bottomLeft = bottomLeft;
-    }
-
-    /**
-     * Returns vector of four border radius elements where: x = top left, y = top right, z = bottom right, w = bottom left
-     *
-     * @return vector of four border radius.
-     */
-    public Length[] get() {
-        return new Length[]{topLeft, topRight, bottomRight, bottomLeft};
-    }
-
-    /**
-     * Used to set border radius for all four corners.
-     *
-     * @param radius radius to set. Sets border radius to all corners.
-     */
-    public void set(Length radius) {
-        topLeft = topRight = bottomRight = bottomLeft = radius;
-    }
-
-    public void set(BorderRadius radius) {
-        this.topLeft = radius.topLeft;
-        this.topRight = radius.topRight;
-        this.bottomRight = radius.bottomRight;
-        this.bottomLeft = radius.bottomLeft;
-    }
 }

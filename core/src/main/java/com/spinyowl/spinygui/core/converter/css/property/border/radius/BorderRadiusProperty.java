@@ -15,34 +15,24 @@ public class BorderRadiusProperty extends Property<BorderRadius> {
 
     public BorderRadiusProperty() {
         super(Properties.BORDER_RADIUS, "0", !INHERITED, ANIMATABLE,
-            (s, br) -> s.getBorderRadius().set(br), NodeStyle::getBorderRadius,
+            NodeStyle::setBorderRadius, NodeStyle::getBorderRadius,
             BorderRadiusProperty::extract, BorderRadiusProperty::test);
     }
 
     private static BorderRadius extract(String value) {
-        BorderRadius borderRadius = new BorderRadius();
         String[] v = value.split("\\s+");
+        //@formatter:off
         switch (v.length) {
-            case 1:
-                borderRadius.set(x(v[0]));
-                break;
-            case 2:
-                borderRadius.set(x(v[0]), x(v[1]));
-                break;
-            case 3:
-                borderRadius.set(x(v[0]), x(v[1]), x(v[2]));
-                break;
-            case 4:
-                borderRadius.set(x(v[0]), x(v[1]), x(v[2]), x(v[3]));
-                break;
-            default:
-                break;
+            case 1:          return new BorderRadius(x(v[0]));
+            case 2:          return new BorderRadius(x(v[0]), x(v[1]));
+            case 3:          return new BorderRadius(x(v[0]), x(v[1]), x(v[2]));
+            case 4: default: return new BorderRadius(x(v[0]), x(v[1]), x(v[2]), x(v[3]));
         }
-        return borderRadius;
+        //@formatter:on
     }
 
-    private static Length x(String value1) {
-        return extractor.extract(value1);
+    private static Length x(String value) {
+        return extractor.extract(value);
     }
 
     public static boolean test(String value) {

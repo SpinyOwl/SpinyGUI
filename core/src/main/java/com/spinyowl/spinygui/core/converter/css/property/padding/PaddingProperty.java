@@ -15,7 +15,7 @@ public class PaddingProperty extends Property<Padding> {
 
     public PaddingProperty() {
         super(Properties.PADDING, "0", !INHERITED, ANIMATABLE,
-            (s, v) -> s.getPadding().set(v), NodeStyle::getPadding,
+            NodeStyle::setPadding, NodeStyle::getPadding,
             PaddingProperty::extract, PaddingProperty::test);
     }
 
@@ -23,40 +23,20 @@ public class PaddingProperty extends Property<Padding> {
         if (value == null) {
             return null;
         }
-        Padding padding = new Padding();
-        String[] values = value.split("\\s+");
-        switch (values.length) {
-            case 0:
-                return null;
-            case 1:
-                padding.set(
-                    lengthValueExtractor.extract(values[0])
-                );
-                break;
-            case 2:
-                padding.set(
-                    lengthValueExtractor.extract(values[0]),
-                    lengthValueExtractor.extract(values[1])
-                );
-                break;
-            case 3:
-                padding.set(
-                    lengthValueExtractor.extract(values[0]),
-                    lengthValueExtractor.extract(values[1]),
-                    lengthValueExtractor.extract(values[2])
-                );
-                break;
-            case 4:
-            default:
-                padding.set(
-                    lengthValueExtractor.extract(values[0]),
-                    lengthValueExtractor.extract(values[1]),
-                    lengthValueExtractor.extract(values[2]),
-                    lengthValueExtractor.extract(values[3])
-                );
-                break;
+        String[] v = value.split("\\s+");
+        //@formatter:off
+        switch (v.length) {
+            case 0:          return null;
+            case 1:          return new Padding(x(v[0]));
+            case 2:          return new Padding(x(v[0]), x(v[1]));
+            case 3:          return new Padding(x(v[0]), x(v[1]), x(v[2]));
+            case 4: default: return new Padding(x(v[0]), x(v[1]), x(v[2]), x(v[3]));
         }
-        return padding;
+        //@formatter:on
+    }
+
+    private static Length x(String value1) {
+        return lengthValueExtractor.extract(value1);
     }
 
     public static boolean test(String value) {

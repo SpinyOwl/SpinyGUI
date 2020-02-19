@@ -12,15 +12,16 @@ import com.spinyowl.spinygui.core.style.types.border.Border;
 import com.spinyowl.spinygui.core.style.types.flex.Flex;
 import com.spinyowl.spinygui.core.style.types.length.Length;
 import com.spinyowl.spinygui.core.style.types.length.Unit;
+import java.util.Objects;
 
 public class NodeStyle {
 
     private final Flex flex = new Flex();
     private final Background background = new Background();
-    private final Border border = new Border();
-    private final BorderRadius borderRadius = new BorderRadius();
-    private final Padding padding = new Padding();
-    private final Margin margin = new Margin();
+    private Border border = new Border();
+    private BorderRadius borderRadius = new BorderRadius();
+    private Padding padding = new Padding();
+    private Margin margin = new Margin();
     private Display display = Display.BLOCK;
     private Position position = Position.RELATIVE;
     private Color color;
@@ -45,8 +46,16 @@ public class NodeStyle {
         return padding;
     }
 
+    public void setPadding(Padding padding) {
+        this.padding = Objects.requireNonNull(padding);
+    }
+
     public BorderRadius getBorderRadius() {
         return borderRadius;
+    }
+
+    public void setBorderRadius(BorderRadius borderRadius) {
+        this.borderRadius = Objects.requireNonNull(borderRadius);
     }
 
     public Unit getWidth() {
@@ -118,10 +127,7 @@ public class NodeStyle {
     }
 
     public void setBorder(Border border) {
-        this.border.setTop(border.getTop());
-        this.border.setBottom(border.getBottom());
-        this.border.setRight(border.getRight());
-        this.border.setLeft(border.getLeft());
+        this.border = Objects.requireNonNull(border);
     }
 
     public Length getTop() {
@@ -180,6 +186,10 @@ public class NodeStyle {
 
     public Margin getMargin() {
         return margin;
+    }
+
+    public void setMargin(Margin margin) {
+        this.margin = Objects.requireNonNull(margin);
     }
 
     public Flex getFlex() {

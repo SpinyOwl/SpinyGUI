@@ -15,7 +15,7 @@ public class MarginProperty extends Property<Margin> {
 
     public MarginProperty() {
         super(Properties.MARGIN, "0", !INHERITED, ANIMATABLE,
-            (s, v) -> s.getMargin().set(v), NodeStyle::getMargin,
+            NodeStyle::setMargin, NodeStyle::getMargin,
             MarginProperty::extract, MarginProperty::test);
     }
 
@@ -23,24 +23,16 @@ public class MarginProperty extends Property<Margin> {
         if (value == null) {
             return null;
         }
-        Margin margin = new Margin();
+
+        //@formatter:off
         String[] v = value.split("\\s+");
         switch (v.length) {
-            case 1:
-                margin.set(x(v[0]));
-                break;
-            case 2:
-                margin.set(x(v[0]), x(v[1]));
-                break;
-            case 3:
-                margin.set(x(v[0]), x(v[1]), x(v[2]));
-                break;
-            case 4:
-            default:
-                margin.set(x(v[0]), x(v[1]), x(v[2]), x(v[3]));
-                break;
+            case 1:          return new Margin(x(v[0]));
+            case 2:          return new Margin(x(v[0]), x(v[1]));
+            case 3:          return new Margin(x(v[0]), x(v[1]), x(v[2]));
+            case 4: default: return new Margin(x(v[0]), x(v[1]), x(v[2]), x(v[3]));
         }
-        return margin;
+        //@formatter:on
     }
 
     private static Unit x(String v) {
