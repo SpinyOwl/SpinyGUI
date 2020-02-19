@@ -3,13 +3,13 @@ package com.spinyowl.spinygui.core.converter.css;
 import com.spinyowl.spinygui.core.converter.css.util.StyleUtils;
 import com.spinyowl.spinygui.core.node.base.Element;
 import com.spinyowl.spinygui.core.style.NodeStyle;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.Objects;
-import java.util.Set;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Root class that describes property. Should be used to create new classes which implement {@link
@@ -120,16 +120,6 @@ public abstract class Property<T> {
 //            throw new IllegalStateException("Failed to calculated default style.");
 //        }
         this.defaultComputedValue = computedValue;
-    }
-
-    /**
-     * Returns a set of constant property values allowed to use or an empty set (if there are no
-     * static values for property).
-     *
-     * @return set of constant values.
-     */
-    public Set<String> allowedValues() {
-        return Set.of(INITIAL, INHERIT);
     }
 
     /**

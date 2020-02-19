@@ -37,14 +37,6 @@ public final class JustifyContent {
      * Distribute items evenly. Items have equal space around them.
      */
     public static final JustifyContent SPACE_EVENLY = JustifyContent.create("space-evenly");
-    /**
-     * Sets this property to its default value.
-     */
-    public static final JustifyContent INITIAL = JustifyContent.create("initial");
-    /**
-     * Inherits this property from its parent element..
-     */
-    public static final JustifyContent INHERIT = JustifyContent.create("inherit");
 
     private String name;
 

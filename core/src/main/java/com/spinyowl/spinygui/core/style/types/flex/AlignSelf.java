@@ -38,15 +38,6 @@ public final class AlignSelf {
      * The element is positioned at the baseline of the container.
      */
     public static final AlignSelf BASELINE = AlignSelf.create("baseline");
-    /**
-     * Sets this property to its default value.
-     */
-    public static final AlignSelf INITIAL = AlignSelf.create("initial");
-    /**
-     * Inherits this property from its parent element..
-     */
-    public static final AlignSelf INHERIT = AlignSelf.create("inherit");
-
 
     private String name;
 

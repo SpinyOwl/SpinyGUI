@@ -6,8 +6,6 @@ import com.spinyowl.spinygui.core.converter.css.util.StyleUtils;
 import com.spinyowl.spinygui.core.style.NodeStyle;
 import com.spinyowl.spinygui.core.style.types.border.Border;
 import com.spinyowl.spinygui.core.style.types.border.BorderStyle;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 public class BorderStyleProperty extends Property<Border> {
 
@@ -42,8 +40,4 @@ public class BorderStyleProperty extends Property<Border> {
         return StyleUtils.testOneFourValue(value, BorderStyle::contains);
     }
 
-    @Override
-    public Set<String> allowedValues() {
-        return BorderStyle.values().stream().map(BorderStyle::getName).collect(Collectors.toSet());
-    }
 }

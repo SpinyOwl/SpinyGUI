@@ -63,17 +63,6 @@ public final class BorderStyle {
     public static final BorderStyle OUTSET = BorderStyle.create("outset");
 
     /**
-     * Sets this property to its default value. Read about initial.
-     */
-    public static final BorderStyle INITIAL = BorderStyle.create("initial");
-
-    /**
-     * Inherits this property from its parent element. Read about inherit.
-     */
-    public static final BorderStyle INHERIT = BorderStyle.create("inherit");
-
-
-    /**
      * Name of border style type (should be same as in css specification)
      */
     private final String name;

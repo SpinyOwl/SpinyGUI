@@ -26,26 +26,17 @@ final class FlexUtils {
     }
 
     public static void setJustifyContent(long node, JustifyContent justifyContent, Element element) {
-        JustifyContent toUse = justifyContent;
-        for (Element lp = element; toUse == JustifyContent.INHERIT; lp = lp.getParent()) {
-            if (lp != null) {
-                toUse = lp.getStyle().getFlex().getJustifyContent();
-            } else {
-                toUse = JustifyContent.FLEX_START;
-                break;
-            }
-        }
-        if (toUse == JustifyContent.INITIAL || toUse == JustifyContent.FLEX_START) {
+        if (justifyContent == null || justifyContent == JustifyContent.FLEX_START) {
             YGNodeStyleSetJustifyContent(node, YGJustifyFlexStart);
-        } else if (toUse == JustifyContent.CENTER) {
+        } else if (justifyContent == JustifyContent.CENTER) {
             YGNodeStyleSetJustifyContent(node, YGJustifyCenter);
-        } else if (toUse == JustifyContent.FLEX_END) {
+        } else if (justifyContent == JustifyContent.FLEX_END) {
             YGNodeStyleSetJustifyContent(node, YGJustifyFlexEnd);
-        } else if (toUse == JustifyContent.SPACE_AROUND) {
+        } else if (justifyContent == JustifyContent.SPACE_AROUND) {
             YGNodeStyleSetJustifyContent(node, YGJustifySpaceAround);
-        } else if (toUse == JustifyContent.SPACE_BETWEEN) {
+        } else if (justifyContent == JustifyContent.SPACE_BETWEEN) {
             YGNodeStyleSetJustifyContent(node, YGJustifySpaceBetween);
-        } else if (toUse == JustifyContent.SPACE_EVENLY) {
+        } else if (justifyContent == JustifyContent.SPACE_EVENLY) {
             YGNodeStyleSetJustifyContent(node, YGJustifySpaceEvenly);
         }
     }
@@ -63,70 +54,44 @@ final class FlexUtils {
     }
 
     public static void setFlexWrap(long node, FlexWrap flexWrap, Element element) {
-        FlexWrap toUse = flexWrap;
-        for (Element lp = element; toUse == FlexWrap.INHERIT; lp = lp.getParent()) {
-            if (lp != null) {
-                toUse = lp.getStyle().getFlex().getFlexWrap();
-            } else {
-                toUse = FlexWrap.NOWRAP;
-                break;
-            }
-        }
-        if (toUse == FlexWrap.INITIAL || toUse == FlexWrap.NOWRAP) {
+        if (flexWrap == null || flexWrap == FlexWrap.NOWRAP) {
             YGNodeStyleSetFlexWrap(node, YGWrapNoWrap);
-        } else if (toUse == FlexWrap.WRAP) {
+        } else if (flexWrap == FlexWrap.WRAP) {
             YGNodeStyleSetFlexWrap(node, YGWrapWrap);
-        } else if (toUse == FlexWrap.WRAP_REVERSE) {
+        } else if (flexWrap == FlexWrap.WRAP_REVERSE) {
             YGNodeStyleSetFlexWrap(node, YGWrapReverse);
         }
     }
 
     public static void setAlignItems(long node, AlignItems alignItems, Element component) {
-        AlignItems toUse = alignItems;
-        for (Element lp = component; toUse == AlignItems.INHERIT; lp = lp.getParent()) {
-            if (lp != null) {
-                toUse = lp.getStyle().getFlex().getAlignItems();
-            } else {
-                toUse = AlignItems.STRETCH;
-                break;
-            }
-        }
-        if (toUse == AlignItems.FLEX_END) {
+
+        if (alignItems == AlignItems.FLEX_END) {
             YGNodeStyleSetAlignItems(node, YGAlignFlexEnd);
-        } else if (toUse == AlignItems.CENTER) {
+        } else if (alignItems == AlignItems.CENTER) {
             YGNodeStyleSetAlignItems(node, YGAlignCenter);
-        } else if (toUse == AlignItems.FLEX_START) {
+        } else if (alignItems == AlignItems.FLEX_START) {
             YGNodeStyleSetAlignItems(node, YGAlignFlexStart);
-        } else if (toUse == AlignItems.STRETCH) {
+        } else if (alignItems == AlignItems.STRETCH) {
             YGNodeStyleSetAlignItems(node, YGAlignStretch);
-        } else if (toUse == AlignItems.BASELINE) {
+        } else if (alignItems == AlignItems.BASELINE) {
             YGNodeStyleSetAlignItems(node, YGAlignBaseline);
-        } else if (toUse == AlignItems.AUTO) {
+        } else if (alignItems == AlignItems.AUTO) {
             YGNodeStyleSetAlignItems(node, YGAlignAuto);
         }
     }
 
     public static void setAlignSelf(long node, AlignSelf alignItems, Element component) {
-        AlignSelf toUse = alignItems;
-        for (Element lp = component; toUse == AlignSelf.INHERIT; lp = lp.getParent()) {
-            if (lp != null) {
-                toUse = lp.getStyle().getFlex().getAlignSelf();
-            } else {
-                toUse = AlignSelf.STRETCH;
-                break;
-            }
-        }
-        if (toUse == AlignSelf.FLEX_END) {
+        if (alignItems == AlignSelf.FLEX_END) {
             YGNodeStyleSetAlignSelf(node, YGAlignFlexEnd);
-        } else if (toUse == AlignSelf.CENTER) {
+        } else if (alignItems == AlignSelf.CENTER) {
             YGNodeStyleSetAlignSelf(node, YGAlignCenter);
-        } else if (toUse == AlignSelf.FLEX_START) {
+        } else if (alignItems == AlignSelf.FLEX_START) {
             YGNodeStyleSetAlignSelf(node, YGAlignFlexStart);
-        } else if (toUse == AlignSelf.STRETCH) {
+        } else if (alignItems == AlignSelf.STRETCH) {
             YGNodeStyleSetAlignSelf(node, YGAlignStretch);
-        } else if (toUse == AlignSelf.BASELINE) {
+        } else if (alignItems == AlignSelf.BASELINE) {
             YGNodeStyleSetAlignSelf(node, YGAlignBaseline);
-        } else if (toUse == AlignSelf.AUTO) {
+        } else if (alignItems == AlignSelf.AUTO) {
             YGNodeStyleSetAlignSelf(node, YGAlignAuto);
         }
     }

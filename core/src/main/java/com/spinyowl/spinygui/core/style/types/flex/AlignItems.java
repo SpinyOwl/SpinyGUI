@@ -36,14 +36,6 @@ public final class AlignItems {
      * Items are positioned at the baseline of the container.
      */
     public static final AlignItems BASELINE = AlignItems.create("baseline");
-    /**
-     * Sets this property to its default value.
-     */
-    public static final AlignItems INITIAL = AlignItems.create("initial");
-    /**
-     * Inherits this property from its parent element..
-     */
-    public static final AlignItems INHERIT = AlignItems.create("inherit");
 
     private String name;
 

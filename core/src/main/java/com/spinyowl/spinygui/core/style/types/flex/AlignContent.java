@@ -37,15 +37,6 @@ public final class AlignContent {
      * Lines are evenly distributed in the flex container, with half-size spaces on either end.
      */
     public static final AlignContent SPACE_AROUND = AlignContent.create("space-around");
-    /**
-     * Sets this property to its default value.
-     */
-    public static final AlignContent INITIAL = AlignContent.create("initial");
-    /**
-     * Inherits this property from its parent element..
-     */
-    public static final AlignContent INHERIT = AlignContent.create("inherit");
-
 
     private String name;
 

@@ -36,15 +36,6 @@ public final class WhiteSpace {
      * Whitespace is preserved by the browser. Text will wrap when necessary, and on line breaks.
      */
     public static final WhiteSpace PRE_WRAP = WhiteSpace.create("pre-wrap");
-    /**
-     * Sets this property to its default value.
-     */
-    public static final WhiteSpace INITIAL = WhiteSpace.create("initial");
-    /**
-     * Inherits this property from its parent element.
-     */
-    public static final WhiteSpace INHERIT = WhiteSpace.create("inherit");
-
 
     /**
      * Name of white-space type (should be same as in css specification)

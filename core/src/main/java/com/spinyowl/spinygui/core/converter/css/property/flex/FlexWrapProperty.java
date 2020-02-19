@@ -1,11 +1,9 @@
 package com.spinyowl.spinygui.core.converter.css.property.flex;
 
-import static com.spinyowl.spinygui.core.converter.css.Properties.FLEX_WRAP;
-
 import com.spinyowl.spinygui.core.converter.css.Property;
 import com.spinyowl.spinygui.core.style.types.flex.FlexWrap;
-import java.util.Set;
-import java.util.stream.Collectors;
+
+import static com.spinyowl.spinygui.core.converter.css.Properties.FLEX_WRAP;
 
 public class FlexWrapProperty extends Property<FlexWrap> {
 
@@ -15,8 +13,4 @@ public class FlexWrapProperty extends Property<FlexWrap> {
             FlexWrap::find, FlexWrap::contains);
     }
 
-    @Override
-    public Set<String> allowedValues() {
-        return FlexWrap.values().stream().map(FlexWrap::getName).collect(Collectors.toSet());
-    }
 }

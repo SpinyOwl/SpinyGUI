@@ -30,16 +30,6 @@ public final class Display {
     public static final Display BLOCK = Display.create("block");
 
     /**
-     * Inherits display property from parent element.
-     */
-    public static final Display INHERIT = Display.create("inherit");
-
-    /**
-     * Used initial display property.
-     */
-    public static final Display INITIAL = Display.create("initial");
-
-    /**
      * Name of display type (should be same as in css specification)
      */
     private final String name;

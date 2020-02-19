@@ -25,15 +25,6 @@ public final class FlexWrap {
      * Specifies that the flexible items will wrap, if necessary, in reverse order.
      */
     public static final FlexWrap WRAP_REVERSE = FlexWrap.create("wrap-reverse");
-    /**
-     * Sets this property to its default value.
-     */
-    public static final FlexWrap INITIAL = FlexWrap.create("initial");
-    /**
-     * Inherits this property from its parent element..
-     */
-    public static final FlexWrap INHERIT = FlexWrap.create("inherit");
-
 
     private String name;
 
