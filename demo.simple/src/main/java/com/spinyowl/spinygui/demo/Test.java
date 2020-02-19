@@ -112,6 +112,6 @@ public class Test {
     public static void parseText() throws Exception {
         var xml = "<div>just a text</div>";
         var componentTree = NodeConverter.fromXml(xml);
-        LOGGER.info(componentTree.toString());
+        LOGGER.info("Component tree: {}", componentTree);
     }
 }

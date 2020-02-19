@@ -1,165 +1,143 @@
 package com.spinyowl.spinygui.core.style.types.border;
 
 import com.spinyowl.spinygui.core.style.types.Color;
+import com.spinyowl.spinygui.core.style.types.SideStyle;
 import com.spinyowl.spinygui.core.style.types.length.Length;
 
-public class Border {
+public class Border extends SideStyle<BorderItem> {
 
-    private final BorderItem top = new BorderItem();
-    private final BorderItem right = new BorderItem();
-    private final BorderItem bottom = new BorderItem();
-    private final BorderItem left = new BorderItem();
-
-    public BorderItem getTop() {
-        return top;
+    public Border() {
     }
 
-    public void setTop(BorderItem top) {
-        this.top.setWidth(top.getWidth());
-        this.top.setStyle(top.getStyle());
-        this.top.setColor(top.getColor());
+    public Border(BorderItem allSides) {
+        super(allSides);
     }
 
-    public BorderItem getRight() {
-        return right;
+    public Border(BorderItem sideTopBottom,
+        BorderItem sideRightLeft) {
+        super(sideTopBottom, sideRightLeft);
     }
 
-    public void setRight(BorderItem right) {
-        this.right.setWidth(right.getWidth());
-        this.right.setStyle(right.getStyle());
-        this.right.setColor(right.getColor());
+    public Border(BorderItem sideTop,
+        BorderItem sideRightLeft, BorderItem sideBottom) {
+        super(sideTop, sideRightLeft, sideBottom);
     }
 
-    public BorderItem getBottom() {
-        return bottom;
+    public Border(BorderItem sideTop,
+        BorderItem sideRight, BorderItem sideBottom,
+        BorderItem sideLeft) {
+        super(sideTop, sideRight, sideBottom, sideLeft);
     }
-
-    public void setBottom(BorderItem bottom) {
-        this.bottom.setWidth(bottom.getWidth());
-        this.bottom.setStyle(bottom.getStyle());
-        this.bottom.setColor(bottom.getColor());
-    }
-
-    public BorderItem getLeft() {
-        return left;
-    }
-
-    public void setLeft(BorderItem left) {
-        this.left.setWidth(left.getWidth());
-        this.left.setStyle(left.getStyle());
-        this.left.setColor(left.getColor());
-    }
-
 
     public void setWidth(Border border) {
-        this.top.setWidth(border.getTop().getWidth());
-        this.bottom.setWidth(border.getBottom().getWidth());
-        this.left.setWidth(border.getLeft().getWidth());
-        this.right.setWidth(border.getRight().getWidth());
+        getTop().setWidth(border.getTop().getWidth());
+        getBottom().setWidth(border.getBottom().getWidth());
+        getLeft().setWidth(border.getLeft().getWidth());
+        getRight().setWidth(border.getRight().getWidth());
     }
 
     public void setWidth(Length width) {
-        this.top.setWidth(width);
-        this.bottom.setWidth(width);
-        this.left.setWidth(width);
-        this.right.setWidth(width);
+        getTop().setWidth(width);
+        getBottom().setWidth(width);
+        getLeft().setWidth(width);
+        getRight().setWidth(width);
     }
 
     public void setWidth(Length widthTopBottom, Length widthRightLeft) {
-        this.top.setWidth(widthTopBottom);
-        this.bottom.setWidth(widthTopBottom);
-        this.left.setWidth(widthRightLeft);
-        this.right.setWidth(widthRightLeft);
+        getTop().setWidth(widthTopBottom);
+        getBottom().setWidth(widthTopBottom);
+        getLeft().setWidth(widthRightLeft);
+        getRight().setWidth(widthRightLeft);
     }
 
     public void setWidth(Length widthTop, Length widthRightLeft, Length widthBottom) {
-        this.top.setWidth(widthTop);
-        this.left.setWidth(widthRightLeft);
-        this.right.setWidth(widthRightLeft);
-        this.bottom.setWidth(widthBottom);
+        getTop().setWidth(widthTop);
+        getBottom().setWidth(widthRightLeft);
+        getLeft().setWidth(widthRightLeft);
+        getRight().setWidth(widthBottom);
     }
 
     public void setWidth(Length widthTop, Length widthRight, Length widthBottom, Length widthLeft) {
-        this.top.setWidth(widthTop);
-        this.left.setWidth(widthLeft);
-        this.bottom.setWidth(widthBottom);
-        this.right.setWidth(widthRight);
+        getTop().setWidth(widthTop);
+        getBottom().setWidth(widthLeft);
+        getLeft().setWidth(widthBottom);
+        getRight().setWidth(widthRight);
     }
 
 
     public void setColor(Border border) {
-        this.top.setColor(border.getTop().getColor());
-        this.bottom.setColor(border.getBottom().getColor());
-        this.left.setColor(border.getLeft().getColor());
-        this.right.setColor(border.getRight().getColor());
+        getTop().setColor(border.getTop().getColor());
+        getBottom().setColor(border.getBottom().getColor());
+        getLeft().setColor(border.getLeft().getColor());
+        getRight().setColor(border.getRight().getColor());
     }
 
     public void setColor(Color color) {
-        this.top.setColor(color);
-        this.bottom.setColor(color);
-        this.left.setColor(color);
-        this.right.setColor(color);
+        getTop().setColor(color);
+        getBottom().setColor(color);
+        getLeft().setColor(color);
+        getRight().setColor(color);
     }
 
     public void setColor(Color colorTopBottom, Color colorRightLeft) {
-        this.top.setColor(colorTopBottom);
-        this.bottom.setColor(colorTopBottom);
-        this.left.setColor(colorRightLeft);
-        this.right.setColor(colorRightLeft);
+        getTop().setColor(colorTopBottom);
+        getBottom().setColor(colorTopBottom);
+        getLeft().setColor(colorRightLeft);
+        getRight().setColor(colorRightLeft);
     }
 
     public void setColor(Color colorTop, Color colorRightLeft, Color colorBottom) {
-        this.top.setColor(colorTop);
-        this.left.setColor(colorRightLeft);
-        this.right.setColor(colorRightLeft);
-        this.bottom.setColor(colorBottom);
+        getTop().setColor(colorTop);
+        getBottom().setColor(colorRightLeft);
+        getLeft().setColor(colorRightLeft);
+        getRight().setColor(colorBottom);
     }
 
     public void setColor(Color colorTop, Color colorRight, Color colorBottom, Color colorLeft) {
-        this.top.setColor(colorTop);
-        this.left.setColor(colorLeft);
-        this.bottom.setColor(colorBottom);
-        this.right.setColor(colorRight);
+        getTop().setColor(colorTop);
+        getBottom().setColor(colorLeft);
+        getLeft().setColor(colorBottom);
+        getRight().setColor(colorRight);
     }
 
 
     public void setStyle(Border border) {
-        this.top.setStyle(border.getTop().getStyle());
-        this.bottom.setStyle(border.getBottom().getStyle());
-        this.left.setStyle(border.getLeft().getStyle());
-        this.right.setStyle(border.getRight().getStyle());
+        getTop().setStyle(border.getTop().getStyle());
+        getBottom().setStyle(border.getBottom().getStyle());
+        getLeft().setStyle(border.getLeft().getStyle());
+        getRight().setStyle(border.getRight().getStyle());
     }
 
 
     public void setStyle(BorderStyle style) {
-        this.top.setStyle(style);
-        this.bottom.setStyle(style);
-        this.left.setStyle(style);
-        this.right.setStyle(style);
+        getTop().setStyle(style);
+        getBottom().setStyle(style);
+        getLeft().setStyle(style);
+        getRight().setStyle(style);
 
     }
 
     public void setStyle(BorderStyle styleTopBottom, BorderStyle styleRightLeft) {
-        this.top.setStyle(styleTopBottom);
-        this.bottom.setStyle(styleTopBottom);
-        this.left.setStyle(styleRightLeft);
-        this.right.setStyle(styleRightLeft);
+        getTop().setStyle(styleTopBottom);
+        getBottom().setStyle(styleTopBottom);
+        getLeft().setStyle(styleRightLeft);
+        getRight().setStyle(styleRightLeft);
     }
 
     public void setStyle(BorderStyle styleTop, BorderStyle styleRightLeft,
         BorderStyle styleBottom) {
-        this.top.setStyle(styleTop);
-        this.left.setStyle(styleRightLeft);
-        this.right.setStyle(styleRightLeft);
-        this.bottom.setStyle(styleBottom);
+        getTop().setStyle(styleTop);
+        getBottom().setStyle(styleRightLeft);
+        getLeft().setStyle(styleRightLeft);
+        getRight().setStyle(styleBottom);
     }
 
     public void setStyle(BorderStyle styleTop, BorderStyle styleRight, BorderStyle styleBottom,
         BorderStyle styleLeft) {
-        this.top.setStyle(styleTop);
-        this.left.setStyle(styleLeft);
-        this.bottom.setStyle(styleBottom);
-        this.right.setStyle(styleRight);
+        getTop().setStyle(styleTop);
+        getBottom().setStyle(styleLeft);
+        getLeft().setStyle(styleBottom);
+        getRight().setStyle(styleRight);
     }
 
 

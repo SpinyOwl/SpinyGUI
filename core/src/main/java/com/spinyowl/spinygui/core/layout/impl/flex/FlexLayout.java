@@ -109,9 +109,9 @@ public class FlexLayout implements Layout {
         NodeStyle style = component.getStyle();
         Flex flex = style.getFlex();
         setFlexDirection(node, flex.getFlexDirection());
-        setJustifyContent(node, flex.getJustifyContent(), component);
-        setAlignItems(node, flex.getAlignItems(), component);
-        setAlignSelf(node, flex.getAlignSelf(), component);
+        setJustifyContent(node, flex.getJustifyContent());
+        setAlignItems(node, flex.getAlignItems());
+        setAlignSelf(node, flex.getAlignSelf());
 
         setLength(style.getMinWidth(), node, Yoga::YGNodeStyleSetMinWidth, Yoga::YGNodeStyleSetMinWidthPercent);
         setLength(style.getMinHeight(), node, Yoga::YGNodeStyleSetMinHeight, Yoga::YGNodeStyleSetMinHeightPercent);
@@ -133,7 +133,7 @@ public class FlexLayout implements Layout {
         setPadding(node, style);
         setMargin(node, style);
 
-        setFlexWrap(node, flex.getFlexWrap(), component);
+        setFlexWrap(node, flex.getFlexWrap());
         YGNodeStyleSetPositionType(node, style.getPosition() == Position.RELATIVE ? YGPositionTypeRelative : YGPositionTypeAbsolute);
 
         YGNodeStyleSetFlexGrow(node, flex.getFlexGrow());

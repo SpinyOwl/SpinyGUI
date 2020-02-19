@@ -1,21 +1,50 @@
 package com.spinyowl.spinygui.core.layout.impl.flex;
 
-import com.spinyowl.spinygui.core.node.base.Element;
+import static com.spinyowl.spinygui.core.style.types.length.Length.LType.PERCENT;
+import static com.spinyowl.spinygui.core.style.types.length.Length.LType.PIXEL;
+import static org.lwjgl.util.yoga.Yoga.YGAlignAuto;
+import static org.lwjgl.util.yoga.Yoga.YGAlignBaseline;
+import static org.lwjgl.util.yoga.Yoga.YGAlignCenter;
+import static org.lwjgl.util.yoga.Yoga.YGAlignFlexEnd;
+import static org.lwjgl.util.yoga.Yoga.YGAlignFlexStart;
+import static org.lwjgl.util.yoga.Yoga.YGAlignStretch;
+import static org.lwjgl.util.yoga.Yoga.YGEdgeBottom;
+import static org.lwjgl.util.yoga.Yoga.YGEdgeLeft;
+import static org.lwjgl.util.yoga.Yoga.YGEdgeRight;
+import static org.lwjgl.util.yoga.Yoga.YGEdgeTop;
+import static org.lwjgl.util.yoga.Yoga.YGFlexDirectionColumn;
+import static org.lwjgl.util.yoga.Yoga.YGFlexDirectionColumnReverse;
+import static org.lwjgl.util.yoga.Yoga.YGFlexDirectionRow;
+import static org.lwjgl.util.yoga.Yoga.YGFlexDirectionRowReverse;
+import static org.lwjgl.util.yoga.Yoga.YGJustifyCenter;
+import static org.lwjgl.util.yoga.Yoga.YGJustifyFlexEnd;
+import static org.lwjgl.util.yoga.Yoga.YGJustifyFlexStart;
+import static org.lwjgl.util.yoga.Yoga.YGJustifySpaceAround;
+import static org.lwjgl.util.yoga.Yoga.YGJustifySpaceBetween;
+import static org.lwjgl.util.yoga.Yoga.YGJustifySpaceEvenly;
+import static org.lwjgl.util.yoga.Yoga.YGNodeStyleSetAlignItems;
+import static org.lwjgl.util.yoga.Yoga.YGNodeStyleSetAlignSelf;
+import static org.lwjgl.util.yoga.Yoga.YGNodeStyleSetFlexDirection;
+import static org.lwjgl.util.yoga.Yoga.YGNodeStyleSetFlexWrap;
+import static org.lwjgl.util.yoga.Yoga.YGNodeStyleSetJustifyContent;
+import static org.lwjgl.util.yoga.Yoga.YGWrapNoWrap;
+import static org.lwjgl.util.yoga.Yoga.YGWrapReverse;
+import static org.lwjgl.util.yoga.Yoga.YGWrapWrap;
+
 import com.spinyowl.spinygui.core.style.NodeStyle;
 import com.spinyowl.spinygui.core.style.types.Margin;
 import com.spinyowl.spinygui.core.style.types.Padding;
-import com.spinyowl.spinygui.core.style.types.flex.*;
+import com.spinyowl.spinygui.core.style.types.flex.AlignItems;
+import com.spinyowl.spinygui.core.style.types.flex.AlignSelf;
+import com.spinyowl.spinygui.core.style.types.flex.FlexDirection;
+import com.spinyowl.spinygui.core.style.types.flex.FlexWrap;
+import com.spinyowl.spinygui.core.style.types.flex.JustifyContent;
 import com.spinyowl.spinygui.core.style.types.length.Length;
 import com.spinyowl.spinygui.core.style.types.length.Unit;
-import org.lwjgl.util.yoga.Yoga;
-
 import java.util.function.BiConsumer;
 import java.util.function.LongConsumer;
 import java.util.function.ObjIntConsumer;
-
-import static com.spinyowl.spinygui.core.style.types.length.Length.LType.PERCENT;
-import static com.spinyowl.spinygui.core.style.types.length.Length.LType.PIXEL;
-import static org.lwjgl.util.yoga.Yoga.*;
+import org.lwjgl.util.yoga.Yoga;
 
 /**
  * @author Aliaksandr_Shcherbin.
@@ -25,7 +54,7 @@ final class FlexUtils {
     private FlexUtils() {
     }
 
-    public static void setJustifyContent(long node, JustifyContent justifyContent, Element element) {
+    public static void setJustifyContent(long node, JustifyContent justifyContent) {
         if (justifyContent == null || justifyContent == JustifyContent.FLEX_START) {
             YGNodeStyleSetJustifyContent(node, YGJustifyFlexStart);
         } else if (justifyContent == JustifyContent.CENTER) {
@@ -53,7 +82,7 @@ final class FlexUtils {
         }
     }
 
-    public static void setFlexWrap(long node, FlexWrap flexWrap, Element element) {
+    public static void setFlexWrap(long node, FlexWrap flexWrap) {
         if (flexWrap == null || flexWrap == FlexWrap.NOWRAP) {
             YGNodeStyleSetFlexWrap(node, YGWrapNoWrap);
         } else if (flexWrap == FlexWrap.WRAP) {
@@ -63,7 +92,7 @@ final class FlexUtils {
         }
     }
 
-    public static void setAlignItems(long node, AlignItems alignItems, Element component) {
+    public static void setAlignItems(long node, AlignItems alignItems) {
 
         if (alignItems == AlignItems.FLEX_END) {
             YGNodeStyleSetAlignItems(node, YGAlignFlexEnd);
@@ -80,7 +109,7 @@ final class FlexUtils {
         }
     }
 
-    public static void setAlignSelf(long node, AlignSelf alignItems, Element component) {
+    public static void setAlignSelf(long node, AlignSelf alignItems) {
         if (alignItems == AlignSelf.FLEX_END) {
             YGNodeStyleSetAlignSelf(node, YGAlignFlexEnd);
         } else if (alignItems == AlignSelf.CENTER) {
