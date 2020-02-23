@@ -7,6 +7,7 @@ import com.spinyowl.spinygui.core.style.types.length.Length;
 public class Border extends SideStyle<BorderItem> {
 
     public Border() {
+        super(new BorderItem());
     }
 
     public Border(BorderItem allSides) {

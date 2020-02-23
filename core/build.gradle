@@ -18,7 +18,4 @@ dependencies {
     api group: 'org.lwjgl', name: 'lwjgl-yoga', version: lwjgl_version, classifier: 'natives-windows'
     api group: 'org.lwjgl', name: 'lwjgl-yoga', version: lwjgl_version, classifier: 'natives-linux'
     api group: 'org.lwjgl', name: 'lwjgl-yoga', version: lwjgl_version, classifier: 'natives-macos'
-
-    implementation group: 'org.javatuples', name: 'javatuples', version: '1.2'
-
 }

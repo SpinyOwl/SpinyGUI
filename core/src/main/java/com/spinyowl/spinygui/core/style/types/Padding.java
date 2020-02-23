@@ -5,6 +5,7 @@ import com.spinyowl.spinygui.core.style.types.length.Length;
 public class Padding extends SideStyle<Length> {
 
     public Padding() {
+        super(Length.ZERO);
     }
 
     public Padding(Length allSides) {

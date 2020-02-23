@@ -5,6 +5,7 @@ import com.spinyowl.spinygui.core.style.types.length.Unit;
 public class Margin extends SideStyle<Unit> {
 
     public Margin() {
+        super(Unit.AUTO);
     }
 
     public Margin(Unit allSides) {

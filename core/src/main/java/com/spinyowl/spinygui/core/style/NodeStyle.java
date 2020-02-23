@@ -12,187 +12,74 @@ import com.spinyowl.spinygui.core.style.types.border.Border;
 import com.spinyowl.spinygui.core.style.types.flex.Flex;
 import com.spinyowl.spinygui.core.style.types.length.Length;
 import com.spinyowl.spinygui.core.style.types.length.Unit;
-import java.util.Objects;
+import java.util.LinkedHashSet;
+import java.util.Set;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.NonNull;
 
+@Data
+@NoArgsConstructor
 public class NodeStyle {
 
-    private final Flex flex = new Flex();
-    private final Background background = new Background();
+    @NonNull
+    private Flex flex = new Flex();
+
+    @NonNull
+    private Background background = new Background();
+
+    @NonNull
     private Border border = new Border();
+
+    @NonNull
     private BorderRadius borderRadius = new BorderRadius();
+
+    @NonNull
     private Padding padding = new Padding();
+
+    @NonNull
     private Margin margin = new Margin();
+
+    @NonNull
     private Display display = Display.BLOCK;
+
+    @NonNull
     private Position position = Position.RELATIVE;
+
+    @NonNull
     private Color color;
 
+    @NonNull
     private Unit width;
+    @NonNull
     private Unit height;
 
+    @NonNull
     private Length minWidth;
+    @NonNull
     private Length minHeight;
 
+    @NonNull
     private Length maxWidth;
+    @NonNull
     private Length maxHeight;
 
+    @NonNull
     private Length top;
+    @NonNull
     private Length bottom;
+    @NonNull
     private Length right;
+    @NonNull
     private Length left;
 
+    @NonNull
     private WhiteSpace whiteSpace = WhiteSpace.NORMAL;
 
-    public Padding getPadding() {
-        return padding;
-    }
+    @NonNull
+    private Set<String> fontFamilies = new LinkedHashSet<>();
 
-    public void setPadding(Padding padding) {
-        this.padding = Objects.requireNonNull(padding);
-    }
+    @NonNull
+    private Length fontSize;
 
-    public BorderRadius getBorderRadius() {
-        return borderRadius;
-    }
-
-    public void setBorderRadius(BorderRadius borderRadius) {
-        this.borderRadius = Objects.requireNonNull(borderRadius);
-    }
-
-    public Unit getWidth() {
-        return width;
-    }
-
-    public void setWidth(Unit width) {
-        this.width = width;
-    }
-
-    public Unit getHeight() {
-        return height;
-    }
-
-    public void setHeight(Unit height) {
-        this.height = height;
-    }
-
-    public Length getMinWidth() {
-        return minWidth;
-    }
-
-    public void setMinWidth(Length minWidth) {
-        this.minWidth = minWidth;
-    }
-
-    public Length getMinHeight() {
-        return minHeight;
-    }
-
-    public void setMinHeight(Length minHeight) {
-        this.minHeight = minHeight;
-    }
-
-    public Length getMaxWidth() {
-        return maxWidth;
-    }
-
-    public void setMaxWidth(Length maxWidth) {
-        this.maxWidth = maxWidth;
-    }
-
-    public Length getMaxHeight() {
-        return maxHeight;
-    }
-
-    public void setMaxHeight(Length maxHeight) {
-        this.maxHeight = maxHeight;
-    }
-
-    public Display getDisplay() {
-        return display;
-    }
-
-    public void setDisplay(Display display) {
-        this.display = display;
-    }
-
-    public Position getPosition() {
-        return position;
-    }
-
-    public void setPosition(Position position) {
-        this.position = position;
-    }
-
-    public Border getBorder() {
-        return border;
-    }
-
-    public void setBorder(Border border) {
-        this.border = Objects.requireNonNull(border);
-    }
-
-    public Length getTop() {
-        return top;
-    }
-
-    public void setTop(Length top) {
-        this.top = top;
-    }
-
-    public Length getBottom() {
-        return bottom;
-    }
-
-    public void setBottom(Length bottom) {
-        this.bottom = bottom;
-    }
-
-    public Length getRight() {
-        return right;
-    }
-
-    public void setRight(Length right) {
-        this.right = right;
-    }
-
-    public Length getLeft() {
-        return left;
-    }
-
-    public void setLeft(Length left) {
-        this.left = left;
-    }
-
-    public Background getBackground() {
-        return background;
-    }
-
-    public WhiteSpace getWhiteSpace() {
-        return whiteSpace;
-    }
-
-    public void setWhiteSpace(WhiteSpace whiteSpace) {
-        this.whiteSpace = whiteSpace;
-    }
-
-    public Color getColor() {
-        return color;
-    }
-
-    public void setColor(Color color) {
-        if (color != null) {
-            this.color = color;
-        }
-    }
-
-    public Margin getMargin() {
-        return margin;
-    }
-
-    public void setMargin(Margin margin) {
-        this.margin = Objects.requireNonNull(margin);
-    }
-
-    public Flex getFlex() {
-        return flex;
-    }
 }

@@ -1,13 +1,16 @@
 package com.spinyowl.spinygui.core.style.types.length;
 
-import java.util.Objects;
-import java.util.StringJoiner;
-
 import static com.spinyowl.spinygui.core.style.types.length.Length.LType.PERCENT;
 import static com.spinyowl.spinygui.core.style.types.length.Length.LType.PIXEL;
 
-public class Length<T> implements Unit {
-    private final T        value;
+import java.util.Objects;
+import java.util.StringJoiner;
+
+public class Length<T extends Number> implements Unit {
+
+    public static final Length<Integer> ZERO = Length.pixel(0);
+
+    private final T value;
     private final LType<T> type;
 
     public Length(T value, LType<T> type) {
@@ -41,18 +44,26 @@ public class Length<T> implements Unit {
                 .toString();
     }
 
+
     /**
      * Converts length to pixels.
      *
      * @param <T> type of length value.
      */
-    public interface Converter<T> {
+    public interface Converter<T extends Number> {
+
         float convert(Length<T> original, float baseLength);
+
     }
 
-    public static final class LType<T> {
-        public static final LType<Integer> PIXEL   = new LType<>("PIXEL", Integer.class, (l, n) -> l.value);
-        public static final LType<Float>   PERCENT = new LType<>("PERCENT", Float.class, (l, n) -> l.value * n);
+    public static final class LType<T extends Number> {
+
+        public static final LType<Integer> PIXEL =
+            new LType<>("PIXEL", Integer.class, (l, n) -> l.value);
+
+        public static final LType<Float> PERCENT =
+            new LType<>("PERCENT", Float.class, (l, n) -> l.value * n);
+
 
         private final String name;
         private final Class<T> type;

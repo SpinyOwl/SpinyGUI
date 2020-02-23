@@ -3,6 +3,7 @@ open module com.spinyowl.spinygui.core {
     requires transitive jdom2;
     requires transitive java.xml;
     requires transitive org.joml;
+    requires static lombok;
 
     requires org.lwjgl;
     requires org.lwjgl.natives;

@@ -1,68 +1,42 @@
 package com.spinyowl.spinygui.core.style.types;
 
-import java.util.Objects;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.NonNull;
 
+@Data
+@NoArgsConstructor
 public abstract class SideStyle<T> {
 
+    @NonNull
     private T top;
+    @NonNull
     private T bottom;
+    @NonNull
     private T right;
+    @NonNull
     private T left;
 
-    public SideStyle() {
+    public SideStyle(@NonNull T allSides) {
+        this.top = this.bottom = this.left = this.right = allSides;
     }
 
-    public SideStyle(T allSides) {
-        this.top = this.bottom = this.left = this.right = Objects.requireNonNull(allSides);
+    public SideStyle(@NonNull T sideTopBottom, @NonNull T sideRightLeft) {
+        this.top = this.bottom = sideTopBottom;
+        this.left = this.right = sideRightLeft;
     }
 
-    public SideStyle(T sideTopBottom, T sideRightLeft) {
-        this.top = this.bottom = Objects.requireNonNull(sideTopBottom);
-        this.left = this.right = Objects.requireNonNull(sideRightLeft);
+    public SideStyle(@NonNull T sideTop, @NonNull T sideRightLeft, @NonNull T sideBottom) {
+        this.top = sideTop;
+        this.left = this.right = sideRightLeft;
+        this.bottom = sideBottom;
     }
 
-    public SideStyle(T sideTop, T sideRightLeft, T sideBottom) {
-        this.top = Objects.requireNonNull(sideTop);
-        this.left = this.right = Objects.requireNonNull(sideRightLeft);
-        this.bottom = Objects.requireNonNull(sideBottom);
-    }
-
-    public SideStyle(T sideTop, T sideRight, T sideBottom, T sideLeft) {
-        this.top = Objects.requireNonNull(sideTop);
-        this.left = Objects.requireNonNull(sideLeft);
-        this.bottom = Objects.requireNonNull(sideBottom);
-        this.right = Objects.requireNonNull(sideRight);
-    }
-
-    public T getTop() {
-        return top;
-    }
-
-    public void setTop(T top) {
-        this.top = Objects.requireNonNull(top);
-    }
-
-    public T getBottom() {
-        return bottom;
-    }
-
-    public void setBottom(T bottom) {
-        this.bottom = Objects.requireNonNull(bottom);
-    }
-
-    public T getRight() {
-        return right;
-    }
-
-    public void setRight(T right) {
-        this.right = Objects.requireNonNull(right);
-    }
-
-    public T getLeft() {
-        return left;
-    }
-
-    public void setLeft(T left) {
-        this.left = Objects.requireNonNull(left);
+    public SideStyle(@NonNull T sideTop, @NonNull T sideRight, @NonNull T sideBottom,
+        @NonNull T sideLeft) {
+        this.top = sideTop;
+        this.left = sideLeft;
+        this.bottom = sideBottom;
+        this.right = sideRight;
     }
 }

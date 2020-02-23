@@ -64,11 +64,11 @@ public class BorderProperty extends Property<Border> {
                 i.setStyle(BorderStyle.find(values[0]));
                 i.setColor(colorValueExtractor.extract(values[1]));
             } else if (BorderStyle.contains(values[1])) {
-                i.setWidth(lengthValueExtractor.extract(values[0]));
+                i.setWidth(BorderWidthProperty.extractOne(values[0]));
                 i.setStyle(BorderStyle.find(values[1]));
             }
         } else if (values.length == 3) {
-            i.setWidth(lengthValueExtractor.extract(values[0]));
+            i.setWidth(BorderWidthProperty.extractOne(values[0]));
             i.setStyle(BorderStyle.find(values[1]));
             i.setColor(colorValueExtractor.extract(values[2]));
         }
