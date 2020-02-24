@@ -1,4 +1,4 @@
-name: PUSH_BUILD
+name: build
 on:
   push:
     branches:
