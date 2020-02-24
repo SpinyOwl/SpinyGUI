@@ -2,7 +2,7 @@
 ![CODE SIZE](https://img.shields.io/github/languages/code-size/SpinyOwl/SpinyGUI.svg) 
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=SpinyOwl_SpinyGUI&metric=alert_status)](https://sonarcloud.io/dashboard?id=SpinyOwl_SpinyGUI)
 ![License](https://img.shields.io/github/license/SpinyOwl/SpinyGUI.svg)  
-![PUSH_BUILD](https://github.com/SpinyOwl/SpinyGUI/workflows/PUSH_BUILD/badge.svg)
+![build](https://github.com/SpinyOwl/SpinyGUI/workflows/build/badge.svg)
 
 ---
 # SpinyGUI (WIP)
