@@ -25,7 +25,7 @@ public class Font {
     private final FontStyle style;
 
     @NonNull
-    private final FontWidth width;
+    private final FontStretch width;
 
     @NonNull
     private final FontWeight weight;
@@ -34,11 +34,11 @@ public class Font {
     private final String path;
 
     public Font(String name, String path) {
-        this(name, FontStyle.NORMAL, FontWidth.NORMAL, FontWeight.NORMAL, path);
+        this(name, FontStyle.NORMAL, FontStretch.NORMAL, FontWeight.NORMAL, path);
     }
 
     public Font(String name, FontStyle style, String path) {
-        this(name, style, FontWidth.NORMAL, FontWeight.NORMAL, path);
+        this(name, style, FontStretch.NORMAL, FontWeight.NORMAL, path);
     }
 
     public static void addFont(Font font) {
@@ -110,7 +110,7 @@ public class Font {
      * @return obtained font.
      */
     public static List<Font> getFonts(
-        String name, FontStyle style, FontWeight weight, FontWidth width
+        String name, FontStyle style, FontWeight weight, FontStretch width
     ) {
         Stream<FontKey> stream = fonts.keySet().stream();
         if (name != null) {
@@ -139,7 +139,7 @@ public class Font {
         private final FontStyle style;
 
         @NonNull
-        private final FontWidth width;
+        private final FontStretch width;
 
         @NonNull
         private final FontWeight weight;

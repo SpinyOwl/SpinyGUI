@@ -1,16 +1,21 @@
 package com.spinyowl.spinygui.core.converter.css;
 
-import com.spinyowl.spinygui.core.node.base.Element;
 import com.spinyowl.spinygui.core.converter.css.selector.StyleSelector;
+import com.spinyowl.spinygui.core.node.base.Element;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
-import java.util.*;
-
+@Getter
+@RequiredArgsConstructor
 public class StyleSheet {
-    private List<RuleSet> ruleSets;
 
-    public StyleSheet(List<RuleSet> ruleSets) {
-        this.ruleSets = ruleSets;
-    }
+    private final List<RuleSet> ruleSets;
+    private final List<AtRule> atRules;
 
     /**
      * Used to search elements in node tree that are correspond to specified rule set.
@@ -71,7 +76,4 @@ public class StyleSheet {
                 .forEach(c -> inspectElementTree(c, selector, elements));
     }
 
-    public List<RuleSet> getRuleSets() {
-        return ruleSets;
-    }
 }

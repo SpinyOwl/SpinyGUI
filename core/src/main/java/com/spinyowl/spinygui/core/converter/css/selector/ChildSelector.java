@@ -1,25 +1,21 @@
 package com.spinyowl.spinygui.core.converter.css.selector;
 
 import com.spinyowl.spinygui.core.node.base.Element;
+import lombok.Data;
 
-import java.util.Objects;
-
+@Data
 public class ChildSelector implements StyleSelector {
-    private StyleSelector first;
-    private StyleSelector second;
 
-    public ChildSelector(StyleSelector first, StyleSelector second) {
-        this.first = first;
-        this.second = second;
-    }
+    private final StyleSelector first;
+    private final StyleSelector second;
 
     @Override
-    public boolean test(Element t) {
-        boolean componentTest = second.test(t);
+    public boolean test(Element element) {
+        boolean componentTest = second.test(element);
         if (!componentTest) {
             return false;
         }
-        Element parent = t.getParent();
+        Element parent = element.getParent();
         while (parent != null) {
             if (first.test(parent)) {
                 return true;
@@ -27,23 +23,5 @@ public class ChildSelector implements StyleSelector {
             parent = parent.getParent();
         }
         return false;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        ChildSelector that = (ChildSelector) o;
-        return Objects.equals(first, that.first) &&
-                Objects.equals(second, that.second);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(first, second);
     }
 }

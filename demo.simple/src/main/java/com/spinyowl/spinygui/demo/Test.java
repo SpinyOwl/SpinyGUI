@@ -37,15 +37,20 @@ public class Test {
 
     public static void createFromCSS() throws StyleSheetException {
         StyleReflectionHandler.getPseudoSelector(":hover");
-        String css = "div > button .test" +
-            "{" +
-                "   background-color: #ffff80;" +
-                "   color: red;" +
-                "   width: 50%;" +
-                "   top: 50%;" +
-                "   top: 50px;" +
-                "   top: 50.2%;" +
-                "}";
+        String css = "@font-face {\n"
+            + "    font-family: My Font Family;\n"
+            + "    src: local(\"some-font.ttf\");\n"
+            + "}\n"
+            + "\n"
+            + "div > button .test\n"
+            + "{\n"
+            + "   background-color: #ffff80;\n"
+            + "   color: red;\n"
+            + "   width: 50%;\n"
+            + "   left: 50%;\n"
+            + "   top: 50px;\n"
+            + "   right: 50.2%;\n"
+            + "}";
 
         var stylesheet = StyleSheetConverter.createFromCSS(css);
 

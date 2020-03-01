@@ -3,7 +3,7 @@ package com.spinyowl.spinygui.core.converter.css;
 import com.spinyowl.spinygui.core.converter.css.selector.StyleSelector;
 import java.util.List;
 
-public class RuleSet implements Statement {
+public class RuleSet {
 
     private List<StyleSelector> selectors;
     private List<Declaration> declarations;

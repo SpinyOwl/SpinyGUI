@@ -1,5 +1,6 @@
 package com.spinyowl.spinygui.core.style;
 
+import com.spinyowl.spinygui.core.font.FontStretch;
 import com.spinyowl.spinygui.core.font.FontStyle;
 import com.spinyowl.spinygui.core.font.FontWeight;
 import com.spinyowl.spinygui.core.style.types.Background;
@@ -86,5 +87,7 @@ public class NodeStyle {
     private FontStyle fontStyle;
     @NonNull
     private FontWeight fontWeight;
+    @NonNull
+    private FontStretch fontStretch;
 
 }
