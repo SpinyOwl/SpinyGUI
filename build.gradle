@@ -26,8 +26,8 @@ subprojects {
 
     buildDir = new File(rootProject.projectDir, "build/" + project.name)
 
-    sourceCompatibility = 1.12
-    targetCompatibility = 1.12
+    sourceCompatibility = 1.11
+    targetCompatibility = 1.11
 
     repositories {
         mavenCentral()

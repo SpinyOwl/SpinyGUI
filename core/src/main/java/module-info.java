@@ -11,8 +11,7 @@ open module com.spinyowl.spinygui.core {
     requires org.lwjgl.yoga;
     requires org.lwjgl.yoga.natives;
 
-    requires guava.base.r03;
-    requires guava.collections.r03;
+    requires com.google.common;
     requires io.github.classgraph;
     requires org.antlr.antlr4.runtime;
 
@@ -45,6 +44,7 @@ open module com.spinyowl.spinygui.core {
 
     exports com.spinyowl.spinygui.core.converter.css;
     exports com.spinyowl.spinygui.core.converter.css.extractor;
+    exports com.spinyowl.spinygui.core.converter.css.extractor.impl;
     exports com.spinyowl.spinygui.core.converter.css.property;
     exports com.spinyowl.spinygui.core.converter.css.property.border;
     exports com.spinyowl.spinygui.core.converter.css.property.border.radius;

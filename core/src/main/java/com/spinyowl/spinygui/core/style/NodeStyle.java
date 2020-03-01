@@ -1,5 +1,7 @@
 package com.spinyowl.spinygui.core.style;
 
+import com.spinyowl.spinygui.core.font.FontStyle;
+import com.spinyowl.spinygui.core.font.FontWeight;
 import com.spinyowl.spinygui.core.style.types.Background;
 import com.spinyowl.spinygui.core.style.types.BorderRadius;
 import com.spinyowl.spinygui.core.style.types.Color;
@@ -78,8 +80,11 @@ public class NodeStyle {
 
     @NonNull
     private Set<String> fontFamilies = new LinkedHashSet<>();
-
     @NonNull
     private Length fontSize;
+    @NonNull
+    private FontStyle fontStyle;
+    @NonNull
+    private FontWeight fontWeight;
 
 }

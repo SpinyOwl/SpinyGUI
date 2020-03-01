@@ -1,4 +1,4 @@
-package com.spinyowl.spinygui.core.converter.css;
+package com.spinyowl.spinygui.core.converter.css.extractor;
 
 public interface ValueExtractor<T> {
 

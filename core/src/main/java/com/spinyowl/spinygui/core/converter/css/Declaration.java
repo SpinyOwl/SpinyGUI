@@ -5,7 +5,7 @@ import static com.spinyowl.spinygui.core.converter.css.Property.INITIAL;
 
 import java.util.Objects;
 
-public class Rule<T> {
+public class Declaration<T> {
     /**
      * Current value of css property. Could not be null.
      */
@@ -13,7 +13,7 @@ public class Rule<T> {
 
     private Property<T> property;
 
-    public Rule(Property<T> property, String value) {
+    public Declaration(Property<T> property, String value) {
         this.property = Objects.requireNonNull(property);
         this.value = Objects.requireNonNull(value);
     }

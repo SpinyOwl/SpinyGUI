@@ -1,9 +1,9 @@
-package com.spinyowl.spinygui.core.converter.css;
+package com.spinyowl.spinygui.core.converter.css.extractor;
 
-import com.spinyowl.spinygui.core.converter.css.extractor.ColorValueExtractor;
-import com.spinyowl.spinygui.core.converter.css.extractor.IntegerExtractor;
-import com.spinyowl.spinygui.core.converter.css.extractor.LengthValueExtractor;
-import com.spinyowl.spinygui.core.converter.css.extractor.UnitValueExtractor;
+import com.spinyowl.spinygui.core.converter.css.extractor.impl.ColorValueExtractor;
+import com.spinyowl.spinygui.core.converter.css.extractor.impl.IntegerExtractor;
+import com.spinyowl.spinygui.core.converter.css.extractor.impl.LengthValueExtractor;
+import com.spinyowl.spinygui.core.converter.css.extractor.impl.UnitValueExtractor;
 import com.spinyowl.spinygui.core.style.types.Color;
 import com.spinyowl.spinygui.core.style.types.length.Length;
 import com.spinyowl.spinygui.core.style.types.length.Unit;

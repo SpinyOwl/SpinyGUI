@@ -16,7 +16,6 @@ import com.spinyowl.spinygui.core.node.base.Element;
 import com.spinyowl.spinygui.core.node.base.Node;
 import com.spinyowl.spinygui.core.node.element.Button;
 import com.spinyowl.spinygui.core.node.element.Label;
-import com.spinyowl.spinygui.core.style.NodeStyle;
 import com.spinyowl.spinygui.core.style.manager.StyleManagerProvider;
 import com.spinyowl.spinygui.core.style.types.Color;
 import java.util.List;

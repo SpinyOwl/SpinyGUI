@@ -1,8 +1,8 @@
 package com.spinyowl.spinygui.core.node.base;
-import com.google.common.base.Objects;
 import com.spinyowl.spinygui.core.util.Reference;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.stream.Collectors;
 
@@ -80,7 +80,7 @@ public abstract class Container extends Element {
             return false;
         }
         Container container = (Container) o;
-        return Objects.equal(childNodes, container.childNodes);
+        return Objects.equals(childNodes, container.childNodes);
     }
 
     @Override

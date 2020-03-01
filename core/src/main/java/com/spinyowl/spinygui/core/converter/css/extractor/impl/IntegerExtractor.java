@@ -1,6 +1,6 @@
-package com.spinyowl.spinygui.core.converter.css.extractor;
+package com.spinyowl.spinygui.core.converter.css.extractor.impl;
 
-import com.spinyowl.spinygui.core.converter.css.ValueExtractor;
+import com.spinyowl.spinygui.core.converter.css.extractor.ValueExtractor;
 
 public class IntegerExtractor implements ValueExtractor<Integer> {
     @Override

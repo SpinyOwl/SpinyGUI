@@ -1,7 +1,6 @@
 package com.spinyowl.spinygui.core.node.base;
 
-import com.google.common.base.Objects;
-
+import java.util.Objects;
 import java.util.StringJoiner;
 
 public final class Text extends Node {
@@ -42,7 +41,7 @@ public final class Text extends Node {
             return false;
         }
         Text that = (Text) o;
-        return Objects.equal(content, that.content);
+        return Objects.equals(content, that.content);
     }
 
     @Override

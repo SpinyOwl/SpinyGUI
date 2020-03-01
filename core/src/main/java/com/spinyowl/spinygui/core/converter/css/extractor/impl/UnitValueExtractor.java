@@ -1,6 +1,6 @@
-package com.spinyowl.spinygui.core.converter.css.extractor;
+package com.spinyowl.spinygui.core.converter.css.extractor.impl;
 
-import com.spinyowl.spinygui.core.converter.css.ValueExtractor;
+import com.spinyowl.spinygui.core.converter.css.extractor.ValueExtractor;
 import com.spinyowl.spinygui.core.style.types.length.Length;
 import com.spinyowl.spinygui.core.style.types.length.Unit;
 
