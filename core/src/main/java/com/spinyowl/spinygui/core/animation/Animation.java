@@ -2,7 +2,7 @@ package com.spinyowl.spinygui.core.animation;
 
 /**
  * Draft animation realization.
- *
+ * <p>
  * Created by ShchAlexander on 31.07.2017.
  *
  * @author ShchAlexander
@@ -32,8 +32,9 @@ public abstract class Animation {
     }
 
     /**
-     * This method used to update animated object. Called by animator every frame. Removed from animator and stops when this method returns true. <p> Returns
-     * true if animation is finished and could be removed from animator.
+     * This method used to update animated object. Called by animator every frame. Removed from
+     * animator and stops when this method returns true. <p> Returns true if animation is finished
+     * and could be removed from animator.
      *
      * @param delta delta time (from previous call).
      * @return true if animation is finished and could be removed from animator.

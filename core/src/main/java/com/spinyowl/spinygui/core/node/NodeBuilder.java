@@ -1,14 +1,18 @@
-package com.spinyowl.spinygui.core;
+package com.spinyowl.spinygui.core.node;
 
 import com.spinyowl.spinygui.core.node.base.Element;
 import com.spinyowl.spinygui.core.node.base.Node;
 import com.spinyowl.spinygui.core.node.base.Text;
-import com.spinyowl.spinygui.core.node.element.*;
-
+import com.spinyowl.spinygui.core.node.element.Button;
+import com.spinyowl.spinygui.core.node.element.Div;
+import com.spinyowl.spinygui.core.node.element.Input;
+import com.spinyowl.spinygui.core.node.element.Label;
+import com.spinyowl.spinygui.core.node.element.RadioButton;
 import java.util.Collections;
 import java.util.Map;
 
 public final class NodeBuilder {
+
     private NodeBuilder() {
     }
 
@@ -25,7 +29,8 @@ public final class NodeBuilder {
     public static Button button(Map<String, String> attributes, Node... nodes) {
         return addAttributes(button(Collections.emptyMap(), nodes), attributes);
     }
-public static Text text(String text) {
+
+    public static Text text(String text) {
         return new Text(text);
     }
 

@@ -6,6 +6,7 @@ import java.util.Objects;
  * Singleton for storing StyleManager.
  */
 public final class StyleManagerProvider {
+
     private StyleManagerProvider() {
     }
 
@@ -28,6 +29,7 @@ public final class StyleManagerProvider {
      * Instance holder.
      */
     private static class StyleManagerHolder {
+
         private static StyleManager instance = new DefaultStyleManger();
     }
 }

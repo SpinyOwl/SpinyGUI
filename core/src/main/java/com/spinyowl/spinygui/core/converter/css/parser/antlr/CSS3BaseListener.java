@@ -6,11 +6,11 @@ import org.antlr.v4.runtime.tree.ErrorNode;
 import org.antlr.v4.runtime.tree.TerminalNode;
 
 /**
- * This class provides an empty implementation of {@link CSS3Listener},
- * which can be extended to create a listener which only needs to handle a subset
- * of the available methods.
+ * This class provides an empty implementation of {@link CSS3Listener}, which can be extended to
+ * create a listener which only needs to handle a subset of the available methods.
  */
 public class CSS3BaseListener implements CSS3Listener {
+
     /**
      * {@inheritDoc}
      *
@@ -1205,7 +1205,8 @@ public class CSS3BaseListener implements CSS3Listener {
      * <p>The default implementation does nothing.</p>
      */
     @Override
-    public void enterSupportsDeclarationCondition(CSS3Parser.SupportsDeclarationConditionContext ctx) {
+    public void enterSupportsDeclarationCondition(
+        CSS3Parser.SupportsDeclarationConditionContext ctx) {
     }
 
     /**
@@ -1214,7 +1215,8 @@ public class CSS3BaseListener implements CSS3Listener {
      * <p>The default implementation does nothing.</p>
      */
     @Override
-    public void exitSupportsDeclarationCondition(CSS3Parser.SupportsDeclarationConditionContext ctx) {
+    public void exitSupportsDeclarationCondition(
+        CSS3Parser.SupportsDeclarationConditionContext ctx) {
     }
 
     /**

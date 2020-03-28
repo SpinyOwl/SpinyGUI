@@ -1,12 +1,10 @@
 package com.spinyowl.spinygui.core.window.service;
 
 import com.spinyowl.spinygui.core.window.Monitor;
-
 import java.util.List;
 
 /**
- * Monitor service allows to work with monitors.
- * Mostly used by {@link Monitor} class.
+ * Monitor service allows to work with monitors. Mostly used by {@link Monitor} class.
  */
 public interface MonitorService {
 

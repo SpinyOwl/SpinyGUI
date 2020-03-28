@@ -4,13 +4,14 @@ package com.spinyowl.spinygui.core.converter.css.parser.antlr;
 import org.antlr.v4.runtime.tree.ParseTreeVisitor;
 
 /**
- * This interface defines a complete generic visitor for a parse tree produced
- * by {@link CSS3Parser}.
+ * This interface defines a complete generic visitor for a parse tree produced by {@link
+ * CSS3Parser}.
  *
- * @param <T> The return type of the visit operation. Use {@link Void} for
- *            operations with no return type.
+ * @param <T> The return type of the visit operation. Use {@link Void} for operations with no return
+ *            type.
  */
 public interface CSS3Visitor<T> extends ParseTreeVisitor<T> {
+
     /**
      * Visit a parse tree produced by {@link CSS3Parser#stylesheet}.
      *
@@ -20,8 +21,8 @@ public interface CSS3Visitor<T> extends ParseTreeVisitor<T> {
     T visitStylesheet(CSS3Parser.StylesheetContext ctx);
 
     /**
-     * Visit a parse tree produced by the {@code goodCharset}
-     * labeled alternative in {@link CSS3Parser#charset}.
+     * Visit a parse tree produced by the {@code goodCharset} labeled alternative in {@link
+     * CSS3Parser#charset}.
      *
      * @param ctx the parse tree
      * @return the visitor result
@@ -29,8 +30,8 @@ public interface CSS3Visitor<T> extends ParseTreeVisitor<T> {
     T visitGoodCharset(CSS3Parser.GoodCharsetContext ctx);
 
     /**
-     * Visit a parse tree produced by the {@code badCharset}
-     * labeled alternative in {@link CSS3Parser#charset}.
+     * Visit a parse tree produced by the {@code badCharset} labeled alternative in {@link
+     * CSS3Parser#charset}.
      *
      * @param ctx the parse tree
      * @return the visitor result
@@ -38,8 +39,8 @@ public interface CSS3Visitor<T> extends ParseTreeVisitor<T> {
     T visitBadCharset(CSS3Parser.BadCharsetContext ctx);
 
     /**
-     * Visit a parse tree produced by the {@code goodImport}
-     * labeled alternative in {@link CSS3Parser#imports}.
+     * Visit a parse tree produced by the {@code goodImport} labeled alternative in {@link
+     * CSS3Parser#imports}.
      *
      * @param ctx the parse tree
      * @return the visitor result
@@ -47,8 +48,8 @@ public interface CSS3Visitor<T> extends ParseTreeVisitor<T> {
     T visitGoodImport(CSS3Parser.GoodImportContext ctx);
 
     /**
-     * Visit a parse tree produced by the {@code badImport}
-     * labeled alternative in {@link CSS3Parser#imports}.
+     * Visit a parse tree produced by the {@code badImport} labeled alternative in {@link
+     * CSS3Parser#imports}.
      *
      * @param ctx the parse tree
      * @return the visitor result
@@ -56,8 +57,8 @@ public interface CSS3Visitor<T> extends ParseTreeVisitor<T> {
     T visitBadImport(CSS3Parser.BadImportContext ctx);
 
     /**
-     * Visit a parse tree produced by the {@code goodNamespace}
-     * labeled alternative in {@link CSS3Parser#namespace}.
+     * Visit a parse tree produced by the {@code goodNamespace} labeled alternative in {@link
+     * CSS3Parser#namespace}.
      *
      * @param ctx the parse tree
      * @return the visitor result
@@ -65,8 +66,8 @@ public interface CSS3Visitor<T> extends ParseTreeVisitor<T> {
     T visitGoodNamespace(CSS3Parser.GoodNamespaceContext ctx);
 
     /**
-     * Visit a parse tree produced by the {@code badNamespace}
-     * labeled alternative in {@link CSS3Parser#namespace}.
+     * Visit a parse tree produced by the {@code badNamespace} labeled alternative in {@link
+     * CSS3Parser#namespace}.
      *
      * @param ctx the parse tree
      * @return the visitor result
@@ -266,8 +267,8 @@ public interface CSS3Visitor<T> extends ParseTreeVisitor<T> {
     T visitNegationArg(CSS3Parser.NegationArgContext ctx);
 
     /**
-     * Visit a parse tree produced by the {@code goodOperator}
-     * labeled alternative in {@link CSS3Parser#operator}.
+     * Visit a parse tree produced by the {@code goodOperator} labeled alternative in {@link
+     * CSS3Parser#operator}.
      *
      * @param ctx the parse tree
      * @return the visitor result
@@ -275,8 +276,8 @@ public interface CSS3Visitor<T> extends ParseTreeVisitor<T> {
     T visitGoodOperator(CSS3Parser.GoodOperatorContext ctx);
 
     /**
-     * Visit a parse tree produced by the {@code badOperator}
-     * labeled alternative in {@link CSS3Parser#operator}.
+     * Visit a parse tree produced by the {@code badOperator} labeled alternative in {@link
+     * CSS3Parser#operator}.
      *
      * @param ctx the parse tree
      * @return the visitor result
@@ -284,8 +285,8 @@ public interface CSS3Visitor<T> extends ParseTreeVisitor<T> {
     T visitBadOperator(CSS3Parser.BadOperatorContext ctx);
 
     /**
-     * Visit a parse tree produced by the {@code goodProperty}
-     * labeled alternative in {@link CSS3Parser#property}.
+     * Visit a parse tree produced by the {@code goodProperty} labeled alternative in {@link
+     * CSS3Parser#property}.
      *
      * @param ctx the parse tree
      * @return the visitor result
@@ -293,8 +294,8 @@ public interface CSS3Visitor<T> extends ParseTreeVisitor<T> {
     T visitGoodProperty(CSS3Parser.GoodPropertyContext ctx);
 
     /**
-     * Visit a parse tree produced by the {@code badProperty}
-     * labeled alternative in {@link CSS3Parser#property}.
+     * Visit a parse tree produced by the {@code badProperty} labeled alternative in {@link
+     * CSS3Parser#property}.
      *
      * @param ctx the parse tree
      * @return the visitor result
@@ -302,8 +303,8 @@ public interface CSS3Visitor<T> extends ParseTreeVisitor<T> {
     T visitBadProperty(CSS3Parser.BadPropertyContext ctx);
 
     /**
-     * Visit a parse tree produced by the {@code knownRuleset}
-     * labeled alternative in {@link CSS3Parser#ruleset}.
+     * Visit a parse tree produced by the {@code knownRuleset} labeled alternative in {@link
+     * CSS3Parser#ruleset}.
      *
      * @param ctx the parse tree
      * @return the visitor result
@@ -311,8 +312,8 @@ public interface CSS3Visitor<T> extends ParseTreeVisitor<T> {
     T visitKnownRuleset(CSS3Parser.KnownRulesetContext ctx);
 
     /**
-     * Visit a parse tree produced by the {@code unknownRuleset}
-     * labeled alternative in {@link CSS3Parser#ruleset}.
+     * Visit a parse tree produced by the {@code unknownRuleset} labeled alternative in {@link
+     * CSS3Parser#ruleset}.
      *
      * @param ctx the parse tree
      * @return the visitor result
@@ -328,8 +329,8 @@ public interface CSS3Visitor<T> extends ParseTreeVisitor<T> {
     T visitDeclarationList(CSS3Parser.DeclarationListContext ctx);
 
     /**
-     * Visit a parse tree produced by the {@code knownDeclaration}
-     * labeled alternative in {@link CSS3Parser#declaration}.
+     * Visit a parse tree produced by the {@code knownDeclaration} labeled alternative in {@link
+     * CSS3Parser#declaration}.
      *
      * @param ctx the parse tree
      * @return the visitor result
@@ -337,8 +338,8 @@ public interface CSS3Visitor<T> extends ParseTreeVisitor<T> {
     T visitKnownDeclaration(CSS3Parser.KnownDeclarationContext ctx);
 
     /**
-     * Visit a parse tree produced by the {@code unknownDeclaration}
-     * labeled alternative in {@link CSS3Parser#declaration}.
+     * Visit a parse tree produced by the {@code unknownDeclaration} labeled alternative in {@link
+     * CSS3Parser#declaration}.
      *
      * @param ctx the parse tree
      * @return the visitor result
@@ -370,8 +371,8 @@ public interface CSS3Visitor<T> extends ParseTreeVisitor<T> {
     T visitExpr(CSS3Parser.ExprContext ctx);
 
     /**
-     * Visit a parse tree produced by the {@code knownTerm}
-     * labeled alternative in {@link CSS3Parser#term}.
+     * Visit a parse tree produced by the {@code knownTerm} labeled alternative in {@link
+     * CSS3Parser#term}.
      *
      * @param ctx the parse tree
      * @return the visitor result
@@ -379,8 +380,8 @@ public interface CSS3Visitor<T> extends ParseTreeVisitor<T> {
     T visitKnownTerm(CSS3Parser.KnownTermContext ctx);
 
     /**
-     * Visit a parse tree produced by the {@code unknownTerm}
-     * labeled alternative in {@link CSS3Parser#term}.
+     * Visit a parse tree produced by the {@code unknownTerm} labeled alternative in {@link
+     * CSS3Parser#term}.
      *
      * @param ctx the parse tree
      * @return the visitor result
@@ -388,8 +389,8 @@ public interface CSS3Visitor<T> extends ParseTreeVisitor<T> {
     T visitUnknownTerm(CSS3Parser.UnknownTermContext ctx);
 
     /**
-     * Visit a parse tree produced by the {@code badTerm}
-     * labeled alternative in {@link CSS3Parser#term}.
+     * Visit a parse tree produced by the {@code badTerm} labeled alternative in {@link
+     * CSS3Parser#term}.
      *
      * @param ctx the parse tree
      * @return the visitor result
@@ -461,8 +462,8 @@ public interface CSS3Visitor<T> extends ParseTreeVisitor<T> {
     T visitAny(CSS3Parser.AnyContext ctx);
 
     /**
-     * Visit a parse tree produced by the {@code unknownAtRule}
-     * labeled alternative in {@link CSS3Parser#atRule}.
+     * Visit a parse tree produced by the {@code unknownAtRule} labeled alternative in {@link
+     * CSS3Parser#atRule}.
      *
      * @param ctx the parse tree
      * @return the visitor result
@@ -622,8 +623,8 @@ public interface CSS3Visitor<T> extends ParseTreeVisitor<T> {
     T visitFontFaceRule(CSS3Parser.FontFaceRuleContext ctx);
 
     /**
-     * Visit a parse tree produced by the {@code knownFontFaceDeclaration}
-     * labeled alternative in {@link CSS3Parser#fontFaceDeclaration}.
+     * Visit a parse tree produced by the {@code knownFontFaceDeclaration} labeled alternative in
+     * {@link CSS3Parser#fontFaceDeclaration}.
      *
      * @param ctx the parse tree
      * @return the visitor result
@@ -631,8 +632,8 @@ public interface CSS3Visitor<T> extends ParseTreeVisitor<T> {
     T visitKnownFontFaceDeclaration(CSS3Parser.KnownFontFaceDeclarationContext ctx);
 
     /**
-     * Visit a parse tree produced by the {@code unknownFontFaceDeclaration}
-     * labeled alternative in {@link CSS3Parser#fontFaceDeclaration}.
+     * Visit a parse tree produced by the {@code unknownFontFaceDeclaration} labeled alternative in
+     * {@link CSS3Parser#fontFaceDeclaration}.
      *
      * @param ctx the parse tree
      * @return the visitor result

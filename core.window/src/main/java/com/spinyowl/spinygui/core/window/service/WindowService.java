@@ -2,14 +2,13 @@ package com.spinyowl.spinygui.core.window.service;
 
 import com.spinyowl.spinygui.core.window.Monitor;
 import com.spinyowl.spinygui.core.window.Window;
+import java.util.List;
 import org.joml.Vector2d;
 import org.joml.Vector2i;
 
-import java.util.List;
-
 /**
- * Window service allows to work with window and it's internal state.
- * Mostly used by {@link Window} class.
+ * Window service allows to work with window and it's internal state. Mostly used by {@link Window}
+ * class.
  */
 public interface WindowService {
 

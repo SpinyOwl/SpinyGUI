@@ -3,14 +3,14 @@ package com.spinyowl.spinygui.core.util;
 import com.spinyowl.spinygui.core.api.Frame;
 import com.spinyowl.spinygui.core.api.Layer;
 import com.spinyowl.spinygui.core.node.base.Node;
-import org.joml.Vector2f;
-import org.joml.Vector2fc;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import org.joml.Vector2f;
+import org.joml.Vector2fc;
 
 public final class NodeUtilities {
+
     private NodeUtilities() {
     }
 
@@ -43,9 +43,9 @@ public final class NodeUtilities {
             // check top parent
 
             if (cPos.x() > component.getParent().getSize().x() ||
-                    cPos.x() + cSize.x() < 0 ||
-                    cPos.y() > component.getParent().getSize().y() ||
-                    cPos.y() + cSize.y() < 0
+                cPos.x() + cSize.x() < 0 ||
+                cPos.y() > component.getParent().getSize().y() ||
+                cPos.y() + cSize.y() < 0
             ) {
                 return false;
             }

@@ -1,6 +1,7 @@
 package com.spinyowl.spinygui.core.converter.css.property.background;
 
-import com.spinyowl.spinygui.core.converter.css.Properties;
+import static com.spinyowl.spinygui.core.converter.css.Properties.BACKGROUND_COLOR;
+
 import com.spinyowl.spinygui.core.converter.css.Property;
 import com.spinyowl.spinygui.core.converter.css.extractor.ValueExtractor;
 import com.spinyowl.spinygui.core.converter.css.extractor.ValueExtractors;
@@ -11,7 +12,7 @@ public class BackgroundColorProperty extends Property<Color> {
     public static final ValueExtractor<Color> colorExtractor = ValueExtractors.of(Color.class);
 
     public BackgroundColorProperty() {
-        super(Properties.BACKGROUND_COLOR, "transparent", !INHERITED, ANIMATABLE,
+        super(BACKGROUND_COLOR, "transparent", !INHERITED, ANIMATABLE,
             (s, c) -> s.getBackground().setColor(c),
             s -> s.getBackground().getColor(),
             colorExtractor::extract,

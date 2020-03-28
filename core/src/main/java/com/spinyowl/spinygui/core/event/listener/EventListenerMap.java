@@ -1,7 +1,6 @@
 package com.spinyowl.spinygui.core.event.listener;
 
 import com.spinyowl.spinygui.core.event.Event;
-
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -10,8 +9,10 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 public class EventListenerMap {
+
     /**
-     * Map of listeners attached that should be attached for node and processed if any event performed.
+     * Map of listeners attached that should be attached for node and processed if any event
+     * performed.
      */
     private Map<Class<? extends Event>, List<? extends EventListener>> listenerMap = new ConcurrentHashMap<>();
 
@@ -19,7 +20,8 @@ public class EventListenerMap {
         getOrCreate(eventClass).add(listener);
     }
 
-    public <T extends Event> void removeEventListener(Class<T> eventClass, EventListener<T> listener) {
+    public <T extends Event> void removeEventListener(Class<T> eventClass,
+        EventListener<T> listener) {
         getOrCreate(eventClass).remove(listener);
     }
 
@@ -35,7 +37,8 @@ public class EventListenerMap {
     }
 
     private <T extends Event> List<EventListener<T>> getOrCreate(Class<T> eventClass) {
-        return (List<EventListener<T>>) listenerMap.computeIfAbsent(eventClass, aClass -> new CopyOnWriteArrayList<>());
+        return (List<EventListener<T>>) listenerMap
+            .computeIfAbsent(eventClass, aClass -> new CopyOnWriteArrayList<>());
     }
 
     /**

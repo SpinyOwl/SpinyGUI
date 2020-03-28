@@ -1,6 +1,7 @@
 package com.spinyowl.spinygui.core.converter.css.property;
 
-import com.spinyowl.spinygui.core.converter.css.Properties;
+import static com.spinyowl.spinygui.core.converter.css.Properties.POSITION;
+
 import com.spinyowl.spinygui.core.converter.css.Property;
 import com.spinyowl.spinygui.core.style.NodeStyle;
 import com.spinyowl.spinygui.core.style.types.Position;
@@ -8,7 +9,7 @@ import com.spinyowl.spinygui.core.style.types.Position;
 public class PositionProperty extends Property<Position> {
 
     public PositionProperty() {
-        super(Properties.POSITION, Position.RELATIVE.getName(), INHERITED, ANIMATABLE,
+        super(POSITION, Position.RELATIVE.getName(), INHERITED, ANIMATABLE,
             NodeStyle::setPosition, NodeStyle::getPosition, Position::find, Position::contains);
     }
 

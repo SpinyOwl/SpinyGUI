@@ -5,6 +5,7 @@ import com.spinyowl.spinygui.core.converter.dom.TagNameMapping;
 import com.spinyowl.spinygui.core.node.base.Element;
 import com.spinyowl.spinygui.core.node.base.Node;
 import com.spinyowl.spinygui.core.node.base.Text;
+import java.io.StringReader;
 import org.jdom2.Content;
 import org.jdom2.Document;
 import org.jdom2.input.SAXBuilder;
@@ -13,13 +14,12 @@ import org.jdom2.output.XMLOutputter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.StringReader;
-
 /**
- * Node marshaller. Used to convert node to xml and vise versa.
- * Uses {@link TagNameMapping} to find out tag name or if there is no mapping - uses class canonical name
+ * Node marshaller. Used to convert node to xml and vise versa. Uses {@link TagNameMapping} to find
+ * out tag name or if there is no mapping - uses class canonical name
  */
 public final class NodeConverter {
+
     private static final Logger LOGGER = LoggerFactory.getLogger(NodeConverter.class);
 
     private NodeConverter() {
@@ -56,7 +56,9 @@ public final class NodeConverter {
         } else if (node instanceof Element) {
             return createElement((Element) node);
         } else {
-            LOGGER.warn("Attempt to marshal {} class which is not Text or Element child -> skipping.", node.getClass().getName());
+            LOGGER
+                .warn("Attempt to marshal {} class which is not Text or Element child -> skipping.",
+                    node.getClass().getName());
             return null;
         }
     }
@@ -91,7 +93,8 @@ public final class NodeConverter {
         if (xml == null || xml.isEmpty()) {
             return null;
         }
-        return createNodeFromContent(new SAXBuilder().build(new StringReader(xml)).getRootElement());
+        return createNodeFromContent(
+            new SAXBuilder().build(new StringReader(xml)).getRootElement());
     }
 
     private static Node createNodeFromContent(Content content) throws Exception {
@@ -104,8 +107,9 @@ public final class NodeConverter {
         } else if (content instanceof org.jdom2.Element) {
             return createNodeFromElement((org.jdom2.Element) content);
         } else {
-            LOGGER.warn("Can't find node mapping and class for content type '{}', content value '{}'.",
-                    content.getCType(), content.getValue());
+            LOGGER.warn(
+                "Can't find node mapping and class for content type '{}', content value '{}'.",
+                content.getCType(), content.getValue());
             return null;
         }
     }

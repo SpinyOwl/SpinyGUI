@@ -11,15 +11,15 @@ jobs:
     name: Build SpinyGUI
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2.0.0
-    - name: Setup Java Action
-      uses: actions/setup-java@v1.0.0
-      with:
-        version: 12
-    - name: Build with Gradle
-      env:
-        GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
-        sonarLogin: ${{secrets.SONAR_TOKEN}}
-        JAVA_OPTS: -Xmx3072m -XX:MaxPermSize=512m -XX:ReservedCodeCacheSize=128m
-        GRADLE_OPTS: -Xmx3800m -XX:ReservedCodeCacheSize=128m -Dorg.gradle.daemon=false
-      run: ./gradlew clean build test sonarqube
+      - uses: actions/checkout@v2.0.0
+      - name: Setup Java Action
+        uses: actions/setup-java@v1.0.0
+        with:
+          version: 12
+      - name: Build with Gradle
+        env:
+          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+          sonarLogin: ${{secrets.SONAR_TOKEN}}
+          JAVA_OPTS: -Xmx3072m -XX:MaxPermSize=512m -XX:ReservedCodeCacheSize=128m
+          GRADLE_OPTS: -Xmx3800m -XX:ReservedCodeCacheSize=128m -Dorg.gradle.daemon=false
+        run: ./gradlew clean build test sonarqube

@@ -1,9 +1,9 @@
 package com.spinyowl.spinygui.core.converter.css.property.flex;
 
+import static com.spinyowl.spinygui.core.converter.css.Properties.JUSTIFY_CONTENT;
+
 import com.spinyowl.spinygui.core.converter.css.Property;
 import com.spinyowl.spinygui.core.style.types.flex.JustifyContent;
-
-import static com.spinyowl.spinygui.core.converter.css.Properties.JUSTIFY_CONTENT;
 
 public class JustifyContentProperty extends Property<JustifyContent> {
 

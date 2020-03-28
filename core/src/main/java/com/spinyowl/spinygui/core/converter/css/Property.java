@@ -3,18 +3,19 @@ package com.spinyowl.spinygui.core.converter.css;
 import com.spinyowl.spinygui.core.converter.css.util.StyleUtils;
 import com.spinyowl.spinygui.core.node.base.Element;
 import com.spinyowl.spinygui.core.style.NodeStyle;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.util.Objects;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Root class that describes property. Should be used to create new classes which implement {@link
  * Property#computeAndApply(Element, String)} and {@link Property#isValid(String)}.
  */
+@Slf4j
 public abstract class Property<T> {
 
     public static final boolean ANIMATABLE = true;
@@ -112,14 +113,7 @@ public abstract class Property<T> {
         this.valueExtractor = Objects.requireNonNull(valueExtractor);
         this.valueValidator = Objects.requireNonNull(valueValidator);
 
-        T computedValue = valueExtractor.apply(defaultValue);
-
-        // For now we skipping throwing exception on parsing default property value
-        // TODO: make something with null values in properties
-//        if (computedValue == null) {
-//            throw new IllegalStateException("Failed to calculated default style.");
-//        }
-        this.defaultComputedValue = computedValue;
+        this.defaultComputedValue = valueExtractor.apply(defaultValue);
     }
 
     /**

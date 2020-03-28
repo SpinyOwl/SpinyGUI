@@ -1,12 +1,11 @@
 package com.spinyowl.spinygui.core.converter.css.selector;
 
 import com.spinyowl.spinygui.core.node.base.Element;
-
 import java.util.Objects;
 
 /**
- * Style selector interface.<br>
- * Style selectors are patterns used to select the elements you want to style.
+ * Style selector interface.<br> Style selectors are patterns used to select the elements you want
+ * to style.
  */
 public interface StyleSelector {
 
@@ -35,8 +34,9 @@ public interface StyleSelector {
     }
 
     /**
-     * Creates new selector that returns true if node could be selected with selector 'first > second'.
-     *
+     * Creates new selector that returns true if node could be selected with selector 'first >
+     * second'.
+     * <p>
      * In general first selector should return true for node's parent, and second for node itself.
      *
      * @param first  first selector.
@@ -49,9 +49,11 @@ public interface StyleSelector {
     }
 
     /**
-     * Creates new selector that returns true if node could be selected with selector 'first second'.
-     *
-     * In general first selector should return true for any node's ancestor, and second for node itself.
+     * Creates new selector that returns true if node could be selected with selector 'first
+     * second'.
+     * <p>
+     * In general first selector should return true for any node's ancestor, and second for node
+     * itself.
      *
      * @param first  first selector.
      * @param second second selector.
@@ -63,10 +65,12 @@ public interface StyleSelector {
     }
 
     /**
-     * Creates new selector that returns true if node could be selected with selector 'first + second'.
-     *
-     *
-     * In general first selector should return true for node that placed immediately before tested node, and second for node itself.
+     * Creates new selector that returns true if node could be selected with selector 'first +
+     * second'.
+     * <p>
+     * <p>
+     * In general first selector should return true for node that placed immediately before tested
+     * node, and second for node itself.
      *
      * @param first  first selector.
      * @param second second selector.
@@ -78,10 +82,12 @@ public interface StyleSelector {
     }
 
     /**
-     * Creates new selector that returns true if node could be selected with selector 'first ~ second'.
-     *
-     *
-     * In general first selector should return true for node that placed before tested node, and second for node itself.
+     * Creates new selector that returns true if node could be selected with selector 'first ~
+     * second'.
+     * <p>
+     * <p>
+     * In general first selector should return true for node that placed before tested node, and
+     * second for node itself.
      *
      * @param first  first selector.
      * @param second second selector.

@@ -3,7 +3,6 @@ package com.spinyowl.spinygui.core.converter.css.parser;
 import com.spinyowl.spinygui.core.converter.css.parser.annotations.PseudoSelector;
 import io.github.classgraph.ClassGraph;
 import io.github.classgraph.ClassInfo;
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -14,11 +13,12 @@ public final class StyleReflectionHandler {
     static {
 
         var scanResult = new ClassGraph()
-                .enableAllInfo()
-                /*.whitelistModules("com.spinyowl.spinygui.core")*/
-                .scan();
+            .enableAllInfo()
+            /*.whitelistModules("com.spinyowl.spinygui.core")*/
+            .scan();
 
-        for (ClassInfo classInfo : scanResult.getClassesWithAnnotation(PseudoSelector.class.getName())) {
+        for (ClassInfo classInfo : scanResult
+            .getClassesWithAnnotation(PseudoSelector.class.getName())) {
             Class<?> clazz = classInfo.loadClass();
             var name = clazz.getAnnotation(PseudoSelector.class).value();
             if (name.isEmpty()) {

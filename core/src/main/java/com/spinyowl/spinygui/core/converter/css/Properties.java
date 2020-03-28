@@ -1,29 +1,18 @@
 package com.spinyowl.spinygui.core.converter.css;
 
-import com.spinyowl.spinygui.core.converter.css.property.ColorProperty;
-import com.spinyowl.spinygui.core.converter.css.property.DisplayProperty;
-import com.spinyowl.spinygui.core.converter.css.property.PositionProperty;
-import com.spinyowl.spinygui.core.converter.css.property.WhiteSpaceProperty;
-import com.spinyowl.spinygui.core.converter.css.property.background.BackgroundColorProperty;
-import com.spinyowl.spinygui.core.converter.css.property.border.*;
-import com.spinyowl.spinygui.core.converter.css.property.border.color.*;
-import com.spinyowl.spinygui.core.converter.css.property.border.radius.*;
-import com.spinyowl.spinygui.core.converter.css.property.border.style.*;
-import com.spinyowl.spinygui.core.converter.css.property.border.width.*;
-import com.spinyowl.spinygui.core.converter.css.property.dimension.*;
-import com.spinyowl.spinygui.core.converter.css.property.flex.*;
-import com.spinyowl.spinygui.core.converter.css.property.margin.*;
-import com.spinyowl.spinygui.core.converter.css.property.padding.*;
-import com.spinyowl.spinygui.core.converter.css.property.position.BottomProperty;
-import com.spinyowl.spinygui.core.converter.css.property.position.LeftProperty;
-import com.spinyowl.spinygui.core.converter.css.property.position.RightProperty;
-import com.spinyowl.spinygui.core.converter.css.property.position.TopProperty;
-
+import com.spinyowl.spinygui.core.converter.annotation.Priority;
+import io.github.classgraph.ClassGraph;
+import io.github.classgraph.ClassInfo;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public final class Properties {
 
     public static final String COLOR = "color";
@@ -117,82 +106,47 @@ public final class Properties {
 
     private static Map<String, Property> propertyMap = new ConcurrentHashMap<>();
 
-    private Properties() {}
-
     static {
-        addSupportedProperty(COLOR, new ColorProperty());
-        addSupportedProperty(BACKGROUND_COLOR, new BackgroundColorProperty());
 
-        addSupportedProperty(PADDING, new PaddingProperty());
-        addSupportedProperty(PADDING_TOP, new PaddingTopProperty());
-        addSupportedProperty(PADDING_RIGHT, new PaddingRightProperty());
-        addSupportedProperty(PADDING_BOTTOM, new PaddingBottomProperty());
-        addSupportedProperty(PADDING_LEFT, new PaddingLeftProperty());
+        var scanResult = new ClassGraph()
+            .whitelistPackages("com.spinyowl.spinygui")
+            .enableAllInfo()
+            .scan();
 
-        addSupportedProperty(MARGIN, new MarginProperty());
-        addSupportedProperty(MARGIN_TOP, new MarginTopProperty());
-        addSupportedProperty(MARGIN_RIGHT, new MarginRightProperty());
-        addSupportedProperty(MARGIN_BOTTOM, new MarginBottomProperty());
-        addSupportedProperty(MARGIN_LEFT, new MarginLeftProperty());
+        var propertiesToAdd = new HashMap<String, List<CssPropertyTuple>>();
 
-        addSupportedProperty(WIDTH, new WidthProperty());
-        addSupportedProperty(HEIGHT, new HeightProperty());
+        for (ClassInfo classInfo : scanResult.getSubclasses(Property.class.getName())) {
+            Class<Property> clazz = (Class<Property>) classInfo.loadClass();
+            Priority annotation = clazz.getAnnotation(Priority.class);
+            int priority = 0;
+            if (annotation != null) {
+                priority = annotation.value();
+            }
+            Property property = null;
+            try {
+                property = clazz.getConstructor().newInstance();
 
-        addSupportedProperty(MIN_WIDTH, new MinWidthProperty());
-        addSupportedProperty(MIN_HEIGHT, new MinHeightProperty());
+            } catch (Exception e) {
+                log.error(
+                    "Can't initialize property handler {}. Public default constructor should be declared.",
+                    clazz.getName());
+            }
+            if (property != null) {
+                List<CssPropertyTuple> values = propertiesToAdd
+                    .computeIfAbsent(property.getName(), p -> new ArrayList<>());
+                values.add(tuple(property, priority));
+            }
+        }
 
-        addSupportedProperty(MAX_WIDTH, new MaxWidthProperty());
-        addSupportedProperty(MAX_HEIGHT, new MaxHeightProperty());
+        for (var entry : propertiesToAdd.entrySet()) {
+            List<CssPropertyTuple> value = entry.getValue();
+            value.sort(Comparator.comparingInt(o -> o.priority));
+            addSupportedProperty(entry.getKey(), value.get(0).property);
+        }
 
-        addSupportedProperty(TOP, new TopProperty());
-        addSupportedProperty(RIGHT, new RightProperty());
-        addSupportedProperty(BOTTOM, new BottomProperty());
-        addSupportedProperty(LEFT, new LeftProperty());
+    }
 
-        addSupportedProperty(DISPLAY, new DisplayProperty());
-        addSupportedProperty(POSITION, new PositionProperty());
-
-        addSupportedProperty(WHITE_SPACE, new WhiteSpaceProperty());
-
-        addSupportedProperty(BORDER_WIDTH, new BorderWidthProperty());
-        addSupportedProperty(BORDER_LEFT_WIDTH, new BorderLeftWidthProperty());
-        addSupportedProperty(BORDER_TOP_WIDTH, new BorderTopWidthProperty());
-        addSupportedProperty(BORDER_BOTTOM_WIDTH, new BorderBottomWidthProperty());
-        addSupportedProperty(BORDER_RIGHT_WIDTH, new BorderRightWidthProperty());
-
-        addSupportedProperty(BORDER_COLOR, new BorderColorProperty());
-        addSupportedProperty(BORDER_LEFT_COLOR, new BorderLeftColorProperty());
-        addSupportedProperty(BORDER_TOP_COLOR, new BorderTopColorProperty());
-        addSupportedProperty(BORDER_BOTTOM_COLOR, new BorderBottomColorProperty());
-        addSupportedProperty(BORDER_RIGHT_COLOR, new BorderRightColorProperty());
-
-        addSupportedProperty(BORDER_STYLE, new BorderStyleProperty());
-        addSupportedProperty(BORDER_LEFT_STYLE, new BorderLeftStyleProperty());
-        addSupportedProperty(BORDER_TOP_STYLE, new BorderTopStyleProperty());
-        addSupportedProperty(BORDER_BOTTOM_STYLE, new BorderBottomStyleProperty());
-        addSupportedProperty(BORDER_RIGHT_STYLE, new BorderRightStyleProperty());
-
-        addSupportedProperty(BORDER, new BorderProperty());
-        addSupportedProperty(BORDER_LEFT, new BorderLeftProperty());
-        addSupportedProperty(BORDER_RIGHT, new BorderRightProperty());
-        addSupportedProperty(BORDER_TOP, new BorderTopProperty());
-        addSupportedProperty(BORDER_BOTTOM, new BorderBottomProperty());
-
-        addSupportedProperty(BORDER_RADIUS, new BorderRadiusProperty());
-        addSupportedProperty(BORDER_BOTTOM_LEFT_RADIUS, new BorderBottomLeftRadiusProperty());
-        addSupportedProperty(BORDER_BOTTOM_RIGHT_RADIUS, new BorderBottomRightRadiusProperty());
-        addSupportedProperty(BORDER_TOP_LEFT_RADIUS, new BorderTopLeftRadiusProperty());
-        addSupportedProperty(BORDER_TOP_RIGHT_RADIUS, new BorderTopRightRadiusProperty());
-
-        addSupportedProperty(ALIGN_CONTENT, new AlignContentProperty());
-        addSupportedProperty(ALIGN_ITEMS, new AlignItemsProperty());
-        addSupportedProperty(ALIGN_SELF, new AlignSelfProperty());
-        addSupportedProperty(FLEX_BASIS, new FlexBasisProperty());
-        addSupportedProperty(FLEX_GROW, new FlexGrowProperty());
-        addSupportedProperty(FLEX_DIRECTION, new FlexDirectionProperty());
-        addSupportedProperty(FLEX_SHRINK, new FlexShrinkProperty());
-        addSupportedProperty(FLEX_WRAP, new FlexWrapProperty());
-        addSupportedProperty(JUSTIFY_CONTENT, new JustifyContentProperty());
+    private Properties() {
     }
 
     public static Property getProperty(String propertyName) {
@@ -214,6 +168,12 @@ public final class Properties {
             throw new IllegalArgumentException("Name should be the same as the property name.");
         }
 
+        if (log.isWarnEnabled() && propertyMap.containsKey(name)) {
+            log.warn(
+                "There is already exist property handler for {} : {}. Would be replaced by {}.",
+                name, propertyMap.get(name).getClass().getName(), property.getClass().getName());
+        }
+
         propertyMap.put(name, property);
     }
 
@@ -231,4 +191,16 @@ public final class Properties {
         return List.copyOf(propertyMap.keySet());
     }
 
+    private static CssPropertyTuple tuple(Property p, int priority) {
+        CssPropertyTuple cssPropertyTuple = new CssPropertyTuple();
+        cssPropertyTuple.priority = priority;
+        cssPropertyTuple.property = p;
+        return cssPropertyTuple;
+    }
+
+    private static class CssPropertyTuple {
+
+        private Property property;
+        private int priority;
+    }
 }

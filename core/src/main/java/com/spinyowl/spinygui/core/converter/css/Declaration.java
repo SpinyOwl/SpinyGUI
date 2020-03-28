@@ -6,6 +6,7 @@ import static com.spinyowl.spinygui.core.converter.css.Property.INITIAL;
 import java.util.Objects;
 
 public class Declaration<T> {
+
     /**
      * Current value of css property. Could not be null.
      */

@@ -3,13 +3,12 @@ package com.spinyowl.spinygui.core.api;
 import com.spinyowl.spinygui.core.event.WindowCloseEvent;
 import com.spinyowl.spinygui.core.event.listener.EventListener;
 import com.spinyowl.spinygui.core.node.base.Container;
-
 import java.util.List;
 import java.util.Objects;
 
 /**
- * Layer class is root container for all nodes in layer.
- * Contains root node of layer - layer container, list of stylesheets which should be used to calculate node styles
+ * Layer class is root container for all nodes in layer. Contains root node of layer - layer
+ * container, list of stylesheets which should be used to calculate node styles
  */
 public class Layer extends Container {
 
@@ -19,7 +18,8 @@ public class Layer extends Container {
     private Frame frame;
 
     /**
-     * Determines if  current layer allow to pass events to bottom layer if event wasn't handled by components of this layer.
+     * Determines if  current layer allow to pass events to bottom layer if event wasn't handled by
+     * components of this layer.
      */
     private boolean eventPassable = true;
 
@@ -120,8 +120,8 @@ public class Layer extends Container {
         }
         Layer layer = (Layer) o;
         return eventPassable == layer.eventPassable &&
-                eventReceivable == layer.eventReceivable &&
-                Objects.equals(frame, layer.frame);
+            eventReceivable == layer.eventReceivable &&
+            Objects.equals(frame, layer.frame);
     }
 
     @Override

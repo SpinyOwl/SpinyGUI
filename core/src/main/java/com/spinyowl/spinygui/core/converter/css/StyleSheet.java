@@ -63,7 +63,8 @@ public class StyleSheet {
      * @param selector    selector that used to search nodes.
      * @param elements    element set to store result.
      */
-    private static void inspectElementTree(Element elementTree, StyleSelector selector, HashSet<Element> elements) {
+    private static void inspectElementTree(Element elementTree, StyleSelector selector,
+        HashSet<Element> elements) {
         Objects.requireNonNull(elementTree);
         Objects.requireNonNull(selector);
 
@@ -72,8 +73,8 @@ public class StyleSheet {
         }
 
         elementTree.getChildNodes().stream()
-                .filter(n -> n instanceof Element).map(n -> (Element) n)
-                .forEach(c -> inspectElementTree(c, selector, elements));
+            .filter(n -> n instanceof Element).map(n -> (Element) n)
+            .forEach(c -> inspectElementTree(c, selector, elements));
     }
 
 }

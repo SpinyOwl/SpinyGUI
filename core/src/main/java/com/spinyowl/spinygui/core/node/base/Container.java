@@ -1,6 +1,6 @@
 package com.spinyowl.spinygui.core.node.base;
-import com.spinyowl.spinygui.core.util.Reference;
 
+import com.spinyowl.spinygui.core.util.Reference;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -45,9 +45,8 @@ public abstract class Container extends Element {
     }
 
     /**
-     * Returns the number of elements in this node.  If this node contains
-     * more than {@code Integer.MAX_VALUE} elements, returns
-     * {@code Integer.MAX_VALUE}.
+     * Returns the number of elements in this node.  If this node contains more than {@code
+     * Integer.MAX_VALUE} elements, returns {@code Integer.MAX_VALUE}.
      *
      * @return the number of elements in this node
      */

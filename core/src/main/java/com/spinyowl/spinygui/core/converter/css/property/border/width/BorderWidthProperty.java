@@ -1,6 +1,7 @@
 package com.spinyowl.spinygui.core.converter.css.property.border.width;
 
-import com.spinyowl.spinygui.core.converter.css.Properties;
+import static com.spinyowl.spinygui.core.converter.css.Properties.BORDER_WIDTH;
+
 import com.spinyowl.spinygui.core.converter.css.Property;
 import com.spinyowl.spinygui.core.converter.css.extractor.ValueExtractor;
 import com.spinyowl.spinygui.core.converter.css.extractor.ValueExtractors;
@@ -22,7 +23,7 @@ public class BorderWidthProperty extends Property<Border> {
     private static ValueExtractor<Length> extractor = ValueExtractors.of(Length.class);
 
     public BorderWidthProperty() {
-        super(Properties.BORDER_WIDTH, MEDIUM, !INHERITED, ANIMATABLE,
+        super(BORDER_WIDTH, MEDIUM, !INHERITED, ANIMATABLE,
             (s, b) -> s.getBorder().setWidth(b), NodeStyle::getBorder,
             BorderWidthProperty::extract, BorderWidthProperty::test);
     }

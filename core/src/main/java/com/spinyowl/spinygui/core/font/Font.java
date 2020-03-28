@@ -5,7 +5,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import lombok.Data;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -100,6 +99,51 @@ public class Font {
     }
 
     /**
+     * Returns true if there is any font with specified parameters.
+     *
+     * @param name font family name.
+     * @return true if there is any font with specified parameters.
+     */
+    public static boolean hasFont(String name) {
+        return hasFont(name, null, null, null);
+    }
+
+    /**
+     * Returns true if there is any font with specified parameters.
+     *
+     * @param name   font family name.
+     * @param weight font weight
+     * @return true if there is any font with specified parameters.
+     */
+    public static boolean hasFont(String name, FontWeight weight) {
+        return hasFont(name, null, weight, null);
+    }
+
+    /**
+     * Returns true if there is any font with specified parameters.
+     *
+     * @param name   font family name.
+     * @param style  font style
+     * @param weight font weight
+     * @return true if there is any font with specified parameters.
+     */
+    public static boolean hasFont(String name, FontStyle style, FontWeight weight) {
+        return hasFont(name, style, weight, null);
+    }
+
+    /**
+     * Returns true if there is any font with specified parameters.
+     *
+     * @param name  font family name.
+     * @param style font style
+     * @return true if there is any font with specified parameters.
+     */
+    public static boolean hasFont(String name, FontStyle style) {
+        return hasFont(name, style, null, null);
+    }
+
+
+    /**
      * Search for fonts with specified parameters. Any parameter could be nullable. In this case
      * this parameter will not be used during search.
      *
@@ -112,20 +156,34 @@ public class Font {
     public static List<Font> getFonts(
         String name, FontStyle style, FontWeight weight, FontStretch width
     ) {
-        Stream<FontKey> stream = fonts.keySet().stream();
-        if (name != null) {
-            stream = stream.filter(k -> name.equalsIgnoreCase(k.getName()));
-        }
-        if (style != null) {
-            stream = stream.filter(k -> style.equals(k.getStyle()));
-        }
-        if (width != null) {
-            stream = stream.filter(k -> width.equals(k.getWidth()));
-        }
-        if (weight != null) {
-            stream = stream.filter(k -> weight.equals(k.getWeight()));
-        }
-        return stream.map(fonts::get).collect(Collectors.toList());
+        return fonts.keySet().stream()
+            .filter(k -> checkFont(k, name, style, weight, width))
+            .map(fonts::get).collect(Collectors.toList());
+    }
+
+    /**
+     * Returns true if there is any font with specified parameters. Any parameter could be nullable.
+     * In this case this parameter will not be used during search.
+     *
+     * @param name   font family name.
+     * @param style  font style
+     * @param width  font width
+     * @param weight font weight
+     * @return true if there is any font with specified parameters.
+     */
+    public static boolean hasFont(
+        String name, FontStyle style, FontWeight weight, FontStretch width
+    ) {
+        return fonts.keySet().stream().anyMatch(k -> checkFont(k, name, style, weight, width));
+    }
+
+    private static boolean checkFont(
+        FontKey fontKey, String name, FontStyle style, FontWeight weight, FontStretch width
+    ) {
+        return (name == null || name.equalsIgnoreCase(fontKey.name)) &&
+            (style == null || style.equals(fontKey.style)) &&
+            (weight == null || weight.equals(fontKey.weight)) &&
+            (width == null || width.equals(fontKey.width));
     }
 
     @Data

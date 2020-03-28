@@ -1,7 +1,6 @@
 package com.spinyowl.spinygui.core.animation;
 
 import com.spinyowl.spinygui.core.time.Time;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -74,7 +73,8 @@ public class AnimatorImpl implements Animator {
     }
 
     /**
-     * Used to remove animation from animator. In case if animation is not finished animation still should be removed and terminated.
+     * Used to remove animation from animator. In case if animation is not finished animation still
+     * should be removed and terminated.
      *
      * @param animation animation to remove.
      */

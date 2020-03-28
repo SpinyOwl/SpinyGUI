@@ -1,6 +1,7 @@
 package com.spinyowl.spinygui.core.converter.css.property.padding;
 
-import com.spinyowl.spinygui.core.converter.css.Properties;
+import static com.spinyowl.spinygui.core.converter.css.Properties.PADDING;
+
 import com.spinyowl.spinygui.core.converter.css.Property;
 import com.spinyowl.spinygui.core.converter.css.extractor.ValueExtractor;
 import com.spinyowl.spinygui.core.converter.css.extractor.ValueExtractors;
@@ -14,7 +15,7 @@ public class PaddingProperty extends Property<Padding> {
     private static ValueExtractor<Length> lengthValueExtractor = ValueExtractors.of(Length.class);
 
     public PaddingProperty() {
-        super(Properties.PADDING, "0", !INHERITED, ANIMATABLE,
+        super(PADDING, "0", !INHERITED, ANIMATABLE,
             NodeStyle::setPadding, NodeStyle::getPadding,
             PaddingProperty::extract, PaddingProperty::test);
     }

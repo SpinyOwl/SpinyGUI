@@ -17,8 +17,8 @@ open module com.spinyowl.spinygui.core {
     requires org.antlr.antlr4.runtime;
 
     requires transitive org.slf4j;
-    requires transitive ch.qos.logback.core;
-    requires transitive ch.qos.logback.classic;
+    requires transitive logback.core;
+    requires transitive logback.classic;
 
     exports com.spinyowl.spinygui.core.animation;
     exports com.spinyowl.spinygui.core.api;
@@ -29,6 +29,7 @@ open module com.spinyowl.spinygui.core {
     exports com.spinyowl.spinygui.core.node.intersection;
 
     exports com.spinyowl.spinygui.core.converter;
+    exports com.spinyowl.spinygui.core.converter.annotation;
     exports com.spinyowl.spinygui.core.converter.css.parser;
     exports com.spinyowl.spinygui.core.converter.css.parser.annotations;
     exports com.spinyowl.spinygui.core.converter.css.parser.antlr;

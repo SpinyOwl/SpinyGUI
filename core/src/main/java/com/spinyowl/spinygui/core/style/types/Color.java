@@ -95,32 +95,33 @@ public class Color {
         switch (value.length()) {
             case 8:
                 return new Color((hex >> 24) & 0xFF,
-                        (hex >> 16) & 0xFF,
-                        (hex >> 8) & 0xFF,
-                        hex & 0xFF);
+                    (hex >> 16) & 0xFF,
+                    (hex >> 8) & 0xFF,
+                    hex & 0xFF);
             case 6:
                 return new Color(
-                        (hex >> 16) & 0xFF,
-                        (hex >> 8) & 0xFF,
-                        hex & 0xFF);
+                    (hex >> 16) & 0xFF,
+                    (hex >> 8) & 0xFF,
+                    hex & 0xFF);
             case 4:
                 return new Color(
-                        (hex >> 12) & 0xF,
-                        (hex >> 8) & 0xF,
-                        (hex >> 4) & 0xF,
-                        hex & 0xF);
+                    (hex >> 12) & 0xF,
+                    (hex >> 8) & 0xF,
+                    (hex >> 4) & 0xF,
+                    hex & 0xF);
             case 3:
                 return new Color(
-                        (hex >> 8) & 0xF,
-                        (hex >> 4) & 0xF,
-                        hex & 0xF);
+                    (hex >> 8) & 0xF,
+                    (hex >> 4) & 0xF,
+                    hex & 0xF);
             default:
                 return null;
         }
     }
 
     /**
-     * Color expression is color represented by three or four integer values divided by comma 'R, G, B' or 'R, G, B, A'
+     * Color expression is color represented by three or four integer values divided by comma 'R, G,
+     * B' or 'R, G, B, A'
      *
      * @param colorExpression color expression
      * @return color if able to parse or null.
@@ -140,21 +141,23 @@ public class Color {
             }
 
         }
-        throw new IllegalArgumentException("Color expression should look like 'R, G, B' or 'R, G, B, A' but was '" + colorExpression + "'");
+        throw new IllegalArgumentException(
+            "Color expression should look like 'R, G, B' or 'R, G, B, A' but was '"
+                + colorExpression + "'");
     }
 
     public static boolean exists(String colorName) {
         return colors.containsKey(colorName.toLowerCase());
     }
 
+    public static Color getInitialColor() {
+        return initialColor;
+    }
+
     public static void setInitialColor(Color color) {
         if (color != null) {
             initialColor = color;
         }
-    }
-
-    public static Color getInitialColor() {
-        return initialColor;
     }
 
     public float getRed() {
@@ -191,9 +194,9 @@ public class Color {
         }
         Color color = (Color) o;
         return Float.compare(color.red, red) == 0 &&
-                Float.compare(color.green, green) == 0 &&
-                Float.compare(color.blue, blue) == 0 &&
-                Float.compare(color.alpha, alpha) == 0;
+            Float.compare(color.green, green) == 0 &&
+            Float.compare(color.blue, blue) == 0 &&
+            Float.compare(color.alpha, alpha) == 0;
     }
 
     @Override

@@ -5,4 +5,5 @@ import com.spinyowl.spinygui.core.node.base.Container;
 
 @Tag("div")
 public class Div extends Container {
+
 }

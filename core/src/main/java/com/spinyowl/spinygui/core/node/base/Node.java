@@ -2,14 +2,13 @@ package com.spinyowl.spinygui.core.node.base;
 
 import com.spinyowl.spinygui.core.node.intersection.Intersection;
 import com.spinyowl.spinygui.core.node.intersection.Intersections;
+import java.util.StringJoiner;
 import org.joml.Vector2f;
 import org.joml.Vector2fc;
 
-import java.util.StringJoiner;
-
 /**
  * Base structure of any node.
- *
+ * <p>
  * Have three base subclasses that should be used to create any kind of element:
  * <ul>
  * <li>{@link Container}<br> - base for components that could contain other components. </li>
@@ -18,34 +17,35 @@ import java.util.StringJoiner;
  * </ul>
  */
 public abstract class Node {
+
     /**
      * Parent node.
      */
-    private Container    parent;
+    private Container parent;
     /**
      * Node position. Assigned to node by layout manager.
      */
-    private Vector2f     position     = new Vector2f();
+    private Vector2f position = new Vector2f();
     /**
      * Node size. Assigned to node by layout manager.
      */
-    private Vector2f     size         = new Vector2f();
+    private Vector2f size = new Vector2f();
     /**
      * Node visibility.
      */
-    private boolean      visible;
+    private boolean visible;
     /**
      * Determines whether this node hovered or not (cursor is over this node).
      */
-    private boolean      hovered;
+    private boolean hovered;
     /**
      * Determines whether this node focused or not.
      */
-    private boolean      focused;
+    private boolean focused;
     /**
      * Determines whether this node pressed or not (Mouse button is down and on this node).
      */
-    private boolean      pressed;
+    private boolean pressed;
     /**
      * Node intersection. During initialization used {@link Intersections#getDefaultIntersection()}.
      * Used to allow detect intersection of point on virtual window surface and node.
@@ -134,8 +134,8 @@ public abstract class Node {
     }
 
     /**
-     * Used to set intersection.
-     * If intersection instance is null - intersection will be replaced with default intersection.
+     * Used to set intersection. If intersection instance is null - intersection will be replaced
+     * with default intersection.
      *
      * @param intersection intersection to set.
      */
@@ -186,7 +186,7 @@ public abstract class Node {
 
     /**
      * Used to set node position in coordinates of parent node.
-     *
+     * <p>
      * Used by layout engine.
      *
      * @param position node position in coordinates of parent node.
@@ -214,7 +214,7 @@ public abstract class Node {
 
     /**
      * Used to set node position in coordinates of parent node.
-     *
+     * <p>
      * Used by layout engine.
      *
      * @param x node x position in coordinates of parent node.
@@ -235,7 +235,7 @@ public abstract class Node {
 
     /**
      * Used to set node size.
-     *
+     * <p>
      * Used by layout engine.
      *
      * @param size node size.
@@ -250,7 +250,7 @@ public abstract class Node {
 
     /**
      * Used to set node size.
-     *
+     * <p>
      * Used by layout engine.
      *
      * @param width  node width.
@@ -263,12 +263,12 @@ public abstract class Node {
     @Override
     public String toString() {
         return new StringJoiner(", ", getClass().getSimpleName() + "[", "]")
-                .add("position=" + position)
-                .add("size=" + size)
-                .add("visible=" + visible)
-                .add("hovered=" + hovered)
-                .add("focused=" + focused)
-                .add("pressed=" + pressed)
-                .toString();
+            .add("position=" + position)
+            .add("size=" + size)
+            .add("visible=" + visible)
+            .add("hovered=" + hovered)
+            .add("focused=" + focused)
+            .add("pressed=" + pressed)
+            .toString();
     }
 }

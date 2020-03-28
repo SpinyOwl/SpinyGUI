@@ -1,20 +1,20 @@
 package com.spinyowl.spinygui.core.converter.css.parser.visitor;
 
+import com.spinyowl.spinygui.core.converter.css.parser.StyleReflectionHandler;
 import com.spinyowl.spinygui.core.converter.css.parser.antlr.CSS3BaseVisitor;
 import com.spinyowl.spinygui.core.converter.css.parser.antlr.CSS3Parser;
-import com.spinyowl.spinygui.core.converter.css.parser.StyleReflectionHandler;
-import com.spinyowl.spinygui.core.converter.dom.TagNameMapping;
 import com.spinyowl.spinygui.core.converter.css.selector.ClassNameSelector;
 import com.spinyowl.spinygui.core.converter.css.selector.StyleSelector;
 import com.spinyowl.spinygui.core.converter.css.selector.TypeSelector;
+import com.spinyowl.spinygui.core.converter.dom.TagNameMapping;
+import java.util.ArrayList;
+import java.util.List;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class SelectorVisitor extends CSS3BaseVisitor<List<StyleSelector>> {
+
     private static final Logger LOGGER = LoggerFactory.getLogger(SelectorVisitor.class);
 
     @Override
@@ -38,7 +38,8 @@ public class SelectorVisitor extends CSS3BaseVisitor<List<StyleSelector>> {
         var list = new ArrayList<StyleSelector>();
         var firstSelector = visitSimpleSelectorSequence(ctx.simpleSelectorSequence(0)).get(0);
         for (int i = 1; i < ctx.simpleSelectorSequence().size(); i++) {
-            final var secondSelector = visitSimpleSelectorSequence(ctx.simpleSelectorSequence(i)).get(0);
+            final var secondSelector = visitSimpleSelectorSequence(ctx.simpleSelectorSequence(i))
+                .get(0);
 
             if (ctx.combinator(i - 1).Space() != null) {
                 firstSelector = StyleSelector.child(firstSelector, secondSelector);
@@ -55,7 +56,8 @@ public class SelectorVisitor extends CSS3BaseVisitor<List<StyleSelector>> {
     }
 
     @Override
-    public List<StyleSelector> visitSimpleSelectorSequence(CSS3Parser.SimpleSelectorSequenceContext ctx) {
+    public List<StyleSelector> visitSimpleSelectorSequence(
+        CSS3Parser.SimpleSelectorSequenceContext ctx) {
         var list = new ArrayList<StyleSelector>();
 
         StyleSelector current = null;

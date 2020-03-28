@@ -5,8 +5,11 @@ import com.spinyowl.spinygui.core.event.EventTarget;
 import com.spinyowl.spinygui.core.event.listener.EventListener;
 import com.spinyowl.spinygui.core.event.listener.EventListenerMap;
 import com.spinyowl.spinygui.core.style.NodeStyle;
-
-import java.util.*;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.StringJoiner;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
@@ -15,10 +18,9 @@ public abstract class Element extends Node implements EventTarget {
     /**
      * Used to overload styles from stylesheet.
      */
-    private NodeStyle style           = new NodeStyle();
+    private NodeStyle style = new NodeStyle();
     /**
-     * Styles from stylesheet.
-     * Updated by style manager every frame state changes.
+     * Styles from stylesheet. Updated by style manager every frame state changes.
      */
     private NodeStyle calculatedStyle = new NodeStyle();
 
@@ -57,7 +59,7 @@ public abstract class Element extends Node implements EventTarget {
      */
     public List<Element> getChildElements() {
         return getChildNodes().stream().filter(n -> n instanceof Element)
-                .map(n -> (Element) n).collect(Collectors.toUnmodifiableList());
+            .map(n -> (Element) n).collect(Collectors.toUnmodifiableList());
     }
 
     /**
@@ -140,9 +142,8 @@ public abstract class Element extends Node implements EventTarget {
     }
 
     /**
-     * Returns the number of elements in this node.  If this node contains
-     * more than {@code Integer.MAX_VALUE} elements, returns
-     * {@code Integer.MAX_VALUE}.
+     * Returns the number of elements in this node.  If this node contains more than {@code
+     * Integer.MAX_VALUE} elements, returns {@code Integer.MAX_VALUE}.
      *
      * @return the number of elements in this node
      */
@@ -180,9 +181,9 @@ public abstract class Element extends Node implements EventTarget {
         }
         Element element = (Element) o;
         return Objects.equals(style, element.style) &&
-                Objects.equals(calculatedStyle, element.calculatedStyle) &&
-                Objects.equals(attributes, element.attributes) &&
-                Objects.equals(eventListenerMap, element.eventListenerMap);
+            Objects.equals(calculatedStyle, element.calculatedStyle) &&
+            Objects.equals(attributes, element.attributes) &&
+            Objects.equals(eventListenerMap, element.eventListenerMap);
     }
 
     @Override
@@ -193,13 +194,13 @@ public abstract class Element extends Node implements EventTarget {
     @Override
     public String toString() {
         return new StringJoiner(", ", getClass().getSimpleName() + "[", "]")
-                .add("position=" + getPosition())
-                .add("size=" + getSize())
-                .add("visible=" + isVisible())
-                .add("hovered=" + isHovered())
-                .add("focused=" + isFocused())
-                .add("pressed=" + isPressed())
-                .add("attributes=" + attributes)
-                .toString();
+            .add("position=" + getPosition())
+            .add("size=" + getSize())
+            .add("visible=" + isVisible())
+            .add("hovered=" + isHovered())
+            .add("focused=" + isFocused())
+            .add("pressed=" + isPressed())
+            .add("attributes=" + attributes)
+            .toString();
     }
 }

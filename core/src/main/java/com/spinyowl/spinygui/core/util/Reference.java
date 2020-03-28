@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.Objects;
 
 public final class Reference {
+
     private Reference() {
     }
 

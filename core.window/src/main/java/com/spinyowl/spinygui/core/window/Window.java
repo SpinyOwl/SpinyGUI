@@ -9,13 +9,16 @@ import java.util.List;
 import java.util.Objects;
 import org.joml.Vector2i;
 import org.joml.Vector2ic;
+
 /**
  * Window class. Represents OS window.
  * <br>
  * <br>
- * <b>If you need to add custom functionality to winodw class - you need to create proxy for instance created by static method!</b>
+ * <b>If you need to add custom functionality to winodw class - you need to create proxy for
+ * instance created by static method!</b>
  */
 public abstract class Window {
+
     public static final EventListener<WindowCloseEvent> EXIT_ON_CLOSE = event -> System.exit(0);
     private final Frame frame;
     /**

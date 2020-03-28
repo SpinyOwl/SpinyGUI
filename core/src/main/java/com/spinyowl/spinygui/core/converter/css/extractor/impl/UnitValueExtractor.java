@@ -1,15 +1,16 @@
 package com.spinyowl.spinygui.core.converter.css.extractor.impl;
 
 import com.spinyowl.spinygui.core.converter.css.extractor.ValueExtractor;
+import com.spinyowl.spinygui.core.converter.css.extractor.ValueExtractorException;
 import com.spinyowl.spinygui.core.style.types.length.Length;
 import com.spinyowl.spinygui.core.style.types.length.Unit;
 
 public class UnitValueExtractor implements ValueExtractor<Unit> {
 
     public static final String PERCENTAGE_REGEX = "-?(\\d+(\\.\\d*)?|\\.\\d+)%";
-    public static final String PIXEL_REGEX      = "-?\\d+[pP][xX]";
-    public static final String AUTO_REGEX       = "[aA][uU][tT][oO]";
-    public static final String ZERO_REGEX       = "0+";
+    public static final String PIXEL_REGEX = "-?\\d+[pP][xX]";
+    public static final String AUTO_REGEX = "[aA][uU][tT][oO]";
+    public static final String ZERO_REGEX = "0+";
 
     public static Length getLength(String value) {
         if (value == null || value.isBlank()) {
@@ -29,15 +30,20 @@ public class UnitValueExtractor implements ValueExtractor<Unit> {
             return Length.pixel(0);
         }
 
-        return null;
+        throw new ValueExtractorException(Length.class, value);
+    }
+
+    @Override
+    public Class<Unit> getType() {
+        return Unit.class;
     }
 
     @Override
     public boolean isValid(String value) {
         return value.matches(PERCENTAGE_REGEX) ||
-                value.matches(PIXEL_REGEX) ||
-                value.matches(AUTO_REGEX) ||
-                value.matches(UnitValueExtractor.ZERO_REGEX);
+            value.matches(PIXEL_REGEX) ||
+            value.matches(AUTO_REGEX) ||
+            value.matches(UnitValueExtractor.ZERO_REGEX);
     }
 
     @Override

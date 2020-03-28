@@ -1,10 +1,12 @@
 package com.spinyowl.spinygui.core.node.element;
+
 import com.spinyowl.spinygui.core.converter.dom.annotations.Tag;
 import com.spinyowl.spinygui.core.node.base.Container;
 import java.util.Objects;
 
 @Tag("radio-button")
 public class RadioButton extends Container {
+
     private RadioButtonGroup radioButtonGroup;
 
     public RadioButtonGroup getRadioButtonGroup() {

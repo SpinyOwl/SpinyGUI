@@ -68,13 +68,13 @@ public class NodeStyle {
     private Length maxHeight;
 
     @NonNull
-    private Length top;
+    private Unit top;
     @NonNull
-    private Length bottom;
+    private Unit bottom;
     @NonNull
-    private Length right;
+    private Unit right;
     @NonNull
-    private Length left;
+    private Unit left;
 
     @NonNull
     private WhiteSpace whiteSpace = WhiteSpace.NORMAL;

@@ -1,8 +1,15 @@
 package com.spinyowl.spinygui.core.converter.css.extractor.impl;
 
 import com.spinyowl.spinygui.core.converter.css.extractor.ValueExtractor;
+import com.spinyowl.spinygui.core.converter.css.extractor.ValueExtractorException;
 
 public class IntegerExtractor implements ValueExtractor<Integer> {
+
+    @Override
+    public Class<Integer> getType() {
+        return Integer.class;
+    }
+
     @Override
     public boolean isValid(String value) {
         if (value.isEmpty()) {
@@ -25,6 +32,10 @@ public class IntegerExtractor implements ValueExtractor<Integer> {
 
     @Override
     public Integer extract(String value) {
-        return Integer.parseInt(value);
+        try {
+            return Integer.parseInt(value);
+        } catch (NumberFormatException e) {
+            throw new ValueExtractorException(getType(), value);
+        }
     }
 }

@@ -7,7 +7,6 @@ import com.spinyowl.spinygui.core.layout.impl.flex.FlexLayout;
 import com.spinyowl.spinygui.core.node.base.Element;
 import com.spinyowl.spinygui.core.style.types.Display;
 import com.spinyowl.spinygui.core.util.NodeUtilities;
-
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
@@ -37,7 +36,7 @@ public class LayoutManagerImpl implements LayoutManager {
     @Override
     public void layout(Element element) {
         if (element != null && element.isVisible()
-                && NodeUtilities.visibleInParents(element)
+            && NodeUtilities.visibleInParents(element)
         ) {
             Layout layout = layoutMap.get(element.getStyle().getDisplay());
             if (layout != null) {

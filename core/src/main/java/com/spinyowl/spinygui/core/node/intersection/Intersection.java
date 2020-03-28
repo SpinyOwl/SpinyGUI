@@ -3,8 +3,8 @@ package com.spinyowl.spinygui.core.node.intersection;
 import com.spinyowl.spinygui.core.node.base.Node;
 
 /**
- * Intersection class specifies intersection rules for node and point.
- * Used to allow detect intersection of point on virtual window surface and node.
+ * Intersection class specifies intersection rules for node and point. Used to allow detect
+ * intersection of point on virtual window surface and node.
  */
 public interface Intersection {
 

@@ -1,8 +1,8 @@
 package com.spinyowl.spinygui.demo;
 
-import static com.spinyowl.spinygui.core.NodeBuilder.button;
-import static com.spinyowl.spinygui.core.NodeBuilder.div;
-import static com.spinyowl.spinygui.core.NodeBuilder.label;
+import static com.spinyowl.spinygui.core.node.NodeBuilder.button;
+import static com.spinyowl.spinygui.core.node.NodeBuilder.div;
+import static com.spinyowl.spinygui.core.node.NodeBuilder.label;
 
 import com.spinyowl.spinygui.core.api.Frame;
 import com.spinyowl.spinygui.core.converter.NodeConverter;
@@ -76,25 +76,25 @@ public class Test {
 
     public static void searchComponents() throws Exception {
         var css =
-                "div .test label { background-color: red; }" +
-                        "div .test { background-color: green; border: 1px, 1px, 2px, 1px }" +
-                        "button { color: black; }";
+            "div .test label { background-color: red; }" +
+                "div .test { background-color: green; border: 1px, 1px, 2px, 1px }" +
+                "button { color: black; }";
 
         var stylesheet = StyleSheetConverter.createFromCSS(css);
 
         var xml = "<div id=\"1\">\n" +
-                "    <div id=\"2\" class=\"test\">\n" +
-                "        <label id=\"3\">Label 1</label>\n" +
-                "    </div>\n" +
-                "    <button id=\"4\" class=\"test\"/>\n" +
-                "    <div id=\"5\" class=\"test\">\n" +
-                "        <div id=\"6\">\n" +
-                "            <div id=\"7\" class=\"test\">\n" +
-                "                <label id=\"8\">Label 1</label>\n" +
-                "            </div>\n" +
-                "        </div>\n" +
-                "    </div>\n" +
-                "</div>";
+            "    <div id=\"2\" class=\"test\">\n" +
+            "        <label id=\"3\">Label 1</label>\n" +
+            "    </div>\n" +
+            "    <button id=\"4\" class=\"test\"/>\n" +
+            "    <div id=\"5\" class=\"test\">\n" +
+            "        <div id=\"6\">\n" +
+            "            <div id=\"7\" class=\"test\">\n" +
+            "                <label id=\"8\">Label 1</label>\n" +
+            "            </div>\n" +
+            "        </div>\n" +
+            "    </div>\n" +
+            "</div>";
         var componentTree = (Element) NodeConverter.fromXml(xml);
 
         List<RuleSet> ruleSets = stylesheet.getRuleSets();

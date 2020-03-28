@@ -1,6 +1,7 @@
 package com.spinyowl.spinygui.core.converter.css.property.margin;
 
-import com.spinyowl.spinygui.core.converter.css.Properties;
+import static com.spinyowl.spinygui.core.converter.css.Properties.MARGIN;
+
 import com.spinyowl.spinygui.core.converter.css.Property;
 import com.spinyowl.spinygui.core.converter.css.extractor.ValueExtractor;
 import com.spinyowl.spinygui.core.converter.css.extractor.ValueExtractors;
@@ -14,7 +15,7 @@ public class MarginProperty extends Property<Margin> {
     private static ValueExtractor<Unit> unitValueExtractor = ValueExtractors.of(Unit.class);
 
     public MarginProperty() {
-        super(Properties.MARGIN, "0", !INHERITED, ANIMATABLE,
+        super(MARGIN, "0", !INHERITED, ANIMATABLE,
             NodeStyle::setMargin, NodeStyle::getMargin,
             MarginProperty::extract, MarginProperty::test);
     }

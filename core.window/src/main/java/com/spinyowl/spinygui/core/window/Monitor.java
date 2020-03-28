@@ -1,7 +1,6 @@
 package com.spinyowl.spinygui.core.window;
 
 import com.spinyowl.spinygui.core.window.service.Services;
-
 import java.util.List;
 
 public abstract class Monitor {

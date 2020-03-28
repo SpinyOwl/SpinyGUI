@@ -10,6 +10,9 @@ import com.spinyowl.spinygui.core.style.types.length.Unit;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+/**
+ * Class keeps all existing value extractors.
+ */
 public final class ValueExtractors {
 
     private static final Map<Class, ValueExtractor> valueExtractorMap = new ConcurrentHashMap<>();

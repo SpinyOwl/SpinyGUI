@@ -1,9 +1,9 @@
 package com.spinyowl.spinygui.core.converter.css.property.flex;
 
+import static com.spinyowl.spinygui.core.converter.css.Properties.ALIGN_CONTENT;
+
 import com.spinyowl.spinygui.core.converter.css.Property;
 import com.spinyowl.spinygui.core.style.types.flex.AlignContent;
-
-import static com.spinyowl.spinygui.core.converter.css.Properties.ALIGN_CONTENT;
 
 public class AlignContentProperty extends Property<AlignContent> {
 

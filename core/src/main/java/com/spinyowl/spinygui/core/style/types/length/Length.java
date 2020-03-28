@@ -39,9 +39,9 @@ public class Length<T extends Number> implements Unit {
     @Override
     public String toString() {
         return new StringJoiner(", ", Length.class.getSimpleName() + "[", "]")
-                .add("value=" + value)
-                .add("type=" + type)
-                .toString();
+            .add("value=" + value)
+            .add("type=" + type)
+            .toString();
     }
 
 
@@ -97,9 +97,9 @@ public class Length<T extends Number> implements Unit {
         @Override
         public String toString() {
             return new StringJoiner(", ", LType.class.getSimpleName() + "[", "]")
-                    .add("name='" + name + "'")
-                    .add("type=" + type)
-                    .toString();
+                .add("name='" + name + "'")
+                .add("type=" + type)
+                .toString();
         }
     }
 }

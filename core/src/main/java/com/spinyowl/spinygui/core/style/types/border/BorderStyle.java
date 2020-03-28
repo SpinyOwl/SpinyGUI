@@ -10,6 +10,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * CSS border style.
  */
 public final class BorderStyle {
+
     private static final Map<String, BorderStyle> VALUES = new ConcurrentHashMap<>();
 
     /**
@@ -154,7 +155,7 @@ public final class BorderStyle {
     @Override
     public String toString() {
         return new StringJoiner(", ", BorderStyle.class.getSimpleName() + "[", "]")
-                .add("name='" + name + "'")
-                .toString();
+            .add("name='" + name + "'")
+            .toString();
     }
 }

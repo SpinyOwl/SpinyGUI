@@ -4,10 +4,10 @@ package com.spinyowl.spinygui.core.converter.css.parser.antlr;
 import org.antlr.v4.runtime.tree.ParseTreeListener;
 
 /**
- * This interface defines a complete listener for a parse tree produced by
- * {@link CSS3Parser}.
+ * This interface defines a complete listener for a parse tree produced by {@link CSS3Parser}.
  */
 public interface CSS3Listener extends ParseTreeListener {
+
     /**
      * Enter a parse tree produced by {@link CSS3Parser#stylesheet}.
      *
@@ -23,96 +23,96 @@ public interface CSS3Listener extends ParseTreeListener {
     void exitStylesheet(CSS3Parser.StylesheetContext ctx);
 
     /**
-     * Enter a parse tree produced by the {@code goodCharset}
-     * labeled alternative in {@link CSS3Parser#charset}.
+     * Enter a parse tree produced by the {@code goodCharset} labeled alternative in {@link
+     * CSS3Parser#charset}.
      *
      * @param ctx the parse tree
      */
     void enterGoodCharset(CSS3Parser.GoodCharsetContext ctx);
 
     /**
-     * Exit a parse tree produced by the {@code goodCharset}
-     * labeled alternative in {@link CSS3Parser#charset}.
+     * Exit a parse tree produced by the {@code goodCharset} labeled alternative in {@link
+     * CSS3Parser#charset}.
      *
      * @param ctx the parse tree
      */
     void exitGoodCharset(CSS3Parser.GoodCharsetContext ctx);
 
     /**
-     * Enter a parse tree produced by the {@code badCharset}
-     * labeled alternative in {@link CSS3Parser#charset}.
+     * Enter a parse tree produced by the {@code badCharset} labeled alternative in {@link
+     * CSS3Parser#charset}.
      *
      * @param ctx the parse tree
      */
     void enterBadCharset(CSS3Parser.BadCharsetContext ctx);
 
     /**
-     * Exit a parse tree produced by the {@code badCharset}
-     * labeled alternative in {@link CSS3Parser#charset}.
+     * Exit a parse tree produced by the {@code badCharset} labeled alternative in {@link
+     * CSS3Parser#charset}.
      *
      * @param ctx the parse tree
      */
     void exitBadCharset(CSS3Parser.BadCharsetContext ctx);
 
     /**
-     * Enter a parse tree produced by the {@code goodImport}
-     * labeled alternative in {@link CSS3Parser#imports}.
+     * Enter a parse tree produced by the {@code goodImport} labeled alternative in {@link
+     * CSS3Parser#imports}.
      *
      * @param ctx the parse tree
      */
     void enterGoodImport(CSS3Parser.GoodImportContext ctx);
 
     /**
-     * Exit a parse tree produced by the {@code goodImport}
-     * labeled alternative in {@link CSS3Parser#imports}.
+     * Exit a parse tree produced by the {@code goodImport} labeled alternative in {@link
+     * CSS3Parser#imports}.
      *
      * @param ctx the parse tree
      */
     void exitGoodImport(CSS3Parser.GoodImportContext ctx);
 
     /**
-     * Enter a parse tree produced by the {@code badImport}
-     * labeled alternative in {@link CSS3Parser#imports}.
+     * Enter a parse tree produced by the {@code badImport} labeled alternative in {@link
+     * CSS3Parser#imports}.
      *
      * @param ctx the parse tree
      */
     void enterBadImport(CSS3Parser.BadImportContext ctx);
 
     /**
-     * Exit a parse tree produced by the {@code badImport}
-     * labeled alternative in {@link CSS3Parser#imports}.
+     * Exit a parse tree produced by the {@code badImport} labeled alternative in {@link
+     * CSS3Parser#imports}.
      *
      * @param ctx the parse tree
      */
     void exitBadImport(CSS3Parser.BadImportContext ctx);
 
     /**
-     * Enter a parse tree produced by the {@code goodNamespace}
-     * labeled alternative in {@link CSS3Parser#namespace}.
+     * Enter a parse tree produced by the {@code goodNamespace} labeled alternative in {@link
+     * CSS3Parser#namespace}.
      *
      * @param ctx the parse tree
      */
     void enterGoodNamespace(CSS3Parser.GoodNamespaceContext ctx);
 
     /**
-     * Exit a parse tree produced by the {@code goodNamespace}
-     * labeled alternative in {@link CSS3Parser#namespace}.
+     * Exit a parse tree produced by the {@code goodNamespace} labeled alternative in {@link
+     * CSS3Parser#namespace}.
      *
      * @param ctx the parse tree
      */
     void exitGoodNamespace(CSS3Parser.GoodNamespaceContext ctx);
 
     /**
-     * Enter a parse tree produced by the {@code badNamespace}
-     * labeled alternative in {@link CSS3Parser#namespace}.
+     * Enter a parse tree produced by the {@code badNamespace} labeled alternative in {@link
+     * CSS3Parser#namespace}.
      *
      * @param ctx the parse tree
      */
     void enterBadNamespace(CSS3Parser.BadNamespaceContext ctx);
 
     /**
-     * Exit a parse tree produced by the {@code badNamespace}
-     * labeled alternative in {@link CSS3Parser#namespace}.
+     * Exit a parse tree produced by the {@code badNamespace} labeled alternative in {@link
+     * CSS3Parser#namespace}.
      *
      * @param ctx the parse tree
      */
@@ -455,96 +455,96 @@ public interface CSS3Listener extends ParseTreeListener {
     void exitNegationArg(CSS3Parser.NegationArgContext ctx);
 
     /**
-     * Enter a parse tree produced by the {@code goodOperator}
-     * labeled alternative in {@link CSS3Parser#operator}.
+     * Enter a parse tree produced by the {@code goodOperator} labeled alternative in {@link
+     * CSS3Parser#operator}.
      *
      * @param ctx the parse tree
      */
     void enterGoodOperator(CSS3Parser.GoodOperatorContext ctx);
 
     /**
-     * Exit a parse tree produced by the {@code goodOperator}
-     * labeled alternative in {@link CSS3Parser#operator}.
+     * Exit a parse tree produced by the {@code goodOperator} labeled alternative in {@link
+     * CSS3Parser#operator}.
      *
      * @param ctx the parse tree
      */
     void exitGoodOperator(CSS3Parser.GoodOperatorContext ctx);
 
     /**
-     * Enter a parse tree produced by the {@code badOperator}
-     * labeled alternative in {@link CSS3Parser#operator}.
+     * Enter a parse tree produced by the {@code badOperator} labeled alternative in {@link
+     * CSS3Parser#operator}.
      *
      * @param ctx the parse tree
      */
     void enterBadOperator(CSS3Parser.BadOperatorContext ctx);
 
     /**
-     * Exit a parse tree produced by the {@code badOperator}
-     * labeled alternative in {@link CSS3Parser#operator}.
+     * Exit a parse tree produced by the {@code badOperator} labeled alternative in {@link
+     * CSS3Parser#operator}.
      *
      * @param ctx the parse tree
      */
     void exitBadOperator(CSS3Parser.BadOperatorContext ctx);
 
     /**
-     * Enter a parse tree produced by the {@code goodProperty}
-     * labeled alternative in {@link CSS3Parser#property}.
+     * Enter a parse tree produced by the {@code goodProperty} labeled alternative in {@link
+     * CSS3Parser#property}.
      *
      * @param ctx the parse tree
      */
     void enterGoodProperty(CSS3Parser.GoodPropertyContext ctx);
 
     /**
-     * Exit a parse tree produced by the {@code goodProperty}
-     * labeled alternative in {@link CSS3Parser#property}.
+     * Exit a parse tree produced by the {@code goodProperty} labeled alternative in {@link
+     * CSS3Parser#property}.
      *
      * @param ctx the parse tree
      */
     void exitGoodProperty(CSS3Parser.GoodPropertyContext ctx);
 
     /**
-     * Enter a parse tree produced by the {@code badProperty}
-     * labeled alternative in {@link CSS3Parser#property}.
+     * Enter a parse tree produced by the {@code badProperty} labeled alternative in {@link
+     * CSS3Parser#property}.
      *
      * @param ctx the parse tree
      */
     void enterBadProperty(CSS3Parser.BadPropertyContext ctx);
 
     /**
-     * Exit a parse tree produced by the {@code badProperty}
-     * labeled alternative in {@link CSS3Parser#property}.
+     * Exit a parse tree produced by the {@code badProperty} labeled alternative in {@link
+     * CSS3Parser#property}.
      *
      * @param ctx the parse tree
      */
     void exitBadProperty(CSS3Parser.BadPropertyContext ctx);
 
     /**
-     * Enter a parse tree produced by the {@code knownRuleset}
-     * labeled alternative in {@link CSS3Parser#ruleset}.
+     * Enter a parse tree produced by the {@code knownRuleset} labeled alternative in {@link
+     * CSS3Parser#ruleset}.
      *
      * @param ctx the parse tree
      */
     void enterKnownRuleset(CSS3Parser.KnownRulesetContext ctx);
 
     /**
-     * Exit a parse tree produced by the {@code knownRuleset}
-     * labeled alternative in {@link CSS3Parser#ruleset}.
+     * Exit a parse tree produced by the {@code knownRuleset} labeled alternative in {@link
+     * CSS3Parser#ruleset}.
      *
      * @param ctx the parse tree
      */
     void exitKnownRuleset(CSS3Parser.KnownRulesetContext ctx);
 
     /**
-     * Enter a parse tree produced by the {@code unknownRuleset}
-     * labeled alternative in {@link CSS3Parser#ruleset}.
+     * Enter a parse tree produced by the {@code unknownRuleset} labeled alternative in {@link
+     * CSS3Parser#ruleset}.
      *
      * @param ctx the parse tree
      */
     void enterUnknownRuleset(CSS3Parser.UnknownRulesetContext ctx);
 
     /**
-     * Exit a parse tree produced by the {@code unknownRuleset}
-     * labeled alternative in {@link CSS3Parser#ruleset}.
+     * Exit a parse tree produced by the {@code unknownRuleset} labeled alternative in {@link
+     * CSS3Parser#ruleset}.
      *
      * @param ctx the parse tree
      */
@@ -565,32 +565,32 @@ public interface CSS3Listener extends ParseTreeListener {
     void exitDeclarationList(CSS3Parser.DeclarationListContext ctx);
 
     /**
-     * Enter a parse tree produced by the {@code knownDeclaration}
-     * labeled alternative in {@link CSS3Parser#declaration}.
+     * Enter a parse tree produced by the {@code knownDeclaration} labeled alternative in {@link
+     * CSS3Parser#declaration}.
      *
      * @param ctx the parse tree
      */
     void enterKnownDeclaration(CSS3Parser.KnownDeclarationContext ctx);
 
     /**
-     * Exit a parse tree produced by the {@code knownDeclaration}
-     * labeled alternative in {@link CSS3Parser#declaration}.
+     * Exit a parse tree produced by the {@code knownDeclaration} labeled alternative in {@link
+     * CSS3Parser#declaration}.
      *
      * @param ctx the parse tree
      */
     void exitKnownDeclaration(CSS3Parser.KnownDeclarationContext ctx);
 
     /**
-     * Enter a parse tree produced by the {@code unknownDeclaration}
-     * labeled alternative in {@link CSS3Parser#declaration}.
+     * Enter a parse tree produced by the {@code unknownDeclaration} labeled alternative in {@link
+     * CSS3Parser#declaration}.
      *
      * @param ctx the parse tree
      */
     void enterUnknownDeclaration(CSS3Parser.UnknownDeclarationContext ctx);
 
     /**
-     * Exit a parse tree produced by the {@code unknownDeclaration}
-     * labeled alternative in {@link CSS3Parser#declaration}.
+     * Exit a parse tree produced by the {@code unknownDeclaration} labeled alternative in {@link
+     * CSS3Parser#declaration}.
      *
      * @param ctx the parse tree
      */
@@ -639,48 +639,48 @@ public interface CSS3Listener extends ParseTreeListener {
     void exitExpr(CSS3Parser.ExprContext ctx);
 
     /**
-     * Enter a parse tree produced by the {@code knownTerm}
-     * labeled alternative in {@link CSS3Parser#term}.
+     * Enter a parse tree produced by the {@code knownTerm} labeled alternative in {@link
+     * CSS3Parser#term}.
      *
      * @param ctx the parse tree
      */
     void enterKnownTerm(CSS3Parser.KnownTermContext ctx);
 
     /**
-     * Exit a parse tree produced by the {@code knownTerm}
-     * labeled alternative in {@link CSS3Parser#term}.
+     * Exit a parse tree produced by the {@code knownTerm} labeled alternative in {@link
+     * CSS3Parser#term}.
      *
      * @param ctx the parse tree
      */
     void exitKnownTerm(CSS3Parser.KnownTermContext ctx);
 
     /**
-     * Enter a parse tree produced by the {@code unknownTerm}
-     * labeled alternative in {@link CSS3Parser#term}.
+     * Enter a parse tree produced by the {@code unknownTerm} labeled alternative in {@link
+     * CSS3Parser#term}.
      *
      * @param ctx the parse tree
      */
     void enterUnknownTerm(CSS3Parser.UnknownTermContext ctx);
 
     /**
-     * Exit a parse tree produced by the {@code unknownTerm}
-     * labeled alternative in {@link CSS3Parser#term}.
+     * Exit a parse tree produced by the {@code unknownTerm} labeled alternative in {@link
+     * CSS3Parser#term}.
      *
      * @param ctx the parse tree
      */
     void exitUnknownTerm(CSS3Parser.UnknownTermContext ctx);
 
     /**
-     * Enter a parse tree produced by the {@code badTerm}
-     * labeled alternative in {@link CSS3Parser#term}.
+     * Enter a parse tree produced by the {@code badTerm} labeled alternative in {@link
+     * CSS3Parser#term}.
      *
      * @param ctx the parse tree
      */
     void enterBadTerm(CSS3Parser.BadTermContext ctx);
 
     /**
-     * Exit a parse tree produced by the {@code badTerm}
-     * labeled alternative in {@link CSS3Parser#term}.
+     * Exit a parse tree produced by the {@code badTerm} labeled alternative in {@link
+     * CSS3Parser#term}.
      *
      * @param ctx the parse tree
      */
@@ -799,16 +799,16 @@ public interface CSS3Listener extends ParseTreeListener {
     void exitAny(CSS3Parser.AnyContext ctx);
 
     /**
-     * Enter a parse tree produced by the {@code unknownAtRule}
-     * labeled alternative in {@link CSS3Parser#atRule}.
+     * Enter a parse tree produced by the {@code unknownAtRule} labeled alternative in {@link
+     * CSS3Parser#atRule}.
      *
      * @param ctx the parse tree
      */
     void enterUnknownAtRule(CSS3Parser.UnknownAtRuleContext ctx);
 
     /**
-     * Exit a parse tree produced by the {@code unknownAtRule}
-     * labeled alternative in {@link CSS3Parser#atRule}.
+     * Exit a parse tree produced by the {@code unknownAtRule} labeled alternative in {@link
+     * CSS3Parser#atRule}.
      *
      * @param ctx the parse tree
      */
@@ -1081,32 +1081,32 @@ public interface CSS3Listener extends ParseTreeListener {
     void exitFontFaceRule(CSS3Parser.FontFaceRuleContext ctx);
 
     /**
-     * Enter a parse tree produced by the {@code knownFontFaceDeclaration}
-     * labeled alternative in {@link CSS3Parser#fontFaceDeclaration}.
+     * Enter a parse tree produced by the {@code knownFontFaceDeclaration} labeled alternative in
+     * {@link CSS3Parser#fontFaceDeclaration}.
      *
      * @param ctx the parse tree
      */
     void enterKnownFontFaceDeclaration(CSS3Parser.KnownFontFaceDeclarationContext ctx);
 
     /**
-     * Exit a parse tree produced by the {@code knownFontFaceDeclaration}
-     * labeled alternative in {@link CSS3Parser#fontFaceDeclaration}.
+     * Exit a parse tree produced by the {@code knownFontFaceDeclaration} labeled alternative in
+     * {@link CSS3Parser#fontFaceDeclaration}.
      *
      * @param ctx the parse tree
      */
     void exitKnownFontFaceDeclaration(CSS3Parser.KnownFontFaceDeclarationContext ctx);
 
     /**
-     * Enter a parse tree produced by the {@code unknownFontFaceDeclaration}
-     * labeled alternative in {@link CSS3Parser#fontFaceDeclaration}.
+     * Enter a parse tree produced by the {@code unknownFontFaceDeclaration} labeled alternative in
+     * {@link CSS3Parser#fontFaceDeclaration}.
      *
      * @param ctx the parse tree
      */
     void enterUnknownFontFaceDeclaration(CSS3Parser.UnknownFontFaceDeclarationContext ctx);
 
     /**
-     * Exit a parse tree produced by the {@code unknownFontFaceDeclaration}
-     * labeled alternative in {@link CSS3Parser#fontFaceDeclaration}.
+     * Exit a parse tree produced by the {@code unknownFontFaceDeclaration} labeled alternative in
+     * {@link CSS3Parser#fontFaceDeclaration}.
      *
      * @param ctx the parse tree
      */

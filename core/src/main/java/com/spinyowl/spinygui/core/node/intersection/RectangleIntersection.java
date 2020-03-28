@@ -18,8 +18,8 @@ public class RectangleIntersection implements Intersection {
         Vector2fc pos = node.getPosition();
         Vector2fc size = node.getSize();
         return x >= pos.x()
-                && x <= pos.x() + size.x()
-                && y >= pos.y()
-                && y <= pos.y() + size.y();
+            && x <= pos.x() + size.x()
+            && y >= pos.y()
+            && y <= pos.y() + size.y();
     }
 }

@@ -1,11 +1,13 @@
 package com.spinyowl.spinygui.core.event.processor;
 
 public final class EventProcessorProvider {
+
+    private EventProcessorProvider() {
+    }
+
     public static EventProcessor getInstance() {
         return EPH.instance;
     }
-
-    private EventProcessorProvider(){}
 
     public static void setInstance(EventProcessor eventProcessor) {
         if (eventProcessor != null) {
@@ -14,6 +16,7 @@ public final class EventProcessorProvider {
     }
 
     private static final class EPH {
+
         private static EventProcessor instance = new DefaultEventProcessor();
     }
 }

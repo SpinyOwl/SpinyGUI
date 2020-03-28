@@ -53,7 +53,8 @@ public class Flex {
     private int flexGrow;
 
     /**
-     * A number specifying how much the item will shrink relative to the rest of the flexible items.
+     * A number specifying how much the item will shrink relative to the rest of the flexible
+     * items.
      */
     private int flexShrink;
 

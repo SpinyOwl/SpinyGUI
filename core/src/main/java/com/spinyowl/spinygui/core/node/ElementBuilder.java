@@ -8,9 +8,8 @@ import com.spinyowl.spinygui.core.node.base.Text;
 import com.spinyowl.spinygui.core.node.element.Button;
 import com.spinyowl.spinygui.core.node.element.Div;
 import com.spinyowl.spinygui.core.node.element.Label;
-import org.joml.Vector2fc;
-
 import java.util.Map;
+import org.joml.Vector2fc;
 
 public class ElementBuilder<T extends Element> {
 
@@ -105,7 +104,7 @@ public class ElementBuilder<T extends Element> {
      * @param listener   listener
      */
     public <E extends Event, L extends EventListener<E>> ElementBuilder<T> listener(
-            Class<E> eventClass, L listener) {
+        Class<E> eventClass, L listener) {
         node.addListener(eventClass, listener);
         return this;
     }

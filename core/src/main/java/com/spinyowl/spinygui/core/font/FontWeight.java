@@ -11,36 +11,26 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public final class FontWeight {
 
-    private static final Map<String, FontWeight> VALUES = new ConcurrentHashMap<>();
-
-    public static final FontWeight THIN = FontWeight.create(100, "thin");
-
-    public static final FontWeight EXTRA_LIGHT =
-        FontWeight.create(200, "extra light", "extralight", "ultra light", "ultralight");
     public static final FontWeight ULTRA_LIGHT = EXTRA_LIGHT;
-
-    public static final FontWeight LIGHT = FontWeight.create(300, "light");
-
-    public static final FontWeight NORMAL =
-        FontWeight.create(400, "normal", "book", "regular");
     public static final FontWeight BOOK = NORMAL;
     public static final FontWeight REGULAR = NORMAL;
-
+    public static final FontWeight DEMI_BOLD = SEMI_BOLD;
+    public static final FontWeight ULTRA_BOLD = EXTRA_BOLD;
+    public static final FontWeight HEAVY = BLACK;
+    private static final Map<String, FontWeight> VALUES = new ConcurrentHashMap<>();
+    public static final FontWeight THIN = FontWeight.create(100, "thin");
+    public static final FontWeight EXTRA_LIGHT =
+        FontWeight.create(200, "extra light", "extralight", "ultra light", "ultralight");
+    public static final FontWeight LIGHT = FontWeight.create(300, "light");
+    public static final FontWeight NORMAL =
+        FontWeight.create(400, "normal", "book", "regular");
     public static final FontWeight MEDIUM = FontWeight.create(500, "medium");
-
     public static final FontWeight SEMI_BOLD =
         FontWeight.create(600, "semi bold", "semibold", "demi bold", "demibold");
-    public static final FontWeight DEMI_BOLD = SEMI_BOLD;
-
     public static final FontWeight BOLD = FontWeight.create(700, "bold");
-
     public static final FontWeight EXTRA_BOLD =
         FontWeight.create(800, "extra bold", "extrabold", "extra bold", "extrabold");
-    public static final FontWeight ULTRA_BOLD = EXTRA_BOLD;
-
     public static final FontWeight BLACK = FontWeight.create(900, "black", "heavy");
-    public static final FontWeight HEAVY = BLACK;
-
     /**
      * Name of font weight type (should be same as in css specification)
      */
@@ -100,15 +90,23 @@ public final class FontWeight {
     public static FontWeight find(int value) {
         int rounded = Math.round(value / 100f);
         switch (rounded) {
-            case 1: return THIN;
-            case 2: return EXTRA_LIGHT;
-            case 3: return LIGHT;
+            case 1:
+                return THIN;
+            case 2:
+                return EXTRA_LIGHT;
+            case 3:
+                return LIGHT;
 
-            case 5: return MEDIUM;
-            case 6: return SEMI_BOLD;
-            case 7: return BOLD;
-            case 8: return EXTRA_BOLD;
-            case 9: return BLACK;
+            case 5:
+                return MEDIUM;
+            case 6:
+                return SEMI_BOLD;
+            case 7:
+                return BOLD;
+            case 8:
+                return EXTRA_BOLD;
+            case 9:
+                return BLACK;
 
             case 4:
             default:

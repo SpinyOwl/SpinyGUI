@@ -1,18 +1,19 @@
 package com.spinyowl.spinygui.core.converter.css.property.position;
 
-import com.spinyowl.spinygui.core.converter.css.Properties;
+import static com.spinyowl.spinygui.core.converter.css.Properties.TOP;
+
 import com.spinyowl.spinygui.core.converter.css.Property;
 import com.spinyowl.spinygui.core.converter.css.extractor.ValueExtractor;
 import com.spinyowl.spinygui.core.converter.css.extractor.ValueExtractors;
 import com.spinyowl.spinygui.core.style.NodeStyle;
-import com.spinyowl.spinygui.core.style.types.length.Length;
+import com.spinyowl.spinygui.core.style.types.length.Unit;
 
-public class TopProperty extends Property<Length> {
+public class TopProperty extends Property<Unit> {
 
-    public static final ValueExtractor<Length> extractor = ValueExtractors.of(Length.class);
+    public static final ValueExtractor<Unit> extractor = ValueExtractors.of(Unit.class);
 
     public TopProperty() {
-        super(Properties.TOP, "auto", !INHERITED, ANIMATABLE,
+        super(TOP, "auto", !INHERITED, ANIMATABLE,
             NodeStyle::setTop, NodeStyle::getTop,
             extractor::extract, extractor::isValid);
     }

@@ -1,7 +1,6 @@
 package com.spinyowl.spinygui.core.event;
 
 import com.spinyowl.spinygui.core.event.listener.EventListener;
-
 import java.util.List;
 
 public interface EventTarget {

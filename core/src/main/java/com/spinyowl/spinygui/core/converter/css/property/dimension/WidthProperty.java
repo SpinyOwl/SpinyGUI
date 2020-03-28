@@ -1,6 +1,7 @@
 package com.spinyowl.spinygui.core.converter.css.property.dimension;
 
-import com.spinyowl.spinygui.core.converter.css.Properties;
+import static com.spinyowl.spinygui.core.converter.css.Properties.WIDTH;
+
 import com.spinyowl.spinygui.core.converter.css.Property;
 import com.spinyowl.spinygui.core.converter.css.extractor.ValueExtractor;
 import com.spinyowl.spinygui.core.converter.css.extractor.ValueExtractors;
@@ -12,7 +13,7 @@ public class WidthProperty extends Property<Unit> {
     public static final ValueExtractor<Unit> extractor = ValueExtractors.of(Unit.class);
 
     public WidthProperty() {
-        super(Properties.WIDTH, "auto", !INHERITED, ANIMATABLE,
+        super(WIDTH, "auto", !INHERITED, ANIMATABLE,
             NodeStyle::setWidth, NodeStyle::getWidth,
             extractor::extract, extractor::isValid);
     }

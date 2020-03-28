@@ -5,24 +5,23 @@ import com.google.common.collect.HashBiMap;
 import com.spinyowl.spinygui.core.converter.NodeConverter;
 import com.spinyowl.spinygui.core.converter.dom.annotations.Tag;
 import com.spinyowl.spinygui.core.node.base.Element;
-import com.spinyowl.spinygui.core.node.base.Node;
 import io.github.classgraph.ClassGraph;
 import io.github.classgraph.ClassInfo;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * Node mapping - contains node to tag mapping for {@link NodeConverter}.
  */
+@Slf4j
 public final class TagNameMapping {
-    private static final Logger                                  LOGGER     = LoggerFactory.getLogger(TagNameMapping.class);
+
     private static final BiMap<String, Class<? extends Element>> tagMapping = HashBiMap.create();
 
     static {
         var scanResult = new ClassGraph()
-                .whitelistPackages("com.spinyowl.spinygui")
-                .enableAllInfo()
-                .scan();
+            .whitelistPackages("com.spinyowl.spinygui")
+            .enableAllInfo()
+            .scan();
 
         for (ClassInfo classInfo : scanResult.getClassesWithAnnotation(Tag.class.getName())) {
             if (classInfo.extendsSuperclass(Element.class.getName())) {
@@ -33,9 +32,9 @@ public final class TagNameMapping {
                 }
                 addMapping(name, clazz);
             } else {
-                LOGGER.warn("{} class is annotated with {} annotation. " +
-                                "Tag annotation is allowed to use with {} children.",
-                        classInfo.getName(), Tag.class.getName(), Element.class.getName())
+                log.warn("{} class is annotated with {} annotation. " +
+                        "Tag annotation is allowed to use with {} children.",
+                    classInfo.getName(), Tag.class.getName(), Element.class.getName())
                 ;
             }
         }

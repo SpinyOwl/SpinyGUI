@@ -1,9 +1,9 @@
 package com.spinyowl.spinygui.core.converter.css.property.flex;
 
+import static com.spinyowl.spinygui.core.converter.css.Properties.FLEX_WRAP;
+
 import com.spinyowl.spinygui.core.converter.css.Property;
 import com.spinyowl.spinygui.core.style.types.flex.FlexWrap;
-
-import static com.spinyowl.spinygui.core.converter.css.Properties.FLEX_WRAP;
 
 public class FlexWrapProperty extends Property<FlexWrap> {
 

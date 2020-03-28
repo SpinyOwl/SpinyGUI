@@ -127,28 +127,36 @@ final class FlexUtils {
 
     public static void setPadding(long node, NodeStyle style) {
         Padding padding = style.getPadding();
-        setLength(padding.getLeft(), node, YGEdgeLeft, Yoga::YGNodeStyleSetPadding, Yoga::YGNodeStyleSetPaddingPercent);
-        setLength(padding.getTop(), node, YGEdgeTop, Yoga::YGNodeStyleSetPadding, Yoga::YGNodeStyleSetPaddingPercent);
-        setLength(padding.getRight(), node, YGEdgeRight, Yoga::YGNodeStyleSetPadding, Yoga::YGNodeStyleSetPaddingPercent);
-        setLength(padding.getBottom(), node, YGEdgeBottom, Yoga::YGNodeStyleSetPadding, Yoga::YGNodeStyleSetPaddingPercent);
+        setLength(padding.getLeft(), node, YGEdgeLeft, Yoga::YGNodeStyleSetPadding,
+            Yoga::YGNodeStyleSetPaddingPercent);
+        setLength(padding.getTop(), node, YGEdgeTop, Yoga::YGNodeStyleSetPadding,
+            Yoga::YGNodeStyleSetPaddingPercent);
+        setLength(padding.getRight(), node, YGEdgeRight, Yoga::YGNodeStyleSetPadding,
+            Yoga::YGNodeStyleSetPaddingPercent);
+        setLength(padding.getBottom(), node, YGEdgeBottom, Yoga::YGNodeStyleSetPadding,
+            Yoga::YGNodeStyleSetPaddingPercent);
     }
 
     public static void setMargin(long node, NodeStyle style) {
         Margin margin = style.getMargin();
         setUnit(margin.getLeft(), node, YGEdgeLeft,
-                Yoga::YGNodeStyleSetMarginAuto, Yoga::YGNodeStyleSetMargin, Yoga::YGNodeStyleSetMarginPercent);
+            Yoga::YGNodeStyleSetMarginAuto, Yoga::YGNodeStyleSetMargin,
+            Yoga::YGNodeStyleSetMarginPercent);
         setUnit(margin.getTop(), node, YGEdgeTop,
-                Yoga::YGNodeStyleSetMarginAuto, Yoga::YGNodeStyleSetMargin, Yoga::YGNodeStyleSetMarginPercent);
+            Yoga::YGNodeStyleSetMarginAuto, Yoga::YGNodeStyleSetMargin,
+            Yoga::YGNodeStyleSetMarginPercent);
         setUnit(margin.getRight(), node, YGEdgeRight,
-                Yoga::YGNodeStyleSetMarginAuto, Yoga::YGNodeStyleSetMargin, Yoga::YGNodeStyleSetMarginPercent);
+            Yoga::YGNodeStyleSetMarginAuto, Yoga::YGNodeStyleSetMargin,
+            Yoga::YGNodeStyleSetMarginPercent);
         setUnit(margin.getBottom(), node, YGEdgeBottom,
-                Yoga::YGNodeStyleSetMarginAuto, Yoga::YGNodeStyleSetMargin, Yoga::YGNodeStyleSetMarginPercent);
+            Yoga::YGNodeStyleSetMarginAuto, Yoga::YGNodeStyleSetMargin,
+            Yoga::YGNodeStyleSetMarginPercent);
     }
 
     public static void setUnit(Unit unit, long node,
-                               LongConsumer autoConsumer,
-                               ObjIntConsumer<Long> pixelConsumer,
-                               BiConsumer<Long, Float> percentConsumer) {
+        LongConsumer autoConsumer,
+        ObjIntConsumer<Long> pixelConsumer,
+        BiConsumer<Long, Float> percentConsumer) {
         if (unit != null) {
             if (unit.isAuto()) {
                 autoConsumer.accept(node);
@@ -164,9 +172,9 @@ final class FlexUtils {
     }
 
     public static void setUnit(Unit unit, long node, int side,
-                               ObjIntConsumer<Long> autoConsumer,
-                               TriConsumer<Long, Integer, Integer> pixelConsumer,
-                               TriConsumer<Long, Integer, Float> percentConsumer) {
+        ObjIntConsumer<Long> autoConsumer,
+        TriConsumer<Long, Integer, Integer> pixelConsumer,
+        TriConsumer<Long, Integer, Float> percentConsumer) {
         if (unit != null) {
             if (unit.isAuto()) {
                 autoConsumer.accept(node, side);
@@ -181,9 +189,22 @@ final class FlexUtils {
         }
     }
 
+    public static void setUnit(Unit unit, long node, int side,
+        TriConsumer<Long, Integer, Integer> pixelConsumer,
+        TriConsumer<Long, Integer, Float> percentConsumer) {
+        if (unit != null && !unit.isAuto()) {
+            Length l = unit.asLength();
+            if (PIXEL.equals(l.type())) {
+                pixelConsumer.accept(node, side, (Integer) l.get());
+            } else if (PERCENT.equals(l.type())) {
+                percentConsumer.accept(node, side, (Float) l.get());
+            }
+        }
+    }
+
     public static void setLength(Length length, long node,
-                                 ObjIntConsumer<Long> pixelConsumer,
-                                 BiConsumer<Long, Float> percentConsumer) {
+        ObjIntConsumer<Long> pixelConsumer,
+        BiConsumer<Long, Float> percentConsumer) {
         if (length != null) {
             if (PIXEL.equals(length.type())) {
                 pixelConsumer.accept(node, (Integer) length.get());
@@ -194,8 +215,8 @@ final class FlexUtils {
     }
 
     public static void setLength(Length length, long node, int side,
-                                 TriConsumer<Long, Integer, Integer> pixelConsumer,
-                                 TriConsumer<Long, Integer, Float> percentConsumer) {
+        TriConsumer<Long, Integer, Integer> pixelConsumer,
+        TriConsumer<Long, Integer, Float> percentConsumer) {
         if (length != null) {
             if (PIXEL.equals(length.type())) {
                 pixelConsumer.accept(node, side, (Integer) length.get());
@@ -206,6 +227,7 @@ final class FlexUtils {
     }
 
     public interface TriConsumer<T, U, V> {
+
         void accept(T t, U u, V v);
     }
 }

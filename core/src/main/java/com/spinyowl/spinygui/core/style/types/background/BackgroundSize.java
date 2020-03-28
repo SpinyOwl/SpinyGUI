@@ -35,16 +35,16 @@ public class BackgroundSize {
         return new BackgroundSize(sizeX, sizeY);
     }
 
-    public Type getType() {
-        return type;
-    }
-
     public static BackgroundSize contain() {
         return new BackgroundSize(Type.CONTAIN);
     }
 
     public static BackgroundSize cover() {
         return new BackgroundSize(Type.COVER);
+    }
+
+    public Type getType() {
+        return type;
     }
 
     public Unit getSizeX() {

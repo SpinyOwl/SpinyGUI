@@ -1,13 +1,12 @@
 package com.spinyowl.spinygui.core.converter.dom;
 
+import java.io.IOException;
+import java.io.Writer;
 import org.jdom2.Element;
 import org.jdom2.output.Format;
 import org.jdom2.output.support.AbstractXMLOutputProcessor;
 import org.jdom2.output.support.FormatStack;
 import org.jdom2.util.NamespaceStack;
-
-import java.io.IOException;
-import java.io.Writer;
 
 /**
  * Used only for marshalling node to xml.
@@ -28,7 +27,8 @@ public class RawProcessor extends AbstractXMLOutputProcessor {
     }
 
     @Override
-    protected void printElement(Writer out, FormatStack fstack, NamespaceStack nstack, Element element) throws IOException {
+    protected void printElement(Writer out, FormatStack fstack, NamespaceStack nstack,
+        Element element) throws IOException {
         if (Boolean.parseBoolean(element.getAttributeValue(PREFORMATTED_ATTRIBUTE))) {
             fstack.setTextMode(Format.TextMode.PRESERVE);
         }

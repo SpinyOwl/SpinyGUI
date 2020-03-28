@@ -1,6 +1,7 @@
 package com.spinyowl.spinygui.core.converter.css.property.border;
 
-import com.spinyowl.spinygui.core.converter.css.Properties;
+import static com.spinyowl.spinygui.core.converter.css.Properties.BORDER;
+
 import com.spinyowl.spinygui.core.converter.css.Property;
 import com.spinyowl.spinygui.core.converter.css.extractor.ValueExtractor;
 import com.spinyowl.spinygui.core.converter.css.extractor.ValueExtractors;
@@ -18,7 +19,7 @@ public class BorderProperty extends Property<Border> {
     private static ValueExtractor<Color> colorValueExtractor = ValueExtractors.of(Color.class);
 
     public BorderProperty() {
-        super(Properties.BORDER, DEFAULT_VALUE, !INHERITED, ANIMATABLE,
+        super(BORDER, DEFAULT_VALUE, !INHERITED, ANIMATABLE,
             NodeStyle::setBorder, NodeStyle::getBorder,
             BorderProperty::x, BorderProperty::test
         );

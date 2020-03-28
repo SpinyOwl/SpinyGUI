@@ -1,13 +1,13 @@
 package com.spinyowl.spinygui.core.layout;
 
 import com.spinyowl.spinygui.core.layout.impl.LayoutManagerImpl;
-
 import java.util.Objects;
 
 /**
  * Layout manager. Used to layout node and it's child components.
  */
 public final class LayoutManagerProvider {
+
     private LayoutManagerProvider() {
     }
 
@@ -24,6 +24,7 @@ public final class LayoutManagerProvider {
      * Instance holder.
      */
     private static class LMH {
+
         private static LayoutManager instance = new LayoutManagerImpl();
     }
 }

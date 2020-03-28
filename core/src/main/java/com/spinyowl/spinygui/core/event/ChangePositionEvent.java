@@ -4,6 +4,7 @@ import com.spinyowl.spinygui.core.node.base.Element;
 import org.joml.Vector2f;
 
 public class ChangePositionEvent<T extends Element> extends NodeEvent<T> {
+
     private final Vector2f oldPos;
     private final Vector2f newPos;
 

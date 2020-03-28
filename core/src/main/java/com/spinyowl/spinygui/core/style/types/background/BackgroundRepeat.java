@@ -3,6 +3,7 @@ package com.spinyowl.spinygui.core.style.types.background;
 import java.util.Objects;
 
 public class BackgroundRepeat {
+
     private Repeat repeatX;
     private Repeat repeatY;
 

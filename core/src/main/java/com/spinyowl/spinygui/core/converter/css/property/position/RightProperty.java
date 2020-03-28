@@ -1,18 +1,19 @@
 package com.spinyowl.spinygui.core.converter.css.property.position;
 
-import com.spinyowl.spinygui.core.converter.css.Properties;
+import static com.spinyowl.spinygui.core.converter.css.Properties.RIGHT;
+
 import com.spinyowl.spinygui.core.converter.css.Property;
 import com.spinyowl.spinygui.core.converter.css.extractor.ValueExtractor;
 import com.spinyowl.spinygui.core.converter.css.extractor.ValueExtractors;
 import com.spinyowl.spinygui.core.style.NodeStyle;
-import com.spinyowl.spinygui.core.style.types.length.Length;
+import com.spinyowl.spinygui.core.style.types.length.Unit;
 
-public class RightProperty extends Property<Length> {
+public class RightProperty extends Property<Unit> {
 
-    public static final ValueExtractor<Length> extractor = ValueExtractors.of(Length.class);
+    public static final ValueExtractor<Unit> extractor = ValueExtractors.of(Unit.class);
 
     public RightProperty() {
-        super(Properties.RIGHT, "auto", !INHERITED, ANIMATABLE,
+        super(RIGHT, "auto", !INHERITED, ANIMATABLE,
             NodeStyle::setRight, NodeStyle::getRight,
             extractor::extract, extractor::isValid);
     }

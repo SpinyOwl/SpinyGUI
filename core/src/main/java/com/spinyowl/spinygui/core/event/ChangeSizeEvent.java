@@ -4,6 +4,7 @@ import com.spinyowl.spinygui.core.node.base.Element;
 import org.joml.Vector2f;
 
 public class ChangeSizeEvent<T extends Element> extends NodeEvent<T> {
+
     private final Vector2f oldSize;
     private final Vector2f newSize;
 

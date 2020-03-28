@@ -1,6 +1,7 @@
 package com.spinyowl.spinygui.core.converter.css.property.border.radius;
 
-import com.spinyowl.spinygui.core.converter.css.Properties;
+import static com.spinyowl.spinygui.core.converter.css.Properties.BORDER_RADIUS;
+
 import com.spinyowl.spinygui.core.converter.css.Property;
 import com.spinyowl.spinygui.core.converter.css.extractor.ValueExtractor;
 import com.spinyowl.spinygui.core.converter.css.extractor.ValueExtractors;
@@ -14,7 +15,7 @@ public class BorderRadiusProperty extends Property<BorderRadius> {
     private static ValueExtractor<Length> extractor = ValueExtractors.of(Length.class);
 
     public BorderRadiusProperty() {
-        super(Properties.BORDER_RADIUS, "0", !INHERITED, ANIMATABLE,
+        super(BORDER_RADIUS, "0", !INHERITED, ANIMATABLE,
             NodeStyle::setBorderRadius, NodeStyle::getBorderRadius,
             BorderRadiusProperty::extract, BorderRadiusProperty::test);
     }
