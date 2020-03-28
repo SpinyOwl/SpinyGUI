@@ -93,8 +93,8 @@ public final class NodeConverter {
         if (xml == null || xml.isEmpty()) {
             return null;
         }
-        return createNodeFromContent(
-            new SAXBuilder().build(new StringReader(xml)).getRootElement());
+        SAXBuilder saxBuilder = new SAXBuilder();
+        return createNodeFromContent(saxBuilder.build(new StringReader(xml)).getRootElement());
     }
 
     private static Node createNodeFromContent(Content content) throws Exception {
