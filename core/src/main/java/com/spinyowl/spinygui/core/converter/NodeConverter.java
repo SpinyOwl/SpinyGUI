@@ -6,6 +6,7 @@ import com.spinyowl.spinygui.core.node.base.Element;
 import com.spinyowl.spinygui.core.node.base.Node;
 import com.spinyowl.spinygui.core.node.base.Text;
 import java.io.StringReader;
+import javax.xml.XMLConstants;
 import org.jdom2.Content;
 import org.jdom2.Document;
 import org.jdom2.input.SAXBuilder;
@@ -92,8 +93,9 @@ public final class NodeConverter {
     public static Node fromXml(String xml) throws Exception {
         if (xml == null || xml.isEmpty()) {
             return null;
-        }
-        SAXBuilder saxBuilder = new SAXBuilder();
+        }SAXBuilder saxBuilder = new SAXBuilder(); // Compliant
+        saxBuilder.setProperty(XMLConstants.ACCESS_EXTERNAL_DTD, ""); // Compliant
+        saxBuilder.setProperty(XMLConstants.ACCESS_EXTERNAL_SCHEMA, ""); // Compliant
         return createNodeFromContent(saxBuilder.build(new StringReader(xml)).getRootElement());
     }
 
