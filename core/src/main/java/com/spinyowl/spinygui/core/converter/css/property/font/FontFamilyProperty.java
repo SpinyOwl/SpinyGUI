@@ -14,7 +14,13 @@ public class FontFamilyProperty extends Property<Set<String>> {
     public FontFamilyProperty() {
         super(FONT_FAMILY, "default", INHERITED, !ANIMATABLE,
             NodeStyle::setFontFamilies, NodeStyle::getFontFamilies,
-            v -> Arrays.stream(v.split("\\s+")).collect(Collectors.toSet()), Font::hasFont);
+            v -> Arrays.stream(v.split(",\\s+"))
+                .map(FontFamilyProperty::trimAndUnwrap).collect(Collectors.toSet()),
+            Font::hasFont);
+    }
+
+    private static String trimAndUnwrap(String value) {
+        return value.trim().replaceAll("\"", "");
     }
 
 }
