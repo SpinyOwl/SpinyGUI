@@ -27,8 +27,6 @@ public class Color {
     private static Map<String, Color> colors = new HashMap<>();
     //@formatter:on
 
-    private static Color initialColor = Color.BLACK;
-
     static {
         colors.put("black", BLACK);
         colors.put("silver", SILVER);
@@ -49,32 +47,32 @@ public class Color {
         colors.put("transparent", TRANSPARENT);
     }
 
-    private final float red;
-    private final float green;
-    private final float blue;
-    private final float alpha;
+    private final float r;
+    private final float g;
+    private final float b;
+    private final float a;
 
-    public Color(float red, float green, float blue, float alpha) {
-        this.red = red;
-        this.green = green;
-        this.blue = blue;
-        this.alpha = alpha;
+    public Color(float r, float g, float b, float a) {
+        this.r = r;
+        this.g = g;
+        this.b = b;
+        this.a = a;
     }
 
-    public Color(int red, int green, int blue, int alpha) {
-        this(red, green, blue, alpha / 255f);
+    public Color(int r, int g, int b, int a) {
+        this(r, g, b, a / 255f);
     }
 
-    public Color(int red, int green, int blue, float alpha) {
-        this(red / 255f, green / 255f, blue / 255f, alpha);
+    public Color(int r, int g, int b, float a) {
+        this(r / 255f, g / 255f, b / 255f, a);
     }
 
-    public Color(float red, float green, float blue) {
-        this(red, green, blue, 1f);
+    public Color(float r, float g, float b) {
+        this(r, g, b, 1f);
     }
 
-    public Color(int red, int green, int blue) {
-        this(red / 255f, green / 255f, blue / 255f, 1f);
+    public Color(int r, int g, int b) {
+        this(r / 255f, g / 255f, b / 255f, 1f);
     }
 
     public static Color getColorByName(String name) {
@@ -150,38 +148,28 @@ public class Color {
         return colors.containsKey(colorName.toLowerCase());
     }
 
-    public static Color getInitialColor() {
-        return initialColor;
+    public float getR() {
+        return r;
     }
 
-    public static void setInitialColor(Color color) {
-        if (color != null) {
-            initialColor = color;
-        }
+    public float getG() {
+        return g;
     }
 
-    public float getRed() {
-        return red;
+    public float getB() {
+        return b;
     }
 
-    public float getGreen() {
-        return green;
-    }
-
-    public float getBlue() {
-        return blue;
-    }
-
-    public float getAlpha() {
-        return alpha;
+    public float getA() {
+        return a;
     }
 
     @Override
     public String toString() {
-        if (alpha != 1) {
-            return String.format("Color(%f, %f, %f, %f)", red, green, blue, alpha);
+        if (a != 1) {
+            return String.format("Color(%f, %f, %f, %f)", r, g, b, a);
         }
-        return String.format("Color(%f, %f, %f)", red, green, blue);
+        return String.format("Color(%f, %f, %f)", r, g, b);
     }
 
     @Override
@@ -193,14 +181,14 @@ public class Color {
             return false;
         }
         Color color = (Color) o;
-        return Float.compare(color.red, red) == 0 &&
-            Float.compare(color.green, green) == 0 &&
-            Float.compare(color.blue, blue) == 0 &&
-            Float.compare(color.alpha, alpha) == 0;
+        return Float.compare(color.r, r) == 0 &&
+            Float.compare(color.g, g) == 0 &&
+            Float.compare(color.b, b) == 0 &&
+            Float.compare(color.a, a) == 0;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(red, green, blue, alpha);
+        return Objects.hash(r, g, b, a);
     }
 }
