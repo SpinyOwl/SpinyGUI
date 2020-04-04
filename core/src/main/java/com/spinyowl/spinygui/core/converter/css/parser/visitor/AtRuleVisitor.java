@@ -54,7 +54,7 @@ public class AtRuleVisitor extends CSS3BaseVisitor<AtRule> {
         } else if (FONT_STRETCH.equalsIgnoreCase(name)) {
             fontStretch = FontStretch.find(value);
         } else if (FONT_STYLE.equalsIgnoreCase(name)) {
-            fontStyle = FontStyle.valueOf(value);
+            fontStyle = FontStyle.find(value);
         } else if (FONT_WEIGHT.equalsIgnoreCase(name)) {
             fontWeight = FontWeight.find(value);
         }
