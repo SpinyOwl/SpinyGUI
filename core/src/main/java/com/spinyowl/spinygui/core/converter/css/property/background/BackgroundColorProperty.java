@@ -13,8 +13,8 @@ public class BackgroundColorProperty extends Property<Color> {
 
     public BackgroundColorProperty() {
         super(BACKGROUND_COLOR, "transparent", !INHERITED, ANIMATABLE,
-            (s, c) -> s.getBackground().setColor(c),
-            s -> s.getBackground().getColor(),
+            (s, c) -> s.background().color(c),
+            s -> s.background().color(),
             colorExtractor::extract,
             colorExtractor::isValid);
     }

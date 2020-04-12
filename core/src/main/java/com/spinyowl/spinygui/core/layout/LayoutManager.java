@@ -1,7 +1,7 @@
 package com.spinyowl.spinygui.core.layout;
 
 import com.spinyowl.spinygui.core.api.Frame;
-import com.spinyowl.spinygui.core.node.base.Element;
+import com.spinyowl.spinygui.core.node.Element;
 import com.spinyowl.spinygui.core.style.types.Display;
 
 /**

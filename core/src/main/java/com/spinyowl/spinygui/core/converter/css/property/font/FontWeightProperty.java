@@ -9,8 +9,8 @@ import com.spinyowl.spinygui.core.style.NodeStyle;
 public class FontWeightProperty extends Property<FontWeight> {
 
     public FontWeightProperty() {
-        super(FONT_WEIGHT, "normal", INHERITED, ANIMATABLE, NodeStyle::setFontWeight,
-            NodeStyle::getFontWeight, FontWeight::find, FontWeight::contains);
+        super(FONT_WEIGHT, "normal", INHERITED, ANIMATABLE, NodeStyle::fontWeight,
+            NodeStyle::fontWeight, FontWeight::find, FontWeight::contains);
     }
 
 }

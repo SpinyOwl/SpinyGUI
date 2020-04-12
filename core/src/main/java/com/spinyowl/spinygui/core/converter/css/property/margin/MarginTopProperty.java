@@ -13,7 +13,7 @@ public class MarginTopProperty extends Property<Unit> {
 
     public MarginTopProperty() {
         super(MARGIN_TOP, "0", !INHERITED, ANIMATABLE,
-            (s, v) -> s.getMargin().setTop(v), s -> s.getMargin().getTop(),
+            (s, v) -> s.margin().top(v), s -> s.margin().top(),
             extractor::extract, extractor::isValid);
     }
 }

@@ -14,7 +14,7 @@ public class ColorProperty extends Property<Color> {
 
     public ColorProperty() {
         super(COLOR, "black", INHERITED, ANIMATABLE,
-            NodeStyle::setColor, NodeStyle::getColor,
+            NodeStyle::color, NodeStyle::color,
             extractor::extract, extractor::isValid);
     }
 }

@@ -9,7 +9,7 @@ public class AlignSelfProperty extends Property<AlignSelf> {
 
     public AlignSelfProperty() {
         super(ALIGN_SELF, "auto", !INHERITED, !ANIMATABLE,
-            (s, v) -> s.getFlex().setAlignSelf(v), s -> s.getFlex().getAlignSelf(),
+            (s, v) -> s.flex().alignSelf(v), s -> s.flex().alignSelf(),
             AlignSelf::find, AlignSelf::contains);
     }
 

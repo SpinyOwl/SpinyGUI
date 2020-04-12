@@ -9,7 +9,7 @@ public class FlexDirectionProperty extends Property<FlexDirection> {
 
     public FlexDirectionProperty() {
         super(FLEX_DIRECTION, "row", !INHERITED, !ANIMATABLE,
-            (s, v) -> s.getFlex().setFlexDirection(v), s -> s.getFlex().getFlexDirection(),
+            (s, v) -> s.flex().flexDirection(v), s -> s.flex().flexDirection(),
             FlexDirection::find, FlexDirection::contains);
     }
 

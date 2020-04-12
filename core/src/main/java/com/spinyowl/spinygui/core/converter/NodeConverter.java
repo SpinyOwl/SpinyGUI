@@ -2,26 +2,24 @@ package com.spinyowl.spinygui.core.converter;
 
 import com.spinyowl.spinygui.core.converter.dom.RawProcessor;
 import com.spinyowl.spinygui.core.converter.dom.TagNameMapping;
-import com.spinyowl.spinygui.core.node.base.Element;
-import com.spinyowl.spinygui.core.node.base.Node;
-import com.spinyowl.spinygui.core.node.base.Text;
+import com.spinyowl.spinygui.core.node.Element;
+import com.spinyowl.spinygui.core.node.Node;
+import com.spinyowl.spinygui.core.node.Text;
 import java.io.StringReader;
 import javax.xml.XMLConstants;
+import lombok.extern.slf4j.Slf4j;
 import org.jdom2.Content;
 import org.jdom2.Document;
 import org.jdom2.input.SAXBuilder;
 import org.jdom2.output.Format;
 import org.jdom2.output.XMLOutputter;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Node marshaller. Used to convert node to xml and vise versa. Uses {@link TagNameMapping} to find
  * out tag name or if there is no mapping - uses class canonical name
  */
+@Slf4j
 public final class NodeConverter {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(NodeConverter.class);
 
     private NodeConverter() {
     }
@@ -53,7 +51,7 @@ public final class NodeConverter {
 
     private static Content createContent(Node node) {
         if (node instanceof Text) {
-            return new org.jdom2.Text(((Text) node).getContent());
+            return new org.jdom2.Text(((Text) node).content());
         } else if (node instanceof Element) {
             return createElement((Element) node);
         } else {
@@ -67,10 +65,10 @@ public final class NodeConverter {
     private static org.jdom2.Element createElement(Element node) {
         org.jdom2.Element element = new org.jdom2.Element(getTagName(node));
 
-        for (var entry : node.getAttributes().entrySet()) {
+        for (var entry : node.attributes().entrySet()) {
             element.setAttribute(entry.getKey(), entry.getValue());
         }
-        for (Node childNode : node.getChildNodes()) {
+        for (Node childNode : node.childNodes()) {
             Content content = createContent(childNode);
             if (content != null) {
                 element.addContent(content);
@@ -93,7 +91,8 @@ public final class NodeConverter {
     public static Node fromXml(String xml) throws Exception {
         if (xml == null || xml.isEmpty()) {
             return null;
-        }SAXBuilder saxBuilder = new SAXBuilder(); // Compliant
+        }
+        SAXBuilder saxBuilder = new SAXBuilder(); // Compliant
         saxBuilder.setProperty(XMLConstants.ACCESS_EXTERNAL_DTD, ""); // Compliant
         saxBuilder.setProperty(XMLConstants.ACCESS_EXTERNAL_SCHEMA, ""); // Compliant
         return createNodeFromContent(saxBuilder.build(new StringReader(xml)).getRootElement());

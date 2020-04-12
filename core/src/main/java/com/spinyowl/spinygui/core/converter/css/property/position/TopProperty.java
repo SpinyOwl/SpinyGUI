@@ -14,7 +14,7 @@ public class TopProperty extends Property<Unit> {
 
     public TopProperty() {
         super(TOP, "auto", !INHERITED, ANIMATABLE,
-            NodeStyle::setTop, NodeStyle::getTop,
+            NodeStyle::top, NodeStyle::top,
             extractor::extract, extractor::isValid);
     }
 }

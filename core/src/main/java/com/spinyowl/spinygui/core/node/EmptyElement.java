@@ -1,4 +1,4 @@
-package com.spinyowl.spinygui.core.node.base;
+package com.spinyowl.spinygui.core.node;
 
 import java.util.Collections;
 import java.util.List;
@@ -16,7 +16,7 @@ public abstract class EmptyElement extends Element {
      * @return list of child nodes.
      */
     @Override
-    public List<Node> getChildNodes() {
+    public List<Node> childNodes() {
         return Collections.emptyList();
     }
 
@@ -47,23 +47,12 @@ public abstract class EmptyElement extends Element {
     }
 
     /**
-     * Returns the number of elements in this node.  If this node contains more than {@code
-     * Integer.MAX_VALUE} elements, returns {@code Integer.MAX_VALUE}.
+     * Returns true if an element has any child nodes, otherwise false.
      *
-     * @return the number of elements in this node
+     * @return true if an element has any child nodes, otherwise false.
      */
     @Override
-    public int count() {
-        return 0;
-    }
-
-    /**
-     * Returns true if there is no child nodes in this node.
-     *
-     * @return true if there is no child nodes in this node.
-     */
-    @Override
-    public boolean isEmpty() {
-        return true;
+    public boolean hasChildNodes() {
+        return false;
     }
 }

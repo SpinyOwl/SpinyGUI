@@ -14,7 +14,7 @@ public class FlexBasisProperty extends Property<Unit> {
 
     public FlexBasisProperty() {
         super(FLEX_BASIS, AUTO, !INHERITED, !ANIMATABLE,
-            (s, v) -> s.getFlex().setFlexBasis(v), s -> s.getFlex().getFlexBasis(),
+            (s, v) -> s.flex().flexBasis(v), s -> s.flex().flexBasis(),
             extractor::extract, extractor::isValid);
     }
 

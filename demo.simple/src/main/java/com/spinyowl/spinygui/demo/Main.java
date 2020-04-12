@@ -1,13 +1,11 @@
 package com.spinyowl.spinygui.demo;
 
-import static com.spinyowl.spinygui.core.node.ElementBuilder.button;
-import static com.spinyowl.spinygui.core.node.ElementBuilder.div;
-import static com.spinyowl.spinygui.core.node.ElementBuilder.text;
+import static com.spinyowl.spinygui.core.node.NodeBuilder.*;
 
 import com.spinyowl.spinygui.core.api.Frame;
 import com.spinyowl.spinygui.core.converter.NodeConverter;
-import com.spinyowl.spinygui.core.node.base.Element;
-import com.spinyowl.spinygui.core.node.base.Node;
+import com.spinyowl.spinygui.core.node.Element;
+import com.spinyowl.spinygui.core.node.Node;
 import com.spinyowl.spinygui.core.node.element.Div;
 import com.spinyowl.spinygui.core.node.element.Input;
 import com.spinyowl.spinygui.core.node.element.RadioButton;
@@ -35,12 +33,12 @@ public class Main {
         input.setName("password");
         input.setValue("PASS_@!@#&");
 
-        Div buttonPanel = div(text("Bold")).build();
-        Node buttonPre = button(text("\n\n\tFOrmantted text\n\t\n\n asdfasdfa\n")).build();
+        Div buttonPanel = div(text("Bold"));
+        Node buttonPre = button(text("\n\n\tFOrmantted text\n\t\n\n asdfasdfa\n"));
         Node button = button(text("\n\n\tFOrmantted text\n\t\n\n asdfasdfa\n"),
-            buttonPanel, buttonPre).build();
+            buttonPanel, buttonPre);
         RadioButton radioButton = new RadioButton();
-        Node element = div(button, input, radioButton).position(100, 100).build();
+        Node element = div(button, input, radioButton);
 
         Frame frame = new Frame();// window.getFrame();
         frame.getDefaultLayer().addChild(element);

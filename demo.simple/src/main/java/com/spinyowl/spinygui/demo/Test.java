@@ -12,9 +12,10 @@ import com.spinyowl.spinygui.core.converter.css.StyleSheet;
 import com.spinyowl.spinygui.core.converter.css.parser.StyleReflectionHandler;
 import com.spinyowl.spinygui.core.converter.css.parser.StyleSheetException;
 import com.spinyowl.spinygui.core.converter.css.selector.StyleSelector;
-import com.spinyowl.spinygui.core.node.base.Element;
-import com.spinyowl.spinygui.core.node.base.Node;
+import com.spinyowl.spinygui.core.node.Element;
+import com.spinyowl.spinygui.core.node.Node;
 import com.spinyowl.spinygui.core.node.element.Button;
+import com.spinyowl.spinygui.core.node.element.Div;
 import com.spinyowl.spinygui.core.node.element.Label;
 import com.spinyowl.spinygui.core.style.manager.StyleManagerProvider;
 import com.spinyowl.spinygui.core.style.types.Color;
@@ -33,6 +34,9 @@ public class Test {
         createFromCSS();
         searchComponents();
         parseText();
+
+        var d = new Div();
+        Map<String, String> attributes = d.attributes();
     }
 
     public static void createFromCSS() throws StyleSheetException {
@@ -58,7 +62,7 @@ public class Test {
 
         Element div = div(button(testLabel));
 
-        List<RuleSet> ruleSets = stylesheet.getRuleSets();
+        List<RuleSet> ruleSets = stylesheet.ruleSets();
         RuleSet ruleSet = ruleSets.get(0);
         List<StyleSelector> selectors = ruleSet.getSelectors();
 
@@ -71,7 +75,7 @@ public class Test {
 
         StyleManagerProvider.getInstance().recalculateStyles(frame);
 
-        assert (Objects.equals(Color.RED, testLabel.getCalculatedStyle().getColor()));
+        assert (Objects.equals(Color.RED, testLabel.calculatedStyle().color()));
     }
 
     public static void searchComponents() throws Exception {
@@ -97,7 +101,7 @@ public class Test {
             "</div>";
         var componentTree = (Element) NodeConverter.fromXml(xml);
 
-        List<RuleSet> ruleSets = stylesheet.getRuleSets();
+        List<RuleSet> ruleSets = stylesheet.ruleSets();
 
         Set<Element> labels = StyleSheet.searchElements(ruleSets.get(0), componentTree);
         for (Node node : labels) {

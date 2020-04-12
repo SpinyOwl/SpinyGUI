@@ -14,7 +14,7 @@ public class MaxWidthProperty extends Property<Length> {
 
     public MaxWidthProperty() {
         super(MAX_WIDTH, "none", !INHERITED, ANIMATABLE,
-            NodeStyle::setMaxWidth, NodeStyle::getMaxWidth,
+            NodeStyle::maxWidth, NodeStyle::maxWidth,
             value -> "none".equalsIgnoreCase(value) ?
                 Length.pixel(Integer.MAX_VALUE)
                 : extractor.extract(value),

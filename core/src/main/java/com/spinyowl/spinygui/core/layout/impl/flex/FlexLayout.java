@@ -37,8 +37,8 @@ import com.spinyowl.spinygui.core.event.ChangeSizeEvent;
 import com.spinyowl.spinygui.core.event.ElementTreeUpdateEvent;
 import com.spinyowl.spinygui.core.event.processor.EventProcessorProvider;
 import com.spinyowl.spinygui.core.layout.Layout;
-import com.spinyowl.spinygui.core.node.base.Element;
-import com.spinyowl.spinygui.core.node.base.Node;
+import com.spinyowl.spinygui.core.node.Element;
+import com.spinyowl.spinygui.core.node.Node;
 import com.spinyowl.spinygui.core.style.NodeStyle;
 import com.spinyowl.spinygui.core.style.types.Position;
 import com.spinyowl.spinygui.core.style.types.flex.Flex;
@@ -68,8 +68,8 @@ public class FlexLayout implements Layout {
         YGNodeStyleSetDisplay(rootNode, YGDisplayFlex);
 
         List<Long> childNodes = new ArrayList<>();
-        List<Element> components = parent.getChildElements().stream()
-            .filter(Node::isVisible).collect(Collectors.toList());
+        List<Element> components = parent.children().stream()
+            .filter(Node::visible).collect(Collectors.toList());
         for (Element component : components) {
             long childNode = YGNodeNew();
             prepareNode(component, childNode);
@@ -78,7 +78,7 @@ public class FlexLayout implements Layout {
         }
 
         // calculate
-        nYGNodeCalculateLayout(rootNode, parent.getSize().x(), parent.getSize().y(),
+        nYGNodeCalculateLayout(rootNode, parent.size().x(), parent.size().y(),
             YGDirectionLTR);
 
         // apply to components
@@ -88,13 +88,13 @@ public class FlexLayout implements Layout {
 
             Vector2f newPos = new Vector2f(YGNodeLayoutGetLeft(yogaNode),
                 YGNodeLayoutGetTop(yogaNode));
-            Vector2f oldPos = new Vector2f(childComponent.getPosition());
-            childComponent.setPosition(newPos);
+            Vector2f oldPos = new Vector2f(childComponent.position());
+            childComponent.position(newPos);
 
             Vector2f newSize = new Vector2f(YGNodeLayoutGetWidth(yogaNode),
                 YGNodeLayoutGetHeight(yogaNode));
-            Vector2f oldSize = new Vector2f(childComponent.getSize());
-            childComponent.setSize(newSize);
+            Vector2f oldSize = new Vector2f(childComponent.size());
+            childComponent.size(newSize);
 
             generateEvents(childComponent, newPos, oldPos, newSize, oldSize);
         }
@@ -130,8 +130,8 @@ public class FlexLayout implements Layout {
 
     private void prepareParentNode(Element parent, long rootNode) {
         prepareNode(parent, rootNode);
-        YGNodeStyleSetWidth(rootNode, parent.getSize().x());
-        YGNodeStyleSetHeight(rootNode, parent.getSize().y());
+        YGNodeStyleSetWidth(rootNode, parent.size().x());
+        YGNodeStyleSetHeight(rootNode, parent.size().y());
     }
 
     /**
@@ -141,50 +141,50 @@ public class FlexLayout implements Layout {
      * @param node      root yoga node.
      */
     private void prepareNode(Element component, long node) {
-        NodeStyle style = component.getStyle();
-        Flex flex = style.getFlex();
-        setFlexDirection(node, flex.getFlexDirection());
-        setJustifyContent(node, flex.getJustifyContent());
-        setAlignItems(node, flex.getAlignItems());
-        setAlignSelf(node, flex.getAlignSelf());
+        NodeStyle style = component.style();
+        Flex flex = style.flex();
+        setFlexDirection(node, flex.flexDirection());
+        setJustifyContent(node, flex.justifyContent());
+        setAlignItems(node, flex.alignItems());
+        setAlignSelf(node, flex.alignSelf());
 
-        setLength(style.getMinWidth(), node, Yoga::YGNodeStyleSetMinWidth,
+        setLength(style.minWidth(), node, Yoga::YGNodeStyleSetMinWidth,
             Yoga::YGNodeStyleSetMinWidthPercent);
-        setLength(style.getMinHeight(), node, Yoga::YGNodeStyleSetMinHeight,
+        setLength(style.minHeight(), node, Yoga::YGNodeStyleSetMinHeight,
             Yoga::YGNodeStyleSetMinHeightPercent);
 
-        setLength(style.getMaxWidth(), node, Yoga::YGNodeStyleSetMaxWidth,
+        setLength(style.maxWidth(), node, Yoga::YGNodeStyleSetMaxWidth,
             Yoga::YGNodeStyleSetMaxWidthPercent);
-        setLength(style.getMaxHeight(), node, Yoga::YGNodeStyleSetMaxHeight,
+        setLength(style.maxHeight(), node, Yoga::YGNodeStyleSetMaxHeight,
             Yoga::YGNodeStyleSetMaxHeightPercent);
 
-        setUnit(style.getWidth(), node, Yoga::YGNodeStyleSetWidthAuto, Yoga::YGNodeStyleSetWidth,
+        setUnit(style.width(), node, Yoga::YGNodeStyleSetWidthAuto, Yoga::YGNodeStyleSetWidth,
             Yoga::YGNodeStyleSetWidthPercent);
-        setUnit(style.getHeight(), node, Yoga::YGNodeStyleSetHeightAuto, Yoga::YGNodeStyleSetHeight,
+        setUnit(style.height(), node, Yoga::YGNodeStyleSetHeightAuto, Yoga::YGNodeStyleSetHeight,
             Yoga::YGNodeStyleSetHeightPercent);
 
-        setUnit(style.getTop(), node, YGEdgeTop, Yoga::YGNodeStyleSetPosition,
+        setUnit(style.top(), node, YGEdgeTop, Yoga::YGNodeStyleSetPosition,
             Yoga::YGNodeStyleSetPositionPercent);
-        setUnit(style.getBottom(), node, YGEdgeBottom, Yoga::YGNodeStyleSetPosition,
+        setUnit(style.bottom(), node, YGEdgeBottom, Yoga::YGNodeStyleSetPosition,
             Yoga::YGNodeStyleSetPositionPercent);
-        setUnit(style.getRight(), node, YGEdgeRight, Yoga::YGNodeStyleSetPosition,
+        setUnit(style.right(), node, YGEdgeRight, Yoga::YGNodeStyleSetPosition,
             Yoga::YGNodeStyleSetPositionPercent);
-        setUnit(style.getLeft(), node, YGEdgeLeft, Yoga::YGNodeStyleSetPosition,
+        setUnit(style.left(), node, YGEdgeLeft, Yoga::YGNodeStyleSetPosition,
             Yoga::YGNodeStyleSetPositionPercent);
 
-        setUnit(flex.getFlexBasis(), node,
+        setUnit(flex.flexBasis(), node,
             Yoga::YGNodeStyleSetFlexBasisAuto, Yoga::YGNodeStyleSetFlexBasis,
             Yoga::YGNodeStyleSetFlexBasisPercent);
 
         setPadding(node, style);
         setMargin(node, style);
 
-        setFlexWrap(node, flex.getFlexWrap());
+        setFlexWrap(node, flex.flexWrap());
         YGNodeStyleSetPositionType(node,
-            style.getPosition() == Position.RELATIVE ? YGPositionTypeRelative
+            style.position() == Position.RELATIVE ? YGPositionTypeRelative
                 : YGPositionTypeAbsolute);
 
-        YGNodeStyleSetFlexGrow(node, flex.getFlexGrow());
-        YGNodeStyleSetFlexShrink(node, flex.getFlexShrink());
+        YGNodeStyleSetFlexGrow(node, flex.flexGrow());
+        YGNodeStyleSetFlexShrink(node, flex.flexShrink());
     }
 }

@@ -3,12 +3,17 @@ package com.spinyowl.spinygui.core.style.types;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
-import java.util.StringJoiner;
 import java.util.concurrent.ConcurrentHashMap;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.ToString;
 
 /**
  * CSS position.
  */
+@Getter
+@EqualsAndHashCode
+@ToString
 public final class Position {
 
     private static final Map<String, Position> VALUES = new ConcurrentHashMap<>();
@@ -101,40 +106,8 @@ public final class Position {
         if (name == null) {
             return false;
         }
-        return values().stream().map(Position::getName)
+        return values().stream().map(Position::name)
             .anyMatch(v -> v.equalsIgnoreCase(name));
     }
 
-    /**
-     * Name of position.
-     *
-     * @return
-     */
-    public String getName() {
-        return name;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        Position position = (Position) o;
-        return Objects.equals(name, position.name);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(name);
-    }
-
-    @Override
-    public String toString() {
-        return new StringJoiner(", ", Position.class.getSimpleName() + "[", "]")
-            .add("name='" + name + "'")
-            .toString();
-    }
 }

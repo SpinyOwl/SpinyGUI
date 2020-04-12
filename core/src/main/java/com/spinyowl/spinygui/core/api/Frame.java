@@ -91,7 +91,7 @@ public class Frame {
      * @param height height.
      */
     public void setSize(float width, float height) {
-        getAllLayers().forEach(l -> l.setSize(width, height));
+        getAllLayers().forEach(l -> l.size(width, height));
     }
 
     /**
@@ -137,7 +137,7 @@ public class Frame {
         if (frame == this && containsLayer(layer)) {
             boolean removed = layers.remove(layer);
             if (removed) {
-                layer.setParent(null);
+                layer.parent(null);
             }
         }
     }

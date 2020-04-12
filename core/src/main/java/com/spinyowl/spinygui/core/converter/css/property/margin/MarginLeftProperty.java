@@ -13,7 +13,7 @@ public class MarginLeftProperty extends Property<Unit> {
 
     public MarginLeftProperty() {
         super(MARGIN_LEFT, "0", !INHERITED, ANIMATABLE,
-            (s, v) -> s.getMargin().setLeft(v), s -> s.getMargin().getLeft(),
+            (s, v) -> s.margin().left(v), s -> s.margin().left(),
             extractor::extract, extractor::isValid);
     }
 }

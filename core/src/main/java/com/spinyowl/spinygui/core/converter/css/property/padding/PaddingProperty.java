@@ -16,7 +16,7 @@ public class PaddingProperty extends Property<Padding> {
 
     public PaddingProperty() {
         super(PADDING, "0", !INHERITED, ANIMATABLE,
-            NodeStyle::setPadding, NodeStyle::getPadding,
+            NodeStyle::padding, NodeStyle::padding,
             PaddingProperty::extract, PaddingProperty::test);
     }
 

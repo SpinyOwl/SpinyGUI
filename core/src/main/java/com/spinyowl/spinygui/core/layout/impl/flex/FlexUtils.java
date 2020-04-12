@@ -126,29 +126,29 @@ final class FlexUtils {
     }
 
     public static void setPadding(long node, NodeStyle style) {
-        Padding padding = style.getPadding();
-        setLength(padding.getLeft(), node, YGEdgeLeft, Yoga::YGNodeStyleSetPadding,
+        Padding padding = style.padding();
+        setLength(padding.left(), node, YGEdgeLeft, Yoga::YGNodeStyleSetPadding,
             Yoga::YGNodeStyleSetPaddingPercent);
-        setLength(padding.getTop(), node, YGEdgeTop, Yoga::YGNodeStyleSetPadding,
+        setLength(padding.top(), node, YGEdgeTop, Yoga::YGNodeStyleSetPadding,
             Yoga::YGNodeStyleSetPaddingPercent);
-        setLength(padding.getRight(), node, YGEdgeRight, Yoga::YGNodeStyleSetPadding,
+        setLength(padding.right(), node, YGEdgeRight, Yoga::YGNodeStyleSetPadding,
             Yoga::YGNodeStyleSetPaddingPercent);
-        setLength(padding.getBottom(), node, YGEdgeBottom, Yoga::YGNodeStyleSetPadding,
+        setLength(padding.bottom(), node, YGEdgeBottom, Yoga::YGNodeStyleSetPadding,
             Yoga::YGNodeStyleSetPaddingPercent);
     }
 
     public static void setMargin(long node, NodeStyle style) {
-        Margin margin = style.getMargin();
-        setUnit(margin.getLeft(), node, YGEdgeLeft,
+        Margin margin = style.margin();
+        setUnit(margin.left(), node, YGEdgeLeft,
             Yoga::YGNodeStyleSetMarginAuto, Yoga::YGNodeStyleSetMargin,
             Yoga::YGNodeStyleSetMarginPercent);
-        setUnit(margin.getTop(), node, YGEdgeTop,
+        setUnit(margin.top(), node, YGEdgeTop,
             Yoga::YGNodeStyleSetMarginAuto, Yoga::YGNodeStyleSetMargin,
             Yoga::YGNodeStyleSetMarginPercent);
-        setUnit(margin.getRight(), node, YGEdgeRight,
+        setUnit(margin.right(), node, YGEdgeRight,
             Yoga::YGNodeStyleSetMarginAuto, Yoga::YGNodeStyleSetMargin,
             Yoga::YGNodeStyleSetMarginPercent);
-        setUnit(margin.getBottom(), node, YGEdgeBottom,
+        setUnit(margin.bottom(), node, YGEdgeBottom,
             Yoga::YGNodeStyleSetMarginAuto, Yoga::YGNodeStyleSetMargin,
             Yoga::YGNodeStyleSetMarginPercent);
     }

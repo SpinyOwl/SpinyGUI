@@ -1,6 +1,6 @@
 package com.spinyowl.spinygui.core.node.intersection;
 
-import com.spinyowl.spinygui.core.node.base.Node;
+import com.spinyowl.spinygui.core.node.Node;
 
 /**
  * Intersection class specifies intersection rules for node and point. Used to allow detect

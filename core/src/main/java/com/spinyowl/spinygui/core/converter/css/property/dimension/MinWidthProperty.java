@@ -14,7 +14,7 @@ public class MinWidthProperty extends Property<Length> {
 
     public MinWidthProperty() {
         super(MIN_WIDTH, "0px", !INHERITED, ANIMATABLE,
-            NodeStyle::setMinWidth, NodeStyle::getMinWidth,
+            NodeStyle::minWidth, NodeStyle::minWidth,
             extractor::extract, extractor::isValid);
     }
 }

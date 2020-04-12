@@ -14,8 +14,8 @@ public class BorderTopColorProperty extends Property<Color> {
 
     public BorderTopColorProperty() {
         super(BORDER_TOP_COLOR, DEFAULT_VALUE, !INHERITED, ANIMATABLE,
-            (s, c) -> s.getBorder().getTop().setColor(c),
-            s -> s.getBorder().getTop().getColor(),
+            (s, c) -> s.border().top().color(c),
+            s -> s.border().top().color(),
             extractor::extract, extractor::isValid);
     }
 }

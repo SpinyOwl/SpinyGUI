@@ -1,6 +1,6 @@
 package com.spinyowl.spinygui.core.converter.css.selector;
 
-import com.spinyowl.spinygui.core.node.base.Element;
+import com.spinyowl.spinygui.core.node.Element;
 import lombok.Data;
 
 /**
@@ -14,7 +14,7 @@ public class ImmediateChildSelector implements StyleSelector {
 
     @Override
     public boolean test(Element t) {
-        return t.getParent() != null && second.test(t) && first.test(t.getParent());
+        return t.parent() != null && second.test(t) && first.test(t.parent());
     }
 
 }

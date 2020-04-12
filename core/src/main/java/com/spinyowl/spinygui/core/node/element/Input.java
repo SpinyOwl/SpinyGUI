@@ -1,7 +1,7 @@
 package com.spinyowl.spinygui.core.node.element;
 
 import com.spinyowl.spinygui.core.converter.dom.annotations.Tag;
-import com.spinyowl.spinygui.core.node.base.EmptyElement;
+import com.spinyowl.spinygui.core.node.EmptyElement;
 
 @Tag("input")
 public class Input extends EmptyElement {

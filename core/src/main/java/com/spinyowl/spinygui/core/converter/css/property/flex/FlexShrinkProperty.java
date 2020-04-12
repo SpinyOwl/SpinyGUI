@@ -12,7 +12,7 @@ public class FlexShrinkProperty extends Property<Integer> {
 
     public FlexShrinkProperty() {
         super(FLEX_SHRINK, "0", !INHERITED, !ANIMATABLE,
-            (s, v) -> s.getFlex().setFlexShrink(v), s -> s.getFlex().getFlexShrink(),
+            (s, v) -> s.flex().flexShrink(v), s -> s.flex().flexShrink(),
             extractor::extract, extractor::isValid);
     }
 }

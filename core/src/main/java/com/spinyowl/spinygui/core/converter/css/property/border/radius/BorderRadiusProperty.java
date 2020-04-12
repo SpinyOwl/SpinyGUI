@@ -16,7 +16,7 @@ public class BorderRadiusProperty extends Property<BorderRadius> {
 
     public BorderRadiusProperty() {
         super(BORDER_RADIUS, "0", !INHERITED, ANIMATABLE,
-            NodeStyle::setBorderRadius, NodeStyle::getBorderRadius,
+            NodeStyle::borderRadius, NodeStyle::borderRadius,
             BorderRadiusProperty::extract, BorderRadiusProperty::test);
     }
 

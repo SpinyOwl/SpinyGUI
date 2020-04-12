@@ -14,7 +14,7 @@ public class WidthProperty extends Property<Unit> {
 
     public WidthProperty() {
         super(WIDTH, "auto", !INHERITED, ANIMATABLE,
-            NodeStyle::setWidth, NodeStyle::getWidth,
+            NodeStyle::width, NodeStyle::width,
             extractor::extract, extractor::isValid);
     }
 }

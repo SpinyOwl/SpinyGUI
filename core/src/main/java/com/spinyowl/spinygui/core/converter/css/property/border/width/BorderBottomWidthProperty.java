@@ -10,8 +10,8 @@ public class BorderBottomWidthProperty extends Property<Length> {
 
     public BorderBottomWidthProperty() {
         super(BORDER_BOTTOM_WIDTH, MEDIUM, !INHERITED, ANIMATABLE,
-            (s, v) -> s.getBorder().getBottom().setWidth(v),
-            s -> s.getBorder().getBottom().getWidth(),
+            (s, v) -> s.border().bottom().width(v),
+            s -> s.border().bottom().width(),
             BorderWidthProperty::extractOne, BorderWidthProperty::testOne);
     }
 }

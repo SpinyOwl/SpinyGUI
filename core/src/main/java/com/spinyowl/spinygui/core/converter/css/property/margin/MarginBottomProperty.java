@@ -13,7 +13,7 @@ public class MarginBottomProperty extends Property<Unit> {
 
     public MarginBottomProperty() {
         super(MARGIN_BOTTOM, "0", !INHERITED, ANIMATABLE,
-            (s, v) -> s.getMargin().setBottom(v), s -> s.getMargin().getBottom(),
+            (s, v) -> s.margin().bottom(v), s -> s.margin().bottom(),
             extractor::extract, extractor::isValid);
     }
 }

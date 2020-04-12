@@ -1,6 +1,6 @@
 package com.spinyowl.spinygui.core.node.intersection;
 
-import com.spinyowl.spinygui.core.node.base.Node;
+import com.spinyowl.spinygui.core.node.Node;
 import org.joml.Vector2fc;
 
 public class RectangleIntersection implements Intersection {
@@ -15,8 +15,8 @@ public class RectangleIntersection implements Intersection {
      */
     @Override
     public boolean intersects(Node node, float x, float y) {
-        Vector2fc pos = node.getPosition();
-        Vector2fc size = node.getSize();
+        Vector2fc pos = node.position();
+        Vector2fc size = node.size();
         return x >= pos.x()
             && x <= pos.x() + size.x()
             && y >= pos.y()

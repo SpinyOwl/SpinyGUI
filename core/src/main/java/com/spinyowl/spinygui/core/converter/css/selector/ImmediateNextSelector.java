@@ -1,6 +1,6 @@
 package com.spinyowl.spinygui.core.converter.css.selector;
 
-import com.spinyowl.spinygui.core.node.base.Element;
+import com.spinyowl.spinygui.core.node.Element;
 import java.util.List;
 import lombok.Data;
 
@@ -17,12 +17,12 @@ public class ImmediateNextSelector implements StyleSelector {
             return false;
         }
 
-        Element parent = t.getParent();
+        Element parent = t.parent();
         if (parent == null) {
             return false;
         }
 
-        List<Element> siblings = parent.getChildElements();
+        List<Element> siblings = parent.children();
         int indexOfComponent = siblings.indexOf(t);
         if (indexOfComponent != 0) {
             return first.test(siblings.get(indexOfComponent - 1));

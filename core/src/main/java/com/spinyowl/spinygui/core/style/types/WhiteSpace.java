@@ -5,10 +5,16 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.StringJoiner;
 import java.util.concurrent.ConcurrentHashMap;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.ToString;
 
 /**
  * CSS white-space.
  */
+@Getter
+@EqualsAndHashCode
+@ToString
 public final class WhiteSpace {
 
     private static final Map<String, WhiteSpace> VALUES = new ConcurrentHashMap<>();
@@ -96,40 +102,7 @@ public final class WhiteSpace {
         if (name == null) {
             return false;
         }
-        return values().stream().map(WhiteSpace::getName)
+        return values().stream().map(WhiteSpace::name)
             .anyMatch(v -> v.equalsIgnoreCase(name));
-    }
-
-    /**
-     * Name of white-space.
-     *
-     * @return
-     */
-    public String getName() {
-        return name;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        WhiteSpace whiteSpace = (WhiteSpace) o;
-        return Objects.equals(name, whiteSpace.name);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(name);
-    }
-
-    @Override
-    public String toString() {
-        return new StringJoiner(", ", WhiteSpace.class.getSimpleName() + "[", "]")
-            .add("name='" + name + "'")
-            .toString();
     }
 }

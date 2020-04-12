@@ -14,7 +14,7 @@ public class BottomProperty extends Property<Unit> {
 
     public BottomProperty() {
         super(BOTTOM, "auto", !INHERITED, ANIMATABLE,
-            NodeStyle::setBottom, NodeStyle::getBottom,
+            NodeStyle::bottom, NodeStyle::bottom,
             extractor::extract, extractor::isValid);
     }
 }

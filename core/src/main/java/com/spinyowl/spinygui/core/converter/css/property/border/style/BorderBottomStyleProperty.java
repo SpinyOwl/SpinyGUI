@@ -10,8 +10,8 @@ public class BorderBottomStyleProperty extends Property<BorderStyle> {
 
     public BorderBottomStyleProperty() {
         super(BORDER_BOTTOM_STYLE, DEFAULT_VALUE, !INHERITED, ANIMATABLE,
-            (s, c) -> s.getBorder().getBottom().setStyle(c),
-            s -> s.getBorder().getBottom().getStyle(),
+            (s, c) -> s.border().bottom().style(c),
+            s -> s.border().bottom().style(),
             BorderStyle::find, BorderStyle::contains);
     }
 

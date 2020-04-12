@@ -66,15 +66,15 @@ public class Flex {
 
 
     public Flex setFlex(int flexGrow, int flexShrink, Unit flexBasis) {
-        setFlexGrow(flexGrow);
-        setFlexShrink(flexShrink);
-        setFlexBasis(flexBasis);
+        flexGrow(flexGrow);
+        flexShrink(flexShrink);
+        flexBasis(flexBasis);
         return this;
     }
 
     public Flex setFlexFlow(FlexDirection flexDirection, FlexWrap flexWrap) {
-        setFlexDirection(flexDirection);
-        setFlexWrap(flexWrap);
+        flexDirection(flexDirection);
+        flexWrap(flexWrap);
         return this;
     }
 

@@ -17,7 +17,7 @@ public class BorderColorProperty extends Property<Border> {
 
     public BorderColorProperty() {
         super(BORDER_COLOR, DEFAULT_VALUE, !INHERITED, ANIMATABLE,
-            (s, b) -> s.getBorder().setColor(b), NodeStyle::getBorder,
+            (s, b) -> s.border().color(b), NodeStyle::border,
             BorderColorProperty::extract, BorderColorProperty::test);
     }
 
@@ -25,20 +25,20 @@ public class BorderColorProperty extends Property<Border> {
         String[] values = value.split("\\s+");
         Border border = new Border();
         if (values.length == 1) {
-            border.setColor(
+            border.color(
                 extractor.extract(values[0]));
         } else if (values.length == 2) {
-            border.setColor(
+            border.color(
                 extractor.extract(values[0]),
                 extractor.extract(values[1]));
         } else if (values.length == 3) {
-            border.setColor(
+            border.color(
                 extractor.extract(values[0]),
                 extractor.extract(values[1]),
                 extractor.extract(values[2])
             );
         } else if (values.length == 4) {
-            border.setColor(
+            border.color(
                 extractor.extract(values[0]),
                 extractor.extract(values[1]),
                 extractor.extract(values[2]),

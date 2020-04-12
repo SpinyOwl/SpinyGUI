@@ -13,8 +13,8 @@ public class BorderBottomLeftRadiusProperty extends Property<Length> {
 
     public BorderBottomLeftRadiusProperty() {
         super(BORDER_BOTTOM_LEFT_RADIUS, "0", !INHERITED, ANIMATABLE,
-            (s, l) -> s.getBorderRadius().setBottomLeft(l),
-            s -> s.getBorderRadius().getBottomLeft(),
+            (s, l) -> s.borderRadius().bottomLeft(l),
+            s -> s.borderRadius().bottomLeft(),
             extractor::extract, extractor::isValid);
     }
 }

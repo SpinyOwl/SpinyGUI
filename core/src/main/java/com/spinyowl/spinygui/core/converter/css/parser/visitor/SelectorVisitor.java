@@ -9,13 +9,11 @@ import com.spinyowl.spinygui.core.converter.css.selector.TypeSelector;
 import com.spinyowl.spinygui.core.converter.dom.TagNameMapping;
 import java.util.ArrayList;
 import java.util.List;
+import lombok.extern.slf4j.Slf4j;
 import org.antlr.v4.runtime.tree.ParseTree;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
+@Slf4j
 public class SelectorVisitor extends CSS3BaseVisitor<List<StyleSelector>> {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(SelectorVisitor.class);
 
     @Override
     public List<StyleSelector> visitSelectorGroup(CSS3Parser.SelectorGroupContext ctx) {

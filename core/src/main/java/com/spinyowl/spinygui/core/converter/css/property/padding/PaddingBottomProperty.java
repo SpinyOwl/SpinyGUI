@@ -13,7 +13,7 @@ public class PaddingBottomProperty extends Property<Length> {
 
     public PaddingBottomProperty() {
         super(PADDING_BOTTOM, "0", !INHERITED, ANIMATABLE,
-            (s, v) -> s.getPadding().setBottom(v), s -> s.getPadding().getBottom(),
+            (s, v) -> s.padding().bottom(v), s -> s.padding().bottom(),
             extractor::extract, extractor::isValid);
     }
 }

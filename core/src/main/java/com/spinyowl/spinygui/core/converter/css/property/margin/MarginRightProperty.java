@@ -13,7 +13,7 @@ public class MarginRightProperty extends Property<Unit> {
 
     public MarginRightProperty() {
         super(MARGIN_RIGHT, "0", !INHERITED, ANIMATABLE,
-            (s, v) -> s.getMargin().setRight(v), s -> s.getMargin().getRight(),
+            (s, v) -> s.margin().right(v), s -> s.margin().right(),
             extractor::extract, extractor::isValid);
     }
 }

@@ -14,7 +14,7 @@ public class LeftProperty extends Property<Unit> {
 
     public LeftProperty() {
         super(LEFT, "auto", !INHERITED, ANIMATABLE,
-            NodeStyle::setLeft, NodeStyle::getLeft,
+            NodeStyle::left, NodeStyle::left,
             extractor::extract, extractor::isValid);
     }
 }

@@ -2,7 +2,7 @@ package com.spinyowl.spinygui.core.util;
 
 import com.spinyowl.spinygui.core.api.Frame;
 import com.spinyowl.spinygui.core.api.Layer;
-import com.spinyowl.spinygui.core.node.base.Node;
+import com.spinyowl.spinygui.core.node.Node;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -23,17 +23,17 @@ public final class NodeUtilities {
     public static boolean visibleInParents(Node component) {
         // TODO: Add overflow check (if overflow support will be added).
         List<Node> parentList = new ArrayList<>();
-        for (Node parent = component.getParent(); parent != null; parent = parent.getParent()) {
+        for (Node parent = component.parent(); parent != null; parent = parent.parent()) {
             parentList.add(parent);
         }
 
         if (!parentList.isEmpty()) {
             Vector2f pos = new Vector2f(0, 0);
             Vector2f rect = new Vector2f(0, 0);
-            Vector2f absolutePosition = component.getAbsolutePosition();
+            Vector2f absolutePosition = component.absolutePosition();
 
-            Vector2fc cSize = component.getSize();
-            Vector2fc cPos = component.getPosition();
+            Vector2fc cSize = component.size();
+            Vector2fc cPos = component.position();
 
             float lx = absolutePosition.x;
             float rx = absolutePosition.x + cSize.x();
@@ -42,9 +42,9 @@ public final class NodeUtilities {
 
             // check top parent
 
-            if (cPos.x() > component.getParent().getSize().x() ||
+            if (cPos.x() > component.parent().size().x() ||
                 cPos.x() + cSize.x() < 0 ||
-                cPos.y() > component.getParent().getSize().y() ||
+                cPos.y() > component.parent().size().y() ||
                 cPos.y() + cSize.y() < 0
             ) {
                 return false;
@@ -53,8 +53,8 @@ public final class NodeUtilities {
                 // check from bottom parent to top parent
                 for (int i = parentList.size() - 1; i >= 1; i--) {
                     Node parent = parentList.get(i);
-                    pos.add(parent.getPosition());
-                    rect.set(pos).add(parent.getSize());
+                    pos.add(parent.position());
+                    rect.set(pos).add(parent.size());
 
                     if (lx > rect.x || rx < pos.x || ty > rect.y || by < pos.y) {
                         return false;
@@ -71,7 +71,7 @@ public final class NodeUtilities {
             if (node instanceof Layer) {
                 return ((Layer) node).getFrame();
             }
-        } while ((node = node.getParent()) != null);
+        } while ((node = node.parent()) != null);
         return null;
     }
 }

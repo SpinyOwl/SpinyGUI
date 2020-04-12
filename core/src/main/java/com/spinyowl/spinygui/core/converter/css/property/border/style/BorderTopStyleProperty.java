@@ -10,8 +10,8 @@ public class BorderTopStyleProperty extends Property<BorderStyle> {
 
     public BorderTopStyleProperty() {
         super(BORDER_TOP_STYLE, DEFAULT_VALUE, !INHERITED, ANIMATABLE,
-            (s, c) -> s.getBorder().getTop().setStyle(c),
-            s -> s.getBorder().getTop().getStyle(),
+            (s, c) -> s.border().top().style(c),
+            s -> s.border().top().style(),
             BorderStyle::find, BorderStyle::contains);
     }
 

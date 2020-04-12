@@ -1,6 +1,6 @@
 package com.spinyowl.spinygui.core.converter.css.selector;
 
-import com.spinyowl.spinygui.core.node.base.Element;
+import com.spinyowl.spinygui.core.node.Element;
 import lombok.Data;
 
 @Data

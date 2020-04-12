@@ -5,11 +5,16 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.StringJoiner;
 import java.util.concurrent.ConcurrentHashMap;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 /**
  * CSS font weight.
  */
+@Data
+@EqualsAndHashCode(exclude = "name")
 public final class FontWeight {
+
     private static final Map<String, FontWeight> VALUES = new ConcurrentHashMap<>();
 
     public static final FontWeight THIN = FontWeight.create(100, "thin");
@@ -19,10 +24,9 @@ public final class FontWeight {
 
     public static final FontWeight LIGHT = FontWeight.create(300, "light");
 
-    public static final FontWeight NORMAL =
-        FontWeight.create(400, "normal", "book", "regular");
-    public static final FontWeight BOOK = NORMAL;
-    public static final FontWeight REGULAR = NORMAL;
+    public static final FontWeight NORMAL = FontWeight.create(400, "normal");
+    public static final FontWeight BOOK = FontWeight.create(400, "book");
+    public static final FontWeight REGULAR = FontWeight.create(400, "regular");
 
     public static final FontWeight MEDIUM = FontWeight.create(500, "medium");
 
@@ -142,41 +146,7 @@ public final class FontWeight {
         if (name == null) {
             return false;
         }
-        return values().stream().map(FontWeight::getName)
+        return values().stream().map(FontWeight::name)
             .anyMatch(v -> v.equalsIgnoreCase(name));
-    }
-
-    /**
-     * Name of font weight.
-     *
-     * @return
-     */
-    public String getName() {
-        return name;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        FontWeight fontWeight = (FontWeight) o;
-        return Objects.equals(weight, fontWeight.weight);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(weight);
-    }
-
-    @Override
-    public String toString() {
-        return new StringJoiner(", ", FontWeight.class.getSimpleName() + "[", "]")
-            .add("name='" + name + "'")
-            .add("weight='" + weight + "'")
-            .toString();
     }
 }

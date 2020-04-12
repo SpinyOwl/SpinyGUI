@@ -1,7 +1,7 @@
 package com.spinyowl.spinygui.core.converter.css;
 
 import com.spinyowl.spinygui.core.converter.css.selector.StyleSelector;
-import com.spinyowl.spinygui.core.node.base.Element;
+import com.spinyowl.spinygui.core.node.Element;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -72,7 +72,7 @@ public class StyleSheet {
             elements.add(elementTree);
         }
 
-        elementTree.getChildNodes().stream()
+        elementTree.childNodes().stream()
             .filter(n -> n instanceof Element).map(n -> (Element) n)
             .forEach(c -> inspectElementTree(c, selector, elements));
     }

@@ -5,7 +5,7 @@ import com.spinyowl.spinygui.core.api.Layer;
 import com.spinyowl.spinygui.core.converter.css.Declaration;
 import com.spinyowl.spinygui.core.converter.css.RuleSet;
 import com.spinyowl.spinygui.core.converter.css.StyleSheet;
-import com.spinyowl.spinygui.core.node.base.Element;
+import com.spinyowl.spinygui.core.node.Element;
 
 /**
  * Default style manager implementation.
@@ -31,7 +31,7 @@ public class DefaultStyleManger implements StyleManager {
                 updateStylesFromStyleSheet(element, p);
             }
         }
-        for (Element childElement : element.getChildElements()) {
+        for (Element childElement : element.children()) {
             updateStylesFromStyleSheet(childElement, styleSheet);
         }
 

@@ -12,7 +12,7 @@ public class FlexGrowProperty extends Property<Integer> {
 
     public FlexGrowProperty() {
         super(FLEX_GROW, "0", !INHERITED, !ANIMATABLE,
-            (s, v) -> s.getFlex().setFlexGrow(v), s -> s.getFlex().getFlexGrow(),
+            (s, v) -> s.flex().flexGrow(v), s -> s.flex().flexGrow(),
             extractor::extract, extractor::isValid);
     }
 }

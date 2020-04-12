@@ -9,7 +9,7 @@ public class AlignContentProperty extends Property<AlignContent> {
 
     public AlignContentProperty() {
         super(ALIGN_CONTENT, "stretch", !INHERITED, !ANIMATABLE,
-            (s, v) -> s.getFlex().setAlignContent(v), s -> s.getFlex().getAlignContent(),
+            (s, v) -> s.flex().alignContent(v), s -> s.flex().alignContent(),
             AlignContent::find, AlignContent::contains);
     }
 

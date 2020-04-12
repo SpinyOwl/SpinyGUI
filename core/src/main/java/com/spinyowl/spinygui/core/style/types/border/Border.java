@@ -30,116 +30,114 @@ public class Border extends SideStyle<BorderItem> {
         super(sideTop, sideRight, sideBottom, sideLeft);
     }
 
-    public void setWidth(Border border) {
-        getTop().setWidth(border.getTop().getWidth());
-        getBottom().setWidth(border.getBottom().getWidth());
-        getLeft().setWidth(border.getLeft().getWidth());
-        getRight().setWidth(border.getRight().getWidth());
+    public void width(Border border) {
+        top().width(border.top().width());
+        bottom().width(border.bottom().width());
+        left().width(border.left().width());
+        right().width(border.right().width());
     }
 
-    public void setWidth(Length width) {
-        getTop().setWidth(width);
-        getBottom().setWidth(width);
-        getLeft().setWidth(width);
-        getRight().setWidth(width);
+    public void width(Length width) {
+        top().width(width);
+        bottom().width(width);
+        left().width(width);
+        right().width(width);
     }
 
-    public void setWidth(Length widthTopBottom, Length widthRightLeft) {
-        getTop().setWidth(widthTopBottom);
-        getBottom().setWidth(widthTopBottom);
-        getLeft().setWidth(widthRightLeft);
-        getRight().setWidth(widthRightLeft);
+    public void width(Length widthTopBottom, Length widthRightLeft) {
+        top().width(widthTopBottom);
+        bottom().width(widthTopBottom);
+        left().width(widthRightLeft);
+        right().width(widthRightLeft);
     }
 
-    public void setWidth(Length widthTop, Length widthRightLeft, Length widthBottom) {
-        getTop().setWidth(widthTop);
-        getBottom().setWidth(widthRightLeft);
-        getLeft().setWidth(widthRightLeft);
-        getRight().setWidth(widthBottom);
+    public void width(Length widthTop, Length widthRightLeft, Length widthBottom) {
+        top().width(widthTop);
+        bottom().width(widthRightLeft);
+        left().width(widthRightLeft);
+        right().width(widthBottom);
     }
 
-    public void setWidth(Length widthTop, Length widthRight, Length widthBottom, Length widthLeft) {
-        getTop().setWidth(widthTop);
-        getBottom().setWidth(widthLeft);
-        getLeft().setWidth(widthBottom);
-        getRight().setWidth(widthRight);
-    }
-
-
-    public void setColor(Border border) {
-        getTop().setColor(border.getTop().getColor());
-        getBottom().setColor(border.getBottom().getColor());
-        getLeft().setColor(border.getLeft().getColor());
-        getRight().setColor(border.getRight().getColor());
-    }
-
-    public void setColor(Color color) {
-        getTop().setColor(color);
-        getBottom().setColor(color);
-        getLeft().setColor(color);
-        getRight().setColor(color);
-    }
-
-    public void setColor(Color colorTopBottom, Color colorRightLeft) {
-        getTop().setColor(colorTopBottom);
-        getBottom().setColor(colorTopBottom);
-        getLeft().setColor(colorRightLeft);
-        getRight().setColor(colorRightLeft);
-    }
-
-    public void setColor(Color colorTop, Color colorRightLeft, Color colorBottom) {
-        getTop().setColor(colorTop);
-        getBottom().setColor(colorRightLeft);
-        getLeft().setColor(colorRightLeft);
-        getRight().setColor(colorBottom);
-    }
-
-    public void setColor(Color colorTop, Color colorRight, Color colorBottom, Color colorLeft) {
-        getTop().setColor(colorTop);
-        getBottom().setColor(colorLeft);
-        getLeft().setColor(colorBottom);
-        getRight().setColor(colorRight);
+    public void width(Length widthTop, Length widthRight, Length widthBottom, Length widthLeft) {
+        top().width(widthTop);
+        bottom().width(widthLeft);
+        left().width(widthBottom);
+        right().width(widthRight);
     }
 
 
-    public void setStyle(Border border) {
-        getTop().setStyle(border.getTop().getStyle());
-        getBottom().setStyle(border.getBottom().getStyle());
-        getLeft().setStyle(border.getLeft().getStyle());
-        getRight().setStyle(border.getRight().getStyle());
+    public void color(Border border) {
+        top().color(border.top().color());
+        bottom().color(border.bottom().color());
+        left().color(border.left().color());
+        right().color(border.right().color());
+    }
+
+    public void color(Color color) {
+        top().color(color);
+        bottom().color(color);
+        left().color(color);
+        right().color(color);
+    }
+
+    public void color(Color colorTopBottom, Color colorRightLeft) {
+        top().color(colorTopBottom);
+        bottom().color(colorTopBottom);
+        left().color(colorRightLeft);
+        right().color(colorRightLeft);
+    }
+
+    public void color(Color colorTop, Color colorRightLeft, Color colorBottom) {
+        top().color(colorTop);
+        bottom().color(colorRightLeft);
+        left().color(colorRightLeft);
+        right().color(colorBottom);
+    }
+
+    public void color(Color colorTop, Color colorRight, Color colorBottom, Color colorLeft) {
+        top().color(colorTop);
+        bottom().color(colorLeft);
+        left().color(colorBottom);
+        right().color(colorRight);
     }
 
 
-    public void setStyle(BorderStyle style) {
-        getTop().setStyle(style);
-        getBottom().setStyle(style);
-        getLeft().setStyle(style);
-        getRight().setStyle(style);
+    public void style(Border border) {
+        top().style(border.top().style());
+        bottom().style(border.bottom().style());
+        left().style(border.left().style());
+        right().style(border.right().style());
+    }
+
+
+    public void style(BorderStyle style) {
+        top().style(style);
+        bottom().style(style);
+        left().style(style);
+        right().style(style);
 
     }
 
-    public void setStyle(BorderStyle styleTopBottom, BorderStyle styleRightLeft) {
-        getTop().setStyle(styleTopBottom);
-        getBottom().setStyle(styleTopBottom);
-        getLeft().setStyle(styleRightLeft);
-        getRight().setStyle(styleRightLeft);
+    public void style(BorderStyle styleTopBottom, BorderStyle styleRightLeft) {
+        top().style(styleTopBottom);
+        bottom().style(styleTopBottom);
+        left().style(styleRightLeft);
+        right().style(styleRightLeft);
     }
 
-    public void setStyle(BorderStyle styleTop, BorderStyle styleRightLeft,
+    public void style(BorderStyle styleTop, BorderStyle styleRightLeft,
         BorderStyle styleBottom) {
-        getTop().setStyle(styleTop);
-        getBottom().setStyle(styleRightLeft);
-        getLeft().setStyle(styleRightLeft);
-        getRight().setStyle(styleBottom);
+        top().style(styleTop);
+        bottom().style(styleRightLeft);
+        left().style(styleRightLeft);
+        right().style(styleBottom);
     }
 
-    public void setStyle(BorderStyle styleTop, BorderStyle styleRight, BorderStyle styleBottom,
+    public void style(BorderStyle styleTop, BorderStyle styleRight, BorderStyle styleBottom,
         BorderStyle styleLeft) {
-        getTop().setStyle(styleTop);
-        getBottom().setStyle(styleLeft);
-        getLeft().setStyle(styleBottom);
-        getRight().setStyle(styleRight);
+        top().style(styleTop);
+        bottom().style(styleLeft);
+        left().style(styleBottom);
+        right().style(styleRight);
     }
-
-
 }

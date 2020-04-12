@@ -16,7 +16,7 @@ public class MarginProperty extends Property<Margin> {
 
     public MarginProperty() {
         super(MARGIN, "0", !INHERITED, ANIMATABLE,
-            NodeStyle::setMargin, NodeStyle::getMargin,
+            NodeStyle::margin, NodeStyle::margin,
             MarginProperty::extract, MarginProperty::test);
     }
 

@@ -24,7 +24,7 @@ public class BorderWidthProperty extends Property<Border> {
 
     public BorderWidthProperty() {
         super(BORDER_WIDTH, MEDIUM, !INHERITED, ANIMATABLE,
-            (s, b) -> s.getBorder().setWidth(b), NodeStyle::getBorder,
+            (s, b) -> s.border().width(b), NodeStyle::border,
             BorderWidthProperty::extract, BorderWidthProperty::test);
     }
 
@@ -32,13 +32,13 @@ public class BorderWidthProperty extends Property<Border> {
         Border b = new Border();
         String[] v = value.split("\\s+");
         if (v.length == 1) {
-            b.setWidth(extractOne(v[0]));
+            b.width(extractOne(v[0]));
         } else if (v.length == 2) {
-            b.setWidth(extractOne(v[0]), extractOne(v[1]));
+            b.width(extractOne(v[0]), extractOne(v[1]));
         } else if (v.length == 3) {
-            b.setWidth(extractOne(v[0]), extractOne(v[1]), extractOne(v[2]));
+            b.width(extractOne(v[0]), extractOne(v[1]), extractOne(v[2]));
         } else if (v.length >= 4) {
-            b.setWidth(extractOne(v[0]), extractOne(v[1]), extractOne(v[2]), extractOne(v[3]));
+            b.width(extractOne(v[0]), extractOne(v[1]), extractOne(v[2]), extractOne(v[3]));
         }
         return b;
     }

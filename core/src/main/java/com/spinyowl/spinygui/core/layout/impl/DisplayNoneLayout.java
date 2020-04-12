@@ -1,7 +1,7 @@
 package com.spinyowl.spinygui.core.layout.impl;
 
 import com.spinyowl.spinygui.core.layout.Layout;
-import com.spinyowl.spinygui.core.node.base.Element;
+import com.spinyowl.spinygui.core.node.Element;
 
 public class DisplayNoneLayout implements Layout {
 

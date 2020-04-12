@@ -3,7 +3,7 @@ package com.spinyowl.spinygui.core.window;
 import com.spinyowl.spinygui.core.api.Frame;
 import com.spinyowl.spinygui.core.event.WindowCloseEvent;
 import com.spinyowl.spinygui.core.event.listener.EventListener;
-import com.spinyowl.spinygui.core.node.base.Node;
+import com.spinyowl.spinygui.core.node.Node;
 import com.spinyowl.spinygui.core.window.service.Services;
 import java.util.List;
 import java.util.Objects;
@@ -56,12 +56,12 @@ public abstract class Window {
         return Services.getWindowService().getWindowPosition(this);
     }
 
-    public void setPosition(Vector2i position) {
+    public void position(Vector2i position) {
         Services.getWindowService().setWindowPosition(this, position);
     }
 
     public void setPosition(int x, int y) {
-        setPosition(new Vector2i(x, y));
+        position(new Vector2i(x, y));
     }
 
     public Vector2ic getSize() {

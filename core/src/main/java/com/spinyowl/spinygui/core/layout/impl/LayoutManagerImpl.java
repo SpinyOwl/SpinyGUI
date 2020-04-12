@@ -4,7 +4,7 @@ import com.spinyowl.spinygui.core.api.Frame;
 import com.spinyowl.spinygui.core.layout.Layout;
 import com.spinyowl.spinygui.core.layout.LayoutManager;
 import com.spinyowl.spinygui.core.layout.impl.flex.FlexLayout;
-import com.spinyowl.spinygui.core.node.base.Element;
+import com.spinyowl.spinygui.core.node.Element;
 import com.spinyowl.spinygui.core.style.types.Display;
 import com.spinyowl.spinygui.core.util.NodeUtilities;
 import java.util.Map;
@@ -35,15 +35,15 @@ public class LayoutManagerImpl implements LayoutManager {
 
     @Override
     public void layout(Element element) {
-        if (element != null && element.isVisible()
+        if (element != null && element.visible()
             && NodeUtilities.visibleInParents(element)
         ) {
-            Layout layout = layoutMap.get(element.getStyle().getDisplay());
+            Layout layout = layoutMap.get(element.style().display());
             if (layout != null) {
                 layout.layout(element);
             }
 
-            element.getChildElements().forEach(this::layout);
+            element.children().forEach(this::layout);
         }
     }
 

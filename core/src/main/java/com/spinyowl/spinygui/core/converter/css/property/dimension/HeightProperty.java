@@ -14,7 +14,7 @@ public class HeightProperty extends Property<Unit> {
 
     public HeightProperty() {
         super(HEIGHT, "auto", !INHERITED, ANIMATABLE,
-            NodeStyle::setHeight, NodeStyle::getHeight,
+            NodeStyle::height, NodeStyle::height,
             extractor::extract, extractor::isValid);
     }
 }

@@ -35,9 +35,9 @@ public class AtRuleVisitor extends CSS3BaseVisitor<AtRule> {
 
         if (fontFamily != null && src != null) {
             fontFaceRule = new FontFaceRule(fontFamily, src);
-            fontFaceRule.setFontStretch(fontStretch);
-            fontFaceRule.setFontStyle(fontStyle);
-            fontFaceRule.setFontWeight(fontWeight);
+            fontFaceRule.fontStretch(fontStretch);
+            fontFaceRule.fontStyle(fontStyle);
+            fontFaceRule.fontWeight(fontWeight);
         }
         return fontFaceRule;
     }

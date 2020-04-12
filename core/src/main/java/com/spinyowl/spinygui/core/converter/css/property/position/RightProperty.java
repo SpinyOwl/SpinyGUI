@@ -14,7 +14,7 @@ public class RightProperty extends Property<Unit> {
 
     public RightProperty() {
         super(RIGHT, "auto", !INHERITED, ANIMATABLE,
-            NodeStyle::setRight, NodeStyle::getRight,
+            NodeStyle::right, NodeStyle::right,
             extractor::extract, extractor::isValid);
     }
 

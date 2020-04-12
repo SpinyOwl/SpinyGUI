@@ -13,7 +13,7 @@ public class PaddingTopProperty extends Property<Length> {
 
     public PaddingTopProperty() {
         super(PADDING_TOP, "0", !INHERITED, ANIMATABLE,
-            (s, v) -> s.getPadding().setTop(v), s -> s.getPadding().getTop(),
+            (s, v) -> s.padding().top(v), s -> s.padding().top(),
             extractor::extract, extractor::isValid);
     }
 }

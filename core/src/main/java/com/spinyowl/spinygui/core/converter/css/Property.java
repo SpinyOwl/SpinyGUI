@@ -1,15 +1,13 @@
 package com.spinyowl.spinygui.core.converter.css;
 
 import com.spinyowl.spinygui.core.converter.css.util.StyleUtils;
-import com.spinyowl.spinygui.core.node.base.Element;
+import com.spinyowl.spinygui.core.node.Element;
 import com.spinyowl.spinygui.core.style.NodeStyle;
 import java.util.Objects;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Root class that describes property. Should be used to create new classes which implement {@link
@@ -23,8 +21,6 @@ public abstract class Property<T> {
 
     public static final String INHERIT = "inherit";
     public static final String INITIAL = "initial";
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(Property.class);
 
     /**
      * Name of css property.
@@ -148,7 +144,7 @@ public abstract class Property<T> {
                 computedValue = computeAbsent(element);
             }
         }
-        valueSetter.accept(element.getCalculatedStyle(), computedValue);
+        valueSetter.accept(element.calculatedStyle(), computedValue);
     }
 
     protected T computeAbsent(Element element) {

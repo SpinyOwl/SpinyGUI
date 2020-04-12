@@ -14,7 +14,7 @@ public class MaxHeightProperty extends Property<Length> {
 
     public MaxHeightProperty() {
         super(MAX_HEIGHT, "none", !INHERITED, ANIMATABLE,
-            NodeStyle::setMaxHeight, NodeStyle::getMaxHeight,
+            NodeStyle::maxHeight, NodeStyle::maxHeight,
             value -> "none".equalsIgnoreCase(value) ?
                 Length.pixel(Integer.MAX_VALUE)
                 : extractor.extract(value),

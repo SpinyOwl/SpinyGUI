@@ -14,7 +14,7 @@ public class MinHeightProperty extends Property<Length> {
 
     public MinHeightProperty() {
         super(MIN_HEIGHT, "0px", !INHERITED, ANIMATABLE,
-            NodeStyle::setMinHeight, NodeStyle::getMinHeight,
+            NodeStyle::minHeight, NodeStyle::minHeight,
             extractor::extract, extractor::isValid);
     }
 

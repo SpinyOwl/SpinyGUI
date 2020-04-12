@@ -2,7 +2,7 @@ package com.spinyowl.spinygui.core.api;
 
 import com.spinyowl.spinygui.core.event.WindowCloseEvent;
 import com.spinyowl.spinygui.core.event.listener.EventListener;
-import com.spinyowl.spinygui.core.node.base.Container;
+import com.spinyowl.spinygui.core.node.Container;
 import java.util.List;
 import java.util.Objects;
 

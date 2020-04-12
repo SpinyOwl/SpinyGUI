@@ -1,6 +1,6 @@
 package com.spinyowl.spinygui.core.layout;
 
-import com.spinyowl.spinygui.core.node.base.Element;
+import com.spinyowl.spinygui.core.node.Element;
 
 /**
  * Layout interface. Specifies rules on how to lay out child and parent components.

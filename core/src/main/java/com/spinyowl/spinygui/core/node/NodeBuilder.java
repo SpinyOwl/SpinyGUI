@@ -1,8 +1,5 @@
 package com.spinyowl.spinygui.core.node;
 
-import com.spinyowl.spinygui.core.node.base.Element;
-import com.spinyowl.spinygui.core.node.base.Node;
-import com.spinyowl.spinygui.core.node.base.Text;
 import com.spinyowl.spinygui.core.node.element.Button;
 import com.spinyowl.spinygui.core.node.element.Div;
 import com.spinyowl.spinygui.core.node.element.Input;
@@ -75,7 +72,7 @@ public final class NodeBuilder {
     }
 
     private static <T extends Element> T addAttributes(T element, Map<String, String> attributes) {
-        element.setAttributes(attributes);
+        element.attributes().putAll(attributes);
         return element;
     }
 }

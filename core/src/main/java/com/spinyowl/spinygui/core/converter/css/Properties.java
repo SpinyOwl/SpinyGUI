@@ -4,12 +4,14 @@ import com.spinyowl.spinygui.core.converter.annotation.Priority;
 import io.github.classgraph.ClassGraph;
 import io.github.classgraph.ClassInfo;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -127,21 +129,27 @@ public final class Properties {
                 property = clazz.getConstructor().newInstance();
 
             } catch (Exception e) {
-                log.error(
+                LOGGER.error(
                     "Can't initialize property handler {}. Public default constructor should be declared.",
                     clazz.getName());
             }
             if (property != null) {
-                List<CssPropertyTuple> values = propertiesToAdd
-                    .computeIfAbsent(property.getName(), p -> new ArrayList<>());
-                values.add(tuple(property, priority));
+                propertiesToAdd.computeIfAbsent(property.getName(), p -> new ArrayList<>()).
+                    add(CssPropertyTuple.of(property, priority));
             }
         }
 
         for (var entry : propertiesToAdd.entrySet()) {
-            List<CssPropertyTuple> value = entry.getValue();
-            value.sort(Comparator.comparingInt(o -> o.priority));
-            addSupportedProperty(entry.getKey(), value.get(0).property);
+            String name = entry.getKey();
+            var value = entry.getValue();
+            if (value.size() > 1) {
+                value.sort(Comparator.comparingInt(o -> -o.priority));
+                LOGGER.warn("Found several tag mappings for tag {} : {}. Using {}", name,
+                    Arrays.toString(
+                        value.stream().map(c -> c.property.getClass().getName()).toArray()),
+                    value.get(0).property.getClass().getName());
+            }
+            addSupportedProperty(name, value.get(0).property);
         }
 
     }
@@ -168,8 +176,8 @@ public final class Properties {
             throw new IllegalArgumentException("Name should be the same as the property name.");
         }
 
-        if (log.isWarnEnabled() && propertyMap.containsKey(name)) {
-            log.warn(
+        if (LOGGER.isWarnEnabled() && propertyMap.containsKey(name)) {
+            LOGGER.warn(
                 "There is already exist property handler for {} : {}. Would be replaced by {}.",
                 name, propertyMap.get(name).getClass().getName(), property.getClass().getName());
         }
@@ -191,16 +199,10 @@ public final class Properties {
         return List.copyOf(propertyMap.keySet());
     }
 
-    private static CssPropertyTuple tuple(Property p, int priority) {
-        CssPropertyTuple cssPropertyTuple = new CssPropertyTuple();
-        cssPropertyTuple.priority = priority;
-        cssPropertyTuple.property = p;
-        return cssPropertyTuple;
-    }
-
+    @AllArgsConstructor(staticName = "of")
     private static class CssPropertyTuple {
 
-        private Property property;
-        private int priority;
+        private final Property property;
+        private final int priority;
     }
 }

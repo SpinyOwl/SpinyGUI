@@ -1,6 +1,6 @@
 package com.spinyowl.spinygui.core.event;
 
-import com.spinyowl.spinygui.core.node.base.Element;
+import com.spinyowl.spinygui.core.node.Element;
 
 public class MouseEvent<T extends Element> extends NodeEvent<T> {
 

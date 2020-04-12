@@ -43,10 +43,10 @@ public class Font {
     public static void addFont(Font font) {
         Objects.requireNonNull(font);
 
-        var key = new FontKey(font.getName(), font.getStyle(), font.getWidth(), font.getWeight());
+        var key = new FontKey(font.name(), font.style(), font.width(), font.weight());
 
         if (fonts.containsKey(key)) {
-            log.warn("Font '{}' will be replaced.", font.getName());
+            LOGGER.warn("Font '{}' will be replaced.", font.name());
         }
         fonts.put(key, font);
     }

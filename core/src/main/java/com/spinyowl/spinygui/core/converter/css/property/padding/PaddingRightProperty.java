@@ -13,7 +13,7 @@ public class PaddingRightProperty extends Property<Length> {
 
     public PaddingRightProperty() {
         super(PADDING_RIGHT, "0", !INHERITED, ANIMATABLE,
-            (s, v) -> s.getPadding().setRight(v), s -> s.getPadding().getRight(),
+            (s, v) -> s.padding().right(v), s -> s.padding().right(),
             extractor::extract, extractor::isValid);
     }
 }

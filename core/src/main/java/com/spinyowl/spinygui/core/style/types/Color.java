@@ -2,8 +2,13 @@ package com.spinyowl.spinygui.core.style.types;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.ToString;
 
+@Getter
+@EqualsAndHashCode
+@ToString
 public class Color {
 
     //@formatter:off
@@ -148,47 +153,4 @@ public class Color {
         return colors.containsKey(colorName.toLowerCase());
     }
 
-    public float getR() {
-        return r;
-    }
-
-    public float getG() {
-        return g;
-    }
-
-    public float getB() {
-        return b;
-    }
-
-    public float getA() {
-        return a;
-    }
-
-    @Override
-    public String toString() {
-        if (a != 1) {
-            return String.format("Color(%f, %f, %f, %f)", r, g, b, a);
-        }
-        return String.format("Color(%f, %f, %f)", r, g, b);
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        Color color = (Color) o;
-        return Float.compare(color.r, r) == 0 &&
-            Float.compare(color.g, g) == 0 &&
-            Float.compare(color.b, b) == 0 &&
-            Float.compare(color.a, a) == 0;
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(r, g, b, a);
-    }
 }

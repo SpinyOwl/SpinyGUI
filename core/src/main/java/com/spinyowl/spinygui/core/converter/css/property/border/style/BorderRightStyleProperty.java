@@ -11,8 +11,8 @@ public class BorderRightStyleProperty extends Property<BorderStyle> {
 
     public BorderRightStyleProperty() {
         super(BORDER_RIGHT_STYLE, DEFAULT_VALUE, !INHERITED, ANIMATABLE,
-            (s, c) -> s.getBorder().getRight().setStyle(c),
-            s -> s.getBorder().getRight().getStyle(),
+            (s, c) -> s.border().right().style(c),
+            s -> s.border().right().style(),
             BorderStyle::find, BorderStyle::contains);
     }
 }

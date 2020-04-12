@@ -1,6 +1,6 @@
 package com.spinyowl.spinygui.core.converter.css.selector;
 
-import com.spinyowl.spinygui.core.node.base.Element;
+import com.spinyowl.spinygui.core.node.Element;
 import java.util.Collections;
 import java.util.List;
 import lombok.Data;
@@ -18,12 +18,12 @@ public class GeneralSiblingSelector implements StyleSelector {
             return false;
         }
 
-        Element parent = element.getParent();
+        Element parent = element.parent();
         if (parent == null) {
             return false;
         }
 
-        List<Element> siblings = parent.getChildElements();
+        List<Element> siblings = parent.children();
         int nodeIndex = siblings.indexOf(element);
         if (nodeIndex == 0) {
             return false;

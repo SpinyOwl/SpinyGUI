@@ -9,7 +9,7 @@ public class FlexWrapProperty extends Property<FlexWrap> {
 
     public FlexWrapProperty() {
         super(FLEX_WRAP, "nowrap", !INHERITED, !ANIMATABLE,
-            (s, v) -> s.getFlex().setFlexWrap(v), s -> s.getFlex().getFlexWrap(),
+            (s, v) -> s.flex().flexWrap(v), s -> s.flex().flexWrap(),
             FlexWrap::find, FlexWrap::contains);
     }
 

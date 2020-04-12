@@ -24,7 +24,6 @@ open module com.spinyowl.spinygui.core {
     exports com.spinyowl.spinygui.core.api;
 
     exports com.spinyowl.spinygui.core.node;
-    exports com.spinyowl.spinygui.core.node.base;
     exports com.spinyowl.spinygui.core.node.element;
     exports com.spinyowl.spinygui.core.node.intersection;
 

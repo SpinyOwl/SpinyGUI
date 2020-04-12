@@ -20,7 +20,7 @@ public class BorderProperty extends Property<Border> {
 
     public BorderProperty() {
         super(BORDER, DEFAULT_VALUE, !INHERITED, ANIMATABLE,
-            NodeStyle::setBorder, NodeStyle::getBorder,
+            NodeStyle::border, NodeStyle::border,
             BorderProperty::x, BorderProperty::test
         );
     }
@@ -47,9 +47,9 @@ public class BorderProperty extends Property<Border> {
     private static Border x(String value) {
         Border border = new Border();
         BorderItem i = extract(value);
-        border.setStyle(i.getStyle());
-        border.setColor(i.getColor());
-        border.setWidth(i.getWidth());
+        border.style(i.style());
+        border.color(i.color());
+        border.width(i.width());
         return border;
     }
 
@@ -57,19 +57,19 @@ public class BorderProperty extends Property<Border> {
         BorderItem i = new BorderItem();
         String[] values = value.split("\\s+");
         if (values.length == 1) {
-            i.setStyle(BorderStyle.find(values[0]));
+            i.style(BorderStyle.find(values[0]));
         } else if (values.length == 2) {
             if (BorderStyle.contains(values[0])) {
-                i.setStyle(BorderStyle.find(values[0]));
-                i.setColor(colorValueExtractor.extract(values[1]));
+                i.style(BorderStyle.find(values[0]));
+                i.color(colorValueExtractor.extract(values[1]));
             } else if (BorderStyle.contains(values[1])) {
-                i.setWidth(BorderWidthProperty.extractOne(values[0]));
-                i.setStyle(BorderStyle.find(values[1]));
+                i.width(BorderWidthProperty.extractOne(values[0]));
+                i.style(BorderStyle.find(values[1]));
             }
         } else if (values.length == 3) {
-            i.setWidth(BorderWidthProperty.extractOne(values[0]));
-            i.setStyle(BorderStyle.find(values[1]));
-            i.setColor(colorValueExtractor.extract(values[2]));
+            i.width(BorderWidthProperty.extractOne(values[0]));
+            i.style(BorderStyle.find(values[1]));
+            i.color(colorValueExtractor.extract(values[2]));
         }
         return i;
     }
