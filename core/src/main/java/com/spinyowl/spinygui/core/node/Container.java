@@ -2,7 +2,6 @@ package com.spinyowl.spinygui.core.node;
 
 import com.spinyowl.spinygui.core.util.Reference;
 import java.util.List;
-import java.util.Objects;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;

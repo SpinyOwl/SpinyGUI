@@ -15,7 +15,6 @@ import com.spinyowl.spinygui.core.converter.css.selector.StyleSelector;
 import com.spinyowl.spinygui.core.node.Element;
 import com.spinyowl.spinygui.core.node.Node;
 import com.spinyowl.spinygui.core.node.element.Button;
-import com.spinyowl.spinygui.core.node.element.Div;
 import com.spinyowl.spinygui.core.node.element.Label;
 import com.spinyowl.spinygui.core.style.manager.StyleManagerProvider;
 import com.spinyowl.spinygui.core.style.types.Color;
@@ -34,9 +33,6 @@ public class Test {
         createFromCSS();
         searchComponents();
         parseText();
-
-        var d = new Div();
-        Map<String, String> attributes = d.attributes();
     }
 
     public static void createFromCSS() throws StyleSheetException {
