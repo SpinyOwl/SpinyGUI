@@ -92,13 +92,13 @@ public abstract class Property<T> {
    * @param valueExtractor function that calculates value from it's string representation.
    */
   protected Property(String name,
-    String defaultValue,
-    boolean inherited,
-    boolean animatable,
-    BiConsumer<NodeStyle, T> valueSetter,
-    Function<NodeStyle, T> valueGetter,
-    Function<String, T> valueExtractor,
-    Predicate<String> valueValidator
+      String defaultValue,
+      boolean inherited,
+      boolean animatable,
+      BiConsumer<NodeStyle, T> valueSetter,
+      Function<NodeStyle, T> valueGetter,
+      Function<String, T> valueExtractor,
+      Predicate<String> valueValidator
   ) {
     this.name = Objects.requireNonNull(name);
     this.defaultValue = Objects.requireNonNull(defaultValue);
@@ -135,7 +135,7 @@ public abstract class Property<T> {
           computedValue = valueExtractor.apply(value);
         } catch (Exception t) {
           LOGGER.error("Error during extracting value from '{}' with '{}' extractor. {}",
-            value, valueExtractor, t.getMessage());
+              value, valueExtractor, t.getMessage());
           computedValue = null;
         }
       }
@@ -157,7 +157,7 @@ public abstract class Property<T> {
   }
 
   protected <Q> T conditionalValue(boolean condition, Q functionArg,
-    Function<Q, T> valueProvider) {
+      Function<Q, T> valueProvider) {
     T computedValue;
     if (condition) {
       computedValue = valueProvider.apply(functionArg);
@@ -174,7 +174,7 @@ public abstract class Property<T> {
    */
   public boolean isValid(String value) {
     return INHERIT.equalsIgnoreCase(value) || INITIAL.equalsIgnoreCase(value) ||
-      valueValidator.test(value);
+        valueValidator.test(value);
   }
 
   /**

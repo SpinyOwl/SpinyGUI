@@ -123,7 +123,7 @@ public final class BorderStyle {
       return false;
     }
     return values().stream().map(BorderStyle::getName)
-      .anyMatch(v -> v.equalsIgnoreCase(name));
+        .anyMatch(v -> v.equalsIgnoreCase(name));
   }
 
   /**
@@ -155,7 +155,7 @@ public final class BorderStyle {
   @Override
   public String toString() {
     return new StringJoiner(", ", BorderStyle.class.getSimpleName() + "[", "]")
-      .add("name='" + name + "'")
-      .toString();
+        .add("name='" + name + "'")
+        .toString();
   }
 }

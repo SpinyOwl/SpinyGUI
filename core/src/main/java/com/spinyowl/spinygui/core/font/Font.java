@@ -154,11 +154,11 @@ public class Font {
    * @return obtained font.
    */
   public static List<Font> getFonts(
-    String name, FontStyle style, FontWeight weight, FontStretch width
+      String name, FontStyle style, FontWeight weight, FontStretch width
   ) {
     return fonts.keySet().stream()
-      .filter(k -> checkFont(k, name, style, weight, width))
-      .map(fonts::get).collect(Collectors.toList());
+        .filter(k -> checkFont(k, name, style, weight, width))
+        .map(fonts::get).collect(Collectors.toList());
   }
 
   /**
@@ -172,18 +172,18 @@ public class Font {
    * @return true if there is any font with specified parameters.
    */
   public static boolean hasFont(
-    String name, FontStyle style, FontWeight weight, FontStretch width
+      String name, FontStyle style, FontWeight weight, FontStretch width
   ) {
     return fonts.keySet().stream().anyMatch(k -> checkFont(k, name, style, weight, width));
   }
 
   private static boolean checkFont(
-    FontKey fontKey, String name, FontStyle style, FontWeight weight, FontStretch width
+      FontKey fontKey, String name, FontStyle style, FontWeight weight, FontStretch width
   ) {
     return (name == null || name.equalsIgnoreCase(fontKey.name)) &&
-      (style == null || style.equals(fontKey.style)) &&
-      (weight == null || weight.equals(fontKey.weight)) &&
-      (width == null || width.equals(fontKey.width));
+        (style == null || style.equals(fontKey.style)) &&
+        (weight == null || weight.equals(fontKey.weight)) &&
+        (width == null || width.equals(fontKey.width));
   }
 
   @Data

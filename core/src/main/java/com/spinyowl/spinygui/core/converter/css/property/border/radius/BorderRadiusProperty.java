@@ -1,7 +1,6 @@
 package com.spinyowl.spinygui.core.converter.css.property.border.radius;
 
 import static com.spinyowl.spinygui.core.converter.css.Properties.BORDER_RADIUS;
-
 import com.spinyowl.spinygui.core.converter.css.Property;
 import com.spinyowl.spinygui.core.converter.css.extractor.ValueExtractor;
 import com.spinyowl.spinygui.core.converter.css.extractor.ValueExtractors;
@@ -16,20 +15,25 @@ public class BorderRadiusProperty extends Property<BorderRadius> {
 
   public BorderRadiusProperty() {
     super(BORDER_RADIUS, "0", !INHERITED, ANIMATABLE,
-      NodeStyle::borderRadius, NodeStyle::borderRadius,
-      BorderRadiusProperty::extract, BorderRadiusProperty::test);
+        NodeStyle::borderRadius, NodeStyle::borderRadius,
+        BorderRadiusProperty::extract, BorderRadiusProperty::test);
   }
 
   private static BorderRadius extract(String value) {
     String[] v = value.split("\\s+");
     //@formatter:off
-        switch (v.length) {
-            case 1:          return new BorderRadius(x(v[0]));
-            case 2:          return new BorderRadius(x(v[0]), x(v[1]));
-            case 3:          return new BorderRadius(x(v[0]), x(v[1]), x(v[2]));
-            case 4: default: return new BorderRadius(x(v[0]), x(v[1]), x(v[2]), x(v[3]));
-        }
-        //@formatter:on
+    switch (v.length) {
+      case 1:
+        return new BorderRadius(x(v[0]));
+      case 2:
+        return new BorderRadius(x(v[0]), x(v[1]));
+      case 3:
+        return new BorderRadius(x(v[0]), x(v[1]), x(v[2]));
+      case 4:
+      default:
+        return new BorderRadius(x(v[0]), x(v[1]), x(v[2]), x(v[3]));
+    }
+    //@formatter:on
   }
 
   private static Length x(String value) {
@@ -38,6 +42,6 @@ public class BorderRadiusProperty extends Property<BorderRadius> {
 
   public static boolean test(String value) {
     return StyleUtils
-      .testOneFourValue(value, extractor::isValid);
+        .testOneFourValue(value, extractor::isValid);
   }
 }

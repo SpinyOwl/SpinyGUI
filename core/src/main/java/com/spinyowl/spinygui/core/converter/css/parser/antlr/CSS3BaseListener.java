@@ -1206,7 +1206,7 @@ public class CSS3BaseListener implements CSS3Listener {
    */
   @Override
   public void enterSupportsDeclarationCondition(
-    CSS3Parser.SupportsDeclarationConditionContext ctx) {
+      CSS3Parser.SupportsDeclarationConditionContext ctx) {
   }
 
   /**
@@ -1216,7 +1216,7 @@ public class CSS3BaseListener implements CSS3Listener {
    */
   @Override
   public void exitSupportsDeclarationCondition(
-    CSS3Parser.SupportsDeclarationConditionContext ctx) {
+      CSS3Parser.SupportsDeclarationConditionContext ctx) {
   }
 
   /**

@@ -12,25 +12,25 @@ import lombok.ToString;
 public class Color {
 
   //@formatter:off
-    public static final Color BLACK        = new Color(0    , 0    , 0          );
-    public static final Color SILVER       = new Color(192  , 192  , 192        );
-    public static final Color GRAY         = new Color(128  , 128  , 128        );
-    public static final Color WHITE        = new Color(255  , 255  , 255        );
-    public static final Color MAROON       = new Color(128  , 0    , 0          );
-    public static final Color RED          = new Color(255  , 0    , 0          );
-    public static final Color PURPLE       = new Color(128  , 0    , 128        );
-    public static final Color FUCHSIA      = new Color(255  , 0    , 255        );
-    public static final Color GREEN        = new Color(0    , 128  , 0          );
-    public static final Color LIME         = new Color(0    , 255  , 0          );
-    public static final Color OLIVE        = new Color(128  , 128  , 0          );
-    public static final Color YELLOW       = new Color(255  , 255  , 0          );
-    public static final Color NAVY         = new Color(0    , 0    , 128        );
-    public static final Color BLUE         = new Color(0    , 0    , 255        );
-    public static final Color TEAL         = new Color(0    , 128  , 128        );
-    public static final Color AQUA         = new Color(0    , 255  , 255        );
-    public static final Color TRANSPARENT  = new Color(0f   , 0f   , 0f    , 0f );
-    private static Map<String, Color> colors = new HashMap<>();
-    //@formatter:on
+  public static final Color BLACK = new Color(0, 0, 0);
+  public static final Color SILVER = new Color(192, 192, 192);
+  public static final Color GRAY = new Color(128, 128, 128);
+  public static final Color WHITE = new Color(255, 255, 255);
+  public static final Color MAROON = new Color(128, 0, 0);
+  public static final Color RED = new Color(255, 0, 0);
+  public static final Color PURPLE = new Color(128, 0, 128);
+  public static final Color FUCHSIA = new Color(255, 0, 255);
+  public static final Color GREEN = new Color(0, 128, 0);
+  public static final Color LIME = new Color(0, 255, 0);
+  public static final Color OLIVE = new Color(128, 128, 0);
+  public static final Color YELLOW = new Color(255, 255, 0);
+  public static final Color NAVY = new Color(0, 0, 128);
+  public static final Color BLUE = new Color(0, 0, 255);
+  public static final Color TEAL = new Color(0, 128, 128);
+  public static final Color AQUA = new Color(0, 255, 255);
+  public static final Color TRANSPARENT = new Color(0f, 0f, 0f, 0f);
+  private static Map<String, Color> colors = new HashMap<>();
+  //@formatter:on
 
   static {
     colors.put("black", BLACK);
@@ -98,25 +98,25 @@ public class Color {
     switch (value.length()) {
       case 8:
         return new Color((hex >> 24) & 0xFF,
-          (hex >> 16) & 0xFF,
-          (hex >> 8) & 0xFF,
-          hex & 0xFF);
+            (hex >> 16) & 0xFF,
+            (hex >> 8) & 0xFF,
+            hex & 0xFF);
       case 6:
         return new Color(
-          (hex >> 16) & 0xFF,
-          (hex >> 8) & 0xFF,
-          hex & 0xFF);
+            (hex >> 16) & 0xFF,
+            (hex >> 8) & 0xFF,
+            hex & 0xFF);
       case 4:
         return new Color(
-          (hex >> 12) & 0xF,
-          (hex >> 8) & 0xF,
-          (hex >> 4) & 0xF,
-          hex & 0xF);
+            (hex >> 12) & 0xF,
+            (hex >> 8) & 0xF,
+            (hex >> 4) & 0xF,
+            hex & 0xF);
       case 3:
         return new Color(
-          (hex >> 8) & 0xF,
-          (hex >> 4) & 0xF,
-          hex & 0xF);
+            (hex >> 8) & 0xF,
+            (hex >> 4) & 0xF,
+            hex & 0xF);
       default:
         return null;
     }
@@ -145,8 +145,8 @@ public class Color {
 
     }
     throw new IllegalArgumentException(
-      "Color expression should look like 'R, G, B' or 'R, G, B, A' but was '"
-        + colorExpression + "'");
+        "Color expression should look like 'R, G, B' or 'R, G, B, A' but was '"
+            + colorExpression + "'");
   }
 
   public static boolean exists(String colorName) {

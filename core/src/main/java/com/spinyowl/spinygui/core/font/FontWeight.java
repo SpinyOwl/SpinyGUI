@@ -31,13 +31,14 @@ public final class FontWeight {
   public static final FontWeight ULTRA_BOLD = FontWeight.create(800, "ultra bold", "ultrabold");
   public static final FontWeight HEAVY = FontWeight.create(900, "heavy");
   public static final FontWeight BLACK = FontWeight.create(900, "black");
+
   /**
-   * Name of font weight type (should be same as in css specification)
+   * Name of font weight type (should be same as in css specification).
    */
   private final String name;
 
   /**
-   * Font weight
+   * Font weight.
    */
   private final int weight;
 
@@ -65,7 +66,7 @@ public final class FontWeight {
   public static FontWeight create(int weight, String name, String... aliases) {
     Objects.requireNonNull(name);
     FontWeight fontWeight = VALUES
-      .computeIfAbsent(name.toLowerCase(), key -> new FontWeight(weight, key));
+        .computeIfAbsent(name.toLowerCase(), key -> new FontWeight(weight, key));
     if (aliases != null) {
       for (String alias : aliases) {
         VALUES.put(alias, new FontWeight(weight, alias));
@@ -133,6 +134,6 @@ public final class FontWeight {
       return false;
     }
     return values().stream().map(FontWeight::name)
-      .anyMatch(v -> v.equalsIgnoreCase(name));
+        .anyMatch(v -> v.equalsIgnoreCase(name));
   }
 }

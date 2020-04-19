@@ -28,7 +28,7 @@ public class RawProcessor extends AbstractXMLOutputProcessor {
 
   @Override
   protected void printElement(Writer out, FormatStack fstack, NamespaceStack nstack,
-    Element element) throws IOException {
+      Element element) throws IOException {
     if (Boolean.parseBoolean(element.getAttributeValue(PREFORMATTED_ATTRIBUTE))) {
       fstack.setTextMode(Format.TextMode.PRESERVE);
     }

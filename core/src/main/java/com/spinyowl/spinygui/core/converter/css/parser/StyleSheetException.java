@@ -69,7 +69,7 @@ public class StyleSheetException extends Exception {
    * @since 1.7
    */
   protected StyleSheetException(String message, Throwable cause, boolean enableSuppression,
-    boolean writableStackTrace) {
+      boolean writableStackTrace) {
     super(message, cause, enableSuppression, writableStackTrace);
   }
 }

@@ -91,7 +91,7 @@ public abstract class Element extends Node implements EventTarget {
    */
   public List<Element> children() {
     return childNodes().stream().filter(n -> n instanceof Element)
-      .map(n -> (Element) n).collect(Collectors.toUnmodifiableList());
+        .map(n -> (Element) n).collect(Collectors.toUnmodifiableList());
   }
 
   /**
@@ -134,7 +134,7 @@ public abstract class Element extends Node implements EventTarget {
   }
 
   public <T extends Event> void removeListener(Class<T> eventClass,
-    EventListener<T> listener) {
+      EventListener<T> listener) {
     getOrCreate(eventClass).remove(listener);
   }
 
@@ -151,7 +151,7 @@ public abstract class Element extends Node implements EventTarget {
 
   private <T extends Event> List<EventListener<T>> getOrCreate(Class<T> eventClass) {
     return (List<EventListener<T>>) listenerMap
-      .computeIfAbsent(eventClass, aClass -> new CopyOnWriteArrayList<>());
+        .computeIfAbsent(eventClass, aClass -> new CopyOnWriteArrayList<>());
   }
 
   /**

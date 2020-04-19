@@ -84,7 +84,7 @@ public final class FontStretch {
       return false;
     }
     return values().stream().map(FontStretch::getName)
-      .anyMatch(v -> v.equalsIgnoreCase(name));
+        .anyMatch(v -> v.equalsIgnoreCase(name));
   }
 
   /**
@@ -116,7 +116,7 @@ public final class FontStretch {
   @Override
   public String toString() {
     return new StringJoiner(", ", FontStretch.class.getSimpleName() + "[", "]")
-      .add("name='" + name + "'")
-      .toString();
+        .add("name='" + name + "'")
+        .toString();
   }
 }

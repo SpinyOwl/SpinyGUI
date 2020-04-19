@@ -1,7 +1,6 @@
 package com.spinyowl.spinygui.core.converter.css.selector;
 
 import static java.util.Objects.requireNonNull;
-
 import com.spinyowl.spinygui.core.node.Element;
 
 /**

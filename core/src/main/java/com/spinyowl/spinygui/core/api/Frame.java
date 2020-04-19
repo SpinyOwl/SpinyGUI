@@ -164,7 +164,7 @@ public class Frame {
    */
   public boolean containsLayer(Layer layer) {
     return (layer != null) && ((layer == tooltipLayer) || (layer == defaultLayer) || layers
-      .stream().anyMatch(l -> l == layer));
+        .stream().anyMatch(l -> l == layer));
   }
 
   /**

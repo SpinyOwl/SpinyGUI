@@ -1,7 +1,6 @@
 package com.spinyowl.spinygui.core.converter.css.property.position;
 
 import static com.spinyowl.spinygui.core.converter.css.Properties.LEFT;
-
 import com.spinyowl.spinygui.core.converter.css.Property;
 import com.spinyowl.spinygui.core.converter.css.extractor.ValueExtractor;
 import com.spinyowl.spinygui.core.converter.css.extractor.ValueExtractors;
@@ -14,7 +13,7 @@ public class LeftProperty extends Property<Unit> {
 
   public LeftProperty() {
     super(LEFT, "auto", !INHERITED, ANIMATABLE,
-      NodeStyle::left, NodeStyle::left,
-      extractor::extract, extractor::isValid);
+        NodeStyle::left, NodeStyle::left,
+        extractor::extract, extractor::isValid);
   }
 }

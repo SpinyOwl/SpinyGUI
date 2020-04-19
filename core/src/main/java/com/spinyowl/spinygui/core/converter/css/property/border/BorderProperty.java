@@ -1,7 +1,6 @@
 package com.spinyowl.spinygui.core.converter.css.property.border;
 
 import static com.spinyowl.spinygui.core.converter.css.Properties.BORDER;
-
 import com.spinyowl.spinygui.core.converter.css.Property;
 import com.spinyowl.spinygui.core.converter.css.extractor.ValueExtractor;
 import com.spinyowl.spinygui.core.converter.css.extractor.ValueExtractors;
@@ -20,8 +19,8 @@ public class BorderProperty extends Property<Border> {
 
   public BorderProperty() {
     super(BORDER, DEFAULT_VALUE, !INHERITED, ANIMATABLE,
-      NodeStyle::border, NodeStyle::border,
-      BorderProperty::x, BorderProperty::test
+        NodeStyle::border, NodeStyle::border,
+        BorderProperty::x, BorderProperty::test
     );
   }
 
@@ -36,11 +35,11 @@ public class BorderProperty extends Property<Border> {
       return BorderStyle.contains(values[0]);
     } else if (values.length == 2) {
       return BorderWidthProperty.testOne(values[0])
-        && BorderStyle.contains(values[1]) ||
-        BorderStyle.contains(values[0]) && colorValueExtractor.isValid(values[1]);
+          && BorderStyle.contains(values[1]) ||
+          BorderStyle.contains(values[0]) && colorValueExtractor.isValid(values[1]);
     } else {
       return BorderWidthProperty.testOne(values[0])
-        && BorderStyle.contains(values[1]) && colorValueExtractor.isValid(values[2]);
+          && BorderStyle.contains(values[1]) && colorValueExtractor.isValid(values[2]);
     }
   }
 

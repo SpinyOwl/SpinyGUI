@@ -1,7 +1,6 @@
 package com.spinyowl.spinygui.core.converter.css.property.position;
 
 import static com.spinyowl.spinygui.core.converter.css.Properties.RIGHT;
-
 import com.spinyowl.spinygui.core.converter.css.Property;
 import com.spinyowl.spinygui.core.converter.css.extractor.ValueExtractor;
 import com.spinyowl.spinygui.core.converter.css.extractor.ValueExtractors;
@@ -14,8 +13,8 @@ public class RightProperty extends Property<Unit> {
 
   public RightProperty() {
     super(RIGHT, "auto", !INHERITED, ANIMATABLE,
-      NodeStyle::right, NodeStyle::right,
-      extractor::extract, extractor::isValid);
+        NodeStyle::right, NodeStyle::right,
+        extractor::extract, extractor::isValid);
   }
 
 }

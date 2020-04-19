@@ -1,7 +1,6 @@
 package com.spinyowl.spinygui.core.converter.css.property.border.style;
 
 import static com.spinyowl.spinygui.core.converter.css.Properties.BORDER_STYLE;
-
 import com.spinyowl.spinygui.core.converter.css.Property;
 import com.spinyowl.spinygui.core.converter.css.util.StyleUtils;
 import com.spinyowl.spinygui.core.style.NodeStyle;
@@ -14,8 +13,8 @@ public class BorderStyleProperty extends Property<Border> {
 
   public BorderStyleProperty() {
     super(BORDER_STYLE, DEFAULT_VALUE, !INHERITED, ANIMATABLE,
-      (s, b) -> s.border().style(b), NodeStyle::border,
-      BorderStyleProperty::extract, BorderStyleProperty::test);
+        (s, b) -> s.border().style(b), NodeStyle::border,
+        BorderStyleProperty::extract, BorderStyleProperty::test);
   }
 
   private static Border extract(String value) {

@@ -17,12 +17,12 @@ public class Margin extends SideStyle<Unit> {
   }
 
   public Margin(Unit sideTop, Unit sideRightLeft,
-    Unit sideBottom) {
+      Unit sideBottom) {
     super(sideTop, sideRightLeft, sideBottom);
   }
 
   public Margin(Unit sideTop, Unit sideRight,
-    Unit sideBottom, Unit sideLeft) {
+      Unit sideBottom, Unit sideLeft) {
     super(sideTop, sideRight, sideBottom, sideLeft);
   }
 }

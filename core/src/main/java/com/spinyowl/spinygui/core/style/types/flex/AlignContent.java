@@ -82,7 +82,7 @@ public final class AlignContent {
       return false;
     }
     return values().stream().map(AlignContent::getName)
-      .anyMatch(v -> v.equalsIgnoreCase(name));
+        .anyMatch(v -> v.equalsIgnoreCase(name));
   }
 
   /**
@@ -114,7 +114,7 @@ public final class AlignContent {
   @Override
   public String toString() {
     return new StringJoiner(", ", AlignContent.class.getSimpleName() + "[", "]")
-      .add("name='" + name + "'")
-      .toString();
+        .add("name='" + name + "'")
+        .toString();
   }
 }

@@ -1,7 +1,6 @@
 package com.spinyowl.spinygui.core.converter.css.property.dimension;
 
 import static com.spinyowl.spinygui.core.converter.css.Properties.MAX_WIDTH;
-
 import com.spinyowl.spinygui.core.converter.css.Property;
 import com.spinyowl.spinygui.core.converter.css.extractor.ValueExtractor;
 import com.spinyowl.spinygui.core.converter.css.extractor.ValueExtractors;
@@ -14,10 +13,10 @@ public class MaxWidthProperty extends Property<Length> {
 
   public MaxWidthProperty() {
     super(MAX_WIDTH, "none", !INHERITED, ANIMATABLE,
-      NodeStyle::maxWidth, NodeStyle::maxWidth,
-      value -> "none".equalsIgnoreCase(value) ?
-        Length.pixel(Integer.MAX_VALUE)
-        : extractor.extract(value),
-      extractor::isValid);
+        NodeStyle::maxWidth, NodeStyle::maxWidth,
+        value -> "none".equalsIgnoreCase(value) ?
+            Length.pixel(Integer.MAX_VALUE)
+            : extractor.extract(value),
+        extractor::isValid);
   }
 }

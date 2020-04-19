@@ -101,6 +101,6 @@ public final class WhiteSpace {
       return false;
     }
     return values().stream().map(WhiteSpace::name)
-      .anyMatch(v -> v.equalsIgnoreCase(name));
+        .anyMatch(v -> v.equalsIgnoreCase(name));
   }
 }

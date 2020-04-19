@@ -1,7 +1,6 @@
 package com.spinyowl.spinygui.core.converter.css.property.font;
 
 import static com.spinyowl.spinygui.core.converter.css.Properties.FONT_SIZE;
-
 import com.spinyowl.spinygui.core.converter.css.Property;
 import com.spinyowl.spinygui.core.converter.css.extractor.ValueExtractor;
 import com.spinyowl.spinygui.core.converter.css.extractor.ValueExtractors;
@@ -20,13 +19,13 @@ public class FontSizeProperty extends Property<Length> {
   private static final String XX_SMALL = "xx-small";
 
   private static final List<String> values = List
-    .of(MEDIUM, XX_SMALL, X_SMALL, SMALL, LARGE, X_LARGE, XX_LARGE);
+      .of(MEDIUM, XX_SMALL, X_SMALL, SMALL, LARGE, X_LARGE, XX_LARGE);
 
   private static final ValueExtractor<Length> extractor = ValueExtractors.of(Length.class);
 
   public FontSizeProperty() {
     super(FONT_SIZE, MEDIUM, INHERITED, ANIMATABLE, NodeStyle::fontSize,
-      NodeStyle::fontSize, FontSizeProperty::extract, FontSizeProperty::test);
+        NodeStyle::fontSize, FontSizeProperty::extract, FontSizeProperty::test);
   }
 
   public static Length extract(String value) {
