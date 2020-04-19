@@ -82,7 +82,7 @@ public final class JustifyContent {
       return false;
     }
     return values().stream().map(JustifyContent::getName)
-      .anyMatch(v -> v.equalsIgnoreCase(name));
+        .anyMatch(v -> v.equalsIgnoreCase(name));
   }
 
   /**
@@ -114,8 +114,8 @@ public final class JustifyContent {
   @Override
   public String toString() {
     return new StringJoiner(", ", JustifyContent.class.getSimpleName() + "[", "]")
-      .add("name='" + name + "'")
-      .toString();
+        .add("name='" + name + "'")
+        .toString();
   }
 
 

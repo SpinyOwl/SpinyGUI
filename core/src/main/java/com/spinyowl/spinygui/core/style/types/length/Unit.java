@@ -3,9 +3,10 @@ package com.spinyowl.spinygui.core.style.types.length;
 public interface Unit {
 
   //@formatter:off
-    // DECLARATION OF AUTO VALUE.
-    Unit AUTO = new Unit() {};
-    //@formatter:on
+  // DECLARATION OF AUTO VALUE.
+  Unit AUTO = new Unit() {
+  };
+  //@formatter:on
 
   default boolean isLength() {
     return this instanceof Length;

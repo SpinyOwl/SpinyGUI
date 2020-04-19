@@ -73,7 +73,7 @@ public final class FontStyle {
       return false;
     }
     return values().stream().map(FontStyle::getName)
-      .anyMatch(v -> v.equalsIgnoreCase(name));
+        .anyMatch(v -> v.equalsIgnoreCase(name));
   }
 
   /**
@@ -105,7 +105,7 @@ public final class FontStyle {
   @Override
   public String toString() {
     return new StringJoiner(", ", FontStyle.class.getSimpleName() + "[", "]")
-      .add("name='" + name + "'")
-      .toString();
+        .add("name='" + name + "'")
+        .toString();
   }
 }

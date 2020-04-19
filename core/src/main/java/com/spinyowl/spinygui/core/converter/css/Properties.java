@@ -111,9 +111,9 @@ public final class Properties {
   static {
 
     var scanResult = new ClassGraph()
-      .whitelistPackages("com.spinyowl.spinygui")
-      .enableAllInfo()
-      .scan();
+        .whitelistPackages("com.spinyowl.spinygui")
+        .enableAllInfo()
+        .scan();
 
     var propertiesToAdd = new HashMap<String, List<CssPropertyTuple>>();
 
@@ -130,12 +130,12 @@ public final class Properties {
 
       } catch (Exception e) {
         LOGGER.error(
-          "Can't initialize property handler {}. Public default constructor should be declared.",
-          clazz.getName());
+            "Can't initialize property handler {}. Public default constructor should be declared.",
+            clazz.getName());
       }
       if (property != null) {
         propertiesToAdd.computeIfAbsent(property.getName(), p -> new ArrayList<>()).
-          add(CssPropertyTuple.of(property, priority));
+            add(CssPropertyTuple.of(property, priority));
       }
     }
 
@@ -145,9 +145,9 @@ public final class Properties {
       if (value.size() > 1) {
         value.sort(Comparator.comparingInt(o -> -o.priority));
         LOGGER.warn("Found several tag mappings for tag {} : {}. Using {}", name,
-          Arrays.toString(
-            value.stream().map(c -> c.property.getClass().getName()).toArray()),
-          value.get(0).property.getClass().getName());
+            Arrays.toString(
+                value.stream().map(c -> c.property.getClass().getName()).toArray()),
+            value.get(0).property.getClass().getName());
       }
       addSupportedProperty(name, value.get(0).property);
     }
@@ -177,8 +177,8 @@ public final class Properties {
 
     if (LOGGER.isWarnEnabled() && propertyMap.containsKey(name)) {
       LOGGER.warn(
-        "There is already exist property handler for {} : {}. Would be replaced by {}.",
-        name, propertyMap.get(name).getClass().getName(), property.getClass().getName());
+          "There is already exist property handler for {} : {}. Would be replaced by {}.",
+          name, propertyMap.get(name).getClass().getName(), property.getClass().getName());
     }
 
     propertyMap.put(name, property);

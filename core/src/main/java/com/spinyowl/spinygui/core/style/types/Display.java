@@ -90,7 +90,7 @@ public final class Display {
       return false;
     }
     return values().stream().map(Display::name)
-      .anyMatch(v -> v.equalsIgnoreCase(name));
+        .anyMatch(v -> v.equalsIgnoreCase(name));
   }
 
 }

@@ -28,7 +28,7 @@ public final class ValueExtractors {
   }
 
   public static <T> void add(Class<T> targetValueClass,
-    ValueExtractor<T> valueExtractor) {
+      ValueExtractor<T> valueExtractor) {
     valueExtractorMap.put(targetValueClass, valueExtractor);
   }
 

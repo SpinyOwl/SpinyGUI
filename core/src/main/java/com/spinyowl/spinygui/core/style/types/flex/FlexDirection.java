@@ -74,7 +74,7 @@ public final class FlexDirection {
       return false;
     }
     return values().stream().map(FlexDirection::getName)
-      .anyMatch(v -> v.equalsIgnoreCase(name));
+        .anyMatch(v -> v.equalsIgnoreCase(name));
   }
 
   /**
@@ -106,8 +106,8 @@ public final class FlexDirection {
   @Override
   public String toString() {
     return new StringJoiner(", ", FlexDirection.class.getSimpleName() + "[", "]")
-      .add("name='" + name + "'")
-      .toString();
+        .add("name='" + name + "'")
+        .toString();
   }
 
 }

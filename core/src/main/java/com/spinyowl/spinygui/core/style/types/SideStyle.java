@@ -33,7 +33,7 @@ public abstract class SideStyle<T> {
   }
 
   public SideStyle(@NonNull T sideTop, @NonNull T sideRight, @NonNull T sideBottom,
-    @NonNull T sideLeft) {
+      @NonNull T sideLeft) {
     this.top = sideTop;
     this.left = sideLeft;
     this.bottom = sideBottom;

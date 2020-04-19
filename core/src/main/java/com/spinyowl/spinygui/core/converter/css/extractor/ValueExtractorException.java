@@ -7,7 +7,7 @@ public class ValueExtractorException extends RuntimeException {
 
   public ValueExtractorException(Class<?> clazz, String value) {
     super(String.format(
-      "Failed to extract '%s' type from '%s' value.", clazz.getName(), value
+        "Failed to extract '%s' type from '%s' value.", clazz.getName(), value
     ));
   }
 

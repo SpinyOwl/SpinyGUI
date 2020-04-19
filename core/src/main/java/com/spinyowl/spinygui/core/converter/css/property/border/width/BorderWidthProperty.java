@@ -1,7 +1,6 @@
 package com.spinyowl.spinygui.core.converter.css.property.border.width;
 
 import static com.spinyowl.spinygui.core.converter.css.Properties.BORDER_WIDTH;
-
 import com.spinyowl.spinygui.core.converter.css.Property;
 import com.spinyowl.spinygui.core.converter.css.extractor.ValueExtractor;
 import com.spinyowl.spinygui.core.converter.css.extractor.ValueExtractors;
@@ -24,8 +23,8 @@ public class BorderWidthProperty extends Property<Border> {
 
   public BorderWidthProperty() {
     super(BORDER_WIDTH, MEDIUM, !INHERITED, ANIMATABLE,
-      (s, b) -> s.border().width(b), NodeStyle::border,
-      BorderWidthProperty::extract, BorderWidthProperty::test);
+        (s, b) -> s.border().width(b), NodeStyle::border,
+        BorderWidthProperty::extract, BorderWidthProperty::test);
   }
 
   protected static Border extract(String value) {
@@ -59,9 +58,9 @@ public class BorderWidthProperty extends Property<Border> {
 
   public static boolean testOne(String borderWidth) {
     return THIN.equalsIgnoreCase(borderWidth) ||
-      MEDIUM.equalsIgnoreCase(borderWidth) ||
-      THICK.equalsIgnoreCase(borderWidth) ||
-      extractor.isValid(borderWidth);
+        MEDIUM.equalsIgnoreCase(borderWidth) ||
+        THICK.equalsIgnoreCase(borderWidth) ||
+        extractor.isValid(borderWidth);
   }
 
   private static boolean test(String value) {

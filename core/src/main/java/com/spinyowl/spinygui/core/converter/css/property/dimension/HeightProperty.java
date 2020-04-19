@@ -1,7 +1,6 @@
 package com.spinyowl.spinygui.core.converter.css.property.dimension;
 
 import static com.spinyowl.spinygui.core.converter.css.Properties.HEIGHT;
-
 import com.spinyowl.spinygui.core.converter.css.Property;
 import com.spinyowl.spinygui.core.converter.css.extractor.ValueExtractor;
 import com.spinyowl.spinygui.core.converter.css.extractor.ValueExtractors;
@@ -14,7 +13,7 @@ public class HeightProperty extends Property<Unit> {
 
   public HeightProperty() {
     super(HEIGHT, "auto", !INHERITED, ANIMATABLE,
-      NodeStyle::height, NodeStyle::height,
-      extractor::extract, extractor::isValid);
+        NodeStyle::height, NodeStyle::height,
+        extractor::extract, extractor::isValid);
   }
 }

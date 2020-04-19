@@ -30,7 +30,7 @@ public abstract class EmptyElement extends Element {
   @Override
   public final void removeChild(Node node) {
     throw new UnsupportedOperationException(
-      "Child operations are not supported for EmptyNode.");
+        "Child operations are not supported for EmptyNode.");
   }
 
   /**
@@ -43,7 +43,7 @@ public abstract class EmptyElement extends Element {
   @Override
   public final void addChild(Node node) {
     throw new UnsupportedOperationException(
-      "Child operations are not supported for EmptyNode.");
+        "Child operations are not supported for EmptyNode.");
   }
 
   /**

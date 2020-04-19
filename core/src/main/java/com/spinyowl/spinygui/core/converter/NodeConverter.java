@@ -62,8 +62,8 @@ public final class NodeConverter {
       return createElement((Element) node);
     } else {
       LOGGER
-        .warn("Attempt to marshal {} class which is not Text or Element child -> skipping.",
-          node.getClass().getName());
+          .warn("Attempt to marshal {} class which is not Text or Element child -> skipping.",
+              node.getClass().getName());
       return null;
     }
   }
@@ -115,8 +115,8 @@ public final class NodeConverter {
       return createNodeFromElement((org.jdom2.Element) content);
     } else {
       LOGGER.warn(
-        "Can't find node mapping and class for content type '{}', content value '{}'.",
-        content.getCType(), content.getValue());
+          "Can't find node mapping and class for content type '{}', content value '{}'.",
+          content.getCType(), content.getValue());
       return null;
     }
   }

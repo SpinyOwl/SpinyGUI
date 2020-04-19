@@ -13,17 +13,17 @@ public class Padding extends SideStyle<Length> {
   }
 
   public Padding(Length sideTopBottom,
-    Length sideRightLeft) {
+      Length sideRightLeft) {
     super(sideTopBottom, sideRightLeft);
   }
 
   public Padding(Length sideTop, Length sideRightLeft,
-    Length sideBottom) {
+      Length sideBottom) {
     super(sideTop, sideRightLeft, sideBottom);
   }
 
   public Padding(Length sideTop, Length sideRight,
-    Length sideBottom, Length sideLeft) {
+      Length sideBottom, Length sideLeft) {
     super(sideTop, sideRight, sideBottom, sideLeft);
   }
 }

@@ -2,7 +2,6 @@ package com.spinyowl.spinygui.core.style.types.length;
 
 import static com.spinyowl.spinygui.core.style.types.length.Length.LType.PERCENT;
 import static com.spinyowl.spinygui.core.style.types.length.Length.LType.PIXEL;
-
 import java.util.Objects;
 import java.util.StringJoiner;
 
@@ -39,9 +38,9 @@ public class Length<T extends Number> implements Unit {
   @Override
   public String toString() {
     return new StringJoiner(", ", Length.class.getSimpleName() + "[", "]")
-      .add("value=" + value)
-      .add("type=" + type)
-      .toString();
+        .add("value=" + value)
+        .add("type=" + type)
+        .toString();
   }
 
 
@@ -59,10 +58,10 @@ public class Length<T extends Number> implements Unit {
   public static final class LType<T extends Number> {
 
     public static final LType<Integer> PIXEL =
-      new LType<>("PIXEL", Integer.class, (l, n) -> l.value);
+        new LType<>("PIXEL", Integer.class, (l, n) -> l.value);
 
     public static final LType<Float> PERCENT =
-      new LType<>("PERCENT", Float.class, (l, n) -> l.value * n);
+        new LType<>("PERCENT", Float.class, (l, n) -> l.value * n);
 
 
     private final String name;
@@ -97,9 +96,9 @@ public class Length<T extends Number> implements Unit {
     @Override
     public String toString() {
       return new StringJoiner(", ", LType.class.getSimpleName() + "[", "]")
-        .add("name='" + name + "'")
-        .add("type=" + type)
-        .toString();
+          .add("name='" + name + "'")
+          .add("type=" + type)
+          .toString();
     }
   }
 }

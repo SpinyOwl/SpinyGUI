@@ -13,12 +13,12 @@ public class StyleSheetVisitor extends CSS3BaseVisitor<StyleSheet> {
     var rulesetVisitor = new RulesetVisitor();
 
     var ruleSetList = ctx.nestedStatement()
-      .stream().map(rulesetVisitor::visit)
-      .filter(Objects::nonNull).collect(Collectors.toList());
+        .stream().map(rulesetVisitor::visit)
+        .filter(Objects::nonNull).collect(Collectors.toList());
 
     var rules = ctx.nestedStatement()
-      .stream().map(new AtRuleVisitor()::visit)
-      .filter(Objects::nonNull).collect(Collectors.toList());
+        .stream().map(new AtRuleVisitor()::visit)
+        .filter(Objects::nonNull).collect(Collectors.toList());
 
     return new StyleSheet(ruleSetList, rules);
   }

@@ -43,9 +43,9 @@ public final class NodeUtilities {
       // check top parent
 
       if (cPos.x() > component.parent().size().x() ||
-        cPos.x() + cSize.x() < 0 ||
-        cPos.y() > component.parent().size().y() ||
-        cPos.y() + cSize.y() < 0
+          cPos.x() + cSize.x() < 0 ||
+          cPos.y() > component.parent().size().y() ||
+          cPos.y() + cSize.y() < 0
       ) {
         return false;
       }

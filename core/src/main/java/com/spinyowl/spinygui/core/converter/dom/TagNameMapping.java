@@ -33,9 +33,9 @@ public final class TagNameMapping {
 
   static {
     var scanResult = new ClassGraph()
-      .whitelistPackages("com.spinyowl.spinygui")
-      .enableAllInfo()
-      .scan();
+        .whitelistPackages("com.spinyowl.spinygui")
+        .enableAllInfo()
+        .scan();
 
     var tagsToAdd = new HashMap<String, List<TagToAdd>>();
 
@@ -56,7 +56,7 @@ public final class TagNameMapping {
       }
 
       tagsToAdd.computeIfAbsent(name, n -> new ArrayList<>())
-        .add(TagToAdd.of(clazz, priority));
+          .add(TagToAdd.of(clazz, priority));
     }
 
     for (var entry : tagsToAdd.entrySet()) {
@@ -65,8 +65,8 @@ public final class TagNameMapping {
       if (value.size() > 1) {
         value.sort(Comparator.comparingInt(o -> -o.priority));
         LOGGER.warn("Found several tag mappings for tag {} : {}. Using {}", name,
-          Arrays.toString(value.stream().map(c -> c.element.getName()).toArray()),
-          value.get(0).element.getName());
+            Arrays.toString(value.stream().map(c -> c.element.getName()).toArray()),
+            value.get(0).element.getName());
       }
       addMapping(name, value.get(0).element);
     }
@@ -82,8 +82,8 @@ public final class TagNameMapping {
 
     if (LOGGER.isWarnEnabled() && tagMapping.containsKey(name)) {
       LOGGER.warn(
-        "There is already exist tag mapping for {} : {}. Would be replaced by {}.",
-        name, tagMapping.get(name).getName(), aClass.getName());
+          "There is already exist tag mapping for {} : {}. Would be replaced by {}.",
+          name, tagMapping.get(name).getName(), aClass.getName());
     }
 
     tagMapping.put(name, aClass);

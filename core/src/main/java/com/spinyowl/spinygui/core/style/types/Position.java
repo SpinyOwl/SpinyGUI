@@ -107,7 +107,7 @@ public final class Position {
       return false;
     }
     return values().stream().map(Position::name)
-      .anyMatch(v -> v.equalsIgnoreCase(name));
+        .anyMatch(v -> v.equalsIgnoreCase(name));
   }
 
 }

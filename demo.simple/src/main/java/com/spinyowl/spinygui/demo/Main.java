@@ -3,7 +3,6 @@ package com.spinyowl.spinygui.demo;
 import static com.spinyowl.spinygui.core.node.NodeBuilder.button;
 import static com.spinyowl.spinygui.core.node.NodeBuilder.div;
 import static com.spinyowl.spinygui.core.node.NodeBuilder.text;
-
 import com.spinyowl.spinygui.core.api.Frame;
 import com.spinyowl.spinygui.core.converter.NodeConverter;
 import com.spinyowl.spinygui.core.node.Element;
@@ -38,7 +37,7 @@ public class Main {
     Div buttonPanel = div(text("Bold"));
     Node buttonPre = button(text("\n\n\tFOrmantted text\n\t\n\n asdfasdfa\n"));
     Node button = button(text("\n\n\tFOrmantted text\n\t\n\n asdfasdfa\n"),
-      buttonPanel, buttonPre);
+        buttonPanel, buttonPre);
     RadioButton radioButton = new RadioButton();
     Node element = div(button, input, radioButton);
 
@@ -50,24 +49,24 @@ public class Main {
     String xml = NodeConverter.toXml(element, false);
     LOGGER.info(xml);
     String xml2 = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
-      "<div>\n" +
-      "  <button>asdfasdfasd</button>" +
-      "  <button>\n" +
-      "    \n\n\n\n\n\n" +
-      "    s\n" +
-      "    \n" +
-      "    Hello World\n\n\n\n\n" +
-      "    <pre>\n" +
-      "    \n\n\n\n\n\n" +
-      "    s\n" +
-      "    \n" +
-      "    Hello World\n" +
-      "    </pre>\n" +
-      "    <div>Bold</div>\n" +
-      "  </button>\n" +
-      "  <input name=\"password\" value=\"PASS_@!@#&amp;\" />\n" +
-      "  <RadioButton />\n" +
-      "</div>";
+        "<div>\n" +
+        "  <button>asdfasdfasd</button>" +
+        "  <button>\n" +
+        "    \n\n\n\n\n\n" +
+        "    s\n" +
+        "    \n" +
+        "    Hello World\n\n\n\n\n" +
+        "    <pre>\n" +
+        "    \n\n\n\n\n\n" +
+        "    s\n" +
+        "    \n" +
+        "    Hello World\n" +
+        "    </pre>\n" +
+        "    <div>Bold</div>\n" +
+        "  </button>\n" +
+        "  <input name=\"password\" value=\"PASS_@!@#&amp;\" />\n" +
+        "  <RadioButton />\n" +
+        "</div>";
     Node unmarshal = NodeConverter.fromXml(xml2);
 
     LOGGER.info("UNMARSHALLING IS FINISHED");

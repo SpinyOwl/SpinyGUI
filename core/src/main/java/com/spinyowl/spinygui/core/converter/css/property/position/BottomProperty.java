@@ -1,7 +1,6 @@
 package com.spinyowl.spinygui.core.converter.css.property.position;
 
 import static com.spinyowl.spinygui.core.converter.css.Properties.BOTTOM;
-
 import com.spinyowl.spinygui.core.converter.css.Property;
 import com.spinyowl.spinygui.core.converter.css.extractor.ValueExtractor;
 import com.spinyowl.spinygui.core.converter.css.extractor.ValueExtractors;
@@ -14,7 +13,7 @@ public class BottomProperty extends Property<Unit> {
 
   public BottomProperty() {
     super(BOTTOM, "auto", !INHERITED, ANIMATABLE,
-      NodeStyle::bottom, NodeStyle::bottom,
-      extractor::extract, extractor::isValid);
+        NodeStyle::bottom, NodeStyle::bottom,
+        extractor::extract, extractor::isValid);
   }
 }

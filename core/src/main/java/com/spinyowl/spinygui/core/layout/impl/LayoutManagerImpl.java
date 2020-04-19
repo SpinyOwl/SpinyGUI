@@ -36,7 +36,7 @@ public class LayoutManagerImpl implements LayoutManager {
   @Override
   public void layout(Element element) {
     if (element != null && element.visible()
-      && NodeUtilities.visibleInParents(element)
+        && NodeUtilities.visibleInParents(element)
     ) {
       Layout layout = layoutMap.get(element.style().display());
       if (layout != null) {

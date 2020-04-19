@@ -2,7 +2,6 @@ package com.spinyowl.spinygui.core.converter.css;
 
 import static com.spinyowl.spinygui.core.converter.css.Property.INHERIT;
 import static com.spinyowl.spinygui.core.converter.css.Property.INITIAL;
-
 import java.util.Objects;
 
 public class Declaration<T> {

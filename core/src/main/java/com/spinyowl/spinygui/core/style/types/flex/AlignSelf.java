@@ -82,7 +82,7 @@ public final class AlignSelf {
       return false;
     }
     return values().stream().map(AlignSelf::getName)
-      .anyMatch(v -> v.equalsIgnoreCase(name));
+        .anyMatch(v -> v.equalsIgnoreCase(name));
   }
 
   /**
@@ -114,7 +114,7 @@ public final class AlignSelf {
   @Override
   public String toString() {
     return new StringJoiner(", ", AlignSelf.class.getSimpleName() + "[", "]")
-      .add("name='" + name + "'")
-      .toString();
+        .add("name='" + name + "'")
+        .toString();
   }
 }

@@ -3,7 +3,6 @@ package com.spinyowl.spinygui.demo;
 import static com.spinyowl.spinygui.core.node.NodeBuilder.button;
 import static com.spinyowl.spinygui.core.node.NodeBuilder.div;
 import static com.spinyowl.spinygui.core.node.NodeBuilder.label;
-
 import com.spinyowl.spinygui.core.api.Frame;
 import com.spinyowl.spinygui.core.converter.NodeConverter;
 import com.spinyowl.spinygui.core.converter.StyleSheetConverter;
@@ -38,19 +37,19 @@ public class Test {
   public static void createFromCSS() throws StyleSheetException {
     StyleReflectionHandler.getPseudoSelector(":hover");
     String css = "@font-face {\n"
-      + "    font-family: My Font Family;\n"
-      + "    src: local(\"some-font.ttf\");\n"
-      + "}\n"
-      + "\n"
-      + "div > button .test\n"
-      + "{\n"
-      + "   background-color: #ffff80;\n"
-      + "   color: red;\n"
-      + "   width: 50%;\n"
-      + "   left: 50%;\n"
-      + "   top: 50px;\n"
-      + "   right: 50.2%;\n"
-      + "}";
+        + "    font-family: My Font Family;\n"
+        + "    src: local(\"some-font.ttf\");\n"
+        + "}\n"
+        + "\n"
+        + "div > button .test\n"
+        + "{\n"
+        + "   background-color: #ffff80;\n"
+        + "   color: red;\n"
+        + "   width: 50%;\n"
+        + "   left: 50%;\n"
+        + "   top: 50px;\n"
+        + "   right: 50.2%;\n"
+        + "}";
 
     var stylesheet = StyleSheetConverter.createFromCSS(css);
 
@@ -76,25 +75,25 @@ public class Test {
 
   public static void searchComponents() throws Exception {
     var css =
-      "div .test label { background-color: red; }" +
-        "div .test { background-color: green; border: 1px, 1px, 2px, 1px }" +
-        "button { color: black; }";
+        "div .test label { background-color: red; }" +
+            "div .test { background-color: green; border: 1px, 1px, 2px, 1px }" +
+            "button { color: black; }";
 
     var stylesheet = StyleSheetConverter.createFromCSS(css);
 
     var xml = "<div id=\"1\">\n" +
-      "    <div id=\"2\" class=\"test\">\n" +
-      "        <label id=\"3\">Label 1</label>\n" +
-      "    </div>\n" +
-      "    <button id=\"4\" class=\"test\"/>\n" +
-      "    <div id=\"5\" class=\"test\">\n" +
-      "        <div id=\"6\">\n" +
-      "            <div id=\"7\" class=\"test\">\n" +
-      "                <label id=\"8\">Label 1</label>\n" +
-      "            </div>\n" +
-      "        </div>\n" +
-      "    </div>\n" +
-      "</div>";
+        "    <div id=\"2\" class=\"test\">\n" +
+        "        <label id=\"3\">Label 1</label>\n" +
+        "    </div>\n" +
+        "    <button id=\"4\" class=\"test\"/>\n" +
+        "    <div id=\"5\" class=\"test\">\n" +
+        "        <div id=\"6\">\n" +
+        "            <div id=\"7\" class=\"test\">\n" +
+        "                <label id=\"8\">Label 1</label>\n" +
+        "            </div>\n" +
+        "        </div>\n" +
+        "    </div>\n" +
+        "</div>";
     var componentTree = (Element) NodeConverter.fromXml(xml);
 
     List<RuleSet> ruleSets = stylesheet.ruleSets();

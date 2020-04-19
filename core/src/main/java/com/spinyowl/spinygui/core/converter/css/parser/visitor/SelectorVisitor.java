@@ -37,7 +37,7 @@ public class SelectorVisitor extends CSS3BaseVisitor<List<StyleSelector>> {
     var firstSelector = visitSimpleSelectorSequence(ctx.simpleSelectorSequence(0)).get(0);
     for (int i = 1; i < ctx.simpleSelectorSequence().size(); i++) {
       final var secondSelector = visitSimpleSelectorSequence(ctx.simpleSelectorSequence(i))
-        .get(0);
+          .get(0);
 
       if (ctx.combinator(i - 1).Space() != null) {
         firstSelector = StyleSelector.child(firstSelector, secondSelector);
@@ -55,7 +55,7 @@ public class SelectorVisitor extends CSS3BaseVisitor<List<StyleSelector>> {
 
   @Override
   public List<StyleSelector> visitSimpleSelectorSequence(
-    CSS3Parser.SimpleSelectorSequenceContext ctx) {
+      CSS3Parser.SimpleSelectorSequenceContext ctx) {
     var list = new ArrayList<StyleSelector>();
 
     StyleSelector current = null;

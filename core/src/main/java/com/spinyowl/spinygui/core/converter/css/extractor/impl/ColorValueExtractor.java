@@ -31,12 +31,12 @@ public class ColorValueExtractor implements ValueExtractor<Color> {
   @Override
   public boolean isValid(String value) {
     return value != null &&
-      (value.matches(HEX_STRING_REGEX) ||
-        value.matches(RGB_FUNCTION_REGEX) ||
-        value.matches(RGBA_FUNCTION_REGEX) ||
+        (value.matches(HEX_STRING_REGEX) ||
+            value.matches(RGB_FUNCTION_REGEX) ||
+            value.matches(RGBA_FUNCTION_REGEX) ||
 //              value.matches(HSL_FUNCTION_REGEX) ||
 //              value.matches(HSLA_FUNCTION_REGEX) ||
-        Color.exists(value));
+            Color.exists(value));
   }
 
   @Override

@@ -69,7 +69,7 @@ public final class FlexWrap {
       return false;
     }
     return values().stream().map(FlexWrap::getName)
-      .anyMatch(v -> v.equalsIgnoreCase(name));
+        .anyMatch(v -> v.equalsIgnoreCase(name));
   }
 
   /**
@@ -101,8 +101,8 @@ public final class FlexWrap {
   @Override
   public String toString() {
     return new StringJoiner(", ", FlexWrap.class.getSimpleName() + "[", "]")
-      .add("name='" + name + "'")
-      .toString();
+        .add("name='" + name + "'")
+        .toString();
   }
 
 }

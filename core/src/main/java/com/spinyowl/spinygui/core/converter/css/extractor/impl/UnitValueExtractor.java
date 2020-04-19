@@ -44,9 +44,9 @@ public class UnitValueExtractor implements ValueExtractor<Unit> {
   @Override
   public boolean isValid(String value) {
     return value.matches(PERCENTAGE_REGEX) ||
-      value.matches(PIXEL_REGEX) ||
-      value.matches(AUTO_REGEX) ||
-      value.matches(UnitValueExtractor.ZERO_REGEX);
+        value.matches(PIXEL_REGEX) ||
+        value.matches(AUTO_REGEX) ||
+        value.matches(UnitValueExtractor.ZERO_REGEX);
   }
 
   @Override

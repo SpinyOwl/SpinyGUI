@@ -15,18 +15,18 @@ public class Border extends SideStyle<BorderItem> {
   }
 
   public Border(BorderItem sideTopBottom,
-    BorderItem sideRightLeft) {
+      BorderItem sideRightLeft) {
     super(sideTopBottom, sideRightLeft);
   }
 
   public Border(BorderItem sideTop,
-    BorderItem sideRightLeft, BorderItem sideBottom) {
+      BorderItem sideRightLeft, BorderItem sideBottom) {
     super(sideTop, sideRightLeft, sideBottom);
   }
 
   public Border(BorderItem sideTop,
-    BorderItem sideRight, BorderItem sideBottom,
-    BorderItem sideLeft) {
+      BorderItem sideRight, BorderItem sideBottom,
+      BorderItem sideLeft) {
     super(sideTop, sideRight, sideBottom, sideLeft);
   }
 
@@ -126,7 +126,7 @@ public class Border extends SideStyle<BorderItem> {
   }
 
   public void style(BorderStyle styleTop, BorderStyle styleRightLeft,
-    BorderStyle styleBottom) {
+      BorderStyle styleBottom) {
     top().style(styleTop);
     bottom().style(styleRightLeft);
     left().style(styleRightLeft);
@@ -134,7 +134,7 @@ public class Border extends SideStyle<BorderItem> {
   }
 
   public void style(BorderStyle styleTop, BorderStyle styleRight, BorderStyle styleBottom,
-    BorderStyle styleLeft) {
+      BorderStyle styleLeft) {
     top().style(styleTop);
     bottom().style(styleLeft);
     left().style(styleBottom);
