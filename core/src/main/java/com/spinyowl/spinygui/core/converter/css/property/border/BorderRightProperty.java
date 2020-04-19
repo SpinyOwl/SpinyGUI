@@ -7,9 +7,9 @@ import com.spinyowl.spinygui.core.style.types.border.BorderItem;
 
 public class BorderRightProperty extends Property<BorderItem> {
 
-    public BorderRightProperty() {
-        super(BORDER_RIGHT, BorderProperty.DEFAULT_VALUE, !INHERITED, ANIMATABLE,
-            (s, i) -> s.border().right(i), s -> s.border().right(),
-            BorderProperty::extract, BorderProperty::test);
-    }
+  public BorderRightProperty() {
+    super(BORDER_RIGHT, BorderProperty.DEFAULT_VALUE, !INHERITED, ANIMATABLE,
+      (s, i) -> s.border().right(i), s -> s.border().right(),
+      BorderProperty::extract, BorderProperty::test);
+  }
 }

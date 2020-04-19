@@ -7,9 +7,9 @@ import com.spinyowl.spinygui.core.style.types.flex.JustifyContent;
 
 public class JustifyContentProperty extends Property<JustifyContent> {
 
-    public JustifyContentProperty() {
-        super(JUSTIFY_CONTENT, "flex-start", !INHERITED, !ANIMATABLE,
-            (s, v) -> s.flex().justifyContent(v), s -> s.flex().justifyContent(),
-            JustifyContent::find, JustifyContent::contains);
-    }
+  public JustifyContentProperty() {
+    super(JUSTIFY_CONTENT, "flex-start", !INHERITED, !ANIMATABLE,
+      (s, v) -> s.flex().justifyContent(v), s -> s.flex().justifyContent(),
+      JustifyContent::find, JustifyContent::contains);
+  }
 }

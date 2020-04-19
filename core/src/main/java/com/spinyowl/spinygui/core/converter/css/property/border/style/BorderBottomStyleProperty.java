@@ -8,11 +8,11 @@ import com.spinyowl.spinygui.core.style.types.border.BorderStyle;
 
 public class BorderBottomStyleProperty extends Property<BorderStyle> {
 
-    public BorderBottomStyleProperty() {
-        super(BORDER_BOTTOM_STYLE, DEFAULT_VALUE, !INHERITED, ANIMATABLE,
-            (s, c) -> s.border().bottom().style(c),
-            s -> s.border().bottom().style(),
-            BorderStyle::find, BorderStyle::contains);
-    }
+  public BorderBottomStyleProperty() {
+    super(BORDER_BOTTOM_STYLE, DEFAULT_VALUE, !INHERITED, ANIMATABLE,
+      (s, c) -> s.border().bottom().style(c),
+      s -> s.border().bottom().style(),
+      BorderStyle::find, BorderStyle::contains);
+  }
 
 }

@@ -10,12 +10,12 @@ import com.spinyowl.spinygui.core.style.types.Color;
 
 public class BorderRightColorProperty extends Property<Color> {
 
-    public static final ValueExtractor<Color> extractor = ValueExtractors.of(Color.class);
+  public static final ValueExtractor<Color> extractor = ValueExtractors.of(Color.class);
 
-    public BorderRightColorProperty() {
-        super(BORDER_RIGHT_COLOR, DEFAULT_VALUE, !INHERITED, ANIMATABLE,
-            (s, c) -> s.border().right().color(c),
-            s -> s.border().right().color(),
-            extractor::extract, extractor::isValid);
-    }
+  public BorderRightColorProperty() {
+    super(BORDER_RIGHT_COLOR, DEFAULT_VALUE, !INHERITED, ANIMATABLE,
+      (s, c) -> s.border().right().color(c),
+      s -> s.border().right().color(),
+      extractor::extract, extractor::isValid);
+  }
 }

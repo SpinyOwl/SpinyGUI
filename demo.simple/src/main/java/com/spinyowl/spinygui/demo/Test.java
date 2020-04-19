@@ -27,96 +27,96 @@ import org.slf4j.LoggerFactory;
 
 public class Test {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(Test.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(Test.class);
 
-    public static void main(String[] args) throws Exception {
-        createFromCSS();
-        searchComponents();
-        parseText();
+  public static void main(String[] args) throws Exception {
+    createFromCSS();
+    searchComponents();
+    parseText();
+  }
+
+  public static void createFromCSS() throws StyleSheetException {
+    StyleReflectionHandler.getPseudoSelector(":hover");
+    String css = "@font-face {\n"
+      + "    font-family: My Font Family;\n"
+      + "    src: local(\"some-font.ttf\");\n"
+      + "}\n"
+      + "\n"
+      + "div > button .test\n"
+      + "{\n"
+      + "   background-color: #ffff80;\n"
+      + "   color: red;\n"
+      + "   width: 50%;\n"
+      + "   left: 50%;\n"
+      + "   top: 50px;\n"
+      + "   right: 50.2%;\n"
+      + "}";
+
+    var stylesheet = StyleSheetConverter.createFromCSS(css);
+
+    Label testLabel = label(Map.of("class", "test"));
+
+    Element div = div(button(testLabel));
+
+    List<RuleSet> ruleSets = stylesheet.ruleSets();
+    RuleSet ruleSet = ruleSets.get(0);
+    List<StyleSelector> selectors = ruleSet.getSelectors();
+
+    assert (!selectors.get(0).test(div));
+    assert (selectors.get(0).test(testLabel));
+
+    Frame frame = new Frame();
+    frame.getStyleSheets().add(stylesheet);
+    frame.defaultLayer().addChild(div);
+
+    StyleManagerProvider.getInstance().recalculateStyles(frame);
+
+    assert (Objects.equals(Color.RED, testLabel.calculatedStyle().color()));
+  }
+
+  public static void searchComponents() throws Exception {
+    var css =
+      "div .test label { background-color: red; }" +
+        "div .test { background-color: green; border: 1px, 1px, 2px, 1px }" +
+        "button { color: black; }";
+
+    var stylesheet = StyleSheetConverter.createFromCSS(css);
+
+    var xml = "<div id=\"1\">\n" +
+      "    <div id=\"2\" class=\"test\">\n" +
+      "        <label id=\"3\">Label 1</label>\n" +
+      "    </div>\n" +
+      "    <button id=\"4\" class=\"test\"/>\n" +
+      "    <div id=\"5\" class=\"test\">\n" +
+      "        <div id=\"6\">\n" +
+      "            <div id=\"7\" class=\"test\">\n" +
+      "                <label id=\"8\">Label 1</label>\n" +
+      "            </div>\n" +
+      "        </div>\n" +
+      "    </div>\n" +
+      "</div>";
+    var componentTree = (Element) NodeConverter.fromXml(xml);
+
+    List<RuleSet> ruleSets = stylesheet.ruleSets();
+
+    Set<Element> labels = StyleSheet.searchElements(ruleSets.get(0), componentTree);
+    for (Node node : labels) {
+      assert (Objects.equals(Label.class, node.getClass()));
+    }
+    Set<Element> test = StyleSheet.searchElements(ruleSets.get(1), componentTree);
+    for (Element node : test) {
+      assert (Objects.equals("test", node.getAttribute("class")));
+    }
+    Set<Element> buttons = StyleSheet.searchElements(ruleSets.get(2), componentTree);
+    for (Node node : buttons) {
+      assert (Objects.equals(Button.class, node.getClass()));
     }
 
-    public static void createFromCSS() throws StyleSheetException {
-        StyleReflectionHandler.getPseudoSelector(":hover");
-        String css = "@font-face {\n"
-            + "    font-family: My Font Family;\n"
-            + "    src: local(\"some-font.ttf\");\n"
-            + "}\n"
-            + "\n"
-            + "div > button .test\n"
-            + "{\n"
-            + "   background-color: #ffff80;\n"
-            + "   color: red;\n"
-            + "   width: 50%;\n"
-            + "   left: 50%;\n"
-            + "   top: 50px;\n"
-            + "   right: 50.2%;\n"
-            + "}";
+  }
 
-        var stylesheet = StyleSheetConverter.createFromCSS(css);
-
-        Label testLabel = label(Map.of("class", "test"));
-
-        Element div = div(button(testLabel));
-
-        List<RuleSet> ruleSets = stylesheet.ruleSets();
-        RuleSet ruleSet = ruleSets.get(0);
-        List<StyleSelector> selectors = ruleSet.getSelectors();
-
-        assert (!selectors.get(0).test(div));
-        assert (selectors.get(0).test(testLabel));
-
-        Frame frame = new Frame();
-        frame.getStyleSheets().add(stylesheet);
-        frame.getDefaultLayer().addChild(div);
-
-        StyleManagerProvider.getInstance().recalculateStyles(frame);
-
-        assert (Objects.equals(Color.RED, testLabel.calculatedStyle().color()));
-    }
-
-    public static void searchComponents() throws Exception {
-        var css =
-            "div .test label { background-color: red; }" +
-                "div .test { background-color: green; border: 1px, 1px, 2px, 1px }" +
-                "button { color: black; }";
-
-        var stylesheet = StyleSheetConverter.createFromCSS(css);
-
-        var xml = "<div id=\"1\">\n" +
-            "    <div id=\"2\" class=\"test\">\n" +
-            "        <label id=\"3\">Label 1</label>\n" +
-            "    </div>\n" +
-            "    <button id=\"4\" class=\"test\"/>\n" +
-            "    <div id=\"5\" class=\"test\">\n" +
-            "        <div id=\"6\">\n" +
-            "            <div id=\"7\" class=\"test\">\n" +
-            "                <label id=\"8\">Label 1</label>\n" +
-            "            </div>\n" +
-            "        </div>\n" +
-            "    </div>\n" +
-            "</div>";
-        var componentTree = (Element) NodeConverter.fromXml(xml);
-
-        List<RuleSet> ruleSets = stylesheet.ruleSets();
-
-        Set<Element> labels = StyleSheet.searchElements(ruleSets.get(0), componentTree);
-        for (Node node : labels) {
-            assert (Objects.equals(Label.class, node.getClass()));
-        }
-        Set<Element> test = StyleSheet.searchElements(ruleSets.get(1), componentTree);
-        for (Element node : test) {
-            assert (Objects.equals("test", node.getAttribute("class")));
-        }
-        Set<Element> buttons = StyleSheet.searchElements(ruleSets.get(2), componentTree);
-        for (Node node : buttons) {
-            assert (Objects.equals(Button.class, node.getClass()));
-        }
-
-    }
-
-    public static void parseText() throws Exception {
-        var xml = "<div>just a text</div>";
-        var componentTree = NodeConverter.fromXml(xml);
-        LOGGER.info("Component tree: {}", componentTree);
-    }
+  public static void parseText() throws Exception {
+    var xml = "<div>just a text</div>";
+    var componentTree = NodeConverter.fromXml(xml);
+    LOGGER.info("Component tree: {}", componentTree);
+  }
 }

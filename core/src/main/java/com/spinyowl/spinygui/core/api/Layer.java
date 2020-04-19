@@ -5,127 +5,82 @@ import com.spinyowl.spinygui.core.event.listener.EventListener;
 import com.spinyowl.spinygui.core.node.Container;
 import java.util.List;
 import java.util.Objects;
+import lombok.AccessLevel;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.Setter;
 
 /**
  * Layer class is root container for all nodes in layer. Contains root node of layer - layer
  * container, list of stylesheets which should be used to calculate node styles
  */
+@Data
+@EqualsAndHashCode(callSuper = true, exclude = "frame")
 public class Layer extends Container {
 
-    /**
-     * Parent frame.
-     */
-    private Frame frame;
+  /**
+   * Parent frame.
+   */
+  @Setter(AccessLevel.NONE)
+  private Frame frame;
 
-    /**
-     * Determines if  current layer allow to pass events to bottom layer if event wasn't handled by
-     * components of this layer.
-     */
-    private boolean eventPassable = true;
+  /**
+   * Determines if  current layer allow to pass events to bottom layer if event wasn't handled by
+   * components of this layer.
+   */
+  private boolean eventPassable = true;
 
-    /**
-     * Determines if current layer and all of it components can receive events.
-     */
-    private boolean eventReceivable = true;
+  /**
+   * Determines if current layer and all of it components can receive events.
+   */
+  private boolean eventReceivable = true;
 
-    /**
-     * Returns frame to which attached this layer.
-     *
-     * @return frame to which attached this layer.
-     */
-    public Frame getFrame() {
-        return frame;
+  /**
+   * Used to attach layer to frame.
+   *
+   * @param frame frame to attach.
+   */
+  protected void frame(Frame frame) {
+    if (frame == this.frame) {
+      return;
     }
-
-    /**
-     * Used to attach layer to frame.
-     *
-     * @param frame frame to attach.
-     */
-    protected void setFrame(Frame frame) {
-        if (frame == this.frame) {
-            return;
-        }
-        if (this.frame != null) {
-            this.frame.removeLayer(this);
-        }
-        this.frame = frame;
-        if (frame != null) {
-            frame.addLayer(this);
-        }
+    if (this.frame != null) {
+      this.frame.removeLayer(this);
     }
-
-    /**
-     * Returns true if layer is event passable.
-     *
-     * @return true if layer is event passable.
-     */
-    public boolean isEventPassable() {
-        return eventPassable;
+    this.frame = frame;
+    if (frame != null) {
+      frame.addLayer(this);
     }
+  }
 
-    /**
-     * Used to enable or disable passing events to bottom layer.
-     *
-     * @param eventPassable true/false to enable/disable passing events to bottom layer.
-     */
-    public void setEventPassable(boolean eventPassable) {
-        this.eventPassable = eventPassable;
-    }
+  /**
+   * Shorthand to add window close event listener.
+   *
+   * @param listener window close event listener to add.
+   */
+  public void addWindowCloseEventListener(EventListener<WindowCloseEvent> listener) {
+    Objects.requireNonNull(listener);
 
-    /**
-     * Returns true if layer is event receivable.
-     *
-     * @return true if layer is event receivable.
-     */
-    public boolean isEventReceivable() {
-        return eventReceivable;
-    }
+    addListener(WindowCloseEvent.class, listener);
+  }
 
-    /**
-     * Used to enable or disable receiving events by layer.
-     *
-     * @param eventReceivable true/false to enable/disable receiving events by layer.
-     */
-    public void setEventReceivable(boolean eventReceivable) {
-        this.eventReceivable = eventReceivable;
-    }
+  /**
+   * Shorthand to remove window close event listener.
+   *
+   * @param listener window close event listener to remove.
+   */
+  public void removeWindowCloseEventListener(EventListener<WindowCloseEvent> listener) {
+    Objects.requireNonNull(listener);
 
-    public void addWindowCloseEventListener(EventListener<WindowCloseEvent> listener) {
-        Objects.requireNonNull(listener);
+    removeListener(WindowCloseEvent.class, listener);
+  }
 
-        addListener(WindowCloseEvent.class, listener);
-    }
-
-    public void removeWindowCloseEventListener(EventListener<WindowCloseEvent> listener) {
-        Objects.requireNonNull(listener);
-
-        removeListener(WindowCloseEvent.class, listener);
-    }
-
-    public List<EventListener<WindowCloseEvent>> getWindowCloseEventListeners() {
-        return getListeners(WindowCloseEvent.class);
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        if (!super.equals(o)) {
-            return false;
-        }
-        Layer layer = (Layer) o;
-        return eventPassable == layer.eventPassable &&
-            eventReceivable == layer.eventReceivable &&
-            Objects.equals(frame, layer.frame);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(super.hashCode(), frame, eventPassable, eventReceivable);
-    }
+  /**
+   * Shorthand to get all window close event listeners assigned to this layer.
+   *
+   * @return all window close event listeners assigned to this layer.
+   */
+  public List<EventListener<WindowCloseEvent>> getWindowCloseEventListeners() {
+    return getListeners(WindowCloseEvent.class);
+  }
 }

@@ -8,23 +8,23 @@ import java.util.Objects;
  */
 public final class LayoutManagerProvider {
 
-    private LayoutManagerProvider() {
-    }
+  private LayoutManagerProvider() {
+  }
 
-    public static LayoutManager getInstance() {
-        return LMH.instance;
-    }
+  public static LayoutManager getInstance() {
+    return LMH.instance;
+  }
 
-    public static void setInstance(LayoutManager instance) {
-        Objects.requireNonNull(instance);
-        LMH.instance = instance;
-    }
+  public static void setInstance(LayoutManager instance) {
+    Objects.requireNonNull(instance);
+    LMH.instance = instance;
+  }
 
-    /**
-     * Instance holder.
-     */
-    private static class LMH {
+  /**
+   * Instance holder.
+   */
+  private static class LMH {
 
-        private static LayoutManager instance = new LayoutManagerImpl();
-    }
+    private static LayoutManager instance = new LayoutManagerImpl();
+  }
 }

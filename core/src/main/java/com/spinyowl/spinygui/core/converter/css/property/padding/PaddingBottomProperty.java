@@ -9,11 +9,11 @@ import com.spinyowl.spinygui.core.style.types.length.Length;
 
 public class PaddingBottomProperty extends Property<Length> {
 
-    public static final ValueExtractor<Length> extractor = ValueExtractors.of(Length.class);
+  public static final ValueExtractor<Length> extractor = ValueExtractors.of(Length.class);
 
-    public PaddingBottomProperty() {
-        super(PADDING_BOTTOM, "0", !INHERITED, ANIMATABLE,
-            (s, v) -> s.padding().bottom(v), s -> s.padding().bottom(),
-            extractor::extract, extractor::isValid);
-    }
+  public PaddingBottomProperty() {
+    super(PADDING_BOTTOM, "0", !INHERITED, ANIMATABLE,
+      (s, v) -> s.padding().bottom(v), s -> s.padding().bottom(),
+      extractor::extract, extractor::isValid);
+  }
 }

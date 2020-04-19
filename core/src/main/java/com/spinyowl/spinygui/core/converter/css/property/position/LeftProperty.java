@@ -10,11 +10,11 @@ import com.spinyowl.spinygui.core.style.types.length.Unit;
 
 public class LeftProperty extends Property<Unit> {
 
-    public static final ValueExtractor<Unit> extractor = ValueExtractors.of(Unit.class);
+  public static final ValueExtractor<Unit> extractor = ValueExtractors.of(Unit.class);
 
-    public LeftProperty() {
-        super(LEFT, "auto", !INHERITED, ANIMATABLE,
-            NodeStyle::left, NodeStyle::left,
-            extractor::extract, extractor::isValid);
-    }
+  public LeftProperty() {
+    super(LEFT, "auto", !INHERITED, ANIMATABLE,
+      NodeStyle::left, NodeStyle::left,
+      extractor::extract, extractor::isValid);
+  }
 }

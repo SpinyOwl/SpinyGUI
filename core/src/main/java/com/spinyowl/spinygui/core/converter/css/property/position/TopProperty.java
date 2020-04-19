@@ -10,11 +10,11 @@ import com.spinyowl.spinygui.core.style.types.length.Unit;
 
 public class TopProperty extends Property<Unit> {
 
-    public static final ValueExtractor<Unit> extractor = ValueExtractors.of(Unit.class);
+  public static final ValueExtractor<Unit> extractor = ValueExtractors.of(Unit.class);
 
-    public TopProperty() {
-        super(TOP, "auto", !INHERITED, ANIMATABLE,
-            NodeStyle::top, NodeStyle::top,
-            extractor::extract, extractor::isValid);
-    }
+  public TopProperty() {
+    super(TOP, "auto", !INHERITED, ANIMATABLE,
+      NodeStyle::top, NodeStyle::top,
+      extractor::extract, extractor::isValid);
+  }
 }

@@ -15,55 +15,55 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public abstract class Container extends Element {
 
-    /**
-     * Child nodes.
-     */
-    private List<Node> childNodes = new CopyOnWriteArrayList<>();
+  /**
+   * Child nodes.
+   */
+  private List<Node> childNodes = new CopyOnWriteArrayList<>();
 
-    /**
-     * Used to remove child node.
-     *
-     * @param node node to remove.
-     */
-    @Override
-    public void removeChild(Node node) {
-        childNodes.remove(node);
+  /**
+   * Used to remove child node.
+   *
+   * @param node node to remove.
+   */
+  @Override
+  public void removeChild(Node node) {
+    childNodes.remove(node);
+  }
+
+  /**
+   * Used to add child node.
+   *
+   * @param node node to add.
+   */
+  @Override
+  public void addChild(Node node) {
+    if (node == null || node == this || Reference.contains(childNodes, node)) {
+      return;
     }
 
-    /**
-     * Used to add child node.
-     *
-     * @param node node to add.
-     */
-    @Override
-    public void addChild(Node node) {
-        if (node == null || node == this || Reference.contains(childNodes, node)) {
-            return;
-        }
-
-        Container parent = node.parent();
-        if (parent != null) {
-            parent.removeChild(node);
-        }
-
-        childNodes.add(node);
-
-        node.parent(this);
+    Container parent = node.parent();
+    if (parent != null) {
+      parent.removeChild(node);
     }
 
-    /**
-     * Used to get child nodes.
-     *
-     * @return list of child nodes.
-     */
-    @Override
-    public List<Node> childNodes() {
-        return childNodes.stream().collect(Collectors.toUnmodifiableList());
-    }
+    childNodes.add(node);
 
-    @Override
-    public boolean hasChildNodes() {
-        return !childNodes.isEmpty();
-    }
+    node.parent(this);
+  }
+
+  /**
+   * Used to get child nodes.
+   *
+   * @return list of child nodes.
+   */
+  @Override
+  public List<Node> childNodes() {
+    return childNodes.stream().collect(Collectors.toUnmodifiableList());
+  }
+
+  @Override
+  public boolean hasChildNodes() {
+    return !childNodes.isEmpty();
+  }
 
 }

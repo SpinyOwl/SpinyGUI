@@ -9,12 +9,12 @@ import lombok.NonNull;
 @NoArgsConstructor
 public class Background {
 
-    @NonNull
-    private Color color;
+  @NonNull
+  private Color color;
 
-    private String image;
+  private String image;
 
-    private Length backgroundPositionX;
-    private Length backgroundPositionY;
+  private Length backgroundPositionX;
+  private Length backgroundPositionY;
 
 }

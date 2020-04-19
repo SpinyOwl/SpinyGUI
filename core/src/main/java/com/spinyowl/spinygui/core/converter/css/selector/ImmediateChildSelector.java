@@ -9,12 +9,12 @@ import lombok.Data;
 @Data
 public class ImmediateChildSelector implements StyleSelector {
 
-    private final StyleSelector first;
-    private final StyleSelector second;
+  private final StyleSelector first;
+  private final StyleSelector second;
 
-    @Override
-    public boolean test(Element t) {
-        return t.parent() != null && second.test(t) && first.test(t.parent());
-    }
+  @Override
+  public boolean test(Element t) {
+    return t.parent() != null && second.test(t) && first.test(t.parent());
+  }
 
 }

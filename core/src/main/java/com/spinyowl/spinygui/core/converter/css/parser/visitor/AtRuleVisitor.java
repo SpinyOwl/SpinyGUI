@@ -12,53 +12,53 @@ import com.spinyowl.spinygui.core.font.FontWeight;
 
 public class AtRuleVisitor extends CSS3BaseVisitor<AtRule> {
 
-    public static final String FONT_FAMILY = "font-family";
-    public static final String SRC = "src";
-    public static final String FONT_STRETCH = "font-stretch";
-    public static final String FONT_STYLE = "font-style";
-    public static final String FONT_WEIGHT = "font-weight";
+  public static final String FONT_FAMILY = "font-family";
+  public static final String SRC = "src";
+  public static final String FONT_STRETCH = "font-stretch";
+  public static final String FONT_STYLE = "font-style";
+  public static final String FONT_WEIGHT = "font-weight";
 
-    private FontFaceRule fontFaceRule = null;
-    private String fontFamily;
-    private String src;
-    private FontStretch fontStretch;
-    private FontStyle fontStyle;
-    private FontWeight fontWeight;
+  private FontFaceRule fontFaceRule = null;
+  private String fontFamily;
+  private String src;
+  private FontStretch fontStretch;
+  private FontStyle fontStyle;
+  private FontWeight fontWeight;
 
-    @Override
-    public AtRule visitFontFaceRule(FontFaceRuleContext ctx) {
-        for (FontFaceDeclarationContext ffdCtx : ctx.fontFaceDeclaration()) {
-            if (ffdCtx instanceof KnownFontFaceDeclarationContext) {
-                visitKnownFontFaceDeclaration((KnownFontFaceDeclarationContext) ffdCtx);
-            }
-        }
-
-        if (fontFamily != null && src != null) {
-            fontFaceRule = new FontFaceRule(fontFamily, src);
-            fontFaceRule.fontStretch(fontStretch);
-            fontFaceRule.fontStyle(fontStyle);
-            fontFaceRule.fontWeight(fontWeight);
-        }
-        return fontFaceRule;
+  @Override
+  public AtRule visitFontFaceRule(FontFaceRuleContext ctx) {
+    for (FontFaceDeclarationContext ffdCtx : ctx.fontFaceDeclaration()) {
+      if (ffdCtx instanceof KnownFontFaceDeclarationContext) {
+        visitKnownFontFaceDeclaration((KnownFontFaceDeclarationContext) ffdCtx);
+      }
     }
 
-    @Override
-    public AtRule visitKnownFontFaceDeclaration(KnownFontFaceDeclarationContext ctx) {
-        String name = ctx.property().getText();
-        String value = ctx.expr().getText();
-
-        if (FONT_FAMILY.equalsIgnoreCase(name)) {
-            fontFamily = value;
-        } else if (SRC.equalsIgnoreCase(name)) {
-            src = value;
-        } else if (FONT_STRETCH.equalsIgnoreCase(name)) {
-            fontStretch = FontStretch.find(value);
-        } else if (FONT_STYLE.equalsIgnoreCase(name)) {
-            fontStyle = FontStyle.find(value);
-        } else if (FONT_WEIGHT.equalsIgnoreCase(name)) {
-            fontWeight = FontWeight.find(value);
-        }
-
-        return super.visitKnownFontFaceDeclaration(ctx);
+    if (fontFamily != null && src != null) {
+      fontFaceRule = new FontFaceRule(fontFamily, src);
+      fontFaceRule.fontStretch(fontStretch);
+      fontFaceRule.fontStyle(fontStyle);
+      fontFaceRule.fontWeight(fontWeight);
     }
+    return fontFaceRule;
+  }
+
+  @Override
+  public AtRule visitKnownFontFaceDeclaration(KnownFontFaceDeclarationContext ctx) {
+    String name = ctx.property().getText();
+    String value = ctx.expr().getText();
+
+    if (FONT_FAMILY.equalsIgnoreCase(name)) {
+      fontFamily = value;
+    } else if (SRC.equalsIgnoreCase(name)) {
+      src = value;
+    } else if (FONT_STRETCH.equalsIgnoreCase(name)) {
+      fontStretch = FontStretch.find(value);
+    } else if (FONT_STYLE.equalsIgnoreCase(name)) {
+      fontStyle = FontStyle.find(value);
+    } else if (FONT_WEIGHT.equalsIgnoreCase(name)) {
+      fontWeight = FontWeight.find(value);
+    }
+
+    return super.visitKnownFontFaceDeclaration(ctx);
+  }
 }

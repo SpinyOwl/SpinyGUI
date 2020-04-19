@@ -8,10 +8,10 @@ import com.spinyowl.spinygui.core.style.types.length.Length;
 
 public class BorderTopWidthProperty extends Property<Length> {
 
-    public BorderTopWidthProperty() {
-        super(BORDER_TOP_WIDTH, MEDIUM, !INHERITED, ANIMATABLE,
-            (s, v) -> s.border().top().width(v),
-            s -> s.border().top().width(),
-            BorderWidthProperty::extractOne, BorderWidthProperty::testOne);
-    }
+  public BorderTopWidthProperty() {
+    super(BORDER_TOP_WIDTH, MEDIUM, !INHERITED, ANIMATABLE,
+      (s, v) -> s.border().top().width(v),
+      s -> s.border().top().width(),
+      BorderWidthProperty::extractOne, BorderWidthProperty::testOne);
+  }
 }

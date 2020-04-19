@@ -5,16 +5,16 @@ import java.util.Objects;
 
 public final class Reference {
 
-    private Reference() {
-    }
+  private Reference() {
+  }
 
-    public static <T> boolean contains(Collection<T> collection, T element) {
-        Objects.requireNonNull(collection);
-        for (T elementOfCollection : collection) {
-            if (elementOfCollection == element) {
-                return true;
-            }
-        }
-        return false;
+  public static <T> boolean contains(Collection<T> collection, T element) {
+    Objects.requireNonNull(collection);
+    for (T elementOfCollection : collection) {
+      if (elementOfCollection == element) {
+        return true;
+      }
     }
+    return false;
+  }
 }

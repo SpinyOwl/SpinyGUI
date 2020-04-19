@@ -19,100 +19,100 @@ import org.joml.Vector2ic;
  */
 public abstract class Window {
 
-    public static final EventListener<WindowCloseEvent> EXIT_ON_CLOSE = event -> System.exit(0);
-    private final Frame frame;
-    /**
-     * Root panel.
-     */
-    private volatile boolean closed = false;
-    private String title;
+  public static final EventListener<WindowCloseEvent> EXIT_ON_CLOSE = event -> System.exit(0);
+  private final Frame frame;
+  /**
+   * Root panel.
+   */
+  private volatile boolean closed = false;
+  private String title;
 
-    public Window() {
-        frame = new Frame();
+  public Window() {
+    frame = new Frame();
+  }
+
+  public static Window createWindow(String title, int width, int height) {
+    return Services.getWindowService().createWindow(width, height, title);
+  }
+
+  public static Window createWindow(String title, int width, int height, Monitor monitor) {
+    return Services.getWindowService().createWindow(width, height, title, monitor);
+  }
+
+  public abstract long getPointer();
+
+  public String getTitle() {
+    return title;
+  }
+
+  public void setTitle(String title) {
+    if (title != null) {
+      this.title = title;
+      Services.getWindowService().setWindowTitle(this, title);
     }
+  }
 
-    public static Window createWindow(String title, int width, int height) {
-        return Services.getWindowService().createWindow(width, height, title);
-    }
+  public Vector2ic getPosition() {
+    return Services.getWindowService().getWindowPosition(this);
+  }
 
-    public static Window createWindow(String title, int width, int height, Monitor monitor) {
-        return Services.getWindowService().createWindow(width, height, title, monitor);
-    }
+  public void position(Vector2i position) {
+    Services.getWindowService().setWindowPosition(this, position);
+  }
 
-    public abstract long getPointer();
+  public void setPosition(int x, int y) {
+    position(new Vector2i(x, y));
+  }
 
-    public String getTitle() {
-        return title;
-    }
+  public Vector2ic getSize() {
+    return Services.getWindowService().getWindowSize(this);
+  }
 
-    public void setTitle(String title) {
-        if (title != null) {
-            this.title = title;
-            Services.getWindowService().setWindowTitle(this, title);
-        }
-    }
+  public void setSize(Vector2i size) {
+    Services.getWindowService().setWindowSize(this, size);
+  }
 
-    public Vector2ic getPosition() {
-        return Services.getWindowService().getWindowPosition(this);
-    }
+  public void setSize(int width, int height) {
+    this.setSize(new Vector2i(width, height));
+  }
 
-    public void position(Vector2i position) {
-        Services.getWindowService().setWindowPosition(this, position);
-    }
+  public boolean isVisible() {
+    return Services.getWindowService().isWindowVisible(this);
+  }
 
-    public void setPosition(int x, int y) {
-        position(new Vector2i(x, y));
-    }
+  public void setVisible(boolean visible) {
+    Services.getWindowService().setWindowVisible(this, visible);
+  }
 
-    public Vector2ic getSize() {
-        return Services.getWindowService().getWindowSize(this);
-    }
+  public boolean isClosed() {
+    return closed;
+  }
 
-    public void setSize(Vector2i size) {
-        Services.getWindowService().setWindowSize(this, size);
-    }
+  public void close() {
+    closed = Services.getWindowService().closeWindow(this);
+  }
 
-    public void setSize(int width, int height) {
-        this.setSize(new Vector2i(width, height));
-    }
+  public abstract Monitor getMonitor();
 
-    public boolean isVisible() {
-        return Services.getWindowService().isWindowVisible(this);
-    }
+  public abstract void setMonitor(Monitor monitor);
 
-    public void setVisible(boolean visible) {
-        Services.getWindowService().setWindowVisible(this, visible);
-    }
+  public void addCloseEventListener(EventListener<WindowCloseEvent> listener) {
+    Objects.requireNonNull(listener);
+    frame.defaultLayer().addWindowCloseEventListener(listener);
+  }
 
-    public boolean isClosed() {
-        return closed;
-    }
+  public void removeCloseEventListener(EventListener<WindowCloseEvent> listener) {
+    Objects.requireNonNull(listener);
+    frame.defaultLayer().removeWindowCloseEventListener(listener);
+  }
 
-    public void close() {
-        closed = Services.getWindowService().closeWindow(this);
-    }
+  public List<EventListener<WindowCloseEvent>> getCloseEventListeners() {
+    return frame.defaultLayer().getWindowCloseEventListeners();
+  }
 
-    public abstract Monitor getMonitor();
+  public abstract Node getFocusOwner();
 
-    public abstract void setMonitor(Monitor monitor);
-
-    public void addCloseEventListener(EventListener<WindowCloseEvent> listener) {
-        Objects.requireNonNull(listener);
-        frame.getDefaultLayer().addWindowCloseEventListener(listener);
-    }
-
-    public void removeCloseEventListener(EventListener<WindowCloseEvent> listener) {
-        Objects.requireNonNull(listener);
-        frame.getDefaultLayer().removeWindowCloseEventListener(listener);
-    }
-
-    public List<EventListener<WindowCloseEvent>> getCloseEventListeners() {
-        return frame.getDefaultLayer().getWindowCloseEventListeners();
-    }
-
-    public abstract Node getFocusOwner();
-
-    public Frame getFrame() {
-        return frame;
-    }
+  public Frame getFrame() {
+    return frame;
+  }
 }

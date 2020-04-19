@@ -9,14 +9,14 @@ import com.spinyowl.spinygui.core.style.types.Color;
 
 public class BackgroundColorProperty extends Property<Color> {
 
-    public static final ValueExtractor<Color> colorExtractor = ValueExtractors.of(Color.class);
+  public static final ValueExtractor<Color> colorExtractor = ValueExtractors.of(Color.class);
 
-    public BackgroundColorProperty() {
-        super(BACKGROUND_COLOR, "transparent", !INHERITED, ANIMATABLE,
-            (s, c) -> s.background().color(c),
-            s -> s.background().color(),
-            colorExtractor::extract,
-            colorExtractor::isValid);
-    }
+  public BackgroundColorProperty() {
+    super(BACKGROUND_COLOR, "transparent", !INHERITED, ANIMATABLE,
+      (s, c) -> s.background().color(c),
+      s -> s.background().color(),
+      colorExtractor::extract,
+      colorExtractor::isValid);
+  }
 
 }

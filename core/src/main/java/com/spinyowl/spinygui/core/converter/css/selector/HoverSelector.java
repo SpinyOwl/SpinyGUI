@@ -8,9 +8,9 @@ import lombok.ToString;
 @PseudoSelector(":hover")
 public class HoverSelector implements StyleSelector {
 
-    @Override
-    public boolean test(Element element) {
-        return element.hovered();
-    }
+  @Override
+  public boolean test(Element element) {
+    return element.hovered();
+  }
 
 }

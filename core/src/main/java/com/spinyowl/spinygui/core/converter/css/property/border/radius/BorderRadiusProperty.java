@@ -12,17 +12,17 @@ import com.spinyowl.spinygui.core.style.types.length.Length;
 
 public class BorderRadiusProperty extends Property<BorderRadius> {
 
-    private static ValueExtractor<Length> extractor = ValueExtractors.of(Length.class);
+  private static ValueExtractor<Length> extractor = ValueExtractors.of(Length.class);
 
-    public BorderRadiusProperty() {
-        super(BORDER_RADIUS, "0", !INHERITED, ANIMATABLE,
-            NodeStyle::borderRadius, NodeStyle::borderRadius,
-            BorderRadiusProperty::extract, BorderRadiusProperty::test);
-    }
+  public BorderRadiusProperty() {
+    super(BORDER_RADIUS, "0", !INHERITED, ANIMATABLE,
+      NodeStyle::borderRadius, NodeStyle::borderRadius,
+      BorderRadiusProperty::extract, BorderRadiusProperty::test);
+  }
 
-    private static BorderRadius extract(String value) {
-        String[] v = value.split("\\s+");
-        //@formatter:off
+  private static BorderRadius extract(String value) {
+    String[] v = value.split("\\s+");
+    //@formatter:off
         switch (v.length) {
             case 1:          return new BorderRadius(x(v[0]));
             case 2:          return new BorderRadius(x(v[0]), x(v[1]));
@@ -30,14 +30,14 @@ public class BorderRadiusProperty extends Property<BorderRadius> {
             case 4: default: return new BorderRadius(x(v[0]), x(v[1]), x(v[2]), x(v[3]));
         }
         //@formatter:on
-    }
+  }
 
-    private static Length x(String value) {
-        return extractor.extract(value);
-    }
+  private static Length x(String value) {
+    return extractor.extract(value);
+  }
 
-    public static boolean test(String value) {
-        return StyleUtils
-            .testOneFourValue(value, extractor::isValid);
-    }
+  public static boolean test(String value) {
+    return StyleUtils
+      .testOneFourValue(value, extractor::isValid);
+  }
 }

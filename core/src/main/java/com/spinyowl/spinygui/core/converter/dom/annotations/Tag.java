@@ -12,11 +12,11 @@ import java.lang.annotation.Target;
 @Target(ElementType.TYPE)
 public @interface Tag {
 
-    /**
-     * Tag name. If not specified - tag mapping will use lower case of class name.
-     *
-     * @return tag name.
-     */
-    String value() default "";
+  /**
+   * Tag name. If not specified - tag mapping will use lower case of class name.
+   *
+   * @return tag name.
+   */
+  String value() default "";
 
 }

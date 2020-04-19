@@ -4,15 +4,15 @@ import com.spinyowl.spinygui.core.node.Element;
 
 public abstract class NodeEvent<T extends Element> extends Event<T> {
 
-    public NodeEvent(T target) {
-        super(target);
-    }
+  public NodeEvent(T target) {
+    super(target);
+  }
 
-    public NodeEvent(T target, double timeStamp) {
-        super(target, timeStamp);
-    }
+  public NodeEvent(T target, double timeStamp) {
+    super(target, timeStamp);
+  }
 
-    public NodeEvent(EventTarget source, T target, double timeStamp) {
-        super(source, target, timeStamp);
-    }
+  public NodeEvent(EventTarget source, T target, double timeStamp) {
+    super(source, target, timeStamp);
+  }
 }

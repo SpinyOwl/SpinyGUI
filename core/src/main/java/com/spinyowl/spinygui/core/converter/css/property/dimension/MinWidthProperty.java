@@ -10,11 +10,11 @@ import com.spinyowl.spinygui.core.style.types.length.Length;
 
 public class MinWidthProperty extends Property<Length> {
 
-    public static final ValueExtractor<Length> extractor = ValueExtractors.of(Length.class);
+  public static final ValueExtractor<Length> extractor = ValueExtractors.of(Length.class);
 
-    public MinWidthProperty() {
-        super(MIN_WIDTH, "0px", !INHERITED, ANIMATABLE,
-            NodeStyle::minWidth, NodeStyle::minWidth,
-            extractor::extract, extractor::isValid);
-    }
+  public MinWidthProperty() {
+    super(MIN_WIDTH, "0px", !INHERITED, ANIMATABLE,
+      NodeStyle::minWidth, NodeStyle::minWidth,
+      extractor::extract, extractor::isValid);
+  }
 }

@@ -15,26 +15,26 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public final class ValueExtractors {
 
-    private static final Map<Class, ValueExtractor> valueExtractorMap = new ConcurrentHashMap<>();
+  private static final Map<Class, ValueExtractor> valueExtractorMap = new ConcurrentHashMap<>();
 
-    static {
-        add(Color.class, new ColorValueExtractor());
-        add(Unit.class, new UnitValueExtractor());
-        add(Length.class, new LengthValueExtractor());
-        add(Integer.class, new IntegerExtractor());
-    }
+  static {
+    add(Color.class, new ColorValueExtractor());
+    add(Unit.class, new UnitValueExtractor());
+    add(Length.class, new LengthValueExtractor());
+    add(Integer.class, new IntegerExtractor());
+  }
 
-    private ValueExtractors() {
-    }
+  private ValueExtractors() {
+  }
 
-    public static <T> void add(Class<T> targetValueClass,
-        ValueExtractor<T> valueExtractor) {
-        valueExtractorMap.put(targetValueClass, valueExtractor);
-    }
+  public static <T> void add(Class<T> targetValueClass,
+    ValueExtractor<T> valueExtractor) {
+    valueExtractorMap.put(targetValueClass, valueExtractor);
+  }
 
-    public static <T> ValueExtractor<T> of(Class<T> targetValueClass) {
-        return valueExtractorMap.get(targetValueClass);
-    }
+  public static <T> ValueExtractor<T> of(Class<T> targetValueClass) {
+    return valueExtractorMap.get(targetValueClass);
+  }
 
 
 }

@@ -13,11 +13,11 @@ import java.lang.annotation.Target;
 @Target(ElementType.TYPE)
 public @interface Priority {
 
-    /**
-     * Allows to overload some property / tag handler.
-     *
-     * @return priority (used only in case if there is more than one element with the same name.
-     */
-    int value() default 0;
+  /**
+   * Allows to overload some property / tag handler.
+   *
+   * @return priority (used only in case if there is more than one element with the same name.
+   */
+  int value() default 0;
 
 }

@@ -8,18 +8,18 @@ import java.util.List;
  */
 public interface MonitorService {
 
-    /**
-     * Returns primary monitor instance. Should not create new object for every method call.
-     *
-     * @return primary monitor.
-     */
-    Monitor getPrimaryMonitor();
+  /**
+   * Returns primary monitor instance. Should not create new object for every method call.
+   *
+   * @return primary monitor.
+   */
+  Monitor getPrimaryMonitor();
 
-    /**
-     * Returns all monitors.
-     *
-     * @return all monitors.
-     */
-    List<Monitor> getMonitors();
+  /**
+   * Returns all monitors.
+   *
+   * @return all monitors.
+   */
+  List<Monitor> getMonitors();
 
 }

@@ -12,20 +12,20 @@ import com.spinyowl.spinygui.core.style.types.length.Unit;
 
 public class MarginProperty extends Property<Margin> {
 
-    private static ValueExtractor<Unit> unitValueExtractor = ValueExtractors.of(Unit.class);
+  private static ValueExtractor<Unit> unitValueExtractor = ValueExtractors.of(Unit.class);
 
-    public MarginProperty() {
-        super(MARGIN, "0", !INHERITED, ANIMATABLE,
-            NodeStyle::margin, NodeStyle::margin,
-            MarginProperty::extract, MarginProperty::test);
+  public MarginProperty() {
+    super(MARGIN, "0", !INHERITED, ANIMATABLE,
+      NodeStyle::margin, NodeStyle::margin,
+      MarginProperty::extract, MarginProperty::test);
+  }
+
+  private static Margin extract(String value) {
+    if (value == null) {
+      return null;
     }
 
-    private static Margin extract(String value) {
-        if (value == null) {
-            return null;
-        }
-
-        //@formatter:off
+    //@formatter:off
         String[] v = value.split("\\s+");
         switch (v.length) {
             case 1:          return new Margin(x(v[0]));
@@ -34,13 +34,13 @@ public class MarginProperty extends Property<Margin> {
             case 4: default: return new Margin(x(v[0]), x(v[1]), x(v[2]), x(v[3]));
         }
         //@formatter:on
-    }
+  }
 
-    private static Unit x(String v) {
-        return unitValueExtractor.extract(v);
-    }
+  private static Unit x(String v) {
+    return unitValueExtractor.extract(v);
+  }
 
-    public static boolean test(String value) {
-        return StyleUtils.testOneFourValue(value, unitValueExtractor::isValid);
-    }
+  public static boolean test(String value) {
+    return StyleUtils.testOneFourValue(value, unitValueExtractor::isValid);
+  }
 }

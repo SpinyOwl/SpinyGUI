@@ -7,16 +7,16 @@ import lombok.Data;
 @Data
 public class ClassNameSelector implements StyleSelector {
 
-    private final String className;
+  private final String className;
 
-    @Override
-    public boolean test(Element element) {
-        var classes = element.getAttribute("class");
-        if (classes != null) {
-            var classList = classes.split(" ");
-            return Stream.of(classList).anyMatch(clazz -> clazz.equals(className));
-        }
-        return false;
+  @Override
+  public boolean test(Element element) {
+    var classes = element.getAttribute("class");
+    if (classes != null) {
+      var classList = classes.split(" ");
+      return Stream.of(classList).anyMatch(clazz -> clazz.equals(className));
     }
+    return false;
+  }
 
 }

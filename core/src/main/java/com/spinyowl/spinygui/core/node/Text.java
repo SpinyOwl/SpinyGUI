@@ -11,10 +11,10 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public final class Text extends Node {
 
-    public static final String ATTRIBUTE_OPERATIONS_ARE_NOT_SUPPORTED
-        = "Attribute operations are not supported for Text";
-    public static final String CHILD_OPERATIONS_ARE_NOT_SUPPORTED
-        = "Child operations are not supported for Text";
-    private String content;
+  public static final String ATTRIBUTE_OPERATIONS_ARE_NOT_SUPPORTED
+    = "Attribute operations are not supported for Text";
+  public static final String CHILD_OPERATIONS_ARE_NOT_SUPPORTED
+    = "Child operations are not supported for Text";
+  private String content;
 
 }

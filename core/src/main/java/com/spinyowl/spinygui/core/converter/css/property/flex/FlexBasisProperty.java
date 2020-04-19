@@ -9,13 +9,13 @@ import com.spinyowl.spinygui.core.style.types.length.Unit;
 
 public class FlexBasisProperty extends Property<Unit> {
 
-    public static final String AUTO = "auto";
-    public static final ValueExtractor<Unit> extractor = ValueExtractors.of(Unit.class);
+  public static final String AUTO = "auto";
+  public static final ValueExtractor<Unit> extractor = ValueExtractors.of(Unit.class);
 
-    public FlexBasisProperty() {
-        super(FLEX_BASIS, AUTO, !INHERITED, !ANIMATABLE,
-            (s, v) -> s.flex().flexBasis(v), s -> s.flex().flexBasis(),
-            extractor::extract, extractor::isValid);
-    }
+  public FlexBasisProperty() {
+    super(FLEX_BASIS, AUTO, !INHERITED, !ANIMATABLE,
+      (s, v) -> s.flex().flexBasis(v), s -> s.flex().flexBasis(),
+      extractor::extract, extractor::isValid);
+  }
 
 }

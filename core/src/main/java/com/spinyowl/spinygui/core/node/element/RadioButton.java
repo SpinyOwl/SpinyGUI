@@ -14,11 +14,11 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class RadioButton extends Container {
 
-    private RadioButtonGroup radioButtonGroup;
+  private RadioButtonGroup radioButtonGroup;
 
-    @Data
-    public static class RadioButtonGroup {
+  @Data
+  public static class RadioButtonGroup {
 
-        private final String name;
-    }
+    private final String name;
+  }
 }

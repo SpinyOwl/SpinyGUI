@@ -7,8 +7,8 @@ import com.spinyowl.spinygui.core.node.Element;
  */
 public class ElementTreeUpdateEvent extends NodeEvent<Element> {
 
-    public ElementTreeUpdateEvent() {
-        super(null);
-    }
+  public ElementTreeUpdateEvent() {
+    super(null);
+  }
 
 }

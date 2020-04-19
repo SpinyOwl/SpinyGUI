@@ -13,38 +13,38 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class LayoutManagerImpl implements LayoutManager {
 
-    private final Map<Display, Layout> layoutMap = new ConcurrentHashMap<>();
+  private final Map<Display, Layout> layoutMap = new ConcurrentHashMap<>();
 
-    public LayoutManagerImpl() {
-        registerLayout(Display.NONE, new DisplayNoneLayout());
-        registerLayout(Display.FLEX, new FlexLayout());
+  public LayoutManagerImpl() {
+    registerLayout(Display.NONE, new DisplayNoneLayout());
+    registerLayout(Display.FLEX, new FlexLayout());
+  }
+
+  @Override
+  public void registerLayout(Display displayType, Layout layout) {
+    Objects.requireNonNull(displayType);
+    Objects.requireNonNull(layout);
+
+    layoutMap.put(displayType, layout);
+  }
+
+  @Override
+  public void layout(Frame frame) {
+    frame.allLayers().forEach(this::layout);
+  }
+
+  @Override
+  public void layout(Element element) {
+    if (element != null && element.visible()
+      && NodeUtilities.visibleInParents(element)
+    ) {
+      Layout layout = layoutMap.get(element.style().display());
+      if (layout != null) {
+        layout.layout(element);
+      }
+
+      element.children().forEach(this::layout);
     }
-
-    @Override
-    public void registerLayout(Display displayType, Layout layout) {
-        Objects.requireNonNull(displayType);
-        Objects.requireNonNull(layout);
-
-        layoutMap.put(displayType, layout);
-    }
-
-    @Override
-    public void layout(Frame frame) {
-        frame.getAllLayers().forEach(this::layout);
-    }
-
-    @Override
-    public void layout(Element element) {
-        if (element != null && element.visible()
-            && NodeUtilities.visibleInParents(element)
-        ) {
-            Layout layout = layoutMap.get(element.style().display());
-            if (layout != null) {
-                layout.layout(element);
-            }
-
-            element.children().forEach(this::layout);
-        }
-    }
+  }
 
 }

@@ -14,29 +14,29 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class FontFaceRule implements AtRule {
 
-    /**
-     * Name of font family
-     */
-    private final String fontFamily;
+  /**
+   * Name of font family
+   */
+  private final String fontFamily;
 
-    /**
-     * Path to source. Could be url or relative path to source on file system/resources.
-     */
-    private final String src;
+  /**
+   * Path to source. Could be url or relative path to source on file system/resources.
+   */
+  private final String src;
 
-    /**
-     * Font stretch. Default is {@link FontStretch#NORMAL}.
-     */
-    private FontStretch fontStretch = FontStretch.NORMAL;
+  /**
+   * Font stretch. Default is {@link FontStretch#NORMAL}.
+   */
+  private FontStretch fontStretch = FontStretch.NORMAL;
 
-    /**
-     * Font style. Default is {@link FontStyle#NORMAL}
-     */
-    private FontStyle fontStyle = FontStyle.NORMAL;
+  /**
+   * Font style. Default is {@link FontStyle#NORMAL}
+   */
+  private FontStyle fontStyle = FontStyle.NORMAL;
 
-    /**
-     * Font weight. Default is {@link FontWeight#NORMAL}
-     */
-    private FontWeight fontWeight = FontWeight.NORMAL;
+  /**
+   * Font weight. Default is {@link FontWeight#NORMAL}
+   */
+  private FontWeight fontWeight = FontWeight.NORMAL;
 
 }

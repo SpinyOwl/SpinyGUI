@@ -29,94 +29,94 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public final class TagNameMapping {
 
-    private static final BiMap<String, Class<? extends Element>> tagMapping = HashBiMap.create();
+  private static final BiMap<String, Class<? extends Element>> tagMapping = HashBiMap.create();
 
-    static {
-        var scanResult = new ClassGraph()
-            .whitelistPackages("com.spinyowl.spinygui")
-            .enableAllInfo()
-            .scan();
+  static {
+    var scanResult = new ClassGraph()
+      .whitelistPackages("com.spinyowl.spinygui")
+      .enableAllInfo()
+      .scan();
 
-        var tagsToAdd = new HashMap<String, List<TagToAdd>>();
+    var tagsToAdd = new HashMap<String, List<TagToAdd>>();
 
-        for (var classInfo : scanResult.getSubclasses(Element.class.getName())) {
-            var clazz = (Class<Element>) classInfo.loadClass();
+    for (var classInfo : scanResult.getSubclasses(Element.class.getName())) {
+      var clazz = (Class<Element>) classInfo.loadClass();
 
-            Priority annotation = clazz.getAnnotation(Priority.class);
+      Priority annotation = clazz.getAnnotation(Priority.class);
 
-            int priority = 0;
-            if (annotation != null) {
-                priority = annotation.value();
-            }
+      int priority = 0;
+      if (annotation != null) {
+        priority = annotation.value();
+      }
 
-            Tag tag = clazz.getAnnotation(Tag.class);
-            var name = clazz.getSimpleName().toLowerCase();
-            if (tag != null) {
-                name = tag.value().toLowerCase();
-            }
+      Tag tag = clazz.getAnnotation(Tag.class);
+      var name = clazz.getSimpleName().toLowerCase();
+      if (tag != null) {
+        name = tag.value().toLowerCase();
+      }
 
-            tagsToAdd.computeIfAbsent(name, n -> new ArrayList<>())
-                .add(TagToAdd.of(clazz, priority));
-        }
-
-        for (var entry : tagsToAdd.entrySet()) {
-            var value = entry.getValue();
-            String name = entry.getKey();
-            if (value.size() > 1) {
-                value.sort(Comparator.comparingInt(o -> -o.priority));
-                LOGGER.warn("Found several tag mappings for tag {} : {}. Using {}", name,
-                    Arrays.toString(value.stream().map(c -> c.element.getName()).toArray()),
-                    value.get(0).element.getName());
-            }
-            addMapping(name, value.get(0).element);
-        }
-
+      tagsToAdd.computeIfAbsent(name, n -> new ArrayList<>())
+        .add(TagToAdd.of(clazz, priority));
     }
 
-    private TagNameMapping() {
+    for (var entry : tagsToAdd.entrySet()) {
+      var value = entry.getValue();
+      String name = entry.getKey();
+      if (value.size() > 1) {
+        value.sort(Comparator.comparingInt(o -> -o.priority));
+        LOGGER.warn("Found several tag mappings for tag {} : {}. Using {}", name,
+          Arrays.toString(value.stream().map(c -> c.element.getName()).toArray()),
+          value.get(0).element.getName());
+      }
+      addMapping(name, value.get(0).element);
     }
 
-    public static void addMapping(String name, Class<? extends Element> aClass) {
-        Objects.requireNonNull(name);
-        Objects.requireNonNull(aClass);
+  }
 
-        if (LOGGER.isWarnEnabled() && tagMapping.containsKey(name)) {
-            LOGGER.warn(
-                "There is already exist tag mapping for {} : {}. Would be replaced by {}.",
-                name, tagMapping.get(name).getName(), aClass.getName());
-        }
+  private TagNameMapping() {
+  }
 
-        tagMapping.put(name, aClass);
+  public static void addMapping(String name, Class<? extends Element> aClass) {
+    Objects.requireNonNull(name);
+    Objects.requireNonNull(aClass);
+
+    if (LOGGER.isWarnEnabled() && tagMapping.containsKey(name)) {
+      LOGGER.warn(
+        "There is already exist tag mapping for {} : {}. Would be replaced by {}.",
+        name, tagMapping.get(name).getName(), aClass.getName());
     }
 
-    public static boolean containsElement(Class<? extends Element> componentClass) {
-        return tagMapping.containsValue(componentClass);
-    }
+    tagMapping.put(name, aClass);
+  }
 
-    public static String getTagName(Class<? extends Element> componentClass) {
-        return tagMapping.inverse().get(componentClass);
-    }
+  public static boolean containsElement(Class<? extends Element> componentClass) {
+    return tagMapping.containsValue(componentClass);
+  }
 
-    public static boolean containsTag(String name) {
-        return tagMapping.containsKey(name.toLowerCase());
-    }
+  public static String getTagName(Class<? extends Element> componentClass) {
+    return tagMapping.inverse().get(componentClass);
+  }
 
-    public static Class<? extends Element> getElement(String tag) {
-        return tagMapping.get(tag.toLowerCase());
-    }
+  public static boolean containsTag(String name) {
+    return tagMapping.containsKey(name.toLowerCase());
+  }
 
-    public static void removeMapping(Class<? extends Element> componentClass) {
-        tagMapping.inverse().remove(componentClass);
-    }
+  public static Class<? extends Element> getElement(String tag) {
+    return tagMapping.get(tag.toLowerCase());
+  }
 
-    public static void removeMapping(String tag) {
-        tagMapping.remove(tag.toLowerCase());
-    }
+  public static void removeMapping(Class<? extends Element> componentClass) {
+    tagMapping.inverse().remove(componentClass);
+  }
 
-    @AllArgsConstructor(staticName = "of")
-    private static class TagToAdd {
+  public static void removeMapping(String tag) {
+    tagMapping.remove(tag.toLowerCase());
+  }
 
-        private final Class<? extends Element> element;
-        private final int priority;
-    }
+  @AllArgsConstructor(staticName = "of")
+  private static class TagToAdd {
+
+    private final Class<? extends Element> element;
+    private final int priority;
+  }
 }

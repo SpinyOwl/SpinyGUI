@@ -4,8 +4,8 @@ import com.spinyowl.spinygui.core.event.Event;
 
 public interface EventProcessor {
 
-    void pushEvent(Event event);
+  void pushEvent(Event event);
 
-    void processEvents();
+  void processEvents();
 
 }

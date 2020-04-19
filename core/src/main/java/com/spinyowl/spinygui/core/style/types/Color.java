@@ -11,7 +11,7 @@ import lombok.ToString;
 @ToString
 public class Color {
 
-    //@formatter:off
+  //@formatter:off
     public static final Color BLACK        = new Color(0    , 0    , 0          );
     public static final Color SILVER       = new Color(192  , 192  , 192        );
     public static final Color GRAY         = new Color(128  , 128  , 128        );
@@ -32,125 +32,125 @@ public class Color {
     private static Map<String, Color> colors = new HashMap<>();
     //@formatter:on
 
-    static {
-        colors.put("black", BLACK);
-        colors.put("silver", SILVER);
-        colors.put("gray", GRAY);
-        colors.put("white", WHITE);
-        colors.put("maroon", MAROON);
-        colors.put("red", RED);
-        colors.put("purple", PURPLE);
-        colors.put("fuchsia", FUCHSIA);
-        colors.put("green", GREEN);
-        colors.put("lime", LIME);
-        colors.put("olive", OLIVE);
-        colors.put("yellow", YELLOW);
-        colors.put("navy", NAVY);
-        colors.put("blue", BLUE);
-        colors.put("teal", TEAL);
-        colors.put("aqua", AQUA);
-        colors.put("transparent", TRANSPARENT);
+  static {
+    colors.put("black", BLACK);
+    colors.put("silver", SILVER);
+    colors.put("gray", GRAY);
+    colors.put("white", WHITE);
+    colors.put("maroon", MAROON);
+    colors.put("red", RED);
+    colors.put("purple", PURPLE);
+    colors.put("fuchsia", FUCHSIA);
+    colors.put("green", GREEN);
+    colors.put("lime", LIME);
+    colors.put("olive", OLIVE);
+    colors.put("yellow", YELLOW);
+    colors.put("navy", NAVY);
+    colors.put("blue", BLUE);
+    colors.put("teal", TEAL);
+    colors.put("aqua", AQUA);
+    colors.put("transparent", TRANSPARENT);
+  }
+
+  private final float r;
+  private final float g;
+  private final float b;
+  private final float a;
+
+  public Color(float r, float g, float b, float a) {
+    this.r = r;
+    this.g = g;
+    this.b = b;
+    this.a = a;
+  }
+
+  public Color(int r, int g, int b, int a) {
+    this(r, g, b, a / 255f);
+  }
+
+  public Color(int r, int g, int b, float a) {
+    this(r / 255f, g / 255f, b / 255f, a);
+  }
+
+  public Color(float r, float g, float b) {
+    this(r, g, b, 1f);
+  }
+
+  public Color(int r, int g, int b) {
+    this(r / 255f, g / 255f, b / 255f, 1f);
+  }
+
+  public static Color getColorByName(String name) {
+    return colors.get(name.toLowerCase());
+  }
+
+  /**
+   * Allowed to parse hex strings in RGB/RGBA/RRGGBB/RRGGBBAA format
+   *
+   * @param value hex value
+   * @return color
+   */
+  public static Color parseHexString(String value) {
+    if (value.startsWith("#")) {
+      value = value.substring(1);
     }
-
-    private final float r;
-    private final float g;
-    private final float b;
-    private final float a;
-
-    public Color(float r, float g, float b, float a) {
-        this.r = r;
-        this.g = g;
-        this.b = b;
-        this.a = a;
+    int hex = Integer.parseInt(value, 16);
+    switch (value.length()) {
+      case 8:
+        return new Color((hex >> 24) & 0xFF,
+          (hex >> 16) & 0xFF,
+          (hex >> 8) & 0xFF,
+          hex & 0xFF);
+      case 6:
+        return new Color(
+          (hex >> 16) & 0xFF,
+          (hex >> 8) & 0xFF,
+          hex & 0xFF);
+      case 4:
+        return new Color(
+          (hex >> 12) & 0xF,
+          (hex >> 8) & 0xF,
+          (hex >> 4) & 0xF,
+          hex & 0xF);
+      case 3:
+        return new Color(
+          (hex >> 8) & 0xF,
+          (hex >> 4) & 0xF,
+          hex & 0xF);
+      default:
+        return null;
     }
+  }
 
-    public Color(int r, int g, int b, int a) {
-        this(r, g, b, a / 255f);
+  /**
+   * Color expression is color represented by three or four integer values divided by comma 'R, G,
+   * B' or 'R, G, B, A'
+   *
+   * @param colorExpression color expression
+   * @return color if able to parse or null.
+   */
+  public static Color parseRGBAColorString(String colorExpression) {
+    var values = colorExpression.split(",");
+    int length = values.length;
+    if (length == 3 || length == 4) {
+      int r = Integer.parseInt(values[0].trim());
+      int g = Integer.parseInt(values[1].trim());
+      int b = Integer.parseInt(values[2].trim());
+      if (length == 3) {
+        return new Color(r, g, b);
+      } else {
+        int a = Integer.parseInt(values[3].trim());
+        return new Color(r, g, b, a);
+      }
+
     }
+    throw new IllegalArgumentException(
+      "Color expression should look like 'R, G, B' or 'R, G, B, A' but was '"
+        + colorExpression + "'");
+  }
 
-    public Color(int r, int g, int b, float a) {
-        this(r / 255f, g / 255f, b / 255f, a);
-    }
-
-    public Color(float r, float g, float b) {
-        this(r, g, b, 1f);
-    }
-
-    public Color(int r, int g, int b) {
-        this(r / 255f, g / 255f, b / 255f, 1f);
-    }
-
-    public static Color getColorByName(String name) {
-        return colors.get(name.toLowerCase());
-    }
-
-    /**
-     * Allowed to parse hex strings in RGB/RGBA/RRGGBB/RRGGBBAA format
-     *
-     * @param value hex value
-     * @return color
-     */
-    public static Color parseHexString(String value) {
-        if (value.startsWith("#")) {
-            value = value.substring(1);
-        }
-        int hex = Integer.parseInt(value, 16);
-        switch (value.length()) {
-            case 8:
-                return new Color((hex >> 24) & 0xFF,
-                    (hex >> 16) & 0xFF,
-                    (hex >> 8) & 0xFF,
-                    hex & 0xFF);
-            case 6:
-                return new Color(
-                    (hex >> 16) & 0xFF,
-                    (hex >> 8) & 0xFF,
-                    hex & 0xFF);
-            case 4:
-                return new Color(
-                    (hex >> 12) & 0xF,
-                    (hex >> 8) & 0xF,
-                    (hex >> 4) & 0xF,
-                    hex & 0xF);
-            case 3:
-                return new Color(
-                    (hex >> 8) & 0xF,
-                    (hex >> 4) & 0xF,
-                    hex & 0xF);
-            default:
-                return null;
-        }
-    }
-
-    /**
-     * Color expression is color represented by three or four integer values divided by comma 'R, G,
-     * B' or 'R, G, B, A'
-     *
-     * @param colorExpression color expression
-     * @return color if able to parse or null.
-     */
-    public static Color parseRGBAColorString(String colorExpression) {
-        var values = colorExpression.split(",");
-        int length = values.length;
-        if (length == 3 || length == 4) {
-            int r = Integer.parseInt(values[0].trim());
-            int g = Integer.parseInt(values[1].trim());
-            int b = Integer.parseInt(values[2].trim());
-            if (length == 3) {
-                return new Color(r, g, b);
-            } else {
-                int a = Integer.parseInt(values[3].trim());
-                return new Color(r, g, b, a);
-            }
-
-        }
-        throw new IllegalArgumentException(
-            "Color expression should look like 'R, G, B' or 'R, G, B, A' but was '"
-                + colorExpression + "'");
-    }
-
-    public static boolean exists(String colorName) {
-        return colors.containsKey(colorName.toLowerCase());
-    }
+  public static boolean exists(String colorName) {
+    return colors.containsKey(colorName.toLowerCase());
+  }
 
 }

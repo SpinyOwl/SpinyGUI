@@ -9,26 +9,26 @@ import com.spinyowl.spinygui.core.style.types.Display;
  */
 public interface LayoutManager {
 
-    /**
-     * Used to register layout for specified display type.
-     *
-     * @param displayType display type.
-     * @param layout      layout to register.
-     */
-    void registerLayout(Display displayType, Layout layout);
+  /**
+   * Used to register layout for specified display type.
+   *
+   * @param displayType display type.
+   * @param layout      layout to register.
+   */
+  void registerLayout(Display displayType, Layout layout);
 
-    /**
-     * Used to layout frame layers and all of their child components.
-     *
-     * @param frame frame to lay out.
-     */
-    void layout(Frame frame);
+  /**
+   * Used to layout frame layers and all of their child components.
+   *
+   * @param frame frame to lay out.
+   */
+  void layout(Frame frame);
 
-    /**
-     * Used to layout element and all of it's child components.
-     *
-     * @param element element to lay out.
-     */
-    void layout(Element element);
+  /**
+   * Used to layout element and all of it's child components.
+   *
+   * @param element element to lay out.
+   */
+  void layout(Element element);
 
 }

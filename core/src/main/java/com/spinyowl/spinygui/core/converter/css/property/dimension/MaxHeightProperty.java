@@ -10,14 +10,14 @@ import com.spinyowl.spinygui.core.style.types.length.Length;
 
 public class MaxHeightProperty extends Property<Length> {
 
-    public static final ValueExtractor<Length> extractor = ValueExtractors.of(Length.class);
+  public static final ValueExtractor<Length> extractor = ValueExtractors.of(Length.class);
 
-    public MaxHeightProperty() {
-        super(MAX_HEIGHT, "none", !INHERITED, ANIMATABLE,
-            NodeStyle::maxHeight, NodeStyle::maxHeight,
-            value -> "none".equalsIgnoreCase(value) ?
-                Length.pixel(Integer.MAX_VALUE)
-                : extractor.extract(value),
-            extractor::isValid);
-    }
+  public MaxHeightProperty() {
+    super(MAX_HEIGHT, "none", !INHERITED, ANIMATABLE,
+      NodeStyle::maxHeight, NodeStyle::maxHeight,
+      value -> "none".equalsIgnoreCase(value) ?
+        Length.pixel(Integer.MAX_VALUE)
+        : extractor.extract(value),
+      extractor::isValid);
+  }
 }

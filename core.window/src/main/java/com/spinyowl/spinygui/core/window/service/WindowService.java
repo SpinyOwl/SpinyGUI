@@ -12,55 +12,55 @@ import org.joml.Vector2i;
  */
 public interface WindowService {
 
-    /**
-     * Used to create window with specified parameters.
-     *
-     * @param width  window width.
-     * @param height window height.
-     * @param title  window title.
-     * @return
-     */
-    Window createWindow(int width, int height, String title);
+  /**
+   * Used to create window with specified parameters.
+   *
+   * @param width  window width.
+   * @param height window height.
+   * @param title  window title.
+   * @return
+   */
+  Window createWindow(int width, int height, String title);
 
-    /**
-     * Used to create fullscreen window with specified parameters.
-     *
-     * @param width   window width.
-     * @param height  window height.
-     * @param title   window title.
-     * @param monitor monitor for fullscreen window.
-     * @return
-     */
-    Window createWindow(int width, int height, String title, Monitor monitor);
+  /**
+   * Used to create fullscreen window with specified parameters.
+   *
+   * @param width   window width.
+   * @param height  window height.
+   * @param title   window title.
+   * @param monitor monitor for fullscreen window.
+   * @return
+   */
+  Window createWindow(int width, int height, String title, Monitor monitor);
 
-    /**
-     * Used to close window.
-     *
-     * @param window window to close.
-     * @return true if window is closed.
-     */
-    boolean closeWindow(Window window);
+  /**
+   * Used to close window.
+   *
+   * @param window window to close.
+   * @return true if window is closed.
+   */
+  boolean closeWindow(Window window);
 
-    Window getWindow(long pointer);
+  Window getWindow(long pointer);
 
-    Vector2i getWindowSize(Window window);
+  Vector2i getWindowSize(Window window);
 
-    void setWindowSize(Window window, Vector2i size);
+  void setWindowSize(Window window, Vector2i size);
 
-    Vector2i getWindowPosition(Window window);
+  Vector2i getWindowPosition(Window window);
 
-    void setWindowPosition(Window window, Vector2i position);
+  void setWindowPosition(Window window, Vector2i position);
 
-    boolean isWindowVisible(Window window);
+  boolean isWindowVisible(Window window);
 
-    void setWindowVisible(Window window, boolean visible);
+  void setWindowVisible(Window window, boolean visible);
 
-    void setWindowTitle(Window window, String title);
+  void setWindowTitle(Window window, String title);
 
-    Vector2d getCursorPosition(Window window);
+  Vector2d getCursorPosition(Window window);
 
-    void setCursorPosition(Window window, Vector2d position);
+  void setCursorPosition(Window window, Vector2d position);
 
-    List<Window> getWindows();
+  List<Window> getWindows();
 
 }

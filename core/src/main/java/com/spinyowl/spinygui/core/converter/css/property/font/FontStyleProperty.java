@@ -8,9 +8,9 @@ import com.spinyowl.spinygui.core.style.NodeStyle;
 
 public class FontStyleProperty extends Property<FontStyle> {
 
-    public FontStyleProperty() {
-        super(FONT_STYLE, "normal", INHERITED, !ANIMATABLE, NodeStyle::fontStyle,
-            NodeStyle::fontStyle, FontStyle::find, FontStyle::contains);
-    }
+  public FontStyleProperty() {
+    super(FONT_STYLE, "normal", INHERITED, !ANIMATABLE, NodeStyle::fontStyle,
+      NodeStyle::fontStyle, FontStyle::find, FontStyle::contains);
+  }
 
 }

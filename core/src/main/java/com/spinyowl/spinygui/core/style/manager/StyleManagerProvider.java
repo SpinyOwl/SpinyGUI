@@ -7,29 +7,29 @@ import java.util.Objects;
  */
 public final class StyleManagerProvider {
 
-    private StyleManagerProvider() {
-    }
+  private StyleManagerProvider() {
+  }
 
-    /**
-     * Getter for instance
-     */
-    public static StyleManager getInstance() {
-        return StyleManagerHolder.instance;
-    }
+  /**
+   * Getter for instance
+   */
+  public static StyleManager getInstance() {
+    return StyleManagerHolder.instance;
+  }
 
-    /**
-     * Setter for instance
-     */
-    public static void setInstance(StyleManager instance) {
-        Objects.requireNonNull(instance);
-        StyleManagerHolder.instance = instance;
-    }
+  /**
+   * Setter for instance
+   */
+  public static void setInstance(StyleManager instance) {
+    Objects.requireNonNull(instance);
+    StyleManagerHolder.instance = instance;
+  }
 
-    /**
-     * Instance holder.
-     */
-    private static class StyleManagerHolder {
+  /**
+   * Instance holder.
+   */
+  private static class StyleManagerHolder {
 
-        private static StyleManager instance = new DefaultStyleManger();
-    }
+    private static StyleManager instance = new DefaultStyleManger();
+  }
 }

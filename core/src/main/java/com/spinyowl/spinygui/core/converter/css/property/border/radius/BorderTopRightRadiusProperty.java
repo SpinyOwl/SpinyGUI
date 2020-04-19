@@ -9,12 +9,12 @@ import com.spinyowl.spinygui.core.style.types.length.Length;
 
 public class BorderTopRightRadiusProperty extends Property<Length> {
 
-    public static final ValueExtractor<Length> extractor = ValueExtractors.of(Length.class);
+  public static final ValueExtractor<Length> extractor = ValueExtractors.of(Length.class);
 
-    public BorderTopRightRadiusProperty() {
-        super(BORDER_TOP_RIGHT_RADIUS, "0", !INHERITED, ANIMATABLE,
-            (s, l) -> s.borderRadius().topRight(l),
-            s -> s.borderRadius().topRight(),
-            extractor::extract, extractor::isValid);
-    }
+  public BorderTopRightRadiusProperty() {
+    super(BORDER_TOP_RIGHT_RADIUS, "0", !INHERITED, ANIMATABLE,
+      (s, l) -> s.borderRadius().topRight(l),
+      s -> s.borderRadius().topRight(),
+      extractor::extract, extractor::isValid);
+  }
 }

@@ -9,10 +9,10 @@ import com.spinyowl.spinygui.core.style.types.border.BorderStyle;
 public class BorderRightStyleProperty extends Property<BorderStyle> {
 
 
-    public BorderRightStyleProperty() {
-        super(BORDER_RIGHT_STYLE, DEFAULT_VALUE, !INHERITED, ANIMATABLE,
-            (s, c) -> s.border().right().style(c),
-            s -> s.border().right().style(),
-            BorderStyle::find, BorderStyle::contains);
-    }
+  public BorderRightStyleProperty() {
+    super(BORDER_RIGHT_STYLE, DEFAULT_VALUE, !INHERITED, ANIMATABLE,
+      (s, c) -> s.border().right().style(c),
+      s -> s.border().right().style(),
+      BorderStyle::find, BorderStyle::contains);
+  }
 }

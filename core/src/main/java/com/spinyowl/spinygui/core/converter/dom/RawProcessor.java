@@ -13,25 +13,25 @@ import org.jdom2.util.NamespaceStack;
  */
 public class RawProcessor extends AbstractXMLOutputProcessor {
 
-    public static final String PREFORMATTED_ATTRIBUTE = "_pre";
+  public static final String PREFORMATTED_ATTRIBUTE = "_pre";
 
-    //TODO implement preformatted style search - node should be updated by style engine so we can check if it contains pre style
+  //TODO implement preformatted style search - node should be updated by style engine so we can check if it contains pre style
 
-    @Override
-    public void process(Writer out, Format format, Element element) throws IOException {
-        Format formatToUse = format;
-        if (Boolean.parseBoolean(element.getAttributeValue(PREFORMATTED_ATTRIBUTE))) {
-            formatToUse = Format.getRawFormat();
-        }
-        super.process(out, formatToUse, element);
+  @Override
+  public void process(Writer out, Format format, Element element) throws IOException {
+    Format formatToUse = format;
+    if (Boolean.parseBoolean(element.getAttributeValue(PREFORMATTED_ATTRIBUTE))) {
+      formatToUse = Format.getRawFormat();
     }
+    super.process(out, formatToUse, element);
+  }
 
-    @Override
-    protected void printElement(Writer out, FormatStack fstack, NamespaceStack nstack,
-        Element element) throws IOException {
-        if (Boolean.parseBoolean(element.getAttributeValue(PREFORMATTED_ATTRIBUTE))) {
-            fstack.setTextMode(Format.TextMode.PRESERVE);
-        }
-        super.printElement(out, fstack, nstack, element);
+  @Override
+  protected void printElement(Writer out, FormatStack fstack, NamespaceStack nstack,
+    Element element) throws IOException {
+    if (Boolean.parseBoolean(element.getAttributeValue(PREFORMATTED_ATTRIBUTE))) {
+      fstack.setTextMode(Format.TextMode.PRESERVE);
     }
+    super.printElement(out, fstack, nstack, element);
+  }
 }

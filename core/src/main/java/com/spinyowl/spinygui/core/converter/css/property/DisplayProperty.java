@@ -8,9 +8,9 @@ import com.spinyowl.spinygui.core.style.types.Display;
 
 public class DisplayProperty extends Property<Display> {
 
-    public DisplayProperty() {
-        super(DISPLAY, Display.BLOCK.name(), INHERITED, ANIMATABLE,
-            NodeStyle::display, NodeStyle::display, Display::find, Display::contains);
-    }
+  public DisplayProperty() {
+    super(DISPLAY, Display.BLOCK.name(), INHERITED, ANIMATABLE,
+      NodeStyle::display, NodeStyle::display, Display::find, Display::contains);
+  }
 
 }

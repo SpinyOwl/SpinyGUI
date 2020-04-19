@@ -8,18 +8,18 @@ import java.util.stream.Collectors;
 
 public class StyleSheetVisitor extends CSS3BaseVisitor<StyleSheet> {
 
-    @Override
-    public StyleSheet visitStylesheet(CSS3Parser.StylesheetContext ctx) {
-        var rulesetVisitor = new RulesetVisitor();
+  @Override
+  public StyleSheet visitStylesheet(CSS3Parser.StylesheetContext ctx) {
+    var rulesetVisitor = new RulesetVisitor();
 
-        var ruleSetList = ctx.nestedStatement()
-            .stream().map(rulesetVisitor::visit)
-            .filter(Objects::nonNull).collect(Collectors.toList());
+    var ruleSetList = ctx.nestedStatement()
+      .stream().map(rulesetVisitor::visit)
+      .filter(Objects::nonNull).collect(Collectors.toList());
 
-        var rules = ctx.nestedStatement()
-            .stream().map(new AtRuleVisitor()::visit)
-            .filter(Objects::nonNull).collect(Collectors.toList());
+    var rules = ctx.nestedStatement()
+      .stream().map(new AtRuleVisitor()::visit)
+      .filter(Objects::nonNull).collect(Collectors.toList());
 
-        return new StyleSheet(ruleSetList, rules);
-    }
+    return new StyleSheet(ruleSetList, rules);
+  }
 }

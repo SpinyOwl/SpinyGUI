@@ -9,11 +9,11 @@ import com.spinyowl.spinygui.core.style.types.length.Unit;
 
 public class MarginLeftProperty extends Property<Unit> {
 
-    public static final ValueExtractor<Unit> extractor = ValueExtractors.of(Unit.class);
+  public static final ValueExtractor<Unit> extractor = ValueExtractors.of(Unit.class);
 
-    public MarginLeftProperty() {
-        super(MARGIN_LEFT, "0", !INHERITED, ANIMATABLE,
-            (s, v) -> s.margin().left(v), s -> s.margin().left(),
-            extractor::extract, extractor::isValid);
-    }
+  public MarginLeftProperty() {
+    super(MARGIN_LEFT, "0", !INHERITED, ANIMATABLE,
+      (s, v) -> s.margin().left(v), s -> s.margin().left(),
+      extractor::extract, extractor::isValid);
+  }
 }

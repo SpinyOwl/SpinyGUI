@@ -6,12 +6,12 @@ import lombok.Data;
 @Data
 public class AndSelector implements StyleSelector {
 
-    private final StyleSelector first;
-    private final StyleSelector second;
+  private final StyleSelector first;
+  private final StyleSelector second;
 
-    @Override
-    public boolean test(Element element) {
-        return first.test(element) && second.test(element);
-    }
+  @Override
+  public boolean test(Element element) {
+    return first.test(element) && second.test(element);
+  }
 
 }
