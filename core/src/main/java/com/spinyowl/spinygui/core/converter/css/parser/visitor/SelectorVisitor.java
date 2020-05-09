@@ -6,7 +6,6 @@ import com.spinyowl.spinygui.core.converter.css.parser.antlr.CSS3Parser;
 import com.spinyowl.spinygui.core.converter.css.selector.ClassNameSelector;
 import com.spinyowl.spinygui.core.converter.css.selector.StyleSelector;
 import com.spinyowl.spinygui.core.converter.css.selector.TypeSelector;
-import com.spinyowl.spinygui.core.converter.dom.TagNameMapping;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
@@ -74,32 +73,22 @@ public class SelectorVisitor extends CSS3BaseVisitor<List<StyleSelector>> {
 
   @Override
   public List<StyleSelector> visitTypeSelector(CSS3Parser.TypeSelectorContext ctx) {
-    var list = new ArrayList<StyleSelector>();
-    var clazz = TagNameMapping.getElement(ctx.getText());
-    list.add(new TypeSelector(clazz));
-    return list;
+    return List.of(new TypeSelector(ctx.getText()));
   }
 
   @Override
   public List<StyleSelector> visitPseudo(CSS3Parser.PseudoContext ctx) {
-    var list = new ArrayList<StyleSelector>();
-    var clazz = StyleReflectionHandler.getPseudoSelector(ctx.getText());
     try {
-      list.add((StyleSelector) clazz.getConstructor().newInstance());
+      var clazz = StyleReflectionHandler.getPseudoSelector(ctx.getText());
+      return List.of((StyleSelector) clazz.getConstructor().newInstance());
     } catch (Exception e) {
-      LOGGER.error(e.getMessage(), e);
+      log.error(e.getMessage(), e);
     }
-    return list;
+    return List.of();
   }
 
   @Override
   public List<StyleSelector> visitClassName(CSS3Parser.ClassNameContext ctx) {
-    var list = new ArrayList<StyleSelector>();
-
-    var clazz = ctx.ident().getText();
-
-    list.add(new ClassNameSelector(clazz));
-
-    return list;
+    return List.of(new ClassNameSelector(ctx.ident().getText()));
   }
 }

@@ -2,11 +2,23 @@ package com.spinyowl.spinygui.core.node;
 
 import java.util.Collections;
 import java.util.List;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
 /**
  * Defines node that can not contain child elements.
  */
-public abstract class EmptyElement extends Element {
+@Getter
+@Setter
+@ToString
+@EqualsAndHashCode
+public class EmptyElement extends Element {
+
+  public EmptyElement(String nodeName) {
+    super(nodeName);
+  }
 
   /**
    * Used to get child nodes.

@@ -2,11 +2,14 @@ package com.spinyowl.spinygui.core.node;
 
 import com.spinyowl.spinygui.core.node.intersection.Intersection;
 import com.spinyowl.spinygui.core.node.intersection.Intersections;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 import lombok.AccessLevel;
-import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import lombok.Getter;
 import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import org.joml.Vector2f;
@@ -16,22 +19,26 @@ import org.joml.Vector2f;
  * <p>
  * Have three base subclasses that should be used to create any kind of element:
  * <ul>
- * <li>{@link Container}<br> - base for components that could contain other components. </li>
+ * <li>{@link Element}<br> - base for components that could contain other components. </li>
  * <li>{@link EmptyElement}<br> - base for components that could not contain other components. </li>
  * <li>{@link Text}<br> - representation of text node. </li>
  * </ul>
  */
-@Data
+@Getter
+@Setter
 @EqualsAndHashCode(exclude = "parent")
 @ToString(exclude = "parent")
-@NoArgsConstructor
+@RequiredArgsConstructor
 public abstract class Node {
+
+  @NonNull
+  private final String nodeName;
 
   /**
    * Parent node.
    */
   @Setter(AccessLevel.NONE)
-  private Container parent;
+  private Element parent;
 
   /**
    * Node position. Assigned to node by layout manager.
@@ -77,7 +84,7 @@ public abstract class Node {
    *
    * @param parent new parent node.
    */
-  public void parent(Container parent) {
+  public void parent(Element parent) {
     if (parent == this) {
       return;
     }
@@ -89,6 +96,53 @@ public abstract class Node {
     if (parent != null) {
       parent.addChild(this);
     }
+  }
+
+  /**
+   * Used to add a new child node, to an element, as the last child node.
+   *
+   * @param node node to add.
+   */
+  public abstract void addChild(Node node);
+
+  /**
+   * Used to remove child node.
+   *
+   * @param node node to remove.
+   */
+  public abstract void removeChild(Node node);
+
+  /**
+   * The {@link #childNodes()} method returns a collection of a node's child nodes, as {@code
+   * List<Node>} object.
+   * <p>
+   * The nodes in the collection are sorted as they was added to the element.
+   * <p>
+   * Tip: To return a collection of a node's element nodes (excluding text and comment nodes), use
+   * the {@link #children()} method.
+   *
+   * @return list of child nodes.
+   */
+  public abstract List<Node> childNodes();
+
+  /**
+   * Returns true if an element has any child nodes, otherwise false.
+   *
+   * @return true if an element has any child nodes, otherwise false.
+   */
+  public abstract boolean hasChildNodes();
+
+  /**
+   * The {@link #children()} method returns a collection of an element's child elements, as an
+   * {@code List<Element>} object.
+   * <p>
+   * The elements in the collection are sorted as they was added tp the element.
+   *
+   * @return list of child elements.
+   */
+  public List<Element> children() {
+    return childNodes().stream().filter(n -> n instanceof Element)
+        .map(n -> (Element) n).collect(Collectors.toUnmodifiableList());
   }
 
   /**
@@ -127,4 +181,51 @@ public abstract class Node {
   public void size(float width, float height) {
     this.size.set(width, height);
   }
+
+
+  /**
+   * Shorthand to set attribute.
+   *
+   * @param key   attribute name.
+   * @param value attribute value.
+   */
+  public abstract void setAttribute(String key, String value);
+
+  /**
+   * Shorthand to get attribute.
+   *
+   * @param key attribute name.
+   * @return attribute value.
+   */
+  public abstract String getAttribute(String key);
+
+  /**
+   * Returns true if node contains specified attribute.
+   *
+   * @param attribute attribute check.
+   * @return true if node has specified attribute.
+   */
+  public abstract boolean hasAttribute(String attribute);
+
+  /**
+   * Returns true if node contains any attribute.
+   *
+   * @return true if node contains any attribute.
+   */
+  public abstract boolean hasAttributes();
+
+  public abstract Map<String, String> attributes();
+
+  /**
+   * Builder method to set attribute.
+   *
+   * @param key   attribute name.
+   * @param value attribute value.
+   */
+  public Node with(String key, String value) {
+    setAttribute(key, value);
+    return this;
+  }
+
+
 }

@@ -19,7 +19,6 @@ public final class StyleReflectionHandler {
 
     var scanResult = new ClassGraph()
         .enableAllInfo()
-        /*.whitelistModules("com.spinyowl.spinygui.core")*/
         .scan();
 
     ClassInfoList result = scanResult.getClassesWithAnnotation(PseudoSelector.class.getName());

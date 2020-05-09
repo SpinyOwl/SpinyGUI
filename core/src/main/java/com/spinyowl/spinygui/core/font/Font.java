@@ -46,7 +46,7 @@ public class Font {
     var key = new FontKey(font.name(), font.style(), font.width(), font.weight());
 
     if (fonts.containsKey(key)) {
-      LOGGER.warn("Font '{}' will be replaced.", font.name());
+      log.warn("Font '{}' will be replaced.", font.name());
     }
     fonts.put(key, font);
   }

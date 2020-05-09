@@ -1,8 +1,10 @@
 package com.spinyowl.spinygui.core.node.intersection;
 
 import com.spinyowl.spinygui.core.node.Node;
+import lombok.Data;
 import org.joml.Vector2fc;
 
+@Data
 public class RectangleIntersection implements Intersection {
 
   /**

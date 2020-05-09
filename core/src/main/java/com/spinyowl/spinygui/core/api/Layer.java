@@ -2,21 +2,25 @@ package com.spinyowl.spinygui.core.api;
 
 import com.spinyowl.spinygui.core.event.WindowCloseEvent;
 import com.spinyowl.spinygui.core.event.listener.EventListener;
-import com.spinyowl.spinygui.core.node.Container;
+import com.spinyowl.spinygui.core.node.Element;
 import java.util.List;
 import java.util.Objects;
 import lombok.AccessLevel;
-import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 /**
  * Layer class is root container for all nodes in layer. Contains root node of layer - layer
  * container, list of stylesheets which should be used to calculate node styles
  */
-@Data
-@EqualsAndHashCode(callSuper = true, exclude = "frame")
-public class Layer extends Container {
+@Getter
+@Setter
+@ToString(exclude = "frame")
+@EqualsAndHashCode(exclude = "frame")
+public class Layer extends Element {
+
 
   /**
    * Parent frame.
@@ -34,6 +38,10 @@ public class Layer extends Container {
    * Determines if current layer and all of it components can receive events.
    */
   private boolean eventReceivable = true;
+
+  public Layer() {
+    super("layer");
+  }
 
   /**
    * Used to attach layer to frame.

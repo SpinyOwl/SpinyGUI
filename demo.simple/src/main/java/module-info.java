@@ -3,4 +3,5 @@
  */
 open module com.spinyowl.spinygui.demo {
   requires com.spinyowl.spinygui;
+  requires static lombok;
 }

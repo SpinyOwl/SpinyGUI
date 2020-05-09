@@ -1,20 +1,19 @@
 package com.spinyowl.spinygui.core.node;
 
-import com.spinyowl.spinygui.core.node.element.Button;
-import com.spinyowl.spinygui.core.node.element.Div;
-import com.spinyowl.spinygui.core.node.element.Input;
-import com.spinyowl.spinygui.core.node.element.Label;
-import com.spinyowl.spinygui.core.node.element.RadioButton;
-import java.util.Collections;
 import java.util.Map;
 
 public final class NodeBuilder {
 
+  public static final String KEY_INPUT = "input";
+  public static final String KEY_TYPE = "type";
+  public static final String KEY_NAME = "name";
+  public static final String KEY_VALUE = "value";
+
   private NodeBuilder() {
   }
 
-  public static Button button(Node... nodes) {
-    Button button = new Button();
+  public static Element button(Node... nodes) {
+    Element button = new Element("button");
     if (nodes != null) {
       for (Node node : nodes) {
         button.addChild(node);
@@ -23,55 +22,70 @@ public final class NodeBuilder {
     return button;
   }
 
-  public static Button button(Map<String, String> attributes, Node... nodes) {
-    return addAttributes(button(Collections.emptyMap(), nodes), attributes);
+  public static Element button(Map<String, String> attributes, Node... nodes) {
+    return addAttributes(button(nodes), attributes);
   }
 
   public static Text text(String text) {
     return new Text(text);
   }
 
-  public static Input input() {
-    return new Input();
+  public static EmptyElement input() {
+    return new EmptyElement(KEY_INPUT);
   }
 
-  public static Label label(Map<String, String> attributes, Node... nodes) {
+  public static EmptyElement input(Map<String, String> attributes) {
+    return addAttributes(new EmptyElement(KEY_INPUT), attributes);
+  }
+
+  public static EmptyElement input(String type) {
+    return addAttributes(new EmptyElement(KEY_INPUT), Map.of(KEY_TYPE, type));
+  }
+
+  public static EmptyElement input(String type, String name) {
+    return addAttributes(new EmptyElement(KEY_INPUT), Map.of(KEY_TYPE, type, KEY_NAME, name));
+  }
+
+  public static EmptyElement input(String type, String name, String value) {
+    return addAttributes(new EmptyElement(KEY_INPUT),
+        Map.of(KEY_TYPE, type, KEY_NAME, name, KEY_VALUE, value));
+  }
+
+  public static Element label(Map<String, String> attributes, Node... nodes) {
     return addAttributes(label(nodes), attributes);
   }
 
-  public static Label label(Node... nodes) {
-    Label label = new Label();
+  public static Element label(Node... nodes) {
+    Element label = new Element("label");
     for (Node node : nodes) {
       label.addChild(node);
     }
     return label;
   }
 
-  public static Div div(Map<String, String> attributes, Node... nodes) {
+  public static Element div(Map<String, String> attributes, Node... nodes) {
     return addAttributes(div(nodes), attributes);
   }
 
-  public static Div div(Node... nodes) {
-    Div div = new Div();
+  public static Element div(Node... nodes) {
+    Element div = new Element("div");
     for (Node node : nodes) {
       div.addChild(node);
     }
     return div;
   }
 
-  public static RadioButton radioButton(Map<String, String> attributes, Node... nodes) {
-    return addAttributes(radioButton(nodes), attributes);
+  public static EmptyElement radioButton(
+      String name, String value, Map<String, String> attributes
+  ) {
+    return addAttributes(radioButton(name, value), attributes);
   }
 
-  public static RadioButton radioButton(Node... nodes) {
-    RadioButton radioButton = new RadioButton();
-    for (Node node : nodes) {
-      radioButton.addChild(node);
-    }
-    return radioButton;
+  public static EmptyElement radioButton(String name, String value) {
+    return input("radio", name, value);
   }
 
-  private static <T extends Element> T addAttributes(T element, Map<String, String> attributes) {
+  private static <T extends Node> T addAttributes(T element, Map<String, String> attributes) {
     element.attributes().putAll(attributes);
     return element;
   }

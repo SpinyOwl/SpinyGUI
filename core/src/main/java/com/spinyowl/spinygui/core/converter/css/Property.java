@@ -134,7 +134,7 @@ public abstract class Property<T> {
         try {
           computedValue = valueExtractor.apply(value);
         } catch (Exception t) {
-          LOGGER.error("Error during extracting value from '{}' with '{}' extractor. {}",
+          log.error("Error during extracting value from '{}' with '{}' extractor. {}",
               value, valueExtractor, t.getMessage());
           computedValue = null;
         }

@@ -6,11 +6,11 @@ import lombok.Data;
 @Data
 public class TypeSelector implements StyleSelector {
 
-  private final Class<?> type;
+  private final String nodeName;
 
   @Override
   public boolean test(Element node) {
-    return node.getClass().equals(type);
+    return node.nodeName().equals(nodeName);
   }
 
 }

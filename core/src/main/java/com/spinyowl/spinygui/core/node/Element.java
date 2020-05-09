@@ -4,42 +4,43 @@ import com.spinyowl.spinygui.core.event.Event;
 import com.spinyowl.spinygui.core.event.EventTarget;
 import com.spinyowl.spinygui.core.event.listener.EventListener;
 import com.spinyowl.spinygui.core.style.NodeStyle;
+import com.spinyowl.spinygui.core.util.Reference;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.stream.Collectors;
 import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
-@Data
-@EqualsAndHashCode(callSuper = true)
-@NoArgsConstructor
-@AllArgsConstructor
-public abstract class Element extends Node implements EventTarget {
+@Getter
+@Setter
+@ToString
+@EqualsAndHashCode
+public class Element extends Node implements EventTarget {
 
+  /**
+   * Child nodes.
+   */
+  private List<Node> childNodes = new CopyOnWriteArrayList<>();
   /**
    * Used to overload styles from stylesheet.
    */
   @Setter(AccessLevel.NONE)
   private NodeStyle style = new NodeStyle();
-
   /**
    * Styles from stylesheet. Updated by style manager every frame state changes.
    */
   @Setter(AccessLevel.NONE)
   private NodeStyle calculatedStyle = new NodeStyle();
-
   /**
    * Node attributes.
    */
   @Setter(AccessLevel.NONE)
   private Map<String, String> attributes = new ConcurrentHashMap<>();
-
   /**
    * Map of listeners attached that should be attached for node and processed if any event
    * performed.
@@ -47,51 +48,8 @@ public abstract class Element extends Node implements EventTarget {
   @Setter(AccessLevel.NONE)
   private Map<Class<? extends Event>, List<? extends EventListener>> listenerMap = new ConcurrentHashMap<>();
 
-  /**
-   * Used to add a new child node, to an element, as the last child node.
-   *
-   * @param node node to add.
-   */
-  public abstract void addChild(Node node);
-
-  /**
-   * Used to remove child node.
-   *
-   * @param node node to remove.
-   */
-  public abstract void removeChild(Node node);
-
-  /**
-   * The {@link #childNodes()} method returns a collection of a node's child nodes, as {@code
-   * List<Node>} object.
-   * <p>
-   * The nodes in the collection are sorted as they was added to the element.
-   * <p>
-   * Tip: To return a collection of a node's element nodes (excluding text and comment nodes), use
-   * the {@link #children()} method.
-   *
-   * @return list of child nodes.
-   */
-  public abstract List<Node> childNodes();
-
-  /**
-   * Returns true if an element has any child nodes, otherwise false.
-   *
-   * @return true if an element has any child nodes, otherwise false.
-   */
-  public abstract boolean hasChildNodes();
-
-  /**
-   * The {@link #children()} method returns a collection of an element's child elements, as an
-   * {@code List<Element>} object.
-   * <p>
-   * The elements in the collection are sorted as they was added tp the element.
-   *
-   * @return list of child elements.
-   */
-  public List<Element> children() {
-    return childNodes().stream().filter(n -> n instanceof Element)
-        .map(n -> (Element) n).collect(Collectors.toUnmodifiableList());
+  public Element(String nodeName) {
+    super(nodeName);
   }
 
   /**
@@ -162,5 +120,51 @@ public abstract class Element extends Node implements EventTarget {
    */
   public boolean hasListenersFor(Class<? extends Event> eventClass) {
     return listenerMap.containsKey(eventClass) && !listenerMap.get(eventClass).isEmpty();
+  }
+
+  /**
+   * Used to remove child node.
+   *
+   * @param node node to remove.
+   */
+  @Override
+  public void removeChild(Node node) {
+    childNodes.remove(node);
+  }
+
+  /**
+   * Used to add child node.
+   *
+   * @param node node to add.
+   */
+  @Override
+  public void addChild(Node node) {
+    if (node == null || node == this || Reference.contains(childNodes, node)) {
+      return;
+    }
+
+    Element parent = node.parent();
+    if (parent != null) {
+      parent.removeChild(node);
+    }
+
+    childNodes.add(node);
+
+    node.parent(this);
+  }
+
+  /**
+   * Used to get child nodes.
+   *
+   * @return list of child nodes.
+   */
+  @Override
+  public List<Node> childNodes() {
+    return childNodes.stream().collect(Collectors.toUnmodifiableList());
+  }
+
+  @Override
+  public boolean hasChildNodes() {
+    return !childNodes.isEmpty();
   }
 }

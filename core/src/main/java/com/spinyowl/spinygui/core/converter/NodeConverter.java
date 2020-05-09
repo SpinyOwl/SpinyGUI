@@ -1,13 +1,17 @@
 package com.spinyowl.spinygui.core.converter;
 
 import com.spinyowl.spinygui.core.converter.dom.RawProcessor;
-import com.spinyowl.spinygui.core.converter.dom.TagNameMapping;
 import com.spinyowl.spinygui.core.node.Element;
+import com.spinyowl.spinygui.core.node.EmptyElement;
 import com.spinyowl.spinygui.core.node.Node;
 import com.spinyowl.spinygui.core.node.Text;
 import java.io.StringReader;
+import java.util.List;
+import java.util.stream.Collectors;
 import javax.xml.XMLConstants;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.jdom2.Attribute;
 import org.jdom2.Content;
 import org.jdom2.Document;
 import org.jdom2.input.SAXBuilder;
@@ -15,11 +19,15 @@ import org.jdom2.output.Format;
 import org.jdom2.output.XMLOutputter;
 
 /**
- * Node marshaller. Used to convert node to xml and vise versa. Uses {@link TagNameMapping} to find
- * out tag name or if there is no mapping - uses class canonical name
+ * Node marshaller. Used to convert node to xml and vise versa.
  */
 @Slf4j
 public final class NodeConverter {
+
+  private static final List<String> EMPTY_ELEMENTS = List.of(
+      "area", "base", "br", "col", "embed", "hr", "img", "input",
+      "keygen", "link", "meta", "param", "source", "track", "wbr"
+  );
 
   private NodeConverter() {
   }
@@ -61,40 +69,36 @@ public final class NodeConverter {
     } else if (node instanceof Element) {
       return createElement((Element) node);
     } else {
-      LOGGER
-          .warn("Attempt to marshal {} class which is not Text or Element child -> skipping.",
-              node.getClass().getName());
+      log.warn("Attempt to marshal {} class which is not Text or Element child -> skipping.",
+          node.getClass().getName());
       return null;
     }
   }
 
   private static org.jdom2.Element createElement(Element node) {
-    org.jdom2.Element element = new org.jdom2.Element(getTagName(node));
+    String name = node.nodeName().toLowerCase();
+    org.jdom2.Element element = new org.jdom2.Element(name);
 
     for (var entry : node.attributes().entrySet()) {
       element.setAttribute(entry.getKey(), entry.getValue());
     }
-    for (Node childNode : node.childNodes()) {
-      Content content = createContent(childNode);
-      if (content != null) {
-        element.addContent(content);
+
+    if (!EMPTY_ELEMENTS.contains(name)) {
+      for (Node childNode : node.childNodes()) {
+        Content content = createContent(childNode);
+        if (content != null) {
+          element.addContent(content);
+        }
       }
     }
-    return element;
-  }
 
-  private static <T extends Element> String getTagName(T component) {
-    var componentClass = component.getClass();
-    if (TagNameMapping.containsElement(componentClass)) {
-      return TagNameMapping.getTagName(componentClass);
-    } else {
-      return componentClass.getCanonicalName();
-    }
+    return element;
   }
 
   // unmarshaller section
 
-  public static Node fromXml(String xml) throws Exception {
+  @SneakyThrows
+  public static Node fromXml(String xml) {
     if (xml == null || xml.isEmpty()) {
       return null;
     }
@@ -104,7 +108,7 @@ public final class NodeConverter {
     return createNodeFromContent(saxBuilder.build(new StringReader(xml)).getRootElement());
   }
 
-  private static Node createNodeFromContent(Content content) throws Exception {
+  private static Node createNodeFromContent(Content content) {
     if (content instanceof org.jdom2.Text) {
       org.jdom2.Text text = (org.jdom2.Text) content;
       if (text.getTextTrim().isEmpty()) {
@@ -114,47 +118,33 @@ public final class NodeConverter {
     } else if (content instanceof org.jdom2.Element) {
       return createNodeFromElement((org.jdom2.Element) content);
     } else {
-      LOGGER.warn(
-          "Can't find node mapping and class for content type '{}', content value '{}'.",
+      log.warn("Content type '{}' is not supported. Content value '{}'.",
           content.getCType(), content.getValue());
       return null;
     }
   }
 
-  private static Node createNodeFromElement(org.jdom2.Element element) throws Exception {
-    Class<? extends Node> aClass = getClassByTag(element.getName());
-    if (aClass == null) {
-      return null;
-    }
-    Node instance = aClass.getDeclaredConstructor().newInstance();
-    if (instance instanceof Element) {
-      Element el = (Element) instance;
-      element.getAttributes().forEach(a -> el.setAttribute(a.getName(), a.getValue()));
-
+  private static Node createNodeFromElement(org.jdom2.Element element) {
+    String tagName = element.getName().toLowerCase();
+    Node instance;
+    if (EMPTY_ELEMENTS.contains(tagName)) {
+      instance = new EmptyElement(tagName);
+    } else {
+      instance = new Element(tagName);
       for (Content c : element.getContent()) {
         try {
           Node componentFromContent = createNodeFromContent(c);
           if (componentFromContent != null) {
-            el.addChild(componentFromContent);
+            instance.addChild(componentFromContent);
           }
         } catch (Exception e) {
-          LOGGER.error(e.getMessage(), e);
+          log.error(e.getMessage(), e);
         }
       }
     }
+    instance.attributes().putAll(element.getAttributes().stream()
+        .collect(Collectors.toMap(Attribute::getName, Attribute::getValue)));
 
     return instance;
-  }
-
-  private static Class<? extends Node> getClassByTag(String name) {
-    if (TagNameMapping.containsTag(name)) {
-      return TagNameMapping.getElement(name);
-    }
-    try {
-      return (Class<? extends Node>) Class.forName(name);
-    } catch (ClassNotFoundException e) {
-      LOGGER.warn("Can't find node mapping and class for tag '{}'.", name);
-      return null;
-    }
   }
 }

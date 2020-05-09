@@ -13,20 +13,16 @@ import com.spinyowl.spinygui.core.converter.css.parser.StyleSheetException;
 import com.spinyowl.spinygui.core.converter.css.selector.StyleSelector;
 import com.spinyowl.spinygui.core.node.Element;
 import com.spinyowl.spinygui.core.node.Node;
-import com.spinyowl.spinygui.core.node.element.Button;
-import com.spinyowl.spinygui.core.node.element.Label;
 import com.spinyowl.spinygui.core.style.manager.StyleManagerProvider;
 import com.spinyowl.spinygui.core.style.types.Color;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public class Test {
-
-  private static final Logger LOGGER = LoggerFactory.getLogger(Test.class);
 
   public static void main(String[] args) throws Exception {
     createFromCSS();
@@ -53,7 +49,7 @@ public class Test {
 
     var stylesheet = StyleSheetConverter.createFromCSS(css);
 
-    Label testLabel = label(Map.of("class", "test"));
+    Element testLabel = label(Map.of("class", "test"));
 
     Element div = div(button(testLabel));
 
@@ -100,7 +96,7 @@ public class Test {
 
     Set<Element> labels = StyleSheet.searchElements(ruleSets.get(0), componentTree);
     for (Node node : labels) {
-      assert (Objects.equals(Label.class, node.getClass()));
+      assert (Objects.equals("label", node.nodeName()));
     }
     Set<Element> test = StyleSheet.searchElements(ruleSets.get(1), componentTree);
     for (Element node : test) {
@@ -108,14 +104,14 @@ public class Test {
     }
     Set<Element> buttons = StyleSheet.searchElements(ruleSets.get(2), componentTree);
     for (Node node : buttons) {
-      assert (Objects.equals(Button.class, node.getClass()));
+      assert (Objects.equals("button", node.nodeName()));
     }
 
   }
 
-  public static void parseText() throws Exception {
+  public static void parseText() {
     var xml = "<div>just a text</div>";
     var componentTree = NodeConverter.fromXml(xml);
-    LOGGER.info("Component tree: {}", componentTree);
+    log.info("Component tree: {}", componentTree);
   }
 }

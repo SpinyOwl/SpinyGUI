@@ -129,7 +129,7 @@ public final class Properties {
         property = clazz.getConstructor().newInstance();
 
       } catch (Exception e) {
-        LOGGER.error(
+        log.error(
             "Can't initialize property handler {}. Public default constructor should be declared.",
             clazz.getName());
       }
@@ -144,7 +144,7 @@ public final class Properties {
       var value = entry.getValue();
       if (value.size() > 1) {
         value.sort(Comparator.comparingInt(o -> -o.priority));
-        LOGGER.warn("Found several tag mappings for tag {} : {}. Using {}", name,
+        log.warn("Found several tag mappings for tag {} : {}. Using {}", name,
             Arrays.toString(
                 value.stream().map(c -> c.property.getClass().getName()).toArray()),
             value.get(0).property.getClass().getName());
@@ -175,8 +175,8 @@ public final class Properties {
       throw new IllegalArgumentException("Name should be the same as the property name.");
     }
 
-    if (LOGGER.isWarnEnabled() && propertyMap.containsKey(name)) {
-      LOGGER.warn(
+    if (log.isWarnEnabled() && propertyMap.containsKey(name)) {
+      log.warn(
           "There is already exist property handler for {} : {}. Would be replaced by {}.",
           name, propertyMap.get(name).getClass().getName(), property.getClass().getName());
     }
