@@ -1,6 +1,5 @@
 plugins {
     id "org.sonarqube" version "2.8"
-    id "org.javamodularity.moduleplugin" version "1.6.0" apply false
     id "checkstyle"
 }
 
@@ -18,17 +17,10 @@ private void printProjectInfo() {
 }
 
 subprojects {
-    apply plugin: 'java'
-    apply plugin: 'java-library'
-    apply plugin: 'org.javamodularity.moduleplugin'
-
     group = 'com.spinyowl'
     version = rootProject.version
 
     buildDir = new File(rootProject.projectDir, "build/" + project.name)
-
-    sourceCompatibility = 1.11
-    targetCompatibility = 1.11
 
     repositories {
         mavenCentral()
@@ -36,29 +28,32 @@ subprojects {
         maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
     }
 
-    test {
+    plugins.withType(JavaPlugin).configureEach {
+        java {
+            modularity.inferModulePath = true
+        }
+
+        sourceCompatibility = 1.11
+        targetCompatibility = 1.11
+
+        dependencies {
+
+            compileOnly 'org.projectlombok:lombok:1.18.12'
+            annotationProcessor 'org.projectlombok:lombok:1.18.12'
+
+            testCompileOnly 'org.projectlombok:lombok:1.18.12'
+            testAnnotationProcessor 'org.projectlombok:lombok:1.18.12'
+
+            // api
+            // implementation
+            testImplementation 'org.junit.jupiter:junit-jupiter-api:5.6.2'
+            testImplementation 'org.junit.jupiter:junit-jupiter-params:5.6.2'
+            testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.6.2'
+        }
+    }
+
+    tasks.withType(Test).configureEach {
         useJUnitPlatform()
-
-        testLogging {
-            events 'PASSED', 'FAILED', 'SKIPPED'
-        }
-    }
-
-    dependencies {
-        compileOnly 'org.projectlombok:lombok:1.18.12'
-        annotationProcessor 'org.projectlombok:lombok:1.18.12'
-
-        testCompileOnly 'org.projectlombok:lombok:1.18.12'
-        testAnnotationProcessor 'org.projectlombok:lombok:1.18.12'
-
-        testImplementation 'org.junit.jupiter:junit-jupiter-api:5.6.2'
-        testImplementation 'org.junit.jupiter:junit-jupiter-params:5.6.2'
-        testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.6.2'
-    }
-    compileJava {
-        moduleOptions {
-            addModules = ['org.lwjgl.natives']
-        }
     }
 }
 

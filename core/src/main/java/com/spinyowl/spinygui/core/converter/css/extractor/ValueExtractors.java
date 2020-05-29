@@ -32,6 +32,10 @@ public final class ValueExtractors {
     valueExtractorMap.put(targetValueClass, valueExtractor);
   }
 
+  public static void remove(Class<?> targetValueClass) {
+    valueExtractorMap.remove(targetValueClass);
+  }
+
   public static <T> ValueExtractor<T> of(Class<T> targetValueClass) {
     return valueExtractorMap.get(targetValueClass);
   }

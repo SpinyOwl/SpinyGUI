@@ -111,7 +111,6 @@ public final class Properties {
   static {
 
     var scanResult = new ClassGraph()
-        .whitelistPackages("com.spinyowl.spinygui")
         .enableAllInfo()
         .scan();
 

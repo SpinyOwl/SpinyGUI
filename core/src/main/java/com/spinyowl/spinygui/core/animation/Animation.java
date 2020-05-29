@@ -1,5 +1,11 @@
 package com.spinyowl.spinygui.core.animation;
 
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
+import lombok.ToString;
+
 /**
  * Draft animation realization.
  * <p>
@@ -7,8 +13,14 @@ package com.spinyowl.spinygui.core.animation;
  *
  * @author ShchAlexander
  */
+@RequiredArgsConstructor
+@Getter
+@EqualsAndHashCode
+@ToString
 public abstract class Animation {
 
+  @NonNull
+  private final Animator animator;
   /**
    * Flag that indicates if animation was started.
    */
@@ -19,15 +31,15 @@ public abstract class Animation {
    */
   public void startAnimation() {
     if (!animationStarted) {
-      AnimatorProvider.getAnimator().pushAnimation(this);
+      animator.pushAnimation(this);
       animationStarted = true;
     }
   }
 
   /**
-   * Called one time before animate loop.
+   * Called once during animation life time before animate loop.
    */
-  protected void beforeAnimation() {
+  protected void initialize() {
     // Could be implemented later.
   }
 
@@ -42,9 +54,9 @@ public abstract class Animation {
   protected abstract boolean animate(double delta);
 
   /**
-   * Called one time when animation ended.
+   * Called once during animation life time when animation ended.
    */
-  protected void afterAnimation() {
+  protected void destroy() {
     // Could be implemented later.
   }
 
@@ -52,7 +64,7 @@ public abstract class Animation {
    * Used to stop animation. Removes animation from animator.
    */
   public void stopAnimation() {
-    AnimatorProvider.getAnimator().removeAnimation(this);
+    animator.removeAnimation(this);
   }
 
   /**

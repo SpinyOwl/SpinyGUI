@@ -1,9 +1,11 @@
 plugins {
-    id 'java'
+    id 'java-library'
     id 'application'
 }
 
 dependencies {
     implementation project(':spinygui')
 }
-mainClassName = "$moduleName/com.spinyowl.spinygui.demo.Main"
+application {
+    mainClass = "com.spinyowl.spinygui.demo.Main"
+}

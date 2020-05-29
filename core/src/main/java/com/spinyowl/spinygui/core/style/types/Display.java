@@ -9,7 +9,7 @@ import lombok.Getter;
 import lombok.ToString;
 
 /**
- * CSS display.
+ * CSS display. Currently supports
  */
 @Getter
 @EqualsAndHashCode
@@ -27,11 +27,6 @@ public final class Display {
    * The element is completely removed.
    */
   public static final Display NONE = Display.create("none");
-
-  /**
-   * Displays an element as a block element. It starts on a new line, and takes up the whole width.
-   */
-  public static final Display BLOCK = Display.create("block");
 
   /**
    * Name of display type (should be same as in css specification)

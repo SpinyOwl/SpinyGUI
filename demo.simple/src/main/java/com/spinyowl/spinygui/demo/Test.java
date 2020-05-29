@@ -13,6 +13,8 @@ import com.spinyowl.spinygui.core.converter.css.parser.StyleSheetException;
 import com.spinyowl.spinygui.core.converter.css.selector.StyleSelector;
 import com.spinyowl.spinygui.core.node.Element;
 import com.spinyowl.spinygui.core.node.Node;
+import com.spinyowl.spinygui.core.style.manager.DefaultStyleManger;
+import com.spinyowl.spinygui.core.style.manager.StyleManager;
 import com.spinyowl.spinygui.core.style.manager.StyleManagerProvider;
 import com.spinyowl.spinygui.core.style.types.Color;
 import java.util.List;
@@ -64,7 +66,8 @@ public class Test {
     frame.getStyleSheets().add(stylesheet);
     frame.defaultLayer().addChild(div);
 
-    StyleManagerProvider.getInstance().recalculateStyles(frame);
+    StyleManager styleManager = new DefaultStyleManger();
+    styleManager.recalculateStyles(frame);
 
     assert (Objects.equals(Color.RED, testLabel.calculatedStyle().color()));
   }

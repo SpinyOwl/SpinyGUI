@@ -40,7 +40,7 @@ public class AnimatorImpl implements Animator {
 
     List<Animation> initializeList = new ArrayList<>(animationsToInitialize);
     for (Animation animation : initializeList) {
-      animation.beforeAnimation();
+      animation.initialize();
       animationsToInitialize.remove(animation);
       animations.add(animation);
     }
@@ -59,7 +59,7 @@ public class AnimatorImpl implements Animator {
 
     List<Animation> destroyList = new ArrayList<>(animationsToDestroy);
     for (Animation animation : destroyList) {
-      animation.afterAnimation();
+      animation.destroy();
       animationsToDestroy.remove(animation);
     }
 

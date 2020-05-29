@@ -44,7 +44,7 @@ public class NodeStyle {
   private Margin margin = new Margin();
 
   @NonNull
-  private Display display = Display.BLOCK;
+  private Display display = Display.FLEX;
 
   @NonNull
   private Position position = Position.RELATIVE;

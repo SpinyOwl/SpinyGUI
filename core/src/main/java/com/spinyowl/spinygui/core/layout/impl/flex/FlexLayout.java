@@ -34,7 +34,7 @@ import static org.lwjgl.util.yoga.Yoga.nYGNodeCalculateLayout;
 import com.spinyowl.spinygui.core.event.ChangePositionEvent;
 import com.spinyowl.spinygui.core.event.ChangeSizeEvent;
 import com.spinyowl.spinygui.core.event.ElementTreeUpdateEvent;
-import com.spinyowl.spinygui.core.event.processor.EventProcessorProvider;
+import com.spinyowl.spinygui.core.event.processor.EventProcessor;
 import com.spinyowl.spinygui.core.layout.Layout;
 import com.spinyowl.spinygui.core.node.Element;
 import com.spinyowl.spinygui.core.node.Node;
@@ -44,15 +44,20 @@ import com.spinyowl.spinygui.core.style.types.flex.Flex;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import org.joml.Vector2f;
 import org.lwjgl.util.yoga.Yoga;
 
 /**
  * @author Aliaksandr_Shcherbin.
  */
+@Getter
+@RequiredArgsConstructor
 public class FlexLayout implements Layout {
 
   public static final float THRESHOLD = 0.0001f;
+  private final EventProcessor eventProcessor;
 
   /**
    * Used to lay out child components for parent component.
@@ -112,17 +117,15 @@ public class FlexLayout implements Layout {
       Element e = (Element) childComponent;
       boolean invalidateTree = false;
       if (!oldPos.equals(newPos, THRESHOLD)) {
-        EventProcessorProvider.getInstance()
-            .pushEvent(new ChangePositionEvent<>(e, oldPos, newPos));
+        eventProcessor.pushEvent(new ChangePositionEvent<>(e, oldPos, newPos));
         invalidateTree = true;
       }
       if (!oldSize.equals(newSize, THRESHOLD)) {
-        EventProcessorProvider.getInstance()
-            .pushEvent(new ChangeSizeEvent<>(e, oldSize, newSize));
+        eventProcessor.pushEvent(new ChangeSizeEvent<>(e, oldSize, newSize));
         invalidateTree = true;
       }
       if (invalidateTree) {
-        EventProcessorProvider.getInstance().pushEvent(new ElementTreeUpdateEvent());
+        eventProcessor.pushEvent(new ElementTreeUpdateEvent());
       }
     }
   }
