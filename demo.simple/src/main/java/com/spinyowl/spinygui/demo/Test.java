@@ -15,7 +15,6 @@ import com.spinyowl.spinygui.core.node.Element;
 import com.spinyowl.spinygui.core.node.Node;
 import com.spinyowl.spinygui.core.style.manager.DefaultStyleManger;
 import com.spinyowl.spinygui.core.style.manager.StyleManager;
-import com.spinyowl.spinygui.core.style.manager.StyleManagerProvider;
 import com.spinyowl.spinygui.core.style.types.Color;
 import java.util.List;
 import java.util.Map;

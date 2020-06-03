@@ -31,6 +31,10 @@ public abstract class Window {
     frame = new Frame();
   }
 
+  public Window(Frame frame) {
+    this.frame = Objects.requireNonNull(frame);
+  }
+
   public static Window createWindow(String title, int width, int height) {
     return Services.getWindowService().createWindow(width, height, title);
   }

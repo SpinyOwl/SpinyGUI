@@ -1,5 +1,6 @@
 package com.spinyowl.spinygui.demo;
 
+import static com.spinyowl.spinygui.core.node.NodeBuilder.INPUT_PASSWORD;
 import static com.spinyowl.spinygui.core.node.NodeBuilder.button;
 import static com.spinyowl.spinygui.core.node.NodeBuilder.div;
 import static com.spinyowl.spinygui.core.node.NodeBuilder.input;
@@ -32,7 +33,7 @@ public class Main {
             div(text("Bold")),
             button(text("\n\n\tFOrmantted text\n\t\n\n asdfasdfa\n"))
         ).with("name", "myAwesomeButton").with("id", "bid1"),
-        input("password", "myPass", "PASS_@!@#&"),
+        input(INPUT_PASSWORD, "myPass", "PASS_@!@#&"),
         radioButton("radio", "firstValue")
     );
 
