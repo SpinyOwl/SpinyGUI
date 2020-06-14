@@ -5,6 +5,9 @@ plugins {
 
 dependencies {
     implementation project(':spinygui')
+
+    api group: 'org.slf4j', name: 'slf4j-api', version: slf4j_version
+    api group: 'ch.qos.logback', name: 'logback-classic', version: logback_version
 }
 application {
     mainClass = "com.spinyowl.spinygui.demo.Main"

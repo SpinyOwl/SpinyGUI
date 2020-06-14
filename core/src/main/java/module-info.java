@@ -1,6 +1,5 @@
 open module com.spinyowl.spinygui.core {
 
-  requires transitive jdom2;
   requires transitive java.xml;
   requires transitive org.joml;
   requires static lombok;
@@ -30,7 +29,6 @@ open module com.spinyowl.spinygui.core {
   exports com.spinyowl.spinygui.core.converter.css.parser.annotations;
   exports com.spinyowl.spinygui.core.converter.css.parser.antlr;
   exports com.spinyowl.spinygui.core.converter.css.parser.visitor;
-  exports com.spinyowl.spinygui.core.converter.dom;
 
   exports com.spinyowl.spinygui.core.event;
   exports com.spinyowl.spinygui.core.event.listener;

@@ -1,22 +1,27 @@
 package com.spinyowl.spinygui.core.converter;
 
-import com.spinyowl.spinygui.core.converter.dom.RawProcessor;
 import com.spinyowl.spinygui.core.node.Element;
 import com.spinyowl.spinygui.core.node.EmptyElement;
 import com.spinyowl.spinygui.core.node.Node;
 import com.spinyowl.spinygui.core.node.Text;
 import java.io.StringReader;
+import java.io.StringWriter;
 import java.util.List;
-import java.util.stream.Collectors;
 import javax.xml.XMLConstants;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import org.jdom2.Attribute;
-import org.jdom2.Content;
-import org.jdom2.Document;
-import org.jdom2.input.SAXBuilder;
-import org.jdom2.output.Format;
-import org.jdom2.output.XMLOutputter;
+import org.w3c.dom.Attr;
+import org.w3c.dom.Document;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
 
 /**
  * Node marshaller. Used to convert node to xml and vise versa.
@@ -53,21 +58,35 @@ public final class NodeConverter {
     if (node == null) {
       return null;
     }
+    StringWriter stringWriter = new StringWriter();
 
-    Document document = new Document();
-    Content content = createContent(node);
-    document.addContent(content);
+    try {
+      DocumentBuilder builder = DocumentBuilderFactory.newDefaultInstance().newDocumentBuilder();
+      Document document = builder.newDocument();
 
-    XMLOutputter out = new XMLOutputter(new RawProcessor());
-    out.setFormat(pretty ? Format.getPrettyFormat() : Format.getRawFormat());
-    return out.outputString(document);
+      org.w3c.dom.Node content = createContent(document, node);
+      document.appendChild(content);
+
+      StreamResult result = new StreamResult(stringWriter);
+      TransformerFactory tf = TransformerFactory.newDefaultInstance();
+      Transformer transformer = tf.newTransformer();
+      if(pretty) {
+        transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+        transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
+        transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2");
+      }
+      transformer.transform(new DOMSource(document), result);
+    } catch (Exception e) {
+      log.error(e.getMessage(), e);
+    }
+    return stringWriter.toString();
   }
 
-  private static Content createContent(Node node) {
+  private static org.w3c.dom.Node createContent(Document document, Node node) {
     if (node instanceof Text) {
-      return new org.jdom2.Text(((Text) node).content());
+      return document.createTextNode(((Text) node).content());
     } else if (node instanceof Element) {
-      return createElement((Element) node);
+      return createElement(document, (Element) node);
     } else {
       log.warn("Attempt to marshal {} class which is not Text or Element child -> skipping.",
           node.getClass().getName());
@@ -75,9 +94,9 @@ public final class NodeConverter {
     }
   }
 
-  private static org.jdom2.Element createElement(Element node) {
+  private static org.w3c.dom.Element createElement(Document document, Element node) {
     String name = node.nodeName().toLowerCase();
-    org.jdom2.Element element = new org.jdom2.Element(name);
+    org.w3c.dom.Element element = document.createElement(name);
 
     for (var entry : node.attributes().entrySet()) {
       element.setAttribute(entry.getKey(), entry.getValue());
@@ -85,9 +104,9 @@ public final class NodeConverter {
 
     if (!EMPTY_ELEMENTS.contains(name)) {
       for (Node childNode : node.childNodes()) {
-        Content content = createContent(childNode);
+        org.w3c.dom.Node content = createContent(document, childNode);
         if (content != null) {
-          element.addContent(content);
+          element.appendChild(content);
         }
       }
     }
@@ -102,36 +121,45 @@ public final class NodeConverter {
     if (xml == null || xml.isEmpty()) {
       return null;
     }
-    SAXBuilder saxBuilder = new SAXBuilder(); // Compliant
-    saxBuilder.setProperty(XMLConstants.ACCESS_EXTERNAL_DTD, ""); // Compliant
-    saxBuilder.setProperty(XMLConstants.ACCESS_EXTERNAL_SCHEMA, ""); // Compliant
-    return createNodeFromContent(saxBuilder.build(new StringReader(xml)).getRootElement());
+
+    DocumentBuilderFactory f = DocumentBuilderFactory.newDefaultInstance();
+    f.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, "");
+    f.setAttribute(XMLConstants.ACCESS_EXTERNAL_SCHEMA, "");
+    DocumentBuilder documentBuilder = f.newDocumentBuilder();
+
+    InputSource inputSource = new InputSource();
+    inputSource.setCharacterStream(new StringReader((xml)));
+    Document document = documentBuilder.parse(inputSource);
+
+    return createNodeFromContent(document.getDocumentElement());
   }
 
-  private static Node createNodeFromContent(Content content) {
-    if (content instanceof org.jdom2.Text) {
-      org.jdom2.Text text = (org.jdom2.Text) content;
-      if (text.getTextTrim().isEmpty()) {
+  private static Node createNodeFromContent(org.w3c.dom.Node node) {
+    if (node instanceof org.w3c.dom.Text) {
+      org.w3c.dom.Text text = (org.w3c.dom.Text) node;
+      String wholeText = text.getWholeText();
+      if (wholeText.isEmpty()) {
         return null;
       }
-      return new Text(text.getText());
-    } else if (content instanceof org.jdom2.Element) {
-      return createNodeFromElement((org.jdom2.Element) content);
+      return new Text(wholeText);
+    } else if (node instanceof org.w3c.dom.Element) {
+      return createNodeFromElement((org.w3c.dom.Element) node);
     } else {
-      log.warn("Content type '{}' is not supported. Content value '{}'.",
-          content.getCType(), content.getValue());
+      log.warn("Content type '{}' is not supported. Content value '{}'.", node.getNodeType(), node.getNodeValue());
       return null;
     }
   }
 
-  private static Node createNodeFromElement(org.jdom2.Element element) {
-    String tagName = element.getName().toLowerCase();
+  private static Node createNodeFromElement(org.w3c.dom.Element element) {
+    String tagName = element.getTagName().toLowerCase();
     Node instance;
     if (EMPTY_ELEMENTS.contains(tagName)) {
       instance = new EmptyElement(tagName);
     } else {
       instance = new Element(tagName);
-      for (Content c : element.getContent()) {
+      NodeList childNodes = element.getChildNodes();
+      for (int i = 0; i < childNodes.getLength(); i++) {
+        org.w3c.dom.Node c = childNodes.item(i);
         try {
           Node componentFromContent = createNodeFromContent(c);
           if (componentFromContent != null) {
@@ -142,8 +170,11 @@ public final class NodeConverter {
         }
       }
     }
-    instance.attributes().putAll(element.getAttributes().stream()
-        .collect(Collectors.toMap(Attribute::getName, Attribute::getValue)));
+    NamedNodeMap attributes = element.getAttributes();
+    for (int i = 0; i < attributes.getLength(); i++) {
+      org.w3c.dom.Attr attr = (Attr) attributes.item(i);
+      instance.attributes().put(attr.getName(), attr.getValue());
+    }
 
     return instance;
   }

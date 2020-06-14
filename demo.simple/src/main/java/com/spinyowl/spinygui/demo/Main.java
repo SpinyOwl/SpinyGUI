@@ -20,8 +20,6 @@ public class Main {
 
   public static void main(String[] args) throws Exception {
 
-    log.info("a core message");
-
 //        Monitor monitor = Monitor.getPrimaryMonitor();
 //        Window window = Window.createWindow("Example window", 800, 600, monitor);
 
@@ -46,24 +44,24 @@ public class Main {
     log.info(xml);
     //language=XML
     String xml2 =
-        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
-            "<div>\n" +
-            "  <button>asdfasdfasd</button>\n"
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
+            "<div>" +
+            "  <button>asdfasdfasd</button>"
             + "  " +
-            "<button>\n\n" +
+            "<button>\n" +
             "    s\n" +
             "    \n" +
             "    Hello World\n\n" +
 
-            "    <pre _pre=\"true\">\n\n" +
+            "    <pre _pre=\"true\">\n" +
             "    s\n" +
             "    \n" +
             "    Hello World\n" +
-            "    </pre>\n" +
-            "    <div>Bold</div>\n" +
-            "  </button>\n" +
-            "  <input name=\"password\" value=\"PASS_@!@#&amp;\" />\n" +
-            "  <radio-button />\n" +
+            "    </pre>" +
+            "    <div>Bold</div>" +
+            "  </button>" +
+            "  <input name=\"password\" value=\"PASS_@!@#&amp;\" />" +
+            "  <radio-button />" +
             "</div>";
     Node unmarshal = NodeConverter.fromXml(xml2);
 
