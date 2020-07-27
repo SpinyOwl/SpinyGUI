@@ -1,9 +1,11 @@
 package com.spinyowl.spinygui.core.event;
 
 import com.spinyowl.spinygui.core.node.Element;
+import lombok.Getter;
 import org.joml.Vector2f;
 
-public class ChangeSizeEvent<T extends Element> extends NodeEvent<T> {
+@Getter
+public class ChangeSizeEvent<T extends Element> extends ElementEvent<T> {
 
   private final Vector2f oldSize;
   private final Vector2f newSize;
@@ -14,11 +16,4 @@ public class ChangeSizeEvent<T extends Element> extends NodeEvent<T> {
     this.newSize = newSize;
   }
 
-  public Vector2f getOldSize() {
-    return oldSize;
-  }
-
-  public Vector2f getNewSize() {
-    return newSize;
-  }
 }

@@ -1,9 +1,11 @@
 package com.spinyowl.spinygui.core.event;
 
 import com.spinyowl.spinygui.core.node.Element;
+import lombok.Getter;
 import org.joml.Vector2f;
 
-public class ChangePositionEvent<T extends Element> extends NodeEvent<T> {
+@Getter
+public class ChangePositionEvent<T extends Element> extends ElementEvent<T> {
 
   private final Vector2f oldPos;
   private final Vector2f newPos;
@@ -12,13 +14,5 @@ public class ChangePositionEvent<T extends Element> extends NodeEvent<T> {
     super(target);
     this.oldPos = oldPos;
     this.newPos = newPos;
-  }
-
-  public Vector2f getOldPos() {
-    return oldPos;
-  }
-
-  public Vector2f getNewPos() {
-    return newPos;
   }
 }

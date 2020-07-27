@@ -21,7 +21,6 @@ import lombok.ToString;
 @EqualsAndHashCode(exclude = "frame")
 public class Layer extends Element {
 
-
   /**
    * Parent frame.
    */

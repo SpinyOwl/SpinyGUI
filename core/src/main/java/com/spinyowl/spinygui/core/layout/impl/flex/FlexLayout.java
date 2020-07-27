@@ -33,7 +33,7 @@ import static org.lwjgl.util.yoga.Yoga.YGPositionTypeRelative;
 import static org.lwjgl.util.yoga.Yoga.nYGNodeCalculateLayout;
 import com.spinyowl.spinygui.core.event.ChangePositionEvent;
 import com.spinyowl.spinygui.core.event.ChangeSizeEvent;
-import com.spinyowl.spinygui.core.event.ElementTreeUpdateEvent;
+import com.spinyowl.spinygui.core.event.InvalidateTreeEvent;
 import com.spinyowl.spinygui.core.event.processor.EventProcessor;
 import com.spinyowl.spinygui.core.layout.Layout;
 import com.spinyowl.spinygui.core.node.Element;
@@ -82,9 +82,9 @@ public class FlexLayout implements Layout {
     }
 
     // calculate
-    nYGNodeCalculateLayout(rootNode, parent.size().x(), parent.size().y(),
-        YGDirectionLTR);
+    nYGNodeCalculateLayout(rootNode, parent.size().x(), parent.size().y(), YGDirectionLTR);
 
+    boolean invalidateTree = false;
     // apply to components
     for (int i = 0; i < components.size(); i++) {
       Node childComponent = components.get(i);
@@ -100,7 +100,11 @@ public class FlexLayout implements Layout {
       Vector2f oldSize = new Vector2f(childComponent.size());
       childComponent.size(newSize);
 
-      generateEvents(childComponent, newPos, oldPos, newSize, oldSize);
+      invalidateTree = invalidateTree || generateEvents(childComponent, newPos, oldPos, newSize, oldSize);
+    }
+
+    if (invalidateTree) {
+      eventProcessor.pushEvent(new InvalidateTreeEvent());
     }
 
     // free mem
@@ -111,11 +115,11 @@ public class FlexLayout implements Layout {
     YGNodeFree(rootNode);
   }
 
-  private void generateEvents(Node childComponent, Vector2f newPos, Vector2f oldPos,
+  private boolean generateEvents(Node childComponent, Vector2f newPos, Vector2f oldPos,
       Vector2f newSize, Vector2f oldSize) {
+    boolean invalidateTree = false;
     if (childComponent instanceof Element) {
       Element e = (Element) childComponent;
-      boolean invalidateTree = false;
       if (!oldPos.equals(newPos, THRESHOLD)) {
         eventProcessor.pushEvent(new ChangePositionEvent<>(e, oldPos, newPos));
         invalidateTree = true;
@@ -124,10 +128,8 @@ public class FlexLayout implements Layout {
         eventProcessor.pushEvent(new ChangeSizeEvent<>(e, oldSize, newSize));
         invalidateTree = true;
       }
-      if (invalidateTree) {
-        eventProcessor.pushEvent(new ElementTreeUpdateEvent());
-      }
     }
+    return invalidateTree;
   }
 
   private void prepareParentNode(Element parent, long rootNode) {

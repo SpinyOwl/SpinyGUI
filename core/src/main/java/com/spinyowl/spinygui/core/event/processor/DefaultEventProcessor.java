@@ -22,7 +22,7 @@ public class DefaultEventProcessor implements EventProcessor {
     List<Event> events = new ArrayList<>(eventQueue);
 
     for (Event event : events) {
-      EventTarget target = event.getTarget();
+      EventTarget target = event.target();
       if (target != null) {
         List<? extends EventListener<? extends Event>> listeners = target
             .getListeners(event.getClass());

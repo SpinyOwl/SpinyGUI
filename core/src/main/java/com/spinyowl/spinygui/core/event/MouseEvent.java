@@ -1,8 +1,10 @@
 package com.spinyowl.spinygui.core.event;
 
 import com.spinyowl.spinygui.core.node.Element;
+import lombok.Getter;
 
-public class MouseEvent<T extends Element> extends NodeEvent<T> {
+@Getter
+public class MouseEvent<T extends Element> extends ElementEvent<T> {
 
   // modificators
   private boolean altKey;
@@ -42,62 +44,6 @@ public class MouseEvent<T extends Element> extends NodeEvent<T> {
 
   public MouseEvent(EventTarget source, T target, double timeStamp) {
     super(source, target, timeStamp);
-  }
-
-  public boolean isAltKey() {
-    return altKey;
-  }
-
-  public boolean isCtrlKey() {
-    return ctrlKey;
-  }
-
-  public boolean isShiftKey() {
-    return shiftKey;
-  }
-
-  public int getButton() {
-    return button;
-  }
-
-  public float getX() {
-    return x;
-  }
-
-  public float getY() {
-    return y;
-  }
-
-  public float getOffsetX() {
-    return offsetX;
-  }
-
-  public float getOffsetY() {
-    return offsetY;
-  }
-
-  public float getScreenX() {
-    return screenX;
-  }
-
-  public float getScreenY() {
-    return screenY;
-  }
-
-  public float getPageX() {
-    return pageX;
-  }
-
-  public float getPageY() {
-    return pageY;
-  }
-
-  public float getMovementX() {
-    return movementX;
-  }
-
-  public float getMovementY() {
-    return movementY;
   }
 
 }
