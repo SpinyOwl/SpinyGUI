@@ -17,6 +17,8 @@ open module com.spinyowl.spinygui.core {
   requires transitive ch.qos.logback.core;
   requires transitive ch.qos.logback.classic;
 
+  requires org.apache.commons.collections4;
+
   exports com.spinyowl.spinygui.core.animation;
   exports com.spinyowl.spinygui.core.api;
 
@@ -33,6 +35,9 @@ open module com.spinyowl.spinygui.core {
   exports com.spinyowl.spinygui.core.event;
   exports com.spinyowl.spinygui.core.event.listener;
   exports com.spinyowl.spinygui.core.event.processor;
+
+  exports com.spinyowl.spinygui.core.font;
+  exports com.spinyowl.spinygui.core.input;
 
   exports com.spinyowl.spinygui.core.layout;
 

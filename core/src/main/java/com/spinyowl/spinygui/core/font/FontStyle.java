@@ -10,9 +10,11 @@ public final class FontStyle {
 
   private static final Map<String, FontStyle> VALUES = new ConcurrentHashMap<>();
 
-  public static final FontStyle NORMAL = FontStyle.create("normal");
-  public static final FontStyle ITALIC = FontStyle.create("italic");
+  //@formatter:off
+  public static final FontStyle NORMAL  = FontStyle.create("normal");
+  public static final FontStyle ITALIC  = FontStyle.create("italic");
   public static final FontStyle OBLIQUE = FontStyle.create("oblique");
+  //@formatter:on
 
 
   /**

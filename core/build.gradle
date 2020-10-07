@@ -5,6 +5,7 @@ plugins {
 dependencies {
     api group: 'org.slf4j', name: 'slf4j-api', version: slf4j_version
     api group: 'ch.qos.logback', name: 'logback-classic', version: logback_version
+    api group: 'org.apache.commons', name: 'commons-collections4', version: commons_collections_version
 
     api group: 'org.joml', name: 'joml', version: joml_version
 

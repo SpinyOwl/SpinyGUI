@@ -100,7 +100,8 @@ public class FlexLayout implements Layout {
       Vector2f oldSize = new Vector2f(childComponent.size());
       childComponent.size(newSize);
 
-      invalidateTree = invalidateTree || generateEvents(childComponent, newPos, oldPos, newSize, oldSize);
+      invalidateTree =
+          invalidateTree || generateEvents(childComponent, newPos, oldPos, newSize, oldSize);
     }
 
     if (invalidateTree) {

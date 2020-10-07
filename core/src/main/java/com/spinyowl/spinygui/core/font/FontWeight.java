@@ -16,21 +16,23 @@ public final class FontWeight {
 
   private static final Map<String, FontWeight> VALUES = new ConcurrentHashMap<>();
 
-  public static final FontWeight THIN = FontWeight.create(100, "thin");
+  //@formatter:off
+  public static final FontWeight THIN        = FontWeight.create(100, "thin");
   public static final FontWeight ULTRA_LIGHT = FontWeight.create(200, "ultra light", "ultralight");
   public static final FontWeight EXTRA_LIGHT = FontWeight.create(200, "extra light", "extralight");
-  public static final FontWeight LIGHT = FontWeight.create(300, "light");
-  public static final FontWeight NORMAL = FontWeight.create(400, "normal");
-  public static final FontWeight BOOK = FontWeight.create(400, "book");
-  public static final FontWeight REGULAR = FontWeight.create(400, "regular");
-  public static final FontWeight MEDIUM = FontWeight.create(500, "medium");
-  public static final FontWeight SEMI_BOLD = FontWeight.create(600, "semi bold", "semibold");
-  public static final FontWeight DEMI_BOLD = FontWeight.create(600, "demi bold", "demibold");
-  public static final FontWeight BOLD = FontWeight.create(700, "bold");
-  public static final FontWeight EXTRA_BOLD = FontWeight.create(800, "extra bold", "extrabold");
-  public static final FontWeight ULTRA_BOLD = FontWeight.create(800, "ultra bold", "ultrabold");
-  public static final FontWeight HEAVY = FontWeight.create(900, "heavy");
-  public static final FontWeight BLACK = FontWeight.create(900, "black");
+  public static final FontWeight LIGHT       = FontWeight.create(300, "light");
+  public static final FontWeight NORMAL      = FontWeight.create(400, "normal");
+  public static final FontWeight BOOK        = FontWeight.create(400, "book");
+  public static final FontWeight REGULAR     = FontWeight.create(400, "regular");
+  public static final FontWeight MEDIUM      = FontWeight.create(500, "medium");
+  public static final FontWeight SEMI_BOLD   = FontWeight.create(600, "semi bold", "semibold");
+  public static final FontWeight DEMI_BOLD   = FontWeight.create(600, "demi bold", "demibold");
+  public static final FontWeight BOLD        = FontWeight.create(700, "bold");
+  public static final FontWeight EXTRA_BOLD  = FontWeight.create(800, "extra bold", "extrabold");
+  public static final FontWeight ULTRA_BOLD  = FontWeight.create(800, "ultra bold", "ultrabold");
+  public static final FontWeight HEAVY       = FontWeight.create(900, "heavy");
+  public static final FontWeight BLACK       = FontWeight.create(900, "black");
+  //@formatter:on
 
   /**
    * Name of font weight type (should be same as in css specification).

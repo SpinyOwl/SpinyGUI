@@ -1,4 +1,4 @@
-package com.spinyowl.spinygui.core.system.input;
+package com.spinyowl.spinygui.core.input;
 
 public enum KeyMod {
   SHIFT,

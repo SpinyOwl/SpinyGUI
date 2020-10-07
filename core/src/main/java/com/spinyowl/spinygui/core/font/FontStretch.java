@@ -13,15 +13,17 @@ public final class FontStretch {
 
   private static final Map<String, FontStretch> VALUES = new ConcurrentHashMap<>();
 
-  public static final FontStretch ULTRA_CONDENSED = FontStretch.create("ultra-condensed");
-  public static final FontStretch EXTRA_CONDENSED = FontStretch.create("extra-condensed");
-  public static final FontStretch CONDENSED = FontStretch.create("condensed");
-  public static final FontStretch SEMI_CONDENSED = FontStretch.create("semi-condensed");
-  public static final FontStretch NORMAL = FontStretch.create("normal");
-  public static final FontStretch SEMI_EXPANDED = FontStretch.create("semi-expanded");
-  public static final FontStretch EXPANDED = FontStretch.create("expanded");
-  public static final FontStretch EXTRA_EXPANDED = FontStretch.create("extra-expanded");
-  public static final FontStretch ULTRA_EXPANDED = FontStretch.create("ultra-expanded");
+  //@formatter:off
+  public static final FontStretch ULTRA_CONDENSED  = FontStretch.create("ultra-condensed");
+  public static final FontStretch EXTRA_CONDENSED  = FontStretch.create("extra-condensed");
+  public static final FontStretch CONDENSED        = FontStretch.create("condensed");
+  public static final FontStretch SEMI_CONDENSED   = FontStretch.create("semi-condensed");
+  public static final FontStretch NORMAL           = FontStretch.create("normal");
+  public static final FontStretch SEMI_EXPANDED    = FontStretch.create("semi-expanded");
+  public static final FontStretch EXPANDED         = FontStretch.create("expanded");
+  public static final FontStretch EXTRA_EXPANDED   = FontStretch.create("extra-expanded");
+  public static final FontStretch ULTRA_EXPANDED   = FontStretch.create("ultra-expanded");
+  //@formatter:on
 
   /**
    * Name of font stretch type (should be same as in css specification)

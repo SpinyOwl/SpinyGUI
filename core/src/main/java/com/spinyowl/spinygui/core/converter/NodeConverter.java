@@ -70,7 +70,7 @@ public final class NodeConverter {
       StreamResult result = new StreamResult(stringWriter);
       TransformerFactory tf = TransformerFactory.newDefaultInstance();
       Transformer transformer = tf.newTransformer();
-      if(pretty) {
+      if (pretty) {
         transformer.setOutputProperty(OutputKeys.INDENT, "yes");
         transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
         transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2");
@@ -145,7 +145,8 @@ public final class NodeConverter {
     } else if (node instanceof org.w3c.dom.Element) {
       return createNodeFromElement((org.w3c.dom.Element) node);
     } else {
-      log.warn("Content type '{}' is not supported. Content value '{}'.", node.getNodeType(), node.getNodeValue());
+      log.warn("Content type '{}' is not supported. Content value '{}'.", node.getNodeType(),
+          node.getNodeValue());
       return null;
     }
   }

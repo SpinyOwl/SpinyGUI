@@ -1,6 +1,6 @@
 package com.spinyowl.spinygui.core.system.event;
 
-import com.spinyowl.spinygui.core.system.input.KeyMod;
+import com.spinyowl.spinygui.core.input.KeyMod;
 import lombok.Data;
 import lombok.NonNull;
 

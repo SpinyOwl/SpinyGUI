@@ -1,7 +1,8 @@
 package com.spinyowl.spinygui.core.system.event;
 
-import com.spinyowl.spinygui.core.system.input.KeyAction;
-import com.spinyowl.spinygui.core.system.input.KeyMod;
+import com.spinyowl.spinygui.core.input.KeyAction;
+import com.spinyowl.spinygui.core.input.KeyCode;
+import com.spinyowl.spinygui.core.input.KeyMod;
 import lombok.Data;
 import lombok.NonNull;
 
@@ -16,10 +17,14 @@ public class SystemKeyEvent implements SystemEvent {
   /**
    * The keyboard key that was pressed or released.
    */
-  public final int key;
+  public final KeyCode key;
 
   /**
    * The system-specific scancode of the key.
+   * <p>
+   * The scancode is unique for every key, regardless of whether it has a key token. Scancodes are
+   * platform-specific but consistent over time, so keys will have different scancodes depending on
+   * the platform but they are safe to save to disk.
    */
   public final int scancode;
 

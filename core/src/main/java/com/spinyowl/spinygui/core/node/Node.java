@@ -74,8 +74,8 @@ public abstract class Node {
   private boolean pressed;
 
   /**
-   * Node intersection. During initialization used {@link Intersections#getDefaultIntersection()}. Used to allow detect
-   * intersection of point on virtual window surface and node.
+   * Node intersection. During initialization used {@link Intersections#getDefaultIntersection()}.
+   * Used to allow detect intersection of point on virtual window surface and node.
    */
   @NonNull
   private Intersection intersection = Intersections.getDefaultIntersection();
@@ -114,12 +114,13 @@ public abstract class Node {
   public abstract void removeChild(Node node);
 
   /**
-   * The {@link #childNodes()} method returns a collection of a node's child nodes, as {@code List<Node>} object.
+   * The {@link #childNodes()} method returns a collection of a node's child nodes, as {@code
+   * List<Node>} object.
    * <p>
    * The nodes in the collection are sorted as they was added to the element.
    * <p>
-   * Tip: To return a collection of a node's element nodes (excluding text and comment nodes), use the {@link
-   * #children()} method.
+   * Tip: To return a collection of a node's element nodes (excluding text and comment nodes), use
+   * the {@link #children()} method.
    *
    * @return list of child nodes.
    */
@@ -133,8 +134,8 @@ public abstract class Node {
   public abstract boolean hasChildNodes();
 
   /**
-   * The {@link #children()} method returns a collection of an element's child elements, as an {@code List<Element>}
-   * object.
+   * The {@link #children()} method returns a collection of an element's child elements, as an
+   * {@code List<Element>} object.
    * <p>
    * The elements in the collection are sorted as they was added tp the element.
    *

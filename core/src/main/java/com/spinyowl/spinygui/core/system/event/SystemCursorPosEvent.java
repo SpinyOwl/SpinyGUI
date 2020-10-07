@@ -16,11 +16,11 @@ public class SystemCursorPosEvent implements SystemEvent {
   /**
    * The new cursor x-coordinate, relative to the left edge of the content area.
    */
-  public final double xpos;
+  public final double posX;
 
   /**
    * The new cursor y-coordinate, relative to the top edge of the content area.
    */
-  public final double ypos;
+  public final double posY;
 
 }

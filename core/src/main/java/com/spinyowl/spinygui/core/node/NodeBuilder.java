@@ -104,7 +104,8 @@ public final class NodeBuilder {
     return input(INPUT_RADIO, name, value);
   }
 
-  public static EmptyElement radioButton(String name, String value, Map<String, String> attributes) {
+  public static EmptyElement radioButton(String name, String value,
+      Map<String, String> attributes) {
     return addAttributes(radioButton(name, value), attributes);
   }
 

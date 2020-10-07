@@ -14,14 +14,16 @@ public class SystemWindowPosEvent implements SystemEvent {
   public final long window;
 
   /**
-   * The new x-coordinate, in screen coordinates, of the upper-left corner of the content area of the window.
+   * The new x-coordinate, in screen coordinates, of the upper-left corner of the content area of
+   * the window.
    */
-  public final int xpos;
+  public final int posX;
 
   /**
-   * The new y-coordinate, in screen coordinates, of the upper-left corner of the content area of the window.
+   * The new y-coordinate, in screen coordinates, of the upper-left corner of the content area of
+   * the window.
    */
-  public final int ypos;
+  public final int posY;
 
 
 }
