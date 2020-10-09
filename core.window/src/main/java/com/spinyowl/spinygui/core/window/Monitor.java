@@ -3,35 +3,35 @@ package com.spinyowl.spinygui.core.window;
 import com.spinyowl.spinygui.core.window.service.Services;
 import java.util.List;
 
-public abstract class Monitor {
+public interface Monitor {
 
-  public static Monitor getPrimaryMonitor() {
+  static Monitor getPrimaryMonitor() {
     return Services.getMonitorService().getPrimaryMonitor();
   }
 
-  public static List<Monitor> getMonitors() {
+  static List<Monitor> getMonitors() {
     return Services.getMonitorService().getMonitors();
   }
 
-  public abstract VideoMode getVideoMode();
+  VideoMode getVideoMode();
 
-  public abstract List<VideoMode> getAvailableVideoModes();
+  List<VideoMode> getAvailableVideoModes();
 
-  public abstract long getPointer();
+  long getPointer();
 
-  public abstract String getMonitorName();
+  String getMonitorName();
 
-  public abstract long getUserPointer();
+  long getUserPointer();
 
-  public abstract int getPosX();
+  int getPosX();
 
-  public abstract int getPosY();
+  int getPosY();
 
-  public abstract float getScaleX();
+  float getScaleX();
 
-  public abstract float getScaleY();
+  float getScaleY();
 
-  public abstract int getSizeX();
+  int getSizeX();
 
-  public abstract int getSizeY();
+  int getSizeY();
 }

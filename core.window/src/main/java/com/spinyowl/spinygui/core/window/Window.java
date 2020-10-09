@@ -27,11 +27,11 @@ public abstract class Window {
   private volatile boolean closed = false;
   private String title;
 
-  public Window() {
+  protected Window() {
     frame = new Frame();
   }
 
-  public Window(Frame frame) {
+  protected Window(Frame frame) {
     this.frame = Objects.requireNonNull(frame);
   }
 
