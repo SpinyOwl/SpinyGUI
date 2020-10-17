@@ -11,12 +11,12 @@ public class SystemWindowFocusEvent implements SystemEvent {
   /**
    * The window that was focused or defocused.
    */
-  public final long window;
+  private final long window;
 
   /**
    * {@code true} if the window was focused, or {@code false} if it was defocused
    */
-  public final boolean focused;
+  private final boolean focused;
 
 
 }

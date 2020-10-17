@@ -15,9 +15,9 @@ public class SystemMouseClickEvent implements SystemEvent {
   /**
    * The window that received the event.
    */
-  public final long window;
+  private final long window;
 
-  public final MouseButton button;
+  private final MouseButton button;
 
   /**
    * The key action. One of:
@@ -27,12 +27,12 @@ public class SystemMouseClickEvent implements SystemEvent {
    *   <li>{@link KeyAction#REPEAT REPEAT}</li>
    * </ul>>.
    */
-  public final KeyAction action;
+  private final KeyAction action;
 
   /**
    * Describes which modifier keys were held down.
    */
   @NonNull
-  public final KeyMod[] mods;
+  private final KeyMod[] mods;
 
 }

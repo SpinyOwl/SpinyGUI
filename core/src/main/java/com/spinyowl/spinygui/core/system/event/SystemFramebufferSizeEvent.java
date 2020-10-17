@@ -11,16 +11,16 @@ public class SystemFramebufferSizeEvent implements SystemEvent {
   /**
    * The window that received the event.
    */
-  public final long window;
+  private final long window;
 
   /**
    * The new width, in pixels, of the framebuffer.
    */
-  public final int width;
+  private final int width;
 
   /**
    * The new height, in pixels, of the framebuffer.
    */
-  public final int height;
+  private final int height;
 
 }

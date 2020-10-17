@@ -11,12 +11,12 @@ public class SystemCursorEnterEvent implements SystemEvent {
   /**
    * The window that received the event.
    */
-  public final long window;
+  private final long window;
 
   /**
    * <b>{@code true}</b> if the cursor entered the window's content area, or <b>{@code false}</b> if
    * it left it
    */
-  public final boolean entered;
+  private final boolean entered;
 
 }

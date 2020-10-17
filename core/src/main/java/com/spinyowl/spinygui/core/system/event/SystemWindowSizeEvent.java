@@ -11,16 +11,16 @@ public class SystemWindowSizeEvent implements SystemEvent {
   /**
    * The window that was resized.
    */
-  public final long window;
+  private final long window;
 
   /**
    * The new width, in screen coordinates, of the window.
    */
-  public final int width;
+  private final int width;
 
   /**
    * The new height, in screen coordinates, of the window.
    */
-  public final int height;
+  private final int height;
 
 }

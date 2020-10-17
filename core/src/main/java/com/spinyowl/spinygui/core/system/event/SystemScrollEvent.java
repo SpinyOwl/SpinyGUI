@@ -12,17 +12,17 @@ public class SystemScrollEvent implements SystemEvent {
   /**
    * The window that received the event.
    */
-  public final long window;
+  private final long window;
 
   /**
    * The scroll offset along the x-axis.
    */
-  public final double offsetX;
+  private final float offsetX;
 
   /**
    * The scroll offset along the y-axis.
    */
-  public final double offsetY;
+  private final float offsetY;
 
 
 }

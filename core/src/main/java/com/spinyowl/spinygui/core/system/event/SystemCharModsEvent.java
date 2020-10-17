@@ -1,7 +1,10 @@
 package com.spinyowl.spinygui.core.system.event;
 
 import com.spinyowl.spinygui.core.input.KeyMod;
+import java.util.List;
+import lombok.AccessLevel;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NonNull;
 
 /**
@@ -13,17 +16,21 @@ public class SystemCharModsEvent implements SystemEvent {
   /**
    * The window that received the event.
    */
-  public final long window;
+  private final long window;
 
   /**
    * The Unicode code point of the character.
    */
-  public final int codepoint;
+  private final int codepoint;
 
   /**
    * Describes which modifier keys were held down.
    */
   @NonNull
-  public final KeyMod[] mods;
+  @Getter(AccessLevel.NONE)
+  private final List<KeyMod> mods;
 
+  public List<KeyMod> mods() {
+    return List.copyOf(mods);
+  }
 }

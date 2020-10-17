@@ -12,6 +12,6 @@ public class SystemWindowCloseEvent implements SystemEvent {
   /**
    * The window that the user attempted to close.
    */
-  public final long window;
+  private final long window;
 
 }

@@ -11,19 +11,19 @@ public class SystemWindowPosEvent implements SystemEvent {
   /**
    * The window that was moved.
    */
-  public final long window;
+  private final long window;
 
   /**
    * The new x-coordinate, in screen coordinates, of the upper-left corner of the content area of
    * the window.
    */
-  public final int posX;
+  private final int posX;
 
   /**
    * The new y-coordinate, in screen coordinates, of the upper-left corner of the content area of
    * the window.
    */
-  public final int posY;
+  private final int posY;
 
 
 }

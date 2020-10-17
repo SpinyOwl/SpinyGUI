@@ -12,5 +12,5 @@ public class SystemWindowRefreshEvent implements SystemEvent {
   /**
    * The window whose content needs to be refreshed/
    */
-  public final long window;
+  private final long window;
 }

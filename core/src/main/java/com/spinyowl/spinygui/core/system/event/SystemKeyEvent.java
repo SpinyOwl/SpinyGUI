@@ -3,7 +3,10 @@ package com.spinyowl.spinygui.core.system.event;
 import com.spinyowl.spinygui.core.input.KeyAction;
 import com.spinyowl.spinygui.core.input.KeyCode;
 import com.spinyowl.spinygui.core.input.KeyMod;
+import java.util.List;
+import lombok.AccessLevel;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NonNull;
 
 /**
@@ -12,12 +15,12 @@ import lombok.NonNull;
 @Data
 public class SystemKeyEvent implements SystemEvent {
 
-  public final long window;
+  private final long window;
 
   /**
    * The keyboard key that was pressed or released.
    */
-  public final KeyCode key;
+  private final KeyCode key;
 
   /**
    * The system-specific scancode of the key.
@@ -26,7 +29,7 @@ public class SystemKeyEvent implements SystemEvent {
    * platform-specific but consistent over time, so keys will have different scancodes depending on
    * the platform but they are safe to save to disk.
    */
-  public final int scancode;
+  private final int scancode;
 
   /**
    * The key action. One of:
@@ -36,12 +39,16 @@ public class SystemKeyEvent implements SystemEvent {
    *   <li>{@link KeyAction#REPEAT REPEAT}</li>
    * </ul>>.
    */
-  public final KeyAction action;
+  private final KeyAction action;
 
   /**
    * Describes which modifier keys were held down.
    */
   @NonNull
-  public final KeyMod[] mods;
+  @Getter(AccessLevel.NONE)
+  private final List<KeyMod> mods;
 
+  public List<KeyMod> mods() {
+    return List.copyOf(mods);
+  }
 }
