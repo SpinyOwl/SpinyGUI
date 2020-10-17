@@ -3,7 +3,7 @@ package com.spinyowl.spinygui.demo;
 import static com.spinyowl.spinygui.core.node.NodeBuilder.button;
 import static com.spinyowl.spinygui.core.node.NodeBuilder.div;
 import static com.spinyowl.spinygui.core.node.NodeBuilder.label;
-import com.spinyowl.spinygui.core.api.Frame;
+import com.spinyowl.spinygui.core.api.DefaultFrame;
 import com.spinyowl.spinygui.core.converter.NodeConverter;
 import com.spinyowl.spinygui.core.converter.StyleSheetConverter;
 import com.spinyowl.spinygui.core.converter.css.RuleSet;
@@ -61,8 +61,8 @@ public class Test {
     assert (!selectors.get(0).test(div));
     assert (selectors.get(0).test(testLabel));
 
-    Frame frame = new Frame();
-    frame.getStyleSheets().add(stylesheet);
+    DefaultFrame frame = new DefaultFrame();
+    frame.styleSheets().add(stylesheet);
     frame.defaultLayer().addChild(div);
 
     StyleManager styleManager = new DefaultStyleManger();

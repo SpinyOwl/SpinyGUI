@@ -1,160 +1,67 @@
 package com.spinyowl.spinygui.core.api;
 
 import com.spinyowl.spinygui.core.converter.css.StyleSheet;
-import java.util.ArrayList;
+import com.spinyowl.spinygui.core.node.Element;
 import java.util.List;
-import java.util.Objects;
 import java.util.concurrent.CopyOnWriteArrayList;
-import lombok.AccessLevel;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
 import org.joml.Vector2f;
 
-/**
- * Represents window content (scene/page).
- * <p>
- * Contains layers with nodes.
- */
-@Getter
-@EqualsAndHashCode
-public class Frame {
-
-  /**
-   * All other layers added to this list.
-   */
-  @Getter(AccessLevel.NONE)
-  private final List<Layer> layers = new CopyOnWriteArrayList<>();
+public abstract class Frame {
 
   /**
    * List of stylesheets attached to frame.
    */
-  private final List<StyleSheet> styleSheets = new CopyOnWriteArrayList<>();
+  protected final List<StyleSheet> styleSheets = new CopyOnWriteArrayList<>();
 
   /**
-   * Used to hold tooltips.
-   */
-  private Layer tooltipLayer;
-
-  /**
-   * Used to hold components.
-   */
-  private Layer defaultLayer;
-
-  /**
-   * Used to create frame and initialize layers with specified size.
+   * Used to set size for frame and all underlying layers.<br/>
+   * <span style="color:red;">NOTE: All layers will be resized to specified size!</span>
    *
-   * @param width  width.
-   * @param height height.
+   * @param size size to set.
    */
-  public Frame(float width, float height) {
-    initialize(width, height);
-  }
+  public abstract void size(Vector2f size);
 
   /**
-   * Default frame constructor.
-   */
-  public Frame() {
-    initialize(10, 10);
-  }
-
-  /**
-   * Used to initialize frame and layers.
+   * Used to set size for frame and all underlying layers.<br/>
+   * <span style="color:red;">NOTE: All layers will be resized to specified size!</span>
    *
-   * @param width  initial layer containers width.
-   * @param height initial layer containers height.
+   * @param width  width to set.
+   * @param height height to set.
    */
-  private void initialize(float width, float height) {
-    tooltipLayer = new Layer();
-    tooltipLayer.frame(this);
-
-    defaultLayer = new Layer();
-    defaultLayer.frame(this);
-
-    size(width, height);
-  }
+  public abstract void size(float width, float height);
 
   /**
-   * Returns list of stylesheets attached to frame.
-   *
-   * @return list of stylesheets attached to frame.
-   */
-  public List<StyleSheet> getStyleSheets() {
-    return styleSheets;
-  }
-
-  /**
-   * Used to set layer containers size. NOTE: All LayerContainers will be resized to specified
-   * size!
-   *
-   * @param size frame size.
-   */
-  public void size(Vector2f size) {
-    size(size.x, size.y);
-  }
-
-  /**
-   * Used to set layer containers size. NOTE: All LayerContainers will be resized to specified
-   * size!
-   *
-   * @param width  width.
-   * @param height height.
-   */
-  public void size(float width, float height) {
-    allLayers().forEach(l -> l.size(width, height));
-  }
-
-  /**
-   * Used to add layer to frame. <span style="color:red;">NOTE: layers processed in reverse order -
+   * Used to add layer to frame. <br/>
+   * <span style="color:red;">NOTE: layers processed in reverse order -
    * from top to bottom.</span>
    *
    * @param layer layer to add.
    */
-  public void addLayer(Layer layer) {
-    Objects.requireNonNull(layer);
-    if (layer == tooltipLayer || layer == defaultLayer) {
-      return;
-    }
-    if (!containsLayer(layer)) {
-      layers.add(layer);
-      changeFrame(layer);
-    }
-  }
+  public abstract void addLayer(Layer layer);
 
   /**
-   * Used to change frame for specified layer.
+   * Used to add layer to frame. <br/>
+   * <span style="color:red;">NOTE: layers processed in reverse order -
+   * from top to bottom.</span>
    *
-   * @param layer layer which frame should be changed to this.
+   * @param index index to add layer at.
+   * @param layer layer to add.
    */
-  private void changeFrame(Layer layer) {
-    Frame frame = layer.frame();
-    if (frame == this) {
-      return;
-    }
-    if (frame != null) {
-      frame.removeLayer(layer);
-    }
-    layer.frame(this);
-  }
+  public abstract void addLayer(int index, Layer layer);
+
+  /**
+   * Used to remove layer from frame.
+   *
+   * @param index layer index to remove.
+   */
+  public abstract void removeLayer(int index);
 
   /**
    * Used to remove layer from frame.
    *
    * @param layer layer to remove.
    */
-  public void removeLayer(Layer layer) {
-    Objects.requireNonNull(layer);
-    if (layer == tooltipLayer || layer == defaultLayer) {
-      return;
-    }
-
-    Frame frame = layer.frame();
-    if (frame == this && containsLayer(layer)) {
-      boolean removed = layers.remove(layer);
-      if (removed) {
-        layer.parent(null);
-      }
-    }
-  }
+  public abstract void removeLayer(Layer layer);
 
   /**
    * Used to check if layer list contains provided layer.
@@ -162,35 +69,54 @@ public class Frame {
    * @param layer layer to check.
    * @return true if layer list contains provided layer.
    */
-  public boolean containsLayer(Layer layer) {
-    return (layer != null) && ((layer == tooltipLayer) || (layer == defaultLayer) || layers
-        .stream().anyMatch(l -> l == layer));
-  }
+  public abstract boolean containsLayer(Layer layer);
 
   /**
-   * Used to retrieve layers added by developer. <span style="color:red;">NOTE: layers processed in
-   * reverse order - from top to bottom.</span>
+   * Used to get layer by index.
    *
-   * @return layers added by developer.
+   * @param index layer index.
+   * @return layer at specified index.
+   * @throws IndexOutOfBoundsException – if the index is out of range (index < 0 || index >=
+   *                                   size())
    */
-  public List<Layer> lLayers() {
-    return new ArrayList<>(layers);
-  }
+  public abstract Layer layer(int index);
 
   /**
-   * Used to retrieve all layers where <ul> <li><b>List[0]</b> - default node layer.</li>
-   * <li><b>List[1]-List[length-2]</b> - layers added by developer.</li>
-   * <li><b>List[length-1]</b>
-   * - default tooltip layer.</li> </ul> <p> <span style="color:red;">NOTE: layers processed in
-   * reverse order - from top to bottom.</span>
+   * Returns unmodifiable list of all layers.
    *
-   * @return all layers.
+   * @return unmodifiable list of all layers.
    */
-  public List<Layer> allLayers() {
-    ArrayList<Layer> layerList = new ArrayList<>();
-    layerList.add(defaultLayer);
-    layerList.addAll(this.layers);
-    layerList.add(tooltipLayer);
-    return layerList;
+  public abstract List<Layer> layers();
+
+  /**
+   * Returns reversed unmodifiable list of all layers.
+   *
+   * @return reversed unmodifiable list of all layers.
+   */
+  public abstract List<Layer> reversedLayers();
+
+  /**
+   * Returns default layer that contains all elements.
+   *
+   * @return default layer that contains all elements.
+   */
+  public abstract Layer defaultLayer();
+
+  /**
+   * Returns layer that used to store tooltips.
+   *
+   * @return layer that used to store tooltips.
+   */
+  public abstract Layer tooltipLayer();
+
+  /**
+   * Returns editable list of stylesheets attached to frame.
+   *
+   * @return editable list of stylesheets attached to frame.
+   */
+  public List<StyleSheet> styleSheets() {
+    return styleSheets;
   }
+
+  public abstract Element getFocusedElement();
 }

@@ -6,6 +6,7 @@ import static com.spinyowl.spinygui.core.node.NodeBuilder.div;
 import static com.spinyowl.spinygui.core.node.NodeBuilder.input;
 import static com.spinyowl.spinygui.core.node.NodeBuilder.radioButton;
 import static com.spinyowl.spinygui.core.node.NodeBuilder.text;
+import com.spinyowl.spinygui.core.api.DefaultFrame;
 import com.spinyowl.spinygui.core.api.Frame;
 import com.spinyowl.spinygui.core.converter.NodeConverter;
 import com.spinyowl.spinygui.core.node.Node;
@@ -35,7 +36,7 @@ public class Main {
         radioButton("radio", "firstValue")
     );
 
-    Frame frame = new Frame();// we can obtain frame also using window.getFrame()
+    Frame frame = new DefaultFrame();// we can obtain frame also using window.getFrame()
     frame.defaultLayer().addChild(element);
     log.info(
         String.valueOf(NodeUtilities.getFrame(input("password", "myPass", "PASS_@!@#&")) == frame));

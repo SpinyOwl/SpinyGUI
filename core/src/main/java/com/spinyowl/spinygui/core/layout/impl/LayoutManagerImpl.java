@@ -36,7 +36,7 @@ public class LayoutManagerImpl implements LayoutManager {
 
   @Override
   public void layout(Frame frame) {
-    frame.allLayers().forEach(this::layout);
+    frame.layers().forEach(this::layout);
   }
 
   @Override

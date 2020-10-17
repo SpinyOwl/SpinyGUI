@@ -38,11 +38,11 @@ subprojects {
 
         dependencies {
 
-            compileOnly 'org.projectlombok:lombok:1.18.12'
-            annotationProcessor 'org.projectlombok:lombok:1.18.12'
+            compileOnly group: 'org.projectlombok', name: 'lombok', version: lombok_version
+            annotationProcessor group: 'org.projectlombok', name: 'lombok', version: lombok_version
 
-            testCompileOnly 'org.projectlombok:lombok:1.18.12'
-            testAnnotationProcessor 'org.projectlombok:lombok:1.18.12'
+            testCompileOnly group: 'org.projectlombok', name: 'lombok', version: lombok_version
+            testAnnotationProcessor group: 'org.projectlombok', name: 'lombok', version: lombok_version
 
             // api
             // implementation

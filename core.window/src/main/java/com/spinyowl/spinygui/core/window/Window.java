@@ -1,5 +1,6 @@
 package com.spinyowl.spinygui.core.window;
 
+import com.spinyowl.spinygui.core.api.DefaultFrame;
 import com.spinyowl.spinygui.core.api.Frame;
 import com.spinyowl.spinygui.core.event.WindowCloseEvent;
 import com.spinyowl.spinygui.core.event.listener.EventListener;
@@ -28,7 +29,7 @@ public abstract class Window {
   private String title;
 
   protected Window() {
-    frame = new Frame();
+    frame = new DefaultFrame();
   }
 
   protected Window(Frame frame) {
