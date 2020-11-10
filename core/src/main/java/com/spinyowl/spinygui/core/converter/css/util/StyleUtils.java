@@ -20,17 +20,19 @@ public final class StyleUtils {
     return parent.calculatedStyle();
   }
 
-  public static boolean testOneFourValue(String value, Predicate<String> singleValueTester) {
-    String[] values = value.split("\\s+");
-    if (values.length == 0 || values.length > 4) {
+  public static boolean testMultipleValues(String value, String splitRegex, int min, int max,
+      Predicate<String> oneValueTester) {
+    String[] values = value.split(splitRegex);
+    if (values.length < min || values.length > max) {
       return false;
     }
-    for (String length : values) {
-      if (!singleValueTester.test(length)) {
+    for (String v : values) {
+      if (!oneValueTester.test(v)) {
         return false;
       }
     }
 
     return true;
   }
+
 }

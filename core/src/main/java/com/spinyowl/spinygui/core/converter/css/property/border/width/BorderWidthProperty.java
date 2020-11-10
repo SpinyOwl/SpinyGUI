@@ -1,10 +1,10 @@
 package com.spinyowl.spinygui.core.converter.css.property.border.width;
 
 import static com.spinyowl.spinygui.core.converter.css.Properties.BORDER_WIDTH;
+import static com.spinyowl.spinygui.core.converter.css.util.StyleUtils.testMultipleValues;
 import com.spinyowl.spinygui.core.converter.css.Property;
 import com.spinyowl.spinygui.core.converter.css.extractor.ValueExtractor;
 import com.spinyowl.spinygui.core.converter.css.extractor.ValueExtractors;
-import com.spinyowl.spinygui.core.converter.css.util.StyleUtils;
 import com.spinyowl.spinygui.core.style.NodeStyle;
 import com.spinyowl.spinygui.core.style.types.border.Border;
 import com.spinyowl.spinygui.core.style.types.length.Length;
@@ -64,7 +64,7 @@ public class BorderWidthProperty extends Property<Border> {
   }
 
   private static boolean test(String value) {
-    return StyleUtils.testOneFourValue(value, BorderWidthProperty::testOne);
+    return testMultipleValues(value, "\\s+", 1, 4, BorderWidthProperty::testOne);
   }
 
 }

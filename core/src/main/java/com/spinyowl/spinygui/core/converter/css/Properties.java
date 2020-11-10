@@ -23,6 +23,8 @@ public final class Properties {
   public static final String BACKGROUND_COLOR = "background-color";
   public static final String BACKGROUND_IMAGE = "background-image";
   public static final String BACKGROUND_POSITION = "background-position";
+  public static final String BACKGROUND_POSITION_X = "background-position-x";
+  public static final String BACKGROUND_POSITION_Y = "background-position-y";
   public static final String BACKGROUND_SIZE = "background-size";
   public static final String BACKGROUND_REPEAT = "background-repeat";
   public static final String BACKGROUND_ORIGIN = "background-origin";

@@ -1,10 +1,10 @@
 package com.spinyowl.spinygui.core.converter.css.property.margin;
 
 import static com.spinyowl.spinygui.core.converter.css.Properties.MARGIN;
+import static com.spinyowl.spinygui.core.converter.css.util.StyleUtils.testMultipleValues;
 import com.spinyowl.spinygui.core.converter.css.Property;
 import com.spinyowl.spinygui.core.converter.css.extractor.ValueExtractor;
 import com.spinyowl.spinygui.core.converter.css.extractor.ValueExtractors;
-import com.spinyowl.spinygui.core.converter.css.util.StyleUtils;
 import com.spinyowl.spinygui.core.style.NodeStyle;
 import com.spinyowl.spinygui.core.style.types.Margin;
 import com.spinyowl.spinygui.core.style.types.length.Unit;
@@ -27,15 +27,10 @@ public class MarginProperty extends Property<Margin> {
     //@formatter:off
     String[] v = value.split("\\s+");
     switch (v.length) {
-      case 1:
-        return new Margin(x(v[0]));
-      case 2:
-        return new Margin(x(v[0]), x(v[1]));
-      case 3:
-        return new Margin(x(v[0]), x(v[1]), x(v[2]));
-      case 4:
-      default:
-        return new Margin(x(v[0]), x(v[1]), x(v[2]), x(v[3]));
+      case 1: return new Margin(x(v[0]));
+      case 2: return new Margin(x(v[0]), x(v[1]));
+      case 3: return new Margin(x(v[0]), x(v[1]), x(v[2]));
+      case 4: default: return new Margin(x(v[0]), x(v[1]), x(v[2]), x(v[3]));
     }
     //@formatter:on
   }
@@ -45,6 +40,6 @@ public class MarginProperty extends Property<Margin> {
   }
 
   public static boolean test(String value) {
-    return StyleUtils.testOneFourValue(value, unitValueExtractor::isValid);
+    return testMultipleValues(value, "\\s+", 1, 4, unitValueExtractor::isValid);
   }
 }

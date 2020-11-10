@@ -1,8 +1,8 @@
 package com.spinyowl.spinygui.core.converter.css.property.border.style;
 
 import static com.spinyowl.spinygui.core.converter.css.Properties.BORDER_STYLE;
+import static com.spinyowl.spinygui.core.converter.css.util.StyleUtils.testMultipleValues;
 import com.spinyowl.spinygui.core.converter.css.Property;
-import com.spinyowl.spinygui.core.converter.css.util.StyleUtils;
 import com.spinyowl.spinygui.core.style.NodeStyle;
 import com.spinyowl.spinygui.core.style.types.border.Border;
 import com.spinyowl.spinygui.core.style.types.border.BorderStyle;
@@ -37,7 +37,7 @@ public class BorderStyleProperty extends Property<Border> {
   }
 
   private static boolean test(String value) {
-    return StyleUtils.testOneFourValue(value, BorderStyle::contains);
+    return testMultipleValues(value, "\\s+", 1, 4, BorderStyle::contains);
   }
 
 }

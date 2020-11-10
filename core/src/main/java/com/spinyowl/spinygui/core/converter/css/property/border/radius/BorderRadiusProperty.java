@@ -1,10 +1,10 @@
 package com.spinyowl.spinygui.core.converter.css.property.border.radius;
 
 import static com.spinyowl.spinygui.core.converter.css.Properties.BORDER_RADIUS;
+import static com.spinyowl.spinygui.core.converter.css.util.StyleUtils.testMultipleValues;
 import com.spinyowl.spinygui.core.converter.css.Property;
 import com.spinyowl.spinygui.core.converter.css.extractor.ValueExtractor;
 import com.spinyowl.spinygui.core.converter.css.extractor.ValueExtractors;
-import com.spinyowl.spinygui.core.converter.css.util.StyleUtils;
 import com.spinyowl.spinygui.core.style.NodeStyle;
 import com.spinyowl.spinygui.core.style.types.BorderRadius;
 import com.spinyowl.spinygui.core.style.types.length.Length;
@@ -41,7 +41,6 @@ public class BorderRadiusProperty extends Property<BorderRadius> {
   }
 
   public static boolean test(String value) {
-    return StyleUtils
-        .testOneFourValue(value, extractor::isValid);
+    return testMultipleValues(value, "\\s+", 1, 4, extractor::isValid);
   }
 }
