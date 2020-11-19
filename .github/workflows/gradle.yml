@@ -2,20 +2,23 @@ name: build
 on:
   push:
     branches:
-      - master
       - develop
-      - restructurization
 
 jobs:
   build:
     name: Build SpinyGUI
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2.0.0
-      - name: Setup Java Action
-        uses: actions/setup-java@v1.0.0
+      # CHECKOUT
+      - uses: actions/checkout@v2
+
+      # PREPARE
+      - name: Setup Java JDK
+        uses: actions/setup-java@v1.4.3
         with:
-          version: 12
+          java-version: 11
+
+      # BUILD
       - name: Build with Gradle
         env:
           GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
