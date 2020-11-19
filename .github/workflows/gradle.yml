@@ -1,4 +1,4 @@
-name: Build PUSH to DEVELOP
+name: Build DEVELOP
 on:
   push:
     branches:
