@@ -5,7 +5,6 @@ import com.spinyowl.spinygui.core.input.KeyAction;
 import com.spinyowl.spinygui.core.input.KeyMod;
 import com.spinyowl.spinygui.core.input.KeyboardKey;
 import com.spinyowl.spinygui.core.node.Element;
-import java.util.Arrays;
 import java.util.Set;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;

@@ -21,15 +21,15 @@ public abstract class Event<T extends EventTarget> {
    */
   private final double timeStamp;
 
-  public Event(T target) {
+  protected Event(T target) {
     this(target, Time.getCurrentTime());
   }
 
-  public Event(T target, double timeStamp) {
+  protected Event(T target, double timeStamp) {
     this(null, target, timeStamp);
   }
 
-  public Event(EventTarget source, T target, double timeStamp) {
+  protected Event(EventTarget source, T target, double timeStamp) {
     this.source = source;
     this.target = target;
     this.timeStamp = timeStamp;

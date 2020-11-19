@@ -17,22 +17,22 @@ public abstract class SideStyle<T> {
   @NonNull
   private T left;
 
-  public SideStyle(@NonNull T allSides) {
+  protected SideStyle(@NonNull T allSides) {
     this.top = this.bottom = this.left = this.right = allSides;
   }
 
-  public SideStyle(@NonNull T sideTopBottom, @NonNull T sideRightLeft) {
+  protected SideStyle(@NonNull T sideTopBottom, @NonNull T sideRightLeft) {
     this.top = this.bottom = sideTopBottom;
     this.left = this.right = sideRightLeft;
   }
 
-  public SideStyle(@NonNull T sideTop, @NonNull T sideRightLeft, @NonNull T sideBottom) {
+  protected SideStyle(@NonNull T sideTop, @NonNull T sideRightLeft, @NonNull T sideBottom) {
     this.top = sideTop;
     this.left = this.right = sideRightLeft;
     this.bottom = sideBottom;
   }
 
-  public SideStyle(@NonNull T sideTop, @NonNull T sideRight, @NonNull T sideBottom,
+  protected SideStyle(@NonNull T sideTop, @NonNull T sideRight, @NonNull T sideBottom,
       @NonNull T sideLeft) {
     this.top = sideTop;
     this.left = sideLeft;

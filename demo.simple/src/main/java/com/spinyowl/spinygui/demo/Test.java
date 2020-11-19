@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -71,7 +72,8 @@ public class Test {
     assert (Objects.equals(Color.RED, testLabel.calculatedStyle().color()));
   }
 
-  public static void searchComponents() throws Exception {
+  @SneakyThrows
+  public static void searchComponents() {
     var css =
         "div .test label { background-color: red; }" +
             "div .test { background-color: green; border: 1px, 1px, 2px, 1px }" +

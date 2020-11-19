@@ -19,7 +19,7 @@ public class FontFamilyProperty extends Property<Set<String>> {
   }
 
   private static String trimAndUnwrap(String value) {
-    return value.trim().replaceAll("\"", "");
+    return value.trim().replace("\"", "");
   }
 
 }
