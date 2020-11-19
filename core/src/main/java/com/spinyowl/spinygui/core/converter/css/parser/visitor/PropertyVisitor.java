@@ -8,15 +8,15 @@ import com.spinyowl.spinygui.core.converter.css.parser.antlr.CSS3Parser;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class PropertyVisitor extends CSS3BaseVisitor<Declaration> {
+public class PropertyVisitor extends CSS3BaseVisitor<Declaration<?>> {
 
   @Override
-  public Declaration visitKnownDeclaration(CSS3Parser.KnownDeclarationContext ctx) {
+  public Declaration<?> visitKnownDeclaration(CSS3Parser.KnownDeclarationContext ctx) {
     String propertyName = ctx.property().getText();
-    Property property = Properties.getProperty(propertyName);
+    Property<?> property = Properties.getProperty(propertyName);
     String value = ctx.expr().getText();
     if (property != null && value != null) {
-      return new Declaration(property, value);
+      return new Declaration<>(property, value);
     }
     log.warn("Can't parse {} property with {} value", propertyName, value);
     return null;

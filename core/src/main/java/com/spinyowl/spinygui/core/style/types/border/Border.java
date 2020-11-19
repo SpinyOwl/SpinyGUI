@@ -30,6 +30,11 @@ public class Border extends SideStyle<BorderItem> {
     super(sideTop, sideRight, sideBottom, sideLeft);
   }
 
+  /**
+   * Copies width from provided border object.
+   *
+   * @param border border to copy width from.
+   */
   public void width(Border border) {
     top().width(border.top().width());
     bottom().width(border.bottom().width());
@@ -66,6 +71,11 @@ public class Border extends SideStyle<BorderItem> {
   }
 
 
+  /**
+   * Copies color from provided border object.
+   *
+   * @param border border to copy color from.
+   */
   public void color(Border border) {
     top().color(border.top().color());
     bottom().color(border.bottom().color());
@@ -101,7 +111,11 @@ public class Border extends SideStyle<BorderItem> {
     right().color(colorRight);
   }
 
-
+  /**
+   * Copies style from provided border object.
+   *
+   * @param border border to copy style from.
+   */
   public void style(Border border) {
     top().style(border.top().style());
     bottom().style(border.bottom().style());

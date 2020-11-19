@@ -1,7 +1,13 @@
 package com.spinyowl.spinygui.core.style.types.background;
 
 import com.spinyowl.spinygui.core.style.types.length.Unit;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.ToString;
 
+@Getter
+@EqualsAndHashCode
+@ToString
 public class BackgroundSize {
 
   private final Type type;
@@ -41,18 +47,6 @@ public class BackgroundSize {
 
   public static BackgroundSize cover() {
     return new BackgroundSize(Type.COVER);
-  }
-
-  public Type getType() {
-    return type;
-  }
-
-  public Unit getSizeX() {
-    return sizeX;
-  }
-
-  public Unit getSizeY() {
-    return sizeY;
   }
 
   public enum Type {

@@ -17,7 +17,7 @@ public class BackgroundPositionYProperty extends Property<Length> {
 
   public BackgroundPositionYProperty() {
     super(BACKGROUND_POSITION_Y, "0%", !INHERITED, ANIMATABLE,
-        (s, c) -> s.background().positionX(c), s -> s.background().positionX(),
+        (s, c) -> s.background().position().y(c), s -> s.background().position().y(),
         BackgroundPositionYProperty::extract, BackgroundPositionYProperty::test);
   }
 

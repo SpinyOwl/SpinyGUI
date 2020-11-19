@@ -5,8 +5,7 @@ import static com.spinyowl.spinygui.core.converter.css.util.StyleUtils.testMulti
 import com.spinyowl.spinygui.core.converter.css.Property;
 import com.spinyowl.spinygui.core.converter.css.extractor.ValueExtractor;
 import com.spinyowl.spinygui.core.converter.css.extractor.ValueExtractors;
-import com.spinyowl.spinygui.core.node.Element;
-import com.spinyowl.spinygui.core.style.types.Background.BackgroundSize;
+import com.spinyowl.spinygui.core.style.types.background.BackgroundSize;
 import com.spinyowl.spinygui.core.style.types.length.Unit;
 import java.util.List;
 
@@ -23,27 +22,21 @@ public class BackgroundSizeProperty extends Property<BackgroundSize> {
         BackgroundSizeProperty::extract, BackgroundSizeProperty::test);
   }
 
-  //@formatter:off
-  private static BackgroundSize extract(String value, Element element) {
-    BackgroundSize backgroundSize = new BackgroundSize();
+  private static BackgroundSize extract(String value) {
     switch (value) {
-      case COVER: backgroundSize.cover(true); break;
-      case CONTAIN: backgroundSize.contain(true); break;
-      default: {
+      case COVER:
+        return BackgroundSize.cover();
+      case CONTAIN:
+        return BackgroundSize.contain();
+      default:
         String[] v = value.split("\\s+");
-        if(v.length == 1) {
-          Unit extracted = extractor.extract(v[0]);
-          backgroundSize.width(extracted);
-          backgroundSize.height(extracted);
-        } else if (v.length == 2) {
-          backgroundSize.width(extractor.extract(v[0]));
-          backgroundSize.height(extractor.extract(v[1]));
+        if (v.length == 1) {
+          return BackgroundSize.size(extractor.extract(v[0]));
+        } else {
+          return BackgroundSize.size(extractor.extract(v[0]), extractor.extract(v[1]));
         }
-      }
     }
-    return backgroundSize;
   }
-  //@formatter:on
 
   private static boolean test(String value) {
     return values.contains(value) || testMultipleValues(value, "\\s+", 1, 2, extractor::isValid);

@@ -18,30 +18,21 @@ public abstract class AbstractSystemEventListener<E extends SystemEvent>
     preProcess(event, frame);
 
     for (Layer layer : frame.reversedLayers()) {
-
-      if (layer.eventReceivable()) {
-
-        if (layer.visible()) {
-          if (process(event, frame, layer)) {
-            return;
-          }
-        }
-
+      if (layer.eventReceivable() && layer.visible() && process(event, frame, layer)) {
+        return;
       }
-
       if (!layer.eventPassable()) {
         break;
       }
     }
 
     postProcess(event, frame);
-
   }
 
   protected void preProcess(E event, Frame frame) {
     // this method could be overridden to pre-process some event
   }
-  
+
   protected abstract boolean process(E event, Frame frame, Layer layer);
 
   protected void postProcess(E event, Frame frame) {

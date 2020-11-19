@@ -5,7 +5,6 @@ import com.spinyowl.spinygui.core.node.Element;
 import com.spinyowl.spinygui.core.style.NodeStyle;
 import java.util.Objects;
 import java.util.function.BiConsumer;
-import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import lombok.extern.slf4j.Slf4j;
@@ -15,7 +14,7 @@ import lombok.extern.slf4j.Slf4j;
  * Property#computeAndApply(Element, String)} and {@link Property#isValid(String)}.
  */
 @Slf4j
-public abstract class Property<T> {
+public class Property<T> {
 
   public static final boolean ANIMATABLE = true;
   public static final boolean INHERITED = true;
@@ -41,15 +40,15 @@ public abstract class Property<T> {
   /**
    * Defines if css property for element should be inherited from parent element.
    * <br>
-   * When no value for an inherited property has been specified on an element, the element gets the computed value of
-   * that property on its parent element. Only the root element of the document gets the initial value given in the
-   * property's summary.
+   * When no value for an inherited property has been specified on an element, the element gets the
+   * computed value of that property on its parent element. Only the root element of the document
+   * gets the initial value given in the property's summary.
    * <br>
-   * When no value for a non-inherited property has been specified on an element, the element gets the initial value of
-   * that property (as specified in the property's summary).
+   * When no value for a non-inherited property has been specified on an element, the element gets
+   * the initial value of that property (as specified in the property's summary).
    * <br>
-   * The <b>inherit</b> keyword allows authors to explicitly specify inheritance. It works on both inherited and
-   * non-inherited properties.
+   * The <b>inherit</b> keyword allows authors to explicitly specify inheritance. It works on both
+   * inherited and non-inherited properties.
    */
   protected final boolean inherited;
 
@@ -58,32 +57,49 @@ public abstract class Property<T> {
    */
   protected final boolean animatable;
 
-
+  /**
+   * Used to set calculated value to node style.
+   */
   protected final BiConsumer<NodeStyle, T> valueSetter;
+
+  /**
+   * Used to get calculated value from node style.
+   */
   protected final Function<NodeStyle, T> valueGetter;
-  protected final BiFunction<String, Element, T> valueExtractor;
+
+  /**
+   * Used to extract and compute value from string representation.
+   */
+  protected final Function<String, T> valueExtractor;
+
+  /**
+   * Used to validate string value before extraction.
+   */
   protected final Predicate<String> valueValidator;
 
   protected final T defaultComputedValue;
 
   /**
-   * Constructor that should be used by implementations to initialize css property. All implementations should provide
-   * at least no-argument constructor.
+   * Constructor that should be used by implementations to initialize css property. All
+   * implementations should provide at least no-argument constructor.
    *
    * @param name           name of css property.
-   * @param defaultValue   default value of css property. Could be null if there is no default value.
-   * @param inherited      inheritance property. Defines if css property for element should be inherited from parent
-   *                       element.
+   * @param defaultValue   default value of css property. Could be null if there is no default
+   *                       value.
+   * @param inherited      inheritance property. Defines if css property for element should be
+   *                       inherited from parent element.
    *                       <br>
-   *                       When no value for an inherited property has been specified on an element, the element gets
-   *                       the computed value of that property on its parent element. Only the root element of the
-   *                       document gets the initial value given in the property's summary.
+   *                       When no value for an inherited property has been specified on an element,
+   *                       the element gets the computed value of that property on its parent
+   *                       element. Only the root element of the document gets the initial value
+   *                       given in the property's summary.
    *                       <br>
-   *                       When no value for a non-inherited property has been specified on an element, the element gets
-   *                       the initial value of that property (as specified in the property's summary).
+   *                       When no value for a non-inherited property has been specified on an
+   *                       element, the element gets the initial value of that property (as
+   *                       specified in the property's summary).
    *                       <br>
-   *                       The <b>inherit</b> keyword allows authors to explicitly specify inheritance. It works on both
-   *                       inherited and non-inherited properties.
+   *                       The <b>inherit</b> keyword allows authors to explicitly specify
+   *                       inheritance. It works on both inherited and non-inherited properties.
    * @param animatable     defines if css property could be animated.
    * @param valueSetter    function that sets calculated css value to calculated style.
    * @param valueGetter    function that retrieves css value from calculated style.
@@ -98,47 +114,6 @@ public abstract class Property<T> {
       Function<String, T> valueExtractor,
       Predicate<String> valueValidator
   ) {
-    this(name, defaultValue, inherited, animatable, valueSetter, valueGetter, toBiFun(valueExtractor),
-        valueValidator);
-
-  }
-
-  private static <F> BiFunction<String, Element, F> toBiFun(Function<String, F> valueExtractor) {
-    return (s, e) -> valueExtractor.apply(s);
-  }
-
-  /**
-   * Constructor that should be used by implementations to initialize css property. All implementations should provide
-   * at least no-argument constructor.
-   *
-   * @param name           name of css property.
-   * @param defaultValue   default value of css property. Could be null if there is no default value.
-   * @param inherited      inheritance property. Defines if css property for element should be inherited from parent
-   *                       element.
-   *                       <br>
-   *                       When no value for an inherited property has been specified on an element, the element gets
-   *                       the computed value of that property on its parent element. Only the root element of the
-   *                       document gets the initial value given in the property's summary.
-   *                       <br>
-   *                       When no value for a non-inherited property has been specified on an element, the element gets
-   *                       the initial value of that property (as specified in the property's summary).
-   *                       <br>
-   *                       The <b>inherit</b> keyword allows authors to explicitly specify inheritance. It works on both
-   *                       inherited and non-inherited properties.
-   * @param animatable     defines if css property could be animated.
-   * @param valueSetter    function that sets calculated css value to calculated style.
-   * @param valueGetter    function that retrieves css value from calculated style.
-   * @param valueExtractor function that calculates value from it's string representation.
-   */
-  protected Property(String name,
-      String defaultValue,
-      boolean inherited,
-      boolean animatable,
-      BiConsumer<NodeStyle, T> valueSetter,
-      Function<NodeStyle, T> valueGetter,
-      BiFunction<String, Element, T> valueExtractor,
-      Predicate<String> valueValidator
-  ) {
     this.name = Objects.requireNonNull(name);
     this.defaultValue = Objects.requireNonNull(defaultValue);
     this.inherited = inherited;
@@ -148,7 +123,7 @@ public abstract class Property<T> {
     this.valueExtractor = Objects.requireNonNull(valueExtractor);
     this.valueValidator = Objects.requireNonNull(valueValidator);
 
-    this.defaultComputedValue = valueExtractor.apply(defaultValue, null);
+    this.defaultComputedValue = valueExtractor.apply(defaultValue);
   }
 
   /**
@@ -171,7 +146,7 @@ public abstract class Property<T> {
         computedValue = getInheritedValue(element);
       } else {
         try {
-          computedValue = valueExtractor.apply(value, element);
+          computedValue = valueExtractor.apply(value);
         } catch (Exception t) {
           log.error("Error during extracting value from '{}' with '{}' extractor. {}",
               value, valueExtractor, t.getMessage());
@@ -226,15 +201,15 @@ public abstract class Property<T> {
   /**
    * Defines if css property for element should be inherited from parent element.
    * <br>
-   * When no value for an inherited property has been specified on an element, the element gets the computed value of
-   * that property on its parent element. Only the root element of the document gets the initial value given in the
-   * property's summary.
+   * When no value for an inherited property has been specified on an element, the element gets the
+   * computed value of that property on its parent element. Only the root element of the document
+   * gets the initial value given in the property's summary.
    * <br>
-   * When no value for a non-inherited property has been specified on an element, the element gets the initial value of
-   * that property (as specified in the property's summary).
+   * When no value for a non-inherited property has been specified on an element, the element gets
+   * the initial value of that property (as specified in the property's summary).
    * <br>
-   * The <b>inherit</b> keyword allows authors to explicitly specify inheritance. It works on both inherited and
-   * non-inherited properties.
+   * The <b>inherit</b> keyword allows authors to explicitly specify inheritance. It works on both
+   * inherited and non-inherited properties.
    *
    * @return true if this property inherit value from parent by default.
    */

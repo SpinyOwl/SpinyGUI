@@ -108,7 +108,7 @@ public final class Properties {
 
   public static final String WHITE_SPACE = "white-space";
 
-  private static Map<String, Property> propertyMap = new ConcurrentHashMap<>();
+  private static Map<String, Property<?>> propertyMap = new ConcurrentHashMap<>();
 
   static {
 
@@ -119,13 +119,13 @@ public final class Properties {
     var propertiesToAdd = new HashMap<String, List<CssPropertyTuple>>();
 
     for (ClassInfo classInfo : scanResult.getSubclasses(Property.class.getName())) {
-      Class<Property> clazz = (Class<Property>) classInfo.loadClass();
+      Class<Property<?>> clazz = (Class<Property<?>>) classInfo.loadClass();
       Priority annotation = clazz.getAnnotation(Priority.class);
       int priority = 0;
       if (annotation != null) {
         priority = annotation.value();
       }
-      Property property = null;
+      Property<?> property = null;
       try {
         property = clazz.getConstructor().newInstance();
 
@@ -168,7 +168,7 @@ public final class Properties {
    * @param name     property to support.
    * @param property property supplier which will be used to create new {@link Property} instance.
    */
-  public static void addSupportedProperty(String name, Property property) {
+  public static void addSupportedProperty(String name, Property<?> property) {
     Objects.requireNonNull(name);
     Objects.requireNonNull(property);
 
@@ -202,7 +202,7 @@ public final class Properties {
   @AllArgsConstructor(staticName = "of")
   private static class CssPropertyTuple {
 
-    private final Property property;
+    private final Property<?> property;
     private final int priority;
   }
 }

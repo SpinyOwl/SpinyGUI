@@ -17,7 +17,7 @@ public class BackgroundPositionXProperty extends Property<Length> {
 
   public BackgroundPositionXProperty() {
     super(BACKGROUND_POSITION_X, "0%", !INHERITED, ANIMATABLE,
-        (s, c) -> s.background().positionX(c), s -> s.background().positionX(),
+        (s, c) -> s.background().position().x(c), s -> s.background().position().x(),
         BackgroundPositionXProperty::extract, BackgroundPositionXProperty::test);
   }
 
