@@ -17,5 +17,4 @@ public class BackgroundColorProperty extends Property<Color> {
         colorExtractor::extract,
         colorExtractor::isValid);
   }
-
 }

@@ -45,7 +45,7 @@ public class ColorValueExtractor implements ValueExtractor<Color> {
       return null;
     }
 
-    Color color = Color.getColorByName(value);
+    Color color = Color.get(value);
     if (color != null) {
       return color;
     }

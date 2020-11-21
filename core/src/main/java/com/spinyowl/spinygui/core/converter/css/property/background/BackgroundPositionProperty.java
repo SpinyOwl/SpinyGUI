@@ -10,8 +10,8 @@ import java.util.List;
 
 public class BackgroundPositionProperty extends Property<BackgroundPosition> {
 
-  public static final ValueExtractor<Length> extractor = ValueExtractors.of(Length.class);
-  public static final String SPLITTERATOR = "\\s+";
+  private static final ValueExtractor<Length> extractor = ValueExtractors.of(Length.class);
+  private static final String SPLITERATOR = "\\s+";
   private static final String LEFT = "left";
   private static final String CENTER = "center";
   private static final String RIGHT = "right";
@@ -27,7 +27,7 @@ public class BackgroundPositionProperty extends Property<BackgroundPosition> {
   }
 
   private static BackgroundPosition extract(String value) {
-    String[] values = value.split(SPLITTERATOR);
+    String[] values = value.split(SPLITERATOR);
     if (values.length == 1) {
       return new BackgroundPosition(extract(values[0], X_VALUES));
     } else {
@@ -44,7 +44,7 @@ public class BackgroundPositionProperty extends Property<BackgroundPosition> {
   }
 
   private static boolean test(String value) {
-    String[] values = value.split(SPLITTERATOR);
+    String[] values = value.split(SPLITERATOR);
     if (values.length <= 0 || values.length > 2) {
       return false;
     } else if (values.length == 1) {

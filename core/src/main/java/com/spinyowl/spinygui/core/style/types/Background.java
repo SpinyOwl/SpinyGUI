@@ -11,8 +11,7 @@ import lombok.NonNull;
 public class Background {
 
   @NonNull
-  private Color color;
-
+  private Color color = Color.TRANSPARENT;
   private String image;
   private BackgroundPosition position;
   private BackgroundSize size;

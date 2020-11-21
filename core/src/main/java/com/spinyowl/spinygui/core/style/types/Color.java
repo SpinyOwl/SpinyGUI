@@ -2,13 +2,13 @@ package com.spinyowl.spinygui.core.style.types;
 
 import java.util.HashMap;
 import java.util.Map;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.ToString;
+import lombok.AllArgsConstructor;
+import lombok.Value;
+import lombok.With;
 
-@Getter
-@EqualsAndHashCode
-@ToString
+@With
+@Value
+@AllArgsConstructor
 public class Color {
 
   //@formatter:off
@@ -52,17 +52,10 @@ public class Color {
     colors.put("transparent", TRANSPARENT);
   }
 
-  private final float r;
-  private final float g;
-  private final float b;
-  private final float a;
-
-  public Color(float r, float g, float b, float a) {
-    this.r = r;
-    this.g = g;
-    this.b = b;
-    this.a = a;
-  }
+  float r;
+  float g;
+  float b;
+  float a;
 
   public Color(int r, int g, int b, int a) {
     this(r, g, b, a / 255f);
@@ -80,7 +73,7 @@ public class Color {
     this(r / 255f, g / 255f, b / 255f, 1f);
   }
 
-  public static Color getColorByName(String name) {
+  public static Color get(String name) {
     return colors.get(name.toLowerCase());
   }
 
@@ -97,26 +90,13 @@ public class Color {
     int hex = Integer.parseInt(value, 16);
     switch (value.length()) {
       case 8:
-        return new Color((hex >> 24) & 0xFF,
-            (hex >> 16) & 0xFF,
-            (hex >> 8) & 0xFF,
-            hex & 0xFF);
+        return new Color((hex >> 24) & 0xFF, (hex >> 16) & 0xFF, (hex >> 8) & 0xFF, hex & 0xFF);
       case 6:
-        return new Color(
-            (hex >> 16) & 0xFF,
-            (hex >> 8) & 0xFF,
-            hex & 0xFF);
+        return new Color((hex >> 16) & 0xFF, (hex >> 8) & 0xFF, hex & 0xFF);
       case 4:
-        return new Color(
-            (hex >> 12) & 0xF,
-            (hex >> 8) & 0xF,
-            (hex >> 4) & 0xF,
-            hex & 0xF);
+        return new Color((hex >> 12) & 0xF, (hex >> 8) & 0xF, (hex >> 4) & 0xF, hex & 0xF);
       case 3:
-        return new Color(
-            (hex >> 8) & 0xF,
-            (hex >> 4) & 0xF,
-            hex & 0xF);
+        return new Color((hex >> 8) & 0xF, (hex >> 4) & 0xF, hex & 0xF);
       default:
         return null;
     }
