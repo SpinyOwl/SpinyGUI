@@ -144,9 +144,9 @@ public class Color {
 
     float p = 2 * l - q;
 
-    float r = Math.max(0, HueToRGB(p, q, h + (1.0f / 3.0f)));
-    float g = Math.max(0, HueToRGB(p, q, h));
-    float b = Math.max(0, HueToRGB(p, q, h - (1.0f / 3.0f)));
+    float r = Math.max(0, hueToRGB(p, q, h + (1.0f / 3.0f)));
+    float g = Math.max(0, hueToRGB(p, q, h));
+    float b = Math.max(0, hueToRGB(p, q, h - (1.0f / 3.0f)));
 
     r = Math.min(r, 1.0f);
     g = Math.min(g, 1.0f);
@@ -156,7 +156,7 @@ public class Color {
   }
 
   //@formatter:off
-  private static float HueToRGB(float p, float q, float h) {
+  private static float hueToRGB(float p, float q, float h) {
     if (h < 0) h += 1;
     if (h > 1) h -= 1;
     if (6 * h < 1) return p + ((q - p) * 6 * h);
