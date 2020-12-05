@@ -8,7 +8,7 @@ import com.spinyowl.spinygui.core.style.types.length.Length;
 
 public class PaddingBottomProperty extends Property<Length> {
 
-  public static final ValueExtractor<Length> extractor = ValueExtractors.of(Length.class);
+  private static final ValueExtractor<Length> extractor = ValueExtractors.of(Length.class);
 
   public PaddingBottomProperty() {
     super(PADDING_BOTTOM, "0", !INHERITED, ANIMATABLE,

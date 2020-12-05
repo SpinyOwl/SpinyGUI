@@ -9,7 +9,7 @@ import com.spinyowl.spinygui.core.style.types.Color;
 
 public class ColorProperty extends Property<Color> {
 
-  public static final ValueExtractor<Color> extractor = ValueExtractors.of(Color.class);
+  private static final ValueExtractor<Color> extractor = ValueExtractors.of(Color.class);
 
   public ColorProperty() {
     super(COLOR, "black", INHERITED, ANIMATABLE,

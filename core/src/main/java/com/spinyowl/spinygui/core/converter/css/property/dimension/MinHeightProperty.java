@@ -9,7 +9,7 @@ import com.spinyowl.spinygui.core.style.types.length.Length;
 
 public class MinHeightProperty extends Property<Length> {
 
-  public static final ValueExtractor<Length> extractor = ValueExtractors.of(Length.class);
+  private static final ValueExtractor<Length> extractor = ValueExtractors.of(Length.class);
 
   public MinHeightProperty() {
     super(MIN_HEIGHT, "0px", !INHERITED, ANIMATABLE,

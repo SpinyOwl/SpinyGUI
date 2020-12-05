@@ -7,7 +7,7 @@ import com.spinyowl.spinygui.core.converter.css.extractor.ValueExtractors;
 
 public class FlexShrinkProperty extends Property<Integer> {
 
-  public static final ValueExtractor<Integer> extractor = ValueExtractors.of(Integer.class);
+  private static final ValueExtractor<Integer> extractor = ValueExtractors.of(Integer.class);
 
   public FlexShrinkProperty() {
     super(FLEX_SHRINK, "0", !INHERITED, !ANIMATABLE,

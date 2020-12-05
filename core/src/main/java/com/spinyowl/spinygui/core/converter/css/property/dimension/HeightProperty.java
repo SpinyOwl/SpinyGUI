@@ -9,7 +9,7 @@ import com.spinyowl.spinygui.core.style.types.length.Unit;
 
 public class HeightProperty extends Property<Unit> {
 
-  public static final ValueExtractor<Unit> extractor = ValueExtractors.of(Unit.class);
+  private static final ValueExtractor<Unit> extractor = ValueExtractors.of(Unit.class);
 
   public HeightProperty() {
     super(HEIGHT, "auto", !INHERITED, ANIMATABLE,

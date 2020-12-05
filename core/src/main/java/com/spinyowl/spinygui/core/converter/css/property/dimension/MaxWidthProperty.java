@@ -9,7 +9,7 @@ import com.spinyowl.spinygui.core.style.types.length.Length;
 
 public class MaxWidthProperty extends Property<Length> {
 
-  public static final ValueExtractor<Length> extractor = ValueExtractors.of(Length.class);
+  private static final ValueExtractor<Length> extractor = ValueExtractors.of(Length.class);
 
   public MaxWidthProperty() {
     super(MAX_WIDTH, "none", !INHERITED, ANIMATABLE,

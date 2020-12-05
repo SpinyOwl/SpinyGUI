@@ -9,7 +9,7 @@ import com.spinyowl.spinygui.core.style.types.Color;
 
 public class BorderLeftColorProperty extends Property<Color> {
 
-  public static final ValueExtractor<Color> extractor = ValueExtractors.of(Color.class);
+  private static final ValueExtractor<Color> extractor = ValueExtractors.of(Color.class);
 
   public BorderLeftColorProperty() {
     super(BORDER_LEFT_COLOR, DEFAULT_VALUE, !INHERITED, ANIMATABLE,

@@ -9,7 +9,7 @@ import com.spinyowl.spinygui.core.style.types.length.Unit;
 
 public class RightProperty extends Property<Unit> {
 
-  public static final ValueExtractor<Unit> extractor = ValueExtractors.of(Unit.class);
+  private static final ValueExtractor<Unit> extractor = ValueExtractors.of(Unit.class);
 
   public RightProperty() {
     super(RIGHT, "auto", !INHERITED, ANIMATABLE,

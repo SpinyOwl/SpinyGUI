@@ -11,7 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 
 /**
  * Root class that describes property. Should be used to create new classes which implement {@link
- * Property#computeAndApply(Element, String)} and {@link Property#isValid(String)}.
+ * Property#compute(Element, String)}}.
  */
 @Slf4j
 public class Property<T> {
@@ -132,10 +132,21 @@ public class Property<T> {
    * @param element element to update calculated style.
    * @param value   string representation of css property value.
    */
-  public void computeAndApply(Element element, String value) {
+  public final void computeAndApply(Element element, String value) {
+    valueSetter.accept(element.calculatedStyle(), compute(element, value));
+  }
+
+  /**
+   * Used to compute css style property value for specified element.
+   *
+   * @param element element to update calculated style.
+   * @param value   string representation of css property value.
+   * @return computed value.
+   */
+  protected T compute(Element element, String value) {
     Objects.requireNonNull(element);
 
-    T computedValue;
+    T computedValue = null;
     if (value == null) {
       computedValue = computeAbsent(element);
     } else {
@@ -144,7 +155,7 @@ public class Property<T> {
         computedValue = getDefaultComputedValue();
       } else if (INHERIT.equalsIgnoreCase(value)) {
         computedValue = getInheritedValue(element);
-      } else {
+      } else if (valueValidator.test(value)) {
         try {
           computedValue = valueExtractor.apply(value);
         } catch (Exception t) {
@@ -158,7 +169,7 @@ public class Property<T> {
         computedValue = computeAbsent(element);
       }
     }
-    valueSetter.accept(element.calculatedStyle(), computedValue);
+    return computedValue;
   }
 
   protected T computeAbsent(Element element) {
@@ -168,16 +179,6 @@ public class Property<T> {
   protected T getInheritedValue(Element element) {
     NodeStyle parentStyle = StyleUtils.getParentCalculatedStyle(element);
     return parentStyle != null ? valueGetter.apply(parentStyle) : getDefaultComputedValue();
-  }
-
-  /**
-   * Used to check if value is valid or not.
-   *
-   * @return true if value is valid. By default returns false.
-   */
-  public boolean isValid(String value) {
-    return INHERIT.equalsIgnoreCase(value) || INITIAL.equalsIgnoreCase(value) ||
-        valueValidator.test(value);
   }
 
   /**

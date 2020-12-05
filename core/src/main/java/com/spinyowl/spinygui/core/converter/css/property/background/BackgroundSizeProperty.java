@@ -11,7 +11,7 @@ import java.util.List;
 
 public class BackgroundSizeProperty extends Property<BackgroundSize> {
 
-  public static final ValueExtractor<Unit> extractor = ValueExtractors.of(Unit.class);
+  private static final ValueExtractor<Unit> extractor = ValueExtractors.of(Unit.class);
   private static final String COVER = "cover";
   private static final String CONTAIN = "contain";
   private static final List<String> values = List.of(COVER, CONTAIN);

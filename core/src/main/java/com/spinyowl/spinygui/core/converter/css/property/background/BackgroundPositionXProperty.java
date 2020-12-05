@@ -9,7 +9,7 @@ import java.util.List;
 
 public class BackgroundPositionXProperty extends Property<Length> {
 
-  public static final ValueExtractor<Length> extractor = ValueExtractors.of(Length.class);
+  private static final ValueExtractor<Length> extractor = ValueExtractors.of(Length.class);
   private static final String LEFT = "left";
   private static final String CENTER = "center";
   private static final String RIGHT = "right";

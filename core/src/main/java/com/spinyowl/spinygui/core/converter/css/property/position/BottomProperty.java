@@ -9,7 +9,7 @@ import com.spinyowl.spinygui.core.style.types.length.Unit;
 
 public class BottomProperty extends Property<Unit> {
 
-  public static final ValueExtractor<Unit> extractor = ValueExtractors.of(Unit.class);
+  private static final ValueExtractor<Unit> extractor = ValueExtractors.of(Unit.class);
 
   public BottomProperty() {
     super(BOTTOM, "auto", !INHERITED, ANIMATABLE,

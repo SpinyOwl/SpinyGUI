@@ -8,7 +8,7 @@ import com.spinyowl.spinygui.core.style.types.length.Unit;
 
 public class MarginBottomProperty extends Property<Unit> {
 
-  public static final ValueExtractor<Unit> extractor = ValueExtractors.of(Unit.class);
+  private static final ValueExtractor<Unit> extractor = ValueExtractors.of(Unit.class);
 
   public MarginBottomProperty() {
     super(MARGIN_BOTTOM, "0", !INHERITED, ANIMATABLE,

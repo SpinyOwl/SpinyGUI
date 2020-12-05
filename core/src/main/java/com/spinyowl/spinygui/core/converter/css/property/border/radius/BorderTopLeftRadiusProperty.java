@@ -8,7 +8,7 @@ import com.spinyowl.spinygui.core.style.types.length.Length;
 
 public class BorderTopLeftRadiusProperty extends Property<Length> {
 
-  public static final ValueExtractor<Length> extractor = ValueExtractors.of(Length.class);
+  private static final ValueExtractor<Length> extractor = ValueExtractors.of(Length.class);
 
   public BorderTopLeftRadiusProperty() {
     super(BORDER_TOP_LEFT_RADIUS, "0", !INHERITED, ANIMATABLE,
