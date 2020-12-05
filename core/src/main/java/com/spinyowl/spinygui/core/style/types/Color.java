@@ -29,6 +29,8 @@ public class Color {
   public static final Color TEAL = new Color(0, 128, 128);
   public static final Color AQUA = new Color(0, 255, 255);
   public static final Color TRANSPARENT = new Color(0f, 0f, 0f, 0f);
+
+  private static final String COMMA = ",";
   private static Map<String, Color> colors = new HashMap<>();
   //@formatter:on
 
@@ -83,7 +85,7 @@ public class Color {
    * @param value hex value
    * @return color
    */
-  public static Color parseHexString(String value) {
+  public static Color fromHex(String value) {
     if (value.startsWith("#")) {
       value = value.substring(1);
     }
@@ -103,31 +105,66 @@ public class Color {
   }
 
   /**
-   * Color expression is color represented by three or four integer values divided by comma 'R, G,
-   * B' or 'R, G, B, A'
+   * Convert HSL values to a RGB Color.
    *
-   * @param colorExpression color expression
-   * @return color if able to parse or null.
+   * @param hue        Hue is specified as degrees in the range 0 - 360.
+   * @param saturation Saturation is specified as a percentage in the range 1 - 100.
+   * @param lightness  lightness is specified as a percentage in the range 1 - 100.
+   * @param alpha      the alpha value between 0 - 1
+   * @returns the Color object.
    */
-  public static Color parseRGBAColorString(String colorExpression) {
-    var values = colorExpression.split(",");
-    int length = values.length;
-    if (length == 3 || length == 4) {
-      int r = Integer.parseInt(values[0].trim());
-      int g = Integer.parseInt(values[1].trim());
-      int b = Integer.parseInt(values[2].trim());
-      if (length == 3) {
-        return new Color(r, g, b);
-      } else {
-        int a = Integer.parseInt(values[3].trim());
-        return new Color(r, g, b, a);
-      }
-
+  public static Color hslToColor(int hue, int saturation, int lightness, float alpha) {
+    if (saturation < 0 || saturation > 100) {
+      String message = "Color parameter outside of expected range - Saturation";
+      throw new IllegalArgumentException(message);
     }
-    throw new IllegalArgumentException(
-        "Color expression should look like 'R, G, B' or 'R, G, B, A' but was '"
-            + colorExpression + "'");
+
+    if (lightness < 0 || lightness > 100) {
+      String message = "Color parameter outside of expected range - Lightness";
+      throw new IllegalArgumentException(message);
+    }
+
+    if (alpha < 0.0f || alpha > 1.0f) {
+      String message = "Color parameter outside of expected range - Alpha";
+      throw new IllegalArgumentException(message);
+    }
+
+    // Formula needs all values between 0 - 1.
+    float h = (hue % 360.0f) / 360f;
+    float s = saturation / 100f;
+    float l = lightness / 100f;
+
+    float q = 0;
+
+    if (l < 0.5) {
+      q = l * (1 + s);
+    } else {
+      q = (l + s) - (s * l);
+    }
+
+    float p = 2 * l - q;
+
+    float r = Math.max(0, HueToRGB(p, q, h + (1.0f / 3.0f)));
+    float g = Math.max(0, HueToRGB(p, q, h));
+    float b = Math.max(0, HueToRGB(p, q, h - (1.0f / 3.0f)));
+
+    r = Math.min(r, 1.0f);
+    g = Math.min(g, 1.0f);
+    b = Math.min(b, 1.0f);
+
+    return new Color(r, g, b, alpha);
   }
+
+  //@formatter:off
+  private static float HueToRGB(float p, float q, float h) {
+    if (h < 0) h += 1;
+    if (h > 1) h -= 1;
+    if (6 * h < 1) return p + ((q - p) * 6 * h);
+    if (2 * h < 1) return q;
+    if (3 * h < 2) return p + ((q - p) * 6 * ((2.0f / 3.0f) - h));
+    return p;
+  }
+  //@formatter:on
 
   public static boolean exists(String colorName) {
     return colors.containsKey(colorName.toLowerCase());
