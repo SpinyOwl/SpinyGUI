@@ -18,6 +18,7 @@ open module com.spinyowl.spinygui.core {
   requires transitive ch.qos.logback.classic;
 
   requires org.apache.commons.collections4;
+  requires org.apache.commons.lang3;
 
   exports com.spinyowl.spinygui.core.animation;
   exports com.spinyowl.spinygui.core.api;

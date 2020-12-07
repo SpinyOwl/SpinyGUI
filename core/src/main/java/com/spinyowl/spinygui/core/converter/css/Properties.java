@@ -111,6 +111,7 @@ public final class Properties {
 
   public static final String Z_INDEX = "z-index";
   public static final String TAB_SIZE = "tab-size";
+  public static final String OPACITY = "opacity";
 
   private static Map<String, Property<?>> propertyMap = new ConcurrentHashMap<>();
 

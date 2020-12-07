@@ -92,5 +92,6 @@ public class NodeStyle {
 
   private int tabSize = 4;
   private int zIndex = 0;
+  private float opacity = 1;
 
 }
