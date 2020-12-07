@@ -1,7 +1,7 @@
 package com.spinyowl.spinygui.core.converter.css.property.border;
 
 import static com.spinyowl.spinygui.core.converter.css.Properties.BORDER_BOTTOM;
-import com.spinyowl.spinygui.core.converter.css.Property;
+import com.spinyowl.spinygui.core.converter.css.model.Property;
 import com.spinyowl.spinygui.core.style.types.border.BorderItem;
 
 public class BorderBottomProperty extends Property<BorderItem> {

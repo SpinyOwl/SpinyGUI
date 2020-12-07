@@ -1,8 +1,8 @@
 package com.spinyowl.spinygui.core.converter.css.parser.visitor;
 
-import com.spinyowl.spinygui.core.converter.css.Declaration;
+import com.spinyowl.spinygui.core.converter.css.model.Declaration;
 import com.spinyowl.spinygui.core.converter.css.Properties;
-import com.spinyowl.spinygui.core.converter.css.Property;
+import com.spinyowl.spinygui.core.converter.css.model.Property;
 import com.spinyowl.spinygui.core.converter.css.parser.antlr.CSS3BaseVisitor;
 import com.spinyowl.spinygui.core.converter.css.parser.antlr.CSS3Parser;
 import lombok.extern.slf4j.Slf4j;

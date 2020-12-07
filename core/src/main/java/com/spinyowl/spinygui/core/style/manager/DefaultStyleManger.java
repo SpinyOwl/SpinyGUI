@@ -2,9 +2,9 @@ package com.spinyowl.spinygui.core.style.manager;
 
 import com.spinyowl.spinygui.core.api.DefaultFrame;
 import com.spinyowl.spinygui.core.api.Layer;
-import com.spinyowl.spinygui.core.converter.css.Declaration;
-import com.spinyowl.spinygui.core.converter.css.RuleSet;
-import com.spinyowl.spinygui.core.converter.css.StyleSheet;
+import com.spinyowl.spinygui.core.converter.css.model.Declaration;
+import com.spinyowl.spinygui.core.converter.css.model.RuleSet;
+import com.spinyowl.spinygui.core.converter.css.model.StyleSheet;
 import com.spinyowl.spinygui.core.node.Element;
 
 /**

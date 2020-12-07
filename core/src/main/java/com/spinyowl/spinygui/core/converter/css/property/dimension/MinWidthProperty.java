@@ -1,7 +1,7 @@
 package com.spinyowl.spinygui.core.converter.css.property.dimension;
 
 import static com.spinyowl.spinygui.core.converter.css.Properties.MIN_WIDTH;
-import com.spinyowl.spinygui.core.converter.css.Property;
+import com.spinyowl.spinygui.core.converter.css.model.Property;
 import com.spinyowl.spinygui.core.converter.css.extractor.ValueExtractor;
 import com.spinyowl.spinygui.core.converter.css.extractor.ValueExtractors;
 import com.spinyowl.spinygui.core.style.NodeStyle;

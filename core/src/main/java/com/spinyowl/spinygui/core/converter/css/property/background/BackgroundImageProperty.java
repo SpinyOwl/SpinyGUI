@@ -1,15 +1,17 @@
 package com.spinyowl.spinygui.core.converter.css.property.background;
 
 import com.spinyowl.spinygui.core.converter.css.Properties;
-import com.spinyowl.spinygui.core.converter.css.Property;
+import com.spinyowl.spinygui.core.converter.css.model.Property;
 
 /**
  * Currently supports only url/none argument.
  */
 public class BackgroundImageProperty extends Property<String> {
 
+  public static final String NONE = "none";
+
   public BackgroundImageProperty() {
-    super(Properties.BACKGROUND_IMAGE, "none", !INHERITED, !ANIMATABLE,
+    super(Properties.BACKGROUND_IMAGE, NONE, !INHERITED, !ANIMATABLE,
         (s, i) -> s.background().image(i), s -> s.background().image(),
         BackgroundImageProperty::extractUrl, BackgroundImageProperty::test);
   }
@@ -17,6 +19,9 @@ public class BackgroundImageProperty extends Property<String> {
   private static boolean test(String value) {
     if (value == null || value.isEmpty()) {
       return false;
+    }
+    if (NONE.equals(value)) {
+      return true;
     }
     String trim = value.trim();
     if (!trim.startsWith("url(") || !trim.endsWith(")")) {
@@ -33,6 +38,9 @@ public class BackgroundImageProperty extends Property<String> {
   }
 
   private static String extractUrl(String value) {
+    if (NONE.equals(value)) {
+      return null;
+    }
     String trimmed = value.trim();
     trimmed = trimmed.substring(4, trimmed.length() - 1); // removed 'url(' and ')'
     return trimmed.replace("\"", "").replace("'", "");

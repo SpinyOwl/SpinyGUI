@@ -2,7 +2,7 @@ package com.spinyowl.spinygui.core.converter.css.property.border.style;
 
 import static com.spinyowl.spinygui.core.converter.css.Properties.BORDER_STYLE;
 import static com.spinyowl.spinygui.core.converter.css.util.StyleUtils.testMultipleValues;
-import com.spinyowl.spinygui.core.converter.css.Property;
+import com.spinyowl.spinygui.core.converter.css.model.Property;
 import com.spinyowl.spinygui.core.style.NodeStyle;
 import com.spinyowl.spinygui.core.style.types.border.Border;
 import com.spinyowl.spinygui.core.style.types.border.BorderStyle;

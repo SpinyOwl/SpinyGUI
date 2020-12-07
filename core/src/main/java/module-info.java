@@ -27,10 +27,23 @@ open module com.spinyowl.spinygui.core {
 
   exports com.spinyowl.spinygui.core.converter;
   exports com.spinyowl.spinygui.core.converter.annotation;
+
+  exports com.spinyowl.spinygui.core.converter.css;
+  exports com.spinyowl.spinygui.core.converter.css.extractor;
+  exports com.spinyowl.spinygui.core.converter.css.extractor.impl;
+  exports com.spinyowl.spinygui.core.converter.css.model;
   exports com.spinyowl.spinygui.core.converter.css.parser;
   exports com.spinyowl.spinygui.core.converter.css.parser.annotations;
   exports com.spinyowl.spinygui.core.converter.css.parser.antlr;
   exports com.spinyowl.spinygui.core.converter.css.parser.visitor;
+  exports com.spinyowl.spinygui.core.converter.css.property;
+  exports com.spinyowl.spinygui.core.converter.css.property.border;
+  exports com.spinyowl.spinygui.core.converter.css.property.border.radius;
+  exports com.spinyowl.spinygui.core.converter.css.property.dimension;
+  exports com.spinyowl.spinygui.core.converter.css.property.margin;
+  exports com.spinyowl.spinygui.core.converter.css.property.padding;
+  exports com.spinyowl.spinygui.core.converter.css.property.position;
+  exports com.spinyowl.spinygui.core.converter.css.selector;
 
   exports com.spinyowl.spinygui.core.event;
   exports com.spinyowl.spinygui.core.event.listener;
@@ -42,18 +55,6 @@ open module com.spinyowl.spinygui.core {
   exports com.spinyowl.spinygui.core.layout;
 
   exports com.spinyowl.spinygui.core.style;
-
-  exports com.spinyowl.spinygui.core.converter.css;
-  exports com.spinyowl.spinygui.core.converter.css.extractor;
-  exports com.spinyowl.spinygui.core.converter.css.extractor.impl;
-  exports com.spinyowl.spinygui.core.converter.css.property;
-  exports com.spinyowl.spinygui.core.converter.css.property.border;
-  exports com.spinyowl.spinygui.core.converter.css.property.border.radius;
-  exports com.spinyowl.spinygui.core.converter.css.property.dimension;
-  exports com.spinyowl.spinygui.core.converter.css.property.margin;
-  exports com.spinyowl.spinygui.core.converter.css.property.padding;
-  exports com.spinyowl.spinygui.core.converter.css.property.position;
-  exports com.spinyowl.spinygui.core.converter.css.selector;
 
   exports com.spinyowl.spinygui.core.style.manager;
 

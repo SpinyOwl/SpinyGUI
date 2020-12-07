@@ -1,7 +1,7 @@
-package com.spinyowl.spinygui.core.converter.css;
+package com.spinyowl.spinygui.core.converter.css.model;
 
-import static com.spinyowl.spinygui.core.converter.css.Property.INHERIT;
-import static com.spinyowl.spinygui.core.converter.css.Property.INITIAL;
+import static com.spinyowl.spinygui.core.converter.css.model.Property.INHERIT;
+import static com.spinyowl.spinygui.core.converter.css.model.Property.INITIAL;
 import java.util.Objects;
 
 public class Declaration<T> {

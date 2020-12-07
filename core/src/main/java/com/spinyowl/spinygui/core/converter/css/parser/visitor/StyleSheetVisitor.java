@@ -1,6 +1,6 @@
 package com.spinyowl.spinygui.core.converter.css.parser.visitor;
 
-import com.spinyowl.spinygui.core.converter.css.StyleSheet;
+import com.spinyowl.spinygui.core.converter.css.model.StyleSheet;
 import com.spinyowl.spinygui.core.converter.css.parser.antlr.CSS3BaseVisitor;
 import com.spinyowl.spinygui.core.converter.css.parser.antlr.CSS3Parser;
 import java.util.Objects;

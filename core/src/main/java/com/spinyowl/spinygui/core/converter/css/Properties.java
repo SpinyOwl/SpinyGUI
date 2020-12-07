@@ -1,6 +1,7 @@
 package com.spinyowl.spinygui.core.converter.css;
 
 import com.spinyowl.spinygui.core.converter.annotation.Priority;
+import com.spinyowl.spinygui.core.converter.css.model.Property;
 import io.github.classgraph.ClassGraph;
 import io.github.classgraph.ClassInfo;
 import java.util.ArrayList;
@@ -107,6 +108,9 @@ public final class Properties {
   public static final String LEFT = "left";
 
   public static final String WHITE_SPACE = "white-space";
+
+  public static final String Z_INDEX = "z-index";
+  public static final String TAB_SIZE = "tab-size";
 
   private static Map<String, Property<?>> propertyMap = new ConcurrentHashMap<>();
 

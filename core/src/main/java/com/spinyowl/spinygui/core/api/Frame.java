@@ -1,6 +1,6 @@
 package com.spinyowl.spinygui.core.api;
 
-import com.spinyowl.spinygui.core.converter.css.StyleSheet;
+import com.spinyowl.spinygui.core.converter.css.model.StyleSheet;
 import com.spinyowl.spinygui.core.node.Element;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;

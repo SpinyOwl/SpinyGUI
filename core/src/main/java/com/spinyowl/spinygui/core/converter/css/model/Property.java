@@ -1,4 +1,4 @@
-package com.spinyowl.spinygui.core.converter.css;
+package com.spinyowl.spinygui.core.converter.css.model;
 
 import com.spinyowl.spinygui.core.converter.css.util.StyleUtils;
 import com.spinyowl.spinygui.core.node.Element;

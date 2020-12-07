@@ -2,7 +2,7 @@ package com.spinyowl.spinygui.core.converter.css.property.border.style;
 
 import static com.spinyowl.spinygui.core.converter.css.Properties.BORDER_TOP_STYLE;
 import static com.spinyowl.spinygui.core.converter.css.property.border.color.BorderColorProperty.DEFAULT_VALUE;
-import com.spinyowl.spinygui.core.converter.css.Property;
+import com.spinyowl.spinygui.core.converter.css.model.Property;
 import com.spinyowl.spinygui.core.style.types.border.BorderStyle;
 
 public class BorderTopStyleProperty extends Property<BorderStyle> {

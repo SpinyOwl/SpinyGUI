@@ -1,7 +1,7 @@
 package com.spinyowl.spinygui.core.converter.css.parser.visitor;
 
-import com.spinyowl.spinygui.core.converter.css.Declaration;
-import com.spinyowl.spinygui.core.converter.css.RuleSet;
+import com.spinyowl.spinygui.core.converter.css.model.Declaration;
+import com.spinyowl.spinygui.core.converter.css.model.RuleSet;
 import com.spinyowl.spinygui.core.converter.css.parser.antlr.CSS3BaseVisitor;
 import com.spinyowl.spinygui.core.converter.css.parser.antlr.CSS3Parser;
 import java.util.ArrayList;

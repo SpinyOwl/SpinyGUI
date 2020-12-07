@@ -1,6 +1,6 @@
 package com.spinyowl.spinygui.core.converter.css.atrule;
 
-import com.spinyowl.spinygui.core.converter.css.AtRule;
+import com.spinyowl.spinygui.core.converter.css.model.AtRule;
 import com.spinyowl.spinygui.core.font.FontStretch;
 import com.spinyowl.spinygui.core.font.FontStyle;
 import com.spinyowl.spinygui.core.font.FontWeight;

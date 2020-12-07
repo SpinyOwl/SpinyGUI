@@ -1,7 +1,7 @@
 package com.spinyowl.spinygui.core.converter.css.property.font;
 
 import static com.spinyowl.spinygui.core.converter.css.Properties.FONT_FAMILY;
-import com.spinyowl.spinygui.core.converter.css.Property;
+import com.spinyowl.spinygui.core.converter.css.model.Property;
 import com.spinyowl.spinygui.core.font.Font;
 import com.spinyowl.spinygui.core.style.NodeStyle;
 import java.util.Arrays;

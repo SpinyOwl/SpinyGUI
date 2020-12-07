@@ -58,14 +58,14 @@ public class NodeStyle {
   private Unit height;
 
   @NonNull
-  private Length minWidth;
+  private Length<?> minWidth;
   @NonNull
-  private Length minHeight;
+  private Length<?> minHeight;
 
   @NonNull
-  private Length maxWidth;
+  private Length<?> maxWidth;
   @NonNull
-  private Length maxHeight;
+  private Length<?> maxHeight;
 
   @NonNull
   private Unit top;
@@ -82,12 +82,15 @@ public class NodeStyle {
   @NonNull
   private Set<String> fontFamilies = new LinkedHashSet<>();
   @NonNull
-  private Length fontSize;
+  private Length<?> fontSize;
   @NonNull
   private FontStyle fontStyle;
   @NonNull
   private FontWeight fontWeight;
   @NonNull
   private FontStretch fontStretch;
+
+  private int tabSize = 4;
+  private int zIndex = 0;
 
 }

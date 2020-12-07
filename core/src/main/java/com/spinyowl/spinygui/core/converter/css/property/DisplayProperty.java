@@ -1,7 +1,7 @@
 package com.spinyowl.spinygui.core.converter.css.property;
 
 import static com.spinyowl.spinygui.core.converter.css.Properties.DISPLAY;
-import com.spinyowl.spinygui.core.converter.css.Property;
+import com.spinyowl.spinygui.core.converter.css.model.Property;
 import com.spinyowl.spinygui.core.style.NodeStyle;
 import com.spinyowl.spinygui.core.style.types.Display;
 

@@ -1,7 +1,7 @@
 package com.spinyowl.spinygui.core.converter.css.property.flex;
 
 import static com.spinyowl.spinygui.core.converter.css.Properties.ALIGN_SELF;
-import com.spinyowl.spinygui.core.converter.css.Property;
+import com.spinyowl.spinygui.core.converter.css.model.Property;
 import com.spinyowl.spinygui.core.style.types.flex.AlignSelf;
 
 public class AlignSelfProperty extends Property<AlignSelf> {

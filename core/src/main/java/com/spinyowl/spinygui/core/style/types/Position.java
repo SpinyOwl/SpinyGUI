@@ -39,17 +39,6 @@ public final class Position {
   public static final Position FIXED = Position.create("fixed");
 
   /**
-   * The element is positioned based on the user's scroll position
-   * <p>
-   * A sticky element toggles between relative and fixed, depending on the scroll position. It is
-   * positioned relative until a given offset position is met in the viewport - then it "sticks" in
-   * place (like position:fixed). Note: Not supported in IE/Edge 15 or earlier. Supported in Safari
-   * from version 6.1 with a -webkit- prefix.
-   */
-  public static final Position STICKY = Position.create("sticky");
-
-
-  /**
    * Name of position type (should be same as in css specification)
    */
   private final String name;
