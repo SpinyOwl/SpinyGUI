@@ -10,7 +10,7 @@ public class BackgroundImageProperty extends Property<String> {
 
   public BackgroundImageProperty() {
     super(Properties.BACKGROUND_IMAGE, "none", !INHERITED, !ANIMATABLE,
-        (s, i) -> s.background().image(i), (s) -> s.background().image(),
+        (s, i) -> s.background().image(i), s -> s.background().image(),
         BackgroundImageProperty::extractUrl, BackgroundImageProperty::test);
   }
 

@@ -18,17 +18,17 @@ public class BackgroundOrigin {
   /**
    * Default value. The background image starts from the upper left corner of the padding edge.
    */
-  public static BackgroundOrigin PADDING_BOX = BackgroundOrigin.create("padding-box");
+  public static final BackgroundOrigin PADDING_BOX = BackgroundOrigin.create("padding-box");
 
   /**
    * The background image starts from the upper left corner of the border.
    */
-  public static BackgroundOrigin BORDER_BOX = BackgroundOrigin.create("border-box");
+  public static final BackgroundOrigin BORDER_BOX = BackgroundOrigin.create("border-box");
 
   /**
    * The background image starts from the upper left corner of the content.
    */
-  public static BackgroundOrigin CONTENT_BOX = BackgroundOrigin.create("content-box");
+  public static final BackgroundOrigin CONTENT_BOX = BackgroundOrigin.create("content-box");
 
   /**
    * Name of position type (should be same as in css specification)
