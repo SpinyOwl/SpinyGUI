@@ -91,10 +91,10 @@ public final class WhiteSpace {
   }
 
   /**
-   * Returns true there is a white-space value wth specified name.
+   * Returns true if there is a white-space value wth specified name.
    *
    * @param name white-space name.
-   * @return true there is a white-space value wth specified name.
+   * @return true if there is a white-space value wth specified name.
    */
   public static boolean contains(String name) {
     if (name == null) {

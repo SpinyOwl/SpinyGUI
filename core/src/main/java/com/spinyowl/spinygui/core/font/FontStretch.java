@@ -76,10 +76,10 @@ public final class FontStretch {
   }
 
   /**
-   * Returns true there is a font stretch value wth specified name.
+   * Returns true if there is a font stretch value wth specified name.
    *
    * @param name font stretch name.
-   * @return true there is a font stretch value wth specified name.
+   * @return true if there is a font stretch value wth specified name.
    */
   public static boolean contains(String name) {
     if (name == null) {

@@ -26,7 +26,7 @@ public final class FlexWrap {
    */
   public static final FlexWrap WRAP_REVERSE = FlexWrap.create("wrap-reverse");
 
-  private String name;
+  private final String name;
 
   private FlexWrap(String name) {
     this.name = name;
@@ -59,10 +59,10 @@ public final class FlexWrap {
   }
 
   /**
-   * Returns true there is a flex-wrap value wth specified name.
+   * Returns true if there is a flex-wrap value wth specified name.
    *
    * @param name flex-wrap name.
-   * @return true there is a flex-wrap value wth specified name.
+   * @return true if there is a flex-wrap value wth specified name.
    */
   public static boolean contains(String name) {
     if (name == null) {

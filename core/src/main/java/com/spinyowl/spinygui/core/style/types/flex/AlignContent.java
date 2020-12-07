@@ -38,7 +38,7 @@ public final class AlignContent {
    */
   public static final AlignContent SPACE_AROUND = AlignContent.create("space-around");
 
-  private String name;
+  private final String name;
 
   private AlignContent(String name) {
     this.name = name;
@@ -72,10 +72,10 @@ public final class AlignContent {
   }
 
   /**
-   * Returns true there is a align-content value wth specified name.
+   * Returns true if there is a align-content value wth specified name.
    *
    * @param name align-content name.
-   * @return true there is a align-content value wth specified name.
+   * @return true if there is a align-content value wth specified name.
    */
   public static boolean contains(String name) {
     if (name == null) {

@@ -38,7 +38,7 @@ public final class JustifyContent {
    */
   public static final JustifyContent SPACE_EVENLY = JustifyContent.create("space-evenly");
 
-  private String name;
+  private final String name;
 
   private JustifyContent(String name) {
     this.name = name;
@@ -72,10 +72,10 @@ public final class JustifyContent {
   }
 
   /**
-   * Returns true there is a justify-content value wth specified name.
+   * Returns true if there is a justify-content value wth specified name.
    *
    * @param name justify-content name.
-   * @return true there is a justify-content value wth specified name.
+   * @return true if there is a justify-content value wth specified name.
    */
   public static boolean contains(String name) {
     if (name == null) {

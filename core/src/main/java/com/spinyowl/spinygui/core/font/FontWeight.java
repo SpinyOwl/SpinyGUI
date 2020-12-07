@@ -126,10 +126,10 @@ public final class FontWeight {
   }
 
   /**
-   * Returns true there is a font weight value wth specified name.
+   * Returns true if there is a font weight value wth specified name.
    *
    * @param name font weight name.
-   * @return true there is a font weight value wth specified name.
+   * @return true if there is a font weight value wth specified name.
    */
   public static boolean contains(String name) {
     if (name == null) {

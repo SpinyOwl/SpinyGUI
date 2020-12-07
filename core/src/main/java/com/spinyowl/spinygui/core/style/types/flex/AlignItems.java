@@ -37,7 +37,7 @@ public final class AlignItems {
    */
   public static final AlignItems BASELINE = AlignItems.create("baseline");
 
-  private String name;
+  private final String name;
 
   private AlignItems(String name) {
     this.name = name;
@@ -70,10 +70,10 @@ public final class AlignItems {
   }
 
   /**
-   * Returns true there is a align-items value wth specified name.
+   * Returns true if there is a align-items value wth specified name.
    *
    * @param name align-items name.
-   * @return true there is a align-items value wth specified name.
+   * @return true if there is a align-items value wth specified name.
    */
   public static boolean contains(String name) {
     if (name == null) {

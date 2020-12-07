@@ -113,10 +113,10 @@ public final class BorderStyle {
   }
 
   /**
-   * Returns true there is a border style value wth specified name.
+   * Returns true if there is a border style value wth specified name.
    *
    * @param name border style name.
-   * @return true there is a border style value wth specified name.
+   * @return true if there is a border style value wth specified name.
    */
   public static boolean contains(String name) {
     if (name == null) {

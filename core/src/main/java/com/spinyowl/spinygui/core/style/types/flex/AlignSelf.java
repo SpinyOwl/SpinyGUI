@@ -39,7 +39,7 @@ public final class AlignSelf {
    */
   public static final AlignSelf BASELINE = AlignSelf.create("baseline");
 
-  private String name;
+  private final String name;
 
   private AlignSelf(String name) {
     this.name = name;
@@ -72,10 +72,10 @@ public final class AlignSelf {
   }
 
   /**
-   * Returns true there is a align-self value wth specified name.
+   * Returns true if there is a align-self value wth specified name.
    *
    * @param name align-self name.
-   * @return true there is a align-self value wth specified name.
+   * @return true if there is a align-self value wth specified name.
    */
   public static boolean contains(String name) {
     if (name == null) {

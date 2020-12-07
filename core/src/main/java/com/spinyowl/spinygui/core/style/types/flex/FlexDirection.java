@@ -30,7 +30,7 @@ public final class FlexDirection {
    */
   public static final FlexDirection COLUMN_REVERSE = FlexDirection.create("column-reverse");
 
-  private String name;
+  private final String name;
 
   private FlexDirection(String name) {
     this.name = name;
@@ -64,10 +64,10 @@ public final class FlexDirection {
   }
 
   /**
-   * Returns true there is a flex-direction value wth specified name.
+   * Returns true if there is a flex-direction value wth specified name.
    *
    * @param name flex-direction name.
-   * @return true there is a flex-direction value wth specified name.
+   * @return true if there is a flex-direction value wth specified name.
    */
   public static boolean contains(String name) {
     if (name == null) {
