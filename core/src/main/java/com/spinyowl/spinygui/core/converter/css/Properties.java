@@ -12,8 +12,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
-import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.tuple.Pair;
 
 @Slf4j
 public final class Properties {
@@ -113,17 +113,17 @@ public final class Properties {
   public static final String TAB_SIZE = "tab-size";
   public static final String OPACITY = "opacity";
 
-  private static Map<String, Property<?>> propertyMap = new ConcurrentHashMap<>();
+  private static final Map<String, Property<?>> propertyMap = new ConcurrentHashMap<>();
 
   static {
-
     var scanResult = new ClassGraph()
         .enableAllInfo()
         .scan();
 
-    var propertiesToAdd = new HashMap<String, List<CssPropertyTuple>>();
+    var propertiesToAdd = new HashMap<String, List<Pair<Property<?>, Integer>>>();
 
     for (ClassInfo classInfo : scanResult.getSubclasses(Property.class.getName())) {
+      @SuppressWarnings("unchecked")
       Class<Property<?>> clazz = (Class<Property<?>>) classInfo.loadClass();
       Priority annotation = clazz.getAnnotation(Priority.class);
       int priority = 0;
@@ -135,27 +135,28 @@ public final class Properties {
         property = clazz.getConstructor().newInstance();
 
       } catch (Exception e) {
-        log.error(
-            "Can't initialize property handler {}. Public default constructor should be declared.",
-            clazz.getName());
+        log.error("Can't initialize property handler {}.", clazz.getName());
+        if (log.isDebugEnabled()) {
+          log.debug(e.getMessage(), e);
+        }
       }
       if (property != null) {
         propertiesToAdd.computeIfAbsent(property.getName(), p -> new ArrayList<>()).
-            add(CssPropertyTuple.of(property, priority));
+            add(Pair.of(property, priority));
       }
     }
 
     for (var entry : propertiesToAdd.entrySet()) {
       String name = entry.getKey();
-      var value = entry.getValue();
-      if (value.size() > 1) {
-        value.sort(Comparator.comparingInt(o -> -o.priority));
+      var list = entry.getValue();
+      if (list.size() > 1) {
+        list.sort(Comparator.comparingInt(o -> -o.getRight()));
         log.warn("Found several tag mappings for tag {} : {}. Using {}", name,
             Arrays.toString(
-                value.stream().map(c -> c.property.getClass().getName()).toArray()),
-            value.get(0).property.getClass().getName());
+                list.stream().map(c -> c.getLeft().getClass().getName()).toArray()),
+            list.get(0).getLeft().getClass().getName());
       }
-      addSupportedProperty(name, value.get(0).property);
+      addSupportedProperty(name, list.get(0).getLeft());
     }
 
   }
@@ -204,10 +205,4 @@ public final class Properties {
     return List.copyOf(propertyMap.keySet());
   }
 
-  @AllArgsConstructor(staticName = "of")
-  private static class CssPropertyTuple {
-
-    private final Property<?> property;
-    private final int priority;
-  }
 }

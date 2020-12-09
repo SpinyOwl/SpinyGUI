@@ -1,14 +1,13 @@
 package com.spinyowl.spinygui.core.converter.css.model;
 
-import com.spinyowl.spinygui.core.converter.css.selector.StyleSelector;
+import com.spinyowl.spinygui.core.converter.css.model.selector.Selector;
 import com.spinyowl.spinygui.core.node.Element;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
-import java.util.Set;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.collections4.list.SetUniqueList;
 
 @Getter
 @RequiredArgsConstructor
@@ -24,10 +23,10 @@ public class StyleSheet {
    * @param elementTree element tree to search elements with rules.
    * @return set of nodes that are correspond to specified rule set.
    */
-  public static Set<Element> searchElements(RuleSet ruleSet, Element elementTree) {
+  public static List<Element> searchElements(RuleSet ruleSet, Element elementTree) {
     Objects.requireNonNull(ruleSet);
     Objects.requireNonNull(elementTree);
-    var nodes = new HashSet<Element>();
+    var nodes = SetUniqueList.<Element>setUniqueList(new ArrayList<>());
     var selectors = ruleSet.getSelectors();
     selectors.forEach(selector -> inspectElementTree(elementTree, selector, nodes));
     return nodes;
@@ -46,7 +45,7 @@ public class StyleSheet {
 
     ArrayList<RuleSet> result = new ArrayList<>();
     for (RuleSet ruleSet : styleSheet.ruleSets) {
-      for (StyleSelector selector : ruleSet.getSelectors()) {
+      for (Selector selector : ruleSet.getSelectors()) {
         if (selector.test(element)) {
           result.add(ruleSet);
           break;
@@ -63,8 +62,8 @@ public class StyleSheet {
    * @param selector    selector that used to search nodes.
    * @param elements    element set to store result.
    */
-  private static void inspectElementTree(Element elementTree, StyleSelector selector,
-      HashSet<Element> elements) {
+  private static void inspectElementTree(Element elementTree, Selector selector,
+      List<Element> elements) {
     Objects.requireNonNull(elementTree);
     Objects.requireNonNull(selector);
 

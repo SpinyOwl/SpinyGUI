@@ -8,18 +8,17 @@ import com.spinyowl.spinygui.core.converter.NodeConverter;
 import com.spinyowl.spinygui.core.converter.StyleSheetConverter;
 import com.spinyowl.spinygui.core.converter.css.model.RuleSet;
 import com.spinyowl.spinygui.core.converter.css.model.StyleSheet;
-import com.spinyowl.spinygui.core.converter.css.parser.StyleReflectionHandler;
+import com.spinyowl.spinygui.core.converter.css.model.selector.Selector;
 import com.spinyowl.spinygui.core.converter.css.parser.StyleSheetException;
-import com.spinyowl.spinygui.core.converter.css.selector.StyleSelector;
 import com.spinyowl.spinygui.core.node.Element;
 import com.spinyowl.spinygui.core.node.Node;
+import com.spinyowl.spinygui.core.node.Text;
 import com.spinyowl.spinygui.core.style.manager.DefaultStyleManger;
 import com.spinyowl.spinygui.core.style.manager.StyleManager;
 import com.spinyowl.spinygui.core.style.types.Color;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Set;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
@@ -33,21 +32,24 @@ public class Test {
   }
 
   public static void createFromCSS() throws StyleSheetException {
-    StyleReflectionHandler.getPseudoSelector(":hover");
-    String css = "@font-face {\n"
-        + "    font-family: My Font Family;\n"
-        + "    src: local(\"some-font.ttf\");\n"
-        + "}\n"
-        + "\n"
-        + "div > button .test\n"
-        + "{\n"
-        + "   background-color: #ffff80;\n"
-        + "   color: red;\n"
-        + "   width: 50%;\n"
-        + "   left: 50%;\n"
-        + "   top: 50px;\n"
-        + "   right: 50.2%;\n"
-        + "}";
+    String css = """
+        @font-face {
+            font-family: My Font Family;
+            src: local("some-font.ttf");
+        }
+
+        div > button .test {
+           background-color: #ffff80;
+           color: red;
+           width: 50%;
+           left: 50%;
+           top: 50px;
+           right: 50.2%;
+        }
+
+        .test:hover {
+          background-color: white;
+        }""";
 
     var stylesheet = StyleSheetConverter.createFromCSS(css);
 
@@ -57,7 +59,7 @@ public class Test {
 
     List<RuleSet> ruleSets = stylesheet.ruleSets();
     RuleSet ruleSet = ruleSets.get(0);
-    List<StyleSelector> selectors = ruleSet.getSelectors();
+    List<Selector> selectors = ruleSet.getSelectors();
 
     assert (!selectors.get(0).test(div));
     assert (selectors.get(0).test(testLabel));
@@ -75,42 +77,76 @@ public class Test {
   @SneakyThrows
   public static void searchComponents() {
     var css =
-        "div .test label { background-color: red; }" +
-            "div .test { background-color: green; border: 1px, 1px, 2px, 1px }" +
-            "button { color: black; }";
+        """
+            div .test label {
+              background-color: red; 
+            }
+            div .test {
+              background-color: green; border: 1px, 1px, 2px, 1px
+            }
+            button {
+              color: black;
+            }
+                        
+            div + p {
+              background-color: yellow;
+            }
+                        
+            div ~ p {
+              background-color: yellow;
+            }
+                        
+            """;
 
     var stylesheet = StyleSheetConverter.createFromCSS(css);
 
-    var xml = "<div id=\"1\">\n" +
-        "    <div id=\"2\" class=\"test\">\n" +
-        "        <label id=\"3\">Label 1</label>\n" +
-        "    </div>\n" +
-        "    <button id=\"4\" class=\"test\"/>\n" +
-        "    <div id=\"5\" class=\"test\">\n" +
-        "        <div id=\"6\">\n" +
-        "            <div id=\"7\" class=\"test\">\n" +
-        "                <label id=\"8\">Label 1</label>\n" +
-        "            </div>\n" +
-        "        </div>\n" +
-        "    </div>\n" +
-        "</div>";
+    var xml = """
+        <div id="1">
+            <div id="2" class="test">
+                <label id="3">Label 1</label>
+            </div>
+            <button id="4" class="test"/>
+            <div id="5" class="test">
+                <div id="6">
+                    <div id="7" class="test">
+                        <label id="8">Label 1</label>
+                    </div>
+                </div>
+            </div>
+            <p> sibling </p>
+            <p> sibling 2 </p>
+        </div>""";
     var componentTree = (Element) NodeConverter.fromXml(xml);
 
     List<RuleSet> ruleSets = stylesheet.ruleSets();
 
-    Set<Element> labels = StyleSheet.searchElements(ruleSets.get(0), componentTree);
+    var labels = StyleSheet.searchElements(ruleSets.get(0), componentTree);
     for (Node node : labels) {
       assert (Objects.equals("label", node.nodeName()));
     }
-    Set<Element> test = StyleSheet.searchElements(ruleSets.get(1), componentTree);
+    var test = StyleSheet.searchElements(ruleSets.get(1), componentTree);
     for (Element node : test) {
       assert (Objects.equals("test", node.getAttribute("class")));
     }
-    Set<Element> buttons = StyleSheet.searchElements(ruleSets.get(2), componentTree);
+    var buttons = StyleSheet.searchElements(ruleSets.get(2), componentTree);
     for (Node node : buttons) {
       assert (Objects.equals("button", node.nodeName()));
     }
 
+    var siblingParagraphs = StyleSheet.searchElements(ruleSets.get(3), componentTree);
+    assert siblingParagraphs.size() == 1;
+    Element first = siblingParagraphs.get(0);
+    assert (Objects.equals("p", first.nodeName()));
+    assert (Objects.equals(" sibling ", ((Text) first.childNodes().get(0)).content()));
+
+    var immediateParagraphs = StyleSheet.searchElements(ruleSets.get(4), componentTree);
+    assert immediateParagraphs.size() == 1;
+    first = immediateParagraphs.get(0);
+    assert (Objects.equals("p", first.nodeName()));
+    assert (Objects.equals(" sibling ", ((Text) first.childNodes().get(0)).content()));
+    Element second = immediateParagraphs.get(1);
+    assert (Objects.equals("p", second.nodeName()));
+    assert (Objects.equals(" sibling 2 ", ((Text) second.childNodes().get(0)).content()));
   }
 
   public static void parseText() {

@@ -1,23 +1,24 @@
 package com.spinyowl.spinygui.core.converter.css.parser.visitor;
 
-import com.spinyowl.spinygui.core.converter.css.parser.StyleReflectionHandler;
+import com.spinyowl.spinygui.core.converter.css.model.selector.Selector;
+import com.spinyowl.spinygui.core.converter.css.model.selector.Selectors;
+import com.spinyowl.spinygui.core.converter.css.model.selector.pseudo_class.HoverSelector;
+import com.spinyowl.spinygui.core.converter.css.model.selector.simple.ClassNameSelector;
+import com.spinyowl.spinygui.core.converter.css.model.selector.simple.ElementSelector;
 import com.spinyowl.spinygui.core.converter.css.parser.antlr.CSS3BaseVisitor;
 import com.spinyowl.spinygui.core.converter.css.parser.antlr.CSS3Parser;
-import com.spinyowl.spinygui.core.converter.css.selector.ClassNameSelector;
-import com.spinyowl.spinygui.core.converter.css.selector.StyleSelector;
-import com.spinyowl.spinygui.core.converter.css.selector.TypeSelector;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.antlr.v4.runtime.tree.ParseTree;
 
 @Slf4j
-public class SelectorVisitor extends CSS3BaseVisitor<List<StyleSelector>> {
+public class SelectorVisitor extends CSS3BaseVisitor<List<Selector>> {
 
   @Override
-  public List<StyleSelector> visitSelectorGroup(CSS3Parser.SelectorGroupContext ctx) {
+  public List<Selector> visitSelectorGroup(CSS3Parser.SelectorGroupContext ctx) {
 
-    List<StyleSelector> selectorVisitors = new ArrayList<>();
+    List<Selector> selectorVisitors = new ArrayList<>();
 
     for (CSS3Parser.SelectorContext selectorContext : ctx.selector()) {
 
@@ -31,21 +32,21 @@ public class SelectorVisitor extends CSS3BaseVisitor<List<StyleSelector>> {
   }
 
   @Override
-  public List<StyleSelector> visitSelector(CSS3Parser.SelectorContext ctx) {
-    var list = new ArrayList<StyleSelector>();
+  public List<Selector> visitSelector(CSS3Parser.SelectorContext ctx) {
+    var list = new ArrayList<Selector>();
     var firstSelector = visitSimpleSelectorSequence(ctx.simpleSelectorSequence(0)).get(0);
     for (int i = 1; i < ctx.simpleSelectorSequence().size(); i++) {
       final var secondSelector = visitSimpleSelectorSequence(ctx.simpleSelectorSequence(i))
           .get(0);
 
       if (ctx.combinator(i - 1).Space() != null) {
-        firstSelector = StyleSelector.child(firstSelector, secondSelector);
+        firstSelector = Selectors.descendant(firstSelector, secondSelector);
       } else if (ctx.combinator(i - 1).Greater() != null) {
-        firstSelector = StyleSelector.immediateChild(firstSelector, secondSelector);
+        firstSelector = Selectors.child(firstSelector, secondSelector);
       } else if (ctx.combinator(i - 1).Plus() != null) {
-        firstSelector = StyleSelector.immediateNext(firstSelector, secondSelector);
+        firstSelector = Selectors.adjacentSibling(firstSelector, secondSelector);
       } else if (ctx.combinator(i - 1).Tilde() != null) {
-        firstSelector = StyleSelector.generalSibling(firstSelector, secondSelector);
+        firstSelector = Selectors.generalSibling(firstSelector, secondSelector);
       }
     }
     list.add(firstSelector);
@@ -53,17 +54,17 @@ public class SelectorVisitor extends CSS3BaseVisitor<List<StyleSelector>> {
   }
 
   @Override
-  public List<StyleSelector> visitSimpleSelectorSequence(
+  public List<Selector> visitSimpleSelectorSequence(
       CSS3Parser.SimpleSelectorSequenceContext ctx) {
-    var list = new ArrayList<StyleSelector>();
+    var list = new ArrayList<Selector>();
 
-    StyleSelector current = null;
+    Selector current = null;
     for (ParseTree child : ctx.children) {
       var s = visit(child).get(0);
       if (current == null) {
         current = s;
       } else {
-        current = StyleSelector.and(current, s);
+        current = Selectors.and(current, s);
       }
     }
     list.add(current);
@@ -72,23 +73,22 @@ public class SelectorVisitor extends CSS3BaseVisitor<List<StyleSelector>> {
   }
 
   @Override
-  public List<StyleSelector> visitTypeSelector(CSS3Parser.TypeSelectorContext ctx) {
-    return List.of(new TypeSelector(ctx.getText()));
+  public List<Selector> visitTypeSelector(CSS3Parser.TypeSelectorContext ctx) {
+    return List.of(new ElementSelector(ctx.getText()));
   }
 
   @Override
-  public List<StyleSelector> visitPseudo(CSS3Parser.PseudoContext ctx) {
-    try {
-      var clazz = StyleReflectionHandler.getPseudoSelector(ctx.getText());
-      return List.of((StyleSelector) clazz.getConstructor().newInstance());
-    } catch (Exception e) {
-      log.error(e.getMessage(), e);
-    }
-    return List.of();
+  public List<Selector> visitPseudo(CSS3Parser.PseudoContext ctx) {
+    String selectorName = ctx.ident().getText();
+
+    return switch (selectorName) {
+      case "hover" -> List.of(new HoverSelector());
+      default -> List.of();
+    };
   }
 
   @Override
-  public List<StyleSelector> visitClassName(CSS3Parser.ClassNameContext ctx) {
+  public List<Selector> visitClassName(CSS3Parser.ClassNameContext ctx) {
     return List.of(new ClassNameSelector(ctx.ident().getText()));
   }
 }

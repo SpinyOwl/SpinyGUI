@@ -1,14 +1,14 @@
 package com.spinyowl.spinygui.core.converter.css.model;
 
-import com.spinyowl.spinygui.core.converter.css.selector.StyleSelector;
+import com.spinyowl.spinygui.core.converter.css.model.selector.Selector;
 import java.util.List;
 
 public class RuleSet {
 
-  private List<StyleSelector> selectors;
+  private List<Selector> selectors;
   private List<Declaration> declarations;
 
-  public RuleSet(List<StyleSelector> selectors, List<Declaration> declarations) {
+  public RuleSet(List<Selector> selectors, List<Declaration> declarations) {
     this.selectors = selectors;
     this.declarations = declarations;
   }
@@ -17,7 +17,7 @@ public class RuleSet {
     return declarations;
   }
 
-  public List<StyleSelector> getSelectors() {
+  public List<Selector> getSelectors() {
     return selectors;
   }
 }
