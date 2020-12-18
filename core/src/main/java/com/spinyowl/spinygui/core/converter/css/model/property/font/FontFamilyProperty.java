@@ -12,7 +12,7 @@ public class FontFamilyProperty extends Property<Set<String>> {
 
   public FontFamilyProperty() {
     super(FONT_FAMILY, "default", INHERITED, !ANIMATABLE,
-        NodeStyle::fontFamilies, NodeStyle::fontFamilies,
+        NodeStyle::fontFamily, NodeStyle::fontFamily,
         v -> Arrays.stream(v.split(",\\s+"))
             .map(FontFamilyProperty::trimAndUnwrap).collect(Collectors.toSet()),
         Font::hasFont);

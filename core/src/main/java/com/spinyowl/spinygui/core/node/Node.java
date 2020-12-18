@@ -114,7 +114,7 @@ public abstract class Node {
   public abstract void removeChild(Node node);
 
   /**
-   * The {@link #childNodes()} method returns a collection of a node's child nodes, as {@code
+   * Returns a collection of a node's child nodes, as {@code
    * List<Node>} object.
    * <p>
    * The nodes in the collection are sorted as they was added to the element.
@@ -134,7 +134,7 @@ public abstract class Node {
   public abstract boolean hasChildNodes();
 
   /**
-   * The {@link #children()} method returns a collection of an element's child elements, as an
+   * Returns a collection of an element's child elements, as an
    * {@code List<Element>} object.
    * <p>
    * The elements in the collection are sorted as they was added tp the element.

@@ -16,29 +16,29 @@ public class BorderRadius {
    * Top left border radius.
    */
   @NonNull
-  private Length topLeft = Length.ZERO;
+  private Length<?> topLeft = Length.ZERO;
   /**
    * Top right border radius.
    */
   @NonNull
-  private Length topRight = Length.ZERO;
+  private Length<?> topRight = Length.ZERO;
   /**
    * Bottom right border radius.
    */
   @NonNull
-  private Length bottomRight = Length.ZERO;
+  private Length<?> bottomRight = Length.ZERO;
   /**
    * Bottom left border radius.
    */
   @NonNull
-  private Length bottomLeft = Length.ZERO;
+  private Length<?> bottomLeft = Length.ZERO;
 
   /**
    * Used to create border radius.
    *
    * @param radius radius to set. Sets border radius to all corners.
    */
-  public BorderRadius(Length radius) {
+  public BorderRadius(Length<?> radius) {
     topLeft = topRight = bottomRight = bottomLeft = radius;
   }
 
@@ -48,7 +48,7 @@ public class BorderRadius {
    * @param topLeftBottomRight top left and bottom right radius.
    * @param topRightBottomLeft top right and bottom left radius.
    */
-  public BorderRadius(Length topLeftBottomRight, Length topRightBottomLeft) {
+  public BorderRadius(Length<?> topLeftBottomRight, Length<?> topRightBottomLeft) {
     topLeft = bottomRight = topLeftBottomRight;
     topRight = bottomLeft = topRightBottomLeft;
   }
@@ -60,7 +60,7 @@ public class BorderRadius {
    * @param bottomRight        bottom right radius.
    * @param topRightBottomLeft top right and bottom left radius.
    */
-  public BorderRadius(Length topLeft, Length topRightBottomLeft, Length bottomRight) {
+  public BorderRadius(Length<?> topLeft, Length<?> topRightBottomLeft, Length<?> bottomRight) {
     this.topLeft = topLeft;
     this.topRight = this.bottomLeft = topRightBottomLeft;
     this.bottomRight = bottomRight;
@@ -74,7 +74,7 @@ public class BorderRadius {
    * @param bottomRight bottom right radius.
    * @param bottomLeft  bottom left radius.
    */
-  public BorderRadius(Length topLeft, Length topRight, Length bottomRight, Length bottomLeft) {
+  public BorderRadius(Length<?> topLeft, Length<?> topRight, Length<?> bottomRight, Length<?> bottomLeft) {
     this.topLeft = topLeft;
     this.topRight = topRight;
     this.bottomRight = bottomRight;

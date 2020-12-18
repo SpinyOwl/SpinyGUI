@@ -15,6 +15,6 @@ public class BorderItem {
   @NonNull
   private BorderStyle style = BorderStyle.NONE;
   @NonNull
-  private Length width = Length.ZERO;
+  private Length<?> width = Length.ZERO;
 
 }

@@ -2,42 +2,25 @@ package com.spinyowl.spinygui.core.converter.css.model;
 
 import static com.spinyowl.spinygui.core.converter.css.model.Property.INHERIT;
 import static com.spinyowl.spinygui.core.converter.css.model.Property.INITIAL;
-import java.util.Objects;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NonNull;
 
+@Data
+@AllArgsConstructor
 public class Declaration<T> {
+
+  /**
+   * Property definition.
+   */
+  @NonNull
+  private Property<T> property;
 
   /**
    * Current value of css property. Could not be null.
    */
+  @NonNull
   protected String value;
-
-  private Property<T> property;
-
-  public Declaration(Property<T> property, String value) {
-    this.property = Objects.requireNonNull(property);
-    this.value = Objects.requireNonNull(value);
-  }
-
-  public Property<T> getProperty() {
-    return property;
-  }
-
-  public void setProperty(Property<T> property) {
-    this.property = property;
-  }
-
-  public String getValue() {
-    return value;
-  }
-
-  /**
-   * Used to set value to property.
-   *
-   * @param value value to set.
-   */
-  public void setValue(String value) {
-    this.value = value;
-  }
 
   /**
    * Used to reset property value to default.

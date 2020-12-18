@@ -15,7 +15,7 @@ public class BorderProperty extends Property<Border> {
 
   public static final String DEFAULT_VALUE = "medium none transparent";
 
-  private static ValueExtractor<Color> colorValueExtractor = ValueExtractors.of(Color.class);
+  private static final ValueExtractor<Color> colorValueExtractor = ValueExtractors.of(Color.class);
 
   public BorderProperty() {
     super(BORDER, DEFAULT_VALUE, !INHERITED, ANIMATABLE,

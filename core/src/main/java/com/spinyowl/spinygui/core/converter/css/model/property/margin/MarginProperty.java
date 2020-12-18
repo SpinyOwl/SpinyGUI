@@ -25,7 +25,7 @@ public class MarginProperty extends Property<Margin> {
     }
 
     //@formatter:off
-    String[] v = value.split("\\s+");
+    String[] v = value.trim().split("\\s+");
     switch (v.length) {
       case 1: return new Margin(x(v[0]));
       case 2: return new Margin(x(v[0]), x(v[1]));

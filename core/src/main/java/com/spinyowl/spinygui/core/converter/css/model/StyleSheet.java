@@ -1,6 +1,5 @@
 package com.spinyowl.spinygui.core.converter.css.model;
 
-import com.spinyowl.spinygui.core.converter.css.model.selector.Selector;
 import com.spinyowl.spinygui.core.node.Element;
 import java.util.ArrayList;
 import java.util.List;
@@ -26,10 +25,7 @@ public class StyleSheet {
   public static List<Element> searchElements(RuleSet ruleSet, Element elementTree) {
     Objects.requireNonNull(ruleSet);
     Objects.requireNonNull(elementTree);
-    var nodes = SetUniqueList.<Element>setUniqueList(new ArrayList<>());
-    var selectors = ruleSet.getSelectors();
-    selectors.forEach(selector -> inspectElementTree(elementTree, selector, nodes));
-    return nodes;
+    return inspectElementTree(elementTree, ruleSet, SetUniqueList.setUniqueList(new ArrayList<>()));
   }
 
   /**
@@ -45,35 +41,33 @@ public class StyleSheet {
 
     ArrayList<RuleSet> result = new ArrayList<>();
     for (RuleSet ruleSet : styleSheet.ruleSets) {
-      for (Selector selector : ruleSet.getSelectors()) {
-        if (selector.test(element)) {
-          result.add(ruleSet);
-          break;
-        }
+      if (ruleSet.test(element)) {
+        result.add(ruleSet);
       }
     }
     return result;
   }
 
   /**
-   * Used to inspect node tree using specified selector.
+   * Used to inspect node tree using specified ruleSet.
    *
    * @param elementTree element tree to search elements.
-   * @param selector    selector that used to search nodes.
+   * @param ruleSet     ruleSet that used to search nodes.
    * @param elements    element set to store result.
+   * @return provided elements array with additional elements that are correspond to specified rule
+   * set.
    */
-  private static void inspectElementTree(Element elementTree, Selector selector,
+  private static List<Element> inspectElementTree(Element elementTree, RuleSet ruleSet,
       List<Element> elements) {
     Objects.requireNonNull(elementTree);
-    Objects.requireNonNull(selector);
+    Objects.requireNonNull(ruleSet);
 
-    if (selector.test(elementTree)) {
+    if (ruleSet.test(elementTree)) {
       elements.add(elementTree);
     }
 
-    elementTree.childNodes().stream()
-        .filter(n -> n instanceof Element).map(n -> (Element) n)
-        .forEach(c -> inspectElementTree(c, selector, elements));
+    elementTree.children().forEach(c -> inspectElementTree(c, ruleSet, elements));
+    return elements;
   }
 
 }

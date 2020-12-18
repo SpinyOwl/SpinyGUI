@@ -1,7 +1,7 @@
 package com.spinyowl.spinygui.core.layout.impl.flex;
 
-import static com.spinyowl.spinygui.core.style.types.length.Length.LType.PERCENT;
-import static com.spinyowl.spinygui.core.style.types.length.Length.LType.PIXEL;
+import static com.spinyowl.spinygui.core.style.types.length.Length.LType.PERCENT_TYPE;
+import static com.spinyowl.spinygui.core.style.types.length.Length.LType.PIXEL_TYPE;
 import static org.lwjgl.util.yoga.Yoga.YGAlignAuto;
 import static org.lwjgl.util.yoga.Yoga.YGAlignBaseline;
 import static org.lwjgl.util.yoga.Yoga.YGAlignCenter;
@@ -160,10 +160,10 @@ final class FlexUtils {
       if (unit.isAuto()) {
         autoConsumer.accept(node);
       } else {
-        Length l = unit.asLength();
-        if (PIXEL.equals(l.type())) {
+        Length<?> l = unit.asLength();
+        if (PIXEL_TYPE.equals(l.type())) {
           pixelConsumer.accept(node, (Integer) l.get());
-        } else if (PERCENT.equals(l.type())) {
+        } else if (PERCENT_TYPE.equals(l.type())) {
           percentConsumer.accept(node, (Float) l.get());
         }
       }
@@ -178,10 +178,10 @@ final class FlexUtils {
       if (unit.isAuto()) {
         autoConsumer.accept(node, side);
       } else {
-        Length l = unit.asLength();
-        if (PIXEL.equals(l.type())) {
+        Length<?> l = unit.asLength();
+        if (PIXEL_TYPE.equals(l.type())) {
           pixelConsumer.accept(node, side, (Integer) l.get());
-        } else if (PERCENT.equals(l.type())) {
+        } else if (PERCENT_TYPE.equals(l.type())) {
           percentConsumer.accept(node, side, (Float) l.get());
         }
       }
@@ -192,34 +192,34 @@ final class FlexUtils {
       TriConsumer<Long, Integer, Integer> pixelConsumer,
       TriConsumer<Long, Integer, Float> percentConsumer) {
     if (unit != null && !unit.isAuto()) {
-      Length l = unit.asLength();
-      if (PIXEL.equals(l.type())) {
+      Length<?> l = unit.asLength();
+      if (PIXEL_TYPE.equals(l.type())) {
         pixelConsumer.accept(node, side, (Integer) l.get());
-      } else if (PERCENT.equals(l.type())) {
+      } else if (PERCENT_TYPE.equals(l.type())) {
         percentConsumer.accept(node, side, (Float) l.get());
       }
     }
   }
 
-  public static void setLength(Length length, long node,
+  public static void setLength(Length<?> length, long node,
       ObjIntConsumer<Long> pixelConsumer,
       BiConsumer<Long, Float> percentConsumer) {
     if (length != null) {
-      if (PIXEL.equals(length.type())) {
+      if (PIXEL_TYPE.equals(length.type())) {
         pixelConsumer.accept(node, (Integer) length.get());
-      } else if (PERCENT.equals(length.type())) {
+      } else if (PERCENT_TYPE.equals(length.type())) {
         percentConsumer.accept(node, (Float) length.get());
       }
     }
   }
 
-  public static void setLength(Length length, long node, int side,
+  public static void setLength(Length<?> length, long node, int side,
       TriConsumer<Long, Integer, Integer> pixelConsumer,
       TriConsumer<Long, Integer, Float> percentConsumer) {
     if (length != null) {
-      if (PIXEL.equals(length.type())) {
+      if (PIXEL_TYPE.equals(length.type())) {
         pixelConsumer.accept(node, side, (Integer) length.get());
-      } else if (PERCENT.equals(length.type())) {
+      } else if (PERCENT_TYPE.equals(length.type())) {
         percentConsumer.accept(node, side, (Float) length.get());
       }
     }

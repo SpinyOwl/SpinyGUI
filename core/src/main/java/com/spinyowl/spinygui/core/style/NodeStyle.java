@@ -7,9 +7,12 @@ import com.spinyowl.spinygui.core.style.types.Background;
 import com.spinyowl.spinygui.core.style.types.BorderRadius;
 import com.spinyowl.spinygui.core.style.types.Color;
 import com.spinyowl.spinygui.core.style.types.Display;
+import com.spinyowl.spinygui.core.style.types.HorizontalAlign;
 import com.spinyowl.spinygui.core.style.types.Margin;
 import com.spinyowl.spinygui.core.style.types.Padding;
 import com.spinyowl.spinygui.core.style.types.Position;
+import com.spinyowl.spinygui.core.style.types.BoxShadow;
+import com.spinyowl.spinygui.core.style.types.VerticalAlign;
 import com.spinyowl.spinygui.core.style.types.WhiteSpace;
 import com.spinyowl.spinygui.core.style.types.border.Border;
 import com.spinyowl.spinygui.core.style.types.flex.Flex;
@@ -80,7 +83,7 @@ public class NodeStyle {
   private WhiteSpace whiteSpace = WhiteSpace.NORMAL;
 
   @NonNull
-  private Set<String> fontFamilies = new LinkedHashSet<>();
+  private Set<String> fontFamily = new LinkedHashSet<>();
   @NonNull
   private Length<?> fontSize;
   @NonNull
@@ -89,6 +92,19 @@ public class NodeStyle {
   private FontWeight fontWeight;
   @NonNull
   private FontStretch fontStretch;
+
+  @NonNull
+  private BoxShadow boxShadow;
+
+  /**
+   * Horizontal alignment. By default used {@link HorizontalAlign#CENTER}.
+   */
+  private HorizontalAlign horizontalAlign;
+
+  /**
+   * Vertical alignment.
+   */
+  private VerticalAlign verticalAlign;
 
   private int tabSize = 4;
   private int zIndex = 0;
