@@ -18,7 +18,7 @@ public class RulesetVisitor extends CSS3BaseVisitor<RuleSet> {
   public RuleSet visitKnownRuleset(CSS3Parser.KnownRulesetContext ctx) {
 
     var selectors = new SelectorVisitor().visit(ctx.selectorGroup());
-    var properties = new ArrayList<Declaration>();
+    var properties = new ArrayList<Declaration<?>>();
     for (CSS3Parser.DeclarationContext declarationCtx : ctx.declarationList().declaration()) {
       var rule = new PropertyVisitor().visit(declarationCtx);
       if (rule != null) {

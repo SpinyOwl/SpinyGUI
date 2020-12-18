@@ -26,7 +26,7 @@ public class LengthValueExtractor implements ValueExtractor<Length> {
   }
 
   @Override
-  public Length extract(String value) {
+  public Length<?> extract(String value) {
     return getLength(value);
   }
 }

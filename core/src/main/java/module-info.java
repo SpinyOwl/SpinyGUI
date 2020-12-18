@@ -62,6 +62,7 @@ open module com.spinyowl.spinygui.core {
   exports com.spinyowl.spinygui.core.style.manager;
 
   exports com.spinyowl.spinygui.core.style.types;
+  exports com.spinyowl.spinygui.core.style.types.background;
   exports com.spinyowl.spinygui.core.style.types.border;
   exports com.spinyowl.spinygui.core.style.types.flex;
   exports com.spinyowl.spinygui.core.style.types.length;

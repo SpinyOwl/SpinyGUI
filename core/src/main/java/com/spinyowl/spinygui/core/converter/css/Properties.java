@@ -38,6 +38,8 @@ public final class Properties {
   public static final String BORDER_TOP_LEFT_RADIUS = "border-top-left-radius";
   public static final String BORDER_TOP_RIGHT_RADIUS = "border-top-right-radius";
 
+  public static final String BOX_SHADOW = "box-shadow";
+
   public static final String FONT_FAMILY = "font-family";
   public static final String FONT_SIZE = "font-size";
   public static final String FONT_STYLE = "font-style";

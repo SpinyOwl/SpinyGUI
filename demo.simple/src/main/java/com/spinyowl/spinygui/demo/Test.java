@@ -48,6 +48,7 @@ public class Test {
         }
 
         .test:hover {
+          box-shadow: 1px 2px 1px red 1px 2px;
           background-color: white;
         }""";
 
@@ -58,11 +59,13 @@ public class Test {
     Element div = div(button(testLabel));
 
     List<RuleSet> ruleSets = stylesheet.ruleSets();
-    RuleSet ruleSet = ruleSets.get(0);
-    List<Selector> selectors = ruleSet.getSelectors();
 
-    assert (!selectors.get(0).test(div));
-    assert (selectors.get(0).test(testLabel));
+    assert (!ruleSets.get(0).test(div));
+    assert (ruleSets.get(0).test(testLabel));
+
+    assert (!ruleSets.get(1).test(testLabel));
+    testLabel.hovered(true);
+    assert (ruleSets.get(1).test(testLabel));
 
     DefaultFrame frame = new DefaultFrame();
     frame.styleSheets().add(stylesheet);
@@ -95,7 +98,6 @@ public class Test {
             div ~ p {
               background-color: yellow;
             }
-                        
             """;
 
     var stylesheet = StyleSheetConverter.createFromCSS(css);

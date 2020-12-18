@@ -10,10 +10,10 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public final class BackgroundPosition {
 
-  private Length x;
-  private Length y;
+  private Length<?> x;
+  private Length<?> y;
 
-  public BackgroundPosition(Length x) {
+  public BackgroundPosition(Length<?> x) {
     this.x = x;
     this.y = Length.percent(50);
   }
