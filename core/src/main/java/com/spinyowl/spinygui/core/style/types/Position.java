@@ -28,15 +28,16 @@ public final class Position {
    */
   public static final Position RELATIVE = Position.create("relative");
 
-  /**
-   * Default value. Elements render in order, as they appear in the document flow.
-   */
-  public static final Position STATIC = Position.create("static");
-
-  /**
-   * The element is positioned relative to the browser window.
-   */
-  public static final Position FIXED = Position.create("fixed");
+// NEXT POSITION OPTIONS ARE CURRENTLY NOT IMPLEMENTED
+//  /**
+//   * Default value. Elements render in order, as they appear in the document flow.
+//   */
+//  public static final Position STATIC = Position.create("static");
+//
+//  /**
+//   * The element is positioned relative to the browser window.
+//   */
+//  public static final Position FIXED = Position.create("fixed");
 
   /**
    * Name of position type (should be same as in css specification)

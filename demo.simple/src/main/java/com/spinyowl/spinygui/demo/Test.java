@@ -7,8 +7,6 @@ import com.spinyowl.spinygui.core.api.DefaultFrame;
 import com.spinyowl.spinygui.core.converter.NodeConverter;
 import com.spinyowl.spinygui.core.converter.StyleSheetConverter;
 import com.spinyowl.spinygui.core.converter.css.model.RuleSet;
-import com.spinyowl.spinygui.core.converter.css.model.StyleSheet;
-import com.spinyowl.spinygui.core.converter.css.model.selector.Selector;
 import com.spinyowl.spinygui.core.converter.css.parser.StyleSheetException;
 import com.spinyowl.spinygui.core.node.Element;
 import com.spinyowl.spinygui.core.node.Node;
@@ -16,6 +14,7 @@ import com.spinyowl.spinygui.core.node.Text;
 import com.spinyowl.spinygui.core.style.manager.DefaultStyleManger;
 import com.spinyowl.spinygui.core.style.manager.StyleManager;
 import com.spinyowl.spinygui.core.style.types.Color;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -47,7 +46,7 @@ public class Test {
            right: 50.2%;
         }
 
-        .test:hover {
+        button .test, .test:hover,  div > button .test {
           box-shadow: 1px 2px 1px red 1px 2px;
           background-color: white;
         }""";
@@ -70,6 +69,11 @@ public class Test {
     DefaultFrame frame = new DefaultFrame();
     frame.styleSheets().add(stylesheet);
     frame.defaultLayer().addChild(div);
+
+    List<RuleSet> rules = stylesheet.searchSpecificRules(testLabel);
+    for (RuleSet rule : rules) {
+      System.out.println(Arrays.toString(rule.selectors().toArray()) + " --- " + rule.specificity(testLabel));
+    }
 
     StyleManager styleManager = new DefaultStyleManger();
     styleManager.recalculateStyles(frame);
@@ -122,26 +126,26 @@ public class Test {
 
     List<RuleSet> ruleSets = stylesheet.ruleSets();
 
-    var labels = StyleSheet.searchElements(ruleSets.get(0), componentTree);
+    var labels = ruleSets.get(0).searchElements(componentTree);
     for (Node node : labels) {
       assert (Objects.equals("label", node.nodeName()));
     }
-    var test = StyleSheet.searchElements(ruleSets.get(1), componentTree);
+    var test = ruleSets.get(0).searchElements(componentTree);
     for (Element node : test) {
       assert (Objects.equals("test", node.getAttribute("class")));
     }
-    var buttons = StyleSheet.searchElements(ruleSets.get(2), componentTree);
+    var buttons = ruleSets.get(0).searchElements(componentTree);
     for (Node node : buttons) {
       assert (Objects.equals("button", node.nodeName()));
     }
 
-    var siblingParagraphs = StyleSheet.searchElements(ruleSets.get(3), componentTree);
+    var siblingParagraphs = ruleSets.get(0).searchElements(componentTree);
     assert siblingParagraphs.size() == 1;
     Element first = siblingParagraphs.get(0);
     assert (Objects.equals("p", first.nodeName()));
     assert (Objects.equals(" sibling ", ((Text) first.childNodes().get(0)).content()));
 
-    var immediateParagraphs = StyleSheet.searchElements(ruleSets.get(4), componentTree);
+    var immediateParagraphs = ruleSets.get(0).searchElements(componentTree);
     assert immediateParagraphs.size() == 1;
     first = immediateParagraphs.get(0);
     assert (Objects.equals("p", first.nodeName()));

@@ -1,6 +1,7 @@
 package com.spinyowl.spinygui.core.converter.css.model.selector.simple;
 
 import com.spinyowl.spinygui.core.converter.css.model.selector.Selector;
+import com.spinyowl.spinygui.core.converter.css.model.selector.Specificity;
 import com.spinyowl.spinygui.core.node.Element;
 import lombok.Data;
 
@@ -17,4 +18,8 @@ public class ElementSelector implements Selector {
     return node.nodeName().equals(nodeName);
   }
 
+  @Override
+  public Specificity specificity() {
+    return Specificity.of(1, 0, 0);
+  }
 }

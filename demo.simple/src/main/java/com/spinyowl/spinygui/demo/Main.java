@@ -6,8 +6,8 @@ import static com.spinyowl.spinygui.core.node.NodeBuilder.div;
 import static com.spinyowl.spinygui.core.node.NodeBuilder.input;
 import static com.spinyowl.spinygui.core.node.NodeBuilder.radioButton;
 import static com.spinyowl.spinygui.core.node.NodeBuilder.text;
-import com.spinyowl.spinygui.core.api.DefaultFrame;
 import com.spinyowl.spinygui.core.api.Frame;
+import com.spinyowl.spinygui.core.api.DefaultFrame;
 import com.spinyowl.spinygui.core.converter.NodeConverter;
 import com.spinyowl.spinygui.core.node.Node;
 import com.spinyowl.spinygui.core.util.NodeUtilities;
@@ -36,7 +36,7 @@ public class Main {
         radioButton("radio", "firstValue")
     );
 
-    Frame frame = new DefaultFrame();// we can obtain frame also using window.getFrame()
+    Frame frame = new DefaultFrame();
     frame.defaultLayer().addChild(element);
     log.info(
         String.valueOf(NodeUtilities.getFrame(input("password", "myPass", "PASS_@!@#&")) == frame));
@@ -44,26 +44,24 @@ public class Main {
     String xml = NodeConverter.toXml(element, false);
     log.info(xml);
     //language=XML
-    String xml2 =
-        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
-            "<div>" +
-            "  <button>asdfasdfasd</button>"
-            + "  " +
-            "<button>\n" +
-            "    s\n" +
-            "    \n" +
-            "    Hello World\n\n" +
-
-            "    <pre _pre=\"true\">\n" +
-            "    s\n" +
-            "    \n" +
-            "    Hello World\n" +
-            "    </pre>" +
-            "    <div>Bold</div>" +
-            "  </button>" +
-            "  <input name=\"password\" value=\"PASS_@!@#&amp;\" />" +
-            "  <radio-button />" +
-            "</div>";
+    String xml2 = """
+        <?xml version="1.0" encoding="UTF-8"?>
+        <div>
+          <button>asdfasdfasd</button>
+        <button>
+          s
+          Hello World
+          <pre _pre="true">
+            s
+            
+            Hello World
+          </pre>
+          <div>Bold</div>  
+        </button>  
+        <input name="password" value="PASS_@!@#&amp;" />  
+        <radio-button />
+        </div>
+        """;
     Node unmarshal = NodeConverter.fromXml(xml2);
 
     log.info("UNMARSHALLING IS FINISHED");

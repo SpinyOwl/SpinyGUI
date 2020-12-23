@@ -1,6 +1,7 @@
 package com.spinyowl.spinygui.core.converter.css.model.selector.simple;
 
 import com.spinyowl.spinygui.core.converter.css.model.selector.Selector;
+import com.spinyowl.spinygui.core.converter.css.model.selector.Specificity;
 import com.spinyowl.spinygui.core.node.Element;
 import java.util.Arrays;
 import lombok.Data;
@@ -12,7 +13,7 @@ import lombok.Data;
  * name.
  */
 @Data
-public class ClassNameSelector implements Selector {
+public class ClassAttributeSelector implements Selector {
 
   private final String className;
 
@@ -26,4 +27,8 @@ public class ClassNameSelector implements Selector {
     return false;
   }
 
+  @Override
+  public Specificity specificity() {
+    return Specificity.of(0, 1, 0);
+  }
 }

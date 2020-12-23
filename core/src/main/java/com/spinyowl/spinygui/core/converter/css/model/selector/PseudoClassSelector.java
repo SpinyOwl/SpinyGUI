@@ -12,4 +12,8 @@ package com.spinyowl.spinygui.core.converter.css.model.selector;
  */
 public interface PseudoClassSelector extends Selector {
 
+  @Override
+  default Specificity specificity() {
+    return Specificity.of(0, 1, 0);
+  }
 }

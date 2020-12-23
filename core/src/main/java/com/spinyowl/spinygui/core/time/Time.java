@@ -35,7 +35,6 @@ public final class Time {
    * @throws NullPointerException in case if provided instance is null.
    */
   public static void setTimeProvider(TimeProvider instance) {
-    Objects.requireNonNull(instance);
-    Time.instance = instance;
+    Time.instance = Objects.requireNonNull(instance);
   }
 }

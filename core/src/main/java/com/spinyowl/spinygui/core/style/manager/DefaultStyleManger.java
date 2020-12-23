@@ -25,7 +25,7 @@ public class DefaultStyleManger implements StyleManager {
   }
 
   private void updateStylesFromStyleSheet(Element element, StyleSheet styleSheet) {
-    for (RuleSet ruleSet : StyleSheet.searchRules(styleSheet, element)) {
+    for (RuleSet ruleSet : styleSheet.searchSpecificRules(element)) {
       for (Declaration<?> p : ruleSet.declarations()) {
 
         updateStylesFromStyleSheet(element, p);

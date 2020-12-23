@@ -3,7 +3,7 @@ package com.spinyowl.spinygui.core.converter.css.parser.visitor;
 import com.spinyowl.spinygui.core.converter.css.model.selector.Selector;
 import com.spinyowl.spinygui.core.converter.css.model.selector.Selectors;
 import com.spinyowl.spinygui.core.converter.css.model.selector.pseudo_class.HoverSelector;
-import com.spinyowl.spinygui.core.converter.css.model.selector.simple.ClassNameSelector;
+import com.spinyowl.spinygui.core.converter.css.model.selector.simple.ClassAttributeSelector;
 import com.spinyowl.spinygui.core.converter.css.model.selector.simple.ElementSelector;
 import com.spinyowl.spinygui.core.converter.css.parser.antlr.CSS3BaseVisitor;
 import com.spinyowl.spinygui.core.converter.css.parser.antlr.CSS3Parser;
@@ -89,6 +89,6 @@ public class SelectorVisitor extends CSS3BaseVisitor<List<Selector>> {
 
   @Override
   public List<Selector> visitClassName(CSS3Parser.ClassNameContext ctx) {
-    return List.of(new ClassNameSelector(ctx.ident().getText()));
+    return List.of(new ClassAttributeSelector(ctx.ident().getText()));
   }
 }

@@ -15,4 +15,16 @@ public interface Selector {
    * @return true if provided node could be selected using this selector.
    */
   boolean test(Element element);
+
+  Specificity specificity();
+
+  static Selector mostSpecific(Selector left, Selector right) {
+    if (left == null) {
+      return right;
+    }
+    if (right == null) {
+      return left;
+    }
+    return left.specificity().compareTo(right.specificity()) > 0 ? left : right;
+  }
 }
