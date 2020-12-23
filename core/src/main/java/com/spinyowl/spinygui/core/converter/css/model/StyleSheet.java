@@ -38,7 +38,7 @@ public class StyleSheet {
 
   /**
    * Used to search rules in stylesheet that are correspond to specified element and filter out less
-   * specific selectors from result.
+   * specific selectors from result. Sorted by specificity.
    *
    * @param element element to search rules.
    * @return set of rules that are correspond to specified element.
@@ -51,6 +51,7 @@ public class StyleSheet {
             .reduce(Selector::mostSpecific)
             .map(s -> new RuleSet(List.of(s), rs.declarations())).orElse(null)
         ).filter(Objects::nonNull)
+        .sorted(Comparator.comparing(r -> r.specificity(element)))
         .collect(Collectors.toList());
   }
 

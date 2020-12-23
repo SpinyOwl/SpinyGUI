@@ -46,7 +46,7 @@ public class Test {
            right: 50.2%;
         }
 
-        button .test, .test:hover,  div > button .test {
+        button .test, .test:hover {
           box-shadow: 1px 2px 1px red 1px 2px;
           background-color: white;
         }""";
