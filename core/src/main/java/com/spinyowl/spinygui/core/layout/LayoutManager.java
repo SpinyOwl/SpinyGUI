@@ -1,6 +1,5 @@
 package com.spinyowl.spinygui.core.layout;
 
-import com.spinyowl.spinygui.core.api.Frame;
 import com.spinyowl.spinygui.core.node.Element;
 import com.spinyowl.spinygui.core.style.types.Display;
 
@@ -16,13 +15,6 @@ public interface LayoutManager {
    * @param layout      layout to register.
    */
   void registerLayout(Display displayType, Layout layout);
-
-  /**
-   * Used to layout frame layers and all of their child components.
-   *
-   * @param frame frame to lay out.
-   */
-  void layout(Frame frame);
 
   /**
    * Used to layout element and all of it's child components.

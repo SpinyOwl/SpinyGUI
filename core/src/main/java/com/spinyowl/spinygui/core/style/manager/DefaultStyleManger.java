@@ -1,6 +1,6 @@
 package com.spinyowl.spinygui.core.style.manager;
 
-import com.spinyowl.spinygui.core.api.DefaultFrame;
+import com.spinyowl.spinygui.core.node.Frame;
 import com.spinyowl.spinygui.core.converter.css.model.Declaration;
 import com.spinyowl.spinygui.core.converter.css.model.StyleSheet;
 import com.spinyowl.spinygui.core.node.Element;
@@ -11,8 +11,8 @@ import com.spinyowl.spinygui.core.node.Element;
 public class DefaultStyleManger implements StyleManager {
 
   @Override
-  public void recalculateStyles(DefaultFrame frame) {
-    frame.layers().forEach(layer -> frame.styleSheets()
+  public void recalculateStyles(Frame frame) {
+    frame.children().forEach(layer -> frame.styleSheets()
         .forEach(styleSheet -> updateStylesFromStyleSheet(layer, styleSheet)));
   }
 

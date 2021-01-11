@@ -1,10 +1,8 @@
 package com.spinyowl.spinygui.core.layout.impl;
 
-import com.spinyowl.spinygui.core.api.Frame;
 import com.spinyowl.spinygui.core.event.processor.EventProcessor;
 import com.spinyowl.spinygui.core.layout.Layout;
 import com.spinyowl.spinygui.core.layout.LayoutManager;
-import com.spinyowl.spinygui.core.layout.impl.flex.FlexLayout;
 import com.spinyowl.spinygui.core.node.Element;
 import com.spinyowl.spinygui.core.style.types.Display;
 import com.spinyowl.spinygui.core.util.NodeUtilities;
@@ -32,11 +30,6 @@ public class LayoutManagerImpl implements LayoutManager {
     Objects.requireNonNull(layout);
 
     layoutMap.put(displayType, layout);
-  }
-
-  @Override
-  public void layout(Frame frame) {
-    frame.layers().forEach(this::layout);
   }
 
   @Override

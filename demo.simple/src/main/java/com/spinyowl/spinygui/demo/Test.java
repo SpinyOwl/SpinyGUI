@@ -3,7 +3,7 @@ package com.spinyowl.spinygui.demo;
 import static com.spinyowl.spinygui.core.node.NodeBuilder.button;
 import static com.spinyowl.spinygui.core.node.NodeBuilder.div;
 import static com.spinyowl.spinygui.core.node.NodeBuilder.label;
-import com.spinyowl.spinygui.core.api.DefaultFrame;
+import com.spinyowl.spinygui.core.node.Frame;
 import com.spinyowl.spinygui.core.converter.NodeConverter;
 import com.spinyowl.spinygui.core.converter.StyleSheetConverter;
 import com.spinyowl.spinygui.core.converter.css.model.RuleSet;
@@ -66,9 +66,9 @@ public class Test {
     testLabel.hovered(true);
     assert (ruleSets.get(1).test(testLabel));
 
-    DefaultFrame frame = new DefaultFrame();
+    Frame frame = new Frame();
     frame.styleSheets().add(stylesheet);
-    frame.defaultLayer().addChild(div);
+    frame.addChild(div);
 
     List<RuleSet> rules = stylesheet.searchSpecificRules(testLabel);
     for (RuleSet rule : rules) {

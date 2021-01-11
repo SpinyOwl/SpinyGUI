@@ -5,11 +5,12 @@ import com.spinyowl.spinygui.core.event.EventTarget;
 import com.spinyowl.spinygui.core.event.listener.EventListener;
 import com.spinyowl.spinygui.core.style.NodeStyle;
 import com.spinyowl.spinygui.core.util.Reference;
+import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.stream.Collectors;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -19,34 +20,43 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
-@EqualsAndHashCode
+@EqualsAndHashCode(exclude = {"firstChild", "lastChild"})
 public class Element extends Node implements EventTarget {
 
   /**
    * Child nodes.
    */
-  private List<Node> childNodes = new CopyOnWriteArrayList<>();
+  private final List<Node> childNodes = new LinkedList<>();
+
+  @Getter(AccessLevel.NONE)
+  @Setter(AccessLevel.NONE)
+  private Node firstChild;
+
+  @Getter(AccessLevel.NONE)
+  @Setter(AccessLevel.NONE)
+  private Node lastChild;
+
   /**
    * Used to overload styles from stylesheet.
    */
   @Setter(AccessLevel.NONE)
-  private NodeStyle style = new NodeStyle();
+  private final NodeStyle style = new NodeStyle();
   /**
    * Styles from stylesheet. Updated by style manager every frame state changes.
    */
   @Setter(AccessLevel.NONE)
-  private NodeStyle calculatedStyle = new NodeStyle();
+  private final NodeStyle calculatedStyle = new NodeStyle();
   /**
    * Node attributes.
    */
   @Setter(AccessLevel.NONE)
-  private Map<String, String> attributes = new ConcurrentHashMap<>();
+  private final Map<String, String> attributes = new ConcurrentHashMap<>();
   /**
    * Map of listeners attached that should be attached for node and processed if any event
    * performed.
    */
   @Setter(AccessLevel.NONE)
-  private Map<Class<? extends Event>, List<? extends EventListener>> listenerMap = new ConcurrentHashMap<>();
+  private final Map<Class<? extends Event>, List<? extends EventListener>> listenerMap = new ConcurrentHashMap<>();
 
   public Element(String nodeName) {
     super(nodeName);
@@ -129,7 +139,23 @@ public class Element extends Node implements EventTarget {
    */
   @Override
   public void removeChild(Node node) {
-    childNodes.remove(node);
+    if (node != null) {
+      unlinkSiblings(node);
+      if (childNodes.remove(node)) {
+        node.parent(null);
+      }
+    }
+  }
+
+  private void unlinkSiblings(Node node) {
+    Node prev = node.previousSibling();
+    Node next = node.nextSibling();
+    if (prev != null) {
+      prev.nextSibling(next);
+    }
+    if (next != null) {
+      next.previousSibling(prev);
+    }
   }
 
   /**
@@ -150,7 +176,21 @@ public class Element extends Node implements EventTarget {
 
     childNodes.add(node);
 
+    linkSiblings(node);
+
     node.parent(this);
+  }
+
+  private void linkSiblings(Node node) {
+    if (firstChild == null) {
+      firstChild = node;
+    }
+
+    if (lastChild != null) {
+      lastChild.nextSibling(node);
+      node.previousSibling(lastChild);
+    }
+    lastChild = node;
   }
 
   /**
@@ -160,11 +200,27 @@ public class Element extends Node implements EventTarget {
    */
   @Override
   public List<Node> childNodes() {
-    return childNodes.stream().collect(Collectors.toUnmodifiableList());
+    return Collections.unmodifiableList(childNodes);
   }
 
   @Override
   public boolean hasChildNodes() {
     return !childNodes.isEmpty();
+  }
+
+  public Element nextElementSibling() {
+    Node next = nextSibling();
+    while (next != null && !(next instanceof Element)) {
+      next = next.nextSibling();
+    }
+    return (Element) next;
+  }
+
+  public Element previousElementSibling() {
+    Node previous = previousSibling();
+    while (previous != null && !(previous instanceof Element)) {
+      previous = previous.previousSibling();
+    }
+    return (Element) previous;
   }
 }

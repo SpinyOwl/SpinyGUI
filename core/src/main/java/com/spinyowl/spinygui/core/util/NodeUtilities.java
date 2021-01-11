@@ -1,11 +1,8 @@
 package com.spinyowl.spinygui.core.util;
 
-import com.spinyowl.spinygui.core.api.Frame;
-import com.spinyowl.spinygui.core.api.Layer;
 import com.spinyowl.spinygui.core.node.Node;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import org.joml.Vector2f;
 import org.joml.Vector2fc;
 
@@ -65,13 +62,4 @@ public final class NodeUtilities {
     return true;
   }
 
-  public static Frame getFrame(Node node) {
-    Objects.requireNonNull(node);
-    do {
-      if (node instanceof Layer) {
-        return ((Layer) node).frame();
-      }
-    } while ((node = node.parent()) != null);
-    return null;
-  }
 }

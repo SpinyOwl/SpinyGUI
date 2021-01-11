@@ -1,8 +1,8 @@
 package com.spinyowl.spinygui.core.converter.css.model.selector.combinator;
 
+import com.spinyowl.spinygui.core.converter.css.model.selector.CombinatorSelector;
 import com.spinyowl.spinygui.core.converter.css.model.selector.Selector;
 import com.spinyowl.spinygui.core.node.Element;
-import java.util.List;
 
 /**
  * Adjacent Sibling Selector (+)
@@ -15,7 +15,7 @@ import java.util.List;
  * <p>
  * Example: 'first + second'.
  */
-public class AdjacentSiblingSelector extends AbstractSiblingSelector {
+public class AdjacentSiblingSelector extends CombinatorSelector {
 
   public AdjacentSiblingSelector(Selector first, Selector second) {
     super(first, second);
@@ -23,12 +23,11 @@ public class AdjacentSiblingSelector extends AbstractSiblingSelector {
 
   @Override
   public boolean test(Element element) {
-    List<Element> siblings = allRowIfSecondIsAccepted(element);
-    int elementIndex = siblings.indexOf(element);
-    if (elementIndex > 0) {
-      return first.test(siblings.get(elementIndex - 1));
+    if (!second.test(element)) {
+      return false;
     }
-    return false;
+    Element previous = element.previousElementSibling();
+    return previous != null && first.test(previous);
   }
 
 }

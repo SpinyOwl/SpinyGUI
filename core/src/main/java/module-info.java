@@ -21,7 +21,6 @@ open module com.spinyowl.spinygui.core {
   requires org.apache.commons.lang3;
 
   exports com.spinyowl.spinygui.core.animation;
-  exports com.spinyowl.spinygui.core.api;
 
   exports com.spinyowl.spinygui.core.node;
   exports com.spinyowl.spinygui.core.node.intersection;

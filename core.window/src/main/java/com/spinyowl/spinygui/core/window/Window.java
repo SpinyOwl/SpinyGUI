@@ -1,11 +1,9 @@
 package com.spinyowl.spinygui.core.window;
 
-import com.spinyowl.spinygui.core.api.DefaultFrame;
-import com.spinyowl.spinygui.core.api.Frame;
+import com.spinyowl.spinygui.core.node.Frame;
 import com.spinyowl.spinygui.core.event.WindowCloseEvent;
 import com.spinyowl.spinygui.core.event.listener.EventListener;
 import com.spinyowl.spinygui.core.node.Node;
-import com.spinyowl.spinygui.core.window.service.Services;
 import java.util.List;
 import java.util.Objects;
 import org.joml.Vector2i;
@@ -29,95 +27,55 @@ public abstract class Window {
   private String title;
 
   protected Window() {
-    frame = new DefaultFrame();
+    frame = new Frame();
   }
 
   protected Window(Frame frame) {
     this.frame = Objects.requireNonNull(frame);
   }
 
-  public static Window createWindow(String title, int width, int height) {
-    return Services.getWindowService().createWindow(width, height, title);
-  }
+  public abstract long pointer();
 
-  public static Window createWindow(String title, int width, int height, Monitor monitor) {
-    return Services.getWindowService().createWindow(width, height, title, monitor);
-  }
-
-  public abstract long getPointer();
-
-  public String getTitle() {
+  public String title() {
     return title;
   }
 
-  public void setTitle(String title) {
-    if (title != null) {
-      this.title = title;
-      Services.getWindowService().setWindowTitle(this, title);
-    }
+  public void title(String title) {
+    this.title = Objects.requireNonNull(title);
   }
 
-  public Vector2ic getPosition() {
-    return Services.getWindowService().getWindowPosition(this);
-  }
+  public abstract Vector2ic position();
+  public abstract void position(Vector2i position);
+  public abstract void position(int x, int y);
 
-  public void position(Vector2i position) {
-    Services.getWindowService().setWindowPosition(this, position);
-  }
+  public abstract Vector2ic size();
+  public abstract void size(Vector2i size);
+  public abstract void size(int width, int height);
 
-  public void setPosition(int x, int y) {
-    position(new Vector2i(x, y));
-  }
+  public abstract boolean visible();
+  public abstract void setVisible(boolean visible);
 
-  public Vector2ic getSize() {
-    return Services.getWindowService().getWindowSize(this);
-  }
+  public abstract boolean closed();
+  public abstract void close();
 
-  public void setSize(Vector2i size) {
-    Services.getWindowService().setWindowSize(this, size);
-  }
-
-  public void setSize(int width, int height) {
-    this.setSize(new Vector2i(width, height));
-  }
-
-  public boolean isVisible() {
-    return Services.getWindowService().isWindowVisible(this);
-  }
-
-  public void setVisible(boolean visible) {
-    Services.getWindowService().setWindowVisible(this, visible);
-  }
-
-  public boolean isClosed() {
-    return closed;
-  }
-
-  public void close() {
-    closed = Services.getWindowService().closeWindow(this);
-  }
-
-  public abstract Monitor getMonitor();
-
-  public abstract void setMonitor(Monitor monitor);
+  public abstract Monitor monitor();
+  public abstract void monitor(Monitor monitor);
 
   public void addCloseEventListener(EventListener<WindowCloseEvent> listener) {
-    Objects.requireNonNull(listener);
-    frame.defaultLayer().addWindowCloseEventListener(listener);
+    frame.addWindowCloseEventListener(Objects.requireNonNull(listener));
   }
 
   public void removeCloseEventListener(EventListener<WindowCloseEvent> listener) {
-    Objects.requireNonNull(listener);
-    frame.defaultLayer().removeWindowCloseEventListener(listener);
+    frame.removeWindowCloseEventListener(Objects.requireNonNull(listener));
   }
 
   public List<EventListener<WindowCloseEvent>> getCloseEventListeners() {
-    return frame.defaultLayer().getWindowCloseEventListeners();
+    return frame.getWindowCloseEventListeners();
   }
 
-  public abstract Node getFocusOwner();
+  public abstract Node focusOwner();
 
-  public Frame getFrame() {
+  public Frame frame() {
     return frame;
   }
 }

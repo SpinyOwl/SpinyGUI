@@ -1,4 +1,4 @@
-package com.spinyowl.spinygui.core.layout.impl.flex;
+package com.spinyowl.spinygui.core.layout.impl;
 
 import static com.spinyowl.spinygui.core.style.types.length.Length.LType.PERCENT_TYPE;
 import static com.spinyowl.spinygui.core.style.types.length.Length.LType.PIXEL_TYPE;

@@ -1,9 +1,9 @@
 package com.spinyowl.spinygui.core.style.manager;
 
-import com.spinyowl.spinygui.core.api.DefaultFrame;
+import com.spinyowl.spinygui.core.node.Frame;
 
 public interface StyleManager {
 
-  void recalculateStyles(DefaultFrame frame);
+  void recalculateStyles(Frame frame);
 
 }

@@ -6,11 +6,9 @@ import static com.spinyowl.spinygui.core.node.NodeBuilder.div;
 import static com.spinyowl.spinygui.core.node.NodeBuilder.input;
 import static com.spinyowl.spinygui.core.node.NodeBuilder.radioButton;
 import static com.spinyowl.spinygui.core.node.NodeBuilder.text;
-import com.spinyowl.spinygui.core.api.Frame;
-import com.spinyowl.spinygui.core.api.DefaultFrame;
 import com.spinyowl.spinygui.core.converter.NodeConverter;
+import com.spinyowl.spinygui.core.node.Frame;
 import com.spinyowl.spinygui.core.node.Node;
-import com.spinyowl.spinygui.core.util.NodeUtilities;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -36,10 +34,11 @@ public class Main {
         radioButton("radio", "firstValue")
     );
 
-    Frame frame = new DefaultFrame();
-    frame.defaultLayer().addChild(element);
+    Frame frame = new Frame();
+    frame.addChild(element);
     log.info(
-        String.valueOf(NodeUtilities.getFrame(input("password", "myPass", "PASS_@!@#&")) == frame));
+        String.valueOf(input(INPUT_PASSWORD, "myPass", "PASS_@!@#&").frame() == frame)); // false
+    log.info(String.valueOf(element.children().get(2).frame() == frame)); // true
 
     String xml = NodeConverter.toXml(element, false);
     log.info(xml);

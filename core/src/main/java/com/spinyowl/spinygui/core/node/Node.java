@@ -1,6 +1,5 @@
 package com.spinyowl.spinygui.core.node;
 
-import com.spinyowl.spinygui.core.api.Frame;
 import com.spinyowl.spinygui.core.node.intersection.Intersection;
 import com.spinyowl.spinygui.core.node.intersection.Intersections;
 import java.util.List;
@@ -27,8 +26,8 @@ import org.joml.Vector2f;
  */
 @Getter
 @Setter
-@EqualsAndHashCode(exclude = "parent")
-@ToString(exclude = "parent")
+@EqualsAndHashCode(exclude = {"parent", "nextSibling", "previousSibling"})
+@ToString(exclude = {"parent", "nextSibling", "previousSibling"})
 @RequiredArgsConstructor
 public abstract class Node {
 
@@ -80,6 +79,12 @@ public abstract class Node {
   @NonNull
   private Intersection intersection = Intersections.getDefaultIntersection();
 
+  @Setter(AccessLevel.MODULE)
+  private Node nextSibling;
+
+  @Setter(AccessLevel.MODULE)
+  private Node previousSibling;
+
   /**
    * Used to set parent node.
    *
@@ -114,8 +119,7 @@ public abstract class Node {
   public abstract void removeChild(Node node);
 
   /**
-   * Returns a collection of a node's child nodes, as {@code
-   * List<Node>} object.
+   * Returns a collection of a node's child nodes, as {@code List<Node>} object.
    * <p>
    * The nodes in the collection are sorted as they was added to the element.
    * <p>
@@ -134,8 +138,7 @@ public abstract class Node {
   public abstract boolean hasChildNodes();
 
   /**
-   * Returns a collection of an element's child elements, as an
-   * {@code List<Element>} object.
+   * Returns a collection of an element's child elements, as an {@code List<Element>} object.
    * <p>
    * The elements in the collection are sorted as they was added tp the element.
    *

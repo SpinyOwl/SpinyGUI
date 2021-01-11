@@ -1,6 +1,6 @@
 package com.spinyowl.spinygui.core.system.event.processor;
 
-import com.spinyowl.spinygui.core.api.Frame;
+import com.spinyowl.spinygui.core.node.Frame;
 import com.spinyowl.spinygui.core.system.event.SystemEvent;
 import com.spinyowl.spinygui.core.system.event.listener.SystemEventListener;
 import com.spinyowl.spinygui.core.system.event.provider.SystemEventListenerProvider;

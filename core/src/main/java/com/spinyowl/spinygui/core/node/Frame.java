@@ -1,64 +1,39 @@
-package com.spinyowl.spinygui.core.api;
+package com.spinyowl.spinygui.core.node;
 
+import com.spinyowl.spinygui.core.converter.css.model.StyleSheet;
 import com.spinyowl.spinygui.core.event.WindowCloseEvent;
 import com.spinyowl.spinygui.core.event.listener.EventListener;
-import com.spinyowl.spinygui.core.node.Element;
 import java.util.List;
 import java.util.Objects;
-import lombok.AccessLevel;
+import java.util.concurrent.CopyOnWriteArrayList;
 import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
 import lombok.ToString;
 
-/**
- * Layer class is root container for all nodes in layer. Contains root node of layer - layer
- * container, list of stylesheets which should be used to calculate node styles
- */
-@Getter
-@Setter
-@ToString(exclude = "frame")
-@EqualsAndHashCode(exclude = "frame")
-public class Layer extends Element {
+@ToString
+@EqualsAndHashCode
+public class Frame extends Element {
 
   /**
-   * Parent frame.
+   * List of stylesheets attached to frame.
    */
-  @Setter(AccessLevel.NONE)
-  private Frame frame;
+  protected final List<StyleSheet> styleSheets = new CopyOnWriteArrayList<>();
 
   /**
-   * Determines if  current layer allow to pass events to bottom layer if event wasn't handled by
-   * components of this layer.
+   * Default constructor which provide {@code "frame"} string to super constructor.
    */
-  private boolean eventPassable = true;
-
-  /**
-   * Determines if current layer and all of it components can receive events.
-   */
-  private boolean eventReceivable = true;
-
-  public Layer() {
-    super("layer");
+  public Frame() {
+    super("frame");
   }
 
   /**
-   * Used to attach layer to frame.
+   * Returns editable list of stylesheets attached to frame.
    *
-   * @param frame frame to attach.
+   * @return editable list of stylesheets attached to frame.
    */
-  protected void frame(Frame frame) {
-    if (frame == this.frame) {
-      return;
-    }
-    if (this.frame != null) {
-      this.frame.removeLayer(this);
-    }
-    this.frame = frame;
-    if (frame != null) {
-      frame.addLayer(this);
-    }
+  public List<StyleSheet> styleSheets() {
+    return styleSheets;
   }
+
 
   /**
    * Shorthand to add window close event listener.
@@ -89,5 +64,31 @@ public class Layer extends Element {
    */
   public List<EventListener<WindowCloseEvent>> getWindowCloseEventListeners() {
     return getListeners(WindowCloseEvent.class);
+  }
+
+  public Element getFocusedElement() {
+    return findFocused(this);
+  }
+
+  private Element findFocused(Element element) {
+    if (element.focused()) {
+      return element;
+    }
+    return findFocused(element.children());
+  }
+
+  private Element findFocused(List<? extends Element> elements) {
+    for (Element element : elements) {
+      Element focused = findFocused(element);
+      if (focused != null) {
+        return focused;
+      }
+    }
+    return null;
+  }
+
+  @Override
+  public Frame frame() {
+    return this;
   }
 }
