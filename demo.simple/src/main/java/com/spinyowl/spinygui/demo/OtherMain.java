@@ -3,12 +3,12 @@ package com.spinyowl.spinygui.demo;
 import static com.spinyowl.spinygui.core.node.NodeBuilder.button;
 import static com.spinyowl.spinygui.core.node.NodeBuilder.div;
 import static com.spinyowl.spinygui.core.node.NodeBuilder.label;
-import com.spinyowl.spinygui.core.node.Frame;
 import com.spinyowl.spinygui.core.converter.NodeConverter;
 import com.spinyowl.spinygui.core.converter.StyleSheetConverter;
 import com.spinyowl.spinygui.core.converter.css.model.RuleSet;
 import com.spinyowl.spinygui.core.converter.css.parser.StyleSheetException;
 import com.spinyowl.spinygui.core.node.Element;
+import com.spinyowl.spinygui.core.node.Frame;
 import com.spinyowl.spinygui.core.node.Node;
 import com.spinyowl.spinygui.core.node.Text;
 import com.spinyowl.spinygui.core.style.manager.DefaultStyleManger;
@@ -18,13 +18,12 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class Test {
+public class OtherMain {
 
-  public static void main(String[] args) throws Exception {
+  public static void main(String[] args)  {
     createFromCSS();
     searchComponents();
     parseText();
@@ -72,7 +71,7 @@ public class Test {
 
     List<RuleSet> rules = stylesheet.searchSpecificRules(testLabel);
     for (RuleSet rule : rules) {
-      System.out.println(Arrays.toString(rule.selectors().toArray()) + " --- " + rule.specificity(testLabel));
+      log.info(Arrays.toString(rule.selectors().toArray()) + " --- " + rule.specificity(testLabel));
     }
 
     StyleManager styleManager = new DefaultStyleManger();
@@ -81,7 +80,6 @@ public class Test {
     assert (Objects.equals(Color.RED, testLabel.calculatedStyle().color()));
   }
 
-  @SneakyThrows
   public static void searchComponents() {
     var css =
         """
@@ -107,6 +105,7 @@ public class Test {
     var stylesheet = StyleSheetConverter.createFromCSS(css);
 
     var xml = """
+      <frame>
         <div id="1">
             <div id="2" class="test">
                 <label id="3">Label 1</label>
@@ -121,7 +120,9 @@ public class Test {
             </div>
             <p> sibling </p>
             <p> sibling 2 </p>
-        </div>""";
+        </div>
+      </frame>
+""";
     var componentTree = (Element) NodeConverter.fromXml(xml);
 
     List<RuleSet> ruleSets = stylesheet.ruleSets();
@@ -158,6 +159,6 @@ public class Test {
   public static void parseText() {
     var xml = "<div>just a text</div>";
     var componentTree = NodeConverter.fromXml(xml);
-    log.info("Component tree: {}", componentTree);
+    log.info("Component tree: {}", NodeConverter.toXml(componentTree));
   }
 }

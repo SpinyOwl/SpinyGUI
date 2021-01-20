@@ -1,27 +1,31 @@
 package com.spinyowl.spinygui.core.converter;
 
+import static com.spinyowl.spinygui.core.node.Frame.FRAME_TAG_NAME;
 import com.spinyowl.spinygui.core.node.Element;
 import com.spinyowl.spinygui.core.node.EmptyElement;
+import com.spinyowl.spinygui.core.node.Frame;
 import com.spinyowl.spinygui.core.node.Node;
 import com.spinyowl.spinygui.core.node.Text;
+import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.List;
 import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
-import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
 
 /**
  * Node marshaller. Used to convert node to xml and vise versa.
@@ -116,25 +120,31 @@ public final class NodeConverter {
 
   // unmarshaller section
 
-  @SneakyThrows
-  public static Node fromXml(String xml) {
-    if (xml == null || xml.isEmpty()) {
-      return null;
+  public static Node fromXml(String xml) throws ParseException {
+    try {
+      if (xml == null || xml.isEmpty()) {
+        return null;
+      }
+
+      DocumentBuilderFactory f = DocumentBuilderFactory.newDefaultInstance();
+      f.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, "");
+      f.setAttribute(XMLConstants.ACCESS_EXTERNAL_SCHEMA, "");
+      DocumentBuilder documentBuilder = f.newDocumentBuilder();
+
+      InputSource inputSource = new InputSource();
+      inputSource.setCharacterStream(new StringReader((xml)));
+      Document document = documentBuilder.parse(inputSource);
+
+      return createNodeFromContent(document.getDocumentElement(), new NodeConverterContext());
+    } catch (ParserConfigurationException | SAXException | IOException e) {
+      throw new ParseException(e);
     }
-
-    DocumentBuilderFactory f = DocumentBuilderFactory.newDefaultInstance();
-    f.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, "");
-    f.setAttribute(XMLConstants.ACCESS_EXTERNAL_SCHEMA, "");
-    DocumentBuilder documentBuilder = f.newDocumentBuilder();
-
-    InputSource inputSource = new InputSource();
-    inputSource.setCharacterStream(new StringReader((xml)));
-    Document document = documentBuilder.parse(inputSource);
-
-    return createNodeFromContent(document.getDocumentElement());
   }
 
-  private static Node createNodeFromContent(org.w3c.dom.Node node) {
+  private static Node createNodeFromContent(
+      org.w3c.dom.Node node,
+      NodeConverterContext context
+  ) {
     if (node instanceof org.w3c.dom.Text) {
       org.w3c.dom.Text text = (org.w3c.dom.Text) node;
       String wholeText = text.getWholeText();
@@ -143,7 +153,7 @@ public final class NodeConverter {
       }
       return new Text(wholeText);
     } else if (node instanceof org.w3c.dom.Element) {
-      return createNodeFromElement((org.w3c.dom.Element) node);
+      return createNodeFromElement((org.w3c.dom.Element) node, context);
     } else {
       log.warn("Content type '{}' is not supported. Content value '{}'.", node.getNodeType(),
           node.getNodeValue());
@@ -151,32 +161,63 @@ public final class NodeConverter {
     }
   }
 
-  private static Node createNodeFromElement(org.w3c.dom.Element element) {
+  private static Node createNodeFromElement(
+      org.w3c.dom.Element element,
+      NodeConverterContext context
+  ) {
     String tagName = element.getTagName().toLowerCase();
-    Node instance;
+    Node node;
     if (EMPTY_ELEMENTS.contains(tagName)) {
-      instance = new EmptyElement(tagName);
+      node = new EmptyElement(tagName);
     } else {
-      instance = new Element(tagName);
-      NodeList childNodes = element.getChildNodes();
-      for (int i = 0; i < childNodes.getLength(); i++) {
-        org.w3c.dom.Node c = childNodes.item(i);
-        try {
-          Node componentFromContent = createNodeFromContent(c);
-          if (componentFromContent != null) {
-            instance.addChild(componentFromContent);
-          }
-        } catch (Exception e) {
-          log.error(e.getMessage(), e);
-        }
+      if(FRAME_TAG_NAME.equals(tagName)) {
+        node = createFrame(context);
+      } else {
+        node = new Element(tagName);
       }
+      createChildNodes(element, context, node);
     }
     NamedNodeMap attributes = element.getAttributes();
     for (int i = 0; i < attributes.getLength(); i++) {
       org.w3c.dom.Attr attr = (Attr) attributes.item(i);
-      instance.attributes().put(attr.getName(), attr.getValue());
+      node.attributes().put(attr.getName(), attr.getValue());
     }
+    context.hasRoot = true;
+    return node;
+  }
 
-    return instance;
+  private static void createChildNodes(
+      org.w3c.dom.Element element, NodeConverterContext context, Node node
+  ) {
+    NodeList childNodes = element.getChildNodes();
+    for (int i = 0; i < childNodes.getLength(); i++) {
+      org.w3c.dom.Node c = childNodes.item(i);
+      try {
+        Node componentFromContent = createNodeFromContent(c, context);
+        if (componentFromContent != null) {
+          node.addChild(componentFromContent);
+        }
+      } catch (Exception e) {
+        log.error(e.getMessage(), e);
+      }
+    }
+  }
+
+  private static Node createFrame(NodeConverterContext context) {
+    if(context.hasFrame) {
+      throw new IllegalStateException("Failed to parse node tree. There could be only one frame element.");
+    }
+    if(context.hasRoot) {
+      throw new IllegalStateException("Failed to parse node tree. Frame element should be the root element.");
+    }
+    context.hasFrame = true;
+    context.frame = new Frame();
+    return context.frame;
+  }
+
+  private static final class NodeConverterContext {
+    private boolean hasFrame;
+    private boolean hasRoot;
+    private Frame frame; // used for direct access to store stylesheets directly.
   }
 }

@@ -5,7 +5,7 @@ import java.security.PrivilegedActionException;
 /**
  * Defines an exception during parsing style sheet.
  */
-public class StyleSheetException extends Exception {
+public class StyleSheetException extends RuntimeException {
 
   /**
    * Constructs a new exception with {@code null} as its detail message. The cause is not
