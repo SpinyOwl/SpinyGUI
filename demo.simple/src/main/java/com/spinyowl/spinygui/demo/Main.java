@@ -1,6 +1,6 @@
 package com.spinyowl.spinygui.demo;
 
-import static com.spinyowl.spinygui.core.node.NodeBuilder.INPUT_PASSWORD;
+import static com.spinyowl.spinygui.core.node.NodeBuilder.TYPE_PASSWORD;
 import static com.spinyowl.spinygui.core.node.NodeBuilder.button;
 import static com.spinyowl.spinygui.core.node.NodeBuilder.div;
 import static com.spinyowl.spinygui.core.node.NodeBuilder.input;
@@ -30,14 +30,14 @@ public class Main {
             div(text("Bold")),
             button(text("\n\n\tFOrmantted text\n\t\n\n asdfasdfa\n"))
         ).with("name", "myAwesomeButton").with("id", "bid1"),
-        input(INPUT_PASSWORD, "myPass", "PASS_@!@#&"),
+        input(TYPE_PASSWORD, "myPass", "PASS_@!@#&"),
         radioButton("radio", "firstValue")
     );
 
     Frame frame = new Frame();
     frame.addChild(element);
     log.info(
-        String.valueOf(input(INPUT_PASSWORD, "myPass", "PASS_@!@#&").frame() == frame)); // false
+        String.valueOf(input(TYPE_PASSWORD, "myPass", "PASS_@!@#&").frame() == frame)); // false
     log.info(String.valueOf(element.children().get(2).frame() == frame)); // true
 
     String xml = NodeConverter.toXml(element, false);

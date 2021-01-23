@@ -120,7 +120,7 @@ public final class NodeConverter {
 
   // unmarshaller section
 
-  public static Node fromXml(String xml) throws ParseException {
+  public static Node fromXml(String xml) {
     try {
       if (xml == null || xml.isEmpty()) {
         return null;

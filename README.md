@@ -12,7 +12,7 @@ First implementation is known as https://github.com/SpinyOwl/legui
 New implementation should be more flexible.
 
 ## System requirements
-SpinyGUI requires Java 11+.
+SpinyGUI requires Java 15+.
 
 ## Links
 [LWJGL - Lightweight Java Game Library 3](https://github.com/LWJGL/lwjgl3)  
