@@ -16,7 +16,7 @@ public final class DefaultStyleSheetConverter implements StyleSheetConverter {
    * @param css css source
    * @return StyleSheet
    */
-  public StyleSheet convertFromCss(String css) {
+  public StyleSheet fromCss(String css) {
 
     try {
       var charStream = CharStreams.fromString(css);

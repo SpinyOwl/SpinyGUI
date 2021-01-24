@@ -4,7 +4,7 @@ import static com.spinyowl.spinygui.core.node.NodeBuilder.button;
 import static com.spinyowl.spinygui.core.node.NodeBuilder.div;
 import static com.spinyowl.spinygui.core.node.NodeBuilder.label;
 import com.spinyowl.spinygui.core.converter.DefaultStyleSheetConverter;
-import com.spinyowl.spinygui.core.converter.NodeConverter;
+import com.spinyowl.spinygui.core.converter.DefaultNodeConverter;
 import com.spinyowl.spinygui.core.converter.StyleSheetConverter;
 import com.spinyowl.spinygui.core.converter.css.model.RuleSet;
 import com.spinyowl.spinygui.core.converter.css.parser.StyleSheetException;
@@ -52,7 +52,7 @@ public class OtherMain {
         }""";
 
     StyleSheetConverter converter = new DefaultStyleSheetConverter();
-    var stylesheet = converter.convertFromCss(css);
+    var stylesheet = converter.fromCss(css);
 
     Element testLabel = label(Map.of("class", "test"));
 
@@ -105,7 +105,7 @@ public class OtherMain {
             """;
 
     StyleSheetConverter converter = new DefaultStyleSheetConverter();
-    var stylesheet = converter.convertFromCss(css);
+    var stylesheet = converter.fromCss(css);
 
     var xml = """
               <frame>
@@ -126,7 +126,7 @@ public class OtherMain {
                 </div>
               </frame>
         """;
-    var componentTree = (Element) NodeConverter.fromXml(xml);
+    var componentTree = (Element) new DefaultNodeConverter().fromXml(xml);
 
     List<RuleSet> ruleSets = stylesheet.ruleSets();
 
@@ -161,7 +161,8 @@ public class OtherMain {
 
   public static void parseText() {
     var xml = "<div>just a text</div>";
-    var componentTree = NodeConverter.fromXml(xml);
-    log.info("Component tree: {}", NodeConverter.toXml(componentTree));
+    DefaultNodeConverter nodeConverter = new DefaultNodeConverter();
+    var componentTree = nodeConverter.fromXml(xml);
+    log.info("Component tree: {}", nodeConverter.toXml(componentTree));
   }
 }
