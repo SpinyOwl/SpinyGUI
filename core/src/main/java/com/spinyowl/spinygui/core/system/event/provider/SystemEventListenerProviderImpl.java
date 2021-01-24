@@ -10,7 +10,7 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class SystemEventListenerProviderImpl implements SystemEventListenerProvider {
 
-  private Map<Class<? extends SystemEvent>,
+  private final Map<Class<? extends SystemEvent>,
       SystemEventListener<? extends SystemEvent>> listenerMap = new ConcurrentHashMap<>();
 
   /**
@@ -31,8 +31,8 @@ public class SystemEventListenerProviderImpl implements SystemEventListenerProvi
    * @param systemEventListener system event listener.
    */
   @Override
-  public <E extends SystemEvent> void listener(Class<E> eventClass, SystemEventListener<E> systemEventListener) {
+  public <E extends SystemEvent> void listener(
+      Class<E> eventClass, SystemEventListener<E> systemEventListener) {
     listenerMap.put(eventClass, systemEventListener);
-
   }
 }

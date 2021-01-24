@@ -3,6 +3,7 @@ package com.spinyowl.spinygui.demo;
 import static com.spinyowl.spinygui.core.node.NodeBuilder.button;
 import static com.spinyowl.spinygui.core.node.NodeBuilder.div;
 import static com.spinyowl.spinygui.core.node.NodeBuilder.label;
+import com.spinyowl.spinygui.core.converter.DefaultStyleSheetConverter;
 import com.spinyowl.spinygui.core.converter.NodeConverter;
 import com.spinyowl.spinygui.core.converter.StyleSheetConverter;
 import com.spinyowl.spinygui.core.converter.css.model.RuleSet;
@@ -23,7 +24,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class OtherMain {
 
-  public static void main(String[] args)  {
+  public static void main(String[] args) {
     createFromCSS();
     searchComponents();
     parseText();
@@ -50,7 +51,8 @@ public class OtherMain {
           background-color: white;
         }""";
 
-    var stylesheet = StyleSheetConverter.createFromCSS(css);
+    StyleSheetConverter converter = new DefaultStyleSheetConverter();
+    var stylesheet = converter.convertFromCss(css);
 
     Element testLabel = label(Map.of("class", "test"));
 
@@ -102,27 +104,28 @@ public class OtherMain {
             }
             """;
 
-    var stylesheet = StyleSheetConverter.createFromCSS(css);
+    StyleSheetConverter converter = new DefaultStyleSheetConverter();
+    var stylesheet = converter.convertFromCss(css);
 
     var xml = """
-      <frame>
-        <div id="1">
-            <div id="2" class="test">
-                <label id="3">Label 1</label>
-            </div>
-            <button id="4" class="test"/>
-            <div id="5" class="test">
-                <div id="6">
-                    <div id="7" class="test">
-                        <label id="8">Label 1</label>
+              <frame>
+                <div id="1">
+                    <div id="2" class="test">
+                        <label id="3">Label 1</label>
                     </div>
+                    <button id="4" class="test"/>
+                    <div id="5" class="test">
+                        <div id="6">
+                            <div id="7" class="test">
+                                <label id="8">Label 1</label>
+                            </div>
+                        </div>
+                    </div>
+                    <p> sibling </p>
+                    <p> sibling 2 </p>
                 </div>
-            </div>
-            <p> sibling </p>
-            <p> sibling 2 </p>
-        </div>
-      </frame>
-""";
+              </frame>
+        """;
     var componentTree = (Element) NodeConverter.fromXml(xml);
 
     List<RuleSet> ruleSets = stylesheet.ruleSets();
