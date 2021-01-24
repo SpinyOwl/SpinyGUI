@@ -1,6 +1,5 @@
 open module com.spinyowl.spinygui.core {
 
-  requires transitive java.xml;
   requires transitive org.joml;
   requires static lombok;
 
@@ -11,7 +10,6 @@ open module com.spinyowl.spinygui.core {
   requires org.lwjgl.yoga.natives;
 
   requires io.github.classgraph;
-  requires org.antlr.antlr4.runtime;
 
   requires transitive org.slf4j;
   requires transitive ch.qos.logback.core;
@@ -25,27 +23,12 @@ open module com.spinyowl.spinygui.core {
   exports com.spinyowl.spinygui.core.node;
   exports com.spinyowl.spinygui.core.node.intersection;
 
-  exports com.spinyowl.spinygui.core.converter;
-  exports com.spinyowl.spinygui.core.converter.annotation;
-
-  exports com.spinyowl.spinygui.core.converter.css;
-  exports com.spinyowl.spinygui.core.converter.css.extractor;
-  exports com.spinyowl.spinygui.core.converter.css.extractor.impl;
-  exports com.spinyowl.spinygui.core.converter.css.model;
-  exports com.spinyowl.spinygui.core.converter.css.parser;
-  exports com.spinyowl.spinygui.core.converter.css.parser.antlr;
-  exports com.spinyowl.spinygui.core.converter.css.parser.visitor;
-  exports com.spinyowl.spinygui.core.converter.css.model.property;
-  exports com.spinyowl.spinygui.core.converter.css.model.property.border;
-  exports com.spinyowl.spinygui.core.converter.css.model.property.border.radius;
-  exports com.spinyowl.spinygui.core.converter.css.model.property.dimension;
-  exports com.spinyowl.spinygui.core.converter.css.model.property.margin;
-  exports com.spinyowl.spinygui.core.converter.css.model.property.padding;
-  exports com.spinyowl.spinygui.core.converter.css.model.property.position;
-  exports com.spinyowl.spinygui.core.converter.css.model.selector;
-  exports com.spinyowl.spinygui.core.converter.css.model.selector.combinator;
-  exports com.spinyowl.spinygui.core.converter.css.model.selector.pseudo_class;
-  exports com.spinyowl.spinygui.core.converter.css.model.selector.simple;
+  exports com.spinyowl.spinygui.core.node.style;
+  exports com.spinyowl.spinygui.core.node.style.types;
+  exports com.spinyowl.spinygui.core.node.style.types.background;
+  exports com.spinyowl.spinygui.core.node.style.types.border;
+  exports com.spinyowl.spinygui.core.node.style.types.flex;
+  exports com.spinyowl.spinygui.core.node.style.types.length;
 
   exports com.spinyowl.spinygui.core.event;
   exports com.spinyowl.spinygui.core.event.listener;
@@ -56,15 +39,21 @@ open module com.spinyowl.spinygui.core {
 
   exports com.spinyowl.spinygui.core.layout;
 
-  exports com.spinyowl.spinygui.core.style;
+  exports com.spinyowl.spinygui.core.style.stylesheet;
+  exports com.spinyowl.spinygui.core.style.stylesheet.atrule;
+  exports com.spinyowl.spinygui.core.style.stylesheet.property;
+  exports com.spinyowl.spinygui.core.style.stylesheet.property.border;
+  exports com.spinyowl.spinygui.core.style.stylesheet.property.border.radius;
+  exports com.spinyowl.spinygui.core.style.stylesheet.property.dimension;
+  exports com.spinyowl.spinygui.core.style.stylesheet.property.margin;
+  exports com.spinyowl.spinygui.core.style.stylesheet.property.padding;
+  exports com.spinyowl.spinygui.core.style.stylesheet.property.position;
+  exports com.spinyowl.spinygui.core.style.stylesheet.selector;
+  exports com.spinyowl.spinygui.core.style.stylesheet.selector.combinator;
+  exports com.spinyowl.spinygui.core.style.stylesheet.selector.pseudo_class;
+  exports com.spinyowl.spinygui.core.style.stylesheet.selector.simple;
 
   exports com.spinyowl.spinygui.core.style.manager;
-
-  exports com.spinyowl.spinygui.core.style.types;
-  exports com.spinyowl.spinygui.core.style.types.background;
-  exports com.spinyowl.spinygui.core.style.types.border;
-  exports com.spinyowl.spinygui.core.style.types.flex;
-  exports com.spinyowl.spinygui.core.style.types.length;
 
   exports com.spinyowl.spinygui.core.util;
   exports com.spinyowl.spinygui.core;

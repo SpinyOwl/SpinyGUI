@@ -1,9 +1,9 @@
 package com.spinyowl.spinygui.core.style.manager;
 
-import com.spinyowl.spinygui.core.node.Frame;
-import com.spinyowl.spinygui.core.converter.css.model.Declaration;
-import com.spinyowl.spinygui.core.converter.css.model.StyleSheet;
 import com.spinyowl.spinygui.core.node.Element;
+import com.spinyowl.spinygui.core.node.Frame;
+import com.spinyowl.spinygui.core.style.stylesheet.Declaration;
+import com.spinyowl.spinygui.core.style.stylesheet.StyleSheet;
 
 /**
  * Default style manager implementation.

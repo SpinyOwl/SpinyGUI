@@ -4,7 +4,7 @@ import com.spinyowl.spinygui.core.event.processor.EventProcessor;
 import com.spinyowl.spinygui.core.layout.Layout;
 import com.spinyowl.spinygui.core.layout.LayoutManager;
 import com.spinyowl.spinygui.core.node.Element;
-import com.spinyowl.spinygui.core.style.types.Display;
+import com.spinyowl.spinygui.core.node.style.types.Display;
 import com.spinyowl.spinygui.core.util.NodeUtilities;
 import java.util.Map;
 import java.util.Objects;

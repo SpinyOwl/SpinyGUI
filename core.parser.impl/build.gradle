@@ -1,0 +1,14 @@
+plugins {
+    id 'java-library'
+}
+dependencies {
+    api project(':core')
+    api project(':core.parser')
+
+    api group: 'org.apache.commons', name: 'commons-collections4', version: commons_collections_version
+    api group: 'org.apache.commons', name: 'commons-lang3', version: commons_lang_version
+    api group: 'org.antlr', name: 'antlr4-runtime', version: antlr4_version
+
+    api group: 'org.slf4j', name: 'slf4j-api', version: slf4j_version
+    api group: 'ch.qos.logback', name: 'logback-classic', version: logback_version
+}

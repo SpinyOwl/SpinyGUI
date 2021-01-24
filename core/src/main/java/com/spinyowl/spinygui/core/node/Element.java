@@ -3,7 +3,7 @@ package com.spinyowl.spinygui.core.node;
 import com.spinyowl.spinygui.core.event.Event;
 import com.spinyowl.spinygui.core.event.EventTarget;
 import com.spinyowl.spinygui.core.event.listener.EventListener;
-import com.spinyowl.spinygui.core.style.NodeStyle;
+import com.spinyowl.spinygui.core.node.style.NodeStyle;
 import com.spinyowl.spinygui.core.util.Reference;
 import java.util.Collections;
 import java.util.LinkedList;

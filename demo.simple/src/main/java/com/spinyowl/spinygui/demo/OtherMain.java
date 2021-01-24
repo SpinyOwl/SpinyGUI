@@ -3,18 +3,17 @@ package com.spinyowl.spinygui.demo;
 import static com.spinyowl.spinygui.core.node.NodeBuilder.button;
 import static com.spinyowl.spinygui.core.node.NodeBuilder.div;
 import static com.spinyowl.spinygui.core.node.NodeBuilder.label;
-import com.spinyowl.spinygui.core.converter.DefaultStyleSheetConverter;
-import com.spinyowl.spinygui.core.converter.DefaultNodeConverter;
-import com.spinyowl.spinygui.core.converter.StyleSheetConverter;
-import com.spinyowl.spinygui.core.converter.css.model.RuleSet;
-import com.spinyowl.spinygui.core.converter.css.parser.StyleSheetException;
+import com.spinyowl.spinygui.core.parser.StyleSheetConverter;
+import com.spinyowl.spinygui.core.parser.impl.DefaultNodeConverter;
+import com.spinyowl.spinygui.core.parser.impl.DefaultStyleSheetConverter;
+import com.spinyowl.spinygui.core.style.stylesheet.RuleSet;
 import com.spinyowl.spinygui.core.node.Element;
 import com.spinyowl.spinygui.core.node.Frame;
 import com.spinyowl.spinygui.core.node.Node;
 import com.spinyowl.spinygui.core.node.Text;
 import com.spinyowl.spinygui.core.style.manager.DefaultStyleManger;
 import com.spinyowl.spinygui.core.style.manager.StyleManager;
-import com.spinyowl.spinygui.core.style.types.Color;
+import com.spinyowl.spinygui.core.node.style.types.Color;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -30,7 +29,7 @@ public class OtherMain {
     parseText();
   }
 
-  public static void createFromCSS() throws StyleSheetException {
+  public static void createFromCSS() {
     String css = """
         @font-face {
             font-family: My Font Family;

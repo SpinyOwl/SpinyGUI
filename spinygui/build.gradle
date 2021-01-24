@@ -3,6 +3,8 @@ plugins {
 }
 dependencies {
     api project(':core')
+    api project(':core.parser')
+    api project(':core.parser.impl')
     api project(':core.window')
 //    api project(':backend.core')
 //    api project(':backend.glfwutil')

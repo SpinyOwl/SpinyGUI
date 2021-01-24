@@ -11,8 +11,6 @@ dependencies {
 
     api group: 'org.joml', name: 'joml', version: joml_version
 
-    api group: 'org.antlr', name: 'antlr4-runtime', version: antlr4_version
-
     api group: 'io.github.classgraph', name: 'classgraph', version: classgraph_version
 
     api group: 'org.lwjgl', name: 'lwjgl', version: lwjgl_version
