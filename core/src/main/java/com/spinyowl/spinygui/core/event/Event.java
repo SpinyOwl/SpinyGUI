@@ -1,10 +1,19 @@
 package com.spinyowl.spinygui.core.event;
 
 import com.spinyowl.spinygui.core.time.Time;
+import lombok.Builder.Default;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+import lombok.experimental.SuperBuilder;
 
 @Getter
-public abstract class Event<T extends EventTarget> {
+@Setter
+@EqualsAndHashCode
+@ToString
+@SuperBuilder
+public abstract class Event {
 
   /**
    * Element which cause event generation.
@@ -12,27 +21,19 @@ public abstract class Event<T extends EventTarget> {
   private final EventTarget source;
 
   /**
-   * Target element which event listeners should be processed.
+   * Target element to which the event was originally dispatched.
    */
-  private final T target;
+  private final EventTarget target;
+
+  /**
+   * Currently registered target for the event. This is the object to which the event is currently
+   * slated to be sent. It's possible this has been changed along the way through retargeting.
+   */
+  private EventTarget currentTarget;
 
   /**
    * TimeStamp of event.
    */
-  private final double timeStamp;
-
-  protected Event(T target) {
-    this(target, Time.getCurrentTime());
-  }
-
-  protected Event(T target, double timeStamp) {
-    this(null, target, timeStamp);
-  }
-
-  protected Event(EventTarget source, T target, double timeStamp) {
-    this.source = source;
-    this.target = target;
-    this.timeStamp = timeStamp;
-  }
-
+  @Default
+  private double timeStamp = Time.getCurrentTime();
 }

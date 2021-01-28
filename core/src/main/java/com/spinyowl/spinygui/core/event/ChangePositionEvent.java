@@ -1,18 +1,24 @@
 package com.spinyowl.spinygui.core.event;
 
-import com.spinyowl.spinygui.core.node.Element;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.NonNull;
+import lombok.ToString;
+import lombok.experimental.SuperBuilder;
 import org.joml.Vector2f;
 
 @Getter
-public class ChangePositionEvent<T extends Element> extends ElementEvent<T> {
+@EqualsAndHashCode
+@ToString
+@SuperBuilder
+public class ChangePositionEvent extends Event {
 
+  @NonNull
   private final Vector2f oldPos;
+  @NonNull
   private final Vector2f newPos;
 
-  public ChangePositionEvent(T target, Vector2f oldPos, Vector2f newPos) {
-    super(target);
-    this.oldPos = oldPos;
-    this.newPos = newPos;
+  public static ChangePositionEvent of(EventTarget target, Vector2f oldPos, Vector2f newPos) {
+    return ChangePositionEvent.builder().target(target).oldPos(oldPos).newPos(newPos).build();
   }
 }

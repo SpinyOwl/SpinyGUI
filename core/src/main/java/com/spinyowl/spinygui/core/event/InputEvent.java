@@ -1,52 +1,35 @@
 package com.spinyowl.spinygui.core.event;
 
-import com.spinyowl.spinygui.core.node.Element;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.NonNull;
 import lombok.ToString;
+import lombok.experimental.SuperBuilder;
 
 /**
  * Represents an event notifying of editable content change.
  */
 @Getter
-@ToString
 @EqualsAndHashCode
-public class InputEvent extends ElementEvent<Element> {
+@ToString
+@SuperBuilder
+public class InputEvent extends Event {
 
   /**
    * Inserted characters (if present).
    */
+  @NonNull
   private final CharSequence data;
 
   /**
    * the type of the change.
    */
+  @NonNull
   private final InputType inputType;
-
-  public InputEvent(Element target, CharSequence data,
-      InputType inputType) {
-    super(target);
-    this.data = data;
-    this.inputType = inputType;
-  }
-
-  public InputEvent(Element target, double timeStamp, CharSequence data,
-      InputType inputType) {
-    super(target, timeStamp);
-    this.data = data;
-    this.inputType = inputType;
-  }
-
-  public InputEvent(EventTarget source, Element target, double timeStamp, CharSequence data,
-      InputType inputType) {
-    super(source, target, timeStamp);
-    this.data = data;
-    this.inputType = inputType;
-  }
 
   @Getter
   @ToString

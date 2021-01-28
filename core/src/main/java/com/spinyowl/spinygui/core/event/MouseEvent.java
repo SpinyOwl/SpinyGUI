@@ -1,10 +1,17 @@
 package com.spinyowl.spinygui.core.event;
 
-import com.spinyowl.spinygui.core.node.Element;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+import lombok.experimental.SuperBuilder;
 
 @Getter
-public class MouseEvent<T extends Element> extends ElementEvent<T> {
+@Setter
+@EqualsAndHashCode
+@ToString
+@SuperBuilder
+public class MouseEvent extends Event {
 
   // modificators
   private boolean altKey;
@@ -33,17 +40,5 @@ public class MouseEvent<T extends Element> extends ElementEvent<T> {
   // mouse movement delta
   private float movementX;
   private float movementY;
-
-  public MouseEvent(T target) {
-    super(target);
-  }
-
-  public MouseEvent(T target, double timeStamp) {
-    super(target, timeStamp);
-  }
-
-  public MouseEvent(EventTarget source, T target, double timeStamp) {
-    super(source, target, timeStamp);
-  }
 
 }

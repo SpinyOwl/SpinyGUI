@@ -134,7 +134,7 @@ public class FlexLayout implements Layout {
     }
 
     if (invalidateTree) {
-      eventProcessor.pushEvent(new InvalidateTreeEvent());
+      eventProcessor.pushEvent(InvalidateTreeEvent.create());
     }
 
     // free mem
@@ -151,11 +151,11 @@ public class FlexLayout implements Layout {
     if (childComponent instanceof Element) {
       Element e = (Element) childComponent;
       if (!oldPos.equals(newPos, THRESHOLD)) {
-        eventProcessor.pushEvent(new ChangePositionEvent<>(e, oldPos, newPos));
+        eventProcessor.pushEvent(ChangePositionEvent.of(e, oldPos, newPos));
         invalidateTree = true;
       }
       if (!oldSize.equals(newSize, THRESHOLD)) {
-        eventProcessor.pushEvent(new ChangeSizeEvent<>(e, oldSize, newSize));
+        eventProcessor.pushEvent(ChangeSizeEvent.of(e, oldSize, newSize));
         invalidateTree = true;
       }
     }
@@ -396,6 +396,7 @@ public class FlexLayout implements Layout {
   }
 
   private interface TriConsumer<T, U, V> {
+
     void accept(T t, U u, V v);
   }
 }

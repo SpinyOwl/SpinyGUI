@@ -1,14 +1,14 @@
 package com.spinyowl.spinygui.core.event;
 
-import com.spinyowl.spinygui.core.node.Element;
+import lombok.experimental.SuperBuilder;
 
 /**
  * Event, that used only for invalidating tree, so it should be rendered again.
  */
-public class InvalidateTreeEvent extends ElementEvent<Element> {
+@SuperBuilder
+public class InvalidateTreeEvent extends Event {
 
-  public InvalidateTreeEvent() {
-    super(null);
+  public static InvalidateTreeEvent create() {
+    return InvalidateTreeEvent.builder().build();
   }
-
 }
