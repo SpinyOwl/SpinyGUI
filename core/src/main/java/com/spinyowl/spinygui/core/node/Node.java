@@ -146,7 +146,7 @@ public abstract class Node {
    */
   public List<Element> children() {
     return childNodes().stream().filter(n -> n instanceof Element)
-        .map(n -> (Element) n).collect(Collectors.toUnmodifiableList());
+        .map(Element.class::cast).collect(Collectors.toUnmodifiableList());
   }
 
   /**
