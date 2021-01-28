@@ -5,13 +5,14 @@ import com.spinyowl.spinygui.core.font.FontStyle;
 import com.spinyowl.spinygui.core.font.FontWeight;
 import com.spinyowl.spinygui.core.node.style.types.Background;
 import com.spinyowl.spinygui.core.node.style.types.BorderRadius;
+import com.spinyowl.spinygui.core.node.style.types.BoxShadow;
 import com.spinyowl.spinygui.core.node.style.types.Color;
 import com.spinyowl.spinygui.core.node.style.types.Display;
 import com.spinyowl.spinygui.core.node.style.types.HorizontalAlign;
 import com.spinyowl.spinygui.core.node.style.types.Margin;
 import com.spinyowl.spinygui.core.node.style.types.Padding;
+import com.spinyowl.spinygui.core.node.style.types.PointerEvents;
 import com.spinyowl.spinygui.core.node.style.types.Position;
-import com.spinyowl.spinygui.core.node.style.types.BoxShadow;
 import com.spinyowl.spinygui.core.node.style.types.VerticalAlign;
 import com.spinyowl.spinygui.core.node.style.types.WhiteSpace;
 import com.spinyowl.spinygui.core.node.style.types.border.Border;
@@ -105,6 +106,11 @@ public class NodeStyle {
    * Vertical alignment.
    */
   private VerticalAlign verticalAlign;
+
+  /**
+   * Pointer events. By default used {@link PointerEvents#AUTO}.
+   */
+  private PointerEvents pointerEvents;
 
   private int tabSize = 4;
   private int zIndex = 0;

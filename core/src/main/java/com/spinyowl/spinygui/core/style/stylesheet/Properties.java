@@ -109,6 +109,7 @@ public final class Properties {
   public static final String LEFT = "left";
 
   public static final String WHITE_SPACE = "white-space";
+  public static final String POINTER_EVENTS = "pointer-events";
 
   public static final String Z_INDEX = "z-index";
   public static final String TAB_SIZE = "tab-size";
