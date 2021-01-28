@@ -2,6 +2,7 @@ package com.spinyowl.spinygui.core.util;
 
 import com.spinyowl.spinygui.core.node.Element;
 import com.spinyowl.spinygui.core.node.Node;
+import com.spinyowl.spinygui.core.node.style.types.PointerEvents;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -77,7 +78,20 @@ public final class NodeUtilities {
    * @return top node from node intersected by vector.
    */
   public static Node getTargetNode(Node node, Vector2f vector) {
-    return getTargetNode(vector, node, null);
+    return getTargetNode(node, vector, false);
+  }
+
+  /**
+   * Used to find target node for provided node and vector. Target means top node which intersected
+   * by provided point(vector).
+   *
+   * @param node      node to search.
+   * @param vector    point to search.
+   * @param clickable if true - searches only for clickable target.
+   * @return top node from node intersected by vector.
+   */
+  public static Node getTargetNode(Node node, Vector2f vector, boolean clickable) {
+    return getTargetNode(vector, node, null, clickable);
   }
 
   /**
@@ -90,9 +104,27 @@ public final class NodeUtilities {
    * @return the top visible node under point.
    */
   public static Node getTargetNode(Vector2f vector, Node node, Node initialTarget) {
+    return getTargetNode(vector, node, initialTarget, false);
+  }
+
+  /**
+   * Used to search target node (under point) in node. Target means top node which intersected by
+   * provided point(vector).
+   *
+   * @param vector        vector to point.
+   * @param node          source node to search target.
+   * @param initialTarget initial target.
+   * @param clickable     if true - searches only for clickable target.
+   * @return the top visible node under point.
+   */
+  public static Node getTargetNode(Vector2f vector, Node node, Node initialTarget,
+      boolean clickable) {
+
     Node retarget = initialTarget;
     if (node.visible() && node.intersection().intersects(node, vector)) {
-      retarget = node;
+      if (!clickable || clickable(node)) {
+        retarget = node;
+      }
       List<Node> childNodes = node.childNodes();
 
       childNodes.sort(Comparator.comparing(comparator));
@@ -101,6 +133,11 @@ public final class NodeUtilities {
       }
     }
     return retarget;
+  }
+
+  private static boolean clickable(Node node) {
+    return !(node instanceof Element) || !PointerEvents.NONE
+        .equals(((Element) node).style().pointerEvents());
   }
 
 
