@@ -7,15 +7,15 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor(staticName = "of")
 public class Specificity implements Comparable<Specificity> {
 
-  private final int typeSpecificity;
-  private final int classSpecificity;
   private final int idSpecificity;
+  private final int classSpecificity;
+  private final int typeSpecificity;
 
   public Specificity add(Specificity specificity) {
     return new Specificity(
-        this.typeSpecificity + specificity.typeSpecificity,
+        this.idSpecificity + specificity.idSpecificity,
         this.classSpecificity + specificity.classSpecificity,
-        this.idSpecificity + specificity.idSpecificity
+        this.typeSpecificity + specificity.typeSpecificity
     );
   }
 

@@ -20,6 +20,6 @@ public class ElementSelector implements Selector {
 
   @Override
   public Specificity specificity() {
-    return Specificity.of(1, 0, 0);
+    return Specificity.of(0, 0, 1);
   }
 }
