@@ -3,13 +3,7 @@ rootProject.name = 'SpinyGUI'
 include 'spinygui'
 
 include 'core'
-include 'core.window'
 include 'core.parser'
 include 'core.parser.impl'
 
-// include 'backend.core'
-// include 'backend.glfwutil'
-// include 'backend.opengl32'
-//
 include 'demo.simple'
-// include 'demo.integrated'
