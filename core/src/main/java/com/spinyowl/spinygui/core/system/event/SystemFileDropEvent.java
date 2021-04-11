@@ -5,21 +5,14 @@ import lombok.AccessLevel;
 import lombok.Data;
 import lombok.Getter;
 import lombok.NonNull;
+import lombok.experimental.SuperBuilder;
 
-/**
- * File drop event. Should be generated when one or more files are dropped on the window.
- */
+/** File drop event. Should be generated when one or more files are dropped on the window. */
 @Data
-public class SystemFileDropEvent implements SystemEvent {
+@SuperBuilder
+public class SystemFileDropEvent extends SystemEvent {
 
-  /**
-   * The window that received the event.
-   */
-  private final long window;
-
-  /**
-   * UTF-8 encoded path names of the dropped files.
-   */
+  /** UTF-8 encoded path names of the dropped files. */
   @NonNull
   @Getter(AccessLevel.NONE)
   private final List<String> strings;

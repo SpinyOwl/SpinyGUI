@@ -1,21 +1,13 @@
 package com.spinyowl.spinygui.core.system.event;
 
 import lombok.Data;
+import lombok.experimental.SuperBuilder;
 
-/**
- * Unicode character is input.
- */
+/** Unicode character is input. */
 @Data
-public class SystemCharEvent implements SystemEvent {
+@SuperBuilder
+public class SystemCharEvent extends SystemEvent {
 
-  /**
-   * The window that received the event.
-   */
-  private final long window;
-
-  /**
-   * The Unicode code point of the character.
-   */
+  /** The Unicode code point of the character. */
   private final int codepoint;
-
 }

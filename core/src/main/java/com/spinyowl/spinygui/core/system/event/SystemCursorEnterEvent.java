@@ -1,22 +1,16 @@
 package com.spinyowl.spinygui.core.system.event;
 
 import lombok.Data;
+import lombok.experimental.SuperBuilder;
 
-/**
- * Event that generated when the cursor enters or leaves the client area of the window.
- */
+/** Event that generated when the cursor enters or leaves the client area of the window. */
 @Data
-public class SystemCursorEnterEvent implements SystemEvent {
-
-  /**
-   * The window that received the event.
-   */
-  private final long window;
+@SuperBuilder
+public class SystemCursorEnterEvent extends SystemEvent {
 
   /**
    * <b>{@code true}</b> if the cursor entered the window's content area, or <b>{@code false}</b> if
    * it left it
    */
   private final boolean entered;
-
 }

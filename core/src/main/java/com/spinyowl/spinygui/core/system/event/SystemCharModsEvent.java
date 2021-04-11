@@ -6,26 +6,17 @@ import lombok.AccessLevel;
 import lombok.Data;
 import lombok.Getter;
 import lombok.NonNull;
+import lombok.experimental.SuperBuilder;
 
-/**
- * Event on Unicode character input regardless of what modifier keys are used.
- */
+/** Event on Unicode character input regardless of what modifier keys are used. */
 @Data
-public class SystemCharModsEvent implements SystemEvent {
+@SuperBuilder
+public class SystemCharModsEvent extends SystemEvent {
 
-  /**
-   * The window that received the event.
-   */
-  private final long window;
-
-  /**
-   * The Unicode code point of the character.
-   */
+  /** The Unicode code point of the character. */
   private final int codepoint;
 
-  /**
-   * Describes which modifier keys were held down.
-   */
+  /** Describes which modifier keys were held down. */
   @NonNull
   @Getter(AccessLevel.NONE)
   private final List<KeyMod> mods;

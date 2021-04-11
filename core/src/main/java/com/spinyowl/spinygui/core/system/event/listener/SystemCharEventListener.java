@@ -1,20 +1,18 @@
 package com.spinyowl.spinygui.core.system.event.listener;
 
-import com.spinyowl.spinygui.core.event.InputEvent;
-import com.spinyowl.spinygui.core.event.InputEvent.InputType;
+import com.spinyowl.spinygui.core.event.CharEvent;
 import com.spinyowl.spinygui.core.event.processor.EventProcessor;
 import com.spinyowl.spinygui.core.node.Element;
 import com.spinyowl.spinygui.core.node.Frame;
 import com.spinyowl.spinygui.core.system.event.SystemCharEvent;
 import com.spinyowl.spinygui.core.util.TextUtil;
 import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
 
-@RequiredArgsConstructor
-public class SystemCharEventListener implements SystemEventListener<SystemCharEvent> {
+public class SystemCharEventListener extends AbstractSystemEventListener<SystemCharEvent> {
 
-  /** Event processor to pass generated events to. */
-  @NonNull private final EventProcessor eventProcessor;
+  public SystemCharEventListener(@NonNull EventProcessor eventProcessor) {
+    super(eventProcessor);
+  }
 
   /**
    * Used to listen, process and translate system event to gui event.
@@ -30,9 +28,8 @@ public class SystemCharEventListener implements SystemEventListener<SystemCharEv
     }
 
     eventProcessor.pushEvent(
-        InputEvent.builder()
-            .inputType(InputType.INSERT_TEXT)
-            .data(TextUtil.cpToStr(event.codepoint()))
+        CharEvent.builder()
+            .input(TextUtil.cpToStr(event.codepoint()))
             .target(focusedElement)
             .source(frame)
             .build());

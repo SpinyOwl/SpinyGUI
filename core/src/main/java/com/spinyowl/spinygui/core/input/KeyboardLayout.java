@@ -9,7 +9,7 @@ public interface KeyboardLayout {
   /**
    * Used to set mapping for specified keyCode.
    *
-   * @param keyCode    key code.
+   * @param keyCode key code.
    * @param nativeCode native key code.
    */
   void updateMapping(KeyCode keyCode, Integer nativeCode);

@@ -6,19 +6,17 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import lombok.NonNull;
 
-/**
- * Used to store shortcuts.
- */
+/** Used to store shortcuts. */
 public class ShortcutRegistryImpl implements ShortcutRegistry {
 
   private final Map<String, Shortcut> shortcuts = new ConcurrentHashMap<>();
 
   /**
    * Used to set shortcut for specified name (for example 'copy').
-   * <p>
-   * Name would be automatically trimmed and casted to lowercase.
    *
-   * @param name     shortcut name.
+   * <p>Name would be automatically trimmed and casted to lowercase.
+   *
+   * @param name shortcut name.
    * @param shortcut shortcut.
    */
   @Override
@@ -28,8 +26,8 @@ public class ShortcutRegistryImpl implements ShortcutRegistry {
 
   /**
    * Used to remove specified shortcut.
-   * <p>
-   * Name would be automatically casted to lowercase.
+   *
+   * <p>Name would be automatically casted to lowercase.
    *
    * @param name shortcut name.
    */
@@ -40,8 +38,8 @@ public class ShortcutRegistryImpl implements ShortcutRegistry {
 
   /**
    * Used to get shortcut by name.
-   * <p>
-   * Name would be automatically casted to lowercase.
+   *
+   * <p>Name would be automatically casted to lowercase.
    *
    * @param name shortcut name.
    * @return shortcut for specified name or null if not found.
@@ -50,5 +48,4 @@ public class ShortcutRegistryImpl implements ShortcutRegistry {
   public Shortcut shortcut(@NonNull String name) {
     return shortcuts.get(name.toLowerCase().trim());
   }
-
 }

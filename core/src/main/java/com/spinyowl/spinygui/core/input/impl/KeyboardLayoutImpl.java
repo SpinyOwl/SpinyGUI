@@ -17,7 +17,7 @@ public class KeyboardLayoutImpl implements KeyboardLayout {
   /**
    * Used to set mapping for specified keyCode.
    *
-   * @param keyCode    key code.
+   * @param keyCode key code.
    * @param nativeCode native key code.
    */
   @Override
@@ -26,7 +26,7 @@ public class KeyboardLayoutImpl implements KeyboardLayout {
   }
 
   /**
-   * Used to get mapped {@link KeyCode} by native key code.
+    * Used to get mapped {@link KeyCode} by native key code.
    *
    * @param nativeCode native key code.
    * @return mapped {@link KeyCode} or null if not found.
@@ -46,5 +46,4 @@ public class KeyboardLayoutImpl implements KeyboardLayout {
   public Integer nativeCode(@NonNull KeyCode keyCode) {
     return keys.get(keyCode);
   }
-
 }

@@ -13,11 +13,9 @@ public class Shortcut {
 
   private static final Map<String, Shortcut> shortcuts = new ConcurrentHashMap<>();
 
-  @NonNull
-  private KeyCode key;
+  @NonNull private KeyCode key;
 
-  @NonNull
-  private Set<KeyMod> mods;
+  @NonNull private Set<KeyMod> mods;
 
   public Shortcut(@NonNull KeyCode key, @NonNull KeyMod... mods) {
     this.key = key;
@@ -34,10 +32,10 @@ public class Shortcut {
 
   /**
    * Used to set shortcut for specified name (for example 'copy').
-   * <p>
-   * Name would be automatically trimmed and casted to lowercase.
    *
-   * @param name     shortcut name.
+   * <p>Name would be automatically trimmed and casted to lowercase.
+   *
+   * @param name shortcut name.
    * @param shortcut shortcut.
    */
   public void shortcut(@NonNull String name, @NonNull Shortcut shortcut) {
@@ -46,8 +44,8 @@ public class Shortcut {
 
   /**
    * Used to remove specified shortcut.
-   * <p>
-   * Name would be automatically casted to lowercase.
+   *
+   * <p>Name would be automatically casted to lowercase.
    *
    * @param name shortcut name.
    */
@@ -57,8 +55,8 @@ public class Shortcut {
 
   /**
    * Used to get shortcut by name.
-   * <p>
-   * Name would be automatically casted to lowercase.
+   *
+   * <p>Name would be automatically casted to lowercase.
    *
    * @param name shortcut name.
    * @return shortcut for specified name or null if not found.
@@ -66,5 +64,4 @@ public class Shortcut {
   public Shortcut shortcut(@NonNull String name) {
     return shortcuts.get(name.toLowerCase().trim());
   }
-
 }

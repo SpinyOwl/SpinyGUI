@@ -1,17 +1,12 @@
 package com.spinyowl.spinygui.core.system.event;
 
 import lombok.Data;
+import lombok.experimental.SuperBuilder;
 
-/**
- * Will be generated when the specified window moves.
- */
+/** Will be generated when the specified window moves. */
 @Data
-public class SystemWindowPosEvent implements SystemEvent {
-
-  /**
-   * The window that was moved.
-   */
-  private final long window;
+@SuperBuilder
+public class SystemWindowPosEvent extends SystemEvent {
 
   /**
    * The new x-coordinate, in screen coordinates, of the upper-left corner of the content area of
@@ -24,6 +19,4 @@ public class SystemWindowPosEvent implements SystemEvent {
    * the window.
    */
   private final int posY;
-
-
 }

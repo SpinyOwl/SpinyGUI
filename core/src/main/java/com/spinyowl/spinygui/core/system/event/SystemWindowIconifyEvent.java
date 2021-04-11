@@ -1,21 +1,13 @@
 package com.spinyowl.spinygui.core.system.event;
 
 import lombok.Data;
+import lombok.experimental.SuperBuilder;
 
-/**
- * Will be generated when the specified window is iconified or restored.
- */
+/** Will be generated when the specified window is iconified or restored. */
 @Data
-public class SystemWindowIconifyEvent implements SystemEvent {
+@SuperBuilder
+public class SystemWindowIconifyEvent extends SystemEvent {
 
-  /**
-   * The window that was iconified or restored.
-   */
-  private final long window;
-
-  /**
-   * {@code true} if the window was iconified, or {@code false} if it was restored
-   */
+  /** {@code true} if the window was iconified, or {@code false} if it was restored */
   private final boolean iconified;
-
 }

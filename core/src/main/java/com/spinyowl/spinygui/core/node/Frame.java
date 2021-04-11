@@ -17,6 +17,7 @@ import lombok.ToString;
 public class Frame extends Element {
 
   public static final String FRAME_TAG_NAME = "frame";
+
   /**
    * List of stylesheets attached to frame.
    */
@@ -37,7 +38,6 @@ public class Frame extends Element {
   public List<StyleSheet> styleSheets() {
     return styleSheets;
   }
-
 
   /**
    * Shorthand to add window close event listener.

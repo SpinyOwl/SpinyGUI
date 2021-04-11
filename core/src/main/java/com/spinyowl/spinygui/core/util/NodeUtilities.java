@@ -12,11 +12,10 @@ import org.joml.Vector2fc;
 
 public final class NodeUtilities {
 
-  private static final Function<Node, Integer> comparator = node ->
-      node instanceof Element ? ((Element) node).style().zIndex() : 0;
+  private static final Function<Node, Integer> comparator =
+      node -> node instanceof Element ? ((Element) node).style().zIndex() : 0;
 
-  private NodeUtilities() {
-  }
+  private NodeUtilities() {}
 
   /**
    * Used to determine if node is visible in parent nodes.
@@ -46,11 +45,10 @@ public final class NodeUtilities {
 
       // check top parent
 
-      if (cPos.x() > node.parent().size().x() ||
-          cPos.x() + cSize.x() < 0 ||
-          cPos.y() > node.parent().size().y() ||
-          cPos.y() + cSize.y() < 0
-      ) {
+      if (cPos.x() > node.parent().size().x()
+          || cPos.x() + cSize.x() < 0
+          || cPos.y() > node.parent().size().y()
+          || cPos.y() + cSize.y() < 0) {
         return false;
       }
       if (parentList.size() != 1) {
@@ -70,101 +68,103 @@ public final class NodeUtilities {
   }
 
   /**
-   * Used to find target node for provided node and vector. Target means top node which intersected
-   * by provided point(vector).
+   * Used to find target element for provided element and vector. Target means top element which
+   * intersected by provided point(vector).
    *
-   * @param node   node to search.
+   * @param element element to search.
    * @param vector point to search.
-   * @return top node from node intersected by vector.
+   * @return top element from element intersected by vector or null if point is null.
    */
-  public static Node getTargetNode(Node node, Vector2f vector) {
-    return getTargetNode(node, vector, false);
+  public static Element getTargetElement(final Element element, final Vector2fc vector) {
+    return getTargetElement(element, vector, false);
   }
 
   /**
-   * Used to find target node for provided node and vector. Target means top node which intersected
-   * by provided point(vector).
+   * Used to find target element for provided element and vector. Target means top element which
+   * intersected by provided point(vector).
    *
-   * @param node      node to search.
-   * @param vector    point to search.
+   * @param element element to search.
+   * @param vector point to search.
    * @param clickable if true - searches only for clickable target.
-   * @return top node from node intersected by vector.
+   * @return top element from element intersected by vector or null if point is null.
    */
-  public static Node getTargetNode(Node node, Vector2f vector, boolean clickable) {
-    return getTargetNode(vector, node, null, clickable);
+  public static Element getTargetElement(
+      final Element element, final Vector2fc vector, final boolean clickable) {
+    return getTargetElement(vector, element, null, clickable);
   }
 
   /**
-   * Used to search target node (under point) in node. Target means top node which intersected by
-   * provided point(vector).
+   * Used to search target element (under point) in element. Target means top element which
+   * intersected by provided point(vector).
    *
-   * @param vector        vector to point.
-   * @param node          source node to search target.
+   * @param vector vector to point.
+   * @param element source element to search target.
    * @param initialTarget initial target.
-   * @return the top visible node under point.
+   * @return the top visible element under point or null if point is null.
    */
-  public static Node getTargetNode(Vector2f vector, Node node, Node initialTarget) {
-    return getTargetNode(vector, node, initialTarget, false);
+  public static Element getTargetElement(
+      final Vector2fc vector, final Element element, final Element initialTarget) {
+    return getTargetElement(vector, element, initialTarget, false);
   }
 
   /**
-   * Used to search target node (under point) in node. Target means top node which intersected by
-   * provided point(vector).
+   * Used to search target element (under point) in element. Target means top element which
+   * intersected by provided point(vector).
    *
-   * @param vector        vector to point.
-   * @param node          source node to search target.
+   * @param vector vector to point.
+   * @param element source element to search target.
    * @param initialTarget initial target.
-   * @param clickable     if true - searches only for clickable target.
-   * @return the top visible node under point.
+   * @param clickable if true - searches only for clickable target.
+   * @return the top visible element under point or null if point is null.
    */
-  public static Node getTargetNode(Vector2f vector, Node node, Node initialTarget,
-      boolean clickable) {
-
-    Node retarget = initialTarget;
-    if (node.visible() && node.intersection().intersects(node, vector)) {
-      if (!clickable || clickable(node)) {
-        retarget = node;
+  public static Element getTargetElement(
+      final Vector2fc vector,
+      final Element element,
+      final Element initialTarget,
+      final boolean clickable) {
+    Element retarget = initialTarget;
+    if (element.visible() && element.intersection().intersects(element, vector)) {
+      if (!clickable || clickable(element)) {
+        retarget = element;
       }
-      List<Node> childNodes = node.childNodes();
+      List<Element> childElements = element.children();
 
-      childNodes.sort(Comparator.comparing(comparator));
-      for (Node child : childNodes) {
-        retarget = getTargetNode(vector, child, retarget);
+      childElements.sort(Comparator.comparing(comparator));
+      for (Element child : childElements) {
+        retarget = getTargetElement(vector, child, retarget);
       }
     }
     return retarget;
   }
 
-  private static boolean clickable(Node node) {
-    return !(node instanceof Element) || !PointerEvents.NONE
-        .equals(((Element) node).style().pointerEvents());
+  private static boolean clickable(final Element element) {
+    return !PointerEvents.NONE.equals(element.style().pointerEvents());
   }
 
-
   /**
-   * Used to search all nodes (under point) in node.
+   * Used to search all elements (under point) in element.
    *
    * @param vector vector to point.
-   * @param node   node to search in.
-   * @return all top visible nodes in node under point(vector).
+   * @param element element to search in.
+   * @return all top visible elements in element under point(vector).
    */
-  public static List<Node> getTargetNodeList(Node node, Vector2f vector) {
-    return fillTargetNodeList(vector, node, new ArrayList<>());
+  public static List<Element> getTargetElementList(final Element element, final Vector2fc vector) {
+    return fillTargetElementList(vector, element, new ArrayList<>());
   }
 
-
   /**
-   * Used to search all nodes (under point) in node. New located target node will be added to target
-   * list.
+   * Used to search all elements (under point) in element. New located target element will be added
+   * to target list.
    *
-   * @param vector     vector to point.
-   * @param node       source node to search target.
+   * @param vector vector to point.
+   * @param element source element to search target.
    * @param targetList current target list.
    */
-  public static List<Node> fillTargetNodeList(Vector2f vector, Node node, List<Node> targetList) {
-    if (node.visible() && node.intersection().intersects(node, vector)) {
-      targetList.add(node);
-      node.childNodes().forEach(child -> fillTargetNodeList(vector, child, targetList));
+  public static List<Element> fillTargetElementList(
+      final Vector2fc vector, final Element element, final List<Element> targetList) {
+    if (element.visible() && element.intersection().intersects(element, vector)) {
+      targetList.add(element);
+      element.children().forEach(child -> fillTargetElementList(vector, child, targetList));
     }
     return targetList;
   }
