@@ -11,8 +11,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
+import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.tuple.Pair;
 
 @Slf4j
 public final class Properties {
@@ -118,11 +118,14 @@ public final class Properties {
   private static final Map<String, Property<?>> propertyMap = new ConcurrentHashMap<>();
 
   static {
-    var scanResult = new ClassGraph()
-        .enableAllInfo()
-        .scan();
+    initialize();
+  }
 
-    var propertiesToAdd = new HashMap<String, List<Pair<Property<?>, Integer>>>();
+  private Properties() {}
+
+  private static void initialize() {
+    var scanResult = new ClassGraph().enableAllInfo().scan();
+    var propertiesToAdd = new HashMap<String, List<PropertyPriority>>();
 
     for (ClassInfo classInfo : scanResult.getSubclasses(Property.class.getName())) {
       @SuppressWarnings("unchecked")
@@ -143,8 +146,9 @@ public final class Properties {
         }
       }
       if (property != null) {
-        propertiesToAdd.computeIfAbsent(property.name(), p -> new ArrayList<>()).
-            add(Pair.of(property, priority));
+        propertiesToAdd
+            .computeIfAbsent(property.name(), p -> new ArrayList<>())
+            .add(new PropertyPriority(property, priority));
       }
     }
 
@@ -152,18 +156,15 @@ public final class Properties {
       String name = entry.getKey();
       var list = entry.getValue();
       if (list.size() > 1) {
-        list.sort(Comparator.comparingInt(o -> -o.getRight()));
-        log.warn("Found several tag mappings for tag {} : {}. Using {}", name,
-            Arrays.toString(
-                list.stream().map(c -> c.getLeft().getClass().getName()).toArray()),
-            list.get(0).getLeft().getClass().getName());
+        list.sort(Comparator.comparingInt(o -> -o.priority()));
+        log.warn(
+            "Found several tag mappings for tag {} : {}. Using {}",
+            name,
+            Arrays.toString(list.stream().map(c -> c.property().getClass().getName()).toArray()),
+            list.get(0).property().getClass().getName());
       }
-      addSupportedProperty(name, list.get(0).getLeft());
+      addSupportedProperty(name, list.get(0).property());
     }
-
-  }
-
-  private Properties() {
   }
 
   public static Property getProperty(String propertyName) {
@@ -173,7 +174,7 @@ public final class Properties {
   /**
    * Used to add property support.
    *
-   * @param name     property to support.
+   * @param name property to support.
    * @param property property supplier which will be used to create new {@link Property} instance.
    */
   public static void addSupportedProperty(String name, Property<?> property) {
@@ -187,7 +188,9 @@ public final class Properties {
     if (log.isWarnEnabled() && propertyMap.containsKey(name)) {
       log.warn(
           "There is already exist property handler for {} : {}. Would be replaced by {}.",
-          name, propertyMap.get(name).getClass().getName(), property.getClass().getName());
+          name,
+          propertyMap.get(name).getClass().getName(),
+          property.getClass().getName());
     }
 
     propertyMap.put(name, property);
@@ -207,4 +210,9 @@ public final class Properties {
     return List.copyOf(propertyMap.keySet());
   }
 
+  @Data
+  private static final class PropertyPriority {
+    private final Property<?> property;
+    private final int priority;
+  }
 }

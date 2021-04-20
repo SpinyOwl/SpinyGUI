@@ -1,10 +1,10 @@
 package com.spinyowl.spinygui.core.input.impl;
 
+import com.google.common.collect.BiMap;
+import com.google.common.collect.HashBiMap;
 import com.spinyowl.spinygui.core.input.KeyCode;
 import com.spinyowl.spinygui.core.input.KeyboardLayout;
 import lombok.NonNull;
-import org.apache.commons.collections4.BidiMap;
-import org.apache.commons.collections4.bidimap.DualHashBidiMap;
 
 /**
  * This class used to store key mapping to native keys. That allows user to have custom keyboard
@@ -12,7 +12,7 @@ import org.apache.commons.collections4.bidimap.DualHashBidiMap;
  */
 public class KeyboardLayoutImpl implements KeyboardLayout {
 
-  private final BidiMap<KeyCode, Integer> keys = new DualHashBidiMap<>();
+  private final BiMap<KeyCode, Integer> keys = HashBiMap.create();
 
   /**
    * Used to set mapping for specified keyCode.
@@ -26,14 +26,14 @@ public class KeyboardLayoutImpl implements KeyboardLayout {
   }
 
   /**
-    * Used to get mapped {@link KeyCode} by native key code.
+   * Used to get mapped {@link KeyCode} by native key code.
    *
    * @param nativeCode native key code.
    * @return mapped {@link KeyCode} or null if not found.
    */
   @Override
   public KeyCode keyCode(@NonNull Integer nativeCode) {
-    return keys.getKey(nativeCode);
+    return keys.inverse().get(nativeCode);
   }
 
   /**

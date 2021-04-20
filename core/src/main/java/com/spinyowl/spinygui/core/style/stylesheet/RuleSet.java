@@ -5,9 +5,9 @@ import com.spinyowl.spinygui.core.style.stylesheet.selector.Selector;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 import lombok.Data;
 import lombok.NonNull;
-import org.apache.commons.collections4.list.SetUniqueList;
 
 /**
  * Combines set of selectors and set of declarations which should be applied for elements accessed
@@ -36,8 +36,11 @@ public class RuleSet {
    * @return specificity for element based on selectors in ruleset.
    */
   public Specificity specificity(Element element) {
-    return selectors.stream().filter(selector -> selector.test(element)).map(Selector::specificity)
-        .reduce(Specificity::max).orElse(null);
+    return selectors.stream()
+        .filter(selector -> selector.test(element))
+        .map(Selector::specificity)
+        .reduce(Specificity::max)
+        .orElse(null);
   }
 
   /**
@@ -48,24 +51,23 @@ public class RuleSet {
    */
   public List<Element> searchElements(Element elementTree) {
     Objects.requireNonNull(elementTree);
-    return inspectElementTree(elementTree, SetUniqueList.setUniqueList(new ArrayList<>()));
+    var elements = new ArrayList<Element>();
+    inspectElementTree(elementTree, elements);
+    return elements.stream().distinct().collect(Collectors.toList());
   }
 
   /**
-   * Used to inspect node tree using specified ruleSet.
+   * Used to inspect node tree using specified ruleSet and fill elements set.
    *
    * @param elementTree element tree to search elements.
-   * @param elements    element set to store result.
-   * @return provided elements array with additional elements that are correspond to specified rule
-   * set.
+   * @param elements element set to store result.
    */
-  private List<Element> inspectElementTree(Element elementTree, List<Element> elements) {
+  private void inspectElementTree(Element elementTree, List<Element> elements) {
     Objects.requireNonNull(elementTree);
     if (test(elementTree)) {
       elements.add(elementTree);
     }
 
     elementTree.children().forEach(c -> inspectElementTree(c, elements));
-    return elements;
   }
 }

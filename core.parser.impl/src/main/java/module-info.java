@@ -8,7 +8,6 @@ open module com.spinyowl.spinygui.core.parser.impl {
 
   requires org.antlr.antlr4.runtime;
 
-  requires org.apache.commons.collections4;
   requires org.apache.commons.lang3;
 
   exports com.spinyowl.spinygui.core.parser.impl.css.parser.antlr;
