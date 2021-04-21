@@ -6,66 +6,42 @@ import java.util.Set;
 import java.util.StringJoiner;
 import java.util.concurrent.ConcurrentHashMap;
 
-/**
- * CSS border style.
- */
+/** CSS border style. */
 public final class BorderStyle {
 
   private static final Map<String, BorderStyle> VALUES = new ConcurrentHashMap<>();
 
-  /**
-   * Specifies no border. This is default.
-   */
+  /** Specifies no border. This is default. */
   public static final BorderStyle NONE = BorderStyle.create("none");
 
-  /**
-   * The same as "none", except in border conflict resolution for table elements.
-   */
+  /** The same as "none", except in border conflict resolution for table elements. */
   public static final BorderStyle HIDDEN = BorderStyle.create("hidden");
 
-  /**
-   * Specifies a dotted border.
-   */
+  /** Specifies a dotted border. */
   public static final BorderStyle DOTTED = BorderStyle.create("dotted");
 
-  /**
-   * Specifies a dashed border.
-   */
+  /** Specifies a dashed border. */
   public static final BorderStyle DASHED = BorderStyle.create("dashed");
 
-  /**
-   * Specifies a solid border.
-   */
+  /** Specifies a solid border. */
   public static final BorderStyle SOLID = BorderStyle.create("solid");
 
-  /**
-   * Specifies a double border.
-   */
+  /** Specifies a double border. */
   public static final BorderStyle DOUBLE = BorderStyle.create("double");
 
-  /**
-   * Specifies a 3D grooved border. The effect depends on the border-color value.
-   */
+  /** Specifies a 3D grooved border. The effect depends on the border-color value. */
   public static final BorderStyle GROOVE = BorderStyle.create("groove");
 
-  /**
-   * Specifies a 3D ridged border. The effect depends on the border-color value.
-   */
+  /** Specifies a 3D ridged border. The effect depends on the border-color value. */
   public static final BorderStyle RIDGE = BorderStyle.create("ridge");
 
-  /**
-   * Specifies a 3D inset border. The effect depends on the border-color value.
-   */
+  /** Specifies a 3D inset border. The effect depends on the border-color value. */
   public static final BorderStyle INSET = BorderStyle.create("inset");
 
-  /**
-   * Specifies a 3D outset border. The effect depends on the border-color value.
-   */
+  /** Specifies a 3D outset border. The effect depends on the border-color value. */
   public static final BorderStyle OUTSET = BorderStyle.create("outset");
 
-  /**
-   * Name of border style type (should be same as in css specification)
-   */
+  /** Name of border style type (should be same as in css specification) */
   private final String name;
 
   /**
@@ -122,8 +98,7 @@ public final class BorderStyle {
     if (name == null) {
       return false;
     }
-    return values().stream().map(BorderStyle::getName)
-        .anyMatch(v -> v.equalsIgnoreCase(name));
+    return values().stream().map(BorderStyle::getName).anyMatch(v -> v.equalsIgnoreCase(name));
   }
 
   /**

@@ -13,26 +13,16 @@ import lombok.ToString;
 @ToString
 public class HorizontalAlign {
 
-  /**
-   * Stores all existing dictionary values.
-   */
+  /** Stores all existing dictionary values. */
   private static final Map<String, HorizontalAlign> VALUES = new ConcurrentHashMap<>();
-  /**
-   * Content should be aligned to left border of container.
-   */
+  /** Content should be aligned to left border of container. */
   public static final HorizontalAlign LEFT = HorizontalAlign.create("left");
-  /**
-   * Content should be aligned to center of container.
-   */
+  /** Content should be aligned to center of container. */
   public static final HorizontalAlign CENTER = HorizontalAlign.create("center");
-  /**
-   * Content should be aligned to right border of container.
-   */
+  /** Content should be aligned to right border of container. */
   public static final HorizontalAlign RIGHT = HorizontalAlign.create("right");
 
-  /**
-   * Name of HorizontalAlign element.
-   */
+  /** Name of HorizontalAlign element. */
   private final String name;
 
   /**
@@ -87,5 +77,4 @@ public class HorizontalAlign {
     }
     return values().stream().map(HorizontalAlign::name).anyMatch(v -> v.equalsIgnoreCase(name));
   }
-
 }

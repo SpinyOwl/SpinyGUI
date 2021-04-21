@@ -2,12 +2,12 @@ package com.spinyowl.spinygui.core.style.stylesheet.property.border.width;
 
 import static com.spinyowl.spinygui.core.style.stylesheet.Properties.BORDER_WIDTH;
 import static com.spinyowl.spinygui.core.style.stylesheet.util.StyleUtils.testMultipleValues;
-import com.spinyowl.spinygui.core.style.stylesheet.extractor.ValueExtractor;
-import com.spinyowl.spinygui.core.style.stylesheet.extractor.ValueExtractors;
 import com.spinyowl.spinygui.core.node.style.NodeStyle;
-import com.spinyowl.spinygui.core.style.stylesheet.Property;
 import com.spinyowl.spinygui.core.node.style.types.border.Border;
 import com.spinyowl.spinygui.core.node.style.types.length.Length;
+import com.spinyowl.spinygui.core.style.stylesheet.Property;
+import com.spinyowl.spinygui.core.style.stylesheet.extractor.ValueExtractor;
+import com.spinyowl.spinygui.core.style.stylesheet.extractor.ValueExtractors;
 
 public class BorderWidthProperty extends Property<Border> {
 
@@ -22,9 +22,15 @@ public class BorderWidthProperty extends Property<Border> {
   private static ValueExtractor<Length> extractor = ValueExtractors.of(Length.class);
 
   public BorderWidthProperty() {
-    super(BORDER_WIDTH, MEDIUM, !INHERITED, ANIMATABLE,
-        (s, b) -> s.border().width(b), NodeStyle::border,
-        BorderWidthProperty::extract, BorderWidthProperty::test);
+    super(
+        BORDER_WIDTH,
+        MEDIUM,
+        !INHERITED,
+        ANIMATABLE,
+        (s, b) -> s.border().width(b),
+        NodeStyle::border,
+        BorderWidthProperty::extract,
+        BorderWidthProperty::test);
   }
 
   protected static Border extract(String value) {
@@ -57,14 +63,13 @@ public class BorderWidthProperty extends Property<Border> {
   }
 
   public static boolean testOne(String borderWidth) {
-    return THIN.equalsIgnoreCase(borderWidth) ||
-        MEDIUM.equalsIgnoreCase(borderWidth) ||
-        THICK.equalsIgnoreCase(borderWidth) ||
-        extractor.isValid(borderWidth);
+    return THIN.equalsIgnoreCase(borderWidth)
+        || MEDIUM.equalsIgnoreCase(borderWidth)
+        || THICK.equalsIgnoreCase(borderWidth)
+        || extractor.isValid(borderWidth);
   }
 
   private static boolean test(String value) {
     return testMultipleValues(value, "\\s+", 1, 4, BorderWidthProperty::testOne);
   }
-
 }

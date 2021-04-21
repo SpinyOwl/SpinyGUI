@@ -1,4 +1,5 @@
-// Generated from C:/Users/Marvin/Documents/SpinyGui/SpinyGUI/core/src/main/resources/grammars\CSS3.g4 by ANTLR 4.7
+// Generated from
+// C:/Users/Marvin/Documents/SpinyGui/SpinyGUI/core/src/main/resources/grammars\CSS3.g4 by ANTLR 4.7
 package com.spinyowl.spinygui.core.parser.impl.css.parser.antlr;
 
 import org.antlr.v4.runtime.tree.AbstractParseTreeVisitor;
@@ -8,15 +9,15 @@ import org.antlr.v4.runtime.tree.AbstractParseTreeVisitor;
  * create a visitor which only needs to handle a subset of the available methods.
  *
  * @param <T> The return type of the visit operation. Use {@link Void} for operations with no return
- *            type.
+ *     type.
  */
 public class CSS3BaseVisitor<T> extends AbstractParseTreeVisitor<T> implements CSS3Visitor<T> {
 
   /**
    * {@inheritDoc}
    *
-   * <p>The default implementation returns the result of calling
-   * {@link #visitChildren} on {@code ctx}.</p>
+   * <p>The default implementation returns the result of calling {@link #visitChildren} on {@code
+   * ctx}.
    */
   @Override
   public T visitStylesheet(CSS3Parser.StylesheetContext ctx) {
@@ -26,8 +27,8 @@ public class CSS3BaseVisitor<T> extends AbstractParseTreeVisitor<T> implements C
   /**
    * {@inheritDoc}
    *
-   * <p>The default implementation returns the result of calling
-   * {@link #visitChildren} on {@code ctx}.</p>
+   * <p>The default implementation returns the result of calling {@link #visitChildren} on {@code
+   * ctx}.
    */
   @Override
   public T visitGoodCharset(CSS3Parser.GoodCharsetContext ctx) {
@@ -37,8 +38,8 @@ public class CSS3BaseVisitor<T> extends AbstractParseTreeVisitor<T> implements C
   /**
    * {@inheritDoc}
    *
-   * <p>The default implementation returns the result of calling
-   * {@link #visitChildren} on {@code ctx}.</p>
+   * <p>The default implementation returns the result of calling {@link #visitChildren} on {@code
+   * ctx}.
    */
   @Override
   public T visitBadCharset(CSS3Parser.BadCharsetContext ctx) {
@@ -48,8 +49,8 @@ public class CSS3BaseVisitor<T> extends AbstractParseTreeVisitor<T> implements C
   /**
    * {@inheritDoc}
    *
-   * <p>The default implementation returns the result of calling
-   * {@link #visitChildren} on {@code ctx}.</p>
+   * <p>The default implementation returns the result of calling {@link #visitChildren} on {@code
+   * ctx}.
    */
   @Override
   public T visitGoodImport(CSS3Parser.GoodImportContext ctx) {
@@ -59,8 +60,8 @@ public class CSS3BaseVisitor<T> extends AbstractParseTreeVisitor<T> implements C
   /**
    * {@inheritDoc}
    *
-   * <p>The default implementation returns the result of calling
-   * {@link #visitChildren} on {@code ctx}.</p>
+   * <p>The default implementation returns the result of calling {@link #visitChildren} on {@code
+   * ctx}.
    */
   @Override
   public T visitBadImport(CSS3Parser.BadImportContext ctx) {
@@ -70,8 +71,8 @@ public class CSS3BaseVisitor<T> extends AbstractParseTreeVisitor<T> implements C
   /**
    * {@inheritDoc}
    *
-   * <p>The default implementation returns the result of calling
-   * {@link #visitChildren} on {@code ctx}.</p>
+   * <p>The default implementation returns the result of calling {@link #visitChildren} on {@code
+   * ctx}.
    */
   @Override
   public T visitGoodNamespace(CSS3Parser.GoodNamespaceContext ctx) {
@@ -81,8 +82,8 @@ public class CSS3BaseVisitor<T> extends AbstractParseTreeVisitor<T> implements C
   /**
    * {@inheritDoc}
    *
-   * <p>The default implementation returns the result of calling
-   * {@link #visitChildren} on {@code ctx}.</p>
+   * <p>The default implementation returns the result of calling {@link #visitChildren} on {@code
+   * ctx}.
    */
   @Override
   public T visitBadNamespace(CSS3Parser.BadNamespaceContext ctx) {
@@ -92,8 +93,8 @@ public class CSS3BaseVisitor<T> extends AbstractParseTreeVisitor<T> implements C
   /**
    * {@inheritDoc}
    *
-   * <p>The default implementation returns the result of calling
-   * {@link #visitChildren} on {@code ctx}.</p>
+   * <p>The default implementation returns the result of calling {@link #visitChildren} on {@code
+   * ctx}.
    */
   @Override
   public T visitNamespacePrefix(CSS3Parser.NamespacePrefixContext ctx) {
@@ -103,8 +104,8 @@ public class CSS3BaseVisitor<T> extends AbstractParseTreeVisitor<T> implements C
   /**
    * {@inheritDoc}
    *
-   * <p>The default implementation returns the result of calling
-   * {@link #visitChildren} on {@code ctx}.</p>
+   * <p>The default implementation returns the result of calling {@link #visitChildren} on {@code
+   * ctx}.
    */
   @Override
   public T visitMedia(CSS3Parser.MediaContext ctx) {
@@ -114,8 +115,8 @@ public class CSS3BaseVisitor<T> extends AbstractParseTreeVisitor<T> implements C
   /**
    * {@inheritDoc}
    *
-   * <p>The default implementation returns the result of calling
-   * {@link #visitChildren} on {@code ctx}.</p>
+   * <p>The default implementation returns the result of calling {@link #visitChildren} on {@code
+   * ctx}.
    */
   @Override
   public T visitMediaQueryList(CSS3Parser.MediaQueryListContext ctx) {
@@ -125,8 +126,8 @@ public class CSS3BaseVisitor<T> extends AbstractParseTreeVisitor<T> implements C
   /**
    * {@inheritDoc}
    *
-   * <p>The default implementation returns the result of calling
-   * {@link #visitChildren} on {@code ctx}.</p>
+   * <p>The default implementation returns the result of calling {@link #visitChildren} on {@code
+   * ctx}.
    */
   @Override
   public T visitMediaQuery(CSS3Parser.MediaQueryContext ctx) {
@@ -136,8 +137,8 @@ public class CSS3BaseVisitor<T> extends AbstractParseTreeVisitor<T> implements C
   /**
    * {@inheritDoc}
    *
-   * <p>The default implementation returns the result of calling
-   * {@link #visitChildren} on {@code ctx}.</p>
+   * <p>The default implementation returns the result of calling {@link #visitChildren} on {@code
+   * ctx}.
    */
   @Override
   public T visitMediaType(CSS3Parser.MediaTypeContext ctx) {
@@ -147,8 +148,8 @@ public class CSS3BaseVisitor<T> extends AbstractParseTreeVisitor<T> implements C
   /**
    * {@inheritDoc}
    *
-   * <p>The default implementation returns the result of calling
-   * {@link #visitChildren} on {@code ctx}.</p>
+   * <p>The default implementation returns the result of calling {@link #visitChildren} on {@code
+   * ctx}.
    */
   @Override
   public T visitMediaExpression(CSS3Parser.MediaExpressionContext ctx) {
@@ -158,8 +159,8 @@ public class CSS3BaseVisitor<T> extends AbstractParseTreeVisitor<T> implements C
   /**
    * {@inheritDoc}
    *
-   * <p>The default implementation returns the result of calling
-   * {@link #visitChildren} on {@code ctx}.</p>
+   * <p>The default implementation returns the result of calling {@link #visitChildren} on {@code
+   * ctx}.
    */
   @Override
   public T visitMediaFeature(CSS3Parser.MediaFeatureContext ctx) {
@@ -169,8 +170,8 @@ public class CSS3BaseVisitor<T> extends AbstractParseTreeVisitor<T> implements C
   /**
    * {@inheritDoc}
    *
-   * <p>The default implementation returns the result of calling
-   * {@link #visitChildren} on {@code ctx}.</p>
+   * <p>The default implementation returns the result of calling {@link #visitChildren} on {@code
+   * ctx}.
    */
   @Override
   public T visitPage(CSS3Parser.PageContext ctx) {
@@ -180,8 +181,8 @@ public class CSS3BaseVisitor<T> extends AbstractParseTreeVisitor<T> implements C
   /**
    * {@inheritDoc}
    *
-   * <p>The default implementation returns the result of calling
-   * {@link #visitChildren} on {@code ctx}.</p>
+   * <p>The default implementation returns the result of calling {@link #visitChildren} on {@code
+   * ctx}.
    */
   @Override
   public T visitPseudoPage(CSS3Parser.PseudoPageContext ctx) {
@@ -191,8 +192,8 @@ public class CSS3BaseVisitor<T> extends AbstractParseTreeVisitor<T> implements C
   /**
    * {@inheritDoc}
    *
-   * <p>The default implementation returns the result of calling
-   * {@link #visitChildren} on {@code ctx}.</p>
+   * <p>The default implementation returns the result of calling {@link #visitChildren} on {@code
+   * ctx}.
    */
   @Override
   public T visitSelectorGroup(CSS3Parser.SelectorGroupContext ctx) {
@@ -202,8 +203,8 @@ public class CSS3BaseVisitor<T> extends AbstractParseTreeVisitor<T> implements C
   /**
    * {@inheritDoc}
    *
-   * <p>The default implementation returns the result of calling
-   * {@link #visitChildren} on {@code ctx}.</p>
+   * <p>The default implementation returns the result of calling {@link #visitChildren} on {@code
+   * ctx}.
    */
   @Override
   public T visitSelector(CSS3Parser.SelectorContext ctx) {
@@ -213,8 +214,8 @@ public class CSS3BaseVisitor<T> extends AbstractParseTreeVisitor<T> implements C
   /**
    * {@inheritDoc}
    *
-   * <p>The default implementation returns the result of calling
-   * {@link #visitChildren} on {@code ctx}.</p>
+   * <p>The default implementation returns the result of calling {@link #visitChildren} on {@code
+   * ctx}.
    */
   @Override
   public T visitCombinator(CSS3Parser.CombinatorContext ctx) {
@@ -224,8 +225,8 @@ public class CSS3BaseVisitor<T> extends AbstractParseTreeVisitor<T> implements C
   /**
    * {@inheritDoc}
    *
-   * <p>The default implementation returns the result of calling
-   * {@link #visitChildren} on {@code ctx}.</p>
+   * <p>The default implementation returns the result of calling {@link #visitChildren} on {@code
+   * ctx}.
    */
   @Override
   public T visitSimpleSelectorSequence(CSS3Parser.SimpleSelectorSequenceContext ctx) {
@@ -235,8 +236,8 @@ public class CSS3BaseVisitor<T> extends AbstractParseTreeVisitor<T> implements C
   /**
    * {@inheritDoc}
    *
-   * <p>The default implementation returns the result of calling
-   * {@link #visitChildren} on {@code ctx}.</p>
+   * <p>The default implementation returns the result of calling {@link #visitChildren} on {@code
+   * ctx}.
    */
   @Override
   public T visitTypeSelector(CSS3Parser.TypeSelectorContext ctx) {
@@ -246,8 +247,8 @@ public class CSS3BaseVisitor<T> extends AbstractParseTreeVisitor<T> implements C
   /**
    * {@inheritDoc}
    *
-   * <p>The default implementation returns the result of calling
-   * {@link #visitChildren} on {@code ctx}.</p>
+   * <p>The default implementation returns the result of calling {@link #visitChildren} on {@code
+   * ctx}.
    */
   @Override
   public T visitTypeNamespacePrefix(CSS3Parser.TypeNamespacePrefixContext ctx) {
@@ -257,8 +258,8 @@ public class CSS3BaseVisitor<T> extends AbstractParseTreeVisitor<T> implements C
   /**
    * {@inheritDoc}
    *
-   * <p>The default implementation returns the result of calling
-   * {@link #visitChildren} on {@code ctx}.</p>
+   * <p>The default implementation returns the result of calling {@link #visitChildren} on {@code
+   * ctx}.
    */
   @Override
   public T visitElementName(CSS3Parser.ElementNameContext ctx) {
@@ -268,8 +269,8 @@ public class CSS3BaseVisitor<T> extends AbstractParseTreeVisitor<T> implements C
   /**
    * {@inheritDoc}
    *
-   * <p>The default implementation returns the result of calling
-   * {@link #visitChildren} on {@code ctx}.</p>
+   * <p>The default implementation returns the result of calling {@link #visitChildren} on {@code
+   * ctx}.
    */
   @Override
   public T visitUniversal(CSS3Parser.UniversalContext ctx) {
@@ -279,8 +280,8 @@ public class CSS3BaseVisitor<T> extends AbstractParseTreeVisitor<T> implements C
   /**
    * {@inheritDoc}
    *
-   * <p>The default implementation returns the result of calling
-   * {@link #visitChildren} on {@code ctx}.</p>
+   * <p>The default implementation returns the result of calling {@link #visitChildren} on {@code
+   * ctx}.
    */
   @Override
   public T visitClassName(CSS3Parser.ClassNameContext ctx) {
@@ -290,8 +291,8 @@ public class CSS3BaseVisitor<T> extends AbstractParseTreeVisitor<T> implements C
   /**
    * {@inheritDoc}
    *
-   * <p>The default implementation returns the result of calling
-   * {@link #visitChildren} on {@code ctx}.</p>
+   * <p>The default implementation returns the result of calling {@link #visitChildren} on {@code
+   * ctx}.
    */
   @Override
   public T visitAttrib(CSS3Parser.AttribContext ctx) {
@@ -301,8 +302,8 @@ public class CSS3BaseVisitor<T> extends AbstractParseTreeVisitor<T> implements C
   /**
    * {@inheritDoc}
    *
-   * <p>The default implementation returns the result of calling
-   * {@link #visitChildren} on {@code ctx}.</p>
+   * <p>The default implementation returns the result of calling {@link #visitChildren} on {@code
+   * ctx}.
    */
   @Override
   public T visitPseudo(CSS3Parser.PseudoContext ctx) {
@@ -312,8 +313,8 @@ public class CSS3BaseVisitor<T> extends AbstractParseTreeVisitor<T> implements C
   /**
    * {@inheritDoc}
    *
-   * <p>The default implementation returns the result of calling
-   * {@link #visitChildren} on {@code ctx}.</p>
+   * <p>The default implementation returns the result of calling {@link #visitChildren} on {@code
+   * ctx}.
    */
   @Override
   public T visitFunctionalPseudo(CSS3Parser.FunctionalPseudoContext ctx) {
@@ -323,8 +324,8 @@ public class CSS3BaseVisitor<T> extends AbstractParseTreeVisitor<T> implements C
   /**
    * {@inheritDoc}
    *
-   * <p>The default implementation returns the result of calling
-   * {@link #visitChildren} on {@code ctx}.</p>
+   * <p>The default implementation returns the result of calling {@link #visitChildren} on {@code
+   * ctx}.
    */
   @Override
   public T visitExpression(CSS3Parser.ExpressionContext ctx) {
@@ -334,8 +335,8 @@ public class CSS3BaseVisitor<T> extends AbstractParseTreeVisitor<T> implements C
   /**
    * {@inheritDoc}
    *
-   * <p>The default implementation returns the result of calling
-   * {@link #visitChildren} on {@code ctx}.</p>
+   * <p>The default implementation returns the result of calling {@link #visitChildren} on {@code
+   * ctx}.
    */
   @Override
   public T visitNegation(CSS3Parser.NegationContext ctx) {
@@ -345,8 +346,8 @@ public class CSS3BaseVisitor<T> extends AbstractParseTreeVisitor<T> implements C
   /**
    * {@inheritDoc}
    *
-   * <p>The default implementation returns the result of calling
-   * {@link #visitChildren} on {@code ctx}.</p>
+   * <p>The default implementation returns the result of calling {@link #visitChildren} on {@code
+   * ctx}.
    */
   @Override
   public T visitNegationArg(CSS3Parser.NegationArgContext ctx) {
@@ -356,8 +357,8 @@ public class CSS3BaseVisitor<T> extends AbstractParseTreeVisitor<T> implements C
   /**
    * {@inheritDoc}
    *
-   * <p>The default implementation returns the result of calling
-   * {@link #visitChildren} on {@code ctx}.</p>
+   * <p>The default implementation returns the result of calling {@link #visitChildren} on {@code
+   * ctx}.
    */
   @Override
   public T visitGoodOperator(CSS3Parser.GoodOperatorContext ctx) {
@@ -367,8 +368,8 @@ public class CSS3BaseVisitor<T> extends AbstractParseTreeVisitor<T> implements C
   /**
    * {@inheritDoc}
    *
-   * <p>The default implementation returns the result of calling
-   * {@link #visitChildren} on {@code ctx}.</p>
+   * <p>The default implementation returns the result of calling {@link #visitChildren} on {@code
+   * ctx}.
    */
   @Override
   public T visitBadOperator(CSS3Parser.BadOperatorContext ctx) {
@@ -378,8 +379,8 @@ public class CSS3BaseVisitor<T> extends AbstractParseTreeVisitor<T> implements C
   /**
    * {@inheritDoc}
    *
-   * <p>The default implementation returns the result of calling
-   * {@link #visitChildren} on {@code ctx}.</p>
+   * <p>The default implementation returns the result of calling {@link #visitChildren} on {@code
+   * ctx}.
    */
   @Override
   public T visitGoodProperty(CSS3Parser.GoodPropertyContext ctx) {
@@ -389,8 +390,8 @@ public class CSS3BaseVisitor<T> extends AbstractParseTreeVisitor<T> implements C
   /**
    * {@inheritDoc}
    *
-   * <p>The default implementation returns the result of calling
-   * {@link #visitChildren} on {@code ctx}.</p>
+   * <p>The default implementation returns the result of calling {@link #visitChildren} on {@code
+   * ctx}.
    */
   @Override
   public T visitBadProperty(CSS3Parser.BadPropertyContext ctx) {
@@ -400,8 +401,8 @@ public class CSS3BaseVisitor<T> extends AbstractParseTreeVisitor<T> implements C
   /**
    * {@inheritDoc}
    *
-   * <p>The default implementation returns the result of calling
-   * {@link #visitChildren} on {@code ctx}.</p>
+   * <p>The default implementation returns the result of calling {@link #visitChildren} on {@code
+   * ctx}.
    */
   @Override
   public T visitKnownRuleset(CSS3Parser.KnownRulesetContext ctx) {
@@ -411,8 +412,8 @@ public class CSS3BaseVisitor<T> extends AbstractParseTreeVisitor<T> implements C
   /**
    * {@inheritDoc}
    *
-   * <p>The default implementation returns the result of calling
-   * {@link #visitChildren} on {@code ctx}.</p>
+   * <p>The default implementation returns the result of calling {@link #visitChildren} on {@code
+   * ctx}.
    */
   @Override
   public T visitUnknownRuleset(CSS3Parser.UnknownRulesetContext ctx) {
@@ -422,8 +423,8 @@ public class CSS3BaseVisitor<T> extends AbstractParseTreeVisitor<T> implements C
   /**
    * {@inheritDoc}
    *
-   * <p>The default implementation returns the result of calling
-   * {@link #visitChildren} on {@code ctx}.</p>
+   * <p>The default implementation returns the result of calling {@link #visitChildren} on {@code
+   * ctx}.
    */
   @Override
   public T visitDeclarationList(CSS3Parser.DeclarationListContext ctx) {
@@ -433,8 +434,8 @@ public class CSS3BaseVisitor<T> extends AbstractParseTreeVisitor<T> implements C
   /**
    * {@inheritDoc}
    *
-   * <p>The default implementation returns the result of calling
-   * {@link #visitChildren} on {@code ctx}.</p>
+   * <p>The default implementation returns the result of calling {@link #visitChildren} on {@code
+   * ctx}.
    */
   @Override
   public T visitKnownDeclaration(CSS3Parser.KnownDeclarationContext ctx) {
@@ -444,8 +445,8 @@ public class CSS3BaseVisitor<T> extends AbstractParseTreeVisitor<T> implements C
   /**
    * {@inheritDoc}
    *
-   * <p>The default implementation returns the result of calling
-   * {@link #visitChildren} on {@code ctx}.</p>
+   * <p>The default implementation returns the result of calling {@link #visitChildren} on {@code
+   * ctx}.
    */
   @Override
   public T visitUnknownDeclaration(CSS3Parser.UnknownDeclarationContext ctx) {
@@ -455,8 +456,8 @@ public class CSS3BaseVisitor<T> extends AbstractParseTreeVisitor<T> implements C
   /**
    * {@inheritDoc}
    *
-   * <p>The default implementation returns the result of calling
-   * {@link #visitChildren} on {@code ctx}.</p>
+   * <p>The default implementation returns the result of calling {@link #visitChildren} on {@code
+   * ctx}.
    */
   @Override
   public T visitPrio(CSS3Parser.PrioContext ctx) {
@@ -466,8 +467,8 @@ public class CSS3BaseVisitor<T> extends AbstractParseTreeVisitor<T> implements C
   /**
    * {@inheritDoc}
    *
-   * <p>The default implementation returns the result of calling
-   * {@link #visitChildren} on {@code ctx}.</p>
+   * <p>The default implementation returns the result of calling {@link #visitChildren} on {@code
+   * ctx}.
    */
   @Override
   public T visitValue(CSS3Parser.ValueContext ctx) {
@@ -477,8 +478,8 @@ public class CSS3BaseVisitor<T> extends AbstractParseTreeVisitor<T> implements C
   /**
    * {@inheritDoc}
    *
-   * <p>The default implementation returns the result of calling
-   * {@link #visitChildren} on {@code ctx}.</p>
+   * <p>The default implementation returns the result of calling {@link #visitChildren} on {@code
+   * ctx}.
    */
   @Override
   public T visitExpr(CSS3Parser.ExprContext ctx) {
@@ -488,8 +489,8 @@ public class CSS3BaseVisitor<T> extends AbstractParseTreeVisitor<T> implements C
   /**
    * {@inheritDoc}
    *
-   * <p>The default implementation returns the result of calling
-   * {@link #visitChildren} on {@code ctx}.</p>
+   * <p>The default implementation returns the result of calling {@link #visitChildren} on {@code
+   * ctx}.
    */
   @Override
   public T visitKnownTerm(CSS3Parser.KnownTermContext ctx) {
@@ -499,8 +500,8 @@ public class CSS3BaseVisitor<T> extends AbstractParseTreeVisitor<T> implements C
   /**
    * {@inheritDoc}
    *
-   * <p>The default implementation returns the result of calling
-   * {@link #visitChildren} on {@code ctx}.</p>
+   * <p>The default implementation returns the result of calling {@link #visitChildren} on {@code
+   * ctx}.
    */
   @Override
   public T visitUnknownTerm(CSS3Parser.UnknownTermContext ctx) {
@@ -510,8 +511,8 @@ public class CSS3BaseVisitor<T> extends AbstractParseTreeVisitor<T> implements C
   /**
    * {@inheritDoc}
    *
-   * <p>The default implementation returns the result of calling
-   * {@link #visitChildren} on {@code ctx}.</p>
+   * <p>The default implementation returns the result of calling {@link #visitChildren} on {@code
+   * ctx}.
    */
   @Override
   public T visitBadTerm(CSS3Parser.BadTermContext ctx) {
@@ -521,8 +522,8 @@ public class CSS3BaseVisitor<T> extends AbstractParseTreeVisitor<T> implements C
   /**
    * {@inheritDoc}
    *
-   * <p>The default implementation returns the result of calling
-   * {@link #visitChildren} on {@code ctx}.</p>
+   * <p>The default implementation returns the result of calling {@link #visitChildren} on {@code
+   * ctx}.
    */
   @Override
   public T visitFunction(CSS3Parser.FunctionContext ctx) {
@@ -532,8 +533,8 @@ public class CSS3BaseVisitor<T> extends AbstractParseTreeVisitor<T> implements C
   /**
    * {@inheritDoc}
    *
-   * <p>The default implementation returns the result of calling
-   * {@link #visitChildren} on {@code ctx}.</p>
+   * <p>The default implementation returns the result of calling {@link #visitChildren} on {@code
+   * ctx}.
    */
   @Override
   public T visitDxImageTransform(CSS3Parser.DxImageTransformContext ctx) {
@@ -543,8 +544,8 @@ public class CSS3BaseVisitor<T> extends AbstractParseTreeVisitor<T> implements C
   /**
    * {@inheritDoc}
    *
-   * <p>The default implementation returns the result of calling
-   * {@link #visitChildren} on {@code ctx}.</p>
+   * <p>The default implementation returns the result of calling {@link #visitChildren} on {@code
+   * ctx}.
    */
   @Override
   public T visitHexcolor(CSS3Parser.HexcolorContext ctx) {
@@ -554,8 +555,8 @@ public class CSS3BaseVisitor<T> extends AbstractParseTreeVisitor<T> implements C
   /**
    * {@inheritDoc}
    *
-   * <p>The default implementation returns the result of calling
-   * {@link #visitChildren} on {@code ctx}.</p>
+   * <p>The default implementation returns the result of calling {@link #visitChildren} on {@code
+   * ctx}.
    */
   @Override
   public T visitNumber(CSS3Parser.NumberContext ctx) {
@@ -565,8 +566,8 @@ public class CSS3BaseVisitor<T> extends AbstractParseTreeVisitor<T> implements C
   /**
    * {@inheritDoc}
    *
-   * <p>The default implementation returns the result of calling
-   * {@link #visitChildren} on {@code ctx}.</p>
+   * <p>The default implementation returns the result of calling {@link #visitChildren} on {@code
+   * ctx}.
    */
   @Override
   public T visitPercentage(CSS3Parser.PercentageContext ctx) {
@@ -576,8 +577,8 @@ public class CSS3BaseVisitor<T> extends AbstractParseTreeVisitor<T> implements C
   /**
    * {@inheritDoc}
    *
-   * <p>The default implementation returns the result of calling
-   * {@link #visitChildren} on {@code ctx}.</p>
+   * <p>The default implementation returns the result of calling {@link #visitChildren} on {@code
+   * ctx}.
    */
   @Override
   public T visitDimension(CSS3Parser.DimensionContext ctx) {
@@ -587,8 +588,8 @@ public class CSS3BaseVisitor<T> extends AbstractParseTreeVisitor<T> implements C
   /**
    * {@inheritDoc}
    *
-   * <p>The default implementation returns the result of calling
-   * {@link #visitChildren} on {@code ctx}.</p>
+   * <p>The default implementation returns the result of calling {@link #visitChildren} on {@code
+   * ctx}.
    */
   @Override
   public T visitUnknownDimension(CSS3Parser.UnknownDimensionContext ctx) {
@@ -598,8 +599,8 @@ public class CSS3BaseVisitor<T> extends AbstractParseTreeVisitor<T> implements C
   /**
    * {@inheritDoc}
    *
-   * <p>The default implementation returns the result of calling
-   * {@link #visitChildren} on {@code ctx}.</p>
+   * <p>The default implementation returns the result of calling {@link #visitChildren} on {@code
+   * ctx}.
    */
   @Override
   public T visitAny(CSS3Parser.AnyContext ctx) {
@@ -609,8 +610,8 @@ public class CSS3BaseVisitor<T> extends AbstractParseTreeVisitor<T> implements C
   /**
    * {@inheritDoc}
    *
-   * <p>The default implementation returns the result of calling
-   * {@link #visitChildren} on {@code ctx}.</p>
+   * <p>The default implementation returns the result of calling {@link #visitChildren} on {@code
+   * ctx}.
    */
   @Override
   public T visitUnknownAtRule(CSS3Parser.UnknownAtRuleContext ctx) {
@@ -620,8 +621,8 @@ public class CSS3BaseVisitor<T> extends AbstractParseTreeVisitor<T> implements C
   /**
    * {@inheritDoc}
    *
-   * <p>The default implementation returns the result of calling
-   * {@link #visitChildren} on {@code ctx}.</p>
+   * <p>The default implementation returns the result of calling {@link #visitChildren} on {@code
+   * ctx}.
    */
   @Override
   public T visitAtKeyword(CSS3Parser.AtKeywordContext ctx) {
@@ -631,8 +632,8 @@ public class CSS3BaseVisitor<T> extends AbstractParseTreeVisitor<T> implements C
   /**
    * {@inheritDoc}
    *
-   * <p>The default implementation returns the result of calling
-   * {@link #visitChildren} on {@code ctx}.</p>
+   * <p>The default implementation returns the result of calling {@link #visitChildren} on {@code
+   * ctx}.
    */
   @Override
   public T visitUnused(CSS3Parser.UnusedContext ctx) {
@@ -642,8 +643,8 @@ public class CSS3BaseVisitor<T> extends AbstractParseTreeVisitor<T> implements C
   /**
    * {@inheritDoc}
    *
-   * <p>The default implementation returns the result of calling
-   * {@link #visitChildren} on {@code ctx}.</p>
+   * <p>The default implementation returns the result of calling {@link #visitChildren} on {@code
+   * ctx}.
    */
   @Override
   public T visitBlock(CSS3Parser.BlockContext ctx) {
@@ -653,8 +654,8 @@ public class CSS3BaseVisitor<T> extends AbstractParseTreeVisitor<T> implements C
   /**
    * {@inheritDoc}
    *
-   * <p>The default implementation returns the result of calling
-   * {@link #visitChildren} on {@code ctx}.</p>
+   * <p>The default implementation returns the result of calling {@link #visitChildren} on {@code
+   * ctx}.
    */
   @Override
   public T visitNestedStatement(CSS3Parser.NestedStatementContext ctx) {
@@ -664,8 +665,8 @@ public class CSS3BaseVisitor<T> extends AbstractParseTreeVisitor<T> implements C
   /**
    * {@inheritDoc}
    *
-   * <p>The default implementation returns the result of calling
-   * {@link #visitChildren} on {@code ctx}.</p>
+   * <p>The default implementation returns the result of calling {@link #visitChildren} on {@code
+   * ctx}.
    */
   @Override
   public T visitGroupRuleBody(CSS3Parser.GroupRuleBodyContext ctx) {
@@ -675,8 +676,8 @@ public class CSS3BaseVisitor<T> extends AbstractParseTreeVisitor<T> implements C
   /**
    * {@inheritDoc}
    *
-   * <p>The default implementation returns the result of calling
-   * {@link #visitChildren} on {@code ctx}.</p>
+   * <p>The default implementation returns the result of calling {@link #visitChildren} on {@code
+   * ctx}.
    */
   @Override
   public T visitSupportsRule(CSS3Parser.SupportsRuleContext ctx) {
@@ -686,8 +687,8 @@ public class CSS3BaseVisitor<T> extends AbstractParseTreeVisitor<T> implements C
   /**
    * {@inheritDoc}
    *
-   * <p>The default implementation returns the result of calling
-   * {@link #visitChildren} on {@code ctx}.</p>
+   * <p>The default implementation returns the result of calling {@link #visitChildren} on {@code
+   * ctx}.
    */
   @Override
   public T visitSupportsCondition(CSS3Parser.SupportsConditionContext ctx) {
@@ -697,8 +698,8 @@ public class CSS3BaseVisitor<T> extends AbstractParseTreeVisitor<T> implements C
   /**
    * {@inheritDoc}
    *
-   * <p>The default implementation returns the result of calling
-   * {@link #visitChildren} on {@code ctx}.</p>
+   * <p>The default implementation returns the result of calling {@link #visitChildren} on {@code
+   * ctx}.
    */
   @Override
   public T visitSupportsConditionInParens(CSS3Parser.SupportsConditionInParensContext ctx) {
@@ -708,8 +709,8 @@ public class CSS3BaseVisitor<T> extends AbstractParseTreeVisitor<T> implements C
   /**
    * {@inheritDoc}
    *
-   * <p>The default implementation returns the result of calling
-   * {@link #visitChildren} on {@code ctx}.</p>
+   * <p>The default implementation returns the result of calling {@link #visitChildren} on {@code
+   * ctx}.
    */
   @Override
   public T visitSupportsNegation(CSS3Parser.SupportsNegationContext ctx) {
@@ -719,8 +720,8 @@ public class CSS3BaseVisitor<T> extends AbstractParseTreeVisitor<T> implements C
   /**
    * {@inheritDoc}
    *
-   * <p>The default implementation returns the result of calling
-   * {@link #visitChildren} on {@code ctx}.</p>
+   * <p>The default implementation returns the result of calling {@link #visitChildren} on {@code
+   * ctx}.
    */
   @Override
   public T visitSupportsConjunction(CSS3Parser.SupportsConjunctionContext ctx) {
@@ -730,8 +731,8 @@ public class CSS3BaseVisitor<T> extends AbstractParseTreeVisitor<T> implements C
   /**
    * {@inheritDoc}
    *
-   * <p>The default implementation returns the result of calling
-   * {@link #visitChildren} on {@code ctx}.</p>
+   * <p>The default implementation returns the result of calling {@link #visitChildren} on {@code
+   * ctx}.
    */
   @Override
   public T visitSupportsDisjunction(CSS3Parser.SupportsDisjunctionContext ctx) {
@@ -741,8 +742,8 @@ public class CSS3BaseVisitor<T> extends AbstractParseTreeVisitor<T> implements C
   /**
    * {@inheritDoc}
    *
-   * <p>The default implementation returns the result of calling
-   * {@link #visitChildren} on {@code ctx}.</p>
+   * <p>The default implementation returns the result of calling {@link #visitChildren} on {@code
+   * ctx}.
    */
   @Override
   public T visitSupportsDeclarationCondition(CSS3Parser.SupportsDeclarationConditionContext ctx) {
@@ -752,8 +753,8 @@ public class CSS3BaseVisitor<T> extends AbstractParseTreeVisitor<T> implements C
   /**
    * {@inheritDoc}
    *
-   * <p>The default implementation returns the result of calling
-   * {@link #visitChildren} on {@code ctx}.</p>
+   * <p>The default implementation returns the result of calling {@link #visitChildren} on {@code
+   * ctx}.
    */
   @Override
   public T visitGeneralEnclosed(CSS3Parser.GeneralEnclosedContext ctx) {
@@ -763,8 +764,8 @@ public class CSS3BaseVisitor<T> extends AbstractParseTreeVisitor<T> implements C
   /**
    * {@inheritDoc}
    *
-   * <p>The default implementation returns the result of calling
-   * {@link #visitChildren} on {@code ctx}.</p>
+   * <p>The default implementation returns the result of calling {@link #visitChildren} on {@code
+   * ctx}.
    */
   @Override
   public T visitVar(CSS3Parser.VarContext ctx) {
@@ -774,8 +775,8 @@ public class CSS3BaseVisitor<T> extends AbstractParseTreeVisitor<T> implements C
   /**
    * {@inheritDoc}
    *
-   * <p>The default implementation returns the result of calling
-   * {@link #visitChildren} on {@code ctx}.</p>
+   * <p>The default implementation returns the result of calling {@link #visitChildren} on {@code
+   * ctx}.
    */
   @Override
   public T visitCalc(CSS3Parser.CalcContext ctx) {
@@ -785,8 +786,8 @@ public class CSS3BaseVisitor<T> extends AbstractParseTreeVisitor<T> implements C
   /**
    * {@inheritDoc}
    *
-   * <p>The default implementation returns the result of calling
-   * {@link #visitChildren} on {@code ctx}.</p>
+   * <p>The default implementation returns the result of calling {@link #visitChildren} on {@code
+   * ctx}.
    */
   @Override
   public T visitCalcSum(CSS3Parser.CalcSumContext ctx) {
@@ -796,8 +797,8 @@ public class CSS3BaseVisitor<T> extends AbstractParseTreeVisitor<T> implements C
   /**
    * {@inheritDoc}
    *
-   * <p>The default implementation returns the result of calling
-   * {@link #visitChildren} on {@code ctx}.</p>
+   * <p>The default implementation returns the result of calling {@link #visitChildren} on {@code
+   * ctx}.
    */
   @Override
   public T visitCalcProduct(CSS3Parser.CalcProductContext ctx) {
@@ -807,8 +808,8 @@ public class CSS3BaseVisitor<T> extends AbstractParseTreeVisitor<T> implements C
   /**
    * {@inheritDoc}
    *
-   * <p>The default implementation returns the result of calling
-   * {@link #visitChildren} on {@code ctx}.</p>
+   * <p>The default implementation returns the result of calling {@link #visitChildren} on {@code
+   * ctx}.
    */
   @Override
   public T visitCalcValue(CSS3Parser.CalcValueContext ctx) {
@@ -818,8 +819,8 @@ public class CSS3BaseVisitor<T> extends AbstractParseTreeVisitor<T> implements C
   /**
    * {@inheritDoc}
    *
-   * <p>The default implementation returns the result of calling
-   * {@link #visitChildren} on {@code ctx}.</p>
+   * <p>The default implementation returns the result of calling {@link #visitChildren} on {@code
+   * ctx}.
    */
   @Override
   public T visitFontFaceRule(CSS3Parser.FontFaceRuleContext ctx) {
@@ -829,8 +830,8 @@ public class CSS3BaseVisitor<T> extends AbstractParseTreeVisitor<T> implements C
   /**
    * {@inheritDoc}
    *
-   * <p>The default implementation returns the result of calling
-   * {@link #visitChildren} on {@code ctx}.</p>
+   * <p>The default implementation returns the result of calling {@link #visitChildren} on {@code
+   * ctx}.
    */
   @Override
   public T visitKnownFontFaceDeclaration(CSS3Parser.KnownFontFaceDeclarationContext ctx) {
@@ -840,8 +841,8 @@ public class CSS3BaseVisitor<T> extends AbstractParseTreeVisitor<T> implements C
   /**
    * {@inheritDoc}
    *
-   * <p>The default implementation returns the result of calling
-   * {@link #visitChildren} on {@code ctx}.</p>
+   * <p>The default implementation returns the result of calling {@link #visitChildren} on {@code
+   * ctx}.
    */
   @Override
   public T visitUnknownFontFaceDeclaration(CSS3Parser.UnknownFontFaceDeclarationContext ctx) {
@@ -851,8 +852,8 @@ public class CSS3BaseVisitor<T> extends AbstractParseTreeVisitor<T> implements C
   /**
    * {@inheritDoc}
    *
-   * <p>The default implementation returns the result of calling
-   * {@link #visitChildren} on {@code ctx}.</p>
+   * <p>The default implementation returns the result of calling {@link #visitChildren} on {@code
+   * ctx}.
    */
   @Override
   public T visitKeyframesRule(CSS3Parser.KeyframesRuleContext ctx) {
@@ -862,8 +863,8 @@ public class CSS3BaseVisitor<T> extends AbstractParseTreeVisitor<T> implements C
   /**
    * {@inheritDoc}
    *
-   * <p>The default implementation returns the result of calling
-   * {@link #visitChildren} on {@code ctx}.</p>
+   * <p>The default implementation returns the result of calling {@link #visitChildren} on {@code
+   * ctx}.
    */
   @Override
   public T visitKeyframesBlocks(CSS3Parser.KeyframesBlocksContext ctx) {
@@ -873,8 +874,8 @@ public class CSS3BaseVisitor<T> extends AbstractParseTreeVisitor<T> implements C
   /**
    * {@inheritDoc}
    *
-   * <p>The default implementation returns the result of calling
-   * {@link #visitChildren} on {@code ctx}.</p>
+   * <p>The default implementation returns the result of calling {@link #visitChildren} on {@code
+   * ctx}.
    */
   @Override
   public T visitKeyframeSelector(CSS3Parser.KeyframeSelectorContext ctx) {
@@ -884,8 +885,8 @@ public class CSS3BaseVisitor<T> extends AbstractParseTreeVisitor<T> implements C
   /**
    * {@inheritDoc}
    *
-   * <p>The default implementation returns the result of calling
-   * {@link #visitChildren} on {@code ctx}.</p>
+   * <p>The default implementation returns the result of calling {@link #visitChildren} on {@code
+   * ctx}.
    */
   @Override
   public T visitViewport(CSS3Parser.ViewportContext ctx) {
@@ -895,8 +896,8 @@ public class CSS3BaseVisitor<T> extends AbstractParseTreeVisitor<T> implements C
   /**
    * {@inheritDoc}
    *
-   * <p>The default implementation returns the result of calling
-   * {@link #visitChildren} on {@code ctx}.</p>
+   * <p>The default implementation returns the result of calling {@link #visitChildren} on {@code
+   * ctx}.
    */
   @Override
   public T visitCounterStyle(CSS3Parser.CounterStyleContext ctx) {
@@ -906,8 +907,8 @@ public class CSS3BaseVisitor<T> extends AbstractParseTreeVisitor<T> implements C
   /**
    * {@inheritDoc}
    *
-   * <p>The default implementation returns the result of calling
-   * {@link #visitChildren} on {@code ctx}.</p>
+   * <p>The default implementation returns the result of calling {@link #visitChildren} on {@code
+   * ctx}.
    */
   @Override
   public T visitFontFeatureValuesRule(CSS3Parser.FontFeatureValuesRuleContext ctx) {
@@ -917,8 +918,8 @@ public class CSS3BaseVisitor<T> extends AbstractParseTreeVisitor<T> implements C
   /**
    * {@inheritDoc}
    *
-   * <p>The default implementation returns the result of calling
-   * {@link #visitChildren} on {@code ctx}.</p>
+   * <p>The default implementation returns the result of calling {@link #visitChildren} on {@code
+   * ctx}.
    */
   @Override
   public T visitFontFamilyNameList(CSS3Parser.FontFamilyNameListContext ctx) {
@@ -928,8 +929,8 @@ public class CSS3BaseVisitor<T> extends AbstractParseTreeVisitor<T> implements C
   /**
    * {@inheritDoc}
    *
-   * <p>The default implementation returns the result of calling
-   * {@link #visitChildren} on {@code ctx}.</p>
+   * <p>The default implementation returns the result of calling {@link #visitChildren} on {@code
+   * ctx}.
    */
   @Override
   public T visitFontFamilyName(CSS3Parser.FontFamilyNameContext ctx) {
@@ -939,8 +940,8 @@ public class CSS3BaseVisitor<T> extends AbstractParseTreeVisitor<T> implements C
   /**
    * {@inheritDoc}
    *
-   * <p>The default implementation returns the result of calling
-   * {@link #visitChildren} on {@code ctx}.</p>
+   * <p>The default implementation returns the result of calling {@link #visitChildren} on {@code
+   * ctx}.
    */
   @Override
   public T visitFeatureValueBlock(CSS3Parser.FeatureValueBlockContext ctx) {
@@ -950,8 +951,8 @@ public class CSS3BaseVisitor<T> extends AbstractParseTreeVisitor<T> implements C
   /**
    * {@inheritDoc}
    *
-   * <p>The default implementation returns the result of calling
-   * {@link #visitChildren} on {@code ctx}.</p>
+   * <p>The default implementation returns the result of calling {@link #visitChildren} on {@code
+   * ctx}.
    */
   @Override
   public T visitFeatureType(CSS3Parser.FeatureTypeContext ctx) {
@@ -961,8 +962,8 @@ public class CSS3BaseVisitor<T> extends AbstractParseTreeVisitor<T> implements C
   /**
    * {@inheritDoc}
    *
-   * <p>The default implementation returns the result of calling
-   * {@link #visitChildren} on {@code ctx}.</p>
+   * <p>The default implementation returns the result of calling {@link #visitChildren} on {@code
+   * ctx}.
    */
   @Override
   public T visitFeatureValueDefinition(CSS3Parser.FeatureValueDefinitionContext ctx) {
@@ -972,8 +973,8 @@ public class CSS3BaseVisitor<T> extends AbstractParseTreeVisitor<T> implements C
   /**
    * {@inheritDoc}
    *
-   * <p>The default implementation returns the result of calling
-   * {@link #visitChildren} on {@code ctx}.</p>
+   * <p>The default implementation returns the result of calling {@link #visitChildren} on {@code
+   * ctx}.
    */
   @Override
   public T visitIdent(CSS3Parser.IdentContext ctx) {
@@ -983,8 +984,8 @@ public class CSS3BaseVisitor<T> extends AbstractParseTreeVisitor<T> implements C
   /**
    * {@inheritDoc}
    *
-   * <p>The default implementation returns the result of calling
-   * {@link #visitChildren} on {@code ctx}.</p>
+   * <p>The default implementation returns the result of calling {@link #visitChildren} on {@code
+   * ctx}.
    */
   @Override
   public T visitWs(CSS3Parser.WsContext ctx) {

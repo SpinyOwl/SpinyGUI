@@ -3,17 +3,21 @@ package com.spinyowl.spinygui.core.style.stylesheet.property.background;
 import com.spinyowl.spinygui.core.style.stylesheet.Properties;
 import com.spinyowl.spinygui.core.style.stylesheet.Property;
 
-/**
- * Currently supports only url/none argument.
- */
+/** Currently supports only url/none argument. */
 public class BackgroundImageProperty extends Property<String> {
 
   public static final String NONE = "none";
 
   public BackgroundImageProperty() {
-    super(Properties.BACKGROUND_IMAGE, NONE, !INHERITED, !ANIMATABLE,
-        (s, i) -> s.background().image(i), s -> s.background().image(),
-        BackgroundImageProperty::extractUrl, BackgroundImageProperty::test);
+    super(
+        Properties.BACKGROUND_IMAGE,
+        NONE,
+        !INHERITED,
+        !ANIMATABLE,
+        (s, i) -> s.background().image(i),
+        s -> s.background().image(),
+        BackgroundImageProperty::extractUrl,
+        BackgroundImageProperty::test);
   }
 
   private static boolean test(String value) {
@@ -33,7 +37,8 @@ public class BackgroundImageProperty extends Property<String> {
   }
 
   private static boolean escaped(String cut, String escapeString) {
-    return cut.startsWith(escapeString) && cut.endsWith(escapeString)
+    return cut.startsWith(escapeString)
+        && cut.endsWith(escapeString)
         && cut.replace(escapeString, "").length() == cut.length() - 2;
   }
 

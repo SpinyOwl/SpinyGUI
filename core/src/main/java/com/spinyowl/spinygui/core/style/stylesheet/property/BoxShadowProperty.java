@@ -1,32 +1,37 @@
 package com.spinyowl.spinygui.core.style.stylesheet.property;
 
 import static com.spinyowl.spinygui.core.style.stylesheet.Properties.BOX_SHADOW;
-import com.spinyowl.spinygui.core.style.stylesheet.extractor.ValueExtractor;
-import com.spinyowl.spinygui.core.style.stylesheet.extractor.ValueExtractors;
 import com.spinyowl.spinygui.core.node.style.NodeStyle;
-import com.spinyowl.spinygui.core.style.stylesheet.Property;
 import com.spinyowl.spinygui.core.node.style.types.BoxShadow;
 import com.spinyowl.spinygui.core.node.style.types.Color;
 import com.spinyowl.spinygui.core.node.style.types.length.Length;
+import com.spinyowl.spinygui.core.style.stylesheet.Property;
+import com.spinyowl.spinygui.core.style.stylesheet.extractor.ValueExtractor;
+import com.spinyowl.spinygui.core.style.stylesheet.extractor.ValueExtractors;
 
 public class BoxShadowProperty extends Property<BoxShadow> {
 
   private static final ValueExtractor<Length> lengthValueExtractor =
       ValueExtractors.of(Length.class);
-  private static final ValueExtractor<Color> colorValueExtractor =
-      ValueExtractors.of(Color.class);
+  private static final ValueExtractor<Color> colorValueExtractor = ValueExtractors.of(Color.class);
 
   private static final String INSET = "INSET";
   private static final String NONE = "none";
 
   public BoxShadowProperty() {
-    super(BOX_SHADOW, NONE, !INHERITED, ANIMATABLE,
-        NodeStyle::boxShadow, NodeStyle::boxShadow,
-        BoxShadowProperty::extract, BoxShadowProperty::validate);
+    super(
+        BOX_SHADOW,
+        NONE,
+        !INHERITED,
+        ANIMATABLE,
+        NodeStyle::boxShadow,
+        NodeStyle::boxShadow,
+        BoxShadowProperty::extract,
+        BoxShadowProperty::validate);
   }
 
   private static boolean validate(String s) {
-    if(s.equals("none")) {
+    if (s.equals("none")) {
       return true;
     }
 
@@ -46,18 +51,18 @@ public class BoxShadowProperty extends Property<BoxShadow> {
       if (!isInset && !isColor && !isLength) {
         return false;
       }
-      //@formatter:off
-      if(isInset) insetArgs ++;
-      if(isColor) colorArgs ++;
-      if(isLength) lengthArgs ++;
-      //@formatter:on
+      // @formatter:off
+      if (isInset) insetArgs++;
+      if (isColor) colorArgs++;
+      if (isLength) lengthArgs++;
+      // @formatter:on
     }
 
     return lengthArgs >= 2 && lengthArgs <= 4 && insetArgs <= 1 && colorArgs <= 1;
   }
 
   private static BoxShadow extract(String s) {
-    if(NONE.equals(s)) return new BoxShadow();
+    if (NONE.equals(s)) return new BoxShadow();
 
     String[] args = s.split("\\s+");
 
@@ -76,10 +81,10 @@ public class BoxShadowProperty extends Property<BoxShadow> {
         color = colorValueExtractor.extract(arg);
       }
     }
-    //@formatter:off
+    // @formatter:off
     if (color == null) color = Color.BLACK;
     if (inset == null) inset = Boolean.FALSE;
-    //@formatter:on
+    // @formatter:on
     shadow.hOffset(shadowArgs[0]);
     shadow.vOffset(shadowArgs[1]);
     shadow.blur(shadowArgs[2] == null ? 0f : shadowArgs[2]);

@@ -6,8 +6,7 @@ public final class Intersections {
 
   private static Intersection defaultIntersection = RECTANGLE_INTERSECTION;
 
-  private Intersections() {
-  }
+  private Intersections() {}
 
   public static Intersection getDefaultIntersection() {
     return defaultIntersection;

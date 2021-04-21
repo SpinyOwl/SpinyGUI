@@ -1,11 +1,10 @@
-// Generated from C:/Users/Marvin/Documents/SpinyGui/SpinyGUI/core/src/main/resources/grammars\CSS3.g4 by ANTLR 4.7
+// Generated from
+// C:/Users/Marvin/Documents/SpinyGui/SpinyGUI/core/src/main/resources/grammars\CSS3.g4 by ANTLR 4.7
 package com.spinyowl.spinygui.core.parser.impl.css.parser.antlr;
 
 import org.antlr.v4.runtime.tree.ParseTreeListener;
 
-/**
- * This interface defines a complete listener for a parse tree produced by {@link CSS3Parser}.
- */
+/** This interface defines a complete listener for a parse tree produced by {@link CSS3Parser}. */
 public interface CSS3Listener extends ParseTreeListener {
 
   /**

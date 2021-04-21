@@ -1,4 +1,5 @@
-// Generated from C:/Users/Marvin/Documents/SpinyGui/SpinyGUI/core/src/main/resources/grammars\CSS3.g4 by ANTLR 4.7
+// Generated from
+// C:/Users/Marvin/Documents/SpinyGui/SpinyGUI/core/src/main/resources/grammars\CSS3.g4 by ANTLR 4.7
 package com.spinyowl.spinygui.core.parser.impl.css.parser.antlr;
 
 import org.antlr.v4.runtime.tree.ParseTreeVisitor;
@@ -8,7 +9,7 @@ import org.antlr.v4.runtime.tree.ParseTreeVisitor;
  * CSS3Parser}.
  *
  * @param <T> The return type of the visit operation. Use {@link Void} for operations with no return
- *            type.
+ *     type.
  */
 public interface CSS3Visitor<T> extends ParseTreeVisitor<T> {
 

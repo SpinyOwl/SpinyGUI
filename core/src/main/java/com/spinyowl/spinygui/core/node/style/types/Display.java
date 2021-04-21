@@ -8,9 +8,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
 
-/**
- * CSS display. Currently supports
- */
+/** CSS display. Currently supports */
 @Getter
 @EqualsAndHashCode
 @ToString
@@ -18,19 +16,13 @@ public final class Display {
 
   private static final Map<String, Display> VALUES = new ConcurrentHashMap<>();
 
-  /**
-   * Displays an element as a block-level flex container.
-   */
+  /** Displays an element as a block-level flex container. */
   public static final Display FLEX = Display.create("flex");
 
-  /**
-   * The element is completely removed.
-   */
+  /** The element is completely removed. */
   public static final Display NONE = Display.create("none");
 
-  /**
-   * Name of display type (should be same as in css specification)
-   */
+  /** Name of display type (should be same as in css specification) */
   private final String name;
 
   /**
@@ -84,8 +76,6 @@ public final class Display {
     if (name == null) {
       return false;
     }
-    return values().stream().map(Display::name)
-        .anyMatch(v -> v.equalsIgnoreCase(name));
+    return values().stream().map(Display::name).anyMatch(v -> v.equalsIgnoreCase(name));
   }
-
 }

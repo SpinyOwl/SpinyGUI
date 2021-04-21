@@ -11,7 +11,7 @@ import lombok.With;
 @AllArgsConstructor
 public class Color {
 
-  //@formatter:off
+  // @formatter:off
   public static final Color BLACK = new Color(0, 0, 0);
   public static final Color SILVER = new Color(192, 192, 192);
   public static final Color GRAY = new Color(128, 128, 128);
@@ -32,7 +32,7 @@ public class Color {
 
   private static final String COMMA = ",";
   private static Map<String, Color> colors = new HashMap<>();
-  //@formatter:on
+  // @formatter:on
 
   static {
     colors.put("black", BLACK);
@@ -107,10 +107,10 @@ public class Color {
   /**
    * Convert HSL values to a RGB Color.
    *
-   * @param hue        Hue is specified as degrees in the range 0 - 360.
+   * @param hue Hue is specified as degrees in the range 0 - 360.
    * @param saturation Saturation is specified as a percentage in the range 1 - 100.
-   * @param lightness  lightness is specified as a percentage in the range 1 - 100.
-   * @param alpha      the alpha value between 0 - 1
+   * @param lightness lightness is specified as a percentage in the range 1 - 100.
+   * @param alpha the alpha value between 0 - 1
    * @returns the Color object.
    */
   public static Color hslToColor(int hue, int saturation, int lightness, float alpha) {
@@ -155,7 +155,7 @@ public class Color {
     return new Color(r, g, b, alpha);
   }
 
-  //@formatter:off
+  // @formatter:off
   private static float hueToRGB(float p, float q, float h) {
     if (h < 0) h += 1;
     if (h > 1) h -= 1;
@@ -164,10 +164,9 @@ public class Color {
     if (3 * h < 2) return p + ((q - p) * 6 * ((2.0f / 3.0f) - h));
     return p;
   }
-  //@formatter:on
+  // @formatter:on
 
   public static boolean exists(String colorName) {
     return colors.containsKey(colorName.toLowerCase());
   }
-
 }

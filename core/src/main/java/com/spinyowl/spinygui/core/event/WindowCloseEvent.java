@@ -9,6 +9,4 @@ import lombok.experimental.SuperBuilder;
 @EqualsAndHashCode
 @ToString
 @SuperBuilder
-public class WindowCloseEvent extends Event {
-
-}
+public class WindowCloseEvent extends Event {}

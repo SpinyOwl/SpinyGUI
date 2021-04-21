@@ -15,8 +15,5 @@ public class BoxShadow {
   private float blur;
   private float spread;
 
-  @NonNull
-  private Color color = Color.TRANSPARENT;
-
-
+  @NonNull private Color color = Color.TRANSPARENT;
 }

@@ -46,13 +46,15 @@ public class StyleSheet {
   public List<RuleSet> searchSpecificRules(Element element) {
     Objects.requireNonNull(element);
     return ruleSets.stream()
-        .map(rs -> rs.selectors().stream()
-            .filter(s -> s.test(element))
-            .reduce(Selector::mostSpecific)
-            .map(s -> new RuleSet(List.of(s), rs.declarations())).orElse(null)
-        ).filter(Objects::nonNull)
+        .map(
+            rs ->
+                rs.selectors().stream()
+                    .filter(s -> s.test(element))
+                    .reduce(Selector::mostSpecific)
+                    .map(s -> new RuleSet(List.of(s), rs.declarations()))
+                    .orElse(null))
+        .filter(Objects::nonNull)
         .sorted(Comparator.comparing(r -> r.specificity(element)))
         .collect(Collectors.toList());
   }
-
 }

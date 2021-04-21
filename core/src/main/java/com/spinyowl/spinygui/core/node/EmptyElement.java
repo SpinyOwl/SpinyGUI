@@ -7,9 +7,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
-/**
- * Defines node that can not contain child elements.
- */
+/** Defines node that can not contain child elements. */
 @Getter
 @Setter
 @ToString
@@ -22,8 +20,8 @@ public class EmptyElement extends Element {
 
   /**
    * Used to get child nodes.
-   * <p>
-   * For empty node returns empty list.
+   *
+   * <p>For empty node returns empty list.
    *
    * @return list of child nodes.
    */
@@ -37,12 +35,11 @@ public class EmptyElement extends Element {
    *
    * @param node node.
    * @throws UnsupportedOperationException because child operations are not supported for {@link
-   *                                       EmptyElement}.
+   *     EmptyElement}.
    */
   @Override
   public final void removeChild(Node node) {
-    throw new UnsupportedOperationException(
-        "Child operations are not supported for EmptyNode.");
+    throw new UnsupportedOperationException("Child operations are not supported for EmptyNode.");
   }
 
   /**
@@ -50,12 +47,11 @@ public class EmptyElement extends Element {
    *
    * @param node node.
    * @throws UnsupportedOperationException because child operations are not supported for {@link
-   *                                       EmptyElement}.
+   *     EmptyElement}.
    */
   @Override
   public final void addChild(Node node) {
-    throw new UnsupportedOperationException(
-        "Child operations are not supported for EmptyNode.");
+    throw new UnsupportedOperationException("Child operations are not supported for EmptyNode.");
   }
 
   /**

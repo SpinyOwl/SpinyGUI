@@ -17,20 +17,15 @@ public class Font {
 
   private static Map<FontKey, Font> fonts = new ConcurrentHashMap<>();
 
-  @NonNull
-  private final String name;
+  @NonNull private final String name;
 
-  @NonNull
-  private final FontStyle style;
+  @NonNull private final FontStyle style;
 
-  @NonNull
-  private final FontStretch width;
+  @NonNull private final FontStretch width;
 
-  @NonNull
-  private final FontWeight weight;
+  @NonNull private final FontWeight weight;
 
-  @NonNull
-  private final String path;
+  @NonNull private final String path;
 
   public Font(String name, String path) {
     this(name, FontStyle.NORMAL, FontStretch.NORMAL, FontWeight.NORMAL, path);
@@ -65,7 +60,7 @@ public class Font {
    * Search for fonts with specified parameters. Any parameter could be nullable. In this case this
    * parameter will not be used during search.
    *
-   * @param name   font family name.
+   * @param name font family name.
    * @param weight font weight
    * @return obtained font.
    */
@@ -77,8 +72,8 @@ public class Font {
    * Search for fonts with specified parameters. Any parameter could be nullable. In this case this
    * parameter will not be used during search.
    *
-   * @param name   font family name.
-   * @param style  font style
+   * @param name font family name.
+   * @param style font style
    * @param weight font weight
    * @return obtained font.
    */
@@ -90,7 +85,7 @@ public class Font {
    * Search for fonts with specified parameters. Any parameter could be nullable. In this case this
    * parameter will not be used during search.
    *
-   * @param name  font family name.
+   * @param name font family name.
    * @param style font style
    * @return obtained font.
    */
@@ -111,7 +106,7 @@ public class Font {
   /**
    * Returns true if there is any font with specified parameters.
    *
-   * @param name   font family name.
+   * @param name font family name.
    * @param weight font weight
    * @return true if there is any font with specified parameters.
    */
@@ -122,8 +117,8 @@ public class Font {
   /**
    * Returns true if there is any font with specified parameters.
    *
-   * @param name   font family name.
-   * @param style  font style
+   * @param name font family name.
+   * @param style font style
    * @param weight font weight
    * @return true if there is any font with specified parameters.
    */
@@ -134,7 +129,7 @@ public class Font {
   /**
    * Returns true if there is any font with specified parameters.
    *
-   * @param name  font family name.
+   * @param name font family name.
    * @param style font style
    * @return true if there is any font with specified parameters.
    */
@@ -142,64 +137,57 @@ public class Font {
     return hasFont(name, style, null, null);
   }
 
-
   /**
    * Search for fonts with specified parameters. Any parameter could be nullable. In this case this
    * parameter will not be used during search.
    *
-   * @param name   font family name.
-   * @param style  font style
-   * @param width  font width
+   * @param name font family name.
+   * @param style font style
+   * @param width font width
    * @param weight font weight
    * @return obtained font.
    */
   public static List<Font> getFonts(
-      String name, FontStyle style, FontWeight weight, FontStretch width
-  ) {
+      String name, FontStyle style, FontWeight weight, FontStretch width) {
     return fonts.keySet().stream()
         .filter(k -> checkFont(k, name, style, weight, width))
-        .map(fonts::get).collect(Collectors.toList());
+        .map(fonts::get)
+        .collect(Collectors.toList());
   }
 
   /**
    * Returns true if there is any font with specified parameters. Any parameter could be nullable.
    * In this case this parameter will not be used during search.
    *
-   * @param name   font family name.
-   * @param style  font style
-   * @param width  font width
+   * @param name font family name.
+   * @param style font style
+   * @param width font width
    * @param weight font weight
    * @return true if there is any font with specified parameters.
    */
   public static boolean hasFont(
-      String name, FontStyle style, FontWeight weight, FontStretch width
-  ) {
+      String name, FontStyle style, FontWeight weight, FontStretch width) {
     return fonts.keySet().stream().anyMatch(k -> checkFont(k, name, style, weight, width));
   }
 
   private static boolean checkFont(
-      FontKey fontKey, String name, FontStyle style, FontWeight weight, FontStretch width
-  ) {
-    return (name == null || name.equalsIgnoreCase(fontKey.name)) &&
-        (style == null || style.equals(fontKey.style)) &&
-        (weight == null || weight.equals(fontKey.weight)) &&
-        (width == null || width.equals(fontKey.width));
+      FontKey fontKey, String name, FontStyle style, FontWeight weight, FontStretch width) {
+    return (name == null || name.equalsIgnoreCase(fontKey.name))
+        && (style == null || style.equals(fontKey.style))
+        && (weight == null || weight.equals(fontKey.weight))
+        && (width == null || width.equals(fontKey.width));
   }
 
   @Data
   @RequiredArgsConstructor
   private static class FontKey {
 
-    @NonNull
-    private final String name;
+    @NonNull private final String name;
 
-    @NonNull
-    private final FontStyle style;
+    @NonNull private final FontStyle style;
 
-    @NonNull
-    private final FontStretch width;
+    @NonNull private final FontStretch width;
 
-    @NonNull
-    private final FontWeight weight;
+    @NonNull private final FontWeight weight;
   }
 }

@@ -30,5 +30,4 @@ public interface ValueExtractor<T> {
    * @throws ValueExtractorException in case if value is not valid.
    */
   T extract(String value);
-
 }

@@ -14,10 +14,10 @@ import lombok.ToString;
 @EqualsAndHashCode
 public final class Text extends Node {
 
-  public static final String ATTRIBUTE_OPERATIONS_ARE_NOT_SUPPORTED
-      = "Attribute operations are not supported for Text";
-  public static final String CHILD_OPERATIONS_ARE_NOT_SUPPORTED
-      = "Child operations are not supported for Text";
+  public static final String ATTRIBUTE_OPERATIONS_ARE_NOT_SUPPORTED =
+      "Attribute operations are not supported for Text";
+  public static final String CHILD_OPERATIONS_ARE_NOT_SUPPORTED =
+      "Child operations are not supported for Text";
   private String content;
 
   public Text() {
@@ -36,8 +36,7 @@ public final class Text extends Node {
    */
   @Override
   public void addChild(Node node) {
-    throw new UnsupportedOperationException(
-        "Child operations are not supported for Text.");
+    throw new UnsupportedOperationException("Child operations are not supported for Text.");
   }
 
   /**
@@ -47,18 +46,17 @@ public final class Text extends Node {
    */
   @Override
   public void removeChild(Node node) {
-    throw new UnsupportedOperationException(
-        "Child operations are not supported for Text.");
+    throw new UnsupportedOperationException("Child operations are not supported for Text.");
   }
 
   /**
    * The {@link #childNodes()} method returns a collection of a node's child nodes, as {@code
    * List<Node>} object.
-   * <p>
-   * The nodes in the collection are sorted as they was added to the element.
-   * <p>
-   * Tip: To return a collection of a node's element nodes (excluding text and comment nodes), use
-   * the {@link #children()} method.
+   *
+   * <p>The nodes in the collection are sorted as they was added to the element.
+   *
+   * <p>Tip: To return a collection of a node's element nodes (excluding text and comment nodes),
+   * use the {@link #children()} method.
    *
    * @return list of child nodes.
    */
@@ -80,13 +78,12 @@ public final class Text extends Node {
   /**
    * Shorthand to set attribute.
    *
-   * @param key   attribute name.
+   * @param key attribute name.
    * @param value attribute value.
    */
   @Override
   public void setAttribute(String key, String value) {
-    throw new UnsupportedOperationException(
-        "Attribute operations are not supported for Text.");
+    throw new UnsupportedOperationException("Attribute operations are not supported for Text.");
   }
 
   /**

@@ -23,9 +23,7 @@ import lombok.ToString;
 @EqualsAndHashCode(exclude = {"firstChild", "lastChild"})
 public class Element extends Node implements EventTarget {
 
-  /**
-   * Child nodes.
-   */
+  /** Child nodes. */
   private final List<Node> childNodes = new LinkedList<>();
 
   @Getter(AccessLevel.NONE)
@@ -36,19 +34,13 @@ public class Element extends Node implements EventTarget {
   @Setter(AccessLevel.NONE)
   private Node lastChild;
 
-  /**
-   * Used to overload styles from stylesheet.
-   */
+  /** Used to overload styles from stylesheet. */
   @Setter(AccessLevel.NONE)
   private final NodeStyle style = new NodeStyle();
-  /**
-   * Styles from stylesheet. Updated by style manager every frame state changes.
-   */
+  /** Styles from stylesheet. Updated by style manager every frame state changes. */
   @Setter(AccessLevel.NONE)
   private final NodeStyle calculatedStyle = new NodeStyle();
-  /**
-   * Node attributes.
-   */
+  /** Node attributes. */
   @Setter(AccessLevel.NONE)
   private final Map<String, String> attributes = new ConcurrentHashMap<>();
   /**
@@ -56,7 +48,8 @@ public class Element extends Node implements EventTarget {
    * performed.
    */
   @Setter(AccessLevel.NONE)
-  private final Map<Class<? extends Event>, List<? extends EventListener>> listenerMap = new ConcurrentHashMap<>();
+  private final Map<Class<? extends Event>, List<? extends EventListener>> listenerMap =
+      new ConcurrentHashMap<>();
 
   public Element(String nodeName) {
     super(nodeName);
@@ -65,7 +58,7 @@ public class Element extends Node implements EventTarget {
   /**
    * Shorthand to set attribute.
    *
-   * @param key   attribute name.
+   * @param key attribute name.
    * @param value attribute value.
    */
   public void setAttribute(String key, String value) {
@@ -94,15 +87,14 @@ public class Element extends Node implements EventTarget {
    * Used to add event listener for specified event class.
    *
    * @param eventClass event class.
-   * @param listener   event listener to add.
-   * @param <T>        type of event for which adding event listener.
+   * @param listener event listener to add.
+   * @param <T> type of event for which adding event listener.
    */
   public <T extends Event> void addListener(Class<T> eventClass, EventListener<T> listener) {
     getOrCreate(eventClass).add(listener);
   }
 
-  public <T extends Event> void removeListener(Class<T> eventClass,
-      EventListener<T> listener) {
+  public <T extends Event> void removeListener(Class<T> eventClass, EventListener<T> listener) {
     getOrCreate(eventClass).remove(listener);
   }
 
@@ -110,7 +102,7 @@ public class Element extends Node implements EventTarget {
    * Returns listener list for specified event class.
    *
    * @param eventClass event class.
-   * @param <T>        type of event.
+   * @param <T> type of event.
    * @return list of event listeners for specified event class.
    */
   public <T extends Event> List<EventListener<T>> getListeners(Class<T> eventClass) {
@@ -118,8 +110,8 @@ public class Element extends Node implements EventTarget {
   }
 
   private <T extends Event> List<EventListener<T>> getOrCreate(Class<T> eventClass) {
-    return (List<EventListener<T>>) listenerMap
-        .computeIfAbsent(eventClass, aClass -> new CopyOnWriteArrayList<>());
+    return (List<EventListener<T>>)
+        listenerMap.computeIfAbsent(eventClass, aClass -> new CopyOnWriteArrayList<>());
   }
 
   /**

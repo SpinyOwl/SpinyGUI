@@ -8,8 +8,14 @@ import com.spinyowl.spinygui.core.style.stylesheet.Property;
 public class FontWeightProperty extends Property<FontWeight> {
 
   public FontWeightProperty() {
-    super(FONT_WEIGHT, "normal", INHERITED, ANIMATABLE, NodeStyle::fontWeight,
-        NodeStyle::fontWeight, FontWeight::find, FontWeight::contains);
+    super(
+        FONT_WEIGHT,
+        "normal",
+        INHERITED,
+        ANIMATABLE,
+        NodeStyle::fontWeight,
+        NodeStyle::fontWeight,
+        FontWeight::find,
+        FontWeight::contains);
   }
-
 }

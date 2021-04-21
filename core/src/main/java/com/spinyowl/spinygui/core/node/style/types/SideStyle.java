@@ -8,14 +8,10 @@ import lombok.NonNull;
 @NoArgsConstructor
 public abstract class SideStyle<T> {
 
-  @NonNull
-  private T top;
-  @NonNull
-  private T bottom;
-  @NonNull
-  private T right;
-  @NonNull
-  private T left;
+  @NonNull private T top;
+  @NonNull private T bottom;
+  @NonNull private T right;
+  @NonNull private T left;
 
   protected SideStyle(@NonNull T allSides) {
     this.top = this.bottom = this.left = this.right = allSides;
@@ -32,8 +28,8 @@ public abstract class SideStyle<T> {
     this.bottom = sideBottom;
   }
 
-  protected SideStyle(@NonNull T sideTop, @NonNull T sideRight, @NonNull T sideBottom,
-      @NonNull T sideLeft) {
+  protected SideStyle(
+      @NonNull T sideTop, @NonNull T sideRight, @NonNull T sideBottom, @NonNull T sideLeft) {
     this.top = sideTop;
     this.left = sideLeft;
     this.bottom = sideBottom;

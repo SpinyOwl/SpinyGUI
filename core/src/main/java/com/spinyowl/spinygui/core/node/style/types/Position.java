@@ -8,9 +8,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
 
-/**
- * CSS position.
- */
+/** CSS position. */
 @Getter
 @EqualsAndHashCode
 @ToString
@@ -18,9 +16,7 @@ public final class Position {
 
   private static final Map<String, Position> VALUES = new ConcurrentHashMap<>();
 
-  /**
-   * The element is positioned relative to its first positioned (not static) ancestor element.
-   */
+  /** The element is positioned relative to its first positioned (not static) ancestor element. */
   public static final Position ABSOLUTE = Position.create("absolute");
   /**
    * The element is positioned relative to its normal position, so "left:20px" adds 20 pixels to the
@@ -28,20 +24,18 @@ public final class Position {
    */
   public static final Position RELATIVE = Position.create("relative");
 
-// NEXT POSITION OPTIONS ARE CURRENTLY NOT IMPLEMENTED
-//  /**
-//   * Default value. Elements render in order, as they appear in the document flow.
-//   */
-//  public static final Position STATIC = Position.create("static");
-//
-//  /**
-//   * The element is positioned relative to the browser window.
-//   */
-//  public static final Position FIXED = Position.create("fixed");
+  // NEXT POSITION OPTIONS ARE CURRENTLY NOT IMPLEMENTED
+  //  /**
+  //   * Default value. Elements render in order, as they appear in the document flow.
+  //   */
+  //  public static final Position STATIC = Position.create("static");
+  //
+  //  /**
+  //   * The element is positioned relative to the browser window.
+  //   */
+  //  public static final Position FIXED = Position.create("fixed");
 
-  /**
-   * Name of position type (should be same as in css specification)
-   */
+  /** Name of position type (should be same as in css specification) */
   private final String name;
 
   /**
@@ -96,8 +90,6 @@ public final class Position {
     if (name == null) {
       return false;
     }
-    return values().stream().map(Position::name)
-        .anyMatch(v -> v.equalsIgnoreCase(name));
+    return values().stream().map(Position::name).anyMatch(v -> v.equalsIgnoreCase(name));
   }
-
 }

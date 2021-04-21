@@ -10,7 +10,7 @@ import java.util.ArrayList;
 public class RulesetVisitor extends CSS3BaseVisitor<RuleSet> {
 
   /**
-   * grammar rule: selectorGroup '{' ws declarationList? '}' ws    # knownRuleset
+   * grammar rule: selectorGroup '{' ws declarationList? '}' ws # knownRuleset
    *
    * @param ctx
    * @return

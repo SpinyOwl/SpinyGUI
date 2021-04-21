@@ -1,11 +1,11 @@
 package com.spinyowl.spinygui.core.style.stylesheet.property.font;
 
 import static com.spinyowl.spinygui.core.style.stylesheet.Properties.FONT_SIZE;
+import com.spinyowl.spinygui.core.node.style.NodeStyle;
+import com.spinyowl.spinygui.core.node.style.types.length.Length;
+import com.spinyowl.spinygui.core.style.stylesheet.Property;
 import com.spinyowl.spinygui.core.style.stylesheet.extractor.ValueExtractor;
 import com.spinyowl.spinygui.core.style.stylesheet.extractor.ValueExtractors;
-import com.spinyowl.spinygui.core.node.style.NodeStyle;
-import com.spinyowl.spinygui.core.style.stylesheet.Property;
-import com.spinyowl.spinygui.core.node.style.types.length.Length;
 import java.util.List;
 
 public class FontSizeProperty extends Property<Length> {
@@ -18,14 +18,21 @@ public class FontSizeProperty extends Property<Length> {
   private static final String X_SMALL = "x-small";
   private static final String XX_SMALL = "xx-small";
 
-  private static final List<String> values = List
-      .of(MEDIUM, XX_SMALL, X_SMALL, SMALL, LARGE, X_LARGE, XX_LARGE);
+  private static final List<String> values =
+      List.of(MEDIUM, XX_SMALL, X_SMALL, SMALL, LARGE, X_LARGE, XX_LARGE);
 
   private static final ValueExtractor<Length> extractor = ValueExtractors.of(Length.class);
 
   public FontSizeProperty() {
-    super(FONT_SIZE, MEDIUM, INHERITED, ANIMATABLE, NodeStyle::fontSize,
-        NodeStyle::fontSize, FontSizeProperty::extract, FontSizeProperty::test);
+    super(
+        FONT_SIZE,
+        MEDIUM,
+        INHERITED,
+        ANIMATABLE,
+        NodeStyle::fontSize,
+        NodeStyle::fontSize,
+        FontSizeProperty::extract,
+        FontSizeProperty::test);
   }
 
   public static Length extract(String value) {
@@ -52,5 +59,4 @@ public class FontSizeProperty extends Property<Length> {
   public static boolean test(String value) {
     return values.contains(value) || extractor.isValid(value);
   }
-
 }

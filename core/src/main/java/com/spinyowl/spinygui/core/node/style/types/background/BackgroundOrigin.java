@@ -15,24 +15,16 @@ public class BackgroundOrigin {
 
   private static final Map<String, BackgroundOrigin> VALUES = new ConcurrentHashMap<>();
 
-  /**
-   * Default value. The background image starts from the upper left corner of the padding edge.
-   */
+  /** Default value. The background image starts from the upper left corner of the padding edge. */
   public static final BackgroundOrigin PADDING_BOX = BackgroundOrigin.create("padding-box");
 
-  /**
-   * The background image starts from the upper left corner of the border.
-   */
+  /** The background image starts from the upper left corner of the border. */
   public static final BackgroundOrigin BORDER_BOX = BackgroundOrigin.create("border-box");
 
-  /**
-   * The background image starts from the upper left corner of the content.
-   */
+  /** The background image starts from the upper left corner of the content. */
   public static final BackgroundOrigin CONTENT_BOX = BackgroundOrigin.create("content-box");
 
-  /**
-   * Name of position type (should be same as in css specification)
-   */
+  /** Name of position type (should be same as in css specification) */
   private final String name;
 
   /**
@@ -89,8 +81,6 @@ public class BackgroundOrigin {
     if (name == null) {
       return false;
     }
-    return values().stream().map(BackgroundOrigin::name)
-        .anyMatch(v -> v.equalsIgnoreCase(name));
+    return values().stream().map(BackgroundOrigin::name).anyMatch(v -> v.equalsIgnoreCase(name));
   }
-
 }

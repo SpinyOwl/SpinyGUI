@@ -6,9 +6,7 @@ import java.util.Set;
 import java.util.StringJoiner;
 import java.util.concurrent.ConcurrentHashMap;
 
-/**
- * Specifies the alignment for selected items inside a flexible container.
- */
+/** Specifies the alignment for selected items inside a flexible container. */
 public final class AlignSelf {
 
   private static final Map<String, AlignSelf> VALUES = new ConcurrentHashMap<>();
@@ -18,25 +16,15 @@ public final class AlignSelf {
    * has no parent container.
    */
   public static final AlignSelf AUTO = AlignSelf.create("auto");
-  /**
-   * The element is positioned to fit the container.
-   */
+  /** The element is positioned to fit the container. */
   public static final AlignSelf STRETCH = AlignSelf.create("stretch");
-  /**
-   * The element is positioned at the center of the container.
-   */
+  /** The element is positioned at the center of the container. */
   public static final AlignSelf CENTER = AlignSelf.create("center");
-  /**
-   * The element is positioned at the beginning of the container.
-   */
+  /** The element is positioned at the beginning of the container. */
   public static final AlignSelf FLEX_START = AlignSelf.create("flex-start");
-  /**
-   * The element is positioned at the end of the container.
-   */
+  /** The element is positioned at the end of the container. */
   public static final AlignSelf FLEX_END = AlignSelf.create("flex-end");
-  /**
-   * The element is positioned at the baseline of the container.
-   */
+  /** The element is positioned at the baseline of the container. */
   public static final AlignSelf BASELINE = AlignSelf.create("baseline");
 
   private final String name;
@@ -81,8 +69,7 @@ public final class AlignSelf {
     if (name == null) {
       return false;
     }
-    return values().stream().map(AlignSelf::getName)
-        .anyMatch(v -> v.equalsIgnoreCase(name));
+    return values().stream().map(AlignSelf::getName).anyMatch(v -> v.equalsIgnoreCase(name));
   }
 
   /**

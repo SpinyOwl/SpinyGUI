@@ -1,13 +1,11 @@
 package com.spinyowl.spinygui.core.style.stylesheet.selector.simple;
 
-import com.spinyowl.spinygui.core.style.stylesheet.selector.Selector;
-import com.spinyowl.spinygui.core.style.stylesheet.Specificity;
 import com.spinyowl.spinygui.core.node.Element;
+import com.spinyowl.spinygui.core.style.stylesheet.Specificity;
+import com.spinyowl.spinygui.core.style.stylesheet.selector.Selector;
 import lombok.Data;
 
-/**
- * The element selector selects elements based on the {@link Element#nodeName()}.
- */
+/** The element selector selects elements based on the {@link Element#nodeName()}. */
 @Data
 public class ElementSelector implements Selector {
 

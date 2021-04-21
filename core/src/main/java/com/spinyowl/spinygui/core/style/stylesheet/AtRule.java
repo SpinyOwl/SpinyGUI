@@ -1,5 +1,3 @@
 package com.spinyowl.spinygui.core.style.stylesheet;
 
-public interface AtRule {
-
-}
+public interface AtRule {}

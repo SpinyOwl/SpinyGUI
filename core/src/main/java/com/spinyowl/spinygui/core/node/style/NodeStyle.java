@@ -29,91 +29,58 @@ import lombok.NonNull;
 @NoArgsConstructor
 public class NodeStyle {
 
-  @NonNull
-  private Flex flex = new Flex();
+  @NonNull private Flex flex = new Flex();
 
-  @NonNull
-  private Background background = new Background();
+  @NonNull private Background background = new Background();
 
-  @NonNull
-  private Border border = new Border();
+  @NonNull private Border border = new Border();
 
-  @NonNull
-  private BorderRadius borderRadius = new BorderRadius();
+  @NonNull private BorderRadius borderRadius = new BorderRadius();
 
-  @NonNull
-  private Padding padding = new Padding();
+  @NonNull private Padding padding = new Padding();
 
-  @NonNull
-  private Margin margin = new Margin();
+  @NonNull private Margin margin = new Margin();
 
-  @NonNull
-  private Display display = Display.FLEX;
+  @NonNull private Display display = Display.FLEX;
 
-  @NonNull
-  private Position position = Position.RELATIVE;
+  @NonNull private Position position = Position.RELATIVE;
 
-  @NonNull
-  private Color color;
+  @NonNull private Color color;
 
-  @NonNull
-  private Unit width;
-  @NonNull
-  private Unit height;
+  @NonNull private Unit width;
+  @NonNull private Unit height;
 
-  @NonNull
-  private Length<?> minWidth;
-  @NonNull
-  private Length<?> minHeight;
+  @NonNull private Length<?> minWidth;
+  @NonNull private Length<?> minHeight;
 
-  @NonNull
-  private Length<?> maxWidth;
-  @NonNull
-  private Length<?> maxHeight;
+  @NonNull private Length<?> maxWidth;
+  @NonNull private Length<?> maxHeight;
 
-  @NonNull
-  private Unit top;
-  @NonNull
-  private Unit bottom;
-  @NonNull
-  private Unit right;
-  @NonNull
-  private Unit left;
+  @NonNull private Unit top;
+  @NonNull private Unit bottom;
+  @NonNull private Unit right;
+  @NonNull private Unit left;
 
-  @NonNull
-  private WhiteSpace whiteSpace = WhiteSpace.NORMAL;
+  @NonNull private WhiteSpace whiteSpace = WhiteSpace.NORMAL;
 
-  @NonNull
-  private Set<String> fontFamily = new LinkedHashSet<>();
-  @NonNull
-  private Length<?> fontSize;
-  @NonNull
-  private FontStyle fontStyle;
-  @NonNull
-  private FontWeight fontWeight;
-  @NonNull
-  private FontStretch fontStretch;
+  @NonNull private Set<String> fontFamily = new LinkedHashSet<>();
+  @NonNull private Length<?> fontSize;
+  @NonNull private FontStyle fontStyle;
+  @NonNull private FontWeight fontWeight;
+  @NonNull private FontStretch fontStretch;
 
-  @NonNull
-  private BoxShadow boxShadow;
+  @NonNull private BoxShadow boxShadow;
 
-  /**
-   * Horizontal alignment. By default used {@link HorizontalAlign#CENTER}.
-   */
+  /** Horizontal alignment. By default used {@link HorizontalAlign#CENTER}. */
   private HorizontalAlign horizontalAlign;
 
-  /**
-   * Vertical alignment.
-   */
+  /** Vertical alignment. */
   private VerticalAlign verticalAlign;
 
-  /**
-   * Pointer events. By default used {@link PointerEvents#AUTO}.
-   */
+  /** Pointer events. By default used {@link PointerEvents#AUTO}. */
   private PointerEvents pointerEvents;
 
   private int tabSize = 4;
   private int zIndex = 0;
   private float opacity = 1;
-
 }

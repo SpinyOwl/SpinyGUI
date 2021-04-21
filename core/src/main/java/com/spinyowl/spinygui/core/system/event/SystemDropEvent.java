@@ -9,5 +9,4 @@ import lombok.experimental.SuperBuilder;
 public class SystemDropEvent extends SystemEvent {
 
   private final ImmutableList<String> strings;
-
 }

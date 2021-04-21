@@ -10,16 +10,13 @@ public final class FontStyle {
 
   private static final Map<String, FontStyle> VALUES = new ConcurrentHashMap<>();
 
-  //@formatter:off
-  public static final FontStyle NORMAL  = FontStyle.create("normal");
-  public static final FontStyle ITALIC  = FontStyle.create("italic");
+  // @formatter:off
+  public static final FontStyle NORMAL = FontStyle.create("normal");
+  public static final FontStyle ITALIC = FontStyle.create("italic");
   public static final FontStyle OBLIQUE = FontStyle.create("oblique");
-  //@formatter:on
+  // @formatter:on
 
-
-  /**
-   * Name of font style type (should be same as in css specification)
-   */
+  /** Name of font style type (should be same as in css specification) */
   private final String name;
 
   /**
@@ -74,8 +71,7 @@ public final class FontStyle {
     if (name == null) {
       return false;
     }
-    return values().stream().map(FontStyle::getName)
-        .anyMatch(v -> v.equalsIgnoreCase(name));
+    return values().stream().map(FontStyle::getName).anyMatch(v -> v.equalsIgnoreCase(name));
   }
 
   /**

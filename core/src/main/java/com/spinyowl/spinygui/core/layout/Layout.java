@@ -2,9 +2,7 @@ package com.spinyowl.spinygui.core.layout;
 
 import com.spinyowl.spinygui.core.node.Element;
 
-/**
- * Layout interface. Specifies rules on how to lay out child and parent components.
- */
+/** Layout interface. Specifies rules on how to lay out child and parent components. */
 public interface Layout {
 
   /**
@@ -13,5 +11,4 @@ public interface Layout {
    * @param element element to lay out.
    */
   void layout(Element element);
-
 }

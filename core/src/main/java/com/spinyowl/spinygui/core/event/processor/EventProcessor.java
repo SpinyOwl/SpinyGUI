@@ -7,5 +7,4 @@ public interface EventProcessor {
   void pushEvent(Event event);
 
   void processEvents();
-
 }

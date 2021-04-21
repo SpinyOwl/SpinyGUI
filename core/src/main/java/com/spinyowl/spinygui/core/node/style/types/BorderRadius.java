@@ -5,33 +5,19 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
 
-/**
- * Class container for border radius properties.
- */
+/** Class container for border radius properties. */
 @Data
 @NoArgsConstructor
 public class BorderRadius {
 
-  /**
-   * Top left border radius.
-   */
-  @NonNull
-  private Length<?> topLeft = Length.ZERO;
-  /**
-   * Top right border radius.
-   */
-  @NonNull
-  private Length<?> topRight = Length.ZERO;
-  /**
-   * Bottom right border radius.
-   */
-  @NonNull
-  private Length<?> bottomRight = Length.ZERO;
-  /**
-   * Bottom left border radius.
-   */
-  @NonNull
-  private Length<?> bottomLeft = Length.ZERO;
+  /** Top left border radius. */
+  @NonNull private Length<?> topLeft = Length.ZERO;
+  /** Top right border radius. */
+  @NonNull private Length<?> topRight = Length.ZERO;
+  /** Bottom right border radius. */
+  @NonNull private Length<?> bottomRight = Length.ZERO;
+  /** Bottom left border radius. */
+  @NonNull private Length<?> bottomLeft = Length.ZERO;
 
   /**
    * Used to create border radius.
@@ -56,8 +42,8 @@ public class BorderRadius {
   /**
    * Used to create border radius.
    *
-   * @param topLeft            top left radius.
-   * @param bottomRight        bottom right radius.
+   * @param topLeft top left radius.
+   * @param bottomRight bottom right radius.
    * @param topRightBottomLeft top right and bottom left radius.
    */
   public BorderRadius(Length<?> topLeft, Length<?> topRightBottomLeft, Length<?> bottomRight) {
@@ -69,16 +55,16 @@ public class BorderRadius {
   /**
    * Used to create border radius.
    *
-   * @param topLeft     top left radius.
-   * @param topRight    top right radius.
+   * @param topLeft top left radius.
+   * @param topRight top right radius.
    * @param bottomRight bottom right radius.
-   * @param bottomLeft  bottom left radius.
+   * @param bottomLeft bottom left radius.
    */
-  public BorderRadius(Length<?> topLeft, Length<?> topRight, Length<?> bottomRight, Length<?> bottomLeft) {
+  public BorderRadius(
+      Length<?> topLeft, Length<?> topRight, Length<?> bottomRight, Length<?> bottomLeft) {
     this.topLeft = topLeft;
     this.topRight = topRight;
     this.bottomRight = bottomRight;
     this.bottomLeft = bottomLeft;
   }
-
 }

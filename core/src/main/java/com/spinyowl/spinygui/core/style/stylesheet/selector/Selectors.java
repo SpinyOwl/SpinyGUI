@@ -11,14 +11,13 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public final class Selectors {
 
-  private Selectors() {
-  }
+  private Selectors() {}
 
   /**
-   * Creates new selector that returns true if both selectors are applicable to node.
-   * <br>Example: {@code .first.second}
+   * Creates new selector that returns true if both selectors are applicable to node. <br>
+   * Example: {@code .first.second}
    *
-   * @param first  first selector.
+   * @param first first selector.
    * @param second second selector.
    * @return new selector as combination of two provided selectors.
    */
@@ -29,10 +28,10 @@ public final class Selectors {
   /**
    * Creates new selector that returns true if node could be selected with selector 'first >
    * second'.
-   * <p>
-   * In general first selector should return true for node's parent, and second for node itself.
    *
-   * @param first  first selector.
+   * <p>In general first selector should return true for node's parent, and second for node itself.
+   *
+   * @param first first selector.
    * @param second second selector.
    * @return new selector as combination of two provided selectors.
    */
@@ -42,11 +41,11 @@ public final class Selectors {
 
   /**
    * Creates new selector that returns true if node could be selected with selector 'first second'.
-   * <p>
-   * In general first selector should return true for any node's ancestor, and second for node
+   *
+   * <p>In general first selector should return true for any node's ancestor, and second for node
    * itself.
    *
-   * @param first  first selector.
+   * @param first first selector.
    * @param second second selector.
    * @return new selector as combination of two provided selectors.
    */
@@ -57,12 +56,13 @@ public final class Selectors {
   /**
    * Creates new selector that returns true if node could be selected with selector 'first +
    * second'.
+   *
    * <p>
-   * <p>
-   * In general first selector should return true for node that placed immediately before tested
+   *
+   * <p>In general first selector should return true for node that placed immediately before tested
    * node, and second for node itself.
    *
-   * @param first  first selector.
+   * @param first first selector.
    * @param second second selector.
    * @return new selector as combination of two provided selectors.
    */
@@ -73,17 +73,17 @@ public final class Selectors {
   /**
    * Creates new selector that returns true if node could be selected with selector 'first ~
    * second'.
+   *
    * <p>
-   * <p>
-   * In general first selector should return true for node that placed before tested node, and
+   *
+   * <p>In general first selector should return true for node that placed before tested node, and
    * second for node itself.
    *
-   * @param first  first selector.
+   * @param first first selector.
    * @param second second selector.
    * @return new selector as combination of two provided selectors.
    */
   public static Selector generalSibling(Selector first, Selector second) {
     return new GeneralSiblingSelector(requireNonNull(first), requireNonNull(second));
   }
-
 }

@@ -5,8 +5,7 @@ import java.util.Objects;
 
 public final class Reference {
 
-  private Reference() {
-  }
+  private Reference() {}
 
   public static <T> boolean contains(Collection<T> collection, T element) {
     Objects.requireNonNull(collection);

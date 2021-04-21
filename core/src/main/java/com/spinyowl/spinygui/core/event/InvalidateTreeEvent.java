@@ -2,9 +2,7 @@ package com.spinyowl.spinygui.core.event;
 
 import lombok.experimental.SuperBuilder;
 
-/**
- * Event, that used only for invalidating tree, so it should be rendered again.
- */
+/** Event, that used only for invalidating tree, so it should be rendered again. */
 @SuperBuilder
 public class InvalidateTreeEvent extends Event {
 

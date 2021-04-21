@@ -4,8 +4,9 @@ import com.spinyowl.spinygui.core.node.Frame;
 import com.spinyowl.spinygui.core.system.event.SystemEvent;
 
 /**
- * System event processor. Used to store system events as a queue and process them (by delegating to {@link
- * com.spinyowl.spinygui.core.system.event.listener.SystemEventListener SystemEventListeners}).
+ * System event processor. Used to store system events as a queue and process them (by delegating to
+ * {@link com.spinyowl.spinygui.core.system.event.listener.SystemEventListener
+ * SystemEventListeners}).
  */
 public interface SystemEventProcessor {
 
@@ -29,5 +30,4 @@ public interface SystemEventProcessor {
    * @return true if there is any not processed system event.
    */
   boolean hasEvents();
-
 }

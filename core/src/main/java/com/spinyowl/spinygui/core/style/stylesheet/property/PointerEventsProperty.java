@@ -8,8 +8,14 @@ import com.spinyowl.spinygui.core.style.stylesheet.Property;
 public class PointerEventsProperty extends Property<PointerEvents> {
 
   public PointerEventsProperty() {
-    super(POINTER_EVENTS, PointerEvents.AUTO.name(), INHERITED, !ANIMATABLE,
-        NodeStyle::pointerEvents, NodeStyle::pointerEvents,
-        PointerEvents::find, PointerEvents::contains);
+    super(
+        POINTER_EVENTS,
+        PointerEvents.AUTO.name(),
+        INHERITED,
+        !ANIMATABLE,
+        NodeStyle::pointerEvents,
+        NodeStyle::pointerEvents,
+        PointerEvents::find,
+        PointerEvents::contains);
   }
 }

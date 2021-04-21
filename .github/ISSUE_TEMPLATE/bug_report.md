@@ -1,7 +1,5 @@
 ---
-name: Bug report
-about: Create a report to help us improve
-title: "[BUG]"
+name: Bug report about: Create a report to help us improve title: "[BUG]"
 labels: ''
 assignees: ''
 
@@ -23,8 +21,9 @@ If applicable, add screenshots to help explain your problem.
 If applicable, add some logs or stacktrace
 
 **Desktop (please complete the following information):**
- - OS: [e.g. Windows 10 / MacOS / Linux]
- - SpinyGUI Version [e.g. 22]
+
+- OS: [e.g. Windows 10 / MacOS / Linux]
+- SpinyGUI Version [e.g. 22]
 
 **Additional context**
 Add any other context about the problem here.

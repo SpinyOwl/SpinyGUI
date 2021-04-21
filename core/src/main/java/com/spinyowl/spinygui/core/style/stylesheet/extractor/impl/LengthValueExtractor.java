@@ -1,12 +1,10 @@
 package com.spinyowl.spinygui.core.style.stylesheet.extractor.impl;
 
 import static com.spinyowl.spinygui.core.style.stylesheet.extractor.impl.UnitValueExtractor.getLength;
-import com.spinyowl.spinygui.core.style.stylesheet.extractor.ValueExtractor;
 import com.spinyowl.spinygui.core.node.style.types.length.Length;
+import com.spinyowl.spinygui.core.style.stylesheet.extractor.ValueExtractor;
 
-/**
- * Used to extract {@link Length} value from string.
- */
+/** Used to extract {@link Length} value from string. */
 public class LengthValueExtractor implements ValueExtractor<Length> {
 
   @Override
@@ -19,10 +17,9 @@ public class LengthValueExtractor implements ValueExtractor<Length> {
     if (value == null) {
       return true;
     }
-    return value.matches(
-        UnitValueExtractor.PERCENTAGE_REGEX) ||
-        value.matches(UnitValueExtractor.PIXEL_REGEX) ||
-        value.matches(UnitValueExtractor.ZERO_REGEX);
+    return value.matches(UnitValueExtractor.PERCENTAGE_REGEX)
+        || value.matches(UnitValueExtractor.PIXEL_REGEX)
+        || value.matches(UnitValueExtractor.ZERO_REGEX);
   }
 
   @Override

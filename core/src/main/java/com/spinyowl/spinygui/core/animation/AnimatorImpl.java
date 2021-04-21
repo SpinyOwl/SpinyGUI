@@ -5,35 +5,21 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-/**
- * Default implementation of {@link Animator} interface.
- */
+/** Default implementation of {@link Animator} interface. */
 public class AnimatorImpl implements Animator {
 
-  /**
-   * List of animations to initialize.
-   */
+  /** List of animations to initialize. */
   private List<Animation> animationsToInitialize = new CopyOnWriteArrayList<>();
-  /**
-   * List of animations to animate.
-   */
+  /** List of animations to animate. */
   private List<Animation> animations = new CopyOnWriteArrayList<>();
-  /**
-   * List of animation to destroy.
-   */
+  /** List of animation to destroy. */
   private List<Animation> animationsToDestroy = new CopyOnWriteArrayList<>();
-  /**
-   * List of animation to destroy.
-   */
+  /** List of animation to destroy. */
   private List<Animation> animationsToRemove = new CopyOnWriteArrayList<>();
-  /**
-   * Used to store previous time.
-   */
+  /** Used to store previous time. */
   private double previousTime;
 
-  /**
-   * This method used to process animations.
-   */
+  /** This method used to process animations. */
   public void runAnimations() {
     double currentTime = Time.getCurrentTime();
     double delta = currentTime - previousTime;
@@ -85,5 +71,4 @@ public class AnimatorImpl implements Animator {
   public void removeAnimation(Animation animation) {
     animationsToRemove.add(animation);
   }
-
 }

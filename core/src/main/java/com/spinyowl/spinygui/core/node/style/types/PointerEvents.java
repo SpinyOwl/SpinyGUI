@@ -13,23 +13,15 @@ import lombok.ToString;
 @ToString
 public class PointerEvents {
 
-  /**
-   * Stores all existing dictionary values.
-   */
+  /** Stores all existing dictionary values. */
   private static final Map<String, PointerEvents> VALUES = new ConcurrentHashMap<>();
 
-  /**
-   * The element reacts to pointer events, like :hover and click. This is default
-   */
+  /** The element reacts to pointer events, like :hover and click. This is default */
   public static final PointerEvents AUTO = PointerEvents.create("auto");
-  /**
-   * The element does not react to pointer events
-   */
+  /** The element does not react to pointer events */
   public static final PointerEvents NONE = PointerEvents.create("none");
 
-  /**
-   * Name of PointerEvents element.
-   */
+  /** Name of PointerEvents element. */
   private final String name;
 
   /**
@@ -84,5 +76,4 @@ public class PointerEvents {
     }
     return values().stream().map(PointerEvents::name).anyMatch(v -> v.equalsIgnoreCase(name));
   }
-
 }

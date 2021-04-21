@@ -7,9 +7,7 @@ import java.util.function.Predicate;
 
 public final class StyleUtils {
 
-  private StyleUtils() {
-  }
-
+  private StyleUtils() {}
 
   public static NodeStyle getParentCalculatedStyle(Element element) {
     Objects.requireNonNull(element);
@@ -20,8 +18,8 @@ public final class StyleUtils {
     return parent.calculatedStyle();
   }
 
-  public static boolean testMultipleValues(String value, String splitRegex, int min, int max,
-      Predicate<String> oneValueTester) {
+  public static boolean testMultipleValues(
+      String value, String splitRegex, int min, int max, Predicate<String> oneValueTester) {
     String[] values = value.split(splitRegex);
     if (values.length < min || values.length > max) {
       return false;
@@ -34,5 +32,4 @@ public final class StyleUtils {
 
     return true;
   }
-
 }

@@ -13,29 +13,17 @@ import lombok.ToString;
 @ToString
 public class VerticalAlign {
 
-  /**
-   * Stores all existing dictionary values.
-   */
+  /** Stores all existing dictionary values. */
   private static final Map<String, VerticalAlign> VALUES = new ConcurrentHashMap<>();
-  /**
-   * Content should be aligned to top border of container.
-   */
+  /** Content should be aligned to top border of container. */
   public static final VerticalAlign TOP = VerticalAlign.create("top");
-  /**
-   * Content should be aligned to middle of container.
-   */
+  /** Content should be aligned to middle of container. */
   public static final VerticalAlign MIDDLE = VerticalAlign.create("middle");
-  /**
-   * Content should be aligned to bottom border of container.
-   */
+  /** Content should be aligned to bottom border of container. */
   public static final VerticalAlign BOTTOM = VerticalAlign.create("bottom");
-  /**
-   * Content should be aligned to baseline of container.
-   */
+  /** Content should be aligned to baseline of container. */
   public static final VerticalAlign BASELINE = VerticalAlign.create("baseline");
-  /**
-   * Name of VerticalAlign element.
-   */
+  /** Name of VerticalAlign element. */
   private final String name;
 
   /**
@@ -90,5 +78,4 @@ public class VerticalAlign {
     }
     return values().stream().map(VerticalAlign::name).anyMatch(v -> v.equalsIgnoreCase(name));
   }
-
 }

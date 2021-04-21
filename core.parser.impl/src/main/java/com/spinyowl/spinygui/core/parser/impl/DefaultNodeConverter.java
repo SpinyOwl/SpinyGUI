@@ -1,12 +1,12 @@
 package com.spinyowl.spinygui.core.parser.impl;
 
 import static com.spinyowl.spinygui.core.node.Frame.FRAME_TAG_NAME;
-import com.spinyowl.spinygui.core.parser.NodeConverter;
 import com.spinyowl.spinygui.core.node.Element;
 import com.spinyowl.spinygui.core.node.EmptyElement;
 import com.spinyowl.spinygui.core.node.Frame;
 import com.spinyowl.spinygui.core.node.Node;
 import com.spinyowl.spinygui.core.node.Text;
+import com.spinyowl.spinygui.core.parser.NodeConverter;
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
@@ -28,16 +28,14 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
-/**
- * Node marshaller. Used to convert node to xml and vise versa.
- */
+/** Node marshaller. Used to convert node to xml and vise versa. */
 @Slf4j
 public final class DefaultNodeConverter implements NodeConverter {
 
-  private static final List<String> EMPTY_ELEMENTS = List.of(
-      "area", "base", "br", "col", "embed", "hr", "img", "input",
-      "keygen", "link", "meta", "param", "source", "track", "wbr"
-  );
+  private static final List<String> EMPTY_ELEMENTS =
+      List.of(
+          "area", "base", "br", "col", "embed", "hr", "img", "input", "keygen", "link", "meta",
+          "param", "source", "track", "wbr");
 
   /**
    * Used to convert node tree to xml.
@@ -52,7 +50,7 @@ public final class DefaultNodeConverter implements NodeConverter {
   /**
    * Used to convert node with all child elements to an xml string.
    *
-   * @param node   node to convert.
+   * @param node node to convert.
    * @param pretty defines if should be pretty printed.
    * @return String with xml representation of node.
    */
@@ -90,7 +88,8 @@ public final class DefaultNodeConverter implements NodeConverter {
     } else if (node instanceof Element) {
       return createElement(document, (Element) node);
     } else {
-      log.warn("Attempt to marshal {} class which is not Text or Element child -> skipping.",
+      log.warn(
+          "Attempt to marshal {} class which is not Text or Element child -> skipping.",
           node.getClass().getName());
       return null;
     }
@@ -139,10 +138,7 @@ public final class DefaultNodeConverter implements NodeConverter {
     }
   }
 
-  private static Node createNodeFromContent(
-      org.w3c.dom.Node node,
-      NodeConverterContext context
-  ) {
+  private static Node createNodeFromContent(org.w3c.dom.Node node, NodeConverterContext context) {
     if (node instanceof org.w3c.dom.Text) {
       org.w3c.dom.Text text = (org.w3c.dom.Text) node;
       String wholeText = text.getWholeText();
@@ -153,22 +149,22 @@ public final class DefaultNodeConverter implements NodeConverter {
     } else if (node instanceof org.w3c.dom.Element) {
       return createNodeFromElement((org.w3c.dom.Element) node, context);
     } else {
-      log.warn("Content type '{}' is not supported. Content value '{}'.", node.getNodeType(),
+      log.warn(
+          "Content type '{}' is not supported. Content value '{}'.",
+          node.getNodeType(),
           node.getNodeValue());
       return null;
     }
   }
 
   private static Node createNodeFromElement(
-      org.w3c.dom.Element element,
-      NodeConverterContext context
-  ) {
+      org.w3c.dom.Element element, NodeConverterContext context) {
     String tagName = element.getTagName().toLowerCase();
     Node node;
     if (EMPTY_ELEMENTS.contains(tagName)) {
       node = new EmptyElement(tagName);
     } else {
-      if(FRAME_TAG_NAME.equals(tagName)) {
+      if (FRAME_TAG_NAME.equals(tagName)) {
         node = createFrame(context);
       } else {
         node = new Element(tagName);
@@ -185,8 +181,7 @@ public final class DefaultNodeConverter implements NodeConverter {
   }
 
   private static void createChildNodes(
-      org.w3c.dom.Element element, NodeConverterContext context, Node node
-  ) {
+      org.w3c.dom.Element element, NodeConverterContext context, Node node) {
     NodeList childNodes = element.getChildNodes();
     for (int i = 0; i < childNodes.getLength(); i++) {
       org.w3c.dom.Node c = childNodes.item(i);
@@ -202,11 +197,13 @@ public final class DefaultNodeConverter implements NodeConverter {
   }
 
   private static Node createFrame(NodeConverterContext context) {
-    if(context.hasFrame) {
-      throw new IllegalStateException("Failed to parse node tree. There could be only one frame element.");
+    if (context.hasFrame) {
+      throw new IllegalStateException(
+          "Failed to parse node tree. There could be only one frame element.");
     }
-    if(context.hasRoot) {
-      throw new IllegalStateException("Failed to parse node tree. Frame element should be the root element.");
+    if (context.hasRoot) {
+      throw new IllegalStateException(
+          "Failed to parse node tree. Frame element should be the root element.");
     }
     context.hasFrame = true;
     context.frame = new Frame();

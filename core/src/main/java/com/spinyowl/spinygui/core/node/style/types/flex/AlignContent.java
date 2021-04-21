@@ -13,29 +13,17 @@ import java.util.concurrent.ConcurrentHashMap;
 public final class AlignContent {
 
   private static final Map<String, AlignContent> VALUES = new ConcurrentHashMap<>();
-  /**
-   * Default value. Lines stretch to take up the remaining space.
-   */
+  /** Default value. Lines stretch to take up the remaining space. */
   public static final AlignContent STRETCH = AlignContent.create("stretch");
-  /**
-   * Lines are packed toward the center of the flex container.
-   */
+  /** Lines are packed toward the center of the flex container. */
   public static final AlignContent CENTER = AlignContent.create("center");
-  /**
-   * Lines are packed toward the start of the flex container.
-   */
+  /** Lines are packed toward the start of the flex container. */
   public static final AlignContent FLEX_START = AlignContent.create("flex-start");
-  /**
-   * Lines are packed toward the end of the flex container.
-   */
+  /** Lines are packed toward the end of the flex container. */
   public static final AlignContent FLEX_END = AlignContent.create("flex-end");
-  /**
-   * Lines are evenly distributed in the flex container.
-   */
+  /** Lines are evenly distributed in the flex container. */
   public static final AlignContent SPACE_BETWEEN = AlignContent.create("space-between");
-  /**
-   * Lines are evenly distributed in the flex container, with half-size spaces on either end.
-   */
+  /** Lines are evenly distributed in the flex container, with half-size spaces on either end. */
   public static final AlignContent SPACE_AROUND = AlignContent.create("space-around");
 
   private final String name;
@@ -81,8 +69,7 @@ public final class AlignContent {
     if (name == null) {
       return false;
     }
-    return values().stream().map(AlignContent::getName)
-        .anyMatch(v -> v.equalsIgnoreCase(name));
+    return values().stream().map(AlignContent::getName).anyMatch(v -> v.equalsIgnoreCase(name));
   }
 
   /**

@@ -15,21 +15,13 @@ import lombok.NonNull;
 @AllArgsConstructor
 public class Declaration<T> {
 
-  /**
-   * Property definition.
-   */
-  @NonNull
-  private final Property<T> property;
+  /** Property definition. */
+  @NonNull private final Property<T> property;
 
-  /**
-   * Current value of css property. Could not be null.
-   */
-  @NonNull
-  protected String value;
+  /** Current value of css property. Could not be null. */
+  @NonNull protected String value;
 
-  /**
-   * Used to reset property value to default.
-   */
+  /** Used to reset property value to default. */
   public void resetToDefault() {
     this.value = property.defaultValue();
   }
@@ -41,5 +33,4 @@ public class Declaration<T> {
   public boolean isInherit() {
     return INHERIT.equalsIgnoreCase(value);
   }
-
 }

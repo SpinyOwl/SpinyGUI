@@ -12,7 +12,7 @@ public interface Intersection {
   /**
    * Intersection rule.
    *
-   * @param node  node to check intersection.
+   * @param node node to check intersection.
    * @param point vector with coordinates of point to check intersection.
    * @return true if node intersected by point.
    */

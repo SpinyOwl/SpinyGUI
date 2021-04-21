@@ -13,8 +13,7 @@ import lombok.NonNull;
 
 public class LayoutManagerImpl implements LayoutManager {
 
-  @NonNull
-  private final EventProcessor eventProcessor;
+  @NonNull private final EventProcessor eventProcessor;
 
   private final Map<Display, Layout> layoutMap = new ConcurrentHashMap<>();
 
@@ -34,9 +33,7 @@ public class LayoutManagerImpl implements LayoutManager {
 
   @Override
   public void layout(Element element) {
-    if (element != null && element.visible()
-        && NodeUtilities.visibleInParents(element)
-    ) {
+    if (element != null && element.visible() && NodeUtilities.visibleInParents(element)) {
       Layout layout = layoutMap.get(element.style().display());
       if (layout != null) {
         layout.layout(element);
@@ -45,5 +42,4 @@ public class LayoutManagerImpl implements LayoutManager {
       element.children().forEach(this::layout);
     }
   }
-
 }

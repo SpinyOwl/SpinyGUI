@@ -21,5 +21,4 @@ public class PropertyVisitor extends CSS3BaseVisitor<Declaration<?>> {
     log.warn("Can't parse {} property with {} value", propertyName, value);
     return null;
   }
-
 }

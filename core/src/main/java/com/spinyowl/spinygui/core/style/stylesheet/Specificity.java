@@ -15,19 +15,18 @@ public class Specificity implements Comparable<Specificity> {
     return new Specificity(
         this.idSpecificity + specificity.idSpecificity,
         this.classSpecificity + specificity.classSpecificity,
-        this.typeSpecificity + specificity.typeSpecificity
-    );
+        this.typeSpecificity + specificity.typeSpecificity);
   }
 
   @Override
   public int compareTo(Specificity o) {
-    //@formatter:off
+    // @formatter:off
     if (this.idSpecificity > o.idSpecificity) return 1;
     if (this.idSpecificity < o.idSpecificity) return -1;
     if (this.classSpecificity > o.classSpecificity) return 1;
     if (this.classSpecificity < o.classSpecificity) return -1;
-    return Integer.compare(this.typeSpecificity,o.typeSpecificity);
-    //@formatter:on
+    return Integer.compare(this.typeSpecificity, o.typeSpecificity);
+    // @formatter:on
   }
 
   public static Specificity max(Specificity left, Specificity right) {

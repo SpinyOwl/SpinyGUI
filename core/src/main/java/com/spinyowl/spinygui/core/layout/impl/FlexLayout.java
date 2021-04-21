@@ -78,9 +78,7 @@ import lombok.RequiredArgsConstructor;
 import org.joml.Vector2f;
 import org.lwjgl.util.yoga.Yoga;
 
-/**
- * @author Aliaksandr_Shcherbin.
- */
+/** @author Aliaksandr_Shcherbin. */
 @Getter
 @RequiredArgsConstructor
 public class FlexLayout implements Layout {
@@ -101,8 +99,8 @@ public class FlexLayout implements Layout {
     YGNodeStyleSetDisplay(rootNode, YGDisplayFlex);
 
     List<Long> childNodes = new ArrayList<>();
-    List<Element> components = parent.children().stream()
-        .filter(Node::visible).collect(Collectors.toList());
+    List<Element> components =
+        parent.children().stream().filter(Node::visible).collect(Collectors.toList());
     for (Element component : components) {
       long childNode = YGNodeNew();
       prepareNode(component, childNode);
@@ -119,13 +117,12 @@ public class FlexLayout implements Layout {
       Node childComponent = components.get(i);
       Long yogaNode = childNodes.get(i);
 
-      Vector2f newPos = new Vector2f(YGNodeLayoutGetLeft(yogaNode),
-          YGNodeLayoutGetTop(yogaNode));
+      Vector2f newPos = new Vector2f(YGNodeLayoutGetLeft(yogaNode), YGNodeLayoutGetTop(yogaNode));
       Vector2f oldPos = new Vector2f(childComponent.position());
       childComponent.position(newPos);
 
-      Vector2f newSize = new Vector2f(YGNodeLayoutGetWidth(yogaNode),
-          YGNodeLayoutGetHeight(yogaNode));
+      Vector2f newSize =
+          new Vector2f(YGNodeLayoutGetWidth(yogaNode), YGNodeLayoutGetHeight(yogaNode));
       Vector2f oldSize = new Vector2f(childComponent.size());
       childComponent.size(newSize);
 
@@ -145,8 +142,8 @@ public class FlexLayout implements Layout {
     YGNodeFree(rootNode);
   }
 
-  private boolean generateEvents(Node childComponent, Vector2f newPos, Vector2f oldPos,
-      Vector2f newSize, Vector2f oldSize) {
+  private boolean generateEvents(
+      Node childComponent, Vector2f newPos, Vector2f oldPos, Vector2f newSize, Vector2f oldSize) {
     boolean invalidateTree = false;
     if (childComponent instanceof Element) {
       Element e = (Element) childComponent;
@@ -172,7 +169,7 @@ public class FlexLayout implements Layout {
    * Used to prepare root node.
    *
    * @param component parent component associated to root node.
-   * @param node      root yoga node.
+   * @param node root yoga node.
    */
   private void prepareNode(Element component, long node) {
     NodeStyle style = component.style();
@@ -182,46 +179,78 @@ public class FlexLayout implements Layout {
     setAlignItems(node, flex.alignItems());
     setAlignSelf(node, flex.alignSelf());
 
-    setLength(style.minWidth(), node, Yoga::YGNodeStyleSetMinWidth,
-        Yoga::YGNodeStyleSetMinWidthPercent);
-    setLength(style.minHeight(), node, Yoga::YGNodeStyleSetMinHeight,
+    setLength(
+        style.minWidth(), node, Yoga::YGNodeStyleSetMinWidth, Yoga::YGNodeStyleSetMinWidthPercent);
+    setLength(
+        style.minHeight(),
+        node,
+        Yoga::YGNodeStyleSetMinHeight,
         Yoga::YGNodeStyleSetMinHeightPercent);
 
-    setLength(style.maxWidth(), node, Yoga::YGNodeStyleSetMaxWidth,
-        Yoga::YGNodeStyleSetMaxWidthPercent);
-    setLength(style.maxHeight(), node, Yoga::YGNodeStyleSetMaxHeight,
+    setLength(
+        style.maxWidth(), node, Yoga::YGNodeStyleSetMaxWidth, Yoga::YGNodeStyleSetMaxWidthPercent);
+    setLength(
+        style.maxHeight(),
+        node,
+        Yoga::YGNodeStyleSetMaxHeight,
         Yoga::YGNodeStyleSetMaxHeightPercent);
 
-    setUnit(style.width(), node, Yoga::YGNodeStyleSetWidthAuto, Yoga::YGNodeStyleSetWidth,
+    setUnit(
+        style.width(),
+        node,
+        Yoga::YGNodeStyleSetWidthAuto,
+        Yoga::YGNodeStyleSetWidth,
         Yoga::YGNodeStyleSetWidthPercent);
-    setUnit(style.height(), node, Yoga::YGNodeStyleSetHeightAuto, Yoga::YGNodeStyleSetHeight,
+    setUnit(
+        style.height(),
+        node,
+        Yoga::YGNodeStyleSetHeightAuto,
+        Yoga::YGNodeStyleSetHeight,
         Yoga::YGNodeStyleSetHeightPercent);
 
-    setUnit(style.top(), node, YGEdgeTop, Yoga::YGNodeStyleSetPosition,
+    setUnit(
+        style.top(),
+        node,
+        YGEdgeTop,
+        Yoga::YGNodeStyleSetPosition,
         Yoga::YGNodeStyleSetPositionPercent);
-    setUnit(style.bottom(), node, YGEdgeBottom, Yoga::YGNodeStyleSetPosition,
+    setUnit(
+        style.bottom(),
+        node,
+        YGEdgeBottom,
+        Yoga::YGNodeStyleSetPosition,
         Yoga::YGNodeStyleSetPositionPercent);
-    setUnit(style.right(), node, YGEdgeRight, Yoga::YGNodeStyleSetPosition,
+    setUnit(
+        style.right(),
+        node,
+        YGEdgeRight,
+        Yoga::YGNodeStyleSetPosition,
         Yoga::YGNodeStyleSetPositionPercent);
-    setUnit(style.left(), node, YGEdgeLeft, Yoga::YGNodeStyleSetPosition,
+    setUnit(
+        style.left(),
+        node,
+        YGEdgeLeft,
+        Yoga::YGNodeStyleSetPosition,
         Yoga::YGNodeStyleSetPositionPercent);
 
-    setUnit(flex.flexBasis(), node,
-        Yoga::YGNodeStyleSetFlexBasisAuto, Yoga::YGNodeStyleSetFlexBasis,
+    setUnit(
+        flex.flexBasis(),
+        node,
+        Yoga::YGNodeStyleSetFlexBasisAuto,
+        Yoga::YGNodeStyleSetFlexBasis,
         Yoga::YGNodeStyleSetFlexBasisPercent);
 
     setPadding(node, style);
     setMargin(node, style);
 
     setFlexWrap(node, flex.flexWrap());
-    YGNodeStyleSetPositionType(node,
-        style.position() == Position.RELATIVE ? YGPositionTypeRelative
-            : YGPositionTypeAbsolute);
+    YGNodeStyleSetPositionType(
+        node,
+        style.position() == Position.RELATIVE ? YGPositionTypeRelative : YGPositionTypeAbsolute);
 
     YGNodeStyleSetFlexGrow(node, flex.flexGrow());
     YGNodeStyleSetFlexShrink(node, flex.flexShrink());
   }
-
 
   private static void setJustifyContent(long node, JustifyContent justifyContent) {
     if (justifyContent == null || justifyContent == JustifyContent.FLEX_START) {
@@ -296,33 +325,67 @@ public class FlexLayout implements Layout {
 
   private static void setPadding(long node, NodeStyle style) {
     Padding padding = style.padding();
-    setLength(padding.left(), node, YGEdgeLeft, Yoga::YGNodeStyleSetPadding,
+    setLength(
+        padding.left(),
+        node,
+        YGEdgeLeft,
+        Yoga::YGNodeStyleSetPadding,
         Yoga::YGNodeStyleSetPaddingPercent);
-    setLength(padding.top(), node, YGEdgeTop, Yoga::YGNodeStyleSetPadding,
+    setLength(
+        padding.top(),
+        node,
+        YGEdgeTop,
+        Yoga::YGNodeStyleSetPadding,
         Yoga::YGNodeStyleSetPaddingPercent);
-    setLength(padding.right(), node, YGEdgeRight, Yoga::YGNodeStyleSetPadding,
+    setLength(
+        padding.right(),
+        node,
+        YGEdgeRight,
+        Yoga::YGNodeStyleSetPadding,
         Yoga::YGNodeStyleSetPaddingPercent);
-    setLength(padding.bottom(), node, YGEdgeBottom, Yoga::YGNodeStyleSetPadding,
+    setLength(
+        padding.bottom(),
+        node,
+        YGEdgeBottom,
+        Yoga::YGNodeStyleSetPadding,
         Yoga::YGNodeStyleSetPaddingPercent);
   }
 
   private static void setMargin(long node, NodeStyle style) {
     Margin margin = style.margin();
-    setUnit(margin.left(), node, YGEdgeLeft,
-        Yoga::YGNodeStyleSetMarginAuto, Yoga::YGNodeStyleSetMargin,
+    setUnit(
+        margin.left(),
+        node,
+        YGEdgeLeft,
+        Yoga::YGNodeStyleSetMarginAuto,
+        Yoga::YGNodeStyleSetMargin,
         Yoga::YGNodeStyleSetMarginPercent);
-    setUnit(margin.top(), node, YGEdgeTop,
-        Yoga::YGNodeStyleSetMarginAuto, Yoga::YGNodeStyleSetMargin,
+    setUnit(
+        margin.top(),
+        node,
+        YGEdgeTop,
+        Yoga::YGNodeStyleSetMarginAuto,
+        Yoga::YGNodeStyleSetMargin,
         Yoga::YGNodeStyleSetMarginPercent);
-    setUnit(margin.right(), node, YGEdgeRight,
-        Yoga::YGNodeStyleSetMarginAuto, Yoga::YGNodeStyleSetMargin,
+    setUnit(
+        margin.right(),
+        node,
+        YGEdgeRight,
+        Yoga::YGNodeStyleSetMarginAuto,
+        Yoga::YGNodeStyleSetMargin,
         Yoga::YGNodeStyleSetMarginPercent);
-    setUnit(margin.bottom(), node, YGEdgeBottom,
-        Yoga::YGNodeStyleSetMarginAuto, Yoga::YGNodeStyleSetMargin,
+    setUnit(
+        margin.bottom(),
+        node,
+        YGEdgeBottom,
+        Yoga::YGNodeStyleSetMarginAuto,
+        Yoga::YGNodeStyleSetMargin,
         Yoga::YGNodeStyleSetMarginPercent);
   }
 
-  private static void setUnit(Unit unit, long node,
+  private static void setUnit(
+      Unit unit,
+      long node,
       LongConsumer autoConsumer,
       ObjIntConsumer<Long> pixelConsumer,
       BiConsumer<Long, Float> percentConsumer) {
@@ -340,7 +403,10 @@ public class FlexLayout implements Layout {
     }
   }
 
-  private static void setUnit(Unit unit, long node, int side,
+  private static void setUnit(
+      Unit unit,
+      long node,
+      int side,
       ObjIntConsumer<Long> autoConsumer,
       TriConsumer<Long, Integer, Integer> pixelConsumer,
       TriConsumer<Long, Integer, Float> percentConsumer) {
@@ -358,7 +424,10 @@ public class FlexLayout implements Layout {
     }
   }
 
-  private static void setUnit(Unit unit, long node, int side,
+  private static void setUnit(
+      Unit unit,
+      long node,
+      int side,
       TriConsumer<Long, Integer, Integer> pixelConsumer,
       TriConsumer<Long, Integer, Float> percentConsumer) {
     if (unit != null && !unit.isAuto()) {
@@ -371,7 +440,9 @@ public class FlexLayout implements Layout {
     }
   }
 
-  private static void setLength(Length<?> length, long node,
+  private static void setLength(
+      Length<?> length,
+      long node,
       ObjIntConsumer<Long> pixelConsumer,
       BiConsumer<Long, Float> percentConsumer) {
     if (length != null) {
@@ -383,7 +454,10 @@ public class FlexLayout implements Layout {
     }
   }
 
-  private static void setLength(Length<?> length, long node, int side,
+  private static void setLength(
+      Length<?> length,
+      long node,
+      int side,
       TriConsumer<Long, Integer, Integer> pixelConsumer,
       TriConsumer<Long, Integer, Float> percentConsumer) {
     if (length != null) {

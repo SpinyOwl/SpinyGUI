@@ -1,15 +1,15 @@
 package com.spinyowl.spinygui.core.style.stylesheet.selector.combinator;
 
+import com.spinyowl.spinygui.core.node.Element;
 import com.spinyowl.spinygui.core.style.stylesheet.selector.CombinatorSelector;
 import com.spinyowl.spinygui.core.style.stylesheet.selector.Selector;
-import com.spinyowl.spinygui.core.node.Element;
 
 /**
  * Descendant Selector
- * <p>
- * The descendant selector matches all elements that are descendants of a specified element.
- * <p>
- * Example: 'first second'.
+ *
+ * <p>The descendant selector matches all elements that are descendants of a specified element.
+ *
+ * <p>Example: 'first second'.
  */
 public class DescendantSelector extends CombinatorSelector {
 

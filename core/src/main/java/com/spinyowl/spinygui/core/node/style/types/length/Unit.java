@@ -2,11 +2,10 @@ package com.spinyowl.spinygui.core.node.style.types.length;
 
 public interface Unit {
 
-  //@formatter:off
+  // @formatter:off
   // DECLARATION OF AUTO VALUE.
-  Unit AUTO = new Unit() {
-  };
-  //@formatter:on
+  Unit AUTO = new Unit() {};
+  // @formatter:on
 
   default boolean isLength() {
     return this instanceof Length;

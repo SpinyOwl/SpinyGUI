@@ -6,24 +6,16 @@ import java.util.Set;
 import java.util.StringJoiner;
 import java.util.concurrent.ConcurrentHashMap;
 
-/**
- * Specifies whether the flexible items should wrap or not.
- */
+/** Specifies whether the flexible items should wrap or not. */
 public final class FlexWrap {
 
   private static final Map<String, FlexWrap> VALUES = new ConcurrentHashMap<>();
 
-  /**
-   * Default value. Specifies that the flexible items will not wrap.
-   */
+  /** Default value. Specifies that the flexible items will not wrap. */
   public static final FlexWrap NOWRAP = FlexWrap.create("nowrap");
-  /**
-   * Specifies that the flexible items will wrap if necessary.
-   */
+  /** Specifies that the flexible items will wrap if necessary. */
   public static final FlexWrap WRAP = FlexWrap.create("wrap");
-  /**
-   * Specifies that the flexible items will wrap, if necessary, in reverse order.
-   */
+  /** Specifies that the flexible items will wrap, if necessary, in reverse order. */
   public static final FlexWrap WRAP_REVERSE = FlexWrap.create("wrap-reverse");
 
   private final String name;
@@ -68,8 +60,7 @@ public final class FlexWrap {
     if (name == null) {
       return false;
     }
-    return values().stream().map(FlexWrap::getName)
-        .anyMatch(v -> v.equalsIgnoreCase(name));
+    return values().stream().map(FlexWrap::getName).anyMatch(v -> v.equalsIgnoreCase(name));
   }
 
   /**
@@ -104,5 +95,4 @@ public final class FlexWrap {
         .add("name='" + name + "'")
         .toString();
   }
-
 }

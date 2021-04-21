@@ -4,42 +4,41 @@ import java.util.Map;
 
 public final class NodeBuilder {
 
-  //@formatter:off
-  public static final String ATTR_TYPE  = "type";
-  public static final String ATTR_NAME  = "name";
+  // @formatter:off
+  public static final String ATTR_TYPE = "type";
+  public static final String ATTR_NAME = "name";
   public static final String ATTR_VALUE = "value";
 
-  public static final String TYPE_BUTTON         = "button";
-  public static final String TYPE_CHECKBOX       = "checkbox";
-  public static final String TYPE_COLOR          = "color";
-  public static final String TYPE_DATE           = "date";
+  public static final String TYPE_BUTTON = "button";
+  public static final String TYPE_CHECKBOX = "checkbox";
+  public static final String TYPE_COLOR = "color";
+  public static final String TYPE_DATE = "date";
   public static final String TYPE_DATETIME_LOCAL = "datetime-local";
-  public static final String TYPE_EMAIL          = "email";
-  public static final String TYPE_FILE           = "file";
-  public static final String TYPE_HIDDEN         = "hidden";
-  public static final String TYPE_IMAGE          = "image";
-  public static final String TYPE_MONTH          = "month";
-  public static final String TYPE_NUMBER         = "number";
-  public static final String TYPE_PASSWORD       = "password";
-  public static final String TYPE_RADIO          = "radio";
-  public static final String TYPE_RANGE          = "range";
-  public static final String TYPE_RESET          = "reset";
-  public static final String TYPE_SEARCH         = "search";
-  public static final String TYPE_SUBMIT         = "submit";
-  public static final String TYPE_TEL            = "tel";
-  public static final String TYPE_TEXT           = "text";
-  public static final String TYPE_TIME           = "time";
-  public static final String TYPE_URL            = "url";
-  public static final String TYPE_WEEK           = "week";
+  public static final String TYPE_EMAIL = "email";
+  public static final String TYPE_FILE = "file";
+  public static final String TYPE_HIDDEN = "hidden";
+  public static final String TYPE_IMAGE = "image";
+  public static final String TYPE_MONTH = "month";
+  public static final String TYPE_NUMBER = "number";
+  public static final String TYPE_PASSWORD = "password";
+  public static final String TYPE_RADIO = "radio";
+  public static final String TYPE_RANGE = "range";
+  public static final String TYPE_RESET = "reset";
+  public static final String TYPE_SEARCH = "search";
+  public static final String TYPE_SUBMIT = "submit";
+  public static final String TYPE_TEL = "tel";
+  public static final String TYPE_TEXT = "text";
+  public static final String TYPE_TIME = "time";
+  public static final String TYPE_URL = "url";
+  public static final String TYPE_WEEK = "week";
 
   public static final String NODE_BUTTON = "button";
-  public static final String NODE_INPUT  = "input";
-  public static final String NODE_DIV    = "div";
+  public static final String NODE_INPUT = "input";
+  public static final String NODE_DIV = "div";
   public static final String NODE_LABEL = "label";
-  //@formatter:on
+  // @formatter:on
 
-  private NodeBuilder() {
-  }
+  private NodeBuilder() {}
 
   /**
    * Creates button element with provided child nodes.
@@ -61,7 +60,7 @@ public final class NodeBuilder {
    * Creates button with specified attributes and child nodes.
    *
    * @param attributes attributes to add.
-   * @param nodes      child nodes to add.
+   * @param nodes child nodes to add.
    * @return button with specified attributes and child nodes.
    */
   public static Element button(Map<String, String> attributes, Node... nodes) {
@@ -115,21 +114,20 @@ public final class NodeBuilder {
    * @return input with specified name and type attributes.
    */
   public static EmptyElement input(String type, String name) {
-    return addAttributes(new EmptyElement(NODE_INPUT), Map.of(ATTR_TYPE, type,
-        ATTR_NAME, name));
+    return addAttributes(new EmptyElement(NODE_INPUT), Map.of(ATTR_TYPE, type, ATTR_NAME, name));
   }
 
   /**
    * Creates input with specified name, type and value attributes.
    *
-   * @param type  type attribute value.
-   * @param name  name attribute value.
+   * @param type type attribute value.
+   * @param name name attribute value.
    * @param value value attribute value.
    * @return input with specified name, type and value attributes.
    */
   public static EmptyElement input(String type, String name, String value) {
-    return addAttributes(new EmptyElement(NODE_INPUT),
-        Map.of(ATTR_TYPE, type, ATTR_NAME, name, ATTR_VALUE, value));
+    return addAttributes(
+        new EmptyElement(NODE_INPUT), Map.of(ATTR_TYPE, type, ATTR_NAME, name, ATTR_VALUE, value));
   }
 
   /**
@@ -150,7 +148,7 @@ public final class NodeBuilder {
    * Creates label with specified attributes and child nodes.
    *
    * @param attributes attributes to add.
-   * @param nodes      child nodes to add.
+   * @param nodes child nodes to add.
    * @return label with specified attributes and child nodes.
    */
   public static Element label(Map<String, String> attributes, Node... nodes) {
@@ -175,7 +173,7 @@ public final class NodeBuilder {
    * Creates div with specified attributes and child nodes.
    *
    * @param attributes attributes to add.
-   * @param nodes      child nodes to add.
+   * @param nodes child nodes to add.
    * @return div with specified attributes and child nodes.
    */
   public static Element div(Map<String, String> attributes, Node... nodes) {
@@ -185,7 +183,7 @@ public final class NodeBuilder {
   /**
    * Creates input with {@code type="radio-button"} and with specified name and value attributes.
    *
-   * @param name  name attribute value.
+   * @param name name attribute value.
    * @param value value attribute value.
    * @return input with {@code type="radio-button"} and with specified name and value attributes.
    */
@@ -196,9 +194,9 @@ public final class NodeBuilder {
   /**
    * Used to add attributes to provided node. Allows to chain calls.
    *
-   * @param node       node to which attributes should be added.
+   * @param node node to which attributes should be added.
    * @param attributes attributes to add to node.
-   * @param <T>        type of node.
+   * @param <T> type of node.
    * @return returns filled node.
    */
   public static <T extends Node> T addAttributes(T node, Map<String, String> attributes) {

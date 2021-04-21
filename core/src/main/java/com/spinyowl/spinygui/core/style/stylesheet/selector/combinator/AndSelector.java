@@ -1,8 +1,8 @@
 package com.spinyowl.spinygui.core.style.stylesheet.selector.combinator;
 
+import com.spinyowl.spinygui.core.node.Element;
 import com.spinyowl.spinygui.core.style.stylesheet.selector.CombinatorSelector;
 import com.spinyowl.spinygui.core.style.stylesheet.selector.Selector;
-import com.spinyowl.spinygui.core.node.Element;
 
 public class AndSelector extends CombinatorSelector {
 
@@ -14,5 +14,4 @@ public class AndSelector extends CombinatorSelector {
   public boolean test(Element element) {
     return first.test(element) && second.test(element);
   }
-
 }

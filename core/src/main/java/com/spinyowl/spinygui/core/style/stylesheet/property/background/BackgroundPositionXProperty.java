@@ -1,10 +1,10 @@
 package com.spinyowl.spinygui.core.style.stylesheet.property.background;
 
 import static com.spinyowl.spinygui.core.style.stylesheet.Properties.BACKGROUND_POSITION_X;
+import com.spinyowl.spinygui.core.node.style.types.length.Length;
+import com.spinyowl.spinygui.core.style.stylesheet.Property;
 import com.spinyowl.spinygui.core.style.stylesheet.extractor.ValueExtractor;
 import com.spinyowl.spinygui.core.style.stylesheet.extractor.ValueExtractors;
-import com.spinyowl.spinygui.core.style.stylesheet.Property;
-import com.spinyowl.spinygui.core.node.style.types.length.Length;
 import java.util.List;
 
 public class BackgroundPositionXProperty extends Property<Length> {
@@ -16,21 +16,31 @@ public class BackgroundPositionXProperty extends Property<Length> {
   private static final List<String> values = List.of(LEFT, CENTER, RIGHT);
 
   public BackgroundPositionXProperty() {
-    super(BACKGROUND_POSITION_X, "0%", !INHERITED, ANIMATABLE,
-        (s, c) -> s.background().position().x(c), s -> s.background().position().x(),
-        BackgroundPositionXProperty::extract, BackgroundPositionXProperty::test);
+    super(
+        BACKGROUND_POSITION_X,
+        "0%",
+        !INHERITED,
+        ANIMATABLE,
+        (s, c) -> s.background().position().x(c),
+        s -> s.background().position().x(),
+        BackgroundPositionXProperty::extract,
+        BackgroundPositionXProperty::test);
   }
 
-  //@formatter:off
+  // @formatter:off
   private static Length extract(String value) {
     switch (value) {
-      case LEFT: return Length.percent(0);
-      case CENTER: return Length.percent(50);
-      case RIGHT: return Length.percent(100);
-      default: return extractor.extract(value);
+      case LEFT:
+        return Length.percent(0);
+      case CENTER:
+        return Length.percent(50);
+      case RIGHT:
+        return Length.percent(100);
+      default:
+        return extractor.extract(value);
     }
   }
-  //@formatter:on
+  // @formatter:on
 
   private static boolean test(String value) {
     return values.contains(value) || extractor.isValid(value);

@@ -11,11 +11,9 @@ import lombok.NonNull;
 @NoArgsConstructor
 public class Background {
 
-  @NonNull
-  private Color color = Color.TRANSPARENT;
+  @NonNull private Color color = Color.TRANSPARENT;
   private String image;
   private BackgroundPosition position;
   private BackgroundSize size;
   private BackgroundOrigin origin = BackgroundOrigin.PADDING_BOX;
-
 }

@@ -10,11 +10,7 @@ import lombok.NonNull;
 @NoArgsConstructor
 public class BorderItem {
 
-  @NonNull
-  private Color color = Color.TRANSPARENT;
-  @NonNull
-  private BorderStyle style = BorderStyle.NONE;
-  @NonNull
-  private Length<?> width = Length.ZERO;
-
+  @NonNull private Color color = Color.TRANSPARENT;
+  @NonNull private BorderStyle style = BorderStyle.NONE;
+  @NonNull private Length<?> width = Length.ZERO;
 }

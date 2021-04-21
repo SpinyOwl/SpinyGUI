@@ -16,12 +16,16 @@ import org.joml.Vector2f;
 
 /**
  * Base structure of any node.
- * <p>
- * Have three base subclasses that should be used to create any kind of element:
+ *
+ * <p>Have three base subclasses that should be used to create any kind of element:
+ *
  * <ul>
- * <li>{@link Element}<br> - base for components that could contain other components. </li>
- * <li>{@link EmptyElement}<br> - base for components that could not contain other components. </li>
- * <li>{@link Text}<br> - representation of text node. </li>
+ *   <li>{@link Element}<br>
+ *       - base for components that could contain other components.
+ *   <li>{@link EmptyElement}<br>
+ *       - base for components that could not contain other components.
+ *   <li>{@link Text}<br>
+ *       - representation of text node.
  * </ul>
  */
 @Getter
@@ -31,53 +35,35 @@ import org.joml.Vector2f;
 @RequiredArgsConstructor
 public abstract class Node {
 
-  @NonNull
-  private final String nodeName;
+  @NonNull private final String nodeName;
 
-  /**
-   * Parent node.
-   */
+  /** Parent node. */
   @Setter(AccessLevel.NONE)
   private Element parent;
 
-  /**
-   * Node position. Assigned to node by layout manager.
-   */
-  @NonNull
-  private Vector2f position = new Vector2f();
+  /** Node position. Assigned to node by layout manager. */
+  @NonNull private Vector2f position = new Vector2f();
 
-  /**
-   * Node size. Assigned to node by layout manager.
-   */
-  @NonNull
-  private Vector2f size = new Vector2f();
+  /** Node size. Assigned to node by layout manager. */
+  @NonNull private Vector2f size = new Vector2f();
 
-  /**
-   * Node visibility.
-   */
+  /** Node visibility. */
   private boolean visible;
 
-  /**
-   * Determines whether this node hovered or not (cursor is over this node).
-   */
+  /** Determines whether this node hovered or not (cursor is over this node). */
   private boolean hovered;
 
-  /**
-   * Determines whether this node focused or not.
-   */
+  /** Determines whether this node focused or not. */
   private boolean focused;
 
-  /**
-   * Determines whether this node pressed or not (Mouse button is down and on this node).
-   */
+  /** Determines whether this node pressed or not (Mouse button is down and on this node). */
   private boolean pressed;
 
   /**
    * Node intersection. During initialization used {@link Intersections#getDefaultIntersection()}.
    * Used to allow detect intersection of point on virtual window surface and node.
    */
-  @NonNull
-  private Intersection intersection = Intersections.getDefaultIntersection();
+  @NonNull private Intersection intersection = Intersections.getDefaultIntersection();
 
   @Setter(AccessLevel.MODULE)
   private Node nextSibling;
@@ -120,11 +106,11 @@ public abstract class Node {
 
   /**
    * Returns a collection of a node's child nodes, as {@code List<Node>} object.
-   * <p>
-   * The nodes in the collection are sorted as they was added to the element.
-   * <p>
-   * Tip: To return a collection of a node's element nodes (excluding text and comment nodes), use
-   * the {@link #children()} method.
+   *
+   * <p>The nodes in the collection are sorted as they was added to the element.
+   *
+   * <p>Tip: To return a collection of a node's element nodes (excluding text and comment nodes),
+   * use the {@link #children()} method.
    *
    * @return list of child nodes.
    */
@@ -139,14 +125,16 @@ public abstract class Node {
 
   /**
    * Returns a collection of an element's child elements, as an {@code List<Element>} object.
-   * <p>
-   * The elements in the collection are sorted as they was added tp the element.
+   *
+   * <p>The elements in the collection are sorted as they was added tp the element.
    *
    * @return list of child elements.
    */
   public List<Element> children() {
-    return childNodes().stream().filter(n -> n instanceof Element)
-        .map(Element.class::cast).collect(Collectors.toUnmodifiableList());
+    return childNodes().stream()
+        .filter(n -> n instanceof Element)
+        .map(Element.class::cast)
+        .collect(Collectors.toUnmodifiableList());
   }
 
   /**
@@ -164,8 +152,8 @@ public abstract class Node {
 
   /**
    * Used to set node position in coordinates of parent node.
-   * <p>
-   * Used by layout engine.
+   *
+   * <p>Used by layout engine.
    *
    * @param x node x position in coordinates of parent node.
    * @param y node y position in coordinates of parent node.
@@ -176,21 +164,20 @@ public abstract class Node {
 
   /**
    * Used to set node size.
-   * <p>
-   * Used by layout engine.
    *
-   * @param width  node width.
+   * <p>Used by layout engine.
+   *
+   * @param width node width.
    * @param height node height.
    */
   public void size(float width, float height) {
     this.size.set(width, height);
   }
 
-
   /**
    * Shorthand to set attribute.
    *
-   * @param key   attribute name.
+   * @param key attribute name.
    * @param value attribute value.
    */
   public abstract void setAttribute(String key, String value);
@@ -223,7 +210,7 @@ public abstract class Node {
   /**
    * Builder method to set attribute.
    *
-   * @param key   attribute name.
+   * @param key attribute name.
    * @param value attribute value.
    */
   public Node with(String key, String value) {
@@ -234,5 +221,4 @@ public abstract class Node {
   public Frame frame() {
     return parent == null ? null : parent.frame();
   }
-
 }

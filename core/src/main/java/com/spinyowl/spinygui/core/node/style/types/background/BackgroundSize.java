@@ -32,7 +32,6 @@ public class BackgroundSize {
     this.sizeY = sizeY;
   }
 
-
   public static BackgroundSize size(Unit sizeX) {
     return new BackgroundSize(sizeX);
   }
@@ -55,5 +54,3 @@ public class BackgroundSize {
     UNIT
   }
 }
-
-

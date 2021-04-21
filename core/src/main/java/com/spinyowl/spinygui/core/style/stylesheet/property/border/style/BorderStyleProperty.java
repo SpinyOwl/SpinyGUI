@@ -3,18 +3,24 @@ package com.spinyowl.spinygui.core.style.stylesheet.property.border.style;
 import static com.spinyowl.spinygui.core.style.stylesheet.Properties.BORDER_STYLE;
 import static com.spinyowl.spinygui.core.style.stylesheet.util.StyleUtils.testMultipleValues;
 import com.spinyowl.spinygui.core.node.style.NodeStyle;
-import com.spinyowl.spinygui.core.style.stylesheet.Property;
 import com.spinyowl.spinygui.core.node.style.types.border.Border;
 import com.spinyowl.spinygui.core.node.style.types.border.BorderStyle;
+import com.spinyowl.spinygui.core.style.stylesheet.Property;
 
 public class BorderStyleProperty extends Property<Border> {
 
   public static final String DEFAULT_VALUE = "solid";
 
   public BorderStyleProperty() {
-    super(BORDER_STYLE, DEFAULT_VALUE, !INHERITED, ANIMATABLE,
-        (s, b) -> s.border().style(b), NodeStyle::border,
-        BorderStyleProperty::extract, BorderStyleProperty::test);
+    super(
+        BORDER_STYLE,
+        DEFAULT_VALUE,
+        !INHERITED,
+        ANIMATABLE,
+        (s, b) -> s.border().style(b),
+        NodeStyle::border,
+        BorderStyleProperty::extract,
+        BorderStyleProperty::test);
   }
 
   private static Border extract(String value) {
@@ -39,5 +45,4 @@ public class BorderStyleProperty extends Property<Border> {
   private static boolean test(String value) {
     return testMultipleValues(value, "\\s+", 1, 4, BorderStyle::contains);
   }
-
 }

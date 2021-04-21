@@ -1,13 +1,11 @@
 package com.spinyowl.spinygui.core.style.stylesheet.extractor.impl;
 
-import com.spinyowl.spinygui.core.style.stylesheet.extractor.ValueExtractor;
-import com.spinyowl.spinygui.core.style.stylesheet.extractor.ValueExtractorException;
 import com.spinyowl.spinygui.core.node.style.types.length.Length;
 import com.spinyowl.spinygui.core.node.style.types.length.Unit;
+import com.spinyowl.spinygui.core.style.stylesheet.extractor.ValueExtractor;
+import com.spinyowl.spinygui.core.style.stylesheet.extractor.ValueExtractorException;
 
-/**
- * Used to extract {@link Unit} value from string.
- */
+/** Used to extract {@link Unit} value from string. */
 public class UnitValueExtractor implements ValueExtractor<Unit> {
 
   public static final String PERCENTAGE_REGEX = "-?(\\d+(\\.\\d*)?|\\.\\d+)%";
@@ -43,10 +41,10 @@ public class UnitValueExtractor implements ValueExtractor<Unit> {
 
   @Override
   public boolean isValid(String value) {
-    return value.matches(PERCENTAGE_REGEX) ||
-        value.matches(PIXEL_REGEX) ||
-        value.matches(AUTO_REGEX) ||
-        value.matches(UnitValueExtractor.ZERO_REGEX);
+    return value.matches(PERCENTAGE_REGEX)
+        || value.matches(PIXEL_REGEX)
+        || value.matches(AUTO_REGEX)
+        || value.matches(UnitValueExtractor.ZERO_REGEX);
   }
 
   @Override

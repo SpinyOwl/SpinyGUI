@@ -3,9 +3,7 @@ package com.spinyowl.spinygui.core.style.stylesheet.extractor.impl;
 import com.spinyowl.spinygui.core.style.stylesheet.extractor.ValueExtractor;
 import com.spinyowl.spinygui.core.style.stylesheet.extractor.ValueExtractorException;
 
-/**
- * Extracts integer value from string (10 radix).
- */
+/** Extracts integer value from string (10 radix). */
 public class IntegerExtractor implements ValueExtractor<Integer> {
 
   @Override

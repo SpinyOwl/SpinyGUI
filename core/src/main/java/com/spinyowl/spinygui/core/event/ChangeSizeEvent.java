@@ -13,13 +13,10 @@ import org.joml.Vector2f;
 @SuperBuilder
 public class ChangeSizeEvent extends Event {
 
-  @NonNull
-  private final Vector2f oldSize;
-  @NonNull
-  private final Vector2f newSize;
+  @NonNull private final Vector2f oldSize;
+  @NonNull private final Vector2f newSize;
 
   public static ChangeSizeEvent of(EventTarget target, Vector2f oldSize, Vector2f newSize) {
     return ChangeSizeEvent.builder().target(target).oldSize(oldSize).newSize(newSize).build();
   }
-
 }

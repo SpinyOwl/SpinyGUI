@@ -1,15 +1,15 @@
 package com.spinyowl.spinygui.core.style.stylesheet.property.border;
 
 import static com.spinyowl.spinygui.core.style.stylesheet.Properties.BORDER;
-import com.spinyowl.spinygui.core.style.stylesheet.extractor.ValueExtractor;
-import com.spinyowl.spinygui.core.style.stylesheet.extractor.ValueExtractors;
-import com.spinyowl.spinygui.core.style.stylesheet.Property;
-import com.spinyowl.spinygui.core.style.stylesheet.property.border.width.BorderWidthProperty;
 import com.spinyowl.spinygui.core.node.style.NodeStyle;
 import com.spinyowl.spinygui.core.node.style.types.Color;
 import com.spinyowl.spinygui.core.node.style.types.border.Border;
 import com.spinyowl.spinygui.core.node.style.types.border.BorderItem;
 import com.spinyowl.spinygui.core.node.style.types.border.BorderStyle;
+import com.spinyowl.spinygui.core.style.stylesheet.Property;
+import com.spinyowl.spinygui.core.style.stylesheet.extractor.ValueExtractor;
+import com.spinyowl.spinygui.core.style.stylesheet.extractor.ValueExtractors;
+import com.spinyowl.spinygui.core.style.stylesheet.property.border.width.BorderWidthProperty;
 
 public class BorderProperty extends Property<Border> {
 
@@ -18,10 +18,15 @@ public class BorderProperty extends Property<Border> {
   private static final ValueExtractor<Color> colorValueExtractor = ValueExtractors.of(Color.class);
 
   public BorderProperty() {
-    super(BORDER, DEFAULT_VALUE, !INHERITED, ANIMATABLE,
-        NodeStyle::border, NodeStyle::border,
-        BorderProperty::x, BorderProperty::test
-    );
+    super(
+        BORDER,
+        DEFAULT_VALUE,
+        !INHERITED,
+        ANIMATABLE,
+        NodeStyle::border,
+        NodeStyle::border,
+        BorderProperty::x,
+        BorderProperty::test);
   }
 
   public static boolean test(String value) {
@@ -34,12 +39,12 @@ public class BorderProperty extends Property<Border> {
     if (values.length == 1) {
       return BorderStyle.contains(values[0]);
     } else if (values.length == 2) {
-      return BorderWidthProperty.testOne(values[0])
-          && BorderStyle.contains(values[1]) ||
-          BorderStyle.contains(values[0]) && colorValueExtractor.isValid(values[1]);
+      return BorderWidthProperty.testOne(values[0]) && BorderStyle.contains(values[1])
+          || BorderStyle.contains(values[0]) && colorValueExtractor.isValid(values[1]);
     } else {
       return BorderWidthProperty.testOne(values[0])
-          && BorderStyle.contains(values[1]) && colorValueExtractor.isValid(values[2]);
+          && BorderStyle.contains(values[1])
+          && colorValueExtractor.isValid(values[2]);
     }
   }
 
@@ -72,5 +77,4 @@ public class BorderProperty extends Property<Border> {
     }
     return i;
   }
-
 }

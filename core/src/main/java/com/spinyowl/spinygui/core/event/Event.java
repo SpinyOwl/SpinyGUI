@@ -15,14 +15,10 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 public abstract class Event {
 
-  /**
-   * Element which cause event generation.
-   */
+  /** Element which cause event generation. */
   private final EventTarget source;
 
-  /**
-   * Target element to which the event was originally dispatched.
-   */
+  /** Target element to which the event was originally dispatched. */
   private final EventTarget target;
 
   /**
@@ -31,9 +27,6 @@ public abstract class Event {
    */
   private EventTarget currentTarget;
 
-  /**
-   * TimeStamp of event.
-   */
-  @Default
-  private double timeStamp = Time.getCurrentTime();
+  /** TimeStamp of event. */
+  @Default private double timeStamp = Time.getCurrentTime();
 }

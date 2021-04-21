@@ -24,59 +24,46 @@ public class Property<T> {
   public static final boolean ANIMATABLE = true;
   public static final boolean INHERITED = true;
 
-  /**
-   * Name of css property.
-   */
+  /** Name of css property. */
   protected final String name;
 
   /**
    * Default value of css property. Could not be null. This value used for next cases:
+   *
    * <ul>
-   *     <li>element is root element in element tree.</li>
-   *     <li>element value is {@link Property#INITIAL} </li>
-   *     <li>there was an issue during computing value using value extractor - treats as no property specified in style.</li>
+   *   <li>element is root element in element tree.
+   *   <li>element value is {@link Property#INITIAL}
+   *   <li>there was an issue during computing value using value extractor - treats as no property
+   *       specified in style.
    * </ul>
    */
   protected final String defaultValue;
 
   /**
-   * Defines if css property for element should be inherited from parent element.
-   * <br>
+   * Defines if css property for element should be inherited from parent element. <br>
    * When no value for an inherited property has been specified on an element, the element gets the
    * computed value of that property on its parent element. Only the root element of the document
-   * gets the initial value given in the property's summary.
-   * <br>
+   * gets the initial value given in the property's summary. <br>
    * When no value for a non-inherited property has been specified on an element, the element gets
-   * the initial value of that property (as specified in the property's summary).
-   * <br>
+   * the initial value of that property (as specified in the property's summary). <br>
    * The <b>inherit</b> keyword allows authors to explicitly specify inheritance. It works on both
    * inherited and non-inherited properties.
    */
   protected final boolean inherited;
 
-  /**
-   * Defines if css property could be animated.
-   */
+  /** Defines if css property could be animated. */
   protected final boolean animatable;
 
-  /**
-   * Used to set calculated value to node style.
-   */
+  /** Used to set calculated value to node style. */
   protected final BiConsumer<NodeStyle, T> valueSetter;
 
-  /**
-   * Used to get calculated value from node style.
-   */
+  /** Used to get calculated value from node style. */
   protected final Function<NodeStyle, T> valueGetter;
 
-  /**
-   * Used to extract and compute value from string representation.
-   */
+  /** Used to extract and compute value from string representation. */
   protected final Function<String, T> valueExtractor;
 
-  /**
-   * Used to validate string value before extraction.
-   */
+  /** Used to validate string value before extraction. */
   protected final Predicate<String> valueValidator;
 
   protected final T defaultComputedValue;
@@ -85,37 +72,31 @@ public class Property<T> {
    * Constructor that should be used by implementations to initialize css property. All
    * implementations should provide at least no-argument constructor.
    *
-   * @param name           name of css property.
-   * @param defaultValue   default value of css property. Could be null if there is no default
-   *                       value.
-   * @param inherited      inheritance property. Defines if css property for element should be
-   *                       inherited from parent element.
-   *                       <br>
-   *                       When no value for an inherited property has been specified on an element,
-   *                       the element gets the computed value of that property on its parent
-   *                       element. Only the root element of the document gets the initial value
-   *                       given in the property's summary.
-   *                       <br>
-   *                       When no value for a non-inherited property has been specified on an
-   *                       element, the element gets the initial value of that property (as
-   *                       specified in the property's summary).
-   *                       <br>
-   *                       The <b>inherit</b> keyword allows authors to explicitly specify
-   *                       inheritance. It works on both inherited and non-inherited properties.
-   * @param animatable     defines if css property could be animated.
-   * @param valueSetter    function that sets calculated css value to calculated style.
-   * @param valueGetter    function that retrieves css value from calculated style.
+   * @param name name of css property.
+   * @param defaultValue default value of css property. Could be null if there is no default value.
+   * @param inherited inheritance property. Defines if css property for element should be inherited
+   *     from parent element. <br>
+   *     When no value for an inherited property has been specified on an element, the element gets
+   *     the computed value of that property on its parent element. Only the root element of the
+   *     document gets the initial value given in the property's summary. <br>
+   *     When no value for a non-inherited property has been specified on an element, the element
+   *     gets the initial value of that property (as specified in the property's summary). <br>
+   *     The <b>inherit</b> keyword allows authors to explicitly specify inheritance. It works on
+   *     both inherited and non-inherited properties.
+   * @param animatable defines if css property could be animated.
+   * @param valueSetter function that sets calculated css value to calculated style.
+   * @param valueGetter function that retrieves css value from calculated style.
    * @param valueExtractor function that calculates value from it's string representation.
    */
-  protected Property(String name,
+  protected Property(
+      String name,
       String defaultValue,
       boolean inherited,
       boolean animatable,
       BiConsumer<NodeStyle, T> valueSetter,
       Function<NodeStyle, T> valueGetter,
       Function<String, T> valueExtractor,
-      Predicate<String> valueValidator
-  ) {
+      Predicate<String> valueValidator) {
     this.name = Objects.requireNonNull(name);
     this.defaultValue = Objects.requireNonNull(defaultValue);
     this.inherited = inherited;
@@ -132,7 +113,7 @@ public class Property<T> {
    * Used to compute css style property value for specified element.
    *
    * @param element element to update calculated style.
-   * @param value   string representation of css property value.
+   * @param value string representation of css property value.
    */
   public final void computeAndApply(Element element, String value) {
     valueSetter.accept(element.calculatedStyle(), compute(element, value));
@@ -142,7 +123,7 @@ public class Property<T> {
    * Used to compute css style property value for specified element.
    *
    * @param element element to update calculated style.
-   * @param value   string representation of css property value.
+   * @param value string representation of css property value.
    * @return computed value.
    */
   public T compute(Element element, String value) {
@@ -161,8 +142,11 @@ public class Property<T> {
         try {
           computedValue = valueExtractor.apply(value);
         } catch (Exception t) {
-          log.error("Error during extracting value from '{}' with '{}' extractor. {}",
-              value, valueExtractor, t.getMessage());
+          log.error(
+              "Error during extracting value from '{}' with '{}' extractor. {}",
+              value,
+              valueExtractor,
+              t.getMessage());
           computedValue = null;
         }
       }

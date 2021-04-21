@@ -9,47 +9,31 @@ import lombok.NonNull;
 @NoArgsConstructor
 public class Flex {
 
-  /**
-   * Specifies the direction of the flexible items
-   */
-  @NonNull
-  private FlexDirection flexDirection = FlexDirection.ROW;
+  /** Specifies the direction of the flexible items */
+  @NonNull private FlexDirection flexDirection = FlexDirection.ROW;
 
   /**
    * Specifies the alignment between the items inside a flexible container when the items do not use
    * all available space.
    */
-  @NonNull
-  private JustifyContent justifyContent = JustifyContent.FLEX_START;
+  @NonNull private JustifyContent justifyContent = JustifyContent.FLEX_START;
 
-  /**
-   * Specifies the alignment for items inside a flexible container.
-   */
-  @NonNull
-  private AlignItems alignItems = AlignItems.STRETCH;
+  /** Specifies the alignment for items inside a flexible container. */
+  @NonNull private AlignItems alignItems = AlignItems.STRETCH;
 
-  /**
-   * Specifies whether the flexible items should wrap or not.
-   */
-  @NonNull
-  private FlexWrap flexWrap = FlexWrap.NOWRAP;
+  /** Specifies whether the flexible items should wrap or not. */
+  @NonNull private FlexWrap flexWrap = FlexWrap.NOWRAP;
 
   /**
    * Specifies the alignment between the lines inside a flexible container when the items do not use
    * all available space.
    */
-  @NonNull
-  private AlignContent alignContent = AlignContent.STRETCH;
+  @NonNull private AlignContent alignContent = AlignContent.STRETCH;
 
-  /**
-   * Specifies the alignment for selected items inside a flexible container.
-   */
-  @NonNull
-  private AlignSelf alignSelf = AlignSelf.AUTO;
+  /** Specifies the alignment for selected items inside a flexible container. */
+  @NonNull private AlignSelf alignSelf = AlignSelf.AUTO;
 
-  /**
-   * A number specifying how much the item will grow relative to the rest of the flexible items.
-   */
+  /** A number specifying how much the item will grow relative to the rest of the flexible items. */
   private int flexGrow;
 
   /**
@@ -57,12 +41,8 @@ public class Flex {
    */
   private int flexShrink;
 
-  /**
-   * The length of the item. Legal values: a number in px.
-   */
-  @NonNull
-  private Unit flexBasis = Unit.AUTO;
-
+  /** The length of the item. Legal values: a number in px. */
+  @NonNull private Unit flexBasis = Unit.AUTO;
 
   public Flex setFlex(int flexGrow, int flexShrink, Unit flexBasis) {
     flexGrow(flexGrow);
@@ -76,5 +56,4 @@ public class Flex {
     flexWrap(flexWrap);
     return this;
   }
-
 }

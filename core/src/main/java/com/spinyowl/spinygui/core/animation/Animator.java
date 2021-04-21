@@ -7,9 +7,7 @@ package com.spinyowl.spinygui.core.animation;
  */
 public interface Animator {
 
-  /**
-   * This method used to process animations.
-   */
+  /** This method used to process animations. */
   void runAnimations();
 
   /**

@@ -7,19 +7,19 @@ package com.spinyowl.spinygui.core;
  */
 public final class Configuration<T> {
 
-  public static final Configuration<Boolean> INITIALIZE_SERVICES = new Configuration<>(
-      "spinygui.service.initialize.provider", Initializer.BOOLEAN);
+  public static final Configuration<Boolean> INITIALIZE_SERVICES =
+      new Configuration<>("spinygui.service.initialize.provider", Initializer.BOOLEAN);
 
-  public static final Configuration<String> MONITOR_SERVICE = new Configuration<>(
-      "spinygui.service.monitor", Initializer.STRING);
-  public static final Configuration<String> WINDOW_SERVICE = new Configuration<>(
-      "spinygui.service.window", Initializer.STRING);
-  public static final Configuration<String> CLIPBOARD_SERVICE = new Configuration<>(
-      "spinygui.service.clipboard", Initializer.STRING);
-  public static final Configuration<String> RENDERER_PROVIDER_SERVICE = new Configuration<>(
-      "spinygui.service.renderer", Initializer.STRING);
-  public static final Configuration<String> TIME_SERVICE = new Configuration<>(
-      "spinygui.service.time", Initializer.STRING);
+  public static final Configuration<String> MONITOR_SERVICE =
+      new Configuration<>("spinygui.service.monitor", Initializer.STRING);
+  public static final Configuration<String> WINDOW_SERVICE =
+      new Configuration<>("spinygui.service.window", Initializer.STRING);
+  public static final Configuration<String> CLIPBOARD_SERVICE =
+      new Configuration<>("spinygui.service.clipboard", Initializer.STRING);
+  public static final Configuration<String> RENDERER_PROVIDER_SERVICE =
+      new Configuration<>("spinygui.service.renderer", Initializer.STRING);
+  public static final Configuration<String> TIME_SERVICE =
+      new Configuration<>("spinygui.service.time", Initializer.STRING);
 
   private String name;
   private T value;
@@ -62,10 +62,11 @@ public final class Configuration<T> {
 
   protected interface Initializer<T> {
 
-    Initializer<Boolean> BOOLEAN = configuration -> {
-      String value = System.getProperty(configuration);
-      return value == null ? null : Boolean.parseBoolean(value);
-    };
+    Initializer<Boolean> BOOLEAN =
+        configuration -> {
+          String value = System.getProperty(configuration);
+          return value == null ? null : Boolean.parseBoolean(value);
+        };
     Initializer<Integer> INT = Integer::getInteger;
     Initializer<String> STRING = System::getProperty;
 

@@ -13,29 +13,17 @@ import java.util.concurrent.ConcurrentHashMap;
 public final class JustifyContent {
 
   private static final Map<String, JustifyContent> VALUES = new ConcurrentHashMap<>();
-  /**
-   * Default value. Items are positioned at the beginning of the container.
-   */
+  /** Default value. Items are positioned at the beginning of the container. */
   public static final JustifyContent FLEX_START = JustifyContent.create("flex-start");
-  /**
-   * Items are positioned at the end of the container.
-   */
+  /** Items are positioned at the end of the container. */
   public static final JustifyContent FLEX_END = JustifyContent.create("flex-end");
-  /**
-   * Items are positioned at the center of the container.
-   */
+  /** Items are positioned at the center of the container. */
   public static final JustifyContent CENTER = JustifyContent.create("center");
-  /**
-   * Items are positioned with space between the lines.
-   */
+  /** Items are positioned with space between the lines. */
   public static final JustifyContent SPACE_BETWEEN = JustifyContent.create("space-between");
-  /**
-   * Items are positioned with space before, between, and after the lines.
-   */
+  /** Items are positioned with space before, between, and after the lines. */
   public static final JustifyContent SPACE_AROUND = JustifyContent.create("space-around");
-  /**
-   * Distribute items evenly. Items have equal space around them.
-   */
+  /** Distribute items evenly. Items have equal space around them. */
   public static final JustifyContent SPACE_EVENLY = JustifyContent.create("space-evenly");
 
   private final String name;
@@ -81,8 +69,7 @@ public final class JustifyContent {
     if (name == null) {
       return false;
     }
-    return values().stream().map(JustifyContent::getName)
-        .anyMatch(v -> v.equalsIgnoreCase(name));
+    return values().stream().map(JustifyContent::getName).anyMatch(v -> v.equalsIgnoreCase(name));
   }
 
   /**
@@ -117,6 +104,4 @@ public final class JustifyContent {
         .add("name='" + name + "'")
         .toString();
   }
-
-
 }

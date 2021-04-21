@@ -6,28 +6,24 @@ import java.util.Set;
 import java.util.StringJoiner;
 import java.util.concurrent.ConcurrentHashMap;
 
-/**
- * CSS font stretch.
- */
+/** CSS font stretch. */
 public final class FontStretch {
 
   private static final Map<String, FontStretch> VALUES = new ConcurrentHashMap<>();
 
-  //@formatter:off
-  public static final FontStretch ULTRA_CONDENSED  = FontStretch.create("ultra-condensed");
-  public static final FontStretch EXTRA_CONDENSED  = FontStretch.create("extra-condensed");
-  public static final FontStretch CONDENSED        = FontStretch.create("condensed");
-  public static final FontStretch SEMI_CONDENSED   = FontStretch.create("semi-condensed");
-  public static final FontStretch NORMAL           = FontStretch.create("normal");
-  public static final FontStretch SEMI_EXPANDED    = FontStretch.create("semi-expanded");
-  public static final FontStretch EXPANDED         = FontStretch.create("expanded");
-  public static final FontStretch EXTRA_EXPANDED   = FontStretch.create("extra-expanded");
-  public static final FontStretch ULTRA_EXPANDED   = FontStretch.create("ultra-expanded");
-  //@formatter:on
+  // @formatter:off
+  public static final FontStretch ULTRA_CONDENSED = FontStretch.create("ultra-condensed");
+  public static final FontStretch EXTRA_CONDENSED = FontStretch.create("extra-condensed");
+  public static final FontStretch CONDENSED = FontStretch.create("condensed");
+  public static final FontStretch SEMI_CONDENSED = FontStretch.create("semi-condensed");
+  public static final FontStretch NORMAL = FontStretch.create("normal");
+  public static final FontStretch SEMI_EXPANDED = FontStretch.create("semi-expanded");
+  public static final FontStretch EXPANDED = FontStretch.create("expanded");
+  public static final FontStretch EXTRA_EXPANDED = FontStretch.create("extra-expanded");
+  public static final FontStretch ULTRA_EXPANDED = FontStretch.create("ultra-expanded");
+  // @formatter:on
 
-  /**
-   * Name of font stretch type (should be same as in css specification)
-   */
+  /** Name of font stretch type (should be same as in css specification) */
   private final String name;
 
   /**
@@ -38,7 +34,6 @@ public final class FontStretch {
   private FontStretch(String name) {
     this.name = name;
   }
-
 
   /**
    * Used to create new font stretch element with specified name. Note that name will be converted
@@ -85,8 +80,7 @@ public final class FontStretch {
     if (name == null) {
       return false;
     }
-    return values().stream().map(FontStretch::getName)
-        .anyMatch(v -> v.equalsIgnoreCase(name));
+    return values().stream().map(FontStretch::getName).anyMatch(v -> v.equalsIgnoreCase(name));
   }
 
   /**

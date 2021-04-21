@@ -24,8 +24,8 @@ public class DefaultEventProcessor implements EventProcessor {
     for (Event event : events) {
       EventTarget target = event.target();
       if (target != null) {
-        List<? extends EventListener<? extends Event>> listeners = target
-            .getListeners(event.getClass());
+        List<? extends EventListener<? extends Event>> listeners =
+            target.getListeners(event.getClass());
         for (EventListener listener : listeners) {
           listener.process(event);
         }
@@ -34,5 +34,4 @@ public class DefaultEventProcessor implements EventProcessor {
 
     eventQueue.removeAll(events);
   }
-
 }

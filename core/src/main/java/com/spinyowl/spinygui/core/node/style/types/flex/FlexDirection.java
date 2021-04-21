@@ -6,28 +6,18 @@ import java.util.Set;
 import java.util.StringJoiner;
 import java.util.concurrent.ConcurrentHashMap;
 
-/**
- * Specifies the direction of the flexible items
- */
+/** Specifies the direction of the flexible items */
 public final class FlexDirection {
 
   private static final Map<String, FlexDirection> VALUES = new ConcurrentHashMap<>();
 
-  /**
-   * Default value. The flexible items are displayed horizontally, as a row.
-   */
+  /** Default value. The flexible items are displayed horizontally, as a row. */
   public static final FlexDirection ROW = FlexDirection.create("row");
-  /**
-   * Same as row, but in reverse order.
-   */
+  /** Same as row, but in reverse order. */
   public static final FlexDirection ROW_REVERSE = FlexDirection.create("row-reverse");
-  /**
-   * The flexible items are displayed vertically, as a column.
-   */
+  /** The flexible items are displayed vertically, as a column. */
   public static final FlexDirection COLUMN = FlexDirection.create("column");
-  /**
-   * Same as column, but in reverse order.
-   */
+  /** Same as column, but in reverse order. */
   public static final FlexDirection COLUMN_REVERSE = FlexDirection.create("column-reverse");
 
   private final String name;
@@ -73,8 +63,7 @@ public final class FlexDirection {
     if (name == null) {
       return false;
     }
-    return values().stream().map(FlexDirection::getName)
-        .anyMatch(v -> v.equalsIgnoreCase(name));
+    return values().stream().map(FlexDirection::getName).anyMatch(v -> v.equalsIgnoreCase(name));
   }
 
   /**
@@ -109,5 +98,4 @@ public final class FlexDirection {
         .add("name='" + name + "'")
         .toString();
   }
-
 }

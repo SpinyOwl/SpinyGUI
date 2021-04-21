@@ -8,8 +8,8 @@ import lombok.ToString;
 
 /**
  * Draft animation realization.
- * <p>
- * Created by ShchAlexander on 31.07.2017.
+ *
+ * <p>Created by ShchAlexander on 31.07.2017.
  *
  * @author ShchAlexander
  */
@@ -19,16 +19,11 @@ import lombok.ToString;
 @ToString
 public abstract class Animation {
 
-  @NonNull
-  private final Animator animator;
-  /**
-   * Flag that indicates if animation was started.
-   */
+  @NonNull private final Animator animator;
+  /** Flag that indicates if animation was started. */
   private boolean animationStarted = false;
 
-  /**
-   * Adds animation to animator.
-   */
+  /** Adds animation to animator. */
   public void startAnimation() {
     if (!animationStarted) {
       animator.pushAnimation(this);
@@ -36,33 +31,28 @@ public abstract class Animation {
     }
   }
 
-  /**
-   * Called once during animation life time before animate loop.
-   */
+  /** Called once during animation life time before animate loop. */
   protected void initialize() {
     // Could be implemented later.
   }
 
   /**
    * This method used to update animated object. Called by animator every frame. Removed from
-   * animator and stops when this method returns true. <p> Returns true if animation is finished and
-   * could be removed from animator.
+   * animator and stops when this method returns true.
+   *
+   * <p>Returns true if animation is finished and could be removed from animator.
    *
    * @param delta delta time (from previous call).
    * @return true if animation is finished and could be removed from animator.
    */
   protected abstract boolean animate(double delta);
 
-  /**
-   * Called once during animation life time when animation ended.
-   */
+  /** Called once during animation life time when animation ended. */
   protected void destroy() {
     // Could be implemented later.
   }
 
-  /**
-   * Used to stop animation. Removes animation from animator.
-   */
+  /** Used to stop animation. Removes animation from animator. */
   public void stopAnimation() {
     animator.removeAnimation(this);
   }
@@ -75,5 +65,4 @@ public abstract class Animation {
   public boolean isAnimationStarted() {
     return animationStarted;
   }
-
 }

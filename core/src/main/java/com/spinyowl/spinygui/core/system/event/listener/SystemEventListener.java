@@ -12,6 +12,7 @@ public interface SystemEventListener<E extends SystemEvent> {
 
   /**
    * Used to listen, process and translate system event to gui event.
+   *
    * @param event system event to process
    * @param frame target frame for system event.
    */

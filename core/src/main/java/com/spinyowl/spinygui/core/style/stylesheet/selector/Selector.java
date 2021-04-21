@@ -4,8 +4,8 @@ import com.spinyowl.spinygui.core.node.Element;
 import com.spinyowl.spinygui.core.style.stylesheet.Specificity;
 
 /**
- * Style selector interface.<br> Style selectors are patterns used to select the elements you want
- * to style.
+ * Style selector interface.<br>
+ * Style selectors are patterns used to select the elements you want to style.
  */
 public interface Selector {
 

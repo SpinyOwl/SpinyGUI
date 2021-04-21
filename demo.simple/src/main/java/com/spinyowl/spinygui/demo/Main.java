@@ -6,10 +6,10 @@ import static com.spinyowl.spinygui.core.node.NodeBuilder.div;
 import static com.spinyowl.spinygui.core.node.NodeBuilder.input;
 import static com.spinyowl.spinygui.core.node.NodeBuilder.radioButton;
 import static com.spinyowl.spinygui.core.node.NodeBuilder.text;
-import com.spinyowl.spinygui.core.parser.NodeConverter;
-import com.spinyowl.spinygui.core.parser.impl.DefaultNodeConverter;
 import com.spinyowl.spinygui.core.node.Frame;
 import com.spinyowl.spinygui.core.node.Node;
+import com.spinyowl.spinygui.core.parser.NodeConverter;
+import com.spinyowl.spinygui.core.parser.impl.DefaultNodeConverter;
 import lombok.extern.slf4j.Slf4j;
 
 /**

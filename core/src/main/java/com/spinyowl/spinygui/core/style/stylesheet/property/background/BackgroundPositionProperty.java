@@ -1,11 +1,11 @@
 package com.spinyowl.spinygui.core.style.stylesheet.property.background;
 
 import static com.spinyowl.spinygui.core.style.stylesheet.Properties.BACKGROUND_POSITION;
-import com.spinyowl.spinygui.core.style.stylesheet.extractor.ValueExtractor;
-import com.spinyowl.spinygui.core.style.stylesheet.extractor.ValueExtractors;
-import com.spinyowl.spinygui.core.style.stylesheet.Property;
 import com.spinyowl.spinygui.core.node.style.types.background.BackgroundPosition;
 import com.spinyowl.spinygui.core.node.style.types.length.Length;
+import com.spinyowl.spinygui.core.style.stylesheet.Property;
+import com.spinyowl.spinygui.core.style.stylesheet.extractor.ValueExtractor;
+import com.spinyowl.spinygui.core.style.stylesheet.extractor.ValueExtractors;
 import java.util.List;
 
 public class BackgroundPositionProperty extends Property<BackgroundPosition> {
@@ -21,9 +21,15 @@ public class BackgroundPositionProperty extends Property<BackgroundPosition> {
   private static final List<String> Y_VALUES = List.of(TOP, CENTER, BOTTOM);
 
   public BackgroundPositionProperty() {
-    super(BACKGROUND_POSITION, "0% 0%", !INHERITED, ANIMATABLE,
-        (s, c) -> s.background().position(c), s -> s.background().position(),
-        BackgroundPositionProperty::extract, BackgroundPositionProperty::test);
+    super(
+        BACKGROUND_POSITION,
+        "0% 0%",
+        !INHERITED,
+        ANIMATABLE,
+        (s, c) -> s.background().position(c),
+        s -> s.background().position(),
+        BackgroundPositionProperty::extract,
+        BackgroundPositionProperty::test);
   }
 
   private static BackgroundPosition extract(String value) {

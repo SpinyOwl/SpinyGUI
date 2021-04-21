@@ -1,14 +1,14 @@
 package com.spinyowl.spinygui.core.parser.impl.css.parser.visitor;
 
+import com.spinyowl.spinygui.core.font.FontStretch;
+import com.spinyowl.spinygui.core.font.FontStyle;
+import com.spinyowl.spinygui.core.font.FontWeight;
 import com.spinyowl.spinygui.core.parser.impl.css.parser.antlr.CSS3BaseVisitor;
 import com.spinyowl.spinygui.core.parser.impl.css.parser.antlr.CSS3Parser.FontFaceDeclarationContext;
 import com.spinyowl.spinygui.core.parser.impl.css.parser.antlr.CSS3Parser.FontFaceRuleContext;
 import com.spinyowl.spinygui.core.parser.impl.css.parser.antlr.CSS3Parser.KnownFontFaceDeclarationContext;
 import com.spinyowl.spinygui.core.style.stylesheet.AtRule;
 import com.spinyowl.spinygui.core.style.stylesheet.atrule.FontFaceRule;
-import com.spinyowl.spinygui.core.font.FontStretch;
-import com.spinyowl.spinygui.core.font.FontStyle;
-import com.spinyowl.spinygui.core.font.FontWeight;
 
 public class AtRuleVisitor extends CSS3BaseVisitor<AtRule> {
 

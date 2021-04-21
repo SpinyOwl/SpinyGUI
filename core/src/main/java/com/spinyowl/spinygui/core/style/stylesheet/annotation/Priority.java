@@ -19,5 +19,4 @@ public @interface Priority {
    * @return priority (used only in case if there is more than one element with the same name.
    */
   int value() default 0;
-
 }

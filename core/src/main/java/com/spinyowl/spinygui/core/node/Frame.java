@@ -9,23 +9,17 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
-/**
- * The root element that holds all stylesheets and other nodes.
- */
+/** The root element that holds all stylesheets and other nodes. */
 @ToString
 @EqualsAndHashCode
 public class Frame extends Element {
 
   public static final String FRAME_TAG_NAME = "frame";
 
-  /**
-   * List of stylesheets attached to frame.
-   */
+  /** List of stylesheets attached to frame. */
   protected final List<StyleSheet> styleSheets = new CopyOnWriteArrayList<>();
 
-  /**
-   * Default constructor which provide {@code "frame"} string to super constructor.
-   */
+  /** Default constructor which provide {@code "frame"} string to super constructor. */
   public Frame() {
     super(FRAME_TAG_NAME);
   }

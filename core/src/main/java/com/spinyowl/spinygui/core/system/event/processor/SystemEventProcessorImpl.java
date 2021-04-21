@@ -9,7 +9,8 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import lombok.RequiredArgsConstructor;
 
 /**
- * Default implementation based on two {@link ConcurrentLinkedQueue} queues which swapped every time during processing.
+ * Default implementation based on two {@link ConcurrentLinkedQueue} queues which swapped every time
+ * during processing.
  */
 @RequiredArgsConstructor
 public class SystemEventProcessorImpl implements SystemEventProcessor {
@@ -40,7 +41,6 @@ public class SystemEventProcessorImpl implements SystemEventProcessor {
         listener.process(event, frame);
       }
     }
-
   }
 
   /**

@@ -14,19 +14,16 @@ public class Border extends SideStyle<BorderItem> {
     super(allSides);
   }
 
-  public Border(BorderItem sideTopBottom,
-      BorderItem sideRightLeft) {
+  public Border(BorderItem sideTopBottom, BorderItem sideRightLeft) {
     super(sideTopBottom, sideRightLeft);
   }
 
-  public Border(BorderItem sideTop,
-      BorderItem sideRightLeft, BorderItem sideBottom) {
+  public Border(BorderItem sideTop, BorderItem sideRightLeft, BorderItem sideBottom) {
     super(sideTop, sideRightLeft, sideBottom);
   }
 
-  public Border(BorderItem sideTop,
-      BorderItem sideRight, BorderItem sideBottom,
-      BorderItem sideLeft) {
+  public Border(
+      BorderItem sideTop, BorderItem sideRight, BorderItem sideBottom, BorderItem sideLeft) {
     super(sideTop, sideRight, sideBottom, sideLeft);
   }
 
@@ -69,7 +66,6 @@ public class Border extends SideStyle<BorderItem> {
     left().width(widthBottom);
     right().width(widthRight);
   }
-
 
   /**
    * Copies color from provided border object.
@@ -123,13 +119,11 @@ public class Border extends SideStyle<BorderItem> {
     right().style(border.right().style());
   }
 
-
   public void style(BorderStyle style) {
     top().style(style);
     bottom().style(style);
     left().style(style);
     right().style(style);
-
   }
 
   public void style(BorderStyle styleTopBottom, BorderStyle styleRightLeft) {
@@ -139,15 +133,17 @@ public class Border extends SideStyle<BorderItem> {
     right().style(styleRightLeft);
   }
 
-  public void style(BorderStyle styleTop, BorderStyle styleRightLeft,
-      BorderStyle styleBottom) {
+  public void style(BorderStyle styleTop, BorderStyle styleRightLeft, BorderStyle styleBottom) {
     top().style(styleTop);
     bottom().style(styleRightLeft);
     left().style(styleRightLeft);
     right().style(styleBottom);
   }
 
-  public void style(BorderStyle styleTop, BorderStyle styleRight, BorderStyle styleBottom,
+  public void style(
+      BorderStyle styleTop,
+      BorderStyle styleRight,
+      BorderStyle styleBottom,
       BorderStyle styleLeft) {
     top().style(styleTop);
     bottom().style(styleLeft);

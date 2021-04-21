@@ -42,7 +42,6 @@ public class Length<T extends Number> implements Unit {
         .toString();
   }
 
-
   /**
    * Converts length to pixels.
    *
@@ -58,7 +57,6 @@ public class Length<T extends Number> implements Unit {
     public static final LType<Integer> PIXEL_TYPE = LType.of("PIXEL", (l, n) -> valueOf(l.value));
     public static final LType<Float> PERCENT_TYPE = LType.of("PERCENT", (l, n) -> l.value * n);
 
-
     private final String name;
     private final Converter<T> converter;
 
@@ -67,8 +65,7 @@ public class Length<T extends Number> implements Unit {
       this.converter = converter;
     }
 
-    public static <E extends Number> LType<E>
-    of(String name, Converter<E> converter) {
+    public static <E extends Number> LType<E> of(String name, Converter<E> converter) {
       return new LType<>(name, converter);
     }
 

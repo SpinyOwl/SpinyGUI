@@ -6,35 +6,21 @@ import java.util.Set;
 import java.util.StringJoiner;
 import java.util.concurrent.ConcurrentHashMap;
 
-/**
- * Specifies the alignment for items inside a flexible container.
- */
+/** Specifies the alignment for items inside a flexible container. */
 public final class AlignItems {
 
   private static final Map<String, AlignItems> VALUES = new ConcurrentHashMap<>();
-  /**
-   * Auto.
-   */
+  /** Auto. */
   public static final AlignItems AUTO = AlignItems.create("auto");
-  /**
-   * Default. Items are stretched to fit the container.
-   */
+  /** Default. Items are stretched to fit the container. */
   public static final AlignItems STRETCH = AlignItems.create("stretch");
-  /**
-   * Items are positioned at the center of the container.
-   */
+  /** Items are positioned at the center of the container. */
   public static final AlignItems CENTER = AlignItems.create("center");
-  /**
-   * Items are positioned at the beginning of the container.
-   */
+  /** Items are positioned at the beginning of the container. */
   public static final AlignItems FLEX_START = AlignItems.create("flex-start");
-  /**
-   * Items are positioned at the end of the container.
-   */
+  /** Items are positioned at the end of the container. */
   public static final AlignItems FLEX_END = AlignItems.create("flex-end");
-  /**
-   * Items are positioned at the baseline of the container.
-   */
+  /** Items are positioned at the baseline of the container. */
   public static final AlignItems BASELINE = AlignItems.create("baseline");
 
   private final String name;
@@ -79,8 +65,7 @@ public final class AlignItems {
     if (name == null) {
       return false;
     }
-    return values().stream().map(AlignItems::getName)
-        .anyMatch(v -> v.equalsIgnoreCase(name));
+    return values().stream().map(AlignItems::getName).anyMatch(v -> v.equalsIgnoreCase(name));
   }
 
   /**
