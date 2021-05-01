@@ -2,13 +2,14 @@ package com.spinyowl.spinygui.core.system.event.listener;
 
 import com.spinyowl.spinygui.core.event.CursorEnterEvent;
 import com.spinyowl.spinygui.core.event.MouseDragEvent;
-import com.spinyowl.spinygui.core.input.Mouse;
 import com.spinyowl.spinygui.core.input.MouseButton;
+import com.spinyowl.spinygui.core.input.MouseService;
 import com.spinyowl.spinygui.core.input.MouseService.CursorPositions;
 import com.spinyowl.spinygui.core.node.Element;
 import com.spinyowl.spinygui.core.node.Frame;
 import com.spinyowl.spinygui.core.system.event.SystemCursorPosEvent;
 import com.spinyowl.spinygui.core.util.NodeUtilities;
+import lombok.NonNull;
 import lombok.experimental.SuperBuilder;
 import org.joml.Vector2f;
 import org.joml.Vector2fc;
@@ -17,6 +18,7 @@ import org.joml.Vector2fc;
 public class SystemCursorPosEventListener
     extends AbstractSystemEventListener<SystemCursorPosEvent> {
 
+  @NonNull private final MouseService mouseService;
 
   /**
    * Used to listen, process and translate system event to gui event.
@@ -27,8 +29,8 @@ public class SystemCursorPosEventListener
   @Override
   public void process(SystemCursorPosEvent event, Frame frame) {
     Vector2fc current = new Vector2f(event.posX(), event.posY());
-    Vector2fc previous = Mouse.getCursorPositions(frame).current();
-    Mouse.mouseService().setCursorPositions(frame, new CursorPositions(current, previous));
+    Vector2fc previous = mouseService.getCursorPositions(frame).current();
+    mouseService.setCursorPositions(frame, new CursorPositions(current, previous));
 
     var focusedElement = frame.getFocusedElement();
 
@@ -43,7 +45,7 @@ public class SystemCursorPosEventListener
 
     // Generate drag events.
     if (focusedElement != null
-        && (Mouse.pressed(MouseButton.LEFT) || Mouse.pressed(MouseButton.RIGHT))) {
+        && (mouseService.pressed(MouseButton.LEFT) || mouseService.pressed(MouseButton.RIGHT))) {
       Vector2f delta = current.sub(previous, new Vector2f());
       eventProcessor.push(
           MouseDragEvent.builder().source(frame).target(focusedElement).delta(delta).build());
