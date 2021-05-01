@@ -20,7 +20,7 @@ public class DefaultEventProcessor implements EventProcessor {
   public void processEvents() {
     var events = List.copyOf(eventQueue);
 
-    for (var event : events) {a
+    for (var event : events) {
       EventTarget target = event.target();
       if (target != null) {
         var listeners = target.getListeners(event.getClass());

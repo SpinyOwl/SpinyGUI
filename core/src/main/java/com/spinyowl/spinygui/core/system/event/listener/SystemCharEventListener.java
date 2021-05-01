@@ -1,18 +1,14 @@
 package com.spinyowl.spinygui.core.system.event.listener;
 
 import com.spinyowl.spinygui.core.event.CharEvent;
-import com.spinyowl.spinygui.core.event.processor.EventProcessor;
 import com.spinyowl.spinygui.core.node.Element;
 import com.spinyowl.spinygui.core.node.Frame;
 import com.spinyowl.spinygui.core.system.event.SystemCharEvent;
 import com.spinyowl.spinygui.core.util.TextUtil;
-import lombok.NonNull;
+import lombok.experimental.SuperBuilder;
 
+@SuperBuilder
 public class SystemCharEventListener extends AbstractSystemEventListener<SystemCharEvent> {
-
-  public SystemCharEventListener(@NonNull EventProcessor eventProcessor) {
-    super(eventProcessor);
-  }
 
   /**
    * Used to listen, process and translate system event to gui event.
@@ -31,6 +27,7 @@ public class SystemCharEventListener extends AbstractSystemEventListener<SystemC
         CharEvent.builder()
             .source(frame)
             .target(focusedElement)
+            .timestamp(timeProvider.getCurrentTime())
             .input(TextUtil.cpToStr(event.codepoint()))
             .build());
   }

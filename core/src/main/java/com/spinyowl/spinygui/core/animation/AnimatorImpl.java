@@ -1,27 +1,31 @@
 package com.spinyowl.spinygui.core.animation;
 
-import com.spinyowl.spinygui.core.time.Time;
+import com.spinyowl.spinygui.core.time.TimeProvider;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 
 /** Default implementation of {@link Animator} interface. */
+@RequiredArgsConstructor
 public class AnimatorImpl implements Animator {
 
+  @NonNull private final TimeProvider timeProvider;
   /** List of animations to initialize. */
-  private List<Animation> animationsToInitialize = new CopyOnWriteArrayList<>();
+  private final List<Animation> animationsToInitialize = new CopyOnWriteArrayList<>();
   /** List of animations to animate. */
-  private List<Animation> animations = new CopyOnWriteArrayList<>();
+  private final List<Animation> animations = new CopyOnWriteArrayList<>();
   /** List of animation to destroy. */
-  private List<Animation> animationsToDestroy = new CopyOnWriteArrayList<>();
+  private final List<Animation> animationsToDestroy = new CopyOnWriteArrayList<>();
   /** List of animation to destroy. */
-  private List<Animation> animationsToRemove = new CopyOnWriteArrayList<>();
+  private final List<Animation> animationsToRemove = new CopyOnWriteArrayList<>();
   /** Used to store previous time. */
   private double previousTime;
 
   /** This method used to process animations. */
   public void runAnimations() {
-    double currentTime = Time.getCurrentTime();
+    double currentTime = timeProvider.getCurrentTime();
     double delta = currentTime - previousTime;
 
     List<Animation> initializeList = new ArrayList<>(animationsToInitialize);

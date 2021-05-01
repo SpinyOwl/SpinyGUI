@@ -2,12 +2,16 @@ package com.spinyowl.spinygui.core.system.event.listener;
 
 import com.spinyowl.spinygui.core.event.processor.EventProcessor;
 import com.spinyowl.spinygui.core.system.event.SystemEvent;
+import com.spinyowl.spinygui.core.time.TimeProvider;
 import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
-@RequiredArgsConstructor
+@SuperBuilder
 public abstract class AbstractSystemEventListener<E extends SystemEvent>
     implements SystemEventListener<E> {
   /** Event processor to pass generated events to. */
-  @NonNull protected final EventProcessor eventProcessor;
+  @NonNull final EventProcessor eventProcessor;
+
+  /** Time provider to use by event listeners. */
+  @NonNull final TimeProvider timeProvider;
 }

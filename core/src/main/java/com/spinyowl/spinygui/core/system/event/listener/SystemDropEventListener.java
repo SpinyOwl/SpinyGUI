@@ -1,19 +1,15 @@
 package com.spinyowl.spinygui.core.system.event.listener;
 
 import com.spinyowl.spinygui.core.event.DropEvent;
-import com.spinyowl.spinygui.core.event.processor.EventProcessor;
 import com.spinyowl.spinygui.core.input.Mouse;
 import com.spinyowl.spinygui.core.node.Frame;
 import com.spinyowl.spinygui.core.system.event.SystemDropEvent;
 import com.spinyowl.spinygui.core.util.NodeUtilities;
-import lombok.NonNull;
+import lombok.experimental.SuperBuilder;
 import org.joml.Vector2fc;
 
+@SuperBuilder
 public class SystemDropEventListener extends AbstractSystemEventListener<SystemDropEvent> {
-
-  public SystemDropEventListener(@NonNull EventProcessor eventProcessor) {
-    super(eventProcessor);
-  }
 
   /**
    * Used to listen, process and translate system event to gui event.

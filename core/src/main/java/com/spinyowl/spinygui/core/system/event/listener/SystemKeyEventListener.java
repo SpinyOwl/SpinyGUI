@@ -1,22 +1,17 @@
 package com.spinyowl.spinygui.core.system.event.listener;
 
 import com.spinyowl.spinygui.core.event.KeyboardEvent;
-import com.spinyowl.spinygui.core.event.processor.EventProcessor;
 import com.spinyowl.spinygui.core.input.Keyboard;
 import com.spinyowl.spinygui.core.input.KeyboardKey;
 import com.spinyowl.spinygui.core.node.Frame;
 import com.spinyowl.spinygui.core.system.event.SystemKeyEvent;
 import lombok.NonNull;
+import lombok.experimental.SuperBuilder;
 
+@SuperBuilder
 public class SystemKeyEventListener extends AbstractSystemEventListener<SystemKeyEvent> {
 
-  private final Keyboard keyboard;
-
-  public SystemKeyEventListener(
-      @NonNull EventProcessor eventProcessor, @NonNull Keyboard keyboard) {
-    super(eventProcessor);
-    this.keyboard = keyboard;
-  }
+  @NonNull private final Keyboard keyboard;
 
   /**
    * Used to listen, process and translate system event to gui event.

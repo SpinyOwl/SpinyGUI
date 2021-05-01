@@ -2,7 +2,6 @@ package com.spinyowl.spinygui.core.system.event.listener;
 
 import com.spinyowl.spinygui.core.event.CursorEnterEvent;
 import com.spinyowl.spinygui.core.event.MouseDragEvent;
-import com.spinyowl.spinygui.core.event.processor.EventProcessor;
 import com.spinyowl.spinygui.core.input.Mouse;
 import com.spinyowl.spinygui.core.input.MouseButton;
 import com.spinyowl.spinygui.core.input.MouseService.CursorPositions;
@@ -10,16 +9,14 @@ import com.spinyowl.spinygui.core.node.Element;
 import com.spinyowl.spinygui.core.node.Frame;
 import com.spinyowl.spinygui.core.system.event.SystemCursorPosEvent;
 import com.spinyowl.spinygui.core.util.NodeUtilities;
-import lombok.NonNull;
+import lombok.experimental.SuperBuilder;
 import org.joml.Vector2f;
 import org.joml.Vector2fc;
 
+@SuperBuilder
 public class SystemCursorPosEventListener
     extends AbstractSystemEventListener<SystemCursorPosEvent> {
 
-  public SystemCursorPosEventListener(@NonNull EventProcessor eventProcessor) {
-    super(eventProcessor);
-  }
 
   /**
    * Used to listen, process and translate system event to gui event.

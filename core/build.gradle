@@ -23,4 +23,9 @@ dependencies {
     api group: 'org.lwjgl', name: 'lwjgl-yoga', version: lwjgl_version, classifier: 'natives-windows'
     api group: 'org.lwjgl', name: 'lwjgl-yoga', version: lwjgl_version, classifier: 'natives-linux'
     api group: 'org.lwjgl', name: 'lwjgl-yoga', version: lwjgl_version, classifier: 'natives-macos'
+
+    // https://mvnrepository.com/artifact/org.mockito/mockito-core
+    testImplementation group: 'org.mockito', name: 'mockito-core', version: '3.9.0'
+    // https://mvnrepository.com/artifact/org.mockito/mockito-junit-jupiter
+    testImplementation group: 'org.mockito', name: 'mockito-junit-jupiter', version: '3.9.0'
 }
