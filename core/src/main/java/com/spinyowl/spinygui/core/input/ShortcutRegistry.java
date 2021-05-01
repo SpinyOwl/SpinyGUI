@@ -3,6 +3,11 @@ package com.spinyowl.spinygui.core.input;
 /** Used to store shortcuts. */
 public interface ShortcutRegistry {
 
+  String CUT = "CUT";
+  String COPY = "COPY";
+  String PASTE = "PASTE";
+  String SELECT_ALL = "SELECT_ALL";
+
   /**
    * Used to set shortcut for specified name (for example 'copy').
    *

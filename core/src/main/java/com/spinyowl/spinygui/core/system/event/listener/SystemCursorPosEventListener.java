@@ -48,8 +48,8 @@ public class SystemCursorPosEventListener
     if (focusedElement != null
         && (Mouse.pressed(MouseButton.LEFT) || Mouse.pressed(MouseButton.RIGHT))) {
       Vector2f delta = current.sub(previous, new Vector2f());
-      eventProcessor.pushEvent(
-          MouseDragEvent.builder().target(focusedElement).source(frame).delta(delta).build());
+      eventProcessor.push(
+          MouseDragEvent.builder().source(frame).target(focusedElement).delta(delta).build());
     }
   }
 
@@ -58,13 +58,13 @@ public class SystemCursorPosEventListener
       Vector2f intersection = prevTarget.absolutePosition().sub(current).negate();
       CursorEnterEvent exitEvent =
           CursorEnterEvent.builder()
-              .target(prevTarget)
               .source(frame)
+              .target(prevTarget)
               .entered(false)
               .intersection(intersection)
               .cursorPosition(current)
               .build();
-      eventProcessor.pushEvent(exitEvent);
+      eventProcessor.push(exitEvent);
       prevTarget.hovered(false);
     }
   }
@@ -75,13 +75,13 @@ public class SystemCursorPosEventListener
       Vector2f intersection = targetElement.absolutePosition().sub(current).negate();
       CursorEnterEvent enterEvent =
           CursorEnterEvent.builder()
-              .target(targetElement)
               .source(frame)
+              .target(targetElement)
               .entered(true)
               .intersection(intersection)
               .cursorPosition(current)
               .build();
-      eventProcessor.pushEvent(enterEvent);
+      eventProcessor.push(enterEvent);
     }
   }
 }

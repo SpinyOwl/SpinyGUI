@@ -4,6 +4,7 @@ import com.spinyowl.spinygui.core.time.Time;
 import lombok.Builder.Default;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.NonNull;
 import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;
@@ -19,7 +20,7 @@ public abstract class Event {
   private final EventTarget source;
 
   /** Target element to which the event was originally dispatched. */
-  private final EventTarget target;
+  @NonNull private final EventTarget target;
 
   /**
    * Currently registered target for the event. This is the object to which the event is currently

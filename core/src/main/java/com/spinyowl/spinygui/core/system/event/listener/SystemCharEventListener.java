@@ -27,11 +27,11 @@ public class SystemCharEventListener extends AbstractSystemEventListener<SystemC
       return;
     }
 
-    eventProcessor.pushEvent(
+    eventProcessor.push(
         CharEvent.builder()
-            .input(TextUtil.cpToStr(event.codepoint()))
-            .target(focusedElement)
             .source(frame)
+            .target(focusedElement)
+            .input(TextUtil.cpToStr(event.codepoint()))
             .build());
   }
 }

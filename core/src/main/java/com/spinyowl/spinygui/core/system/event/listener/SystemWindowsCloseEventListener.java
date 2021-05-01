@@ -22,6 +22,6 @@ public class SystemWindowsCloseEventListener
    */
   @Override
   public void process(SystemWindowCloseEvent event, Frame frame) {
-    eventProcessor.pushEvent(WindowCloseEvent.builder().target(frame).build());
+    eventProcessor.push(WindowCloseEvent.builder().source(frame).target(frame).build());
   }
 }

@@ -1,12 +1,9 @@
 package com.spinyowl.spinygui.core.system.event;
 
+import com.google.common.collect.ImmutableSet;
 import com.spinyowl.spinygui.core.input.KeyAction;
-import com.spinyowl.spinygui.core.input.KeyCode;
 import com.spinyowl.spinygui.core.input.KeyMod;
-import java.util.List;
-import lombok.AccessLevel;
 import lombok.Data;
-import lombok.Getter;
 import lombok.NonNull;
 import lombok.experimental.SuperBuilder;
 
@@ -16,7 +13,7 @@ import lombok.experimental.SuperBuilder;
 public class SystemKeyEvent extends SystemEvent {
 
   /** The keyboard key that was pressed or released. */
-  private final KeyCode key;
+  private final int keyCode;
 
   /**
    * The system-specific scancode of the key.
@@ -36,14 +33,8 @@ public class SystemKeyEvent extends SystemEvent {
    *   <li>{@link KeyAction#REPEAT REPEAT}
    * </ul>
    */
-  private final KeyAction action;
+  @NonNull private final KeyAction action;
 
   /** Describes which modifier keys were held down. */
-  @NonNull
-  @Getter(AccessLevel.NONE)
-  private final List<KeyMod> mods;
-
-  public List<KeyMod> mods() {
-    return List.copyOf(mods);
-  }
+  @NonNull private final ImmutableSet<KeyMod> mods;
 }

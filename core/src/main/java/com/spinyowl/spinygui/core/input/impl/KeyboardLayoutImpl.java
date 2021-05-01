@@ -4,6 +4,7 @@ import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import com.spinyowl.spinygui.core.input.KeyCode;
 import com.spinyowl.spinygui.core.input.KeyboardLayout;
+import java.util.Map;
 import lombok.NonNull;
 
 /**
@@ -12,7 +13,11 @@ import lombok.NonNull;
  */
 public class KeyboardLayoutImpl implements KeyboardLayout {
 
-  private final BiMap<KeyCode, Integer> keys = HashBiMap.create();
+  private final BiMap<KeyCode, Integer> keys;
+
+  public KeyboardLayoutImpl(Map<KeyCode, Integer> keys) {
+    this.keys = HashBiMap.create(keys);
+  }
 
   /**
    * Used to set mapping for specified keyCode.
