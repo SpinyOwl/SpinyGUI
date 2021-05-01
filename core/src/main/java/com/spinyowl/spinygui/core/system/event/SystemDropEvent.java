@@ -8,5 +8,6 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 public class SystemDropEvent extends SystemEvent {
 
-  private final ImmutableList<String> strings;
+  /** The UTF-8 encoded file and/or directory path names. */
+  private final ImmutableList<String> paths;
 }

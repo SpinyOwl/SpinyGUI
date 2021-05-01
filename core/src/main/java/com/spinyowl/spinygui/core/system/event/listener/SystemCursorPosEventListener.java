@@ -33,41 +33,15 @@ public class SystemCursorPosEventListener
     Vector2fc previous = Mouse.getCursorPositions(frame).current();
     Mouse.mouseService().setCursorPositions(frame, new CursorPositions(current, previous));
 
-    Element focusedElement = frame.getFocusedElement();
+    var focusedElement = frame.getFocusedElement();
 
-    Element prevTarget = NodeUtilities.getTargetElement(frame, previous);
-    Element targetElement = NodeUtilities.getTargetElement(frame, current);
+    var prevTarget = NodeUtilities.getTargetElement(frame, previous);
+    var targetElement = NodeUtilities.getTargetElement(frame, current);
 
     // Generate enter / exit events.
     if (targetElement != prevTarget) {
-      if (targetElement != null) {
-        targetElement.hovered(true);
-        Vector2f intersection = targetElement.absolutePosition().sub(current).negate();
-        CursorEnterEvent enterEvent =
-            CursorEnterEvent.builder()
-                .target(targetElement)
-                .source(frame)
-                .entered(true)
-                .intersection(intersection)
-                .cursorPosition(current)
-                .build();
-        eventProcessor.pushEvent(enterEvent);
-      }
-
-      // Generate
-      if (prevTarget != null) {
-        Vector2f intersection = prevTarget.absolutePosition().sub(current).negate();
-        CursorEnterEvent exitEvent =
-            CursorEnterEvent.builder()
-                .target(prevTarget)
-                .source(frame)
-                .entered(false)
-                .intersection(intersection)
-                .cursorPosition(current)
-                .build();
-        eventProcessor.pushEvent(exitEvent);
-        prevTarget.hovered(false);
-      }
+      generateEnterEvent(frame, current, targetElement);
+      generateExitEvent(frame, current, prevTarget);
     }
 
     // Generate drag events.
@@ -76,6 +50,38 @@ public class SystemCursorPosEventListener
       Vector2f delta = current.sub(previous, new Vector2f());
       eventProcessor.pushEvent(
           MouseDragEvent.builder().target(focusedElement).source(frame).delta(delta).build());
+    }
+  }
+
+  private void generateExitEvent(Frame frame, Vector2fc current, Element prevTarget) {
+    if (prevTarget != null) {
+      Vector2f intersection = prevTarget.absolutePosition().sub(current).negate();
+      CursorEnterEvent exitEvent =
+          CursorEnterEvent.builder()
+              .target(prevTarget)
+              .source(frame)
+              .entered(false)
+              .intersection(intersection)
+              .cursorPosition(current)
+              .build();
+      eventProcessor.pushEvent(exitEvent);
+      prevTarget.hovered(false);
+    }
+  }
+
+  private void generateEnterEvent(Frame frame, Vector2fc current, Element targetElement) {
+    if (targetElement != null) {
+      targetElement.hovered(true);
+      Vector2f intersection = targetElement.absolutePosition().sub(current).negate();
+      CursorEnterEvent enterEvent =
+          CursorEnterEvent.builder()
+              .target(targetElement)
+              .source(frame)
+              .entered(true)
+              .intersection(intersection)
+              .cursorPosition(current)
+              .build();
+      eventProcessor.pushEvent(enterEvent);
     }
   }
 }
