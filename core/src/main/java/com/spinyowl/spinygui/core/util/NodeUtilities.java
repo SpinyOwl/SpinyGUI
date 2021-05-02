@@ -2,6 +2,7 @@ package com.spinyowl.spinygui.core.util;
 
 import com.spinyowl.spinygui.core.node.Element;
 import com.spinyowl.spinygui.core.node.Node;
+import com.spinyowl.spinygui.core.node.style.types.Display;
 import com.spinyowl.spinygui.core.node.style.types.PointerEvents;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -31,24 +32,24 @@ public final class NodeUtilities {
     }
 
     if (!parentList.isEmpty()) {
-      Vector2f pos = new Vector2f(0, 0);
-      Vector2f rect = new Vector2f(0, 0);
-      Vector2f absolutePosition = node.absolutePosition();
+      var pos = new Vector2f(0, 0);
+      var rect = new Vector2f(0, 0);
+      var absolutePosition = node.absolutePosition();
 
-      Vector2fc cSize = node.size();
-      Vector2fc cPos = node.position();
+      Vector2fc currentSize = node.size();
+      Vector2fc currentPos = node.position();
 
       float lx = absolutePosition.x;
-      float rx = absolutePosition.x + cSize.x();
+      float rx = absolutePosition.x + currentSize.x();
       float ty = absolutePosition.y;
-      float by = absolutePosition.y + cSize.y();
+      float by = absolutePosition.y + currentSize.y();
 
       // check top parent
 
-      if (cPos.x() > node.parent().size().x()
-          || cPos.x() + cSize.x() < 0
-          || cPos.y() > node.parent().size().y()
-          || cPos.y() + cSize.y() < 0) {
+      if (currentPos.x() > node.parent().size().x()
+          || currentPos.x() + currentSize.x() < 0
+          || currentPos.y() > node.parent().size().y()
+          || currentPos.y() + currentSize.y() < 0) {
         return false;
       }
       if (parentList.size() != 1) {
@@ -85,12 +86,12 @@ public final class NodeUtilities {
    *
    * @param element element to search.
    * @param vector point to search.
-   * @param clickable if true - searches only for clickable target.
+   * @param searchOnlyClickable if true - searches only for clickable target.
    * @return top element from element intersected by vector or null if point is null.
    */
   public static Element getTargetElement(
-      final Element element, final Vector2fc vector, final boolean clickable) {
-    return getTargetElement(vector, element, null, clickable);
+      final Element element, final Vector2fc vector, final boolean searchOnlyClickable) {
+    return getTargetElement(vector, element, null, searchOnlyClickable);
   }
 
   /**
@@ -114,17 +115,17 @@ public final class NodeUtilities {
    * @param vector vector to point.
    * @param element source element to search target.
    * @param initialTarget initial target.
-   * @param clickable if true - searches only for clickable target.
+   * @param searchOnlyClickable if true - searches only for clickable target.
    * @return the top visible element under point or null if point is null.
    */
   public static Element getTargetElement(
       final Vector2fc vector,
       final Element element,
       final Element initialTarget,
-      final boolean clickable) {
+      final boolean searchOnlyClickable) {
     Element retarget = initialTarget;
-    if (element.visible() && element.intersection().intersects(element, vector)) {
-      if (!clickable || clickable(element)) {
+    if (visible(element) && element.intersection().intersects(element, vector)) {
+      if (!searchOnlyClickable || clickable(element)) {
         retarget = element;
       }
       List<Element> childElements = element.children();
@@ -162,10 +163,14 @@ public final class NodeUtilities {
    */
   public static List<Element> fillTargetElementList(
       final Vector2fc vector, final Element element, final List<Element> targetList) {
-    if (element.visible() && element.intersection().intersects(element, vector)) {
+    if (visible(element) && element.intersection().intersects(element, vector)) {
       targetList.add(element);
       element.children().forEach(child -> fillTargetElementList(vector, child, targetList));
     }
     return targetList;
+  }
+
+  public static boolean visible(Element element) {
+    return !Display.NONE.equals(element.style().display());
   }
 }

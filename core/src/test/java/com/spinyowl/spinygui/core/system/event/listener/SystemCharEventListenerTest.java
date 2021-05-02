@@ -9,9 +9,8 @@ import com.spinyowl.spinygui.core.event.processor.EventProcessor;
 import com.spinyowl.spinygui.core.node.Element;
 import com.spinyowl.spinygui.core.node.Frame;
 import com.spinyowl.spinygui.core.system.event.SystemCharEvent;
-import com.spinyowl.spinygui.core.time.TimeProvider;
+import com.spinyowl.spinygui.core.time.TimeService;
 import com.spinyowl.spinygui.core.util.TextUtil;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -22,7 +21,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 class SystemCharEventListenerTest {
 
   @Mock private EventProcessor eventProcessor;
-  @Mock private TimeProvider timeProvider;
+  @Mock private TimeService timeService;
 
   private SystemCharEventListener systemCharEventListener;
 
@@ -31,18 +30,18 @@ class SystemCharEventListenerTest {
     systemCharEventListener =
         SystemCharEventListener.builder()
             .eventProcessor(eventProcessor)
-            .timeProvider(timeProvider)
+            .timeService(timeService)
             .build();
   }
 
   @Test
-  void process() {
+  void process_pushesCharEvent_generatedFrom_SystemCharEvent() {
     Frame frame = mock(Frame.class);
     Element focusedElement = mock(Element.class);
 
     double currentTime = 1;
 
-    when(timeProvider.getCurrentTime()).thenReturn(currentTime);
+    when(timeService.getCurrentTime()).thenReturn(currentTime);
     when(frame.getFocusedElement()).thenReturn(focusedElement);
 
     SystemCharEvent source = SystemCharEvent.builder().window(1).codepoint(1).build();

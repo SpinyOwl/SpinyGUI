@@ -1,6 +1,6 @@
 package com.spinyowl.spinygui.core.animation;
 
-import com.spinyowl.spinygui.core.time.TimeProvider;
+import com.spinyowl.spinygui.core.time.TimeService;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -11,7 +11,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class AnimatorImpl implements Animator {
 
-  @NonNull private final TimeProvider timeProvider;
+  @NonNull private final TimeService timeService;
   /** List of animations to initialize. */
   private final List<Animation> animationsToInitialize = new CopyOnWriteArrayList<>();
   /** List of animations to animate. */
@@ -25,7 +25,7 @@ public class AnimatorImpl implements Animator {
 
   /** This method used to process animations. */
   public void runAnimations() {
-    double currentTime = timeProvider.getCurrentTime();
+    double currentTime = timeService.getCurrentTime();
     double delta = currentTime - previousTime;
 
     List<Animation> initializeList = new ArrayList<>(animationsToInitialize);

@@ -1,10 +1,10 @@
 package com.spinyowl.spinygui.core.node;
 
+import static java.util.stream.Collectors.toList;
 import com.spinyowl.spinygui.core.node.intersection.Intersection;
 import com.spinyowl.spinygui.core.node.intersection.Intersections;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -46,9 +46,6 @@ public abstract class Node {
 
   /** Node size. Assigned to node by layout manager. */
   @NonNull private Vector2f size = new Vector2f();
-
-  /** Node visibility. */
-  private boolean visible;
 
   /** Determines whether this node hovered or not (cursor is over this node). */
   private boolean hovered;
@@ -132,9 +129,9 @@ public abstract class Node {
    */
   public List<Element> children() {
     return childNodes().stream()
-        .filter(n -> n instanceof Element)
+        .filter(Element.class::isInstance)
         .map(Element.class::cast)
-        .collect(Collectors.toUnmodifiableList());
+        .collect(toList());
   }
 
   /**
@@ -143,7 +140,7 @@ public abstract class Node {
    * @return position vector.
    */
   public Vector2f absolutePosition() {
-    Vector2f screenPos = new Vector2f(this.position());
+    var screenPos = new Vector2f(this.position());
     for (Node p = this.parent(); p != null; p = p.parent()) {
       screenPos.add(p.position());
     }

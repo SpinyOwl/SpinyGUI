@@ -2,7 +2,7 @@ package com.spinyowl.spinygui.core.system.event.listener;
 
 import com.spinyowl.spinygui.core.event.processor.EventProcessor;
 import com.spinyowl.spinygui.core.system.event.SystemEvent;
-import com.spinyowl.spinygui.core.time.TimeProvider;
+import com.spinyowl.spinygui.core.time.TimeService;
 import lombok.NonNull;
 import lombok.experimental.SuperBuilder;
 
@@ -13,5 +13,5 @@ public abstract class AbstractSystemEventListener<E extends SystemEvent>
   @NonNull final EventProcessor eventProcessor;
 
   /** Time provider to use by event listeners. */
-  @NonNull final TimeProvider timeProvider;
+  @NonNull final TimeService timeService;
 }

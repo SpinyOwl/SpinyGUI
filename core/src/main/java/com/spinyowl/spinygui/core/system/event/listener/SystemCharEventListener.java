@@ -18,7 +18,7 @@ public class SystemCharEventListener extends AbstractSystemEventListener<SystemC
    */
   @Override
   public void process(SystemCharEvent event, Frame frame) {
-    Element focusedElement = frame.getFocusedElement();
+    var focusedElement = frame.getFocusedElement();
     if (focusedElement == null) {
       return;
     }
@@ -27,7 +27,7 @@ public class SystemCharEventListener extends AbstractSystemEventListener<SystemC
         CharEvent.builder()
             .source(frame)
             .target(focusedElement)
-            .timestamp(timeProvider.getCurrentTime())
+            .timestamp(timeService.getCurrentTime())
             .input(TextUtil.cpToStr(event.codepoint()))
             .build());
   }
