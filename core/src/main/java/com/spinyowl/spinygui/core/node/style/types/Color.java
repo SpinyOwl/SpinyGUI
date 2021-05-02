@@ -1,5 +1,6 @@
 package com.spinyowl.spinygui.core.node.style.types;
 
+import static java.lang.String.format;
 import java.util.HashMap;
 import java.util.Map;
 import lombok.AllArgsConstructor;
@@ -29,10 +30,13 @@ public class Color {
   public static final Color TEAL = new Color(0, 128, 128);
   public static final Color AQUA = new Color(0, 255, 255);
   public static final Color TRANSPARENT = new Color(0f, 0f, 0f, 0f);
+  // @formatter:on
 
   private static final String COMMA = ",";
+  private static final String OUTSIDE_OF_EXPECTED_RANGE_S =
+      "Color parameter outside of expected range - %s";
+
   private static Map<String, Color> colors = new HashMap<>();
-  // @formatter:on
 
   static {
     colors.put("black", BLACK);
@@ -80,7 +84,9 @@ public class Color {
   }
 
   /**
-   * Allowed to parse hex strings in RGB/RGBA/RRGGBB/RRGGBBAA format
+   * Allowed to parse hex strings in RGB/RGBA/RRGGBB/RRGGBBAA format.
+   *
+   * Example
    *
    * @param value hex value
    * @return color
@@ -89,19 +95,15 @@ public class Color {
     if (value.startsWith("#")) {
       value = value.substring(1);
     }
-    int hex = Integer.parseInt(value, 16);
-    switch (value.length()) {
-      case 8:
-        return new Color((hex >> 24) & 0xFF, (hex >> 16) & 0xFF, (hex >> 8) & 0xFF, hex & 0xFF);
-      case 6:
-        return new Color((hex >> 16) & 0xFF, (hex >> 8) & 0xFF, hex & 0xFF);
-      case 4:
-        return new Color((hex >> 12) & 0xF, (hex >> 8) & 0xF, (hex >> 4) & 0xF, hex & 0xF);
-      case 3:
-        return new Color((hex >> 8) & 0xF, (hex >> 4) & 0xF, hex & 0xF);
-      default:
-        return null;
-    }
+    value = value.trim();
+    var hex = Integer.parseInt(value, 16);
+    return switch (value.length()) {
+      case 8 -> new Color((hex >> 24) & 0xFF, (hex >> 16) & 0xFF, (hex >> 8) & 0xFF, hex & 0xFF);
+      case 6 -> new Color((hex >> 16) & 0xFF, (hex >> 8) & 0xFF, hex & 0xFF);
+      case 4 -> new Color((hex >> 12) & 0xF, (hex >> 8) & 0xF, (hex >> 4) & 0xF, hex & 0xF);
+      case 3 -> new Color((hex >> 8) & 0xF, (hex >> 4) & 0xF, hex & 0xF);
+      default -> null;
+    };
   }
 
   /**
@@ -111,22 +113,19 @@ public class Color {
    * @param saturation Saturation is specified as a percentage in the range 1 - 100.
    * @param lightness lightness is specified as a percentage in the range 1 - 100.
    * @param alpha the alpha value between 0 - 1
-   * @returns the Color object.
+   * @return the Color object.
    */
   public static Color hslToColor(int hue, int saturation, int lightness, float alpha) {
     if (saturation < 0 || saturation > 100) {
-      String message = "Color parameter outside of expected range - Saturation";
-      throw new IllegalArgumentException(message);
+      throw new IllegalArgumentException(format(OUTSIDE_OF_EXPECTED_RANGE_S, "Saturation"));
     }
 
     if (lightness < 0 || lightness > 100) {
-      String message = "Color parameter outside of expected range - Lightness";
-      throw new IllegalArgumentException(message);
+      throw new IllegalArgumentException(format(OUTSIDE_OF_EXPECTED_RANGE_S, "Lightness"));
     }
 
     if (alpha < 0.0f || alpha > 1.0f) {
-      String message = "Color parameter outside of expected range - Alpha";
-      throw new IllegalArgumentException(message);
+      throw new IllegalArgumentException(format(OUTSIDE_OF_EXPECTED_RANGE_S, "Alpha"));
     }
 
     // Formula needs all values between 0 - 1.
@@ -134,7 +133,7 @@ public class Color {
     float s = saturation / 100f;
     float l = lightness / 100f;
 
-    float q = 0;
+    float q;
 
     if (l < 0.5) {
       q = l * (1 + s);
