@@ -23,7 +23,7 @@ jobs:
         run: ./gradlew clean build
 
       # Run tests
-      - name: Build with Gradle
+      - name: Test with Gradle
         run: ./gradlew test --scan
 
       # Run codecov
