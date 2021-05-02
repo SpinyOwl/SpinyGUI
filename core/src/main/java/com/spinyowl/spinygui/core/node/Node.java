@@ -92,14 +92,14 @@ public abstract class Node {
    *
    * @param node node to add.
    */
-  public abstract void addChild(Node node);
+  public abstract void addChild(@NonNull Node node);
 
   /**
    * Used to remove child node.
    *
    * @param node node to remove.
    */
-  public abstract void removeChild(Node node);
+  public abstract void removeChild(@NonNull Node node);
 
   /**
    * Returns a collection of a node's child nodes, as {@code List<Node>} object.

@@ -28,17 +28,13 @@ public class BackgroundPositionXProperty extends Property<Length> {
   }
 
   // @formatter:off
-  private static Length extract(String value) {
-    switch (value) {
-      case LEFT:
-        return Length.percent(0);
-      case CENTER:
-        return Length.percent(50);
-      case RIGHT:
-        return Length.percent(100);
-      default:
-        return extractor.extract(value);
-    }
+  private static Length<?> extract(String value) {
+    return switch (value) {
+      case LEFT -> Length.percent(0);
+      case CENTER -> Length.percent(50);
+      case RIGHT -> Length.percent(100);
+      default -> extractor.extract(value);
+    };
   }
   // @formatter:on
 

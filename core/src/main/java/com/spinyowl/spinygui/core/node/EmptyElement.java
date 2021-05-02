@@ -4,6 +4,7 @@ import java.util.Collections;
 import java.util.List;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.NonNull;
 import lombok.Setter;
 import lombok.ToString;
 
@@ -38,7 +39,7 @@ public class EmptyElement extends Element {
    *     EmptyElement}.
    */
   @Override
-  public final void removeChild(Node node) {
+  public final void removeChild(@NonNull Node node) {
     throw new UnsupportedOperationException("Child operations are not supported for EmptyNode.");
   }
 
@@ -50,7 +51,7 @@ public class EmptyElement extends Element {
    *     EmptyElement}.
    */
   @Override
-  public final void addChild(Node node) {
+  public final void addChild(@NonNull Node node) {
     throw new UnsupportedOperationException("Child operations are not supported for EmptyNode.");
   }
 

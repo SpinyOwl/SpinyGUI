@@ -7,4 +7,6 @@ public interface NodeConverter {
   Node fromXml(String xml);
 
   String toXml(Node node);
+
+  String toXml(Node node, boolean pretty);
 }

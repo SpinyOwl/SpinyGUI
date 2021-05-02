@@ -42,7 +42,7 @@ public class Main {
         String.valueOf(input(TYPE_PASSWORD, "myPass", "PASS_@!@#&").frame() == frame)); // false
     log.info(String.valueOf(element.children().get(2).frame() == frame)); // true
 
-    String xml = DefaultNodeConverter.toXml(element, false);
+    String xml = nodeConverter.toXml(element, false);
     log.info(xml);
     //language=XML
     String xml2 = """

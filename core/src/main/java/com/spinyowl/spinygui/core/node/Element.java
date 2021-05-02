@@ -14,6 +14,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.NonNull;
 import lombok.Setter;
 import lombok.ToString;
 
@@ -130,18 +131,16 @@ public class Element extends Node implements EventTarget {
    * @param node node to remove.
    */
   @Override
-  public void removeChild(Node node) {
-    if (node != null) {
-      unlinkSiblings(node);
-      if (childNodes.remove(node)) {
-        node.parent(null);
-      }
+  public void removeChild(@NonNull Node node) {
+    unlinkSiblings(node);
+    if (childNodes.remove(node)) {
+      node.parent(null);
     }
   }
 
   private void unlinkSiblings(Node node) {
-    Node prev = node.previousSibling();
-    Node next = node.nextSibling();
+    var prev = node.previousSibling();
+    var next = node.nextSibling();
     if (prev != null) {
       prev.nextSibling(next);
     }
@@ -156,8 +155,8 @@ public class Element extends Node implements EventTarget {
    * @param node node to add.
    */
   @Override
-  public void addChild(Node node) {
-    if (node == null || node == this || Reference.contains(childNodes, node)) {
+  public void addChild(@NonNull Node node) {
+    if (node == this || Reference.contains(childNodes, node)) {
       return;
     }
 

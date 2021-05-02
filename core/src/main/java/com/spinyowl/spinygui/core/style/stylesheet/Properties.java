@@ -131,7 +131,7 @@ public final class Properties {
       @SuppressWarnings("unchecked")
       Class<Property<?>> clazz = (Class<Property<?>>) classInfo.loadClass();
       Priority annotation = clazz.getAnnotation(Priority.class);
-      int priority = 0;
+      var priority = 0;
       if (annotation != null) {
         priority = annotation.value();
       }

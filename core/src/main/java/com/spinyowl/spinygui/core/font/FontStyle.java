@@ -1,11 +1,18 @@
 package com.spinyowl.spinygui.core.font;
 
 import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
-import java.util.StringJoiner;
 import java.util.concurrent.ConcurrentHashMap;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
+import lombok.ToString;
 
+@Getter
+@ToString
+@EqualsAndHashCode
+@RequiredArgsConstructor(staticName = "create")
 public final class FontStyle {
 
   private static final Map<String, FontStyle> VALUES = new ConcurrentHashMap<>();
@@ -17,16 +24,7 @@ public final class FontStyle {
   // @formatter:on
 
   /** Name of font style type (should be same as in css specification) */
-  private final String name;
-
-  /**
-   * Creates font style element with specified name.
-   *
-   * @param name name of font style type (should be same as in css specification)
-   */
-  private FontStyle(String name) {
-    this.name = name;
-  }
+  @NonNull private final String name;
 
   /**
    * Used to find font style element with specified name. Note that name will be converted to lower
@@ -35,8 +33,7 @@ public final class FontStyle {
    * @param name name of font style element.
    * @return existing font style element or null.
    */
-  public static FontStyle find(String name) {
-    Objects.requireNonNull(name);
+  public static FontStyle find(@NonNull String name) {
     return VALUES.get(name.toLowerCase());
   }
 
@@ -47,8 +44,7 @@ public final class FontStyle {
    * @param name name of font style element.
    * @return new font style element (or existing one).
    */
-  public static FontStyle create(String name) {
-    Objects.requireNonNull(name);
+  public static FontStyle create(@NonNull String name) {
     return VALUES.computeIfAbsent(name.toLowerCase(), FontStyle::new);
   }
 
@@ -67,43 +63,7 @@ public final class FontStyle {
    * @param name font style name.
    * @return true if there is a font style value wth specified name.
    */
-  public static boolean contains(String name) {
-    if (name == null) {
-      return false;
-    }
-    return values().stream().map(FontStyle::getName).anyMatch(v -> v.equalsIgnoreCase(name));
-  }
-
-  /**
-   * Name of font style.
-   *
-   * @return name of font style.
-   */
-  public String getName() {
-    return name;
-  }
-
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) {
-      return true;
-    }
-    if (o == null || getClass() != o.getClass()) {
-      return false;
-    }
-    FontStyle fontStyle = (FontStyle) o;
-    return Objects.equals(name, fontStyle.name);
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hash(name);
-  }
-
-  @Override
-  public String toString() {
-    return new StringJoiner(", ", FontStyle.class.getSimpleName() + "[", "]")
-        .add("name='" + name + "'")
-        .toString();
+  public static boolean contains(@NonNull String name) {
+    return values().stream().map(FontStyle::name).anyMatch(v -> v.equalsIgnoreCase(name));
   }
 }

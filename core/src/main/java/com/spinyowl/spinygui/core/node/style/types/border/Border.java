@@ -39,28 +39,29 @@ public class Border extends SideStyle<BorderItem> {
     right().width(border.right().width());
   }
 
-  public void width(Length width) {
+  public void width(Length<?> width) {
     top().width(width);
     bottom().width(width);
     left().width(width);
     right().width(width);
   }
 
-  public void width(Length widthTopBottom, Length widthRightLeft) {
+  public void width(Length<?> widthTopBottom, Length<?> widthRightLeft) {
     top().width(widthTopBottom);
     bottom().width(widthTopBottom);
     left().width(widthRightLeft);
     right().width(widthRightLeft);
   }
 
-  public void width(Length widthTop, Length widthRightLeft, Length widthBottom) {
+  public void width(Length<?> widthTop, Length<?> widthRightLeft, Length<?> widthBottom) {
     top().width(widthTop);
     bottom().width(widthRightLeft);
     left().width(widthRightLeft);
     right().width(widthBottom);
   }
 
-  public void width(Length widthTop, Length widthRight, Length widthBottom, Length widthLeft) {
+  public void width(
+      Length<?> widthTop, Length<?> widthRight, Length<?> widthBottom, Length<?> widthLeft) {
     top().width(widthTop);
     bottom().width(widthLeft);
     left().width(widthBottom);

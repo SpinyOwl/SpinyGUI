@@ -4,12 +4,18 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
-import lombok.Data;
+import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
+import lombok.ToString;
 
 /** CSS font weight. */
-@Data
+@Getter
+@ToString
 @EqualsAndHashCode(exclude = "name")
+@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public final class FontWeight {
 
   private static final Map<String, FontWeight> VALUES = new ConcurrentHashMap<>();
@@ -32,22 +38,11 @@ public final class FontWeight {
   public static final FontWeight BLACK = FontWeight.create(900, "black");
   // @formatter:on
 
-  /** Name of font weight type (should be same as in css specification). */
-  private final String name;
-
   /** Font weight. */
   private final int weight;
 
-  /**
-   * Creates font weight element with specified name.
-   *
-   * @param name name of font weight type (should be same as in css specification)
-   * @param weight int value of font weight that associated with font weight name.
-   */
-  private FontWeight(int weight, String name) {
-    this.name = name;
-    this.weight = weight;
-  }
+  /** Name of font weight type (should be same as in css specification). */
+  @NonNull private final String name;
 
   /**
    * Used to create new font weight element with specified name. Note that name will be converted to
@@ -56,13 +51,12 @@ public final class FontWeight {
    * @param name name of font weight element.
    * @return new font weight element (or existing one).
    */
-  public static FontWeight create(int weight, String name, String... aliases) {
+  public static FontWeight create(int weight, @NonNull String name, String... aliases) {
     Objects.requireNonNull(name);
-    FontWeight fontWeight =
-        VALUES.computeIfAbsent(name.toLowerCase(), key -> new FontWeight(weight, key));
+    var fontWeight = VALUES.computeIfAbsent(name.toLowerCase(), key -> new FontWeight(weight, key));
     if (aliases != null) {
-      for (String alias : aliases) {
-        VALUES.put(alias, new FontWeight(weight, alias));
+      for (@NonNull String alias : aliases) {
+        VALUES.put(alias.toLowerCase(), new FontWeight(weight, alias));
       }
     }
     return fontWeight;
@@ -75,36 +69,22 @@ public final class FontWeight {
    * @param name name of font weight element.
    * @return existing font weight element or null.
    */
-  public static FontWeight find(String name) {
-    Objects.requireNonNull(name);
+  public static FontWeight find(@NonNull String name) {
     return VALUES.get(name.toLowerCase());
   }
 
   public static FontWeight find(int value) {
-    int rounded = Math.round(value / 100f);
-    switch (rounded) {
-      case 1:
-        return THIN;
-      case 2:
-        return EXTRA_LIGHT;
-      case 3:
-        return LIGHT;
-
-      case 5:
-        return MEDIUM;
-      case 6:
-        return SEMI_BOLD;
-      case 7:
-        return BOLD;
-      case 8:
-        return EXTRA_BOLD;
-      case 9:
-        return BLACK;
-
-      case 4:
-      default:
-        return NORMAL;
-    }
+    return switch (Math.round(value / 100f)) {
+      case 1 -> THIN;
+      case 2 -> EXTRA_LIGHT;
+      case 3 -> LIGHT;
+      case 5 -> MEDIUM;
+      case 6 -> SEMI_BOLD;
+      case 7 -> BOLD;
+      case 8 -> EXTRA_BOLD;
+      case 9 -> BLACK;
+      default -> NORMAL;
+    };
   }
 
   /**
@@ -122,10 +102,7 @@ public final class FontWeight {
    * @param name font weight name.
    * @return true if there is a font weight value wth specified name.
    */
-  public static boolean contains(String name) {
-    if (name == null) {
-      return false;
-    }
+  public static boolean contains(@NonNull String name) {
     return values().stream().map(FontWeight::name).anyMatch(v -> v.equalsIgnoreCase(name));
   }
 }

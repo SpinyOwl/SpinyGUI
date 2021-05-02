@@ -12,11 +12,9 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.List;
 import javax.xml.XMLConstants;
-import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.OutputKeys;
-import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
@@ -37,6 +35,7 @@ public final class DefaultNodeConverter implements NodeConverter {
           "area", "base", "br", "col", "embed", "hr", "img", "input", "keygen", "link", "meta",
           "param", "source", "track", "wbr");
 
+
   /**
    * Used to convert node tree to xml.
    *
@@ -48,28 +47,59 @@ public final class DefaultNodeConverter implements NodeConverter {
   }
 
   /**
+   * Used to convert node tree to xml.
+   *
+   * @param node node to convert.
+   * @return string with xml representation of provided node.
+   */
+  public String toXml(Node node, boolean pretty) {
+    return convertToXml(node, pretty);
+  }
+
+  public Node fromXml(String xml) {
+    try {
+      if (xml == null || xml.isEmpty()) {
+        return null;
+      }
+
+      var documentBuilderFactory = DocumentBuilderFactory.newDefaultInstance();
+      documentBuilderFactory.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, "");
+      documentBuilderFactory.setAttribute(XMLConstants.ACCESS_EXTERNAL_SCHEMA, "");
+      var documentBuilder = documentBuilderFactory.newDocumentBuilder();
+
+      var inputSource = new InputSource();
+      inputSource.setCharacterStream(new StringReader((xml)));
+      var document = documentBuilder.parse(inputSource);
+
+      return createNodeFromContent(document.getDocumentElement(), new NodeConverterContext());
+    } catch (ParserConfigurationException | SAXException | IOException e) {
+      throw new ParseException(e);
+    }
+  }
+
+  /**
    * Used to convert node with all child elements to an xml string.
    *
    * @param node node to convert.
    * @param pretty defines if should be pretty printed.
    * @return String with xml representation of node.
    */
-  public static String toXml(Node node, boolean pretty) {
+  private static String convertToXml(Node node, boolean pretty) {
     if (node == null) {
       return null;
     }
-    StringWriter stringWriter = new StringWriter();
+    var stringWriter = new StringWriter();
 
     try {
-      DocumentBuilder builder = DocumentBuilderFactory.newDefaultInstance().newDocumentBuilder();
-      Document document = builder.newDocument();
+      var builder = DocumentBuilderFactory.newDefaultInstance().newDocumentBuilder();
+      var document = builder.newDocument();
 
       org.w3c.dom.Node content = createContent(document, node);
       document.appendChild(content);
 
-      StreamResult result = new StreamResult(stringWriter);
-      TransformerFactory tf = TransformerFactory.newDefaultInstance();
-      Transformer transformer = tf.newTransformer();
+      var result = new StreamResult(stringWriter);
+      var transformerFactory = TransformerFactory.newDefaultInstance();
+      var transformer = transformerFactory.newTransformer();
       if (pretty) {
         transformer.setOutputProperty(OutputKeys.INDENT, "yes");
         transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
@@ -97,7 +127,7 @@ public final class DefaultNodeConverter implements NodeConverter {
 
   private static org.w3c.dom.Element createElement(Document document, Element node) {
     String name = node.nodeName().toLowerCase();
-    org.w3c.dom.Element element = document.createElement(name);
+    var element = document.createElement(name);
 
     for (var entry : node.attributes().entrySet()) {
       element.setAttribute(entry.getKey(), entry.getValue());
@@ -105,7 +135,7 @@ public final class DefaultNodeConverter implements NodeConverter {
 
     if (!EMPTY_ELEMENTS.contains(name)) {
       for (Node childNode : node.childNodes()) {
-        org.w3c.dom.Node content = createContent(document, childNode);
+        var content = createContent(document, childNode);
         if (content != null) {
           element.appendChild(content);
         }
@@ -115,32 +145,8 @@ public final class DefaultNodeConverter implements NodeConverter {
     return element;
   }
 
-  // unmarshaller section
-
-  public Node fromXml(String xml) {
-    try {
-      if (xml == null || xml.isEmpty()) {
-        return null;
-      }
-
-      DocumentBuilderFactory f = DocumentBuilderFactory.newDefaultInstance();
-      f.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, "");
-      f.setAttribute(XMLConstants.ACCESS_EXTERNAL_SCHEMA, "");
-      DocumentBuilder documentBuilder = f.newDocumentBuilder();
-
-      InputSource inputSource = new InputSource();
-      inputSource.setCharacterStream(new StringReader((xml)));
-      Document document = documentBuilder.parse(inputSource);
-
-      return createNodeFromContent(document.getDocumentElement(), new NodeConverterContext());
-    } catch (ParserConfigurationException | SAXException | IOException e) {
-      throw new ParseException(e);
-    }
-  }
-
   private static Node createNodeFromContent(org.w3c.dom.Node node, NodeConverterContext context) {
-    if (node instanceof org.w3c.dom.Text) {
-      org.w3c.dom.Text text = (org.w3c.dom.Text) node;
+    if (node instanceof org.w3c.dom.Text text) {
       String wholeText = text.getWholeText();
       if (wholeText.isEmpty()) {
         return null;
@@ -172,21 +178,23 @@ public final class DefaultNodeConverter implements NodeConverter {
       createChildNodes(element, context, node);
     }
     NamedNodeMap attributes = element.getAttributes();
-    for (int i = 0; i < attributes.getLength(); i++) {
-      org.w3c.dom.Attr attr = (Attr) attributes.item(i);
-      node.attributes().put(attr.getName(), attr.getValue());
+    for (var i = 0; i < attributes.getLength(); i++) {
+      var attribute = (Attr) attributes.item(i);
+      node.attributes().put(attribute.getName(), attribute.getValue());
     }
     context.hasRoot = true;
     return node;
   }
 
+  // unmarshaller section
+
   private static void createChildNodes(
       org.w3c.dom.Element element, NodeConverterContext context, Node node) {
     NodeList childNodes = element.getChildNodes();
-    for (int i = 0; i < childNodes.getLength(); i++) {
-      org.w3c.dom.Node c = childNodes.item(i);
+    for (var i = 0; i < childNodes.getLength(); i++) {
+      var childNode = childNodes.item(i);
       try {
-        Node componentFromContent = createNodeFromContent(c, context);
+        var componentFromContent = createNodeFromContent(childNode, context);
         if (componentFromContent != null) {
           node.addChild(componentFromContent);
         }

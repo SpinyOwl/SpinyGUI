@@ -1,12 +1,19 @@
 package com.spinyowl.spinygui.core.font;
 
 import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
-import java.util.StringJoiner;
 import java.util.concurrent.ConcurrentHashMap;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
+import lombok.ToString;
 
 /** CSS font stretch. */
+@Getter
+@ToString
+@EqualsAndHashCode
+@RequiredArgsConstructor(staticName = "create")
 public final class FontStretch {
 
   private static final Map<String, FontStretch> VALUES = new ConcurrentHashMap<>();
@@ -24,16 +31,7 @@ public final class FontStretch {
   // @formatter:on
 
   /** Name of font stretch type (should be same as in css specification) */
-  private final String name;
-
-  /**
-   * Creates font stretch element with specified name.
-   *
-   * @param name name of font stretch type (should be same as in css specification)
-   */
-  private FontStretch(String name) {
-    this.name = name;
-  }
+  @NonNull private final String name;
 
   /**
    * Used to create new font stretch element with specified name. Note that name will be converted
@@ -43,8 +41,7 @@ public final class FontStretch {
    * @param name name of font stretch element.
    * @return new font stretch element (or existing one).
    */
-  public static FontStretch create(String name) {
-    Objects.requireNonNull(name);
+  public static FontStretch create(@NonNull String name) {
     return VALUES.computeIfAbsent(name.toLowerCase(), FontStretch::new);
   }
 
@@ -56,8 +53,7 @@ public final class FontStretch {
    * @param name name of font stretch element.
    * @return existing font stretch element or null.
    */
-  public static FontStretch find(String name) {
-    Objects.requireNonNull(name);
+  public static FontStretch find(@NonNull String name) {
     return VALUES.get(name.toLowerCase());
   }
 
@@ -76,43 +72,7 @@ public final class FontStretch {
    * @param name font stretch name.
    * @return true if there is a font stretch value wth specified name.
    */
-  public static boolean contains(String name) {
-    if (name == null) {
-      return false;
-    }
-    return values().stream().map(FontStretch::getName).anyMatch(v -> v.equalsIgnoreCase(name));
-  }
-
-  /**
-   * Name of font stretch.
-   *
-   * @return
-   */
-  public String getName() {
-    return name;
-  }
-
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) {
-      return true;
-    }
-    if (o == null || getClass() != o.getClass()) {
-      return false;
-    }
-    FontStretch fontStretch = (FontStretch) o;
-    return Objects.equals(name, fontStretch.name);
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hash(name);
-  }
-
-  @Override
-  public String toString() {
-    return new StringJoiner(", ", FontStretch.class.getSimpleName() + "[", "]")
-        .add("name='" + name + "'")
-        .toString();
+  public static boolean contains(@NonNull String name) {
+    return values().stream().map(FontStretch::name).anyMatch(v -> v.equalsIgnoreCase(name));
   }
 }

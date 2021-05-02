@@ -40,9 +40,8 @@ public class SelectorVisitor extends CSS3BaseVisitor<List<Selector>> {
   public List<Selector> visitSelector(SelectorContext ctx) {
     var list = new ArrayList<Selector>();
     var firstSelector = visitSimpleSelectorSequence(ctx.simpleSelectorSequence(0)).get(0);
-    for (int i = 1; i < ctx.simpleSelectorSequence().size(); i++) {
-      final var secondSelector = visitSimpleSelectorSequence(ctx.simpleSelectorSequence(i))
-          .get(0);
+    for (var i = 1; i < ctx.simpleSelectorSequence().size(); i++) {
+      final var secondSelector = visitSimpleSelectorSequence(ctx.simpleSelectorSequence(i)).get(0);
 
       if (ctx.combinator(i - 1).Space() != null) {
         firstSelector = Selectors.descendant(firstSelector, secondSelector);
@@ -59,8 +58,7 @@ public class SelectorVisitor extends CSS3BaseVisitor<List<Selector>> {
   }
 
   @Override
-  public List<Selector> visitSimpleSelectorSequence(
-      SimpleSelectorSequenceContext ctx) {
+  public List<Selector> visitSimpleSelectorSequence(SimpleSelectorSequenceContext ctx) {
     var list = new ArrayList<Selector>();
 
     Selector current = null;
@@ -86,10 +84,10 @@ public class SelectorVisitor extends CSS3BaseVisitor<List<Selector>> {
   public List<Selector> visitPseudo(PseudoContext ctx) {
     String selectorName = ctx.ident().getText();
 
-    return switch (selectorName) {
-      case "hover" -> List.of(new HoverSelector());
-      default -> List.of();
-    };
+    if ("hover".equals(selectorName)) {
+      return List.of(new HoverSelector());
+    }
+    return List.of();
   }
 
   @Override

@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.NonNull;
 import lombok.Setter;
 import lombok.ToString;
 
@@ -35,7 +36,7 @@ public final class Text extends Node {
    * @param node node to add.
    */
   @Override
-  public void addChild(Node node) {
+  public void addChild(@NonNull Node node) {
     throw new UnsupportedOperationException("Child operations are not supported for Text.");
   }
 
@@ -45,7 +46,7 @@ public final class Text extends Node {
    * @param node node to remove.
    */
   @Override
-  public void removeChild(Node node) {
+  public void removeChild(@NonNull Node node) {
     throw new UnsupportedOperationException("Child operations are not supported for Text.");
   }
 

@@ -21,7 +21,7 @@ public final class Configuration<T> {
   public static final Configuration<String> TIME_SERVICE =
       new Configuration<>("spinygui.service.time", Initializer.STRING);
 
-  private String name;
+  private final String name;
   private T value;
 
   private Configuration(String name, Initializer<T> initializer) {
@@ -52,7 +52,7 @@ public final class Configuration<T> {
   }
 
   public T getState(T defaultValue) {
-    T state = this.value;
+    var state = this.value;
     if (state == null) {
       state = defaultValue;
     }
