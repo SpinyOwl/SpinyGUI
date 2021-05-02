@@ -1,20 +1,11 @@
 package com.spinyowl.spinygui.core.style.stylesheet;
 
-import com.spinyowl.spinygui.core.style.stylesheet.annotation.Priority;
-import io.github.classgraph.ClassGraph;
-import io.github.classgraph.ClassInfo;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.concurrent.ConcurrentHashMap;
-import lombok.Data;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class Properties {
 
   public static final String COLOR = "color";
@@ -114,105 +105,4 @@ public final class Properties {
   public static final String Z_INDEX = "z-index";
   public static final String TAB_SIZE = "tab-size";
   public static final String OPACITY = "opacity";
-
-  private static final Map<String, Property<?>> propertyMap = new ConcurrentHashMap<>();
-
-  static {
-    initialize();
-  }
-
-  private Properties() {}
-
-  private static void initialize() {
-    var scanResult = new ClassGraph().enableAllInfo().scan();
-    var propertiesToAdd = new HashMap<String, List<PropertyPriority>>();
-
-    for (ClassInfo classInfo : scanResult.getSubclasses(Property.class.getName())) {
-      @SuppressWarnings("unchecked")
-      Class<Property<?>> clazz = (Class<Property<?>>) classInfo.loadClass();
-      Priority annotation = clazz.getAnnotation(Priority.class);
-      var priority = 0;
-      if (annotation != null) {
-        priority = annotation.value();
-      }
-      Property<?> property = null;
-      try {
-        property = clazz.getConstructor().newInstance();
-
-      } catch (Exception e) {
-        log.error("Can't initialize property handler {}.", clazz.getName());
-        if (log.isDebugEnabled()) {
-          log.debug(e.getMessage(), e);
-        }
-      }
-      if (property != null) {
-        propertiesToAdd
-            .computeIfAbsent(property.name(), p -> new ArrayList<>())
-            .add(new PropertyPriority(property, priority));
-      }
-    }
-
-    for (var entry : propertiesToAdd.entrySet()) {
-      String name = entry.getKey();
-      var list = entry.getValue();
-      if (list.size() > 1) {
-        list.sort(Comparator.comparingInt(o -> -o.priority()));
-        log.warn(
-            "Found several tag mappings for tag {} : {}. Using {}",
-            name,
-            Arrays.toString(list.stream().map(c -> c.property().getClass().getName()).toArray()),
-            list.get(0).property().getClass().getName());
-      }
-      addSupportedProperty(name, list.get(0).property());
-    }
-  }
-
-  public static Property getProperty(String propertyName) {
-    return propertyMap.get(propertyName);
-  }
-
-  /**
-   * Used to add property support.
-   *
-   * @param name property to support.
-   * @param property property supplier which will be used to create new {@link Property} instance.
-   */
-  public static void addSupportedProperty(String name, Property<?> property) {
-    Objects.requireNonNull(name);
-    Objects.requireNonNull(property);
-
-    if (!Objects.equals(name, property.name())) {
-      throw new IllegalArgumentException("Name should be the same as the property name.");
-    }
-
-    if (log.isWarnEnabled() && propertyMap.containsKey(name)) {
-      log.warn(
-          "There is already exist property handler for {} : {}. Would be replaced by {}.",
-          name,
-          propertyMap.get(name).getClass().getName(),
-          property.getClass().getName());
-    }
-
-    propertyMap.put(name, property);
-  }
-
-  public static void removeSupportedProperty(String property) {
-    Objects.requireNonNull(property);
-    propertyMap.remove(property);
-  }
-
-  /**
-   * Returns unmodifiable list of supported properties.
-   *
-   * @return unmodifiable list of supported properties.
-   */
-  public static List<String> getSupportedProperties() {
-    return List.copyOf(propertyMap.keySet());
-  }
-
-  @Data
-  private static final class PropertyPriority {
-    private final Property<?> property;
-    private final int priority;
-  }
 }

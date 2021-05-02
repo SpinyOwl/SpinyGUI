@@ -29,6 +29,9 @@ open module com.spinyowl.spinygui.core {
   exports com.spinyowl.spinygui.core.layout;
   exports com.spinyowl.spinygui.core.style.stylesheet;
   exports com.spinyowl.spinygui.core.style.stylesheet.atrule;
+  exports com.spinyowl.spinygui.core.style.stylesheet.extractor;
+  exports com.spinyowl.spinygui.core.style.stylesheet.extractor.impl;
+  exports com.spinyowl.spinygui.core.style.stylesheet.impl;
   exports com.spinyowl.spinygui.core.style.stylesheet.property;
   exports com.spinyowl.spinygui.core.style.stylesheet.property.border;
   exports com.spinyowl.spinygui.core.style.stylesheet.property.border.radius;

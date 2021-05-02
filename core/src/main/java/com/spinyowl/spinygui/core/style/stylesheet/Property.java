@@ -7,7 +7,9 @@ import java.util.Objects;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -16,6 +18,7 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 @Getter
+@Builder
 public class Property<T> {
 
   public static final String INHERIT = "inherit";
@@ -25,7 +28,7 @@ public class Property<T> {
   public static final boolean INHERITED = true;
 
   /** Name of css property. */
-  protected final String name;
+  @NonNull protected final String name;
 
   /**
    * Default value of css property. Could not be null. This value used for next cases:
@@ -37,7 +40,7 @@ public class Property<T> {
    *       specified in style.
    * </ul>
    */
-  protected final String defaultValue;
+  @NonNull protected final String defaultValue;
 
   /**
    * Defines if css property for element should be inherited from parent element. <br>
@@ -55,18 +58,16 @@ public class Property<T> {
   protected final boolean animatable;
 
   /** Used to set calculated value to node style. */
-  protected final BiConsumer<NodeStyle, T> valueSetter;
+  @NonNull protected final BiConsumer<NodeStyle, T> valueSetter;
 
   /** Used to get calculated value from node style. */
-  protected final Function<NodeStyle, T> valueGetter;
+  @NonNull protected final Function<NodeStyle, T> valueGetter;
 
   /** Used to extract and compute value from string representation. */
-  protected final Function<String, T> valueExtractor;
+  @NonNull protected final Function<String, T> valueExtractor;
 
   /** Used to validate string value before extraction. */
-  protected final Predicate<String> valueValidator;
-
-  protected final T defaultComputedValue;
+  @NonNull protected final Predicate<String> valueValidator;
 
   /**
    * Constructor that should be used by implementations to initialize css property. All
@@ -105,8 +106,6 @@ public class Property<T> {
     this.valueGetter = Objects.requireNonNull(valueGetter);
     this.valueExtractor = Objects.requireNonNull(valueExtractor);
     this.valueValidator = Objects.requireNonNull(valueValidator);
-
-    this.defaultComputedValue = valueExtractor.apply(defaultValue);
   }
 
   /**
@@ -135,7 +134,7 @@ public class Property<T> {
     } else {
 
       if (INITIAL.equalsIgnoreCase(value)) {
-        computedValue = defaultComputedValue();
+        computedValue = valueExtractor.apply(defaultValue);
       } else if (INHERIT.equalsIgnoreCase(value)) {
         computedValue = inheritedValue(element);
       } else if (valueValidator.test(value)) {
@@ -159,11 +158,13 @@ public class Property<T> {
   }
 
   public T computeAbsent(Element element) {
-    return inherited() ? this.inheritedValue(element) : defaultComputedValue();
+    return inherited() ? this.inheritedValue(element) : valueExtractor.apply(defaultValue);
   }
 
   public T inheritedValue(Element element) {
     NodeStyle parentStyle = StyleUtils.getParentCalculatedStyle(element);
-    return parentStyle != null ? valueGetter.apply(parentStyle) : defaultComputedValue();
+    return parentStyle != null
+        ? valueGetter.apply(parentStyle)
+        : valueExtractor.apply(defaultValue);
   }
 }

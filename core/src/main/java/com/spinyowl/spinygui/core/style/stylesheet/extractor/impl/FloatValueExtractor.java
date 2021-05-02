@@ -5,7 +5,7 @@ import com.spinyowl.spinygui.core.style.stylesheet.extractor.ValueExtractorExcep
 import org.apache.commons.lang3.math.NumberUtils;
 
 /** Extracts integer value from string (10 radix). */
-public class FloatExtractor implements ValueExtractor<Float> {
+public class FloatValueExtractor implements ValueExtractor<Float> {
 
   @Override
   public Class<Float> getType() {

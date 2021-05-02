@@ -2,16 +2,22 @@ package com.spinyowl.spinygui.core.parser.impl.css.parser.visitor;
 
 import com.spinyowl.spinygui.core.parser.impl.css.parser.antlr.CSS3BaseVisitor;
 import com.spinyowl.spinygui.core.parser.impl.css.parser.antlr.CSS3Parser.StylesheetContext;
+import com.spinyowl.spinygui.core.style.stylesheet.AtRule;
+import com.spinyowl.spinygui.core.style.stylesheet.RuleSet;
 import com.spinyowl.spinygui.core.style.stylesheet.StyleSheet;
 import java.util.Objects;
 import java.util.stream.Collectors;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 
+@RequiredArgsConstructor
 public class StyleSheetVisitor extends CSS3BaseVisitor<StyleSheet> {
+
+  @NonNull private final CSS3BaseVisitor<RuleSet> rulesetVisitor;
+  @NonNull private final CSS3BaseVisitor<AtRule> atRuleVisitor;
 
   @Override
   public StyleSheet visitStylesheet(StylesheetContext ctx) {
-    var rulesetVisitor = new RulesetVisitor();
-
     var ruleSetList =
         ctx.nestedStatement().stream()
             .map(rulesetVisitor::visit)
@@ -20,7 +26,7 @@ public class StyleSheetVisitor extends CSS3BaseVisitor<StyleSheet> {
 
     var rules =
         ctx.nestedStatement().stream()
-            .map(new AtRuleVisitor()::visit)
+            .map(atRuleVisitor::visit)
             .filter(Objects::nonNull)
             .collect(Collectors.toList());
 

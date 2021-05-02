@@ -3,6 +3,7 @@ package com.spinyowl.spinygui.demo;
 import static com.spinyowl.spinygui.core.node.NodeBuilder.button;
 import static com.spinyowl.spinygui.core.node.NodeBuilder.div;
 import static com.spinyowl.spinygui.core.node.NodeBuilder.label;
+import static com.spinyowl.spinygui.core.parser.impl.StyleSheetConverterFactory.createConverter;
 import com.spinyowl.spinygui.core.node.Element;
 import com.spinyowl.spinygui.core.node.Frame;
 import com.spinyowl.spinygui.core.node.Node;
@@ -10,7 +11,6 @@ import com.spinyowl.spinygui.core.node.Text;
 import com.spinyowl.spinygui.core.node.style.types.Color;
 import com.spinyowl.spinygui.core.parser.StyleSheetConverter;
 import com.spinyowl.spinygui.core.parser.impl.DefaultNodeConverter;
-import com.spinyowl.spinygui.core.parser.impl.DefaultStyleSheetConverter;
 import com.spinyowl.spinygui.core.style.manager.DefaultStyleManger;
 import com.spinyowl.spinygui.core.style.manager.StyleManager;
 import com.spinyowl.spinygui.core.style.stylesheet.RuleSet;
@@ -50,7 +50,7 @@ public class OtherMain {
           background-color: white;
         }""";
 
-    StyleSheetConverter converter = new DefaultStyleSheetConverter();
+    StyleSheetConverter converter = createConverter();
     var stylesheet = converter.fromCss(css);
 
     Element testLabel = label(Map.of("class", "test"));
@@ -85,7 +85,7 @@ public class OtherMain {
     var css =
         """
             div .test label {
-              background-color: red; 
+              background-color: red;
             }
             div .test {
               background-color: green; border: 1px, 1px, 2px, 1px
@@ -103,7 +103,7 @@ public class OtherMain {
             }
             """;
 
-    StyleSheetConverter converter = new DefaultStyleSheetConverter();
+    StyleSheetConverter converter = createConverter();
     var stylesheet = converter.fromCss(css);
 
     var xml = """
