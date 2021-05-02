@@ -24,7 +24,7 @@ jobs:
 
       # Run tests
       - name: Test with Gradle
-        run: ./gradlew test --scan
+        run: ./gradlew test
 
       # Run codecov
       - name: Code Coverage
@@ -34,7 +34,7 @@ jobs:
         with:
           file: ./**/build/core/reports/jacoco/test/jacocoTestReport.xml
           name: codecov
-          token: ${{secrets.CODECOV_TOKEN}}          
+          token: ${{secrets.CODECOV_TOKEN}}
       
       # Run sonarqube
       - name: Sonarqube
