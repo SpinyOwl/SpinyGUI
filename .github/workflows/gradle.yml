@@ -20,9 +20,27 @@ jobs:
 
       # BUILD
       - name: Build with Gradle
-        env:
+        run: ./gradlew clean build
+
+      # Run tests
+      - name: Build with Gradle
+        run: ./gradlew test --scan
+
+      # Run codecov
+      - name: Code Coverage
+        env: 
+          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+        uses: codecov/codecov-action@v1.4.1
+        with:
+          file: ./**/build/core/reports/jacoco/test/jacocoTestReport.xml
+          name: codecov
+          token: ${{secrets.CODECOV_TOKEN}}          
+      
+      # Run sonarqube
+      - name: Sonarqube
+        env: 
           GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
           sonarLogin: ${{secrets.SONAR_TOKEN}}
           JAVA_OPTS: -Xmx3072m -XX:MaxPermSize=512m -XX:ReservedCodeCacheSize=128m
           GRADLE_OPTS: -Xmx3800m -XX:ReservedCodeCacheSize=128m -Dorg.gradle.daemon=false
-        run: ./gradlew clean build test sonarqube
+        run: ./gradlew sonarqube
