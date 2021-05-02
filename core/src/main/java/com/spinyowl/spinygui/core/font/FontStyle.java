@@ -3,6 +3,7 @@ package com.spinyowl.spinygui.core.font;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NonNull;
@@ -12,7 +13,7 @@ import lombok.ToString;
 @Getter
 @ToString
 @EqualsAndHashCode
-@RequiredArgsConstructor(staticName = "create")
+@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public final class FontStyle {
 
   private static final Map<String, FontStyle> VALUES = new ConcurrentHashMap<>();
