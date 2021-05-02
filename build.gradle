@@ -14,7 +14,6 @@ private void printProjectInfo() {
     println sprintf("#     name:     %-33s#", project.name)
     println sprintf("#     version:  %-33s#", project.version)
     println "##################################################"
-    println
 }
 
 subprojects {
