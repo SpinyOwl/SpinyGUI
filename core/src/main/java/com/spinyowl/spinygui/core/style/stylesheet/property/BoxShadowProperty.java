@@ -11,6 +11,7 @@ import com.spinyowl.spinygui.core.style.stylesheet.extractor.ValueExtractors;
 
 public class BoxShadowProperty extends Property<BoxShadow> {
 
+  @SuppressWarnings("rawtypes")
   private static final ValueExtractor<Length> lengthValueExtractor =
       ValueExtractors.of(Length.class);
   private static final ValueExtractor<Color> colorValueExtractor = ValueExtractors.of(Color.class);
@@ -40,9 +41,9 @@ public class BoxShadowProperty extends Property<BoxShadow> {
       return false;
     }
 
-    int lengthArgs = 0;
-    int insetArgs = 0;
-    int colorArgs = 0;
+    var lengthArgs = 0;
+    var insetArgs = 0;
+    var colorArgs = 0;
 
     for (String arg : args) {
       boolean isInset = INSET.equals(arg);
@@ -58,6 +59,10 @@ public class BoxShadowProperty extends Property<BoxShadow> {
       // @formatter:on
     }
 
+    return validateArgNumbers(lengthArgs, insetArgs, colorArgs);
+  }
+
+  private static boolean validateArgNumbers(int lengthArgs, int insetArgs, int colorArgs) {
     return lengthArgs >= 2 && lengthArgs <= 4 && insetArgs <= 1 && colorArgs <= 1;
   }
 
@@ -66,8 +71,8 @@ public class BoxShadowProperty extends Property<BoxShadow> {
 
     String[] args = s.split("\\s+");
 
-    BoxShadow shadow = new BoxShadow();
-    Float[] shadowArgs = new Float[4];
+    var shadow = new BoxShadow();
+    var shadowArgs = new Float[4];
     int shadowArgIndex = -1;
     Color color = null;
     Boolean inset = null;

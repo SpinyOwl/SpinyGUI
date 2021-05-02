@@ -36,7 +36,7 @@ public class Main {
         radioButton("radio", "firstValue")
     );
 
-    Frame frame = new Frame();
+    var frame = new Frame();
     frame.addChild(element);
     log.info(
         String.valueOf(input(TYPE_PASSWORD, "myPass", "PASS_@!@#&").frame() == frame)); // false
@@ -45,7 +45,7 @@ public class Main {
     String xml = nodeConverter.toXml(element, false);
     log.info(xml);
     //language=XML
-    String xml2 = """
+    var xml2 = """
         <?xml version="1.0" encoding="UTF-8"?>
         <div>
           <button>asdfasdfasd</button>
@@ -63,7 +63,7 @@ public class Main {
         <radio-button />
         </div>
         """;
-    Node unmarshal = nodeConverter.fromXml(xml2);
+    var unmarshal = nodeConverter.fromXml(xml2);
 
     log.info("UNMARSHALLING IS FINISHED");
     log.info("--------------------------------");

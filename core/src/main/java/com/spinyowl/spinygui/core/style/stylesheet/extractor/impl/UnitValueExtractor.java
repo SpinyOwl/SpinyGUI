@@ -13,17 +13,18 @@ public class UnitValueExtractor implements ValueExtractor<Unit> {
   public static final String AUTO_REGEX = "[aA][uU][tT][oO]";
   public static final String ZERO_REGEX = "0+";
 
+  @SuppressWarnings("rawtypes")
   public static Length getLength(String value) {
     if (value == null || value.isBlank()) {
       return null;
     }
     if (value.matches(PIXEL_REGEX)) {
-      String pixelValue = value.substring(0, value.length() - 2);
+      var pixelValue = value.substring(0, value.length() - 2);
       return Length.pixel(Integer.parseInt(pixelValue));
     }
 
     if (value.matches(PERCENTAGE_REGEX)) {
-      String percentageValue = value.substring(0, value.length() - 1);
+      var percentageValue = value.substring(0, value.length() - 1);
       return Length.percent(Float.parseFloat(percentageValue));
     }
 

@@ -49,7 +49,7 @@ public class BorderProperty extends Property<Border> {
   }
 
   private static Border x(String value) {
-    Border border = new Border();
+    var border = new Border();
     BorderItem i = extract(value);
     border.style(i.style());
     border.color(i.color());
@@ -58,7 +58,7 @@ public class BorderProperty extends Property<Border> {
   }
 
   public static BorderItem extract(String value) {
-    BorderItem i = new BorderItem();
+    var i = new BorderItem();
     String[] values = value.split("\\s+");
     if (values.length == 1) {
       i.style(BorderStyle.find(values[0]));

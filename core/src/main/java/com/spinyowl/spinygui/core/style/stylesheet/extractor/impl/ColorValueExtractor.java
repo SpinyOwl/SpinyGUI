@@ -64,11 +64,11 @@ public class ColorValueExtractor implements ValueExtractor<Color> {
       return Color.fromHex(value);
     }
     if (value.matches(RGB_FUNCTION_REGEX)) {
-      String[] rgb = value.substring(4, value.length() - 1).split(SEPARATOR);
+      String[] rgb = getArgs(value, 4);
       return new Color(parseInt(rgb[0].trim()), parseInt(rgb[1].trim()), parseInt(rgb[2].trim()));
     }
     if (value.matches(RGBA_FUNCTION_REGEX)) {
-      String[] rgba = value.substring(5, value.length() - 1).split(SEPARATOR);
+      String[] rgba = getArgs(value, 5);
       return new Color(
           parseInt(rgba[0].trim()),
           parseInt(rgba[1].trim()),
@@ -76,17 +76,21 @@ public class ColorValueExtractor implements ValueExtractor<Color> {
           parseFloat(rgba[3].trim()));
     }
     if (value.matches(HSL_FUNCTION_REGEX)) {
-      String[] hsl = value.substring(4, value.length() - 1).split(SEPARATOR);
+      String[] hsl = getArgs(value, 4);
       return Color.hslToColor(
           parseInt(hsl[0].trim()), parseInt(hsl[1].trim()), parseInt(hsl[2].trim()), 1f);
     }
     if (value.matches(HSLA_FUNCTION_REGEX)) {
-      String[] hsla = value.substring(5, value.length() - 1).split(SEPARATOR);
+      String[] hsla = getArgs(value, 5);
       return Color.hslToColor(
           parseInt(hsla[0].trim()), parseInt(hsla[1].trim()),
           parseInt(hsla[2].trim()), parseFloat(hsla[3].trim()));
     }
 
     throw new ValueExtractorException(getType(), value);
+  }
+
+  private String[] getArgs(String value, int startIndex) {
+    return value.substring(startIndex, value.length() - 1).split(SEPARATOR);
   }
 }

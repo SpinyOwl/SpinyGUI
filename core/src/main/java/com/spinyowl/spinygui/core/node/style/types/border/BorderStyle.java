@@ -1,12 +1,20 @@
 package com.spinyowl.spinygui.core.node.style.types.border;
 
 import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
-import java.util.StringJoiner;
 import java.util.concurrent.ConcurrentHashMap;
+import lombok.AccessLevel;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
+import lombok.ToString;
 
 /** CSS border style. */
+@Getter
+@ToString
+@EqualsAndHashCode
+@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public final class BorderStyle {
 
   private static final Map<String, BorderStyle> VALUES = new ConcurrentHashMap<>();
@@ -42,16 +50,7 @@ public final class BorderStyle {
   public static final BorderStyle OUTSET = BorderStyle.create("outset");
 
   /** Name of border style type (should be same as in css specification) */
-  private final String name;
-
-  /**
-   * Creates border style element with specified name.
-   *
-   * @param name name of border style type (should be same as in css specification)
-   */
-  private BorderStyle(String name) {
-    this.name = name;
-  }
+  @NonNull private final String name;
 
   /**
    * Used to create new border style element with specified name. Note that name will be converted
@@ -61,8 +60,7 @@ public final class BorderStyle {
    * @param name name of border style element.
    * @return new border style element (or existing one).
    */
-  public static BorderStyle create(String name) {
-    Objects.requireNonNull(name);
+  public static BorderStyle create(@NonNull String name) {
     return VALUES.computeIfAbsent(name.toLowerCase(), BorderStyle::new);
   }
 
@@ -74,8 +72,7 @@ public final class BorderStyle {
    * @param name name of border style element.
    * @return existing border element or null.
    */
-  public static BorderStyle find(String name) {
-    Objects.requireNonNull(name);
+  public static BorderStyle find(@NonNull String name) {
     return VALUES.get(name.toLowerCase());
   }
 
@@ -94,43 +91,7 @@ public final class BorderStyle {
    * @param name border style name.
    * @return true if there is a border style value wth specified name.
    */
-  public static boolean contains(String name) {
-    if (name == null) {
-      return false;
-    }
-    return values().stream().map(BorderStyle::getName).anyMatch(v -> v.equalsIgnoreCase(name));
-  }
-
-  /**
-   * Name of border style.
-   *
-   * @return
-   */
-  public String getName() {
-    return name;
-  }
-
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) {
-      return true;
-    }
-    if (o == null || getClass() != o.getClass()) {
-      return false;
-    }
-    BorderStyle borderStyle = (BorderStyle) o;
-    return Objects.equals(name, borderStyle.name);
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hash(name);
-  }
-
-  @Override
-  public String toString() {
-    return new StringJoiner(", ", BorderStyle.class.getSimpleName() + "[", "]")
-        .add("name='" + name + "'")
-        .toString();
+  public static boolean contains(@NonNull String name) {
+    return values().stream().map(BorderStyle::name).anyMatch(v -> v.equalsIgnoreCase(name));
   }
 }

@@ -1,15 +1,23 @@
 package com.spinyowl.spinygui.core.node.style.types.flex;
 
 import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
-import java.util.StringJoiner;
 import java.util.concurrent.ConcurrentHashMap;
+import lombok.AccessLevel;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
+import lombok.ToString;
 
 /**
  * Specifies the alignment between the lines inside a flexible container when the items do not use
  * all available space.
  */
+@Getter
+@ToString
+@EqualsAndHashCode
+@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public final class AlignContent {
 
   private static final Map<String, AlignContent> VALUES = new ConcurrentHashMap<>();
@@ -26,14 +34,9 @@ public final class AlignContent {
   /** Lines are evenly distributed in the flex container, with half-size spaces on either end. */
   public static final AlignContent SPACE_AROUND = AlignContent.create("space-around");
 
-  private final String name;
+  @NonNull private final String name;
 
-  private AlignContent(String name) {
-    this.name = name;
-  }
-
-  private static AlignContent create(String name) {
-    Objects.requireNonNull(name);
+  private static AlignContent create(@NonNull String name) {
     return VALUES.computeIfAbsent(name.toLowerCase(), AlignContent::new);
   }
 
@@ -45,8 +48,7 @@ public final class AlignContent {
    * @param name name of align-content element.
    * @return existing align-content element or null.
    */
-  public static AlignContent find(String name) {
-    Objects.requireNonNull(name);
+  public static AlignContent find(@NonNull String name) {
     return VALUES.get(name.toLowerCase());
   }
 
@@ -65,43 +67,7 @@ public final class AlignContent {
    * @param name align-content name.
    * @return true if there is a align-content value wth specified name.
    */
-  public static boolean contains(String name) {
-    if (name == null) {
-      return false;
-    }
-    return values().stream().map(AlignContent::getName).anyMatch(v -> v.equalsIgnoreCase(name));
-  }
-
-  /**
-   * Name of align-content.
-   *
-   * @return
-   */
-  public String getName() {
-    return name;
-  }
-
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) {
-      return true;
-    }
-    if (o == null || getClass() != o.getClass()) {
-      return false;
-    }
-    AlignContent alignContent = (AlignContent) o;
-    return Objects.equals(name, alignContent.name);
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hash(name);
-  }
-
-  @Override
-  public String toString() {
-    return new StringJoiner(", ", AlignContent.class.getSimpleName() + "[", "]")
-        .add("name='" + name + "'")
-        .toString();
+  public static boolean contains(@NonNull String name) {
+    return values().stream().map(AlignContent::name).anyMatch(v -> v.equalsIgnoreCase(name));
   }
 }

@@ -1,12 +1,20 @@
 package com.spinyowl.spinygui.core.node.style.types.flex;
 
 import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
-import java.util.StringJoiner;
 import java.util.concurrent.ConcurrentHashMap;
+import lombok.AccessLevel;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
+import lombok.ToString;
 
 /** Specifies the alignment for selected items inside a flexible container. */
+@Getter
+@ToString
+@EqualsAndHashCode
+@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public final class AlignSelf {
 
   private static final Map<String, AlignSelf> VALUES = new ConcurrentHashMap<>();
@@ -27,14 +35,9 @@ public final class AlignSelf {
   /** The element is positioned at the baseline of the container. */
   public static final AlignSelf BASELINE = AlignSelf.create("baseline");
 
-  private final String name;
+  @NonNull private final String name;
 
-  private AlignSelf(String name) {
-    this.name = name;
-  }
-
-  private static AlignSelf create(String name) {
-    Objects.requireNonNull(name);
+  private static AlignSelf create(@NonNull String name) {
     return VALUES.computeIfAbsent(name.toLowerCase(), AlignSelf::new);
   }
 
@@ -45,8 +48,7 @@ public final class AlignSelf {
    * @param name name of align-self element.
    * @return existing align-content element or null.
    */
-  public static AlignSelf find(String name) {
-    Objects.requireNonNull(name);
+  public static AlignSelf find(@NonNull String name) {
     return VALUES.get(name.toLowerCase());
   }
 
@@ -65,43 +67,7 @@ public final class AlignSelf {
    * @param name align-self name.
    * @return true if there is a align-self value wth specified name.
    */
-  public static boolean contains(String name) {
-    if (name == null) {
-      return false;
-    }
-    return values().stream().map(AlignSelf::getName).anyMatch(v -> v.equalsIgnoreCase(name));
-  }
-
-  /**
-   * Name of align-self.
-   *
-   * @return
-   */
-  public String getName() {
-    return name;
-  }
-
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) {
-      return true;
-    }
-    if (o == null || getClass() != o.getClass()) {
-      return false;
-    }
-    AlignSelf alignSelf = (AlignSelf) o;
-    return Objects.equals(name, alignSelf.name);
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hash(name);
-  }
-
-  @Override
-  public String toString() {
-    return new StringJoiner(", ", AlignSelf.class.getSimpleName() + "[", "]")
-        .add("name='" + name + "'")
-        .toString();
+  public static boolean contains(@NonNull String name) {
+    return values().stream().map(AlignSelf::name).anyMatch(v -> v.equalsIgnoreCase(name));
   }
 }

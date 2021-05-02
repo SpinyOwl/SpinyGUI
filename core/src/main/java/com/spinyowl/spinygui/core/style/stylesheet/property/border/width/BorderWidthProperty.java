@@ -15,11 +15,12 @@ public class BorderWidthProperty extends Property<Border> {
   public static final String MEDIUM = "medium";
   public static final String THICK = "thick";
 
-  public static final Length THIN_VALUE = Length.pixel(2);
-  public static final Length MEDIUM_VALUE = Length.pixel(4);
-  public static final Length THICK_VALUE = Length.pixel(6);
+  public static final Length<Integer> THIN_VALUE = Length.pixel(2);
+  public static final Length<Integer> MEDIUM_VALUE = Length.pixel(4);
+  public static final Length<Integer> THICK_VALUE = Length.pixel(6);
 
-  private static ValueExtractor<Length> extractor = ValueExtractors.of(Length.class);
+  @SuppressWarnings("rawtypes")
+  private static final ValueExtractor<Length> extractor = ValueExtractors.of(Length.class);
 
   public BorderWidthProperty() {
     super(
@@ -34,7 +35,7 @@ public class BorderWidthProperty extends Property<Border> {
   }
 
   protected static Border extract(String value) {
-    Border b = new Border();
+    var b = new Border();
     String[] v = value.split("\\s+");
     if (v.length == 1) {
       b.width(extractOne(v[0]));
@@ -48,18 +49,15 @@ public class BorderWidthProperty extends Property<Border> {
     return b;
   }
 
+  @SuppressWarnings("rawtypes")
   public static Length extractOne(String value) {
-    Length v = null;
-    if (THIN.equalsIgnoreCase(value)) {
-      v = THIN_VALUE;
-    } else if (MEDIUM.equalsIgnoreCase(value)) {
-      v = MEDIUM_VALUE;
-    } else if (THICK.equalsIgnoreCase(value)) {
-      v = THICK_VALUE;
-    } else {
-      v = extractor.extract(value);
-    }
-    return v;
+    String lowerCaseValue = value.toLowerCase();
+    return switch (lowerCaseValue) {
+      case THIN -> THIN_VALUE;
+      case MEDIUM -> MEDIUM_VALUE;
+      case THICK -> THICK_VALUE;
+      default -> extractor.extract(lowerCaseValue);
+    };
   }
 
   public static boolean testOne(String borderWidth) {

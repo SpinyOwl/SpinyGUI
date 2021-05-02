@@ -30,7 +30,7 @@ public class OtherMain {
   }
 
   public static void createFromCSS() {
-    String css = """
+    var css = """
         @font-face {
             font-family: My Font Family;
             src: local("some-font.ttf");
@@ -66,7 +66,7 @@ public class OtherMain {
     testLabel.hovered(true);
     assert (ruleSets.get(1).test(testLabel));
 
-    Frame frame = new Frame();
+    var frame = new Frame();
     frame.styleSheets().add(stylesheet);
     frame.addChild(div);
 
@@ -160,7 +160,7 @@ public class OtherMain {
 
   public static void parseText() {
     var xml = "<div>just a text</div>";
-    DefaultNodeConverter nodeConverter = new DefaultNodeConverter();
+    var nodeConverter = new DefaultNodeConverter();
     var componentTree = nodeConverter.fromXml(xml);
     log.info("Component tree: {}", nodeConverter.toXml(componentTree));
   }

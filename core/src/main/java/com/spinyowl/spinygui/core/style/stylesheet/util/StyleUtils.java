@@ -11,7 +11,7 @@ public final class StyleUtils {
 
   public static NodeStyle getParentCalculatedStyle(Element element) {
     Objects.requireNonNull(element);
-    Element parent = element.parent();
+    var parent = element.parent();
     if (parent == null) {
       return null;
     }

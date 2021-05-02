@@ -16,7 +16,7 @@ public class IntegerExtractor implements ValueExtractor<Integer> {
     if (value.isEmpty()) {
       return false;
     }
-    for (int i = 0; i < value.length(); i++) {
+    for (var i = 0; i < value.length(); i++) {
       if (i == 0 && value.charAt(i) == '-') {
         if (value.length() == 1) {
           return false;

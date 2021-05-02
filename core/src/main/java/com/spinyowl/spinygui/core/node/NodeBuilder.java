@@ -47,7 +47,7 @@ public final class NodeBuilder {
    * @return button with specified child nodes.
    */
   public static Element button(Node... nodes) {
-    Element button = new Element(NODE_BUTTON);
+    var button = new Element(NODE_BUTTON);
     if (nodes != null) {
       for (Node node : nodes) {
         button.addChild(node);
@@ -137,7 +137,7 @@ public final class NodeBuilder {
    * @return label with specified child nodes.
    */
   public static Element label(Node... nodes) {
-    Element label = new Element(NODE_LABEL);
+    var label = new Element(NODE_LABEL);
     for (Node node : nodes) {
       label.addChild(node);
     }
@@ -162,7 +162,7 @@ public final class NodeBuilder {
    * @return div with specified child nodes.
    */
   public static Element div(Node... nodes) {
-    Element div = new Element(NODE_DIV);
+    var div = new Element(NODE_DIV);
     for (Node node : nodes) {
       div.addChild(node);
     }

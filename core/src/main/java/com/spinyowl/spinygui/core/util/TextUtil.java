@@ -39,7 +39,7 @@ public final class TextUtil {
 
     int next = current;
     boolean word;
-    boolean startedWord = false;
+    var startedWord = false;
     while (next < length) {
       int i = Arrays.binarySearch(wordBreakers, text.charAt(next));
       // if char at (next) is not word breaker
@@ -70,7 +70,7 @@ public final class TextUtil {
 
     int prev = current;
     boolean word;
-    boolean startedWord = false;
+    var startedWord = false;
     while (prev > 0) {
       int i = Arrays.binarySearch(wordBreakers, text.charAt(prev - 1));
       // if char at (prev) is word breaker

@@ -28,7 +28,7 @@ public class BorderColorProperty extends Property<Border> {
 
   private static Border extract(String value) {
     String[] values = value.split("\\s+");
-    Border border = new Border();
+    var border = new Border();
     if (values.length == 1) {
       border.color(extractor.extract(values[0]));
     } else if (values.length == 2) {

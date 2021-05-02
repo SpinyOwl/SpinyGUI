@@ -17,6 +17,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public final class ValueExtractors {
 
+  @SuppressWarnings("rawtypes")
   private static final Map<Class, ValueExtractor> valueExtractorMap = new ConcurrentHashMap<>();
 
   static {
@@ -32,7 +33,7 @@ public final class ValueExtractors {
       @SuppressWarnings("unchecked")
       Class<ValueExtractor<?>> clazz = (Class<ValueExtractor<?>>) classInfo.loadClass();
       Priority annotation = clazz.getAnnotation(Priority.class);
-      int priority = 0;
+      var priority = 0;
       if (annotation != null) {
         priority = annotation.value();
       }
@@ -54,7 +55,7 @@ public final class ValueExtractors {
     }
 
     for (var entry : extractorsToAdd.entrySet()) {
-      Class clazz = entry.getKey();
+      var clazz = entry.getKey();
       var list = entry.getValue();
       if (list.size() > 1) {
         list.sort(Comparator.comparingInt(o -> -o.priority()));

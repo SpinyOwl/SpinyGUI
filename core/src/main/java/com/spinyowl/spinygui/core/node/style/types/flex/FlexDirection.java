@@ -1,12 +1,20 @@
 package com.spinyowl.spinygui.core.node.style.types.flex;
 
 import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
-import java.util.StringJoiner;
 import java.util.concurrent.ConcurrentHashMap;
+import lombok.AccessLevel;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
+import lombok.ToString;
 
 /** Specifies the direction of the flexible items */
+@Getter
+@ToString
+@EqualsAndHashCode
+@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public final class FlexDirection {
 
   private static final Map<String, FlexDirection> VALUES = new ConcurrentHashMap<>();
@@ -20,14 +28,9 @@ public final class FlexDirection {
   /** Same as column, but in reverse order. */
   public static final FlexDirection COLUMN_REVERSE = FlexDirection.create("column-reverse");
 
-  private final String name;
+  @NonNull private final String name;
 
-  private FlexDirection(String name) {
-    this.name = name;
-  }
-
-  private static FlexDirection create(String name) {
-    Objects.requireNonNull(name);
+  private static FlexDirection create(@NonNull String name) {
     return VALUES.computeIfAbsent(name.toLowerCase(), FlexDirection::new);
   }
 
@@ -39,8 +42,7 @@ public final class FlexDirection {
    * @param name name of flex-direction element.
    * @return existing align-content element or null.
    */
-  public static FlexDirection find(String name) {
-    Objects.requireNonNull(name);
+  public static FlexDirection find(@NonNull String name) {
     return VALUES.get(name.toLowerCase());
   }
 
@@ -59,43 +61,7 @@ public final class FlexDirection {
    * @param name flex-direction name.
    * @return true if there is a flex-direction value wth specified name.
    */
-  public static boolean contains(String name) {
-    if (name == null) {
-      return false;
-    }
-    return values().stream().map(FlexDirection::getName).anyMatch(v -> v.equalsIgnoreCase(name));
-  }
-
-  /**
-   * Name of flex-direction.
-   *
-   * @return
-   */
-  public String getName() {
-    return name;
-  }
-
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) {
-      return true;
-    }
-    if (o == null || getClass() != o.getClass()) {
-      return false;
-    }
-    FlexDirection flexDirection = (FlexDirection) o;
-    return Objects.equals(name, flexDirection.name);
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hash(name);
-  }
-
-  @Override
-  public String toString() {
-    return new StringJoiner(", ", FlexDirection.class.getSimpleName() + "[", "]")
-        .add("name='" + name + "'")
-        .toString();
+  public static boolean contains(@NonNull String name) {
+    return values().stream().map(FlexDirection::name).anyMatch(v -> v.equalsIgnoreCase(name));
   }
 }

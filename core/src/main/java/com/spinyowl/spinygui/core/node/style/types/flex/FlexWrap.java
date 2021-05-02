@@ -1,12 +1,20 @@
 package com.spinyowl.spinygui.core.node.style.types.flex;
 
 import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
-import java.util.StringJoiner;
 import java.util.concurrent.ConcurrentHashMap;
+import lombok.AccessLevel;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
+import lombok.ToString;
 
 /** Specifies whether the flexible items should wrap or not. */
+@Getter
+@ToString
+@EqualsAndHashCode
+@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public final class FlexWrap {
 
   private static final Map<String, FlexWrap> VALUES = new ConcurrentHashMap<>();
@@ -18,14 +26,9 @@ public final class FlexWrap {
   /** Specifies that the flexible items will wrap, if necessary, in reverse order. */
   public static final FlexWrap WRAP_REVERSE = FlexWrap.create("wrap-reverse");
 
-  private final String name;
+  @NonNull private final String name;
 
-  private FlexWrap(String name) {
-    this.name = name;
-  }
-
-  private static FlexWrap create(String name) {
-    Objects.requireNonNull(name);
+  private static FlexWrap create(@NonNull String name) {
     return VALUES.computeIfAbsent(name.toLowerCase(), FlexWrap::new);
   }
 
@@ -36,8 +39,7 @@ public final class FlexWrap {
    * @param name name of flex-wrap element.
    * @return existing align-content element or null.
    */
-  public static FlexWrap find(String name) {
-    Objects.requireNonNull(name);
+  public static FlexWrap find(@NonNull String name) {
     return VALUES.get(name.toLowerCase());
   }
 
@@ -56,43 +58,7 @@ public final class FlexWrap {
    * @param name flex-wrap name.
    * @return true if there is a flex-wrap value wth specified name.
    */
-  public static boolean contains(String name) {
-    if (name == null) {
-      return false;
-    }
-    return values().stream().map(FlexWrap::getName).anyMatch(v -> v.equalsIgnoreCase(name));
-  }
-
-  /**
-   * Name of flex-wrap.
-   *
-   * @return
-   */
-  public String getName() {
-    return name;
-  }
-
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) {
-      return true;
-    }
-    if (o == null || getClass() != o.getClass()) {
-      return false;
-    }
-    FlexWrap flexWrap = (FlexWrap) o;
-    return Objects.equals(name, flexWrap.name);
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hash(name);
-  }
-
-  @Override
-  public String toString() {
-    return new StringJoiner(", ", FlexWrap.class.getSimpleName() + "[", "]")
-        .add("name='" + name + "'")
-        .toString();
+  public static boolean contains(@NonNull String name) {
+    return values().stream().map(FlexWrap::name).anyMatch(v -> v.equalsIgnoreCase(name));
   }
 }

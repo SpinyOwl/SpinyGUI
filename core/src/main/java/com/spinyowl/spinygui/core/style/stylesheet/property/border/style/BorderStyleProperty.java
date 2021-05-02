@@ -25,7 +25,7 @@ public class BorderStyleProperty extends Property<Border> {
 
   private static Border extract(String value) {
     String[] v = value.split("\\s+");
-    Border border = new Border();
+    var border = new Border();
     if (v.length == 1) {
       border.style(x(v[0]));
     } else if (v.length == 2) {

@@ -26,7 +26,7 @@ public class AdjacentSiblingSelector extends CombinatorSelector {
     if (!second.test(element)) {
       return false;
     }
-    Element previous = element.previousElementSibling();
+    var previous = element.previousElementSibling();
     return previous != null && first.test(previous);
   }
 }

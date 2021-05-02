@@ -23,7 +23,7 @@ public class DescendantSelector extends CombinatorSelector {
     if (!componentTest) {
       return false;
     }
-    Element parent = element.parent();
+    var parent = element.parent();
     while (parent != null) {
       if (first.test(parent)) {
         return true;

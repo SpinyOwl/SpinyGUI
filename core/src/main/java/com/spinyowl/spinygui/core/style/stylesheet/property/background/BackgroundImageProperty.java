@@ -31,7 +31,7 @@ public class BackgroundImageProperty extends Property<String> {
     if (!trim.startsWith("url(") || !trim.endsWith(")")) {
       return false;
     }
-    String cut = trim.substring(4, trim.length() - 1);
+    var cut = trim.substring(4, trim.length() - 1);
 
     return escaped(cut, "\"") || escaped(cut, "'") || (!cut.contains("\"") && !cut.contains("'"));
   }
