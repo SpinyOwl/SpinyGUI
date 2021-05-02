@@ -1,14 +1,10 @@
 package com.spinyowl.spinygui.core.event;
 
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NonNull;
-import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 
-@Getter
-@EqualsAndHashCode
-@ToString
+@Data
 @SuperBuilder
 public class CharEvent extends Event {
 

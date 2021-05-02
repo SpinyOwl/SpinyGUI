@@ -64,6 +64,12 @@ public class Frame extends Element {
     return getListeners(WindowCloseEvent.class);
   }
 
+  /**
+   * Used to search focused element. If there are more - returns first in the tree. Note that system
+   * will use only first focused element.
+   *
+   * @return first focused element (whose {@link #focused()} is true).
+   */
   public Element getFocusedElement() {
     return findFocused(this);
   }

@@ -1,5 +1,6 @@
 package com.spinyowl.spinygui.core.system.event;
 
+import com.google.common.collect.ImmutableSet;
 import com.spinyowl.spinygui.core.input.KeyAction;
 import com.spinyowl.spinygui.core.input.KeyMod;
 import com.spinyowl.spinygui.core.input.MouseButton;
@@ -26,5 +27,5 @@ public class SystemMouseClickEvent extends SystemEvent {
   private final KeyAction action;
 
   /** Describes which modifier keys were held down. */
-  @NonNull private final KeyMod[] mods;
+  @NonNull private final ImmutableSet<KeyMod> mods;
 }

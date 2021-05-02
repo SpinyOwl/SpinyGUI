@@ -1,15 +1,11 @@
 package com.spinyowl.spinygui.core.event;
 
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NonNull;
-import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 import org.joml.Vector2f;
 
-@Getter
-@EqualsAndHashCode
-@ToString
+@Data
 @SuperBuilder
 public class ChangePositionEvent extends Event {
 

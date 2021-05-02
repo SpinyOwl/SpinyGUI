@@ -1,15 +1,11 @@
 package com.spinyowl.spinygui.core.event;
 
 import com.google.common.collect.ImmutableList;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NonNull;
-import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 
-@Getter
-@EqualsAndHashCode
-@ToString
+@Data
 @SuperBuilder
 public class DropEvent extends Event {
 

@@ -22,9 +22,11 @@ public class DefaultEventProcessor implements EventProcessor {
 
     for (var event : events) {
       EventTarget target = event.target();
-      var listeners = target.getListeners(event.getClass());
-      for (EventListener listener : listeners) {
-        listener.process(event);
+      if (target != null) {
+        var listeners = target.getListeners(event.getClass());
+        for (EventListener listener : listeners) {
+          listener.process(event);
+        }
       }
     }
 

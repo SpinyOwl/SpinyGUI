@@ -3,5 +3,6 @@ package com.spinyowl.spinygui.core.input;
 public enum KeyAction {
   PRESS,
   RELEASE,
-  REPEAT
+  REPEAT,
+  CLICK // applicable to mouse keys
 }

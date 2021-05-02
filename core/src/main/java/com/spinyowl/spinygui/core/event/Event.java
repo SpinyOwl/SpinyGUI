@@ -1,23 +1,17 @@
 package com.spinyowl.spinygui.core.event;
 
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NonNull;
-import lombok.Setter;
-import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 
-@Getter
-@Setter
-@EqualsAndHashCode
-@ToString
+@Data
 @SuperBuilder
 public abstract class Event {
 
   /** Element which cause event generation. */
   @NonNull private final EventTarget source;
   /** Target element to which the event was originally dispatched. */
-  @NonNull private final EventTarget target;
+  private final EventTarget target;
   /** Timestamp of event. */
   private final double timestamp;
 

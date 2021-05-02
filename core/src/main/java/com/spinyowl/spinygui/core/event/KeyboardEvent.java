@@ -4,15 +4,11 @@ import com.spinyowl.spinygui.core.input.KeyAction;
 import com.spinyowl.spinygui.core.input.KeyMod;
 import com.spinyowl.spinygui.core.input.KeyboardKey;
 import java.util.Set;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.ToString;
+import lombok.Data;
 import lombok.experimental.SuperBuilder;
 
 /** Created by ShchAlexander on 2/13/2017. */
-@Getter
-@ToString
-@EqualsAndHashCode
+@Data
 @SuperBuilder
 public class KeyboardEvent extends Event {
 
