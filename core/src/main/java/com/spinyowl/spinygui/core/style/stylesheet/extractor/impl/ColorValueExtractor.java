@@ -18,7 +18,7 @@ import com.spinyowl.spinygui.core.style.stylesheet.extractor.ValueExtractorExcep
  */
 public class ColorValueExtractor implements ValueExtractor<Color> {
 
-  public static final String SEPARATOR = "\\s*?,\\s*?";
+  public static final String SEPARATOR = ",";
 
   private static final String HEX_STRING_REGEX =
       "#([0-9a-fA-F]{3}|[0-9a-fA-F]{4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})";
@@ -55,7 +55,7 @@ public class ColorValueExtractor implements ValueExtractor<Color> {
       return null;
     }
 
-    Color color = Color.get(value);
+    var color = Color.get(value);
     if (color != null) {
       return color;
     }
