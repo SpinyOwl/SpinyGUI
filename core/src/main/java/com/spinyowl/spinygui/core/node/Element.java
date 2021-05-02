@@ -1,10 +1,10 @@
 package com.spinyowl.spinygui.core.node;
 
+import static com.spinyowl.spinygui.core.util.Reference.containsReference;
 import com.spinyowl.spinygui.core.event.Event;
 import com.spinyowl.spinygui.core.event.EventTarget;
 import com.spinyowl.spinygui.core.event.listener.EventListener;
 import com.spinyowl.spinygui.core.node.style.NodeStyle;
-import com.spinyowl.spinygui.core.util.Reference;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
@@ -156,7 +156,7 @@ public class Element extends Node implements EventTarget {
    */
   @Override
   public void addChild(@NonNull Node node) {
-    if (node == this || Reference.contains(childNodes, node)) {
+    if (node == this || containsReference(childNodes, node)) {
       return;
     }
 

@@ -7,7 +7,7 @@ public final class Reference {
 
   private Reference() {}
 
-  public static <T> boolean contains(Collection<T> collection, T element) {
+  public static <T> boolean containsReference(Collection<T> collection, T element) {
     Objects.requireNonNull(collection);
     for (T elementOfCollection : collection) {
       if (elementOfCollection == element) {
