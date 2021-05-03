@@ -10,6 +10,7 @@ import com.spinyowl.spinygui.core.node.Frame;
 import com.spinyowl.spinygui.core.node.Node;
 import com.spinyowl.spinygui.core.parser.NodeConverter;
 import com.spinyowl.spinygui.core.parser.impl.DefaultNodeConverter;
+import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -28,10 +29,14 @@ public class Main {
     NodeConverter nodeConverter = new DefaultNodeConverter();
     Node element = div(
         button(
+            Map.of(
+                "name", "myAwesomeButton",
+                "id", "bid1"
+            ),
             text("\n\n\tFOrmantted text\n\t\n\n asdfasdfa\n"),
             div(text("Bold")),
             button(text("\n\n\tFOrmantted text\n\t\n\n asdfasdfa\n"))
-        ).with("name", "myAwesomeButton").with("id", "bid1"),
+        ),
         input(TYPE_PASSWORD, "myPass", "PASS_@!@#&"),
         radioButton("radio", "firstValue")
     );

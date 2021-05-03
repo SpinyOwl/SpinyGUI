@@ -1,6 +1,7 @@
 package com.spinyowl.spinygui.core.system.event.listener;
 
 import com.spinyowl.spinygui.core.event.KeyboardEvent;
+import com.spinyowl.spinygui.core.input.KeyAction;
 import com.spinyowl.spinygui.core.input.Keyboard;
 import com.spinyowl.spinygui.core.input.KeyboardKey;
 import com.spinyowl.spinygui.core.node.Frame;
@@ -32,9 +33,17 @@ public class SystemKeyEventListener extends AbstractSystemEventListener<SystemKe
               .target(element)
               .key(key)
               .timestamp(timeService.getCurrentTime())
-              .mods(event.mods())
-              .action(event.action())
+              .mods(event.mappedMods())
+              .action(getAction(event))
               .build());
     }
+  }
+
+  private KeyAction getAction(SystemKeyEvent event) {
+    return switch (event.action()) {
+      case PRESS -> KeyAction.PRESS;
+      case RELEASE -> KeyAction.RELEASE;
+      case REPEAT -> KeyAction.REPEAT;
+    };
   }
 }

@@ -41,6 +41,31 @@ public final class NodeBuilder {
   private NodeBuilder() {}
 
   /**
+   * Creates frame with provided child nodes.
+   *
+   * @param nodes child nodes to add.
+   * @return frame with specified child nodes.
+   */
+  public static Frame frame(Node... nodes) {
+    var div = new Frame();
+    for (Node node : nodes) {
+      div.addChild(node);
+    }
+    return div;
+  }
+
+  /**
+   * Creates frame with specified attributes and child nodes.
+   *
+   * @param attributes attributes to add.
+   * @param nodes child nodes to add.
+   * @return frame with specified attributes and child nodes.
+   */
+  public static Frame frame(Map<String, String> attributes, Node... nodes) {
+    return addAttributes(frame(nodes), attributes);
+  }
+
+  /**
    * Creates button element with provided child nodes.
    *
    * @param nodes child nodes to add.

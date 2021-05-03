@@ -14,6 +14,7 @@ import com.spinyowl.spinygui.core.input.KeyboardLayout;
 import com.spinyowl.spinygui.core.node.Element;
 import com.spinyowl.spinygui.core.node.Frame;
 import com.spinyowl.spinygui.core.system.event.SystemKeyEvent;
+import com.spinyowl.spinygui.core.system.input.SystemKeyAction;
 import com.spinyowl.spinygui.core.time.TimeService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -57,7 +58,7 @@ class SystemKeyEventListenerTest {
         SystemKeyEvent.builder()
             .keyCode(keyCode)
             .scancode(scancode)
-            .action(PRESS)
+            .action(SystemKeyAction.PRESS)
             .mods(ImmutableSet.of())
             .window(1)
             .build();

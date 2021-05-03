@@ -1,8 +1,10 @@
 package com.spinyowl.spinygui.core.system.event;
 
+import static com.google.common.collect.ImmutableSet.toImmutableSet;
 import com.google.common.collect.ImmutableSet;
-import com.spinyowl.spinygui.core.input.KeyAction;
 import com.spinyowl.spinygui.core.input.KeyMod;
+import com.spinyowl.spinygui.core.system.input.SystemKeyAction;
+import com.spinyowl.spinygui.core.system.input.SystemKeyMod;
 import lombok.Data;
 import lombok.NonNull;
 import lombok.experimental.SuperBuilder;
@@ -28,13 +30,17 @@ public class SystemKeyEvent extends SystemEvent {
    * The key action. One of:
    *
    * <ul>
-   *   <li>{@link KeyAction#PRESS PRESS}
-   *   <li>{@link KeyAction#RELEASE RELEASE}
-   *   <li>{@link KeyAction#REPEAT REPEAT}
+   *   <li>{@link SystemKeyAction#PRESS PRESS}
+   *   <li>{@link SystemKeyAction#RELEASE RELEASE}
+   *   <li>{@link SystemKeyAction#REPEAT REPEAT}
    * </ul>
    */
-  @NonNull private final KeyAction action;
+  @NonNull private final SystemKeyAction action;
 
   /** Describes which modifier keys were held down. */
-  @NonNull private final ImmutableSet<KeyMod> mods;
+  @NonNull private final ImmutableSet<SystemKeyMod> mods;
+
+  public ImmutableSet<KeyMod> mappedMods() {
+    return mods.stream().map(SystemKeyMod::keyMod).collect(toImmutableSet());
+  }
 }

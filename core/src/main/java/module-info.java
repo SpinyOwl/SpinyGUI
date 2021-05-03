@@ -48,6 +48,7 @@ open module com.spinyowl.spinygui.core {
   exports com.spinyowl.spinygui.core.system.event.listener;
   exports com.spinyowl.spinygui.core.system.event.processor;
   exports com.spinyowl.spinygui.core.system.event.provider;
+  exports com.spinyowl.spinygui.core.system.input;
   exports com.spinyowl.spinygui.core.style.manager;
   exports com.spinyowl.spinygui.core.time;
   exports com.spinyowl.spinygui.core.util;

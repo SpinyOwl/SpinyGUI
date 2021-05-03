@@ -7,7 +7,7 @@ import lombok.experimental.SuperBuilder;
 
 @Data
 @SuperBuilder(toBuilder = true)
-public class DropEvent extends Event {
+public class FileDropEvent extends Event {
 
   @NonNull private final ImmutableList<String> paths;
 }

@@ -4,12 +4,12 @@ import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import com.google.common.collect.ImmutableList;
-import com.spinyowl.spinygui.core.event.DropEvent;
+import com.spinyowl.spinygui.core.event.FileDropEvent;
 import com.spinyowl.spinygui.core.event.processor.EventProcessor;
 import com.spinyowl.spinygui.core.input.MouseService;
 import com.spinyowl.spinygui.core.input.MouseService.CursorPositions;
 import com.spinyowl.spinygui.core.node.Frame;
-import com.spinyowl.spinygui.core.system.event.SystemDropEvent;
+import com.spinyowl.spinygui.core.system.event.SystemFileDropEvent;
 import com.spinyowl.spinygui.core.time.TimeService;
 import org.joml.Vector2f;
 import org.junit.jupiter.api.BeforeEach;
@@ -19,18 +19,18 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
-class SystemDropEventListenerTest {
+class SystemFileDropEventListenerTest {
 
   @Mock private EventProcessor eventProcessor;
   @Mock private TimeService timeService;
   @Mock private MouseService mouseService;
 
-  private SystemEventListener<SystemDropEvent> systemDropEventListener;
+  private SystemEventListener<SystemFileDropEvent> systemDropEventListener;
 
   @BeforeEach
   void setUp() {
     systemDropEventListener =
-        SystemDropEventListener.builder()
+        SystemFileDropEventListener.builder()
             .eventProcessor(eventProcessor)
             .timeService(timeService)
             .mouseService(mouseService)
@@ -49,20 +49,20 @@ class SystemDropEventListenerTest {
     when(mouseService.getCursorPositions(frame)).thenReturn(cursorPositions);
 
     ImmutableList<String> paths = ImmutableList.of("first", "second");
-    SystemDropEvent systemDropEvent = SystemDropEvent.builder().paths(paths).build();
+    SystemFileDropEvent systemFileDropEvent = SystemFileDropEvent.builder().paths(paths).build();
 
     double timestamp = 1D;
     when(timeService.getCurrentTime()).thenReturn(timestamp);
-    DropEvent expectedDropEvent =
-        DropEvent.builder().source(frame).target(frame).timestamp(timestamp).paths(paths).build();
-    doNothing().when(eventProcessor).push(expectedDropEvent);
+    FileDropEvent expectedFileDropEvent =
+        FileDropEvent.builder().source(frame).target(frame).timestamp(timestamp).paths(paths).build();
+    doNothing().when(eventProcessor).push(expectedFileDropEvent);
 
     // Act
-    systemDropEventListener.process(systemDropEvent, frame);
+    systemDropEventListener.process(systemFileDropEvent, frame);
 
     // Verify
     verify(timeService).getCurrentTime();
     verify(mouseService).getCursorPositions(frame);
-    verify(eventProcessor).push(expectedDropEvent);
+    verify(eventProcessor).push(expectedFileDropEvent);
   }
 }

@@ -155,8 +155,9 @@ public abstract class Node {
    * @param x node x position in coordinates of parent node.
    * @param y node y position in coordinates of parent node.
    */
-  public void position(float x, float y) {
+  public Node position(float x, float y) {
     this.position.set(x, y);
+    return this;
   }
 
   /**
@@ -167,8 +168,9 @@ public abstract class Node {
    * @param width node width.
    * @param height node height.
    */
-  public void size(float width, float height) {
+  public Node size(float width, float height) {
     this.size.set(width, height);
+    return this;
   }
 
   /**
@@ -203,17 +205,6 @@ public abstract class Node {
   public abstract boolean hasAttributes();
 
   public abstract Map<String, String> attributes();
-
-  /**
-   * Chain method to set attribute.
-   *
-   * @param key attribute name.
-   * @param value attribute value.
-   */
-  public Node with(String key, String value) {
-    setAttribute(key, value);
-    return this;
-  }
 
   public Frame frame() {
     return parent == null ? null : parent.frame();
