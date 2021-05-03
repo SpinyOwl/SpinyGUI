@@ -8,23 +8,38 @@ class ClassKeyMapTest {
 
   // Key classes
   private static class A {}
+
   private static class B extends A {}
+
   private static class C extends A {}
+
   private static class D extends B {}
+
   private static class E extends B {}
+
   private static class F extends B {}
+
   private static class G extends D {}
+
   private static class H extends E {}
+
   private static class I extends A {}
 
   // Value classes
-  private static abstract class P<T extends A> {
-    String execute(T source) { return source.getClass().getSimpleName() + this.getClass().getSimpleName(); }
+  private abstract static class P<T extends A> {
+    String execute(T source) {
+      return source.getClass().getSimpleName() + this.getClass().getSimpleName();
+    }
   }
+
   private static class Q extends P<A> {}
+
   private static class R extends P<B> {}
+
   private static class S extends P<C> {}
+
   private static class T extends P<D> {}
+
   private static class U extends P<E> {}
 
   private final ClassKeyMap<A, P<? extends A>> classKeyMap = new ClassKeyMap<>(A.class);
@@ -65,22 +80,30 @@ class ClassKeyMapTest {
 
   @Test
   void testClassKeyMap_for_C_returns_S_andExecutionIs_FR() {
-    test("FR", new F());
+    F source = new F();
+    test("FR", source);
+    Assertions.assertNull(classKeyMap.get(source.getClass()));
   }
 
   @Test
   void testClassKeyMap_for_C_returns_S_andExecutionIs_GT() {
-    test("GT", new G());
+    G source = new G();
+    test("GT", source);
+    Assertions.assertNull(classKeyMap.get(source.getClass()));
   }
 
   @Test
   void testClassKeyMap_for_C_returns_S_andExecutionIs_HU() {
-    test("HU", new H());
+    H source = new H();
+    test("HU", source);
+    Assertions.assertNull(classKeyMap.get(source.getClass()));
   }
 
   @Test
   void testClassKeyMap_for_C_returns_S_andExecutionIs_IQ() {
-    test("IQ", new I());
+    I source = new I();
+    test("IQ", source);
+    Assertions.assertNull(classKeyMap.get(source.getClass()));
   }
 
   private void test(String expected, A source) {
