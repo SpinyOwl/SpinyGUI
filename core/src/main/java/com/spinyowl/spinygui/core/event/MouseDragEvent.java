@@ -5,7 +5,7 @@ import lombok.experimental.SuperBuilder;
 import org.joml.Vector2fc;
 
 @Data
-@SuperBuilder
+@SuperBuilder(toBuilder = true)
 public class MouseDragEvent extends Event {
   private final Vector2fc delta;
 }

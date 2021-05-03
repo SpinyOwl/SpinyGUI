@@ -8,5 +8,5 @@ import lombok.experimental.SuperBuilder;
  * if the window has been exposed after having been covered by another window.
  */
 @Data
-@SuperBuilder
+@SuperBuilder(toBuilder = true)
 public class SystemWindowRefreshEvent extends SystemEvent {}

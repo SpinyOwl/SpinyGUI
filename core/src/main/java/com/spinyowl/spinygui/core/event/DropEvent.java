@@ -6,7 +6,7 @@ import lombok.NonNull;
 import lombok.experimental.SuperBuilder;
 
 @Data
-@SuperBuilder
+@SuperBuilder(toBuilder = true)
 public class DropEvent extends Event {
 
   @NonNull private final ImmutableList<String> paths;

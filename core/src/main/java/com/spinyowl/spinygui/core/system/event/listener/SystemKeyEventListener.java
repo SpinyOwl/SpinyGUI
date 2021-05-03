@@ -8,7 +8,7 @@ import com.spinyowl.spinygui.core.system.event.SystemKeyEvent;
 import lombok.NonNull;
 import lombok.experimental.SuperBuilder;
 
-@SuperBuilder
+@SuperBuilder(toBuilder = true)
 public class SystemKeyEventListener extends AbstractSystemEventListener<SystemKeyEvent> {
 
   @NonNull private final Keyboard keyboard;

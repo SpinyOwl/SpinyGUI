@@ -5,7 +5,7 @@ import lombok.Data;
 import lombok.experimental.SuperBuilder;
 
 @Data
-@SuperBuilder
+@SuperBuilder(toBuilder = true)
 public class SystemDropEvent extends SystemEvent {
 
   /** The UTF-8 encoded file and/or directory path names. */

@@ -9,7 +9,7 @@ import lombok.experimental.SuperBuilder;
 
 /** Created by ShchAlexander on 2/13/2017. */
 @Data
-@SuperBuilder
+@SuperBuilder(toBuilder = true)
 public class KeyboardEvent extends Event {
 
   private final KeyAction action;

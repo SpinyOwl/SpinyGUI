@@ -6,7 +6,7 @@ import lombok.experimental.SuperBuilder;
 import org.joml.Vector2f;
 
 @Data
-@SuperBuilder
+@SuperBuilder(toBuilder = true)
 public class ChangeSizeEvent extends Event {
 
   @NonNull private final Vector2f oldSize;

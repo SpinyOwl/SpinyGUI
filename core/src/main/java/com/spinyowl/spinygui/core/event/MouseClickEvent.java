@@ -10,7 +10,7 @@ import lombok.experimental.SuperBuilder;
 import org.joml.Vector2fc;
 
 @Data
-@SuperBuilder
+@SuperBuilder(toBuilder = true)
 public class MouseClickEvent extends Event {
   @NonNull private final KeyAction action;
   @NonNull private final MouseButton mouseButton;

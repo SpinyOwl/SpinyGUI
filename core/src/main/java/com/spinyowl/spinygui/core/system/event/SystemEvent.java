@@ -5,7 +5,7 @@ import lombok.experimental.SuperBuilder;
 
 /** Marker interface that defines tree of system events. */
 @Data
-@SuperBuilder
+@SuperBuilder(toBuilder = true)
 public abstract class SystemEvent {
 
   /** The window that received the event. */

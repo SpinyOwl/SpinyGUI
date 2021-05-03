@@ -8,7 +8,7 @@ import lombok.experimental.SuperBuilder;
  * touchpad.
  */
 @Data
-@SuperBuilder
+@SuperBuilder(toBuilder = true)
 public class SystemScrollEvent extends SystemEvent {
 
   /** The scroll offset along the x-axis. */

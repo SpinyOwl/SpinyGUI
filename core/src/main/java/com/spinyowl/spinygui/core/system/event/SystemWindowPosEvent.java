@@ -5,7 +5,7 @@ import lombok.experimental.SuperBuilder;
 
 /** Will be generated when the specified window moves. */
 @Data
-@SuperBuilder
+@SuperBuilder(toBuilder = true)
 public class SystemWindowPosEvent extends SystemEvent {
 
   /**

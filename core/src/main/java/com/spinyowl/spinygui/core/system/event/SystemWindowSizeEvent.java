@@ -5,7 +5,7 @@ import lombok.experimental.SuperBuilder;
 
 /** Will be generated when the specified window is resized. */
 @Data
-@SuperBuilder
+@SuperBuilder(toBuilder = true)
 public class SystemWindowSizeEvent extends SystemEvent {
 
   /** The new width, in screen coordinates, of the window. */

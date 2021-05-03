@@ -7,7 +7,7 @@ import com.spinyowl.spinygui.core.system.event.SystemWindowCloseEvent;
 import lombok.experimental.SuperBuilder;
 
 /** Generates {@link WindowCloseEvent} for frame and pushes it to {@link EventProcessor}. */
-@SuperBuilder
+@SuperBuilder(toBuilder = true)
 public class SystemWindowsCloseEventListener
     extends AbstractSystemEventListener<SystemWindowCloseEvent> {
 

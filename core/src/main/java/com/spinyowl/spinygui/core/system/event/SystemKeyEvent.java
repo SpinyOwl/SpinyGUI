@@ -9,7 +9,7 @@ import lombok.experimental.SuperBuilder;
 
 /** Will be generated when a key is pressed, repeated or released. */
 @Data
-@SuperBuilder
+@SuperBuilder(toBuilder = true)
 public class SystemKeyEvent extends SystemEvent {
 
   /** The keyboard key that was pressed or released. */

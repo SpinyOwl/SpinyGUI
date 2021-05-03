@@ -9,7 +9,7 @@ import lombok.NonNull;
 import lombok.experimental.SuperBuilder;
 import org.joml.Vector2fc;
 
-@SuperBuilder
+@SuperBuilder(toBuilder = true)
 public class SystemDropEventListener extends AbstractSystemEventListener<SystemDropEvent> {
 
   @NonNull private final MouseService mouseService;

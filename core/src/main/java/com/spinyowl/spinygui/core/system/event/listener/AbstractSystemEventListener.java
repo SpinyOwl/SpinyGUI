@@ -6,7 +6,7 @@ import com.spinyowl.spinygui.core.time.TimeService;
 import lombok.NonNull;
 import lombok.experimental.SuperBuilder;
 
-@SuperBuilder
+@SuperBuilder(toBuilder = true)
 public abstract class AbstractSystemEventListener<E extends SystemEvent>
     implements SystemEventListener<E> {
   /** Event processor to pass generated events to. */

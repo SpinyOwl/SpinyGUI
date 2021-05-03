@@ -8,5 +8,5 @@ import lombok.experimental.SuperBuilder;
  * the close widget in the title bar.
  */
 @Data
-@SuperBuilder
+@SuperBuilder(toBuilder = true)
 public class SystemWindowCloseEvent extends SystemEvent {}

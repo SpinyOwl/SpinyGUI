@@ -16,7 +16,7 @@ import lombok.NonNull;
 import lombok.experimental.SuperBuilder;
 import org.joml.Vector2fc;
 
-@SuperBuilder
+@SuperBuilder(toBuilder = true)
 public class SystemMouseClickEventListener
     extends AbstractSystemEventListener<SystemMouseClickEvent> {
 

@@ -5,7 +5,7 @@ import lombok.experimental.SuperBuilder;
 
 /** Unicode character is input. */
 @Data
-@SuperBuilder
+@SuperBuilder(toBuilder = true)
 public class SystemCharEvent extends SystemEvent {
 
   /** The Unicode code point of the character. */

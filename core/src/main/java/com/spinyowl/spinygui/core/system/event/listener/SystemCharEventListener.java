@@ -6,7 +6,7 @@ import com.spinyowl.spinygui.core.system.event.SystemCharEvent;
 import com.spinyowl.spinygui.core.util.TextUtil;
 import lombok.experimental.SuperBuilder;
 
-@SuperBuilder
+@SuperBuilder(toBuilder = true)
 public class SystemCharEventListener extends AbstractSystemEventListener<SystemCharEvent> {
 
   /**

@@ -16,7 +16,7 @@ import lombok.experimental.SuperBuilder;
 import org.joml.Vector2f;
 import org.joml.Vector2fc;
 
-@SuperBuilder
+@SuperBuilder(toBuilder = true)
 public class SystemCursorPosEventListener
     extends AbstractSystemEventListener<SystemCursorPosEvent> {
 

@@ -10,7 +10,7 @@ import lombok.experimental.SuperBuilder;
 
 /** Will be generated when a mouse button is pressed or released. */
 @Data
-@SuperBuilder
+@SuperBuilder(toBuilder = true)
 public class SystemMouseClickEvent extends SystemEvent {
 
   private final MouseButton button;

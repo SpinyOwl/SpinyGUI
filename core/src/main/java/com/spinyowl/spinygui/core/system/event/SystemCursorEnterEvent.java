@@ -5,7 +5,7 @@ import lombok.experimental.SuperBuilder;
 
 /** Event that generated when the cursor enters or leaves the client area of the window. */
 @Data
-@SuperBuilder
+@SuperBuilder(toBuilder = true)
 public class SystemCursorEnterEvent extends SystemEvent {
 
   /**

@@ -5,7 +5,7 @@ import lombok.experimental.SuperBuilder;
 
 /** Will be generated when the specified window is iconified or restored. */
 @Data
-@SuperBuilder
+@SuperBuilder(toBuilder = true)
 public class SystemWindowIconifyEvent extends SystemEvent {
 
   /** {@code true} if the window was iconified, or {@code false} if it was restored */

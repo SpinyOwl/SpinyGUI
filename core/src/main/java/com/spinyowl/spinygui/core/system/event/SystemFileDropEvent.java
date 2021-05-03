@@ -9,7 +9,7 @@ import lombok.experimental.SuperBuilder;
 
 /** File drop event. Should be generated when one or more files are dropped on the window. */
 @Data
-@SuperBuilder
+@SuperBuilder(toBuilder = true)
 public class SystemFileDropEvent extends SystemEvent {
 
   /** UTF-8 encoded path names of the dropped files. */

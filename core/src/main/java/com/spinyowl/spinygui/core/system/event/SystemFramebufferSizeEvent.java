@@ -5,7 +5,7 @@ import lombok.experimental.SuperBuilder;
 
 /** Will be generated when the framebuffer of the specified window is resized. */
 @Data
-@SuperBuilder
+@SuperBuilder(toBuilder = true)
 public class SystemFramebufferSizeEvent extends SystemEvent {
 
   /** The new width, in pixels, of the framebuffer. */

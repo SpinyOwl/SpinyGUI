@@ -10,7 +10,7 @@ import lombok.experimental.SuperBuilder;
 
 /** Event on Unicode character input regardless of what modifier keys are used. */
 @Data
-@SuperBuilder
+@SuperBuilder(toBuilder = true)
 public class SystemCharModsEvent extends SystemEvent {
 
   /** The Unicode code point of the character. */
