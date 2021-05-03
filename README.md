@@ -4,6 +4,9 @@
 ![License](https://img.shields.io/github/license/SpinyOwl/SpinyGUI.svg)  
 ![Build DEVELOP](https://github.com/SpinyOwl/SpinyGUI/workflows/Build%20DEVELOP/badge.svg)
 
+[![codecov](https://codecov.io/gh/SpinyOwl/SpinyGUI/branch/develop/graph/badge.svg)](https://codecov.io/gh/SpinyOwl/SpinyGUI)  
+[![coverage graph](https://codecov.io/gh/SpinyOwl/SpinyGUI/branch/develop/graphs/icicle.svg)](https://codecov.io/gh/SpinyOwl/SpinyGUI)  
+
 ---
 # SpinyGUI (WIP)
 ---
