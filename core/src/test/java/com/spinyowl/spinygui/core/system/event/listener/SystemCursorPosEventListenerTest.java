@@ -30,10 +30,10 @@ class SystemCursorPosEventListenerTest {
   @Mock private EventProcessor eventProcessor;
   @Mock private TimeService timeService;
 
-  private SystemCursorPosEventListener listener;
+  private SystemEventListener<SystemCursorPosEvent> listener;
 
   @BeforeEach
-  public void setUp() {
+  void setUp() {
     listener =
         SystemCursorPosEventListener.builder()
             .eventProcessor(eventProcessor)
@@ -79,6 +79,9 @@ class SystemCursorPosEventListenerTest {
     listener.process(event, frame);
 
     // Verify
+    verify(mouseService).getCursorPositions(frame);
+    verify(mouseService).setCursorPositions(frame, newCursorPosition);
+
     verify(eventProcessor).push(expectedEnterEvent);
     verify(eventProcessor, times(0)).push(any(CursorExitEvent.class));
     verify(eventProcessor, times(0)).push(any(MouseDragEvent.class));
@@ -121,6 +124,9 @@ class SystemCursorPosEventListenerTest {
     listener.process(event, frame);
 
     // Verify
+    verify(mouseService).getCursorPositions(frame);
+    verify(mouseService).setCursorPositions(frame, newCursorPosition);
+
     verify(eventProcessor).push(expectedExitEvent);
     verify(eventProcessor, times(0)).push(any(CursorEnterEvent.class));
     verify(eventProcessor, times(0)).push(any(MouseDragEvent.class));
@@ -167,6 +173,10 @@ class SystemCursorPosEventListenerTest {
     listener.process(event, frame);
 
     // Verify
+    verify(mouseService).pressed(LEFT);
+    verify(mouseService).getCursorPositions(frame);
+    verify(mouseService).setCursorPositions(frame, newCursorPosition);
+
     verify(eventProcessor, times(1)).push(expectedDragEvent);
     verify(eventProcessor, times(0)).push(any(CursorExitEvent.class));
     verify(eventProcessor, times(0)).push(any(CursorEnterEvent.class));

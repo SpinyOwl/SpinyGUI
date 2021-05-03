@@ -24,10 +24,10 @@ class SystemCharEventListenerTest {
   @Mock private EventProcessor eventProcessor;
   @Mock private TimeService timeService;
 
-  private SystemCharEventListener systemCharEventListener;
+  private SystemEventListener<SystemCharEvent> systemCharEventListener;
 
   @BeforeEach
-  public void setUp() {
+  void setUp() {
     systemCharEventListener =
         SystemCharEventListener.builder()
             .eventProcessor(eventProcessor)
@@ -64,6 +64,7 @@ class SystemCharEventListenerTest {
     systemCharEventListener.process(source, frame);
 
     // Verify
+    verify(timeService).getCurrentTime();
     verify(eventProcessor).push(expected);
   }
 

@@ -1,10 +1,12 @@
 package com.spinyowl.spinygui.core.node.intersection;
 
 import com.spinyowl.spinygui.core.node.Node;
-import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 import org.joml.Vector2fc;
 
-@Data
+@ToString
+@EqualsAndHashCode
 public class RectangleIntersection implements Intersection {
 
   @Override

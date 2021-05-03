@@ -23,7 +23,14 @@ public class SystemDropEventListener extends AbstractSystemEventListener<SystemD
   public void process(SystemDropEvent event, Frame frame) {
     Vector2fc currentMousePosition = mouseService.getCursorPositions(frame).current();
     var targetElement = NodeUtilities.getTargetElement(frame, currentMousePosition);
-    eventProcessor.push(
-        DropEvent.builder().source(frame).target(targetElement).paths(event.paths()).build());
+    if (targetElement != null) {
+      eventProcessor.push(
+          DropEvent.builder()
+              .source(frame)
+              .target(targetElement)
+              .timestamp(timeService.getCurrentTime())
+              .paths(event.paths())
+              .build());
+    }
   }
 }
