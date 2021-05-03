@@ -1,7 +1,7 @@
 ![REPO SIZE](https://img.shields.io/github/repo-size/SpinyOwl/SpinyGUI.svg)
 ![CODE SIZE](https://img.shields.io/github/languages/code-size/SpinyOwl/SpinyGUI.svg)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=SpinyOwl_SpinyGUI&metric=alert_status)](https://sonarcloud.io/dashboard?id=SpinyOwl_SpinyGUI)
-![License](https://img.shields.io/github/license/SpinyOwl/SpinyGUI.svg)  
+[![License](https://img.shields.io/github/license/SpinyOwl/SpinyGUI.svg)](/LICENSE)
 ![Build DEVELOP](https://github.com/SpinyOwl/SpinyGUI/workflows/Build%20DEVELOP/badge.svg)
 
 [![codecov](https://codecov.io/gh/SpinyOwl/SpinyGUI/branch/develop/graph/badge.svg)](https://codecov.io/gh/SpinyOwl/SpinyGUI)  
