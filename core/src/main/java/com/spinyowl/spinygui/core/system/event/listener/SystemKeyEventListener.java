@@ -31,6 +31,7 @@ public class SystemKeyEventListener extends AbstractSystemEventListener<SystemKe
               .source(frame)
               .target(element)
               .key(key)
+              .timestamp(timeService.getCurrentTime())
               .mods(event.mods())
               .action(event.action())
               .build());
