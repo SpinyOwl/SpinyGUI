@@ -64,8 +64,5 @@ sonarqube {
         property "sonar.organization", "spinyowl"
         property "sonar.host.url", "https://sonarcloud.io"
         property "sonar.login", sonarLogin
-        property "sonar.modules", "core, core.parser, core.parser.impl"
-        property "sonar.java.coveragePlugin", "jacoco"
-        property "sonar.coverage.jacoco.xmlReportPaths", "build/core/reports/jacoco/test/jacocoTestReport.xml"
     }
 }
