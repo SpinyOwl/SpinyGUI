@@ -6,18 +6,28 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Supplier;
 import lombok.NonNull;
 
-public class RecursiveClassKeyMap<C, V> {
+/**
+ * Used to store key-value structure, where key is class of type C and value is parameterized
+ * instance V, where generic arg is {@code <? extends T>}.
+ *
+ * <p>Used for such structures as class and processor for this class. Provides method to search
+ * value recursively by key class hierarchy in case if there is no value for provided key.
+ *
+ * @param <C> class type.
+ * @param <V> value type.
+ */
+public class ClassKeyMap<C, V> {
 
   private final Map<Class<? extends C>, V> map;
   private final Class<C> rootClass;
 
-  public RecursiveClassKeyMap(
+  public ClassKeyMap(
       @NonNull Supplier<Map<Class<? extends C>, V>> mapSupplier, @NonNull Class<C> rootClass) {
     this.map = requireNonNull(mapSupplier.get());
     this.rootClass = rootClass;
   }
 
-  public RecursiveClassKeyMap(@NonNull Class<C> rootClass) {
+  public ClassKeyMap(@NonNull Class<C> rootClass) {
     this(ConcurrentHashMap::new, rootClass);
   }
 
