@@ -1,7 +1,8 @@
 package com.spinyowl.spinygui.core.system.event.listener;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import com.spinyowl.spinygui.core.event.CharEvent;
@@ -35,29 +36,51 @@ class SystemCharEventListenerTest {
   }
 
   @Test
-  void process_pushesCharEvent_generatedFrom_SystemCharEvent() {
-    Frame frame = mock(Frame.class);
-    Element focusedElement = mock(Element.class);
+  void process_generatesCharEvent() {
+    // Arrange
+    Frame frame = new Frame();
+    Element element = new Element("input");
+    frame.addChild(element);
 
+    // make element focused so it will be used to generate char event.
+    element.focused(true);
     double currentTime = 1;
 
     when(timeService.getCurrentTime()).thenReturn(currentTime);
-    when(frame.getFocusedElement()).thenReturn(focusedElement);
 
     SystemCharEvent source = SystemCharEvent.builder().window(1).codepoint(1).build();
 
     CharEvent expected =
         CharEvent.builder()
             .source(frame)
-            .target(focusedElement)
+            .target(element)
             .input(TextUtil.cpToStr(1))
             .timestamp(currentTime)
             .build();
 
     doNothing().when(eventProcessor).push(expected);
 
+    // Act
     systemCharEventListener.process(source, frame);
 
+    // Verify
     verify(eventProcessor).push(expected);
+  }
+
+  @Test
+  void process_skipsGeneratingCharEvent() {
+    // Arrange
+    Frame frame = new Frame();
+    Element focusedElement = new Element("input");
+    frame.addChild(focusedElement);
+
+    SystemCharEvent source = SystemCharEvent.builder().window(1).codepoint(1).build();
+
+    // Act
+    systemCharEventListener.process(source, frame);
+
+    // Verify
+    verify(timeService, times(0)).getCurrentTime();
+    verify(eventProcessor, times(0)).push(any(CharEvent.class));
   }
 }

@@ -205,7 +205,7 @@ public abstract class Node {
   public abstract Map<String, String> attributes();
 
   /**
-   * Builder method to set attribute.
+   * Chain method to set attribute.
    *
    * @param key attribute name.
    * @param value attribute value.

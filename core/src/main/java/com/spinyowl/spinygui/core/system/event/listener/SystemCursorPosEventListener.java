@@ -1,8 +1,10 @@
 package com.spinyowl.spinygui.core.system.event.listener;
 
+import static com.spinyowl.spinygui.core.input.MouseButton.LEFT;
+import static com.spinyowl.spinygui.core.input.MouseButton.RIGHT;
 import com.spinyowl.spinygui.core.event.CursorEnterEvent;
+import com.spinyowl.spinygui.core.event.CursorExitEvent;
 import com.spinyowl.spinygui.core.event.MouseDragEvent;
-import com.spinyowl.spinygui.core.input.MouseButton;
 import com.spinyowl.spinygui.core.input.MouseService;
 import com.spinyowl.spinygui.core.input.MouseService.CursorPositions;
 import com.spinyowl.spinygui.core.node.Element;
@@ -44,27 +46,10 @@ public class SystemCursorPosEventListener
     }
 
     // Generate drag events.
-    if (focusedElement != null
-        && (mouseService.pressed(MouseButton.LEFT) || mouseService.pressed(MouseButton.RIGHT))) {
+    if (focusedElement != null && (mouseService.pressed(LEFT) || mouseService.pressed(RIGHT))) {
       Vector2f delta = current.sub(previous, new Vector2f());
       eventProcessor.push(
           MouseDragEvent.builder().source(frame).target(focusedElement).delta(delta).build());
-    }
-  }
-
-  private void generateExitEvent(Frame frame, Vector2fc current, Element prevTarget) {
-    if (prevTarget != null) {
-      Vector2f intersection = prevTarget.absolutePosition().sub(current).negate();
-      CursorEnterEvent exitEvent =
-          CursorEnterEvent.builder()
-              .source(frame)
-              .target(prevTarget)
-              .entered(false)
-              .intersection(intersection)
-              .cursorPosition(current)
-              .build();
-      eventProcessor.push(exitEvent);
-      prevTarget.hovered(false);
     }
   }
 
@@ -76,11 +61,25 @@ public class SystemCursorPosEventListener
           CursorEnterEvent.builder()
               .source(frame)
               .target(targetElement)
-              .entered(true)
               .intersection(intersection)
               .cursorPosition(current)
               .build();
       eventProcessor.push(enterEvent);
+    }
+  }
+
+  private void generateExitEvent(Frame frame, Vector2fc current, Element prevTarget) {
+    if (prevTarget != null) {
+      Vector2f intersection = prevTarget.absolutePosition().sub(current).negate();
+      CursorExitEvent exitEvent =
+          CursorExitEvent.builder()
+              .source(frame)
+              .target(prevTarget)
+              .intersection(intersection)
+              .cursorPosition(current)
+              .build();
+      eventProcessor.push(exitEvent);
+      prevTarget.hovered(false);
     }
   }
 }
