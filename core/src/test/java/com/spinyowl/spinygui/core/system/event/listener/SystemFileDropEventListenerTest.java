@@ -97,13 +97,15 @@ class SystemFileDropEventListenerTest {
 
   @Test
   void process_throwsNPE_ifFrameIsNull() {
+    SystemFileDropEvent event = createEvent();
     Assertions.assertThrows(
-        NullPointerException.class, () -> listener.process(createEvent(), null));
+        NullPointerException.class, () -> listener.process(event, null));
   }
 
   @Test
   void process_throwsNPE_ifEventIsNull() {
-    Assertions.assertThrows(NullPointerException.class, () -> listener.process(null, frame()));
+    Frame frame = frame();
+    Assertions.assertThrows(NullPointerException.class, () -> listener.process(null, frame));
   }
 
   private SystemFileDropEvent createEvent() {

@@ -99,7 +99,8 @@ class SystemScrollEventListenerTest {
 
   @Test
   void process_throwsNPE_ifEventIsNull() {
-    Assertions.assertThrows(NullPointerException.class, () -> listener.process(null, frame()));
+    Frame frame = frame();
+    Assertions.assertThrows(NullPointerException.class, () -> listener.process(null, frame));
   }
 
   private SystemScrollEvent createEvent() {

@@ -18,6 +18,7 @@ import com.spinyowl.spinygui.core.input.KeyCode;
 import com.spinyowl.spinygui.core.input.Keyboard;
 import com.spinyowl.spinygui.core.input.KeyboardKey;
 import com.spinyowl.spinygui.core.input.KeyboardLayout;
+import com.spinyowl.spinygui.core.node.Frame;
 import com.spinyowl.spinygui.core.system.event.SystemKeyEvent;
 import com.spinyowl.spinygui.core.system.input.SystemKeyAction;
 import com.spinyowl.spinygui.core.time.TimeService;
@@ -147,6 +148,7 @@ class SystemKeyEventListenerTest {
 
   @Test
   void process_throwsNPE_ifEventIsNull() {
-    Assertions.assertThrows(NullPointerException.class, () -> listener.process(null, frame()));
+    Frame frame = frame();
+    Assertions.assertThrows(NullPointerException.class, () -> listener.process(null, frame));
   }
 }
