@@ -3,8 +3,12 @@ package com.spinyowl.spinygui.core.system.event.listener;
 import static com.spinyowl.spinygui.core.input.KeyAction.PRESS;
 import static com.spinyowl.spinygui.core.input.KeyAction.RELEASE;
 import static com.spinyowl.spinygui.core.input.KeyAction.REPEAT;
+import static com.spinyowl.spinygui.core.node.NodeBuilder.div;
+import static com.spinyowl.spinygui.core.node.NodeBuilder.frame;
 import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 import com.google.common.collect.ImmutableSet;
 import com.spinyowl.spinygui.core.event.KeyboardEvent;
@@ -14,8 +18,6 @@ import com.spinyowl.spinygui.core.input.KeyCode;
 import com.spinyowl.spinygui.core.input.Keyboard;
 import com.spinyowl.spinygui.core.input.KeyboardKey;
 import com.spinyowl.spinygui.core.input.KeyboardLayout;
-import com.spinyowl.spinygui.core.node.Element;
-import com.spinyowl.spinygui.core.node.Frame;
 import com.spinyowl.spinygui.core.system.event.SystemKeyEvent;
 import com.spinyowl.spinygui.core.system.input.SystemKeyAction;
 import com.spinyowl.spinygui.core.time.TimeService;
@@ -31,7 +33,6 @@ class SystemKeyEventListenerTest {
   @Mock private EventProcessor eventProcessor;
   @Mock private TimeService timeService;
   @Mock private Keyboard keyboard;
-  @Mock private KeyboardLayout keyboardLayout;
 
   private SystemEventListener<SystemKeyEvent> listener;
 
@@ -43,8 +44,6 @@ class SystemKeyEventListenerTest {
             .timeService(timeService)
             .keyboard(keyboard)
             .build();
-
-    when(keyboard.layout()).thenReturn(keyboardLayout);
   }
 
   @Test
@@ -62,10 +61,34 @@ class SystemKeyEventListenerTest {
     test(SystemKeyAction.RELEASE, RELEASE);
   }
 
+  @Test
+  void process_doNothingIfNoFocusedElement() {
+    // Arrange
+    var frame = frame(div());
+    SystemKeyEvent systemEvent =
+        SystemKeyEvent.builder()
+            .keyCode(7)
+            .scancode(7)
+            .action(SystemKeyAction.PRESS)
+            .mods(ImmutableSet.of())
+            .window(1)
+            .build();
+
+    // Act
+    listener.process(systemEvent, frame);
+
+    // Verify
+    verifyNoInteractions(eventProcessor);
+    verifyNoInteractions(timeService);
+    verifyNoInteractions(keyboard);
+  }
+
   private void test(SystemKeyAction systemAction, KeyAction action) {
     // Arrange
     double timestamp = 1D;
     when(timeService.getCurrentTime()).thenReturn(timestamp);
+    KeyboardLayout keyboardLayout = mock(KeyboardLayout.class);
+    when(keyboard.layout()).thenReturn(keyboardLayout);
 
     int keyCode = 7;
     KeyCode keyCodeObject = KeyCode.KEY_7;
@@ -82,9 +105,8 @@ class SystemKeyEventListenerTest {
 
     when(keyboardLayout.keyCode(keyCode)).thenReturn(keyCodeObject);
 
-    Frame frame = new Frame();
-    Element element = new Element("div");
-    frame.addChild(element);
+    var element = div();
+    var frame = frame(element);
 
     element.focused(true);
 

@@ -22,11 +22,12 @@ public class SystemKeyEventListener extends AbstractSystemEventListener<SystemKe
    */
   @Override
   public void process(SystemKeyEvent event, Frame frame) {
-    int keyCode = event.keyCode();
-    var key = new KeyboardKey(keyboard.layout().keyCode(keyCode), keyCode, event.scancode());
-
     var element = frame.getFocusedElement();
     if (element != null) {
+
+      int keyCode = event.keyCode();
+      var key = new KeyboardKey(keyboard.layout().keyCode(keyCode), keyCode, event.scancode());
+
       eventProcessor.push(
           KeyboardEvent.builder()
               .source(frame)
