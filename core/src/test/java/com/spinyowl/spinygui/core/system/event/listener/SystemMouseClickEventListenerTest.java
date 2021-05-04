@@ -83,7 +83,7 @@ class SystemMouseClickEventListenerTest {
             .target(element)
             .action(KeyAction.RELEASE)
             .mouseButton(MouseButton.LEFT)
-            .position(new Vector2f(20, 20).sub(current).negate())
+            .position(new Vector2f(element.position()).sub(current).negate())
             .absolutePosition(current)
             .mods(ImmutableSet.of())
             .timestamp(timestamp)
@@ -149,8 +149,8 @@ class SystemMouseClickEventListenerTest {
             .target(newFocusedElement)
             .action(KeyAction.PRESS)
             .timestamp(timestamp)
-            .mouseButton(event.button().mouseButton())
-            .position(new Vector2f(20, 20).sub(current).negate())
+            .mouseButton(MouseButton.LEFT)
+            .position(new Vector2f(newFocusedElement.position()).sub(current).negate())
             .absolutePosition(current)
             .mods(event.mappedMods())
             .build();
@@ -183,5 +183,138 @@ class SystemMouseClickEventListenerTest {
 
     assertTrue(newFocusedElement.focused());
     assertTrue(newFocusedElement.pressed());
+  }
+
+  @Test
+  void process_releaseInCurrentFrame_generatesReleaseEventForFocusedElement() {
+    // Arrange
+    Element otherElement = div();
+    otherElement.size(20, 20);
+    otherElement.position(20, 20);
+
+    Element focusedElement = div(); // will lose focus
+    focusedElement.focused(true);
+    focusedElement.size(20, 20);
+    focusedElement.position(50, 20);
+
+    Frame frame = frame(focusedElement, otherElement);
+    frame.size(100, 100);
+
+    SystemMouseClickEvent event =
+        SystemMouseClickEvent.builder()
+            .action(SystemKeyAction.RELEASE)
+            .mods(ImmutableSet.of())
+            .window(1)
+            .button(SystemMouseButton.LEFT)
+            .build();
+
+    doNothing().when(mouseService).pressed(event.button().mouseButton(), false);
+
+    Vector2f current = new Vector2f(25, 25); // click in frame
+    CursorPositions cursorPositions = new CursorPositions(current, current);
+    when(mouseService.getCursorPositions(frame)).thenReturn(cursorPositions);
+
+    double timestamp = 1;
+    when(timeService.getCurrentTime()).thenReturn(timestamp);
+
+    MouseClickEvent expectedReleaseEvent =
+        MouseClickEvent.builder()
+            .source(frame)
+            .target(focusedElement)
+            .action(KeyAction.RELEASE)
+            .timestamp(timestamp)
+            .mouseButton(MouseButton.LEFT)
+            .position(new Vector2f(focusedElement.position()).sub(current).negate())
+            .absolutePosition(current)
+            .mods(event.mappedMods())
+            .build();
+    doNothing().when(eventProcessor).push(expectedReleaseEvent);
+
+    // Act
+    listener.process(event, frame);
+
+    // Verify
+    verify(mouseService).pressed(event.button().mouseButton(), false);
+    verify(mouseService).getCursorPositions(frame);
+
+    verify(timeService, times(1)).getCurrentTime();
+
+    verify(eventProcessor).push(expectedReleaseEvent);
+
+    assertTrue(focusedElement.focused());
+    assertFalse(focusedElement.pressed());
+
+    assertFalse(otherElement.focused());
+    assertFalse(otherElement.pressed());
+  }
+
+  @Test
+  void process_releaseInCurrentFrame_generatesClickAndReleaseEventForFocusedElement() {
+    // Arrange
+    Element focusedElement = div(); // will lose focus
+    focusedElement.focused(true);
+    focusedElement.size(20, 20);
+    focusedElement.position(50, 20);
+
+    Frame frame = frame(focusedElement);
+    frame.size(100, 100);
+
+    SystemMouseClickEvent event =
+        SystemMouseClickEvent.builder()
+            .action(SystemKeyAction.RELEASE)
+            .mods(ImmutableSet.of())
+            .window(1)
+            .button(SystemMouseButton.LEFT)
+            .build();
+
+    doNothing().when(mouseService).pressed(event.button().mouseButton(), false);
+
+    Vector2f current = new Vector2f(55, 25); // click in frame
+    CursorPositions cursorPositions = new CursorPositions(current, current);
+    when(mouseService.getCursorPositions(frame)).thenReturn(cursorPositions);
+
+    double timestamp = 1;
+    when(timeService.getCurrentTime()).thenReturn(timestamp);
+
+    MouseClickEvent expectedClickEvent =
+        MouseClickEvent.builder()
+            .source(frame)
+            .target(focusedElement)
+            .action(KeyAction.CLICK)
+            .timestamp(timestamp)
+            .mouseButton(MouseButton.LEFT)
+            .position(new Vector2f(focusedElement.position()).sub(current).negate())
+            .absolutePosition(current)
+            .mods(event.mappedMods())
+            .build();
+    doNothing().when(eventProcessor).push(expectedClickEvent);
+
+    MouseClickEvent expectedReleaseEvent =
+        MouseClickEvent.builder()
+            .source(frame)
+            .target(focusedElement)
+            .action(KeyAction.RELEASE)
+            .timestamp(timestamp)
+            .mouseButton(MouseButton.LEFT)
+            .position(new Vector2f(focusedElement.position()).sub(current).negate())
+            .absolutePosition(current)
+            .mods(event.mappedMods())
+            .build();
+    doNothing().when(eventProcessor).push(expectedReleaseEvent);
+
+    // Act
+    listener.process(event, frame);
+
+    // Verify
+    verify(mouseService).pressed(event.button().mouseButton(), false);
+    verify(mouseService).getCursorPositions(frame);
+
+    verify(timeService, times(2)).getCurrentTime();
+
+    verify(eventProcessor).push(expectedClickEvent);
+    verify(eventProcessor).push(expectedReleaseEvent);
+
+    assertTrue(focusedElement.focused());
+    assertFalse(focusedElement.pressed());
   }
 }

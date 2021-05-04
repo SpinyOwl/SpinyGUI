@@ -61,7 +61,7 @@ public class SystemMouseClickEventListener
       Element target) {
     if (event.action() == PRESS) {
       updateFocusAndGenerateEvents(event, frame, focusedElement, cursorPosition, target);
-    } else {
+    } else { // event.action == RELEASE
       if (focusedElement != null) {
         focusedElement.pressed(false);
         if (focusedElement == target) {
