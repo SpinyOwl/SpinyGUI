@@ -1,5 +1,6 @@
 package com.spinyowl.spinygui.core.system.event.listener;
 
+import static com.spinyowl.spinygui.core.node.NodeBuilder.frame;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -8,6 +9,7 @@ import com.spinyowl.spinygui.core.event.processor.EventProcessor;
 import com.spinyowl.spinygui.core.node.Frame;
 import com.spinyowl.spinygui.core.system.event.SystemWindowCloseEvent;
 import com.spinyowl.spinygui.core.time.TimeService;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -38,7 +40,7 @@ class SystemWindowsCloseEventListenerTest {
     Frame frame = new Frame();
     frame.size(100, 100);
 
-    SystemWindowCloseEvent event = SystemWindowCloseEvent.builder().window(1).build();
+    SystemWindowCloseEvent event = createEvent();
 
     double timestamp = 1D;
     when(timeService.getCurrentTime()).thenReturn(timestamp);
@@ -53,5 +55,20 @@ class SystemWindowsCloseEventListenerTest {
     // Verify
     verify(timeService).getCurrentTime();
     verify(eventProcessor).push(expectedEvent);
+  }
+
+  private SystemWindowCloseEvent createEvent() {
+    return SystemWindowCloseEvent.builder().window(1).build();
+  }
+
+  @Test
+  void process_throwsNPE_ifFrameIsNull() {
+    Assertions.assertThrows(
+        NullPointerException.class, () -> listener.process(createEvent(), null));
+  }
+
+  @Test
+  void process_throwsNPE_ifEventIsNull() {
+    Assertions.assertThrows(NullPointerException.class, () -> listener.process(null, frame()));
   }
 }

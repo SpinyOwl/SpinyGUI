@@ -1,5 +1,6 @@
 package com.spinyowl.spinygui.core.system.event.listener;
 
+import static com.spinyowl.spinygui.core.node.NodeBuilder.frame;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.times;
@@ -12,6 +13,7 @@ import com.spinyowl.spinygui.core.node.Frame;
 import com.spinyowl.spinygui.core.system.event.SystemCharEvent;
 import com.spinyowl.spinygui.core.time.TimeService;
 import com.spinyowl.spinygui.core.util.TextUtil;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -24,11 +26,11 @@ class SystemCharEventListenerTest {
   @Mock private EventProcessor eventProcessor;
   @Mock private TimeService timeService;
 
-  private SystemEventListener<SystemCharEvent> systemCharEventListener;
+  private SystemEventListener<SystemCharEvent> listener;
 
   @BeforeEach
   void setUp() {
-    systemCharEventListener =
+    listener =
         SystemCharEventListener.builder()
             .eventProcessor(eventProcessor)
             .timeService(timeService)
@@ -48,7 +50,7 @@ class SystemCharEventListenerTest {
 
     when(timeService.getCurrentTime()).thenReturn(currentTime);
 
-    SystemCharEvent source = SystemCharEvent.builder().window(1).codepoint(1).build();
+    SystemCharEvent source = createEvent();
 
     CharEvent expected =
         CharEvent.builder()
@@ -61,7 +63,7 @@ class SystemCharEventListenerTest {
     doNothing().when(eventProcessor).push(expected);
 
     // Act
-    systemCharEventListener.process(source, frame);
+    listener.process(source, frame);
 
     // Verify
     verify(timeService).getCurrentTime();
@@ -75,13 +77,28 @@ class SystemCharEventListenerTest {
     Element focusedElement = new Element("input");
     frame.addChild(focusedElement);
 
-    SystemCharEvent source = SystemCharEvent.builder().window(1).codepoint(1).build();
+    SystemCharEvent source = createEvent();
 
     // Act
-    systemCharEventListener.process(source, frame);
+    listener.process(source, frame);
 
     // Verify
     verify(timeService, times(0)).getCurrentTime();
     verify(eventProcessor, times(0)).push(any(CharEvent.class));
+  }
+
+  private SystemCharEvent createEvent() {
+    return SystemCharEvent.builder().window(1).codepoint(1).build();
+  }
+
+  @Test
+  void process_throwsNPE_ifFrameIsNull() {
+    Assertions.assertThrows(
+        NullPointerException.class, () -> listener.process(createEvent(), null));
+  }
+
+  @Test
+  void process_throwsNPE_ifEventIsNull() {
+    Assertions.assertThrows(NullPointerException.class, () -> listener.process(null, frame()));
   }
 }

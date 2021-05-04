@@ -1,6 +1,7 @@
 package com.spinyowl.spinygui.core.system.event.listener;
 
 import static com.spinyowl.spinygui.core.input.MouseButton.LEFT;
+import static com.spinyowl.spinygui.core.node.NodeBuilder.frame;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.times;
@@ -17,6 +18,7 @@ import com.spinyowl.spinygui.core.node.Frame;
 import com.spinyowl.spinygui.core.system.event.SystemCursorPosEvent;
 import com.spinyowl.spinygui.core.time.TimeService;
 import org.joml.Vector2f;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -180,5 +182,16 @@ class SystemCursorPosEventListenerTest {
     verify(eventProcessor, times(1)).push(expectedDragEvent);
     verify(eventProcessor, times(0)).push(any(CursorExitEvent.class));
     verify(eventProcessor, times(0)).push(any(CursorEnterEvent.class));
+  }
+
+  @Test
+  void process_throwsNPE_ifFrameIsNull() {
+    SystemCursorPosEvent event = SystemCursorPosEvent.builder().posX(1).posY(1).window(1).build();
+    Assertions.assertThrows(NullPointerException.class, () -> listener.process(event, null));
+  }
+
+  @Test
+  void process_throwsNPE_ifEventIsNull() {
+    Assertions.assertThrows(NullPointerException.class, () -> listener.process(null, frame()));
   }
 }

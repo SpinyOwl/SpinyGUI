@@ -21,6 +21,7 @@ import com.spinyowl.spinygui.core.input.KeyboardLayout;
 import com.spinyowl.spinygui.core.system.event.SystemKeyEvent;
 import com.spinyowl.spinygui.core.system.input.SystemKeyAction;
 import com.spinyowl.spinygui.core.time.TimeService;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -129,5 +130,23 @@ class SystemKeyEventListenerTest {
     verify(keyboardLayout).keyCode(keyCode);
     verify(timeService).getCurrentTime();
     verify(eventProcessor).push(expectedEvent);
+  }
+
+  @Test
+  void process_throwsNPE_ifFrameIsNull() {
+    SystemKeyEvent event =
+        SystemKeyEvent.builder()
+            .keyCode(1)
+            .scancode(1)
+            .action(SystemKeyAction.PRESS)
+            .mods(ImmutableSet.of())
+            .window(1)
+            .build();
+    Assertions.assertThrows(NullPointerException.class, () -> listener.process(event, null));
+  }
+
+  @Test
+  void process_throwsNPE_ifEventIsNull() {
+    Assertions.assertThrows(NullPointerException.class, () -> listener.process(null, frame()));
   }
 }

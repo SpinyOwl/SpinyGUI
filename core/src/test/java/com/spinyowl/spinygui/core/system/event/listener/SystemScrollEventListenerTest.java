@@ -1,7 +1,9 @@
 package com.spinyowl.spinygui.core.system.event.listener;
 
+import static com.spinyowl.spinygui.core.node.NodeBuilder.frame;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 import com.spinyowl.spinygui.core.event.ScrollEvent;
 import com.spinyowl.spinygui.core.event.processor.EventProcessor;
@@ -11,6 +13,7 @@ import com.spinyowl.spinygui.core.node.Frame;
 import com.spinyowl.spinygui.core.system.event.SystemScrollEvent;
 import com.spinyowl.spinygui.core.time.TimeService;
 import org.joml.Vector2f;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -47,7 +50,7 @@ class SystemScrollEventListenerTest {
     double timestamp = 1D;
     when(timeService.getCurrentTime()).thenReturn(timestamp);
 
-    SystemScrollEvent event = SystemScrollEvent.builder().window(1).offsetX(1).offsetY(-1).build();
+    SystemScrollEvent event = createEvent();
 
     ScrollEvent expectedEvent =
         ScrollEvent.builder()
@@ -66,5 +69,40 @@ class SystemScrollEventListenerTest {
     verify(mouseService).getCursorPositions(frame);
     verify(timeService).getCurrentTime();
     verify(eventProcessor).push(expectedEvent);
+  }
+
+  @Test
+  void process_doNotGenerateScrollEvent() {
+    Frame frame = new Frame();
+    frame.size(100, 100);
+
+    Vector2f current = new Vector2f(-10, -10);
+    CursorPositions cursorPositions = new CursorPositions(current, current);
+    when(mouseService.getCursorPositions(frame)).thenReturn(cursorPositions);
+
+    SystemScrollEvent event = createEvent();
+
+    // Act
+    listener.process(event, frame);
+
+    // Verify
+    verify(mouseService).getCursorPositions(frame);
+    verifyNoInteractions(timeService);
+    verifyNoInteractions(eventProcessor);
+  }
+
+  @Test
+  void process_throwsNPE_ifFrameIsNull() {
+    SystemScrollEvent event = createEvent();
+    Assertions.assertThrows(NullPointerException.class, () -> listener.process(event, null));
+  }
+
+  @Test
+  void process_throwsNPE_ifEventIsNull() {
+    Assertions.assertThrows(NullPointerException.class, () -> listener.process(null, frame()));
+  }
+
+  private SystemScrollEvent createEvent() {
+    return SystemScrollEvent.builder().window(1).offsetX(1).offsetY(-1).build();
   }
 }

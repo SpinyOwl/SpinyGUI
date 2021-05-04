@@ -24,6 +24,7 @@ import com.spinyowl.spinygui.core.system.input.SystemKeyAction;
 import com.spinyowl.spinygui.core.system.input.SystemMouseButton;
 import com.spinyowl.spinygui.core.time.TimeService;
 import org.joml.Vector2f;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -316,5 +317,22 @@ class SystemMouseClickEventListenerTest {
 
     assertTrue(focusedElement.focused());
     assertFalse(focusedElement.pressed());
+  }
+
+  @Test
+  void process_throwsNPE_ifFrameIsNull() {
+    SystemMouseClickEvent event =
+        SystemMouseClickEvent.builder()
+            .action(SystemKeyAction.RELEASE)
+            .mods(ImmutableSet.of())
+            .window(1)
+            .button(SystemMouseButton.LEFT)
+            .build();
+    Assertions.assertThrows(NullPointerException.class, () -> listener.process(event, null));
+  }
+
+  @Test
+  void process_throwsNPE_ifEventIsNull() {
+    Assertions.assertThrows(NullPointerException.class, () -> listener.process(null, frame()));
   }
 }

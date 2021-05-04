@@ -1,5 +1,6 @@
 package com.spinyowl.spinygui.core.system.event.listener;
 
+import static com.spinyowl.spinygui.core.node.NodeBuilder.frame;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -12,6 +13,7 @@ import com.spinyowl.spinygui.core.node.Frame;
 import com.spinyowl.spinygui.core.system.event.SystemFileDropEvent;
 import com.spinyowl.spinygui.core.time.TimeService;
 import org.joml.Vector2f;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -25,11 +27,11 @@ class SystemFileDropEventListenerTest {
   @Mock private TimeService timeService;
   @Mock private MouseService mouseService;
 
-  private SystemEventListener<SystemFileDropEvent> systemDropEventListener;
+  private SystemEventListener<SystemFileDropEvent> listener;
 
   @BeforeEach
   void setUp() {
-    systemDropEventListener =
+    listener =
         SystemFileDropEventListener.builder()
             .eventProcessor(eventProcessor)
             .timeService(timeService)
@@ -54,15 +56,34 @@ class SystemFileDropEventListenerTest {
     double timestamp = 1D;
     when(timeService.getCurrentTime()).thenReturn(timestamp);
     FileDropEvent expectedFileDropEvent =
-        FileDropEvent.builder().source(frame).target(frame).timestamp(timestamp).paths(paths).build();
+        FileDropEvent.builder()
+            .source(frame)
+            .target(frame)
+            .timestamp(timestamp)
+            .paths(paths)
+            .build();
     doNothing().when(eventProcessor).push(expectedFileDropEvent);
 
     // Act
-    systemDropEventListener.process(systemFileDropEvent, frame);
+    listener.process(systemFileDropEvent, frame);
 
     // Verify
     verify(timeService).getCurrentTime();
     verify(mouseService).getCursorPositions(frame);
     verify(eventProcessor).push(expectedFileDropEvent);
+  }
+
+  @Test
+  void process_throwsNPE_ifFrameIsNull() {
+    Assertions.assertThrows(
+        NullPointerException.class,
+        () ->
+            listener.process(
+                SystemFileDropEvent.builder().paths(ImmutableList.of()).build(), null));
+  }
+
+  @Test
+  void process_throwsNPE_ifEventIsNull() {
+    Assertions.assertThrows(NullPointerException.class, () -> listener.process(null, frame()));
   }
 }
