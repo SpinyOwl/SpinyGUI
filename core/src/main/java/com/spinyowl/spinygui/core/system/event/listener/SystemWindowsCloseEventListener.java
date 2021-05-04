@@ -4,6 +4,7 @@ import com.spinyowl.spinygui.core.event.WindowCloseEvent;
 import com.spinyowl.spinygui.core.event.processor.EventProcessor;
 import com.spinyowl.spinygui.core.node.Frame;
 import com.spinyowl.spinygui.core.system.event.SystemWindowCloseEvent;
+import lombok.NonNull;
 import lombok.experimental.SuperBuilder;
 
 /** Generates {@link WindowCloseEvent} for frame and pushes it to {@link EventProcessor}. */
@@ -18,7 +19,7 @@ public class SystemWindowsCloseEventListener
    * @param frame target frame for system event.
    */
   @Override
-  public void process(SystemWindowCloseEvent event, Frame frame) {
+  public void process(@NonNull SystemWindowCloseEvent event, @NonNull Frame frame) {
     eventProcessor.push(
         WindowCloseEvent.builder()
             .timestamp(timeService.getCurrentTime())

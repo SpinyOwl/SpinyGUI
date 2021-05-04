@@ -4,6 +4,7 @@ import com.spinyowl.spinygui.core.event.CharEvent;
 import com.spinyowl.spinygui.core.node.Frame;
 import com.spinyowl.spinygui.core.system.event.SystemCharEvent;
 import com.spinyowl.spinygui.core.util.TextUtil;
+import lombok.NonNull;
 import lombok.experimental.SuperBuilder;
 
 @SuperBuilder(toBuilder = true)
@@ -16,7 +17,7 @@ public class SystemCharEventListener extends AbstractSystemEventListener<SystemC
    * @param frame target frame for system event.
    */
   @Override
-  public void process(SystemCharEvent event, Frame frame) {
+  public void process(@NonNull SystemCharEvent event, @NonNull Frame frame) {
     var focusedElement = frame.getFocusedElement();
     if (focusedElement == null) {
       return;

@@ -29,7 +29,7 @@ public class SystemMouseClickEventListener
    * @param frame target frame for system event.
    */
   @Override
-  public void process(SystemMouseClickEvent event, Frame frame) {
+  public void process(@NonNull SystemMouseClickEvent event, @NonNull Frame frame) {
     mouseService.pressed(event.button().mouseButton(), event.action() != RELEASE);
     var cursorPositions = mouseService.getCursorPositions(frame);
     var focusedElement = frame.getFocusedElement();

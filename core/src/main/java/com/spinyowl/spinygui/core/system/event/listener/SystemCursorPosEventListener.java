@@ -29,7 +29,7 @@ public class SystemCursorPosEventListener
    * @param frame target frame for system event.
    */
   @Override
-  public void process(SystemCursorPosEvent event, Frame frame) {
+  public void process(@NonNull SystemCursorPosEvent event, @NonNull Frame frame) {
     Vector2fc current = new Vector2f(event.posX(), event.posY());
     Vector2fc previous = mouseService.getCursorPositions(frame).current();
     mouseService.setCursorPositions(frame, new CursorPositions(current, previous));

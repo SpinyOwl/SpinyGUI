@@ -21,7 +21,7 @@ public class SystemKeyEventListener extends AbstractSystemEventListener<SystemKe
    * @param frame target frame for system event.
    */
   @Override
-  public void process(SystemKeyEvent event, Frame frame) {
+  public void process(@NonNull SystemKeyEvent event, @NonNull Frame frame) {
     var element = frame.getFocusedElement();
     if (element != null) {
 

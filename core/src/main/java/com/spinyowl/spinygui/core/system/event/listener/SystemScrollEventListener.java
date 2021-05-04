@@ -21,7 +21,7 @@ public class SystemScrollEventListener extends AbstractSystemEventListener<Syste
    * @param frame target frame for system event.
    */
   @Override
-  public void process(SystemScrollEvent event, Frame frame) {
+  public void process(@NonNull SystemScrollEvent event, @NonNull Frame frame) {
     Vector2fc current = mouseService.getCursorPositions(frame).current();
     var target = getTargetElement(frame, current);
     if (target != null) {

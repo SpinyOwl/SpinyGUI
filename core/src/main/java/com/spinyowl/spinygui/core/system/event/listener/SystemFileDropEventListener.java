@@ -20,7 +20,7 @@ public class SystemFileDropEventListener extends AbstractSystemEventListener<Sys
    * @param frame target frame for system event.
    */
   @Override
-  public void process(SystemFileDropEvent event, Frame frame) {
+  public void process(@NonNull SystemFileDropEvent event, @NonNull Frame frame) {
     Vector2fc currentMousePosition = mouseService.getCursorPositions(frame).current();
     var targetElement = NodeUtilities.getTargetElement(frame, currentMousePosition);
     if (targetElement != null) {

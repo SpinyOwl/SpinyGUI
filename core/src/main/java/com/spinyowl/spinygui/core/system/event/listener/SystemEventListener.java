@@ -2,6 +2,7 @@ package com.spinyowl.spinygui.core.system.event.listener;
 
 import com.spinyowl.spinygui.core.node.Frame;
 import com.spinyowl.spinygui.core.system.event.SystemEvent;
+import lombok.NonNull;
 
 /**
  * Used to listen, process and translate system event to gui event.
@@ -16,5 +17,5 @@ public interface SystemEventListener<E extends SystemEvent> {
    * @param event system event to process
    * @param frame target frame for system event.
    */
-  void process(E event, Frame frame);
+  void process(@NonNull E event, @NonNull Frame frame);
 }
