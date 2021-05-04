@@ -3,6 +3,7 @@ package com.spinyowl.spinygui.core.system.event.listener;
 import static com.spinyowl.spinygui.core.node.NodeBuilder.frame;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 import com.google.common.collect.ImmutableList;
 import com.spinyowl.spinygui.core.event.FileDropEvent;
@@ -28,6 +29,7 @@ class SystemFileDropEventListenerTest {
   @Mock private MouseService mouseService;
 
   private SystemEventListener<SystemFileDropEvent> listener;
+  private ImmutableList<String> paths;
 
   @BeforeEach
   void setUp() {
@@ -37,6 +39,7 @@ class SystemFileDropEventListenerTest {
             .timeService(timeService)
             .mouseService(mouseService)
             .build();
+    paths = ImmutableList.of("first", "second");
   }
 
   @Test
@@ -50,8 +53,7 @@ class SystemFileDropEventListenerTest {
     CursorPositions cursorPositions = new CursorPositions(current, previous);
     when(mouseService.getCursorPositions(frame)).thenReturn(cursorPositions);
 
-    ImmutableList<String> paths = ImmutableList.of("first", "second");
-    SystemFileDropEvent systemFileDropEvent = SystemFileDropEvent.builder().paths(paths).build();
+    SystemFileDropEvent systemFileDropEvent = createEvent();
 
     double timestamp = 1D;
     when(timeService.getCurrentTime()).thenReturn(timestamp);
@@ -74,16 +76,37 @@ class SystemFileDropEventListenerTest {
   }
 
   @Test
+  void process_doNothingIfNoTarget() {
+    // Arrange
+    Frame frame = frame();
+    frame.size(100, 100);
+    Vector2f current = new Vector2f(110, 110);
+    CursorPositions cursorPositions = new CursorPositions(current, current);
+    when(mouseService.getCursorPositions(frame)).thenReturn(cursorPositions);
+
+    SystemFileDropEvent systemFileDropEvent = createEvent();
+
+    // Act
+    listener.process(systemFileDropEvent, frame);
+
+    // Verify
+    verifyNoInteractions(timeService);
+    verifyNoInteractions(eventProcessor);
+    verify(mouseService).getCursorPositions(frame);
+  }
+
+  @Test
   void process_throwsNPE_ifFrameIsNull() {
     Assertions.assertThrows(
-        NullPointerException.class,
-        () ->
-            listener.process(
-                SystemFileDropEvent.builder().paths(ImmutableList.of()).build(), null));
+        NullPointerException.class, () -> listener.process(createEvent(), null));
   }
 
   @Test
   void process_throwsNPE_ifEventIsNull() {
     Assertions.assertThrows(NullPointerException.class, () -> listener.process(null, frame()));
+  }
+
+  private SystemFileDropEvent createEvent() {
+    return SystemFileDropEvent.builder().paths(paths).build();
   }
 }
