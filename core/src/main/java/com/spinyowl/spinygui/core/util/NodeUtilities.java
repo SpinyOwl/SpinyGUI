@@ -91,36 +91,36 @@ public final class NodeUtilities {
    */
   public static Element getTargetElement(
       final Element element, final Vector2fc vector, final boolean searchOnlyClickable) {
-    return getTargetElement(vector, element, null, searchOnlyClickable);
+    return getTargetElement(element, vector, null, searchOnlyClickable);
   }
 
   /**
    * Used to search target element (under point) in element. Target means top element which
    * intersected by provided point(vector).
    *
-   * @param vector vector to point.
    * @param element source element to search target.
+   * @param vector vector to point.
    * @param initialTarget initial target.
    * @return the top visible element under point or null if point is null.
    */
   public static Element getTargetElement(
-      final Vector2fc vector, final Element element, final Element initialTarget) {
-    return getTargetElement(vector, element, initialTarget, false);
+      final Element element, final Vector2fc vector, final Element initialTarget) {
+    return getTargetElement(element, vector, initialTarget, false);
   }
 
   /**
    * Used to search target element (under point) in element. Target means top element which
    * intersected by provided point(vector).
    *
-   * @param vector vector to point.
    * @param element source element to search target.
+   * @param vector vector to point.
    * @param initialTarget initial target.
    * @param searchOnlyClickable if true - searches only for clickable target.
    * @return the top visible element under point or null if point is null.
    */
   public static Element getTargetElement(
-      final Vector2fc vector,
       final Element element,
+      final Vector2fc vector,
       final Element initialTarget,
       final boolean searchOnlyClickable) {
     Element retarget = initialTarget;
@@ -132,7 +132,7 @@ public final class NodeUtilities {
 
       childElements.sort(Comparator.comparing(comparator));
       for (Element child : childElements) {
-        retarget = getTargetElement(vector, child, retarget);
+        retarget = getTargetElement(child, vector, retarget);
       }
     }
     return retarget;

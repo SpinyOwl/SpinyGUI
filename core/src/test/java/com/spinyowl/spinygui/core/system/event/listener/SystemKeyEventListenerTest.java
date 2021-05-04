@@ -1,12 +1,15 @@
 package com.spinyowl.spinygui.core.system.event.listener;
 
 import static com.spinyowl.spinygui.core.input.KeyAction.PRESS;
+import static com.spinyowl.spinygui.core.input.KeyAction.RELEASE;
+import static com.spinyowl.spinygui.core.input.KeyAction.REPEAT;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import com.google.common.collect.ImmutableSet;
 import com.spinyowl.spinygui.core.event.KeyboardEvent;
 import com.spinyowl.spinygui.core.event.processor.EventProcessor;
+import com.spinyowl.spinygui.core.input.KeyAction;
 import com.spinyowl.spinygui.core.input.KeyCode;
 import com.spinyowl.spinygui.core.input.Keyboard;
 import com.spinyowl.spinygui.core.input.KeyboardKey;
@@ -45,7 +48,21 @@ class SystemKeyEventListenerTest {
   }
 
   @Test
-  void process_generatesKeyboardEvent() {
+  void process_pressGeneratesKeyboardEvent() {
+    test(SystemKeyAction.PRESS, PRESS);
+  }
+
+  @Test
+  void process_repeatGeneratesKeyboardEvent() {
+    test(SystemKeyAction.REPEAT, REPEAT);
+  }
+
+  @Test
+  void process_releaseGeneratesKeyboardEvent() {
+    test(SystemKeyAction.RELEASE, RELEASE);
+  }
+
+  private void test(SystemKeyAction systemAction, KeyAction action) {
     // Arrange
     double timestamp = 1D;
     when(timeService.getCurrentTime()).thenReturn(timestamp);
@@ -58,7 +75,7 @@ class SystemKeyEventListenerTest {
         SystemKeyEvent.builder()
             .keyCode(keyCode)
             .scancode(scancode)
-            .action(SystemKeyAction.PRESS)
+            .action(systemAction)
             .mods(ImmutableSet.of())
             .window(1)
             .build();
@@ -75,7 +92,7 @@ class SystemKeyEventListenerTest {
         KeyboardEvent.builder()
             .source(frame)
             .target(element)
-            .action(PRESS)
+            .action(action)
             .timestamp(timestamp)
             .mods(ImmutableSet.of())
             .key(new KeyboardKey(keyCodeObject, keyCode, scancode))
