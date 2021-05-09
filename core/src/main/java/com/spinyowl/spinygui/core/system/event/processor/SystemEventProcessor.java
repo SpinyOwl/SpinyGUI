@@ -1,6 +1,5 @@
 package com.spinyowl.spinygui.core.system.event.processor;
 
-import com.spinyowl.spinygui.core.node.Frame;
 import com.spinyowl.spinygui.core.system.event.SystemEvent;
 
 /**
@@ -10,12 +9,8 @@ import com.spinyowl.spinygui.core.system.event.SystemEvent;
  */
 public interface SystemEventProcessor {
 
-  /**
-   * Used to process stored events in system event processor.
-   *
-   * @param frame target frame to which events should be applied.
-   */
-  void processEvents(Frame frame);
+  /** Used to process stored events in system event processor. */
+  void processEvents();
 
   /**
    * Used to push new system event to {@link SystemEventProcessor}.

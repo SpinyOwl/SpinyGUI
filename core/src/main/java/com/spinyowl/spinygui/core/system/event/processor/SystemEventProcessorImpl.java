@@ -1,24 +1,28 @@
 package com.spinyowl.spinygui.core.system.event.processor;
 
-import com.spinyowl.spinygui.core.node.Frame;
+import com.spinyowl.spinygui.core.system.FrameWindowService;
 import com.spinyowl.spinygui.core.system.event.SystemEvent;
 import com.spinyowl.spinygui.core.system.event.listener.SystemEventListener;
 import com.spinyowl.spinygui.core.system.event.provider.SystemEventListenerProvider;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
-import lombok.RequiredArgsConstructor;
+import lombok.Builder;
+import lombok.Builder.Default;
+import lombok.NonNull;
 
 /**
  * Default implementation based on two {@link ConcurrentLinkedQueue} queues which swapped every time
  * during processing.
  */
-@RequiredArgsConstructor
+@Builder
 public class SystemEventProcessorImpl implements SystemEventProcessor {
 
-  private final SystemEventListenerProvider eventListenerProvider;
+  @NonNull private final SystemEventListenerProvider eventListenerProvider;
 
-  private Queue<SystemEvent> first = new ConcurrentLinkedQueue<>();
-  private Queue<SystemEvent> second = new ConcurrentLinkedQueue<>();
+  @Default private Queue<SystemEvent> first = new ConcurrentLinkedQueue<>();
+  @Default private Queue<SystemEvent> second = new ConcurrentLinkedQueue<>();
+
+  @NonNull private final FrameWindowService frameWindowService;
 
   private void swap() {
     Queue<SystemEvent> temp = first;
@@ -29,15 +33,17 @@ public class SystemEventProcessorImpl implements SystemEventProcessor {
   /**
    * Used to process stored events in system event processor.
    *
-   * @param frame target frame to which events should be applied.
+   * <p>Target frame to which events should be applied will be obtained from {@link
+   * #frameWindowService} (see {@link FrameWindowService}).
    */
   @Override
-  public void processEvents(Frame frame) {
+  public void processEvents() {
     swap();
 
     for (SystemEvent event = second.poll(); event != null; event = second.poll()) {
       SystemEventListener listener = eventListenerProvider.listener(event.getClass());
       if (listener != null) {
+        var frame = frameWindowService.getFrame(event.window());
         listener.process(event, frame);
       }
     }
