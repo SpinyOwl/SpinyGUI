@@ -9,8 +9,10 @@ import com.spinyowl.spinygui.core.node.Frame;
 import com.spinyowl.spinygui.core.system.event.SystemKeyEvent;
 import com.spinyowl.spinygui.core.time.TimeService;
 import lombok.Builder;
+import lombok.EqualsAndHashCode;
 import lombok.NonNull;
 
+@EqualsAndHashCode
 public class SystemKeyEventListener extends AbstractSystemEventListener<SystemKeyEvent> {
 
   @NonNull private final Keyboard keyboard;

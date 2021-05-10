@@ -6,8 +6,10 @@ import com.spinyowl.spinygui.core.node.Frame;
 import com.spinyowl.spinygui.core.system.event.SystemWindowSizeEvent;
 import com.spinyowl.spinygui.core.time.TimeService;
 import lombok.Builder;
+import lombok.EqualsAndHashCode;
 import lombok.NonNull;
 
+@EqualsAndHashCode
 public class SystemWindowSizeEventListener
     extends AbstractSystemEventListener<SystemWindowSizeEvent> {
 

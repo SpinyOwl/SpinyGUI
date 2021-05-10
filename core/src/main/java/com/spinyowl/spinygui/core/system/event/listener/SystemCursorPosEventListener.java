@@ -14,10 +14,12 @@ import com.spinyowl.spinygui.core.system.event.SystemCursorPosEvent;
 import com.spinyowl.spinygui.core.time.TimeService;
 import com.spinyowl.spinygui.core.util.NodeUtilities;
 import lombok.Builder;
+import lombok.EqualsAndHashCode;
 import lombok.NonNull;
 import org.joml.Vector2f;
 import org.joml.Vector2fc;
 
+@EqualsAndHashCode
 public class SystemCursorPosEventListener
     extends AbstractSystemEventListener<SystemCursorPosEvent> {
 

@@ -8,9 +8,11 @@ import com.spinyowl.spinygui.core.system.event.SystemFileDropEvent;
 import com.spinyowl.spinygui.core.time.TimeService;
 import com.spinyowl.spinygui.core.util.NodeUtilities;
 import lombok.Builder;
+import lombok.EqualsAndHashCode;
 import lombok.NonNull;
 import org.joml.Vector2fc;
 
+@EqualsAndHashCode
 public class SystemFileDropEventListener extends AbstractSystemEventListener<SystemFileDropEvent> {
 
   @NonNull private final MouseService mouseService;

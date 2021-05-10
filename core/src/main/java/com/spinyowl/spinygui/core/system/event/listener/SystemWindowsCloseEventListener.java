@@ -6,9 +6,11 @@ import com.spinyowl.spinygui.core.node.Frame;
 import com.spinyowl.spinygui.core.system.event.SystemWindowCloseEvent;
 import com.spinyowl.spinygui.core.time.TimeService;
 import lombok.Builder;
+import lombok.EqualsAndHashCode;
 import lombok.NonNull;
 
 /** Generates {@link WindowCloseEvent} for frame and pushes it to {@link EventProcessor}. */
+@EqualsAndHashCode
 public class SystemWindowsCloseEventListener
     extends AbstractSystemEventListener<SystemWindowCloseEvent> {
 

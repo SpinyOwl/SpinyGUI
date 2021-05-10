@@ -6,8 +6,10 @@ import com.spinyowl.spinygui.core.node.Frame;
 import com.spinyowl.spinygui.core.system.event.SystemWindowIconifyEvent;
 import com.spinyowl.spinygui.core.time.TimeService;
 import lombok.Builder;
+import lombok.EqualsAndHashCode;
 import lombok.NonNull;
 
+@EqualsAndHashCode
 public class SystemWindowIconifyEventListener
     extends AbstractSystemEventListener<SystemWindowIconifyEvent> {
 

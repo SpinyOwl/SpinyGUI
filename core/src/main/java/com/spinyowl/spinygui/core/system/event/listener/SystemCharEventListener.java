@@ -7,8 +7,10 @@ import com.spinyowl.spinygui.core.system.event.SystemCharEvent;
 import com.spinyowl.spinygui.core.time.TimeService;
 import com.spinyowl.spinygui.core.util.TextUtil;
 import lombok.Builder;
+import lombok.EqualsAndHashCode;
 import lombok.NonNull;
 
+@EqualsAndHashCode
 public class SystemCharEventListener extends AbstractSystemEventListener<SystemCharEvent> {
 
   @Builder

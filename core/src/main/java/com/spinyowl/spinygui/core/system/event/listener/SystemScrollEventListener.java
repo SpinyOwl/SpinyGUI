@@ -8,9 +8,11 @@ import com.spinyowl.spinygui.core.node.Frame;
 import com.spinyowl.spinygui.core.system.event.SystemScrollEvent;
 import com.spinyowl.spinygui.core.time.TimeService;
 import lombok.Builder;
+import lombok.EqualsAndHashCode;
 import lombok.NonNull;
 import org.joml.Vector2fc;
 
+@EqualsAndHashCode
 public class SystemScrollEventListener extends AbstractSystemEventListener<SystemScrollEvent> {
 
   @NonNull private final MouseService mouseService;
