@@ -10,14 +10,14 @@ import org.joml.Vector2fc;
 @Getter
 @ToString
 @EqualsAndHashCode
-public class CursorEnterEvent extends NodeEvent {
+public class CursorEnterEvent extends Event {
   private final Vector2fc cursorPosition;
   private final Vector2fc intersection;
 
   @Builder
   public CursorEnterEvent(
       @NonNull EventTarget source,
-      EventTarget target,
+      @NonNull EventTarget target,
       double timestamp,
       Vector2fc cursorPosition,
       Vector2fc intersection) {

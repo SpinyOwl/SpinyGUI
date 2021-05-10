@@ -9,14 +9,14 @@ import lombok.ToString;
 @Getter
 @ToString
 @EqualsAndHashCode
-public class ScrollEvent extends NodeEvent {
+public class ScrollEvent extends Event {
   private final float offsetX;
   private final float offsetY;
 
   @Builder
   public ScrollEvent(
       @NonNull EventTarget source,
-      EventTarget target,
+      @NonNull EventTarget target,
       double timestamp,
       EventTarget currentTarget,
       float offsetX,

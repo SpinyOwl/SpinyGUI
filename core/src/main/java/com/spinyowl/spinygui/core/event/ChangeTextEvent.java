@@ -9,14 +9,14 @@ import lombok.ToString;
 @Getter
 @ToString
 @EqualsAndHashCode
-public class ChangeTextEvent extends NodeEvent {
+public class ChangeTextEvent extends Event {
   private final String oldText;
   private final String newText;
 
   @Builder
   public ChangeTextEvent(
       @NonNull EventTarget source,
-      EventTarget target,
+      @NonNull EventTarget target,
       double timestamp,
       String oldText,
       String newText) {

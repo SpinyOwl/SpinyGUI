@@ -14,7 +14,7 @@ import lombok.ToString;
 @Getter
 @ToString
 @EqualsAndHashCode
-public class KeyboardEvent extends NodeEvent {
+public class KeyboardEvent extends Event {
 
   private final KeyAction action;
   private final KeyboardKey key;
@@ -23,7 +23,7 @@ public class KeyboardEvent extends NodeEvent {
   @Builder
   public KeyboardEvent(
       @NonNull EventTarget source,
-      EventTarget target,
+      @NonNull EventTarget target,
       double timestamp,
       EventTarget currentTarget,
       KeyAction action,

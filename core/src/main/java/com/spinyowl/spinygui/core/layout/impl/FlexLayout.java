@@ -348,7 +348,7 @@ public class FlexLayout implements Layout {
     }
 
     if (invalidateTree) {
-      eventProcessor.push(new InvalidateTreeEvent(timeService.getCurrentTime()));
+      eventProcessor.push(new InvalidateTreeEvent(parent,parent.root(), timeService.getCurrentTime()));
     }
 
     // free mem

@@ -14,7 +14,7 @@ import org.joml.Vector2fc;
 @Getter
 @ToString
 @EqualsAndHashCode
-public class MouseClickEvent extends NodeEvent {
+public class MouseClickEvent extends Event {
   @NonNull private final KeyAction action;
   @NonNull private final MouseButton mouseButton;
   @NonNull private final Vector2fc position;
@@ -24,7 +24,7 @@ public class MouseClickEvent extends NodeEvent {
   @Builder
   public MouseClickEvent(
       @NonNull EventTarget source,
-      EventTarget target,
+      @NonNull EventTarget target,
       double timestamp,
       EventTarget currentTarget,
       @NonNull KeyAction action,

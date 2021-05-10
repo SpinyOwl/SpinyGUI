@@ -10,7 +10,7 @@ import org.joml.Vector2f;
 @Getter
 @ToString
 @EqualsAndHashCode
-public class ChangeSizeEvent extends NodeEvent {
+public class ChangeSizeEvent extends Event {
 
   @NonNull private final Vector2f oldSize;
   @NonNull private final Vector2f newSize;
@@ -18,7 +18,7 @@ public class ChangeSizeEvent extends NodeEvent {
   @Builder
   public ChangeSizeEvent(
       @NonNull EventTarget source,
-      EventTarget target,
+      @NonNull EventTarget target,
       double timestamp,
       @NonNull Vector2f oldSize,
       @NonNull Vector2f newSize) {

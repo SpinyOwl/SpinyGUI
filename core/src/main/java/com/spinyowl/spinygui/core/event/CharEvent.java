@@ -9,7 +9,7 @@ import lombok.ToString;
 @Getter
 @ToString
 @EqualsAndHashCode
-public class CharEvent extends NodeEvent {
+public class CharEvent extends Event {
 
   @NonNull private final String input;
 

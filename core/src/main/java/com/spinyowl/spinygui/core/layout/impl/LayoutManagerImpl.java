@@ -7,6 +7,7 @@ import com.spinyowl.spinygui.core.layout.Layout;
 import com.spinyowl.spinygui.core.layout.LayoutManager;
 import com.spinyowl.spinygui.core.node.Element;
 import com.spinyowl.spinygui.core.node.style.types.Display;
+import com.spinyowl.spinygui.core.time.TimeService;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
@@ -16,9 +17,10 @@ public class LayoutManagerImpl implements LayoutManager {
 
   private final Map<Display, Layout> layoutMap = new ConcurrentHashMap<>();
 
-  public LayoutManagerImpl(@NonNull EventProcessor eventProcessor) {
+  public LayoutManagerImpl(
+      @NonNull EventProcessor eventProcessor, @NonNull TimeService timeService) {
     registerLayout(Display.NONE, new DisplayNoneLayout());
-    registerLayout(Display.FLEX, new FlexLayout(eventProcessor));
+    registerLayout(Display.FLEX, new FlexLayout(eventProcessor, timeService));
   }
 
   @Override

@@ -9,14 +9,14 @@ import lombok.ToString;
 @Getter
 @ToString
 @EqualsAndHashCode
-public class WindowPosEvent extends NodeEvent {
+public class WindowPosEvent extends Event {
   private final int posX;
   private final int posY;
 
   @Builder
   public WindowPosEvent(
       @NonNull EventTarget source,
-      EventTarget target,
+      @NonNull EventTarget target,
       double timestamp,
       EventTarget currentTarget,
       int posX,

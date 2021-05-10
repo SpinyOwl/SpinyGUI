@@ -3,7 +3,6 @@ package com.spinyowl.spinygui.core.node;
 import static com.spinyowl.spinygui.core.util.Reference.containsReference;
 import com.spinyowl.spinygui.core.event.Event;
 import com.spinyowl.spinygui.core.event.EventTarget;
-import com.spinyowl.spinygui.core.event.NodeEvent;
 import com.spinyowl.spinygui.core.event.listener.EventListener;
 import com.spinyowl.spinygui.core.node.style.NodeStyle;
 import java.util.Collections;
@@ -92,11 +91,11 @@ public class Element extends Node implements EventTarget {
    * @param listener event listener to add.
    * @param <T> type of event for which adding event listener.
    */
-  public <T extends NodeEvent> void addListener(Class<T> eventClass, EventListener<T> listener) {
+  public <T extends Event> void addListener(Class<T> eventClass, EventListener<T> listener) {
     getOrCreate(eventClass).add(listener);
   }
 
-  public <T extends NodeEvent> void removeListener(Class<T> eventClass, EventListener<T> listener) {
+  public <T extends Event> void removeListener(Class<T> eventClass, EventListener<T> listener) {
     getOrCreate(eventClass).remove(listener);
   }
 
@@ -107,11 +106,11 @@ public class Element extends Node implements EventTarget {
    * @param <T> type of event.
    * @return list of event listeners for specified event class.
    */
-  public <T extends NodeEvent> List<EventListener<T>> getListeners(Class<T> eventClass) {
+  public <T extends Event> List<EventListener<T>> getListeners(Class<T> eventClass) {
     return getOrCreate(eventClass);
   }
 
-  private <T extends NodeEvent> List<EventListener<T>> getOrCreate(Class<T> eventClass) {
+  private <T extends Event> List<EventListener<T>> getOrCreate(Class<T> eventClass) {
     return (List<EventListener<T>>)
         listenerMap.computeIfAbsent(eventClass, aClass -> new CopyOnWriteArrayList<>());
   }
@@ -214,5 +213,9 @@ public class Element extends Node implements EventTarget {
       previous = previous.previousSibling();
     }
     return (Element) previous;
+  }
+
+  public Element root() {
+    return parent() == null ? this : parent().root();
   }
 }

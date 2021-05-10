@@ -10,7 +10,7 @@ import lombok.ToString;
 @Getter
 @ToString
 @EqualsAndHashCode
-public class FocusEvent extends NodeEvent {
+public class FocusEvent extends Event {
 
   @Builder
   public FocusEvent(@NonNull EventTarget source, EventTarget target, double timestamp) {
@@ -23,10 +23,9 @@ public class FocusEvent extends NodeEvent {
   public static class FocusOutEvent extends FocusEvent {
     @NonNull private final Element nextFocus;
 
-    @Builder
     public FocusOutEvent(
         @NonNull EventTarget source,
-        EventTarget target,
+        @NonNull EventTarget target,
         double timestamp,
         @NonNull Element nextFocus) {
       super(source, target, timestamp);
@@ -40,10 +39,9 @@ public class FocusEvent extends NodeEvent {
   public static class FocusInEvent extends FocusEvent {
     @NonNull private final Element prevFocus;
 
-    @Builder
     public FocusInEvent(
         @NonNull EventTarget source,
-        EventTarget target,
+        @NonNull EventTarget target,
         double timestamp,
         @NonNull Element prevFocus) {
       super(source, target, timestamp);

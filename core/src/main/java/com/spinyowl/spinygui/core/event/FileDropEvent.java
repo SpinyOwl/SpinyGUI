@@ -10,14 +10,14 @@ import lombok.ToString;
 @Getter
 @ToString
 @EqualsAndHashCode
-public class FileDropEvent extends NodeEvent {
+public class FileDropEvent extends Event {
 
   @NonNull private final ImmutableList<String> paths;
 
   @Builder
   public FileDropEvent(
       @NonNull EventTarget source,
-      EventTarget target,
+      @NonNull EventTarget target,
       double timestamp,
       @NonNull ImmutableList<String> paths) {
     super(source, target, timestamp);

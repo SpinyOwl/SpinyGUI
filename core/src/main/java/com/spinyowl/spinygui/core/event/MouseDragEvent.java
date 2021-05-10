@@ -10,13 +10,13 @@ import org.joml.Vector2fc;
 @Getter
 @ToString
 @EqualsAndHashCode
-public class MouseDragEvent extends NodeEvent {
+public class MouseDragEvent extends Event {
   private final Vector2fc delta;
 
   @Builder
   public MouseDragEvent(
       @NonNull EventTarget source,
-      EventTarget target,
+      @NonNull EventTarget target,
       double timestamp,
       EventTarget currentTarget,
       Vector2fc delta) {

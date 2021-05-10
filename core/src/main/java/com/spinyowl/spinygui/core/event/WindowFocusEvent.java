@@ -9,12 +9,12 @@ import lombok.ToString;
 @Getter
 @ToString
 @EqualsAndHashCode
-public class WindowFocusEvent extends NodeEvent {
+public class WindowFocusEvent extends Event {
 
   @Builder
   public WindowFocusEvent(
       @NonNull EventTarget source,
-      EventTarget target,
+      @NonNull EventTarget target,
       double timestamp,
       EventTarget currentTarget) {
     super(source, target, timestamp, currentTarget);

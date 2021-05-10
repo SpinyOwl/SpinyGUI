@@ -120,13 +120,7 @@ public class SystemMouseClickEventListener
   }
 
   private void generateFocusGainedEvent(Frame frame, Element target, Element prevFocus) {
-    eventProcessor.push(
-        FocusInEvent.builder()
-            .source(frame)
-            .target(target)
-            .prevFocus(prevFocus)
-            .timestamp(timeService.getCurrentTime())
-            .build());
+    eventProcessor.push(new FocusInEvent(frame, target, timeService.getCurrentTime(), prevFocus));
   }
 
   private void generatePressEvent(
@@ -145,13 +139,7 @@ public class SystemMouseClickEventListener
   }
 
   private void generateFocusLostEvent(Element focused, Element element, Frame frame) {
-    eventProcessor.push(
-        FocusOutEvent.builder()
-            .source(frame)
-            .target(element)
-            .timestamp(timeService.getCurrentTime())
-            .nextFocus(focused)
-            .build());
+    eventProcessor.push(new FocusOutEvent(frame, element, timeService.getCurrentTime(), focused));
   }
 
   private void generateReleaseEvent(

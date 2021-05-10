@@ -10,7 +10,7 @@ import org.joml.Vector2f;
 @Getter
 @ToString
 @EqualsAndHashCode
-public class ChangePositionEvent extends NodeEvent {
+public class ChangePositionEvent extends Event {
 
   @NonNull private final Vector2f oldPos;
   @NonNull private final Vector2f newPos;
@@ -18,7 +18,7 @@ public class ChangePositionEvent extends NodeEvent {
   @Builder
   public ChangePositionEvent(
       @NonNull EventTarget source,
-      EventTarget target,
+      @NonNull EventTarget target,
       double timestamp,
       @NonNull Vector2f oldPos,
       @NonNull Vector2f newPos) {

@@ -136,12 +136,7 @@ class SystemMouseClickEventListenerTest {
     when(timeService.getCurrentTime()).thenReturn(timestamp);
 
     FocusOutEvent expectedFocusLostEvent =
-        FocusOutEvent.builder()
-            .source(frame)
-            .target(oldFocusedElement)
-            .nextFocus(newFocusedElement)
-            .timestamp(timestamp)
-            .build();
+        new FocusOutEvent(frame, oldFocusedElement, timestamp, newFocusedElement);
     doNothing().when(eventProcessor).push(expectedFocusLostEvent);
 
     MouseClickEvent expectedPressEvent =
@@ -158,12 +153,7 @@ class SystemMouseClickEventListenerTest {
     doNothing().when(eventProcessor).push(expectedPressEvent);
 
     FocusInEvent expectedFocusGainedEvent =
-        FocusInEvent.builder()
-            .source(frame)
-            .target(newFocusedElement)
-            .prevFocus(oldFocusedElement)
-            .timestamp(timestamp)
-            .build();
+        new FocusInEvent(frame, newFocusedElement, timestamp, oldFocusedElement);
     doNothing().when(eventProcessor).push(expectedFocusGainedEvent);
 
     // Act

@@ -9,13 +9,13 @@ import lombok.ToString;
 @Getter
 @ToString
 @EqualsAndHashCode
-public class WindowIconifyEvent extends NodeEvent {
+public class WindowIconifyEvent extends Event {
   private final boolean iconified;
 
   @Builder
   public WindowIconifyEvent(
       @NonNull EventTarget source,
-      EventTarget target,
+      @NonNull EventTarget target,
       double timestamp,
       EventTarget currentTarget,
       boolean iconified) {

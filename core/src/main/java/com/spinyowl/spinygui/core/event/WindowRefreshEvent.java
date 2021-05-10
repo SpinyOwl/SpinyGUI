@@ -9,12 +9,12 @@ import lombok.ToString;
 @Getter
 @ToString
 @EqualsAndHashCode
-public class WindowRefreshEvent extends NodeEvent {
+public class WindowRefreshEvent extends Event {
 
   @Builder
   public WindowRefreshEvent(
       @NonNull EventTarget source,
-      EventTarget target,
+      @NonNull EventTarget target,
       double timestamp,
       EventTarget currentTarget) {
     super(source, target, timestamp, currentTarget);

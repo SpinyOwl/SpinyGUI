@@ -9,14 +9,14 @@ import lombok.ToString;
 @Getter
 @ToString
 @EqualsAndHashCode
-public class WindowSizeEvent extends NodeEvent {
+public class WindowSizeEvent extends Event {
   private final int width;
   private final int height;
 
   @Builder
   public WindowSizeEvent(
       @NonNull EventTarget source,
-      EventTarget target,
+      @NonNull EventTarget target,
       double timestamp,
       EventTarget currentTarget,
       int width,
