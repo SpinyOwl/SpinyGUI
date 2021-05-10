@@ -64,6 +64,7 @@ import com.spinyowl.spinygui.core.node.style.types.flex.FlexWrap;
 import com.spinyowl.spinygui.core.node.style.types.flex.JustifyContent;
 import com.spinyowl.spinygui.core.node.style.types.length.Length;
 import com.spinyowl.spinygui.core.node.style.types.length.Unit;
+import com.spinyowl.spinygui.core.time.TimeService;
 import com.spinyowl.spinygui.core.util.NodeUtilities;
 import java.util.ArrayList;
 import java.util.List;
@@ -72,6 +73,7 @@ import java.util.function.LongConsumer;
 import java.util.function.ObjIntConsumer;
 import java.util.stream.Collectors;
 import lombok.Getter;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.joml.Vector2f;
 import org.lwjgl.util.yoga.Yoga;
@@ -82,7 +84,8 @@ import org.lwjgl.util.yoga.Yoga;
 public class FlexLayout implements Layout {
 
   public static final float THRESHOLD = 0.0001f;
-  private final EventProcessor eventProcessor;
+  @NonNull private final EventProcessor eventProcessor;
+  @NonNull private final TimeService timeService;
 
   private static void setJustifyContent(long node, JustifyContent justifyContent) {
     if (justifyContent == null || justifyContent == JustifyContent.FLEX_START) {
@@ -345,7 +348,7 @@ public class FlexLayout implements Layout {
     }
 
     if (invalidateTree) {
-      eventProcessor.push(InvalidateTreeEvent.create());
+      eventProcessor.push(new InvalidateTreeEvent(timeService.getCurrentTime()));
     }
 
     // free mem

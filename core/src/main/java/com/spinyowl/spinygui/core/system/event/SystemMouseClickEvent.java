@@ -6,13 +6,16 @@ import com.spinyowl.spinygui.core.input.KeyMod;
 import com.spinyowl.spinygui.core.system.input.SystemKeyAction;
 import com.spinyowl.spinygui.core.system.input.SystemKeyMod;
 import com.spinyowl.spinygui.core.system.input.SystemMouseButton;
-import lombok.Data;
+import lombok.Builder;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.NonNull;
-import lombok.experimental.SuperBuilder;
+import lombok.ToString;
 
 /** Will be generated when a mouse button is pressed or released. */
-@Data
-@SuperBuilder(toBuilder = true)
+@Getter
+@ToString
+@EqualsAndHashCode
 public class SystemMouseClickEvent extends SystemEvent {
 
   private final SystemMouseButton button;
@@ -30,6 +33,18 @@ public class SystemMouseClickEvent extends SystemEvent {
 
   /** Describes which modifier keys were held down. */
   @NonNull private final ImmutableSet<SystemKeyMod> mods;
+
+  @Builder
+  protected SystemMouseClickEvent(
+      long window,
+      SystemMouseButton button,
+      SystemKeyAction action,
+      @NonNull ImmutableSet<SystemKeyMod> mods) {
+    super(window);
+    this.button = button;
+    this.action = action;
+    this.mods = mods;
+  }
 
   public ImmutableSet<KeyMod> mappedMods() {
     return mods.stream().map(SystemKeyMod::keyMod).collect(toImmutableSet());

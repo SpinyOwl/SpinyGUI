@@ -1,13 +1,19 @@
 package com.spinyowl.spinygui.core.system.event;
 
-import lombok.Data;
-import lombok.experimental.SuperBuilder;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.ToString;
 
 /** Marker interface that defines tree of system events. */
-@Data
-@SuperBuilder(toBuilder = true)
+@Getter
+@ToString
+@EqualsAndHashCode
 public abstract class SystemEvent {
 
   /** The window that received the event. */
   private final long window;
+
+  protected SystemEvent(long window) {
+    this.window = window;
+  }
 }

@@ -13,15 +13,31 @@ public class AnimatorImpl implements Animator {
 
   @NonNull private final TimeService timeService;
   /** List of animations to initialize. */
-  private final List<Animation> animationsToInitialize = new CopyOnWriteArrayList<>();
+  @NonNull private final List<Animation> animationsToInitialize;
   /** List of animations to animate. */
-  private final List<Animation> animations = new CopyOnWriteArrayList<>();
+  @NonNull private final List<Animation> animations;
   /** List of animation to destroy. */
-  private final List<Animation> animationsToDestroy = new CopyOnWriteArrayList<>();
+  @NonNull private final List<Animation> animationsToDestroy;
   /** List of animation to destroy. */
-  private final List<Animation> animationsToRemove = new CopyOnWriteArrayList<>();
+  @NonNull private final List<Animation> animationsToRemove;
   /** Used to store previous time. */
   private double previousTime;
+
+  public AnimatorImpl(@NonNull TimeService timeService) {
+    this.timeService = timeService;
+    this.animationsToInitialize = new CopyOnWriteArrayList<>();
+    this.animations = new CopyOnWriteArrayList<>();
+    this.animationsToDestroy = new CopyOnWriteArrayList<>();
+    this.animationsToRemove = new CopyOnWriteArrayList<>();
+  }
+
+  public AnimatorImpl(@NonNull TimeService timeService, List<Animation> animations) {
+    this.timeService = timeService;
+    this.animationsToInitialize = new CopyOnWriteArrayList<>();
+    this.animations = animations;
+    this.animationsToDestroy = new CopyOnWriteArrayList<>();
+    this.animationsToRemove = new CopyOnWriteArrayList<>();
+  }
 
   /** This method used to process animations. */
   public void runAnimations() {

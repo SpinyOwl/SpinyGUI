@@ -1,8 +1,8 @@
 package com.spinyowl.spinygui.core.event.listener;
 
-import com.spinyowl.spinygui.core.event.Event;
+import com.spinyowl.spinygui.core.event.NodeEvent;
 
-public interface EventListener<T extends Event> {
+public interface EventListener<T extends NodeEvent> {
 
   void process(T event);
 }

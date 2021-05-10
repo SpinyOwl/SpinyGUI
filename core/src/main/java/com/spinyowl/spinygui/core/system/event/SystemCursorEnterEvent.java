@@ -1,11 +1,14 @@
 package com.spinyowl.spinygui.core.system.event;
 
-import lombok.Data;
-import lombok.experimental.SuperBuilder;
+import lombok.Builder;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.ToString;
 
 /** Event that generated when the cursor enters or leaves the client area of the window. */
-@Data
-@SuperBuilder(toBuilder = true)
+@Getter
+@ToString
+@EqualsAndHashCode
 public class SystemCursorEnterEvent extends SystemEvent {
 
   /**
@@ -13,4 +16,10 @@ public class SystemCursorEnterEvent extends SystemEvent {
    * it left it
    */
   private final boolean entered;
+
+  @Builder
+  protected SystemCursorEnterEvent(long window, boolean entered) {
+    super(window);
+    this.entered = entered;
+  }
 }

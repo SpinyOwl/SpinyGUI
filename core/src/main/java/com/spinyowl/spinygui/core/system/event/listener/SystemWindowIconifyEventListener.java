@@ -1,14 +1,21 @@
 package com.spinyowl.spinygui.core.system.event.listener;
 
 import com.spinyowl.spinygui.core.event.WindowIconifyEvent;
+import com.spinyowl.spinygui.core.event.processor.EventProcessor;
 import com.spinyowl.spinygui.core.node.Frame;
 import com.spinyowl.spinygui.core.system.event.SystemWindowIconifyEvent;
+import com.spinyowl.spinygui.core.time.TimeService;
+import lombok.Builder;
 import lombok.NonNull;
-import lombok.experimental.SuperBuilder;
 
-@SuperBuilder
 public class SystemWindowIconifyEventListener
     extends AbstractSystemEventListener<SystemWindowIconifyEvent> {
+
+  @Builder
+  public SystemWindowIconifyEventListener(
+      @NonNull EventProcessor eventProcessor, @NonNull TimeService timeService) {
+    super(eventProcessor, timeService);
+  }
 
   /**
    * Used to listen, process and translate system event to gui event.

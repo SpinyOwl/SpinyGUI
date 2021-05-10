@@ -7,20 +7,30 @@ import static com.spinyowl.spinygui.core.util.NodeUtilities.visible;
 import com.spinyowl.spinygui.core.event.FocusEvent.FocusInEvent;
 import com.spinyowl.spinygui.core.event.FocusEvent.FocusOutEvent;
 import com.spinyowl.spinygui.core.event.MouseClickEvent;
+import com.spinyowl.spinygui.core.event.processor.EventProcessor;
 import com.spinyowl.spinygui.core.input.KeyAction;
 import com.spinyowl.spinygui.core.input.MouseService;
 import com.spinyowl.spinygui.core.node.Element;
 import com.spinyowl.spinygui.core.node.Frame;
 import com.spinyowl.spinygui.core.system.event.SystemMouseClickEvent;
+import com.spinyowl.spinygui.core.time.TimeService;
+import lombok.Builder;
 import lombok.NonNull;
-import lombok.experimental.SuperBuilder;
 import org.joml.Vector2fc;
 
-@SuperBuilder(toBuilder = true)
 public class SystemMouseClickEventListener
     extends AbstractSystemEventListener<SystemMouseClickEvent> {
 
   @NonNull private final MouseService mouseService;
+
+  @Builder
+  public SystemMouseClickEventListener(
+      @NonNull EventProcessor eventProcessor,
+      @NonNull TimeService timeService,
+      @NonNull MouseService mouseService) {
+    super(eventProcessor, timeService);
+    this.mouseService = mouseService;
+  }
 
   /**
    * Used to listen, process and translate system event to gui event.

@@ -5,13 +5,16 @@ import com.google.common.collect.ImmutableSet;
 import com.spinyowl.spinygui.core.input.KeyMod;
 import com.spinyowl.spinygui.core.system.input.SystemKeyAction;
 import com.spinyowl.spinygui.core.system.input.SystemKeyMod;
-import lombok.Data;
+import lombok.Builder;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.NonNull;
-import lombok.experimental.SuperBuilder;
+import lombok.ToString;
 
 /** Will be generated when a key is pressed, repeated or released. */
-@Data
-@SuperBuilder(toBuilder = true)
+@Getter
+@ToString
+@EqualsAndHashCode
 public class SystemKeyEvent extends SystemEvent {
 
   /** The keyboard key that was pressed or released. */
@@ -39,6 +42,20 @@ public class SystemKeyEvent extends SystemEvent {
 
   /** Describes which modifier keys were held down. */
   @NonNull private final ImmutableSet<SystemKeyMod> mods;
+
+  @Builder
+  protected SystemKeyEvent(
+      long window,
+      int keyCode,
+      int scancode,
+      @NonNull SystemKeyAction action,
+      @NonNull ImmutableSet<SystemKeyMod> mods) {
+    super(window);
+    this.keyCode = keyCode;
+    this.scancode = scancode;
+    this.action = action;
+    this.mods = mods;
+  }
 
   public ImmutableSet<KeyMod> mappedMods() {
     return mods.stream().map(SystemKeyMod::keyMod).collect(toImmutableSet());

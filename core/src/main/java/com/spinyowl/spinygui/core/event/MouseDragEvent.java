@@ -1,11 +1,26 @@
 package com.spinyowl.spinygui.core.event;
 
-import lombok.Data;
-import lombok.experimental.SuperBuilder;
+import lombok.Builder;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NonNull;
+import lombok.ToString;
 import org.joml.Vector2fc;
 
-@Data
-@SuperBuilder(toBuilder = true)
-public class MouseDragEvent extends Event {
+@Getter
+@ToString
+@EqualsAndHashCode
+public class MouseDragEvent extends NodeEvent {
   private final Vector2fc delta;
+
+  @Builder
+  public MouseDragEvent(
+      @NonNull EventTarget source,
+      EventTarget target,
+      double timestamp,
+      EventTarget currentTarget,
+      Vector2fc delta) {
+    super(source, target, timestamp, currentTarget);
+    this.delta = delta;
+  }
 }

@@ -2,17 +2,27 @@ package com.spinyowl.spinygui.core.system.event.listener;
 
 import static com.spinyowl.spinygui.core.util.NodeUtilities.getTargetElement;
 import com.spinyowl.spinygui.core.event.ScrollEvent;
+import com.spinyowl.spinygui.core.event.processor.EventProcessor;
 import com.spinyowl.spinygui.core.input.MouseService;
 import com.spinyowl.spinygui.core.node.Frame;
 import com.spinyowl.spinygui.core.system.event.SystemScrollEvent;
+import com.spinyowl.spinygui.core.time.TimeService;
+import lombok.Builder;
 import lombok.NonNull;
-import lombok.experimental.SuperBuilder;
 import org.joml.Vector2fc;
 
-@SuperBuilder(toBuilder = true)
 public class SystemScrollEventListener extends AbstractSystemEventListener<SystemScrollEvent> {
 
   @NonNull private final MouseService mouseService;
+
+  @Builder
+  public SystemScrollEventListener(
+      @NonNull EventProcessor eventProcessor,
+      @NonNull TimeService timeService,
+      @NonNull MouseService mouseService) {
+    super(eventProcessor, timeService);
+    this.mouseService = mouseService;
+  }
 
   /**
    * Used to listen, process and translate system event to gui event.

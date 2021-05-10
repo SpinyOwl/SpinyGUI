@@ -13,7 +13,7 @@ public interface EventTarget {
    * @param listener listener to add.
    * @param <T> type of event.
    */
-  <T extends Event> void addListener(Class<T> eventClass, EventListener<T> listener);
+  <T extends NodeEvent> void addListener(Class<T> eventClass, EventListener<T> listener);
 
   /**
    * Removes specified event listener for specified event.
@@ -22,7 +22,7 @@ public interface EventTarget {
    * @param listener listener to remove.
    * @param <T> type of event.
    */
-  <T extends Event> void removeListener(Class<T> eventClass, EventListener<T> listener);
+  <T extends NodeEvent> void removeListener(Class<T> eventClass, EventListener<T> listener);
 
   /**
    * Returns list of listeners for specified event class.
@@ -31,5 +31,5 @@ public interface EventTarget {
    * @param <T> type of event.
    * @return list of event listeners for specified event class.
    */
-  <T extends Event> List<EventListener<T>> getListeners(Class<T> eventClass);
+  <T extends NodeEvent> List<EventListener<T>> getListeners(Class<T> eventClass);
 }

@@ -1,12 +1,18 @@
 package com.spinyowl.spinygui.core.event;
 
-import lombok.experimental.SuperBuilder;
+import lombok.Builder;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.ToString;
 
 /** Event, that used only for invalidating tree, so it should be rendered again. */
-@SuperBuilder(toBuilder = true)
+@Getter
+@ToString
+@EqualsAndHashCode
 public class InvalidateTreeEvent extends Event {
 
-  public static InvalidateTreeEvent create() {
-    return InvalidateTreeEvent.builder().build();
+  @Builder
+  public InvalidateTreeEvent(double timestamp) {
+    super(timestamp);
   }
 }

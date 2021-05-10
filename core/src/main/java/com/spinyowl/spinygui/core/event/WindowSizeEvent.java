@@ -1,11 +1,28 @@
 package com.spinyowl.spinygui.core.event;
 
-import lombok.Data;
-import lombok.experimental.SuperBuilder;
+import lombok.Builder;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NonNull;
+import lombok.ToString;
 
-@Data
-@SuperBuilder
-public class WindowSizeEvent extends Event {
+@Getter
+@ToString
+@EqualsAndHashCode
+public class WindowSizeEvent extends NodeEvent {
   private final int width;
   private final int height;
+
+  @Builder
+  public WindowSizeEvent(
+      @NonNull EventTarget source,
+      EventTarget target,
+      double timestamp,
+      EventTarget currentTarget,
+      int width,
+      int height) {
+    super(source, target, timestamp, currentTarget);
+    this.width = width;
+    this.height = height;
+  }
 }

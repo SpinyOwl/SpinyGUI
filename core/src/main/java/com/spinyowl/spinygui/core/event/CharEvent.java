@@ -1,12 +1,22 @@
 package com.spinyowl.spinygui.core.event;
 
-import lombok.Data;
+import lombok.Builder;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.NonNull;
-import lombok.experimental.SuperBuilder;
+import lombok.ToString;
 
-@Data
-@SuperBuilder(toBuilder = true)
-public class CharEvent extends Event {
+@Getter
+@ToString
+@EqualsAndHashCode
+public class CharEvent extends NodeEvent {
 
   @NonNull private final String input;
+
+  @Builder
+  public CharEvent(
+      @NonNull EventTarget source, EventTarget target, double timestamp, @NonNull String input) {
+    super(source, target, timestamp);
+    this.input = input;
+  }
 }

@@ -1,18 +1,29 @@
 package com.spinyowl.spinygui.core.system.event.listener;
 
 import com.spinyowl.spinygui.core.event.FileDropEvent;
+import com.spinyowl.spinygui.core.event.processor.EventProcessor;
 import com.spinyowl.spinygui.core.input.MouseService;
 import com.spinyowl.spinygui.core.node.Frame;
 import com.spinyowl.spinygui.core.system.event.SystemFileDropEvent;
+import com.spinyowl.spinygui.core.time.TimeService;
 import com.spinyowl.spinygui.core.util.NodeUtilities;
+import lombok.Builder;
 import lombok.NonNull;
-import lombok.experimental.SuperBuilder;
 import org.joml.Vector2fc;
 
-@SuperBuilder(toBuilder = true)
 public class SystemFileDropEventListener extends AbstractSystemEventListener<SystemFileDropEvent> {
 
   @NonNull private final MouseService mouseService;
+
+  @Builder
+  public SystemFileDropEventListener(
+      @NonNull EventProcessor eventProcessor,
+      @NonNull TimeService timeService,
+      @NonNull MouseService mouseService) {
+    super(eventProcessor, timeService);
+    this.mouseService = mouseService;
+  }
+
   /**
    * Used to listen, process and translate system event to gui event.
    *

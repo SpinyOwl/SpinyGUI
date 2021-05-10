@@ -3,10 +3,12 @@ package com.spinyowl.spinygui.core.system.event.listener;
 import com.spinyowl.spinygui.core.event.processor.EventProcessor;
 import com.spinyowl.spinygui.core.system.event.SystemEvent;
 import com.spinyowl.spinygui.core.time.TimeService;
+import lombok.EqualsAndHashCode;
 import lombok.NonNull;
-import lombok.experimental.SuperBuilder;
+import lombok.RequiredArgsConstructor;
 
-@SuperBuilder(toBuilder = true)
+@EqualsAndHashCode
+@RequiredArgsConstructor
 public abstract class AbstractSystemEventListener<E extends SystemEvent>
     implements SystemEventListener<E> {
   /** Event processor to pass generated events to. */

@@ -5,22 +5,32 @@ import static com.spinyowl.spinygui.core.input.MouseButton.RIGHT;
 import com.spinyowl.spinygui.core.event.CursorEnterEvent;
 import com.spinyowl.spinygui.core.event.CursorExitEvent;
 import com.spinyowl.spinygui.core.event.MouseDragEvent;
+import com.spinyowl.spinygui.core.event.processor.EventProcessor;
 import com.spinyowl.spinygui.core.input.MouseService;
 import com.spinyowl.spinygui.core.input.MouseService.CursorPositions;
 import com.spinyowl.spinygui.core.node.Element;
 import com.spinyowl.spinygui.core.node.Frame;
 import com.spinyowl.spinygui.core.system.event.SystemCursorPosEvent;
+import com.spinyowl.spinygui.core.time.TimeService;
 import com.spinyowl.spinygui.core.util.NodeUtilities;
+import lombok.Builder;
 import lombok.NonNull;
-import lombok.experimental.SuperBuilder;
 import org.joml.Vector2f;
 import org.joml.Vector2fc;
 
-@SuperBuilder(toBuilder = true)
 public class SystemCursorPosEventListener
     extends AbstractSystemEventListener<SystemCursorPosEvent> {
 
   @NonNull private final MouseService mouseService;
+
+  @Builder
+  public SystemCursorPosEventListener(
+      @NonNull EventProcessor eventProcessor,
+      @NonNull TimeService timeService,
+      @NonNull MouseService mouseService) {
+    super(eventProcessor, timeService);
+    this.mouseService = mouseService;
+  }
 
   /**
    * Used to listen, process and translate system event to gui event.

@@ -4,13 +4,19 @@ import com.spinyowl.spinygui.core.event.WindowCloseEvent;
 import com.spinyowl.spinygui.core.event.processor.EventProcessor;
 import com.spinyowl.spinygui.core.node.Frame;
 import com.spinyowl.spinygui.core.system.event.SystemWindowCloseEvent;
+import com.spinyowl.spinygui.core.time.TimeService;
+import lombok.Builder;
 import lombok.NonNull;
-import lombok.experimental.SuperBuilder;
 
 /** Generates {@link WindowCloseEvent} for frame and pushes it to {@link EventProcessor}. */
-@SuperBuilder(toBuilder = true)
 public class SystemWindowsCloseEventListener
     extends AbstractSystemEventListener<SystemWindowCloseEvent> {
+
+  @Builder
+  public SystemWindowsCloseEventListener(
+      @NonNull EventProcessor eventProcessor, @NonNull TimeService timeService) {
+    super(eventProcessor, timeService);
+  }
 
   /**
    * Used to listen, process and translate system event to gui event.

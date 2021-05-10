@@ -4,13 +4,16 @@ import static com.google.common.collect.ImmutableSet.toImmutableSet;
 import com.google.common.collect.ImmutableSet;
 import com.spinyowl.spinygui.core.input.KeyMod;
 import com.spinyowl.spinygui.core.system.input.SystemKeyMod;
-import lombok.Data;
+import lombok.Builder;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.NonNull;
-import lombok.experimental.SuperBuilder;
+import lombok.ToString;
 
 /** Event on Unicode character input regardless of what modifier keys are used. */
-@Data
-@SuperBuilder(toBuilder = true)
+@Getter
+@ToString
+@EqualsAndHashCode
 public class SystemCharModsEvent extends SystemEvent {
 
   /** The Unicode code point of the character. */
@@ -18,6 +21,14 @@ public class SystemCharModsEvent extends SystemEvent {
 
   /** Describes which modifier keys were held down. */
   @NonNull private final ImmutableSet<SystemKeyMod> mods;
+
+  @Builder
+  protected SystemCharModsEvent(
+      long window, int codepoint, @NonNull ImmutableSet<SystemKeyMod> mods) {
+    super(window);
+    this.codepoint = codepoint;
+    this.mods = mods;
+  }
 
   public ImmutableSet<KeyMod> mappedMods() {
     return mods.stream().map(SystemKeyMod::keyMod).collect(toImmutableSet());
