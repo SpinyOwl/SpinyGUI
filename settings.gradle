@@ -3,7 +3,11 @@ rootProject.name = 'SpinyGUI'
 include 'spinygui'
 
 include 'core'
+
 include 'core.parser'
 include 'core.parser.impl'
+
+include 'core.backend'
+include 'core.backend.lwjgl.nanovg'
 
 include 'demo.simple'

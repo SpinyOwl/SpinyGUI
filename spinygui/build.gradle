@@ -3,9 +3,10 @@ plugins {
 }
 dependencies {
     api project(':core')
+
+    api project(':core.backend')
+    api project(':core.backend.lwjgl.nanovg')
+
     api project(':core.parser')
     api project(':core.parser.impl')
-//    api project(':backend.core')
-//    api project(':backend.glfwutil')
-//    api project(':backend.opengl32')
 }

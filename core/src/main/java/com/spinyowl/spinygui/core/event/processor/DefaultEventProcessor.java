@@ -17,6 +17,7 @@ public class DefaultEventProcessor implements EventProcessor {
   }
 
   @Override
+  @SuppressWarnings({"rawtypes", "unchecked"})
   public void processEvents() {
     var events = List.copyOf(eventQueue);
 
