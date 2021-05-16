@@ -7,7 +7,7 @@ include 'core'
 include 'core.parser'
 include 'core.parser.impl'
 
-include 'core.backend'
-include 'core.backend.lwjgl.nanovg'
+include 'core.renderer'
+include 'core.renderer.lwjgl.nanovg'
 
 include 'demo.simple'
