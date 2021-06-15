@@ -1,7 +1,7 @@
 package com.spinyowl.spinygui.core.style.stylesheet.property.flex;
 
 import static com.spinyowl.spinygui.core.style.stylesheet.Properties.JUSTIFY_CONTENT;
-import com.spinyowl.spinygui.core.node.style.types.flex.JustifyContent;
+import com.spinyowl.spinygui.core.style.types.flex.JustifyContent;
 import com.spinyowl.spinygui.core.style.stylesheet.Property;
 
 public class JustifyContentProperty extends Property<JustifyContent> {

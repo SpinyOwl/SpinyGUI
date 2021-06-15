@@ -25,6 +25,7 @@ subprojects {
     repositories {
         mavenCentral()
         maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
+        maven { url "https://raw.githubusercontent.com/SpinyOwl/repo/releases" }
     }
 
     plugins.withType(JavaPlugin).configureEach {
@@ -34,6 +35,10 @@ subprojects {
 
         sourceCompatibility = 1.16
         targetCompatibility = 1.16
+
+        compileJava.options.encoding = "UTF-8"
+        compileTestJava.options.encoding = "UTF-8"
+        javadoc.options.encoding = 'UTF-8'
 
         dependencies {
 

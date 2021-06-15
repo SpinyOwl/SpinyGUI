@@ -4,7 +4,7 @@ import static com.spinyowl.spinygui.core.util.Reference.containsReference;
 import com.spinyowl.spinygui.core.event.Event;
 import com.spinyowl.spinygui.core.event.EventTarget;
 import com.spinyowl.spinygui.core.event.listener.EventListener;
-import com.spinyowl.spinygui.core.node.style.NodeStyle;
+import com.spinyowl.spinygui.core.style.NodeStyle;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;

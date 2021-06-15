@@ -25,7 +25,7 @@ public class SystemEventProcessorImpl implements SystemEventProcessor {
   @NonNull private final FrameWindowService frameWindowService;
 
   private void swap() {
-    Queue<SystemEvent> temp = first;
+    var temp = first;
     first = second;
     second = temp;
   }

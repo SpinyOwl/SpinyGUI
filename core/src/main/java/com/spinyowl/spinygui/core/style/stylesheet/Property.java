@@ -1,7 +1,7 @@
 package com.spinyowl.spinygui.core.style.stylesheet;
 
 import com.spinyowl.spinygui.core.node.Element;
-import com.spinyowl.spinygui.core.node.style.NodeStyle;
+import com.spinyowl.spinygui.core.style.NodeStyle;
 import com.spinyowl.spinygui.core.style.stylesheet.util.StyleUtils;
 import java.util.Objects;
 import java.util.function.BiConsumer;

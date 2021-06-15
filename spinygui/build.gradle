@@ -1,12 +1,15 @@
 plugins {
     id 'java-library'
 }
+
 dependencies {
     api project(':core')
 
-    api project(':core.renderer')
-    api project(':core.renderer.lwjgl.nanovg')
+    api project(':core.backend')
+    api project(':core.backend.lwjgl.nanovg')
 
     api project(':core.parser')
     api project(':core.parser.impl')
+
+    api group: 'org.liquidengine', name: 'cbchain', version: '1.0.0';
 }

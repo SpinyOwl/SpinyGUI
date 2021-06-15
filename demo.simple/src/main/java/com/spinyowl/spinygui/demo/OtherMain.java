@@ -8,10 +8,10 @@ import com.spinyowl.spinygui.core.node.Element;
 import com.spinyowl.spinygui.core.node.Frame;
 import com.spinyowl.spinygui.core.node.Node;
 import com.spinyowl.spinygui.core.node.Text;
-import com.spinyowl.spinygui.core.node.style.types.Color;
+import com.spinyowl.spinygui.core.style.types.Color;
 import com.spinyowl.spinygui.core.parser.StyleSheetConverter;
 import com.spinyowl.spinygui.core.parser.impl.DefaultNodeConverter;
-import com.spinyowl.spinygui.core.style.manager.DefaultStyleManger;
+import com.spinyowl.spinygui.core.style.manager.StyleManagerImpl;
 import com.spinyowl.spinygui.core.style.manager.StyleManager;
 import com.spinyowl.spinygui.core.style.stylesheet.RuleSet;
 import java.util.Arrays;
@@ -75,7 +75,7 @@ public class OtherMain {
       log.info(Arrays.toString(rule.selectors().toArray()) + " --- " + rule.specificity(testLabel));
     }
 
-    StyleManager styleManager = new DefaultStyleManger();
+    StyleManager styleManager = new StyleManagerImpl();
     styleManager.recalculateStyles(frame);
 
     assert (Objects.equals(Color.RED, testLabel.calculatedStyle().color()));
