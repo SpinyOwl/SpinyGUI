@@ -1,11 +1,11 @@
 package com.spinyowl.spinygui.core.style.stylesheet.property.border;
 
 import static com.spinyowl.spinygui.core.style.stylesheet.Properties.BORDER;
-import com.spinyowl.spinygui.core.node.style.NodeStyle;
-import com.spinyowl.spinygui.core.node.style.types.Color;
-import com.spinyowl.spinygui.core.node.style.types.border.Border;
-import com.spinyowl.spinygui.core.node.style.types.border.BorderItem;
-import com.spinyowl.spinygui.core.node.style.types.border.BorderStyle;
+import com.spinyowl.spinygui.core.style.NodeStyle;
+import com.spinyowl.spinygui.core.style.types.Color;
+import com.spinyowl.spinygui.core.style.types.border.Border;
+import com.spinyowl.spinygui.core.style.types.border.BorderItem;
+import com.spinyowl.spinygui.core.style.types.border.BorderStyle;
 import com.spinyowl.spinygui.core.style.stylesheet.Property;
 import com.spinyowl.spinygui.core.style.stylesheet.extractor.ValueExtractor;
 import com.spinyowl.spinygui.core.style.stylesheet.extractor.ValueExtractors;

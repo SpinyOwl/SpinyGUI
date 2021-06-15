@@ -1,22 +1,17 @@
 package com.spinyowl.spinygui.core.system.impl;
 
-import com.google.common.collect.HashMultimap;
-import com.google.common.collect.SetMultimap;
+import com.google.common.collect.BiMap;
+import com.google.common.collect.HashBiMap;
 import com.spinyowl.spinygui.core.node.Frame;
 import com.spinyowl.spinygui.core.system.FrameWindowService;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
 import lombok.NonNull;
 
 public class FrameWindowServiceImpl implements FrameWindowService {
-  private final Map<Long, Frame> windowFrameMap = new HashMap<>();
-  private final SetMultimap<Frame, Long> frameWindowMultimap = HashMultimap.create();
+  private final BiMap<Long, Frame> windowFrameMap = HashBiMap.create();
 
   @Override
   public void put(@NonNull Long window, @NonNull Frame frame) {
     windowFrameMap.put(window, frame);
-    frameWindowMultimap.put(frame, window);
   }
 
   @Override
@@ -25,15 +20,12 @@ public class FrameWindowServiceImpl implements FrameWindowService {
   }
 
   @Override
-  public Set<Long> getWindows(@NonNull Frame frame) {
-    return frameWindowMultimap.get(frame);
+  public Long getWindow(@NonNull Frame frame) {
+    return windowFrameMap.inverse().getOrDefault(frame, -1L);
   }
 
   @Override
   public void remove(@NonNull Long window) {
-    if (windowFrameMap.containsKey(window)) {
-      var frame = windowFrameMap.remove(window);
-      frameWindowMultimap.remove(frame, window);
-    }
+    windowFrameMap.remove(window);
   }
 }

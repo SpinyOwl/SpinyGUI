@@ -1,8 +1,8 @@
 package com.spinyowl.spinygui.core.style.stylesheet.property;
 
 import static com.spinyowl.spinygui.core.style.stylesheet.Properties.WHITE_SPACE;
-import com.spinyowl.spinygui.core.node.style.NodeStyle;
-import com.spinyowl.spinygui.core.node.style.types.WhiteSpace;
+import com.spinyowl.spinygui.core.style.NodeStyle;
+import com.spinyowl.spinygui.core.style.types.WhiteSpace;
 import com.spinyowl.spinygui.core.style.stylesheet.Property;
 
 public class WhiteSpaceProperty extends Property<WhiteSpace> {

@@ -1,7 +1,7 @@
 package com.spinyowl.spinygui.core.style.stylesheet.extractor.impl;
 
-import com.spinyowl.spinygui.core.node.style.types.length.Length;
-import com.spinyowl.spinygui.core.node.style.types.length.Unit;
+import com.spinyowl.spinygui.core.style.types.length.Length;
+import com.spinyowl.spinygui.core.style.types.length.Unit;
 import com.spinyowl.spinygui.core.style.stylesheet.extractor.ValueExtractor;
 import com.spinyowl.spinygui.core.style.stylesheet.extractor.ValueExtractorException;
 

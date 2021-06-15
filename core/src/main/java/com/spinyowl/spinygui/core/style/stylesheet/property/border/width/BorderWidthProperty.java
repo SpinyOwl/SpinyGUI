@@ -2,9 +2,9 @@ package com.spinyowl.spinygui.core.style.stylesheet.property.border.width;
 
 import static com.spinyowl.spinygui.core.style.stylesheet.Properties.BORDER_WIDTH;
 import static com.spinyowl.spinygui.core.style.stylesheet.util.StyleUtils.testMultipleValues;
-import com.spinyowl.spinygui.core.node.style.NodeStyle;
-import com.spinyowl.spinygui.core.node.style.types.border.Border;
-import com.spinyowl.spinygui.core.node.style.types.length.Length;
+import com.spinyowl.spinygui.core.style.NodeStyle;
+import com.spinyowl.spinygui.core.style.types.border.Border;
+import com.spinyowl.spinygui.core.style.types.length.Length;
 import com.spinyowl.spinygui.core.style.stylesheet.Property;
 import com.spinyowl.spinygui.core.style.stylesheet.extractor.ValueExtractor;
 import com.spinyowl.spinygui.core.style.stylesheet.extractor.ValueExtractors;

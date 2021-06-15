@@ -2,7 +2,7 @@ package com.spinyowl.spinygui.core.style.stylesheet.property.font;
 
 import static com.spinyowl.spinygui.core.style.stylesheet.Properties.FONT_FAMILY;
 import com.spinyowl.spinygui.core.font.Font;
-import com.spinyowl.spinygui.core.node.style.NodeStyle;
+import com.spinyowl.spinygui.core.style.NodeStyle;
 import com.spinyowl.spinygui.core.style.stylesheet.Property;
 import java.util.Arrays;
 import java.util.Set;

@@ -1,10 +1,10 @@
 package com.spinyowl.spinygui.core.style.stylesheet.property;
 
 import static com.spinyowl.spinygui.core.style.stylesheet.Properties.BOX_SHADOW;
-import com.spinyowl.spinygui.core.node.style.NodeStyle;
-import com.spinyowl.spinygui.core.node.style.types.BoxShadow;
-import com.spinyowl.spinygui.core.node.style.types.Color;
-import com.spinyowl.spinygui.core.node.style.types.length.Length;
+import com.spinyowl.spinygui.core.style.NodeStyle;
+import com.spinyowl.spinygui.core.style.types.BoxShadow;
+import com.spinyowl.spinygui.core.style.types.Color;
+import com.spinyowl.spinygui.core.style.types.length.Length;
 import com.spinyowl.spinygui.core.style.stylesheet.Property;
 import com.spinyowl.spinygui.core.style.stylesheet.extractor.ValueExtractor;
 import com.spinyowl.spinygui.core.style.stylesheet.extractor.ValueExtractors;
@@ -81,7 +81,7 @@ public class BoxShadowProperty extends Property<BoxShadow> {
       if (INSET.equals(arg)) {
         inset = Boolean.TRUE;
       } else if (lengthValueExtractor.isValid(arg)) {
-        shadowArgs[++shadowArgIndex] = lengthValueExtractor.extract(arg).get().floatValue();
+        shadowArgs[++shadowArgIndex] = lengthValueExtractor.extract(arg).value().floatValue();
       } else if (colorValueExtractor.isValid(arg)) {
         color = colorValueExtractor.extract(arg);
       }

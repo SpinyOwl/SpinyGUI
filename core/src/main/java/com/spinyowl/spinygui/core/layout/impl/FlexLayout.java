@@ -1,7 +1,7 @@
 package com.spinyowl.spinygui.core.layout.impl;
 
-import static com.spinyowl.spinygui.core.node.style.types.length.Length.LType.PERCENT_TYPE;
-import static com.spinyowl.spinygui.core.node.style.types.length.Length.LType.PIXEL_TYPE;
+import static com.spinyowl.spinygui.core.style.types.length.LengthType.PERCENT;
+import static com.spinyowl.spinygui.core.style.types.length.LengthType.PIXEL;
 import static org.lwjgl.util.yoga.Yoga.YGAlignAuto;
 import static org.lwjgl.util.yoga.Yoga.YGAlignBaseline;
 import static org.lwjgl.util.yoga.Yoga.YGAlignCenter;
@@ -55,15 +55,15 @@ import com.spinyowl.spinygui.core.event.processor.EventProcessor;
 import com.spinyowl.spinygui.core.layout.Layout;
 import com.spinyowl.spinygui.core.node.Element;
 import com.spinyowl.spinygui.core.node.Node;
-import com.spinyowl.spinygui.core.node.style.NodeStyle;
-import com.spinyowl.spinygui.core.node.style.types.Position;
-import com.spinyowl.spinygui.core.node.style.types.flex.AlignItems;
-import com.spinyowl.spinygui.core.node.style.types.flex.AlignSelf;
-import com.spinyowl.spinygui.core.node.style.types.flex.FlexDirection;
-import com.spinyowl.spinygui.core.node.style.types.flex.FlexWrap;
-import com.spinyowl.spinygui.core.node.style.types.flex.JustifyContent;
-import com.spinyowl.spinygui.core.node.style.types.length.Length;
-import com.spinyowl.spinygui.core.node.style.types.length.Unit;
+import com.spinyowl.spinygui.core.style.NodeStyle;
+import com.spinyowl.spinygui.core.style.types.Position;
+import com.spinyowl.spinygui.core.style.types.flex.AlignItems;
+import com.spinyowl.spinygui.core.style.types.flex.AlignSelf;
+import com.spinyowl.spinygui.core.style.types.flex.FlexDirection;
+import com.spinyowl.spinygui.core.style.types.flex.FlexWrap;
+import com.spinyowl.spinygui.core.style.types.flex.JustifyContent;
+import com.spinyowl.spinygui.core.style.types.length.Length;
+import com.spinyowl.spinygui.core.style.types.length.Unit;
 import com.spinyowl.spinygui.core.time.TimeService;
 import com.spinyowl.spinygui.core.util.NodeUtilities;
 import java.util.ArrayList;
@@ -229,10 +229,10 @@ public class FlexLayout implements Layout {
         autoConsumer.accept(node);
       } else {
         Length<?> l = unit.asLength();
-        if (PIXEL_TYPE.equals(l.type())) {
-          pixelConsumer.accept(node, (Integer) l.get());
-        } else if (PERCENT_TYPE.equals(l.type())) {
-          percentConsumer.accept(node, (Float) l.get());
+        if (PIXEL.equals(l.type())) {
+          pixelConsumer.accept(node, (Integer) l.value());
+        } else if (PERCENT.equals(l.type())) {
+          percentConsumer.accept(node, (Float) l.value());
         }
       }
     }
@@ -250,10 +250,10 @@ public class FlexLayout implements Layout {
         autoConsumer.accept(node, side);
       } else {
         Length<?> l = unit.asLength();
-        if (PIXEL_TYPE.equals(l.type())) {
-          pixelConsumer.accept(node, side, (Integer) l.get());
-        } else if (PERCENT_TYPE.equals(l.type())) {
-          percentConsumer.accept(node, side, (Float) l.get());
+        if (PIXEL.equals(l.type())) {
+          pixelConsumer.accept(node, side, (Integer) l.value());
+        } else if (PERCENT.equals(l.type())) {
+          percentConsumer.accept(node, side, (Float) l.value());
         }
       }
     }
@@ -267,10 +267,10 @@ public class FlexLayout implements Layout {
       TriConsumer<Long, Integer, Float> percentConsumer) {
     if (unit != null && !unit.isAuto()) {
       Length<?> l = unit.asLength();
-      if (PIXEL_TYPE.equals(l.type())) {
-        pixelConsumer.accept(node, side, (Integer) l.get());
-      } else if (PERCENT_TYPE.equals(l.type())) {
-        percentConsumer.accept(node, side, (Float) l.get());
+      if (PIXEL.equals(l.type())) {
+        pixelConsumer.accept(node, side, (Integer) l.value());
+      } else if (PERCENT.equals(l.type())) {
+        percentConsumer.accept(node, side, (Float) l.value());
       }
     }
   }
@@ -281,10 +281,10 @@ public class FlexLayout implements Layout {
       ObjIntConsumer<Long> pixelConsumer,
       BiConsumer<Long, Float> percentConsumer) {
     if (length != null) {
-      if (PIXEL_TYPE.equals(length.type())) {
-        pixelConsumer.accept(node, (Integer) length.get());
-      } else if (PERCENT_TYPE.equals(length.type())) {
-        percentConsumer.accept(node, (Float) length.get());
+      if (PIXEL.equals(length.type())) {
+        pixelConsumer.accept(node, (Integer) length.value());
+      } else if (PERCENT.equals(length.type())) {
+        percentConsumer.accept(node, (Float) length.value());
       }
     }
   }
@@ -296,10 +296,10 @@ public class FlexLayout implements Layout {
       TriConsumer<Long, Integer, Integer> pixelConsumer,
       TriConsumer<Long, Integer, Float> percentConsumer) {
     if (length != null) {
-      if (PIXEL_TYPE.equals(length.type())) {
-        pixelConsumer.accept(node, side, (Integer) length.get());
-      } else if (PERCENT_TYPE.equals(length.type())) {
-        percentConsumer.accept(node, side, (Float) length.get());
+      if (PIXEL.equals(length.type())) {
+        pixelConsumer.accept(node, side, (Integer) length.value());
+      } else if (PERCENT.equals(length.type())) {
+        percentConsumer.accept(node, side, (Float) length.value());
       }
     }
   }

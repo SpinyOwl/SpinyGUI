@@ -2,8 +2,8 @@ package com.spinyowl.spinygui.core.util;
 
 import com.spinyowl.spinygui.core.node.Element;
 import com.spinyowl.spinygui.core.node.Node;
-import com.spinyowl.spinygui.core.node.style.types.Display;
-import com.spinyowl.spinygui.core.node.style.types.PointerEvents;
+import com.spinyowl.spinygui.core.style.types.Display;
+import com.spinyowl.spinygui.core.style.types.PointerEvents;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;

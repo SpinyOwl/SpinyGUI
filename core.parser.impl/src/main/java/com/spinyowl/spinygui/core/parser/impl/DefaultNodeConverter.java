@@ -147,7 +147,7 @@ public final class DefaultNodeConverter implements NodeConverter {
 
   private static Node createNodeFromContent(org.w3c.dom.Node node, NodeConverterContext context) {
     if (node instanceof org.w3c.dom.Text text) {
-      String wholeText = text.getWholeText();
+      String wholeText = text.getWholeText().trim();
       if (wholeText.isEmpty()) {
         return null;
       }

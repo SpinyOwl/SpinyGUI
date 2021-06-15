@@ -10,5 +10,5 @@ dependencies {
     api group: 'ch.qos.logback', name: 'logback-classic', version: logback_version
 }
 application {
-    mainClass = "com.spinyowl.spinygui.demo.Main"
+    mainClass = "com.spinyowl.spinygui.demo.simple.Main"
 }
