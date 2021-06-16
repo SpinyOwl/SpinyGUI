@@ -5,7 +5,7 @@ import com.spinyowl.spinygui.core.style.stylesheet.Specificity;
 import com.spinyowl.spinygui.core.style.stylesheet.selector.Selector;
 import lombok.Data;
 
-/** The element selector selects elements based on the {@link Element#nodeName()}. */
+/** The element selector selects elements based on the Element's nodeName. */
 @Data
 public class ElementSelector implements Selector {
 

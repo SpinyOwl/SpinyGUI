@@ -11,5 +11,5 @@ dependencies {
     api project(':core.parser')
     api project(':core.parser.impl')
 
-    api group: 'org.liquidengine', name: 'cbchain', version: '1.0.0';
+    api group: 'com.spinyowl', name: 'cbchain', version: '1.0.0';
 }

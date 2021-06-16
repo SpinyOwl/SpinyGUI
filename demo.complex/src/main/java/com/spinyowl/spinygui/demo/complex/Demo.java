@@ -1,6 +1,6 @@
 package com.spinyowl.spinygui.demo.complex;
 
-import org.liquidengine.cbchain.IChainCallback;
+import com.spinyowl.cbchain.IChainCallback;
 
 public abstract class Demo {
 

@@ -28,7 +28,7 @@ public final class WhiteSpace {
    */
   public static final WhiteSpace NOWRAP = WhiteSpace.create("nowrap");
   /**
-   * Whitespace is preserved by the browser. Text will only wrap on line breaks. Acts like the <pre> tag in HTML.
+   * Whitespace is preserved by the browser. Text will only wrap on line breaks. Acts like the {@code <pre>} tag in HTML.
    */
   public static final WhiteSpace PRE = WhiteSpace.create("pre");
   /**
