@@ -3,10 +3,6 @@ plugins {
     id 'application'
 }
 
-repositories {
-    maven { url "https://raw.githubusercontent.com/SpinyOwl/repo/releases" }
-}
-
 dependencies {
     api project(':core')
 
