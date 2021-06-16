@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
 
+/** Used to read stylesheets from css. */
 @RequiredArgsConstructor
 public final class DefaultStyleSheetConverter implements StyleSheetConverter {
 

@@ -30,8 +30,6 @@ subprojects {
 
     plugins.withType(JavaPlugin).configureEach {
         java {
-            withJavadocJar()
-            withSourcesJar()
             modularity.inferModulePath = true
         }
 
