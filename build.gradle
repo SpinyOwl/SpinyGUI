@@ -28,7 +28,7 @@ subprojects {
         maven { url "https://raw.githubusercontent.com/SpinyOwl/repo/releases" }
     }
 
-    plugins.withType(JavaPlugin).configureEach {
+    plugins.withType(JavaLibraryPlugin).configureEach {
         java {
             modularity.inferModulePath = true
         }
@@ -42,7 +42,7 @@ subprojects {
 
         dependencies {
 
-            compileOnly group: 'org.projectlombok', name: 'lombok', version: lombok_version
+            api group: 'org.projectlombok', name: 'lombok', version: lombok_version
             annotationProcessor group: 'org.projectlombok', name: 'lombok', version: lombok_version
 
             testCompileOnly group: 'org.projectlombok', name: 'lombok', version: lombok_version
