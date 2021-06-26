@@ -1,5 +1,6 @@
 package com.spinyowl.spinygui.core.system.event;
 
+import com.spinyowl.spinygui.core.node.Frame;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -21,8 +22,8 @@ public class SystemScrollEvent extends SystemEvent {
   private final float offsetY;
 
   @Builder
-  protected SystemScrollEvent(long window, float offsetX, float offsetY) {
-    super(window);
+  protected SystemScrollEvent(Frame frame, float offsetX, float offsetY) {
+    super(frame);
     this.offsetX = offsetX;
     this.offsetY = offsetY;
   }

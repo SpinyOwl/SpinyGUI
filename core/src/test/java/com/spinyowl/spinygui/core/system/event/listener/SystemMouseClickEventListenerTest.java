@@ -65,7 +65,7 @@ class SystemMouseClickEventListenerTest {
         SystemMouseClickEvent.builder()
             .action(SystemKeyAction.PRESS)
             .mods(ImmutableSet.of())
-            .window(1)
+            .frame(frame)
             .button(SystemMouseButton.LEFT)
             .build();
 
@@ -122,7 +122,7 @@ class SystemMouseClickEventListenerTest {
         SystemMouseClickEvent.builder()
             .action(SystemKeyAction.PRESS)
             .mods(ImmutableSet.of())
-            .window(1)
+            .frame(frame)
             .button(SystemMouseButton.LEFT)
             .build();
 
@@ -195,7 +195,7 @@ class SystemMouseClickEventListenerTest {
         SystemMouseClickEvent.builder()
             .action(SystemKeyAction.RELEASE)
             .mods(ImmutableSet.of())
-            .window(1)
+            .frame(frame)
             .button(SystemMouseButton.LEFT)
             .build();
 
@@ -254,7 +254,7 @@ class SystemMouseClickEventListenerTest {
         SystemMouseClickEvent.builder()
             .action(SystemKeyAction.RELEASE)
             .mods(ImmutableSet.of())
-            .window(1)
+            .frame(frame)
             .button(SystemMouseButton.LEFT)
             .build();
 
@@ -315,7 +315,7 @@ class SystemMouseClickEventListenerTest {
         SystemMouseClickEvent.builder()
             .action(SystemKeyAction.RELEASE)
             .mods(ImmutableSet.of())
-            .window(1)
+            .frame(frame())
             .button(SystemMouseButton.LEFT)
             .build();
     Assertions.assertThrows(NullPointerException.class, () -> listener.process(event, null));

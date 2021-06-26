@@ -1,5 +1,6 @@
 package com.spinyowl.spinygui.core.system.event;
 
+import com.spinyowl.spinygui.core.node.Frame;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -18,8 +19,8 @@ public class SystemCursorEnterEvent extends SystemEvent {
   private final boolean entered;
 
   @Builder
-  protected SystemCursorEnterEvent(long window, boolean entered) {
-    super(window);
+  protected SystemCursorEnterEvent(Frame frame, boolean entered) {
+    super(frame);
     this.entered = entered;
   }
 }

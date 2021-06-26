@@ -40,7 +40,7 @@ class SystemWindowFocusEventListenerTest {
     Frame frame = new Frame();
     frame.size(100, 100);
 
-    SystemWindowFocusEvent event = createEvent();
+    SystemWindowFocusEvent event = createEvent(frame);
 
     double timestamp = 1D;
     when(timeService.getCurrentTime()).thenReturn(timestamp);
@@ -57,15 +57,14 @@ class SystemWindowFocusEventListenerTest {
     verify(eventProcessor).push(expectedEvent);
   }
 
-  private SystemWindowFocusEvent createEvent() {
-    return SystemWindowFocusEvent.builder().window(1).build();
+  private SystemWindowFocusEvent createEvent(Frame frame) {
+    return SystemWindowFocusEvent.builder().frame(frame).build();
   }
 
   @Test
   void process_throwsNPE_ifFrameIsNull() {
-    SystemWindowFocusEvent event = createEvent();
-    Assertions.assertThrows(
-        NullPointerException.class, () -> listener.process(event, null));
+    SystemWindowFocusEvent event = createEvent(frame());
+    Assertions.assertThrows(NullPointerException.class, () -> listener.process(event, null));
   }
 
   @Test

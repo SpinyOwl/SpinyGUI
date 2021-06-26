@@ -73,7 +73,7 @@ class SystemKeyEventListenerTest {
             .scancode(7)
             .action(SystemKeyAction.PRESS)
             .mods(ImmutableSet.of())
-            .window(1)
+            .frame(frame)
             .build();
 
     // Act
@@ -87,6 +87,10 @@ class SystemKeyEventListenerTest {
 
   private void test(SystemKeyAction systemAction, KeyAction action) {
     // Arrange
+
+    var frame = frame();
+    var element = div();
+    frame.addChild(element);
     double timestamp = 1D;
     when(timeService.getCurrentTime()).thenReturn(timestamp);
     KeyboardLayout keyboardLayout = mock(KeyboardLayout.class);
@@ -102,13 +106,10 @@ class SystemKeyEventListenerTest {
             .scancode(scancode)
             .action(systemAction)
             .mods(ImmutableSet.of())
-            .window(1)
+            .frame(frame)
             .build();
 
     when(keyboardLayout.keyCode(keyCode)).thenReturn(keyCodeObject);
-
-    var element = div();
-    var frame = frame(element);
 
     element.focused(true);
 
@@ -141,7 +142,7 @@ class SystemKeyEventListenerTest {
             .scancode(1)
             .action(SystemKeyAction.PRESS)
             .mods(ImmutableSet.of())
-            .window(1)
+            .frame(frame())
             .build();
     Assertions.assertThrows(NullPointerException.class, () -> listener.process(event, null));
   }

@@ -1,6 +1,5 @@
 package com.spinyowl.spinygui.core.system.event.processor;
 
-import com.spinyowl.spinygui.core.system.FrameWindowService;
 import com.spinyowl.spinygui.core.system.event.SystemEvent;
 import com.spinyowl.spinygui.core.system.event.listener.SystemEventListener;
 import com.spinyowl.spinygui.core.system.event.provider.SystemEventListenerProvider;
@@ -22,20 +21,13 @@ public class SystemEventProcessorImpl implements SystemEventProcessor {
   @Default private Queue<SystemEvent> first = new ConcurrentLinkedQueue<>();
   @Default private Queue<SystemEvent> second = new ConcurrentLinkedQueue<>();
 
-  @NonNull private final FrameWindowService frameWindowService;
-
   private void swap() {
     var temp = first;
     first = second;
     second = temp;
   }
 
-  /**
-   * Used to process stored events in system event processor.
-   *
-   * <p>Target frame to which events should be applied will be obtained from {@link
-   * #frameWindowService} (see {@link FrameWindowService}).
-   */
+  /** Used to process stored events in system event processor. */
   @Override
   public void processEvents() {
     swap();
@@ -43,8 +35,7 @@ public class SystemEventProcessorImpl implements SystemEventProcessor {
     for (SystemEvent event = second.poll(); event != null; event = second.poll()) {
       SystemEventListener listener = eventListenerProvider.listener(event.getClass());
       if (listener != null) {
-        var frame = frameWindowService.getFrame(event.window());
-        listener.process(event, frame);
+        listener.process(event, event.frame());
       }
     }
   }

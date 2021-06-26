@@ -50,11 +50,12 @@ class SystemCursorPosEventListenerTest {
 
     int posX = 1;
     int posY = 1;
-    SystemCursorPosEvent event =
-        SystemCursorPosEvent.builder().posX(posX).posY(posY).window(1).build();
 
     Frame frame = new Frame();
     frame.size(100, 100);
+
+    SystemCursorPosEvent event =
+        SystemCursorPosEvent.builder().posX(posX).posY(posY).frame(frame).build();
 
     Vector2f currentFirst = new Vector2f(-1, -1);
     Vector2f previousFirst = new Vector2f(-2, -2);
@@ -95,11 +96,11 @@ class SystemCursorPosEventListenerTest {
 
     int posX = -1;
     int posY = -1;
-    SystemCursorPosEvent event =
-        SystemCursorPosEvent.builder().posX(posX).posY(posY).window(1).build();
-
     Frame frame = new Frame();
     frame.size(100, 100);
+
+    SystemCursorPosEvent event =
+        SystemCursorPosEvent.builder().posX(posX).posY(posY).frame(frame).build();
 
     Vector2f currentFirst = new Vector2f(1, 1);
     Vector2f previousFirst = new Vector2f(2, 2);
@@ -140,11 +141,12 @@ class SystemCursorPosEventListenerTest {
 
     int posX = 13;
     int posY = 13;
-    SystemCursorPosEvent event =
-        SystemCursorPosEvent.builder().posX(posX).posY(posY).window(1).build();
 
     Frame frame = new Frame();
     frame.size(100, 100);
+
+    SystemCursorPosEvent event =
+        SystemCursorPosEvent.builder().posX(posX).posY(posY).frame(frame).build();
 
     Element element = new Element("div");
     element.size(10, 10);
@@ -186,7 +188,8 @@ class SystemCursorPosEventListenerTest {
 
   @Test
   void process_throwsNPE_ifFrameIsNull() {
-    SystemCursorPosEvent event = SystemCursorPosEvent.builder().posX(1).posY(1).window(1).build();
+    SystemCursorPosEvent event =
+        SystemCursorPosEvent.builder().posX(1).posY(1).frame(frame()).build();
     Assertions.assertThrows(NullPointerException.class, () -> listener.process(event, null));
   }
 

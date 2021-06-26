@@ -1,5 +1,6 @@
 package com.spinyowl.spinygui.core.system.event;
 
+import com.spinyowl.spinygui.core.node.Frame;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -15,7 +16,7 @@ import lombok.ToString;
 public class SystemWindowRefreshEvent extends SystemEvent {
 
   @Builder
-  protected SystemWindowRefreshEvent(long window) {
-    super(window);
+  protected SystemWindowRefreshEvent(Frame frame) {
+    super(frame);
   }
 }

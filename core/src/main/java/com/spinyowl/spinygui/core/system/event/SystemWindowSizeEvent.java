@@ -1,5 +1,6 @@
 package com.spinyowl.spinygui.core.system.event;
 
+import com.spinyowl.spinygui.core.node.Frame;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -18,8 +19,8 @@ public class SystemWindowSizeEvent extends SystemEvent {
   private final int height;
 
   @Builder
-  protected SystemWindowSizeEvent(long window, int width, int height) {
-    super(window);
+  protected SystemWindowSizeEvent(Frame frame, int width, int height) {
+    super(frame);
     this.width = width;
     this.height = height;
   }

@@ -1,5 +1,6 @@
 package com.spinyowl.spinygui.core.system.event;
 
+import com.spinyowl.spinygui.core.node.Frame;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -18,8 +19,8 @@ public class SystemCursorPosEvent extends SystemEvent {
   private final float posY;
 
   @Builder
-  protected SystemCursorPosEvent(long window, float posX, float posY) {
-    super(window);
+  protected SystemCursorPosEvent(Frame frame, float posX, float posY) {
+    super(frame);
     this.posX = posX;
     this.posY = posY;
   }

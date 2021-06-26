@@ -50,7 +50,7 @@ class SystemScrollEventListenerTest {
     double timestamp = 1D;
     when(timeService.getCurrentTime()).thenReturn(timestamp);
 
-    SystemScrollEvent event = createEvent();
+    SystemScrollEvent event = createEvent(frame);
 
     ScrollEvent expectedEvent =
         ScrollEvent.builder()
@@ -80,7 +80,7 @@ class SystemScrollEventListenerTest {
     CursorPositions cursorPositions = new CursorPositions(current, current);
     when(mouseService.getCursorPositions(frame)).thenReturn(cursorPositions);
 
-    SystemScrollEvent event = createEvent();
+    SystemScrollEvent event = createEvent(frame);
 
     // Act
     listener.process(event, frame);
@@ -93,7 +93,7 @@ class SystemScrollEventListenerTest {
 
   @Test
   void process_throwsNPE_ifFrameIsNull() {
-    SystemScrollEvent event = createEvent();
+    SystemScrollEvent event = createEvent(frame());
     Assertions.assertThrows(NullPointerException.class, () -> listener.process(event, null));
   }
 
@@ -103,7 +103,7 @@ class SystemScrollEventListenerTest {
     Assertions.assertThrows(NullPointerException.class, () -> listener.process(null, frame));
   }
 
-  private SystemScrollEvent createEvent() {
-    return SystemScrollEvent.builder().window(1).offsetX(1).offsetY(-1).build();
+  private SystemScrollEvent createEvent(Frame frame) {
+    return SystemScrollEvent.builder().frame(frame).offsetX(1).offsetY(-1).build();
   }
 }

@@ -1,5 +1,6 @@
 package com.spinyowl.spinygui.core.system.event;
 
+import com.spinyowl.spinygui.core.node.Frame;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -15,7 +16,7 @@ import lombok.ToString;
 public class SystemWindowCloseEvent extends SystemEvent {
 
   @Builder
-  protected SystemWindowCloseEvent(long window) {
-    super(window);
+  protected SystemWindowCloseEvent(Frame frame) {
+    super(frame);
   }
 }

@@ -1,5 +1,6 @@
 package com.spinyowl.spinygui.core.system.event;
 
+import com.spinyowl.spinygui.core.node.Frame;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -15,8 +16,8 @@ public class SystemCharEvent extends SystemEvent {
   private final int codepoint;
 
   @Builder
-  protected SystemCharEvent(long window, int codepoint) {
-    super(window);
+  protected SystemCharEvent(Frame frame, int codepoint) {
+    super(frame);
     this.codepoint = codepoint;
   }
 }

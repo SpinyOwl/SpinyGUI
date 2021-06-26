@@ -53,7 +53,7 @@ class SystemFileDropEventListenerTest {
     CursorPositions cursorPositions = new CursorPositions(current, previous);
     when(mouseService.getCursorPositions(frame)).thenReturn(cursorPositions);
 
-    SystemFileDropEvent systemFileDropEvent = createEvent();
+    SystemFileDropEvent systemFileDropEvent = createEvent(frame);
 
     double timestamp = 1D;
     when(timeService.getCurrentTime()).thenReturn(timestamp);
@@ -84,7 +84,7 @@ class SystemFileDropEventListenerTest {
     CursorPositions cursorPositions = new CursorPositions(current, current);
     when(mouseService.getCursorPositions(frame)).thenReturn(cursorPositions);
 
-    SystemFileDropEvent systemFileDropEvent = createEvent();
+    SystemFileDropEvent systemFileDropEvent = createEvent(frame);
 
     // Act
     listener.process(systemFileDropEvent, frame);
@@ -97,9 +97,8 @@ class SystemFileDropEventListenerTest {
 
   @Test
   void process_throwsNPE_ifFrameIsNull() {
-    SystemFileDropEvent event = createEvent();
-    Assertions.assertThrows(
-        NullPointerException.class, () -> listener.process(event, null));
+    SystemFileDropEvent event = createEvent(frame());
+    Assertions.assertThrows(NullPointerException.class, () -> listener.process(event, null));
   }
 
   @Test
@@ -108,7 +107,7 @@ class SystemFileDropEventListenerTest {
     Assertions.assertThrows(NullPointerException.class, () -> listener.process(null, frame));
   }
 
-  private SystemFileDropEvent createEvent() {
-    return SystemFileDropEvent.builder().paths(paths).build();
+  private SystemFileDropEvent createEvent(Frame frame) {
+    return SystemFileDropEvent.builder().frame(frame).paths(paths).build();
   }
 }

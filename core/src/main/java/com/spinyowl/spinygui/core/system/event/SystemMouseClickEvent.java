@@ -3,6 +3,7 @@ package com.spinyowl.spinygui.core.system.event;
 import static com.google.common.collect.ImmutableSet.toImmutableSet;
 import com.google.common.collect.ImmutableSet;
 import com.spinyowl.spinygui.core.input.KeyMod;
+import com.spinyowl.spinygui.core.node.Frame;
 import com.spinyowl.spinygui.core.system.input.SystemKeyAction;
 import com.spinyowl.spinygui.core.system.input.SystemKeyMod;
 import com.spinyowl.spinygui.core.system.input.SystemMouseButton;
@@ -36,11 +37,11 @@ public class SystemMouseClickEvent extends SystemEvent {
 
   @Builder
   protected SystemMouseClickEvent(
-      long window,
+      Frame frame,
       SystemMouseButton button,
       SystemKeyAction action,
       @NonNull ImmutableSet<SystemKeyMod> mods) {
-    super(window);
+    super(frame);
     this.button = button;
     this.action = action;
     this.mods = mods;

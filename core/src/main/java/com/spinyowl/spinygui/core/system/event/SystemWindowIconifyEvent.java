@@ -1,5 +1,6 @@
 package com.spinyowl.spinygui.core.system.event;
 
+import com.spinyowl.spinygui.core.node.Frame;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -15,8 +16,8 @@ public class SystemWindowIconifyEvent extends SystemEvent {
   private final boolean iconified;
 
   @Builder
-  protected SystemWindowIconifyEvent(long window, boolean iconified) {
-    super(window);
+  protected SystemWindowIconifyEvent(Frame frame, boolean iconified) {
+    super(frame);
     this.iconified = iconified;
   }
 }

@@ -6,6 +6,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import com.spinyowl.spinygui.core.event.WindowSizeEvent;
 import com.spinyowl.spinygui.core.event.processor.EventProcessor;
+import com.spinyowl.spinygui.core.node.Frame;
 import com.spinyowl.spinygui.core.system.event.SystemWindowSizeEvent;
 import com.spinyowl.spinygui.core.time.TimeService;
 import org.junit.jupiter.api.Assertions;
@@ -43,7 +44,7 @@ class SystemWindowSizeEventListenerTest {
 
     when(timeService.getCurrentTime()).thenReturn(timestamp);
 
-    var sourceEvent = createEvent();
+    var sourceEvent = createEvent(frame);
     var expectedEvent =
         WindowSizeEvent.builder()
             .source(frame)
@@ -64,7 +65,7 @@ class SystemWindowSizeEventListenerTest {
 
   @Test
   void process_throwsNPE_ifFrameIsNull() {
-    var event = createEvent();
+    var event = createEvent(frame());
     Assertions.assertThrows(NullPointerException.class, () -> listener.process(event, null));
   }
 
@@ -74,7 +75,7 @@ class SystemWindowSizeEventListenerTest {
     Assertions.assertThrows(NullPointerException.class, () -> listener.process(null, frame));
   }
 
-  private SystemWindowSizeEvent createEvent() {
-    return SystemWindowSizeEvent.builder().window(1).width(width).height(height).build();
+  private SystemWindowSizeEvent createEvent(Frame frame) {
+    return SystemWindowSizeEvent.builder().frame(frame).width(width).height(height).build();
   }
 }

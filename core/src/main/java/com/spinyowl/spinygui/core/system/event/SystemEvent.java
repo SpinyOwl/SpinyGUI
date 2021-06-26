@@ -1,5 +1,6 @@
 package com.spinyowl.spinygui.core.system.event;
 
+import com.spinyowl.spinygui.core.node.Frame;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
@@ -10,10 +11,10 @@ import lombok.ToString;
 @EqualsAndHashCode
 public abstract class SystemEvent {
 
-  /** The window that received the event. */
-  private final long window;
+  /** The frame that received the event. */
+  private final Frame frame;
 
-  protected SystemEvent(long window) {
-    this.window = window;
+  protected SystemEvent(Frame frame) {
+    this.frame = frame;
   }
 }

@@ -1,6 +1,7 @@
 package com.spinyowl.spinygui.core.system.event;
 
 import com.google.common.collect.ImmutableList;
+import com.spinyowl.spinygui.core.node.Frame;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -15,8 +16,8 @@ public class SystemFileDropEvent extends SystemEvent {
   private final ImmutableList<String> paths;
 
   @Builder
-  protected SystemFileDropEvent(long window, ImmutableList<String> paths) {
-    super(window);
+  protected SystemFileDropEvent(Frame frame, ImmutableList<String> paths) {
+    super(frame);
     this.paths = paths;
   }
 }

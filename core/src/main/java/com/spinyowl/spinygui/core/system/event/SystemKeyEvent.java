@@ -3,6 +3,7 @@ package com.spinyowl.spinygui.core.system.event;
 import static com.google.common.collect.ImmutableSet.toImmutableSet;
 import com.google.common.collect.ImmutableSet;
 import com.spinyowl.spinygui.core.input.KeyMod;
+import com.spinyowl.spinygui.core.node.Frame;
 import com.spinyowl.spinygui.core.system.input.SystemKeyAction;
 import com.spinyowl.spinygui.core.system.input.SystemKeyMod;
 import lombok.Builder;
@@ -45,12 +46,12 @@ public class SystemKeyEvent extends SystemEvent {
 
   @Builder
   protected SystemKeyEvent(
-      long window,
+      Frame frame,
       int keyCode,
       int scancode,
       @NonNull SystemKeyAction action,
       @NonNull ImmutableSet<SystemKeyMod> mods) {
-    super(window);
+    super(frame);
     this.keyCode = keyCode;
     this.scancode = scancode;
     this.action = action;

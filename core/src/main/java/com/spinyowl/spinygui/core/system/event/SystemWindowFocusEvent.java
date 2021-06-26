@@ -1,5 +1,6 @@
 package com.spinyowl.spinygui.core.system.event;
 
+import com.spinyowl.spinygui.core.node.Frame;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -15,8 +16,8 @@ public class SystemWindowFocusEvent extends SystemEvent {
   private final boolean focused;
 
   @Builder
-  protected SystemWindowFocusEvent(long window, boolean focused) {
-    super(window);
+  protected SystemWindowFocusEvent(Frame frame, boolean focused) {
+    super(frame);
     this.focused = focused;
   }
 }

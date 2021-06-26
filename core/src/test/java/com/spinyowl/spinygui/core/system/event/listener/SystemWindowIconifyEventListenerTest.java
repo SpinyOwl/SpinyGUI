@@ -40,7 +40,7 @@ class SystemWindowIconifyEventListenerTest {
 
     when(timeService.getCurrentTime()).thenReturn(timestamp);
 
-    var sourceEvent = createEvent();
+    var sourceEvent = createEvent(frame);
     var expectedEvent =
         WindowIconifyEvent.builder()
             .source(frame)
@@ -60,7 +60,7 @@ class SystemWindowIconifyEventListenerTest {
 
   @Test
   void process_throwsNPE_ifFrameIsNull() {
-    SystemWindowIconifyEvent event = createEvent();
+    SystemWindowIconifyEvent event = createEvent(frame());
     Assertions.assertThrows(NullPointerException.class, () -> listener.process(event, null));
   }
 
@@ -70,7 +70,7 @@ class SystemWindowIconifyEventListenerTest {
     Assertions.assertThrows(NullPointerException.class, () -> listener.process(null, frame));
   }
 
-  private SystemWindowIconifyEvent createEvent() {
-    return SystemWindowIconifyEvent.builder().window(1).iconified(true).build();
+  private SystemWindowIconifyEvent createEvent(Frame frame) {
+    return SystemWindowIconifyEvent.builder().frame(frame).iconified(true).build();
   }
 }

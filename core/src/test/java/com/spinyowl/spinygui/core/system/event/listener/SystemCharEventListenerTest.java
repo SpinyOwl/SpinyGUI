@@ -50,7 +50,7 @@ class SystemCharEventListenerTest {
 
     when(timeService.getCurrentTime()).thenReturn(currentTime);
 
-    SystemCharEvent source = createEvent();
+    SystemCharEvent source = createEvent(frame);
 
     CharEvent expected =
         CharEvent.builder()
@@ -77,7 +77,7 @@ class SystemCharEventListenerTest {
     Element focusedElement = new Element("input");
     frame.addChild(focusedElement);
 
-    SystemCharEvent source = createEvent();
+    SystemCharEvent source = createEvent(frame);
 
     // Act
     listener.process(source, frame);
@@ -87,13 +87,9 @@ class SystemCharEventListenerTest {
     verify(eventProcessor, times(0)).push(any(CharEvent.class));
   }
 
-  private SystemCharEvent createEvent() {
-    return SystemCharEvent.builder().window(1).codepoint(1).build();
-  }
-
   @Test
   void process_throwsNPE_ifFrameIsNull() {
-    SystemCharEvent event = createEvent();
+    SystemCharEvent event = createEvent(frame());
     Assertions.assertThrows(NullPointerException.class, () -> listener.process(event, null));
   }
 
@@ -101,5 +97,9 @@ class SystemCharEventListenerTest {
   void process_throwsNPE_ifEventIsNull() {
     Frame frame = frame();
     Assertions.assertThrows(NullPointerException.class, () -> listener.process(null, frame));
+  }
+
+  private SystemCharEvent createEvent(Frame frame) {
+    return SystemCharEvent.builder().frame(frame).codepoint(1).build();
   }
 }

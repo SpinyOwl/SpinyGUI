@@ -6,6 +6,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import com.spinyowl.spinygui.core.event.WindowRefreshEvent;
 import com.spinyowl.spinygui.core.event.processor.EventProcessor;
+import com.spinyowl.spinygui.core.node.Frame;
 import com.spinyowl.spinygui.core.system.event.SystemWindowRefreshEvent;
 import com.spinyowl.spinygui.core.time.TimeService;
 import org.junit.jupiter.api.Assertions;
@@ -39,7 +40,7 @@ class SystemWindowRefreshEventListenerTest {
 
     when(timeService.getCurrentTime()).thenReturn(timestamp);
 
-    var sourceEvent = createEvent();
+    var sourceEvent = createEvent(frame);
     var expectedEvent =
         WindowRefreshEvent.builder().source(frame).target(frame).timestamp(timestamp).build();
     doNothing().when(eventProcessor).push(expectedEvent);
@@ -54,7 +55,7 @@ class SystemWindowRefreshEventListenerTest {
 
   @Test
   void process_throwsNPE_ifFrameIsNull() {
-    var event = createEvent();
+    var event = createEvent(frame());
     Assertions.assertThrows(NullPointerException.class, () -> listener.process(event, null));
   }
 
@@ -64,7 +65,7 @@ class SystemWindowRefreshEventListenerTest {
     Assertions.assertThrows(NullPointerException.class, () -> listener.process(null, frame));
   }
 
-  private SystemWindowRefreshEvent createEvent() {
-    return SystemWindowRefreshEvent.builder().window(1).build();
+  private SystemWindowRefreshEvent createEvent(Frame frame) {
+    return SystemWindowRefreshEvent.builder().frame(frame).build();
   }
 }

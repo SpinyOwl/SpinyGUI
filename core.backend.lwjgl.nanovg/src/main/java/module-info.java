@@ -6,6 +6,8 @@ open module com.spinyowl.spinygui.core.backend.lwjgl.nanovg {
 
   requires org.lwjgl;
   requires org.lwjgl.natives;
+  requires org.lwjgl.glfw;
+  requires org.lwjgl.glfw.natives;
   requires org.lwjgl.nanovg;
   requires org.lwjgl.nanovg.natives;
   requires org.lwjgl.opengl;

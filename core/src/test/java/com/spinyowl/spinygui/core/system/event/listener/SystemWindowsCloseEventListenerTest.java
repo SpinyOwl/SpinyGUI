@@ -40,7 +40,7 @@ class SystemWindowsCloseEventListenerTest {
     Frame frame = new Frame();
     frame.size(100, 100);
 
-    SystemWindowCloseEvent event = createEvent();
+    SystemWindowCloseEvent event = createEvent(frame);
 
     double timestamp = 1D;
     when(timeService.getCurrentTime()).thenReturn(timestamp);
@@ -57,13 +57,13 @@ class SystemWindowsCloseEventListenerTest {
     verify(eventProcessor).push(expectedEvent);
   }
 
-  private SystemWindowCloseEvent createEvent() {
-    return SystemWindowCloseEvent.builder().window(1).build();
+  private SystemWindowCloseEvent createEvent(Frame frame) {
+    return SystemWindowCloseEvent.builder().frame(frame).build();
   }
 
   @Test
   void process_throwsNPE_ifFrameIsNull() {
-    SystemWindowCloseEvent event = createEvent();
+    SystemWindowCloseEvent event = createEvent(frame());
     Assertions.assertThrows(NullPointerException.class, () -> listener.process(event, null));
   }
 

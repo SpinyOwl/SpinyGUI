@@ -44,7 +44,7 @@ class SystemWindowPosEventListenerTest {
 
     when(timeService.getCurrentTime()).thenReturn(timestamp);
 
-    var sourceEvent = createEvent();
+    var sourceEvent = createEvent(frame);
     var expectedEvent =
         WindowPosEvent.builder()
             .source(frame)
@@ -65,7 +65,7 @@ class SystemWindowPosEventListenerTest {
 
   @Test
   void process_throwsNPE_ifFrameIsNull() {
-    SystemWindowPosEvent event = createEvent();
+    SystemWindowPosEvent event = createEvent(frame());
     Assertions.assertThrows(NullPointerException.class, () -> listener.process(event, null));
   }
 
@@ -75,7 +75,7 @@ class SystemWindowPosEventListenerTest {
     Assertions.assertThrows(NullPointerException.class, () -> listener.process(null, frame));
   }
 
-  private SystemWindowPosEvent createEvent() {
-    return SystemWindowPosEvent.builder().window(1).posX(posX).posY(posY).build();
+  private SystemWindowPosEvent createEvent(Frame frame) {
+    return SystemWindowPosEvent.builder().frame(frame).posX(posX).posY(posY).build();
   }
 }
