@@ -1,5 +1,6 @@
 package com.spinyowl.spinygui.core.style.types.flex;
 
+import com.spinyowl.spinygui.core.style.types.length.Length;
 import com.spinyowl.spinygui.core.style.types.length.Unit;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -42,7 +43,7 @@ public class Flex {
   private int flexShrink;
 
   /** The length of the item. Legal values: a number in px. */
-  @NonNull private Unit flexBasis = Unit.AUTO;
+  @NonNull private Unit flexBasis = Length.ZERO;
 
   public Flex setFlex(int flexGrow, int flexShrink, Unit flexBasis) {
     flexGrow(flexGrow);

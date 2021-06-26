@@ -1,10 +1,11 @@
 package com.spinyowl.spinygui.core.style.stylesheet.property.margin;
 
 import static com.spinyowl.spinygui.core.style.stylesheet.Properties.MARGIN_TOP;
-import com.spinyowl.spinygui.core.style.types.length.Unit;
+import com.spinyowl.spinygui.core.style.NodeStyle;
 import com.spinyowl.spinygui.core.style.stylesheet.Property;
 import com.spinyowl.spinygui.core.style.stylesheet.extractor.ValueExtractor;
 import com.spinyowl.spinygui.core.style.stylesheet.extractor.ValueExtractors;
+import com.spinyowl.spinygui.core.style.types.length.Unit;
 
 public class MarginTopProperty extends Property<Unit> {
 
@@ -16,8 +17,8 @@ public class MarginTopProperty extends Property<Unit> {
         "0",
         !INHERITED,
         ANIMATABLE,
-        (s, v) -> s.margin().top(v),
-        s -> s.margin().top(),
+        NodeStyle::marginTop,
+        NodeStyle::marginTop,
         extractor::extract,
         extractor::isValid);
   }

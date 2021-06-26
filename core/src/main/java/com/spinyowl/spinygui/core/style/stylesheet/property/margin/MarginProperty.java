@@ -3,13 +3,13 @@ package com.spinyowl.spinygui.core.style.stylesheet.property.margin;
 import static com.spinyowl.spinygui.core.style.stylesheet.Properties.MARGIN;
 import static com.spinyowl.spinygui.core.style.stylesheet.util.StyleUtils.testMultipleValues;
 import com.spinyowl.spinygui.core.style.NodeStyle;
-import com.spinyowl.spinygui.core.style.types.Margin;
-import com.spinyowl.spinygui.core.style.types.length.Unit;
 import com.spinyowl.spinygui.core.style.stylesheet.Property;
 import com.spinyowl.spinygui.core.style.stylesheet.extractor.ValueExtractor;
 import com.spinyowl.spinygui.core.style.stylesheet.extractor.ValueExtractors;
+import com.spinyowl.spinygui.core.style.types.length.Unit;
+import java.util.Arrays;
 
-public class MarginProperty extends Property<Margin> {
+public class MarginProperty extends Property<Unit[]> {
 
   private static ValueExtractor<Unit> unitValueExtractor = ValueExtractors.of(Unit.class);
 
@@ -25,24 +25,13 @@ public class MarginProperty extends Property<Margin> {
         MarginProperty::test);
   }
 
-  private static Margin extract(String value) {
+  private static Unit[] extract(String value) {
     if (value == null) {
       return null;
     }
 
     // @formatter:off
-    String[] v = value.trim().split("\\s+");
-    switch (v.length) {
-      case 1:
-        return new Margin(x(v[0]));
-      case 2:
-        return new Margin(x(v[0]), x(v[1]));
-      case 3:
-        return new Margin(x(v[0]), x(v[1]), x(v[2]));
-      case 4:
-      default:
-        return new Margin(x(v[0]), x(v[1]), x(v[2]), x(v[3]));
-    }
+    return Arrays.stream(value.trim().split("\\s+")).map(MarginProperty::x).toArray(Unit[]::new);
     // @formatter:on
   }
 

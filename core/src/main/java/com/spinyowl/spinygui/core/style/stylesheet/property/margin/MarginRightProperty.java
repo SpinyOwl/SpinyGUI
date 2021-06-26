@@ -1,6 +1,7 @@
 package com.spinyowl.spinygui.core.style.stylesheet.property.margin;
 
 import static com.spinyowl.spinygui.core.style.stylesheet.Properties.MARGIN_RIGHT;
+import com.spinyowl.spinygui.core.style.NodeStyle;
 import com.spinyowl.spinygui.core.style.types.length.Unit;
 import com.spinyowl.spinygui.core.style.stylesheet.Property;
 import com.spinyowl.spinygui.core.style.stylesheet.extractor.ValueExtractor;
@@ -16,8 +17,8 @@ public class MarginRightProperty extends Property<Unit> {
         "0",
         !INHERITED,
         ANIMATABLE,
-        (s, v) -> s.margin().right(v),
-        s -> s.margin().right(),
+        NodeStyle::marginRight,
+        NodeStyle::marginRight,
         extractor::extract,
         extractor::isValid);
   }

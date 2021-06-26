@@ -9,7 +9,6 @@ import com.spinyowl.spinygui.core.style.types.BoxShadow;
 import com.spinyowl.spinygui.core.style.types.Color;
 import com.spinyowl.spinygui.core.style.types.Display;
 import com.spinyowl.spinygui.core.style.types.HorizontalAlign;
-import com.spinyowl.spinygui.core.style.types.Margin;
 import com.spinyowl.spinygui.core.style.types.Padding;
 import com.spinyowl.spinygui.core.style.types.PointerEvents;
 import com.spinyowl.spinygui.core.style.types.Position;
@@ -39,7 +38,10 @@ public class NodeStyle {
 
   @NonNull private Padding padding = new Padding();
 
-  @NonNull private Margin margin = new Margin();
+  private Unit marginTop;
+  private Unit marginBottom;
+  private Unit marginLeft;
+  private Unit marginRight;
 
   @NonNull private Display display = Display.FLEX;
 
@@ -83,4 +85,43 @@ public class NodeStyle {
   private int tabSize = 4;
   private int zIndex = 0;
   private float opacity = 1;
+
+  public NodeStyle margin(Unit... margin) {
+    switch (margin.length) {
+      case 0:
+        break;
+      case 1:
+        {
+          marginTop = marginRight = marginBottom = marginLeft = margin[0];
+          break;
+        }
+      case 2:
+        {
+          marginTop = marginBottom = margin[0];
+          marginRight = marginLeft = margin[1];
+          break;
+        }
+      case 3:
+        {
+          marginTop = margin[0];
+          marginRight = marginLeft = margin[1];
+          marginBottom = margin[2];
+          break;
+        }
+      case 4:
+      default:
+        {
+          marginTop = margin[0];
+          marginRight = margin[1];
+          marginBottom = margin[2];
+          marginLeft = margin[3];
+          break;
+        }
+    }
+    return this;
+  }
+
+  public Unit[] margin() {
+    return new Unit[] {marginTop, marginRight, marginBottom, marginLeft};
+  }
 }

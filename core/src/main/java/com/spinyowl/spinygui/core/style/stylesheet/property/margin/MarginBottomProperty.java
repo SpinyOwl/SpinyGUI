@@ -1,6 +1,7 @@
 package com.spinyowl.spinygui.core.style.stylesheet.property.margin;
 
 import static com.spinyowl.spinygui.core.style.stylesheet.Properties.MARGIN_BOTTOM;
+import com.spinyowl.spinygui.core.style.NodeStyle;
 import com.spinyowl.spinygui.core.style.types.length.Unit;
 import com.spinyowl.spinygui.core.style.stylesheet.Property;
 import com.spinyowl.spinygui.core.style.stylesheet.extractor.ValueExtractor;
@@ -16,8 +17,8 @@ public class MarginBottomProperty extends Property<Unit> {
         "0",
         !INHERITED,
         ANIMATABLE,
-        (s, v) -> s.margin().bottom(v),
-        s -> s.margin().bottom(),
+        NodeStyle::marginBottom,
+        NodeStyle::marginBottom,
         extractor::extract,
         extractor::isValid);
   }
