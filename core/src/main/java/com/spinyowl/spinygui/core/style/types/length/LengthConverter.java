@@ -9,21 +9,21 @@ package com.spinyowl.spinygui.core.style.types.length;
 public interface LengthConverter<T extends Number> {
 
   /**
-   * Used to convert length of specified type to pixels (in float).
+   * Used to convert length of specified type to pixels.
    *
    * @param original original length.
    * @param baseLength base length (that could be used to calculate relative length).
    * @return calculated length.
    */
-  float convert(Length<T> original, float baseLength);
+  int convert(Length<T> original, float baseLength);
 
   /**
-   * Used to convert length of specified type to pixels (in float). Base length is 1.
+   * Used to convert length of specified type to pixels. Base length is 1.
    *
    * @param original original length.
    * @return calculated length.
    */
-  default float convert(Length<T> original) {
+  default int convert(Length<T> original) {
     return convert(original, 1);
   }
 }
