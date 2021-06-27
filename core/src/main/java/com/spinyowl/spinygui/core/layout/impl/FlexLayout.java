@@ -1,7 +1,7 @@
 package com.spinyowl.spinygui.core.layout.impl;
 
-import static com.spinyowl.spinygui.core.style.types.length.LengthType.PERCENT;
-import static com.spinyowl.spinygui.core.style.types.length.LengthType.PIXEL;
+import static com.spinyowl.spinygui.core.layout.impl.FlexUtils.setLength;
+import static com.spinyowl.spinygui.core.layout.impl.FlexUtils.setUnit;
 import static org.lwjgl.util.yoga.Yoga.YGAlignAuto;
 import static org.lwjgl.util.yoga.Yoga.YGAlignBaseline;
 import static org.lwjgl.util.yoga.Yoga.YGAlignCenter;
@@ -62,15 +62,11 @@ import com.spinyowl.spinygui.core.style.types.flex.AlignSelf;
 import com.spinyowl.spinygui.core.style.types.flex.FlexDirection;
 import com.spinyowl.spinygui.core.style.types.flex.FlexWrap;
 import com.spinyowl.spinygui.core.style.types.flex.JustifyContent;
-import com.spinyowl.spinygui.core.style.types.length.Length;
 import com.spinyowl.spinygui.core.style.types.length.Unit;
 import com.spinyowl.spinygui.core.time.TimeService;
 import com.spinyowl.spinygui.core.util.NodeUtilities;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.BiConsumer;
-import java.util.function.LongConsumer;
-import java.util.function.ObjIntConsumer;
 import java.util.stream.Collectors;
 import lombok.Getter;
 import lombok.NonNull;
@@ -86,6 +82,189 @@ public class FlexLayout implements Layout {
   public static final float THRESHOLD = 0.0001f;
   @NonNull private final EventProcessor eventProcessor;
   @NonNull private final TimeService timeService;
+
+  /**
+   * Used to lay out child components for parent component.
+   *
+   * @param parent component to lay out.
+   */
+  @Override
+  public void layout(Element parent) {
+    // initialize
+    long rootNode = YGNodeNew();
+    prepareParentNode(parent, rootNode);
+    YGNodeStyleSetDisplay(rootNode, YGDisplayFlex);
+
+    List<Long> childNodes = new ArrayList<>();
+    List<Element> components =
+        parent.children().stream().filter(NodeUtilities::visible).collect(Collectors.toList());
+    for (Element component : components) {
+      long childNode = YGNodeNew();
+      prepareNode(component, childNode);
+      YGNodeInsertChild(rootNode, childNode, childNodes.size());
+      childNodes.add(childNode);
+    }
+
+    // calculate
+    nYGNodeCalculateLayout(rootNode, parent.size().x(), parent.size().y(), YGDirectionLTR);
+
+    var invalidateTree = false;
+    // apply to components
+    for (var i = 0; i < components.size(); i++) {
+      Node childComponent = components.get(i);
+      Long yogaNode = childNodes.get(i);
+
+      var newPos = new Vector2f(YGNodeLayoutGetLeft(yogaNode), YGNodeLayoutGetTop(yogaNode));
+      var oldPos = new Vector2f(childComponent.position());
+      childComponent.position(newPos);
+
+      var newSize = new Vector2f(YGNodeLayoutGetWidth(yogaNode), YGNodeLayoutGetHeight(yogaNode));
+      var oldSize = new Vector2f(childComponent.size());
+      childComponent.size(newSize);
+
+      invalidateTree =
+          invalidateTree || generateEvents(childComponent, newPos, oldPos, newSize, oldSize);
+    }
+
+    if (invalidateTree) {
+      eventProcessor.push(new InvalidateTreeEvent(parent,parent.root(), timeService.getCurrentTime()));
+    }
+
+    // free mem
+    for (Long childNode : childNodes) {
+      YGNodeFree(childNode);
+    }
+
+    YGNodeFree(rootNode);
+  }
+
+  private boolean generateEvents(
+      Node childComponent, Vector2f newPos, Vector2f oldPos, Vector2f newSize, Vector2f oldSize) {
+    var invalidateTree = false;
+    if (childComponent instanceof Element e) {
+      if (!oldPos.equals(newPos, THRESHOLD)) {
+        eventProcessor.push(ChangePositionEvent.of(e, e, oldPos, newPos));
+        invalidateTree = true;
+      }
+      if (!oldSize.equals(newSize, THRESHOLD)) {
+        eventProcessor.push(ChangeSizeEvent.of(e, e, oldSize, newSize));
+        invalidateTree = true;
+      }
+    }
+    return invalidateTree;
+  }
+
+  private void prepareParentNode(Element parent, long rootNode) {
+    prepareNode(parent, rootNode);
+    YGNodeStyleSetWidth(rootNode, parent.size().x());
+    YGNodeStyleSetHeight(rootNode, parent.size().y());
+  }
+
+  /**
+   * Used to prepare root node.
+   *
+   * @param component parent component associated to root node.
+   * @param node root yoga node.
+   */
+  private void prepareNode(Element component, long node) {
+    NodeStyle style = component.style();
+    var flex = style.flex();
+    setFlexDirection(node, flex.flexDirection());
+    setJustifyContent(node, flex.justifyContent());
+    setAlignItems(node, flex.alignItems());
+    setAlignSelf(node, flex.alignSelf());
+
+    setMinWidth(node, style);
+    setMinHeight(node, style);
+
+    setMaxWidth(node, style);
+    setMaxHeight(node, style);
+
+    setWidth(node, style);
+    setHeight(node, style);
+
+    setPosition(node, style.top(), YGEdgeTop);
+    setPosition(node, style.bottom(), YGEdgeBottom);
+    setPosition(node, style.right(), YGEdgeRight);
+    setPosition(node, style.left(), YGEdgeLeft);
+
+    setFlexBasis(node, flex);
+
+    setPadding(node, style);
+    setMargin(node, style);
+
+    setFlexWrap(node, flex.flexWrap());
+    YGNodeStyleSetPositionType(
+        node,
+        Position.RELATIVE.equals(style.position()) ?
+            YGPositionTypeRelative :
+            YGPositionTypeAbsolute);
+
+    YGNodeStyleSetFlexGrow(node, flex.flexGrow());
+    YGNodeStyleSetFlexShrink(node, flex.flexShrink());
+  }
+
+  private void setMinHeight(long node, NodeStyle style) {
+    setLength(
+        style.minHeight(),
+        node,
+        Yoga::YGNodeStyleSetMinHeight,
+        Yoga::YGNodeStyleSetMinHeightPercent);
+  }
+
+  private void setMaxWidth(long node, NodeStyle style) {
+    setLength(
+        style.maxWidth(), node, Yoga::YGNodeStyleSetMaxWidth, Yoga::YGNodeStyleSetMaxWidthPercent);
+  }
+
+  private void setMaxHeight(long node, NodeStyle style) {
+    setLength(
+        style.maxHeight(),
+        node,
+        Yoga::YGNodeStyleSetMaxHeight,
+        Yoga::YGNodeStyleSetMaxHeightPercent);
+  }
+
+  private void setWidth(long node, NodeStyle style) {
+    setUnit(
+        style.width(),
+        node,
+        Yoga::YGNodeStyleSetWidthAuto,
+        Yoga::YGNodeStyleSetWidth,
+        Yoga::YGNodeStyleSetWidthPercent);
+  }
+
+  private void setHeight(long node, NodeStyle style) {
+    setUnit(
+        style.height(),
+        node,
+        Yoga::YGNodeStyleSetHeightAuto,
+        Yoga::YGNodeStyleSetHeight,
+        Yoga::YGNodeStyleSetHeightPercent);
+  }
+
+  private void setPosition(long node, Unit distance, int edge) {
+    setUnit(
+        distance,
+        node,
+        edge,
+        Yoga::YGNodeStyleSetPosition,
+        Yoga::YGNodeStyleSetPositionPercent);
+  }
+
+  private void setFlexBasis(long node, com.spinyowl.spinygui.core.style.types.flex.Flex flex) {
+    setUnit(
+        flex.flexBasis(),
+        node,
+        Yoga::YGNodeStyleSetFlexBasisAuto,
+        Yoga::YGNodeStyleSetFlexBasis,
+        Yoga::YGNodeStyleSetFlexBasisPercent);
+  }
+
+  private void setMinWidth(long node, NodeStyle style) {
+    setLength(
+        style.minWidth(), node, Yoga::YGNodeStyleSetMinWidth, Yoga::YGNodeStyleSetMinWidthPercent);
+  }
 
   private static void setJustifyContent(long node, JustifyContent justifyContent) {
     if (justifyContent == null || justifyContent == JustifyContent.FLEX_START) {
@@ -187,30 +366,29 @@ public class FlexLayout implements Layout {
   }
 
   private static void setMargin(long node, NodeStyle style) {
-    var margin = style.margin();
     setUnit(
-        margin.left(),
+        style.marginLeft(),
         node,
         YGEdgeLeft,
         Yoga::YGNodeStyleSetMarginAuto,
         Yoga::YGNodeStyleSetMargin,
         Yoga::YGNodeStyleSetMarginPercent);
     setUnit(
-        margin.top(),
+        style.marginTop(),
         node,
         YGEdgeTop,
         Yoga::YGNodeStyleSetMarginAuto,
         Yoga::YGNodeStyleSetMargin,
         Yoga::YGNodeStyleSetMarginPercent);
     setUnit(
-        margin.right(),
+        style.marginRight(),
         node,
         YGEdgeRight,
         Yoga::YGNodeStyleSetMarginAuto,
         Yoga::YGNodeStyleSetMargin,
         Yoga::YGNodeStyleSetMarginPercent);
     setUnit(
-        margin.bottom(),
+        style.marginBottom(),
         node,
         YGEdgeBottom,
         Yoga::YGNodeStyleSetMarginAuto,
@@ -218,258 +396,4 @@ public class FlexLayout implements Layout {
         Yoga::YGNodeStyleSetMarginPercent);
   }
 
-  private static void setUnit(
-      Unit unit,
-      long node,
-      LongConsumer autoConsumer,
-      ObjIntConsumer<Long> pixelConsumer,
-      BiConsumer<Long, Float> percentConsumer) {
-    if (unit != null) {
-      if (unit.isAuto()) {
-        autoConsumer.accept(node);
-      } else {
-        Length<?> l = unit.asLength();
-        if (PIXEL.equals(l.type())) {
-          pixelConsumer.accept(node, (Integer) l.value());
-        } else if (PERCENT.equals(l.type())) {
-          percentConsumer.accept(node, (Float) l.value());
-        }
-      }
-    }
-  }
-
-  private static void setUnit(
-      Unit unit,
-      long node,
-      int side,
-      ObjIntConsumer<Long> autoConsumer,
-      TriConsumer<Long, Integer, Integer> pixelConsumer,
-      TriConsumer<Long, Integer, Float> percentConsumer) {
-    if (unit != null) {
-      if (unit.isAuto()) {
-        autoConsumer.accept(node, side);
-      } else {
-        Length<?> l = unit.asLength();
-        if (PIXEL.equals(l.type())) {
-          pixelConsumer.accept(node, side, (Integer) l.value());
-        } else if (PERCENT.equals(l.type())) {
-          percentConsumer.accept(node, side, (Float) l.value());
-        }
-      }
-    }
-  }
-
-  private static void setUnit(
-      Unit unit,
-      long node,
-      int side,
-      TriConsumer<Long, Integer, Integer> pixelConsumer,
-      TriConsumer<Long, Integer, Float> percentConsumer) {
-    if (unit != null && !unit.isAuto()) {
-      Length<?> l = unit.asLength();
-      if (PIXEL.equals(l.type())) {
-        pixelConsumer.accept(node, side, (Integer) l.value());
-      } else if (PERCENT.equals(l.type())) {
-        percentConsumer.accept(node, side, (Float) l.value());
-      }
-    }
-  }
-
-  private static void setLength(
-      Length<?> length,
-      long node,
-      ObjIntConsumer<Long> pixelConsumer,
-      BiConsumer<Long, Float> percentConsumer) {
-    if (length != null) {
-      if (PIXEL.equals(length.type())) {
-        pixelConsumer.accept(node, (Integer) length.value());
-      } else if (PERCENT.equals(length.type())) {
-        percentConsumer.accept(node, (Float) length.value());
-      }
-    }
-  }
-
-  private static void setLength(
-      Length<?> length,
-      long node,
-      int side,
-      TriConsumer<Long, Integer, Integer> pixelConsumer,
-      TriConsumer<Long, Integer, Float> percentConsumer) {
-    if (length != null) {
-      if (PIXEL.equals(length.type())) {
-        pixelConsumer.accept(node, side, (Integer) length.value());
-      } else if (PERCENT.equals(length.type())) {
-        percentConsumer.accept(node, side, (Float) length.value());
-      }
-    }
-  }
-
-  /**
-   * Used to lay out child components for parent component.
-   *
-   * @param parent component to lay out.
-   */
-  @Override
-  public void layout(Element parent) {
-    // initialize
-    long rootNode = YGNodeNew();
-    prepareParentNode(parent, rootNode);
-    YGNodeStyleSetDisplay(rootNode, YGDisplayFlex);
-
-    List<Long> childNodes = new ArrayList<>();
-    List<Element> components =
-        parent.children().stream().filter(NodeUtilities::visible).collect(Collectors.toList());
-    for (Element component : components) {
-      long childNode = YGNodeNew();
-      prepareNode(component, childNode);
-      YGNodeInsertChild(rootNode, childNode, childNodes.size());
-      childNodes.add(childNode);
-    }
-
-    // calculate
-    nYGNodeCalculateLayout(rootNode, parent.size().x(), parent.size().y(), YGDirectionLTR);
-
-    var invalidateTree = false;
-    // apply to components
-    for (var i = 0; i < components.size(); i++) {
-      Node childComponent = components.get(i);
-      Long yogaNode = childNodes.get(i);
-
-      var newPos = new Vector2f(YGNodeLayoutGetLeft(yogaNode), YGNodeLayoutGetTop(yogaNode));
-      var oldPos = new Vector2f(childComponent.position());
-      childComponent.position(newPos);
-
-      var newSize = new Vector2f(YGNodeLayoutGetWidth(yogaNode), YGNodeLayoutGetHeight(yogaNode));
-      var oldSize = new Vector2f(childComponent.size());
-      childComponent.size(newSize);
-
-      invalidateTree =
-          invalidateTree || generateEvents(childComponent, newPos, oldPos, newSize, oldSize);
-    }
-
-    if (invalidateTree) {
-      eventProcessor.push(new InvalidateTreeEvent(parent,parent.root(), timeService.getCurrentTime()));
-    }
-
-    // free mem
-    for (Long childNode : childNodes) {
-      YGNodeFree(childNode);
-    }
-
-    YGNodeFree(rootNode);
-  }
-
-  private boolean generateEvents(
-      Node childComponent, Vector2f newPos, Vector2f oldPos, Vector2f newSize, Vector2f oldSize) {
-    var invalidateTree = false;
-    if (childComponent instanceof Element e) {
-      if (!oldPos.equals(newPos, THRESHOLD)) {
-        eventProcessor.push(ChangePositionEvent.of(e, oldPos, newPos));
-        invalidateTree = true;
-      }
-      if (!oldSize.equals(newSize, THRESHOLD)) {
-        eventProcessor.push(ChangeSizeEvent.of(e, oldSize, newSize));
-        invalidateTree = true;
-      }
-    }
-    return invalidateTree;
-  }
-
-  private void prepareParentNode(Element parent, long rootNode) {
-    prepareNode(parent, rootNode);
-    YGNodeStyleSetWidth(rootNode, parent.size().x());
-    YGNodeStyleSetHeight(rootNode, parent.size().y());
-  }
-
-  /**
-   * Used to prepare root node.
-   *
-   * @param component parent component associated to root node.
-   * @param node root yoga node.
-   */
-  private void prepareNode(Element component, long node) {
-    NodeStyle style = component.style();
-    var flex = style.flex();
-    setFlexDirection(node, flex.flexDirection());
-    setJustifyContent(node, flex.justifyContent());
-    setAlignItems(node, flex.alignItems());
-    setAlignSelf(node, flex.alignSelf());
-
-    setLength(
-        style.minWidth(), node, Yoga::YGNodeStyleSetMinWidth, Yoga::YGNodeStyleSetMinWidthPercent);
-    setLength(
-        style.minHeight(),
-        node,
-        Yoga::YGNodeStyleSetMinHeight,
-        Yoga::YGNodeStyleSetMinHeightPercent);
-
-    setLength(
-        style.maxWidth(), node, Yoga::YGNodeStyleSetMaxWidth, Yoga::YGNodeStyleSetMaxWidthPercent);
-    setLength(
-        style.maxHeight(),
-        node,
-        Yoga::YGNodeStyleSetMaxHeight,
-        Yoga::YGNodeStyleSetMaxHeightPercent);
-
-    setUnit(
-        style.width(),
-        node,
-        Yoga::YGNodeStyleSetWidthAuto,
-        Yoga::YGNodeStyleSetWidth,
-        Yoga::YGNodeStyleSetWidthPercent);
-    setUnit(
-        style.height(),
-        node,
-        Yoga::YGNodeStyleSetHeightAuto,
-        Yoga::YGNodeStyleSetHeight,
-        Yoga::YGNodeStyleSetHeightPercent);
-
-    setUnit(
-        style.top(),
-        node,
-        YGEdgeTop,
-        Yoga::YGNodeStyleSetPosition,
-        Yoga::YGNodeStyleSetPositionPercent);
-    setUnit(
-        style.bottom(),
-        node,
-        YGEdgeBottom,
-        Yoga::YGNodeStyleSetPosition,
-        Yoga::YGNodeStyleSetPositionPercent);
-    setUnit(
-        style.right(),
-        node,
-        YGEdgeRight,
-        Yoga::YGNodeStyleSetPosition,
-        Yoga::YGNodeStyleSetPositionPercent);
-    setUnit(
-        style.left(),
-        node,
-        YGEdgeLeft,
-        Yoga::YGNodeStyleSetPosition,
-        Yoga::YGNodeStyleSetPositionPercent);
-
-    setUnit(
-        flex.flexBasis(),
-        node,
-        Yoga::YGNodeStyleSetFlexBasisAuto,
-        Yoga::YGNodeStyleSetFlexBasis,
-        Yoga::YGNodeStyleSetFlexBasisPercent);
-
-    setPadding(node, style);
-    setMargin(node, style);
-
-    setFlexWrap(node, flex.flexWrap());
-    YGNodeStyleSetPositionType(
-        node,
-        style.position() == Position.RELATIVE ? YGPositionTypeRelative : YGPositionTypeAbsolute);
-
-    YGNodeStyleSetFlexGrow(node, flex.flexGrow());
-    YGNodeStyleSetFlexShrink(node, flex.flexShrink());
-  }
-
-  private interface TriConsumer<T, U, V> {
-
-    void accept(T t, U u, V v);
-  }
 }
