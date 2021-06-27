@@ -27,7 +27,13 @@ public class ChangePositionEvent extends Event {
     this.newPos = newPos;
   }
 
-  public static ChangePositionEvent of(EventTarget source, EventTarget target, Vector2f oldPos, Vector2f newPos) {
-    return ChangePositionEvent.builder().source(source).target(target).oldPos(oldPos).newPos(newPos).build();
+  public static ChangePositionEvent of(
+      EventTarget source, EventTarget target, Vector2f oldPos, Vector2f newPos) {
+    return ChangePositionEvent.builder()
+        .source(source)
+        .target(target)
+        .oldPos(oldPos)
+        .newPos(newPos)
+        .build();
   }
 }

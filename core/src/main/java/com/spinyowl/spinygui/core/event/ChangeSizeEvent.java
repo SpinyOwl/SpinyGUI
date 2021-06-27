@@ -27,7 +27,13 @@ public class ChangeSizeEvent extends Event {
     this.newSize = newSize;
   }
 
-  public static ChangeSizeEvent of(EventTarget source, EventTarget target, Vector2f oldSize, Vector2f newSize) {
-    return ChangeSizeEvent.builder().source(source).target(target).oldSize(oldSize).newSize(newSize).build();
+  public static ChangeSizeEvent of(
+      EventTarget source, EventTarget target, Vector2f oldSize, Vector2f newSize) {
+    return ChangeSizeEvent.builder()
+        .source(source)
+        .target(target)
+        .oldSize(oldSize)
+        .newSize(newSize)
+        .build();
   }
 }
