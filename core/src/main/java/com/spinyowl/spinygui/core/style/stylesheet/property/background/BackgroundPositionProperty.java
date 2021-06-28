@@ -1,14 +1,14 @@
 package com.spinyowl.spinygui.core.style.stylesheet.property.background;
 
 import static com.spinyowl.spinygui.core.style.stylesheet.Properties.BACKGROUND_POSITION;
-import com.spinyowl.spinygui.core.style.types.background.BackgroundPosition;
-import com.spinyowl.spinygui.core.style.types.length.Length;
+import com.spinyowl.spinygui.core.style.NodeStyle;
 import com.spinyowl.spinygui.core.style.stylesheet.Property;
 import com.spinyowl.spinygui.core.style.stylesheet.extractor.ValueExtractor;
 import com.spinyowl.spinygui.core.style.stylesheet.extractor.ValueExtractors;
+import com.spinyowl.spinygui.core.style.types.length.Length;
 import java.util.List;
 
-public class BackgroundPositionProperty extends Property<BackgroundPosition> {
+public class BackgroundPositionProperty extends Property<Length<?>[]> {
 
   private static final ValueExtractor<Length> extractor = ValueExtractors.of(Length.class);
   private static final String SPLITERATOR = "\\s+";
@@ -26,22 +26,22 @@ public class BackgroundPositionProperty extends Property<BackgroundPosition> {
         "0% 0%",
         !INHERITED,
         ANIMATABLE,
-        (s, c) -> s.background().position(c),
-        s -> s.background().position(),
+        BackgroundPositionProperty::setBackgroundPosition,
+        BackgroundPositionProperty::getBackgroundPosition,
         BackgroundPositionProperty::extract,
         BackgroundPositionProperty::test);
   }
 
-  private static BackgroundPosition extract(String value) {
+  private static Length<?>[] extract(String value) {
     String[] values = value.split(SPLITERATOR);
     if (values.length == 1) {
-      return new BackgroundPosition(extract(values[0], X_VALUES));
+      return new Length[] {extract(values[0], X_VALUES), Length.percent(50)};
     } else {
-      return new BackgroundPosition(extract(values[0], X_VALUES), extract(values[1], Y_VALUES));
+      return new Length[] {extract(values[0], X_VALUES), extract(values[1], Y_VALUES)};
     }
   }
 
-  private static Length extract(String value, List<String> values) {
+  private static Length<?> extract(String value, List<String> values) {
     if (values.contains(value)) {
       return Length.percent(values.indexOf(value) * 100f / (values.size() - 1));
     } else {
@@ -59,5 +59,14 @@ public class BackgroundPositionProperty extends Property<BackgroundPosition> {
       return (X_VALUES.contains(values[0]) || extractor.isValid(values[0]))
           && (Y_VALUES.contains(values[1]) || extractor.isValid(values[1]));
     }
+  }
+
+  private static void setBackgroundPosition(NodeStyle nodeStyle, Length<?>[] backgroundPosition) {
+    nodeStyle.backgroundPositionX(backgroundPosition[0]);
+    nodeStyle.backgroundPositionY(backgroundPosition[1]);
+  }
+
+  private static Length<?>[] getBackgroundPosition(NodeStyle nodeStyle1) {
+    return new Length[] {nodeStyle1.backgroundPositionX(), nodeStyle1.backgroundPositionY()};
   }
 }

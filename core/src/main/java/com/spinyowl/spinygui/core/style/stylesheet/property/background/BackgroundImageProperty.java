@@ -1,5 +1,6 @@
 package com.spinyowl.spinygui.core.style.stylesheet.property.background;
 
+import com.spinyowl.spinygui.core.style.NodeStyle;
 import com.spinyowl.spinygui.core.style.stylesheet.Properties;
 import com.spinyowl.spinygui.core.style.stylesheet.Property;
 
@@ -14,8 +15,8 @@ public class BackgroundImageProperty extends Property<String> {
         NONE,
         !INHERITED,
         !ANIMATABLE,
-        (s, i) -> s.background().image(i),
-        s -> s.background().image(),
+        NodeStyle::backgroundImage,
+        NodeStyle::backgroundImage,
         BackgroundImageProperty::extractUrl,
         BackgroundImageProperty::test);
   }

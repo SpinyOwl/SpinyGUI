@@ -1,6 +1,7 @@
 package com.spinyowl.spinygui.core.style.stylesheet.property.background;
 
 import static com.spinyowl.spinygui.core.style.stylesheet.Properties.BACKGROUND_POSITION_Y;
+import com.spinyowl.spinygui.core.style.NodeStyle;
 import com.spinyowl.spinygui.core.style.types.length.Length;
 import com.spinyowl.spinygui.core.style.stylesheet.Property;
 import com.spinyowl.spinygui.core.style.stylesheet.extractor.ValueExtractor;
@@ -21,8 +22,8 @@ public class BackgroundPositionYProperty extends Property<Length> {
         "0%",
         !INHERITED,
         ANIMATABLE,
-        (s, c) -> s.background().position().y(c),
-        s -> s.background().position().y(),
+        NodeStyle::backgroundPositionY,
+        NodeStyle::backgroundPositionY,
         BackgroundPositionYProperty::extract,
         BackgroundPositionYProperty::test);
   }

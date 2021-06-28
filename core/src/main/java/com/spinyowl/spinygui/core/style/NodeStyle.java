@@ -3,7 +3,6 @@ package com.spinyowl.spinygui.core.style;
 import com.spinyowl.spinygui.core.font.FontStretch;
 import com.spinyowl.spinygui.core.font.FontStyle;
 import com.spinyowl.spinygui.core.font.FontWeight;
-import com.spinyowl.spinygui.core.style.types.Background;
 import com.spinyowl.spinygui.core.style.types.BorderRadius;
 import com.spinyowl.spinygui.core.style.types.BoxShadow;
 import com.spinyowl.spinygui.core.style.types.Color;
@@ -14,6 +13,8 @@ import com.spinyowl.spinygui.core.style.types.PointerEvents;
 import com.spinyowl.spinygui.core.style.types.Position;
 import com.spinyowl.spinygui.core.style.types.VerticalAlign;
 import com.spinyowl.spinygui.core.style.types.WhiteSpace;
+import com.spinyowl.spinygui.core.style.types.background.BackgroundOrigin;
+import com.spinyowl.spinygui.core.style.types.background.BackgroundSize;
 import com.spinyowl.spinygui.core.style.types.border.Border;
 import com.spinyowl.spinygui.core.style.types.flex.AlignContent;
 import com.spinyowl.spinygui.core.style.types.flex.AlignItems;
@@ -33,6 +34,7 @@ import lombok.NonNull;
 @NoArgsConstructor
 public class NodeStyle {
 
+  // -------------------------- FLEX STYLE GROUP -------------------------------
   /** Specifies the direction of the flexible items */
   @NonNull private FlexDirection flexDirection = FlexDirection.ROW;
 
@@ -68,20 +70,13 @@ public class NodeStyle {
   /** The length of the item. Legal values: a number in px. */
   @NonNull private Unit flexBasis = Length.ZERO;
 
-  public NodeStyle flex(int flexGrow, int flexShrink, Unit flexBasis) {
-    flexGrow(flexGrow);
-    flexShrink(flexShrink);
-    flexBasis(flexBasis);
-    return this;
-  }
-
-  public NodeStyle flexFlow(FlexDirection flexDirection, FlexWrap flexWrap) {
-    flexDirection(flexDirection);
-    flexWrap(flexWrap);
-    return this;
-  }
-
-  @NonNull private Background background = new Background();
+  // -------------------------- BACKGROUND STYLE GROUP -------------------------------
+  @NonNull private Color backgroundColor = Color.TRANSPARENT;
+  private String backgroundImage;
+  private Length<?> backgroundPositionX;
+  private Length<?> backgroundPositionY;
+  private BackgroundSize backgroundSize;
+  private BackgroundOrigin backgroundOrigin = BackgroundOrigin.PADDING_BOX;
 
   @NonNull private Border border = new Border();
 
@@ -89,6 +84,7 @@ public class NodeStyle {
 
   @NonNull private Padding padding = new Padding();
 
+  // -------------------------- MARGIN STYLE GROUP -------------------------------
   private Unit marginTop;
   private Unit marginBottom;
   private Unit marginLeft;
@@ -100,6 +96,7 @@ public class NodeStyle {
 
   @NonNull private Color color;
 
+  // -------------------------- SIZE STYLE GROUP -------------------------------
   @NonNull private Unit width;
   @NonNull private Unit height;
 
@@ -109,11 +106,13 @@ public class NodeStyle {
   @NonNull private Length<?> maxWidth;
   @NonNull private Length<?> maxHeight;
 
+  // -------------------------- POSITION STYLE GROUP -------------------------------
   @NonNull private Unit top;
   @NonNull private Unit bottom;
   @NonNull private Unit right;
   @NonNull private Unit left;
 
+  // -------------------------- TEXT-RELATED STYLE GROUP -------------------------------
   @NonNull private WhiteSpace whiteSpace = WhiteSpace.NORMAL;
 
   @NonNull private Set<String> fontFamily = new LinkedHashSet<>();
@@ -121,19 +120,18 @@ public class NodeStyle {
   @NonNull private FontStyle fontStyle;
   @NonNull private FontWeight fontWeight;
   @NonNull private FontStretch fontStretch;
-
-  @NonNull private BoxShadow boxShadow;
-
   /** Horizontal alignment. By default used {@link HorizontalAlign#CENTER}. */
   private HorizontalAlign horizontalAlign;
-
   /** Vertical alignment. */
   private VerticalAlign verticalAlign;
+
+  private int tabSize = 4;
+
+  @NonNull private BoxShadow boxShadow;
 
   /** Pointer events. By default used {@link PointerEvents#AUTO}. */
   private PointerEvents pointerEvents;
 
-  private int tabSize = 4;
   private int zIndex = 0;
   private float opacity = 1;
 
@@ -174,5 +172,18 @@ public class NodeStyle {
 
   public Unit[] margin() {
     return new Unit[] {marginTop, marginRight, marginBottom, marginLeft};
+  }
+
+  public NodeStyle flex(int flexGrow, int flexShrink, Unit flexBasis) {
+    flexGrow(flexGrow);
+    flexShrink(flexShrink);
+    flexBasis(flexBasis);
+    return this;
+  }
+
+  public NodeStyle flexFlow(FlexDirection flexDirection, FlexWrap flexWrap) {
+    flexDirection(flexDirection);
+    flexWrap(flexWrap);
+    return this;
   }
 }

@@ -1,56 +1,72 @@
 package com.spinyowl.spinygui.core.style.types.background;
 
 import com.spinyowl.spinygui.core.style.types.length.Unit;
+import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
-@Getter
-@EqualsAndHashCode
-@ToString
-public class BackgroundSize {
+@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
+public abstract class BackgroundSize {
+  private final boolean unit;
+  private final boolean contain;
+  private final boolean cover;
 
-  private final Type type;
-
-  private final Unit sizeX;
-  private final Unit sizeY;
-
-  private BackgroundSize(Type type) {
-    this.type = type;
-    this.sizeX = this.sizeY = null;
+  public BackgroundSizeUnit asUnit() {
+    return (BackgroundSizeUnit) this;
   }
 
-  private BackgroundSize(Unit size) {
-    this.type = Type.UNIT;
-    this.sizeX = size;
-    this.sizeY = Unit.AUTO;
+  public static BackgroundSize createSize(Unit sizeX) {
+    return new BackgroundSizeUnit(sizeX);
   }
 
-  private BackgroundSize(Unit sizeX, Unit sizeY) {
-    this.type = Type.UNIT;
-    this.sizeX = sizeX;
-    this.sizeY = sizeY;
+  public static BackgroundSize createSize(Unit sizeX, Unit sizeY) {
+    return new BackgroundSizeUnit(sizeX, sizeY);
   }
 
-  public static BackgroundSize size(Unit sizeX) {
-    return new BackgroundSize(sizeX);
+  public static BackgroundSize createContain() {
+    return new BackgroundSizeContain();
   }
 
-  public static BackgroundSize size(Unit sizeX, Unit sizeY) {
-    return new BackgroundSize(sizeX, sizeY);
+  public static BackgroundSize createCover() {
+    return new BackgroundSizeCover();
   }
 
-  public static BackgroundSize contain() {
-    return new BackgroundSize(Type.CONTAIN);
+  @Getter
+  @EqualsAndHashCode
+  @ToString
+  public static class BackgroundSizeContain extends BackgroundSize {
+    private BackgroundSizeContain() {
+      super(false, true, false);
+    }
   }
 
-  public static BackgroundSize cover() {
-    return new BackgroundSize(Type.COVER);
+  @Getter
+  @EqualsAndHashCode
+  @ToString
+  public static class BackgroundSizeCover extends BackgroundSize {
+
+    private BackgroundSizeCover() {
+      super(false, false, true);
+    }
   }
 
-  public enum Type {
-    CONTAIN,
-    COVER,
-    UNIT
+  @Getter
+  @EqualsAndHashCode
+  @ToString
+  public static class BackgroundSizeUnit extends BackgroundSize {
+    private final Unit sizeX;
+    private final Unit sizeY;
+
+    private BackgroundSizeUnit(Unit size) {
+      this(size, Unit.AUTO);
+    }
+
+    private BackgroundSizeUnit(Unit sizeX, Unit sizeY) {
+      super(true, false, false);
+      this.sizeX = sizeX;
+      this.sizeY = sizeY;
+    }
   }
 }

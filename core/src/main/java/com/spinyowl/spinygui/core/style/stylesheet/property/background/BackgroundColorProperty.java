@@ -1,10 +1,11 @@
 package com.spinyowl.spinygui.core.style.stylesheet.property.background;
 
 import static com.spinyowl.spinygui.core.style.stylesheet.Properties.BACKGROUND_COLOR;
-import com.spinyowl.spinygui.core.style.types.Color;
+import com.spinyowl.spinygui.core.style.NodeStyle;
 import com.spinyowl.spinygui.core.style.stylesheet.Property;
 import com.spinyowl.spinygui.core.style.stylesheet.extractor.ValueExtractor;
 import com.spinyowl.spinygui.core.style.stylesheet.extractor.ValueExtractors;
+import com.spinyowl.spinygui.core.style.types.Color;
 
 public class BackgroundColorProperty extends Property<Color> {
 
@@ -16,8 +17,8 @@ public class BackgroundColorProperty extends Property<Color> {
         "transparent",
         !INHERITED,
         ANIMATABLE,
-        (s, c) -> s.background().color(c),
-        s -> s.background().color(),
+        NodeStyle::backgroundColor,
+        NodeStyle::backgroundColor,
         colorExtractor::extract,
         colorExtractor::isValid);
   }

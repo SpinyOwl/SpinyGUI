@@ -2,11 +2,12 @@ package com.spinyowl.spinygui.core.style.stylesheet.property.background;
 
 import static com.spinyowl.spinygui.core.style.stylesheet.Properties.BACKGROUND_SIZE;
 import static com.spinyowl.spinygui.core.style.stylesheet.util.StyleUtils.testMultipleValues;
-import com.spinyowl.spinygui.core.style.types.background.BackgroundSize;
-import com.spinyowl.spinygui.core.style.types.length.Unit;
+import com.spinyowl.spinygui.core.style.NodeStyle;
 import com.spinyowl.spinygui.core.style.stylesheet.Property;
 import com.spinyowl.spinygui.core.style.stylesheet.extractor.ValueExtractor;
 import com.spinyowl.spinygui.core.style.stylesheet.extractor.ValueExtractors;
+import com.spinyowl.spinygui.core.style.types.background.BackgroundSize;
+import com.spinyowl.spinygui.core.style.types.length.Unit;
 import java.util.List;
 
 public class BackgroundSizeProperty extends Property<BackgroundSize> {
@@ -22,8 +23,8 @@ public class BackgroundSizeProperty extends Property<BackgroundSize> {
         "auto",
         !INHERITED,
         ANIMATABLE,
-        (s, c) -> s.background().size(c),
-        nodeStyle -> nodeStyle.background().size(),
+        NodeStyle::backgroundSize,
+        NodeStyle::backgroundSize,
         BackgroundSizeProperty::extract,
         BackgroundSizeProperty::test);
   }
@@ -31,15 +32,15 @@ public class BackgroundSizeProperty extends Property<BackgroundSize> {
   private static BackgroundSize extract(String value) {
     switch (value) {
       case COVER:
-        return BackgroundSize.cover();
+        return BackgroundSize.createCover();
       case CONTAIN:
-        return BackgroundSize.contain();
+        return BackgroundSize.createContain();
       default:
         String[] v = value.split("\\s+");
         if (v.length == 1) {
-          return BackgroundSize.size(extractor.extract(v[0]));
+          return BackgroundSize.createSize(extractor.extract(v[0]));
         } else {
-          return BackgroundSize.size(extractor.extract(v[0]), extractor.extract(v[1]));
+          return BackgroundSize.createSize(extractor.extract(v[0]), extractor.extract(v[1]));
         }
     }
   }

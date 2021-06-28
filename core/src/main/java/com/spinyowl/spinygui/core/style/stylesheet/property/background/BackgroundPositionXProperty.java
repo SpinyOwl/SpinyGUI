@@ -1,10 +1,11 @@
 package com.spinyowl.spinygui.core.style.stylesheet.property.background;
 
 import static com.spinyowl.spinygui.core.style.stylesheet.Properties.BACKGROUND_POSITION_X;
-import com.spinyowl.spinygui.core.style.types.length.Length;
+import com.spinyowl.spinygui.core.style.NodeStyle;
 import com.spinyowl.spinygui.core.style.stylesheet.Property;
 import com.spinyowl.spinygui.core.style.stylesheet.extractor.ValueExtractor;
 import com.spinyowl.spinygui.core.style.stylesheet.extractor.ValueExtractors;
+import com.spinyowl.spinygui.core.style.types.length.Length;
 import java.util.List;
 
 public class BackgroundPositionXProperty extends Property<Length> {
@@ -21,8 +22,8 @@ public class BackgroundPositionXProperty extends Property<Length> {
         "0%",
         !INHERITED,
         ANIMATABLE,
-        (s, c) -> s.background().position().x(c),
-        s -> s.background().position().x(),
+        NodeStyle::backgroundPositionX,
+        NodeStyle::backgroundPositionX,
         BackgroundPositionXProperty::extract,
         BackgroundPositionXProperty::test);
   }
