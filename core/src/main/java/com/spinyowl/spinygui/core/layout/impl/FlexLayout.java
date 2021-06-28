@@ -173,11 +173,10 @@ public class FlexLayout implements Layout {
    */
   private void prepareNode(Element component, long node) {
     NodeStyle style = component.style();
-    var flex = style.flex();
-    setFlexDirection(node, flex.flexDirection());
-    setJustifyContent(node, flex.justifyContent());
-    setAlignItems(node, flex.alignItems());
-    setAlignSelf(node, flex.alignSelf());
+    setFlexDirection(node, style.flexDirection());
+    setJustifyContent(node, style.justifyContent());
+    setAlignItems(node, style.alignItems());
+    setAlignSelf(node, style.alignSelf());
 
     setMinWidth(node, style);
     setMinHeight(node, style);
@@ -193,20 +192,20 @@ public class FlexLayout implements Layout {
     setPosition(node, style.right(), YGEdgeRight);
     setPosition(node, style.left(), YGEdgeLeft);
 
-    setFlexBasis(node, flex);
+    setFlexBasis(node, style.flexBasis());
 
     setPadding(node, style);
     setMargin(node, style);
 
-    setFlexWrap(node, flex.flexWrap());
+    setFlexWrap(node, style.flexWrap());
     YGNodeStyleSetPositionType(
         node,
         Position.RELATIVE.equals(style.position()) ?
             YGPositionTypeRelative :
             YGPositionTypeAbsolute);
 
-    YGNodeStyleSetFlexGrow(node, flex.flexGrow());
-    YGNodeStyleSetFlexShrink(node, flex.flexShrink());
+    YGNodeStyleSetFlexGrow(node, style.flexGrow());
+    YGNodeStyleSetFlexShrink(node, style.flexShrink());
   }
 
   private void setMinHeight(long node, NodeStyle style) {
@@ -257,9 +256,9 @@ public class FlexLayout implements Layout {
         Yoga::YGNodeStyleSetPositionPercent);
   }
 
-  private void setFlexBasis(long node, com.spinyowl.spinygui.core.style.types.flex.Flex flex) {
+  private void setFlexBasis(long node, Unit flexBasis) {
     setUnit(
-        flex.flexBasis(),
+        flexBasis,
         node,
         Yoga::YGNodeStyleSetFlexBasisAuto,
         Yoga::YGNodeStyleSetFlexBasis,

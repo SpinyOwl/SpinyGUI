@@ -1,6 +1,7 @@
 package com.spinyowl.spinygui.core.style.stylesheet.property.flex;
 
 import static com.spinyowl.spinygui.core.style.stylesheet.Properties.FLEX_BASIS;
+import com.spinyowl.spinygui.core.style.NodeStyle;
 import com.spinyowl.spinygui.core.style.types.length.Unit;
 import com.spinyowl.spinygui.core.style.stylesheet.Property;
 import com.spinyowl.spinygui.core.style.stylesheet.extractor.ValueExtractor;
@@ -17,8 +18,8 @@ public class FlexBasisProperty extends Property<Unit> {
         AUTO,
         !INHERITED,
         !ANIMATABLE,
-        (s, v) -> s.flex().flexBasis(v),
-        s -> s.flex().flexBasis(),
+        NodeStyle::flexBasis,
+        NodeStyle::flexBasis,
         extractor::extract,
         extractor::isValid);
   }

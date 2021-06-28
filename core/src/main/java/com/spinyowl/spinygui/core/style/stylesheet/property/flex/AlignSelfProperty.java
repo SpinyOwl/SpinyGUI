@@ -1,6 +1,7 @@
 package com.spinyowl.spinygui.core.style.stylesheet.property.flex;
 
 import static com.spinyowl.spinygui.core.style.stylesheet.Properties.ALIGN_SELF;
+import com.spinyowl.spinygui.core.style.NodeStyle;
 import com.spinyowl.spinygui.core.style.types.flex.AlignSelf;
 import com.spinyowl.spinygui.core.style.stylesheet.Property;
 
@@ -12,8 +13,8 @@ public class AlignSelfProperty extends Property<AlignSelf> {
         "auto",
         !INHERITED,
         !ANIMATABLE,
-        (s, v) -> s.flex().alignSelf(v),
-        s -> s.flex().alignSelf(),
+        NodeStyle::alignSelf,
+        NodeStyle::alignSelf,
         AlignSelf::find,
         AlignSelf::contains);
   }

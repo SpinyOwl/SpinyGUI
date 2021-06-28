@@ -15,7 +15,12 @@ import com.spinyowl.spinygui.core.style.types.Position;
 import com.spinyowl.spinygui.core.style.types.VerticalAlign;
 import com.spinyowl.spinygui.core.style.types.WhiteSpace;
 import com.spinyowl.spinygui.core.style.types.border.Border;
-import com.spinyowl.spinygui.core.style.types.flex.Flex;
+import com.spinyowl.spinygui.core.style.types.flex.AlignContent;
+import com.spinyowl.spinygui.core.style.types.flex.AlignItems;
+import com.spinyowl.spinygui.core.style.types.flex.AlignSelf;
+import com.spinyowl.spinygui.core.style.types.flex.FlexDirection;
+import com.spinyowl.spinygui.core.style.types.flex.FlexWrap;
+import com.spinyowl.spinygui.core.style.types.flex.JustifyContent;
 import com.spinyowl.spinygui.core.style.types.length.Length;
 import com.spinyowl.spinygui.core.style.types.length.Unit;
 import java.util.LinkedHashSet;
@@ -28,7 +33,53 @@ import lombok.NonNull;
 @NoArgsConstructor
 public class NodeStyle {
 
-  @NonNull private Flex flex = new Flex();
+  /** Specifies the direction of the flexible items */
+  @NonNull private FlexDirection flexDirection = FlexDirection.ROW;
+
+  /**
+   * Specifies the alignment between the items inside a flexible container when the items do not use
+   * all available space.
+   */
+  @NonNull private JustifyContent justifyContent = JustifyContent.FLEX_START;
+
+  /** Specifies the alignment for items inside a flexible container. */
+  @NonNull private AlignItems alignItems = AlignItems.STRETCH;
+
+  /** Specifies whether the flexible items should wrap or not. */
+  @NonNull private FlexWrap flexWrap = FlexWrap.NOWRAP;
+
+  /**
+   * Specifies the alignment between the lines inside a flexible container when the items do not use
+   * all available space.
+   */
+  @NonNull private AlignContent alignContent = AlignContent.STRETCH;
+
+  /** Specifies the alignment for selected items inside a flexible container. */
+  @NonNull private AlignSelf alignSelf = AlignSelf.AUTO;
+
+  /** A number specifying how much the item will grow relative to the rest of the flexible items. */
+  private int flexGrow;
+
+  /**
+   * A number specifying how much the item will shrink relative to the rest of the flexible items.
+   */
+  private int flexShrink;
+
+  /** The length of the item. Legal values: a number in px. */
+  @NonNull private Unit flexBasis = Length.ZERO;
+
+  public NodeStyle flex(int flexGrow, int flexShrink, Unit flexBasis) {
+    flexGrow(flexGrow);
+    flexShrink(flexShrink);
+    flexBasis(flexBasis);
+    return this;
+  }
+
+  public NodeStyle flexFlow(FlexDirection flexDirection, FlexWrap flexWrap) {
+    flexDirection(flexDirection);
+    flexWrap(flexWrap);
+    return this;
+  }
 
   @NonNull private Background background = new Background();
 
