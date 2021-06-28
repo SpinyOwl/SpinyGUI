@@ -76,7 +76,8 @@ public class OtherMain {
     }
 
     StyleManager styleManager = new StyleManagerImpl();
-    styleManager.recalculateStyles(frame);
+    styleManager.needRecalculate(frame);
+    styleManager.recalculate();
 
     assert (Objects.equals(Color.RED, testLabel.calculatedStyle().color()));
   }

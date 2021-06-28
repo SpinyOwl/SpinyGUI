@@ -50,7 +50,6 @@ import static org.lwjgl.util.yoga.Yoga.YGWrapWrap;
 import static org.lwjgl.util.yoga.Yoga.nYGNodeCalculateLayout;
 import com.spinyowl.spinygui.core.event.ChangePositionEvent;
 import com.spinyowl.spinygui.core.event.ChangeSizeEvent;
-import com.spinyowl.spinygui.core.event.InvalidateTreeEvent;
 import com.spinyowl.spinygui.core.event.processor.EventProcessor;
 import com.spinyowl.spinygui.core.layout.Layout;
 import com.spinyowl.spinygui.core.node.Element;
@@ -63,6 +62,8 @@ import com.spinyowl.spinygui.core.style.types.flex.FlexDirection;
 import com.spinyowl.spinygui.core.style.types.flex.FlexWrap;
 import com.spinyowl.spinygui.core.style.types.flex.JustifyContent;
 import com.spinyowl.spinygui.core.style.types.length.Unit;
+import com.spinyowl.spinygui.core.system.event.InvalidateTreeEvent;
+import com.spinyowl.spinygui.core.system.event.processor.SystemEventProcessor;
 import com.spinyowl.spinygui.core.time.TimeService;
 import com.spinyowl.spinygui.core.util.NodeUtilities;
 import java.util.ArrayList;
@@ -80,6 +81,7 @@ import org.lwjgl.util.yoga.Yoga;
 public class FlexLayout implements Layout {
 
   public static final float THRESHOLD = 0.0001f;
+  @NonNull private final SystemEventProcessor systemEventProcessor;
   @NonNull private final EventProcessor eventProcessor;
   @NonNull private final TimeService timeService;
 
@@ -127,7 +129,10 @@ public class FlexLayout implements Layout {
     }
 
     if (invalidateTree) {
-      eventProcessor.push(new InvalidateTreeEvent(parent,parent.root(), timeService.getCurrentTime()));
+      var frame = parent.frame();
+      if(frame!=null) {
+        systemEventProcessor.push(new InvalidateTreeEvent(frame));
+      }
     }
 
     // free mem
@@ -141,13 +146,13 @@ public class FlexLayout implements Layout {
   private boolean generateEvents(
       Node childComponent, Vector2f newPos, Vector2f oldPos, Vector2f newSize, Vector2f oldSize) {
     var invalidateTree = false;
-    if (childComponent instanceof Element e) {
+    if (childComponent instanceof Element element) {
       if (!oldPos.equals(newPos, THRESHOLD)) {
-        eventProcessor.push(ChangePositionEvent.of(e, e, oldPos, newPos));
+        eventProcessor.push(ChangePositionEvent.of(element, element, oldPos, newPos));
         invalidateTree = true;
       }
       if (!oldSize.equals(newSize, THRESHOLD)) {
-        eventProcessor.push(ChangeSizeEvent.of(e, e, oldSize, newSize));
+        eventProcessor.push(ChangeSizeEvent.of(element, element, oldSize, newSize));
         invalidateTree = true;
       }
     }

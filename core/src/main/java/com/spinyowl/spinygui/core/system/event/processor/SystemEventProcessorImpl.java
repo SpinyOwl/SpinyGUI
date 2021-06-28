@@ -3,11 +3,11 @@ package com.spinyowl.spinygui.core.system.event.processor;
 import com.spinyowl.spinygui.core.system.event.SystemEvent;
 import com.spinyowl.spinygui.core.system.event.listener.SystemEventListener;
 import com.spinyowl.spinygui.core.system.event.provider.SystemEventListenerProvider;
+import com.spinyowl.spinygui.core.system.event.provider.SystemEventListenerProviderImpl;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import lombok.Builder;
 import lombok.Builder.Default;
-import lombok.NonNull;
 
 /**
  * Default implementation based on two {@link ConcurrentLinkedQueue} queues which swapped every time
@@ -16,8 +16,7 @@ import lombok.NonNull;
 @Builder
 public class SystemEventProcessorImpl implements SystemEventProcessor {
 
-  @NonNull private final SystemEventListenerProvider eventListenerProvider;
-
+  @Default private SystemEventListenerProvider eventListenerProvider = new SystemEventListenerProviderImpl();
   @Default private Queue<SystemEvent> first = new ConcurrentLinkedQueue<>();
   @Default private Queue<SystemEvent> second = new ConcurrentLinkedQueue<>();
 
@@ -46,7 +45,7 @@ public class SystemEventProcessorImpl implements SystemEventProcessor {
    * @param event system event to push to queue.
    */
   @Override
-  public void pushEvent(SystemEvent event) {
+  public void push(SystemEvent event) {
     first.add(event);
   }
 
@@ -59,4 +58,8 @@ public class SystemEventProcessorImpl implements SystemEventProcessor {
   public boolean hasEvents() {
     return !first.isEmpty() || !second.isEmpty();
   }
+
+  public static SystemEventProcessorImpl create() {
+    return SystemEventProcessorImpl.builder().build();
+  };
 }

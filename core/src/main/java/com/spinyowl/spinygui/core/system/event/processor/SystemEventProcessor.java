@@ -17,7 +17,7 @@ public interface SystemEventProcessor {
    *
    * @param event system event to push to queue.
    */
-  void pushEvent(SystemEvent event);
+  void push(SystemEvent event);
 
   /**
    * Used to check if current system event processor has any system events to process.
