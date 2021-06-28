@@ -1,6 +1,6 @@
 package com.spinyowl.spinygui.core.parser.impl;
 
-import com.spinyowl.spinygui.core.parser.StyleSheetConverter;
+import com.spinyowl.spinygui.core.parser.StyleSheetParser;
 import com.spinyowl.spinygui.core.parser.impl.css.parser.antlr.CSS3BaseVisitor;
 import com.spinyowl.spinygui.core.parser.impl.css.parser.antlr.CSS3Lexer;
 import com.spinyowl.spinygui.core.parser.impl.css.parser.antlr.CSS3Parser;
@@ -12,7 +12,7 @@ import org.antlr.v4.runtime.CommonTokenStream;
 
 /** Used to read stylesheets from css. */
 @RequiredArgsConstructor
-public final class DefaultStyleSheetConverter implements StyleSheetConverter {
+public final class DefaultStyleSheetParser implements StyleSheetParser {
 
   @NonNull private final CSS3BaseVisitor<StyleSheet> styleSheetVisitor;
   /**

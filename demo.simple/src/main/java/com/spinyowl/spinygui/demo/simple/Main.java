@@ -8,8 +8,8 @@ import static com.spinyowl.spinygui.core.node.NodeBuilder.radioButton;
 import static com.spinyowl.spinygui.core.node.NodeBuilder.text;
 import com.spinyowl.spinygui.core.node.Frame;
 import com.spinyowl.spinygui.core.node.Node;
-import com.spinyowl.spinygui.core.parser.NodeConverter;
-import com.spinyowl.spinygui.core.parser.impl.DefaultNodeConverter;
+import com.spinyowl.spinygui.core.parser.NodeParser;
+import com.spinyowl.spinygui.core.parser.impl.DefaultNodeParser;
 import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 
@@ -26,7 +26,7 @@ public class Main {
 
 //        window.addCloseEventListener(Window.EXIT_ON_CLOSE);
 
-    NodeConverter nodeConverter = new DefaultNodeConverter();
+    NodeParser nodeParser = new DefaultNodeParser();
     Node element = div(
         button(
             Map.of(
@@ -47,7 +47,7 @@ public class Main {
         String.valueOf(input(TYPE_PASSWORD, "myPass", "PASS_@!@#&").frame() == frame)); // false
     log.info(String.valueOf(element.children().get(2).frame() == frame)); // true
 
-    String xml = nodeConverter.toXml(element, false);
+    String xml = nodeParser.toXml(element, false);
     log.info(xml);
     //language=XML
     var xml2 = """
@@ -68,12 +68,12 @@ public class Main {
         <radio-button />
         </div>
         """;
-    var unmarshal = nodeConverter.fromXml(xml2);
+    var unmarshal = nodeParser.fromXml(xml2);
 
     log.info("UNMARSHALLING IS FINISHED");
     log.info("--------------------------------");
     log.info(xml2);
-    log.info(nodeConverter.toXml(unmarshal));
+    log.info(nodeParser.toXml(unmarshal));
 
 //        window.setVisible(true);
   }

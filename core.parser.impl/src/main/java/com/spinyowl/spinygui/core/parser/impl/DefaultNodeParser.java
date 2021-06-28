@@ -6,7 +6,7 @@ import com.spinyowl.spinygui.core.node.EmptyElement;
 import com.spinyowl.spinygui.core.node.Frame;
 import com.spinyowl.spinygui.core.node.Node;
 import com.spinyowl.spinygui.core.node.Text;
-import com.spinyowl.spinygui.core.parser.NodeConverter;
+import com.spinyowl.spinygui.core.parser.NodeParser;
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
@@ -28,7 +28,7 @@ import org.xml.sax.SAXException;
 
 /** Node marshaller. Used to convert node to xml and vise versa. */
 @Slf4j
-public final class DefaultNodeConverter implements NodeConverter {
+public final class DefaultNodeParser implements NodeParser {
 
   private static final List<String> EMPTY_ELEMENTS =
       List.of(

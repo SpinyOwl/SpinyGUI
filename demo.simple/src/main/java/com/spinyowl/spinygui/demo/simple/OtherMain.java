@@ -3,17 +3,17 @@ package com.spinyowl.spinygui.demo.simple;
 import static com.spinyowl.spinygui.core.node.NodeBuilder.button;
 import static com.spinyowl.spinygui.core.node.NodeBuilder.div;
 import static com.spinyowl.spinygui.core.node.NodeBuilder.label;
-import static com.spinyowl.spinygui.core.parser.impl.StyleSheetConverterFactory.createConverter;
+import static com.spinyowl.spinygui.core.parser.impl.StyleSheetParserFactory.createParser;
 import com.spinyowl.spinygui.core.node.Element;
 import com.spinyowl.spinygui.core.node.Frame;
 import com.spinyowl.spinygui.core.node.Node;
 import com.spinyowl.spinygui.core.node.Text;
-import com.spinyowl.spinygui.core.style.types.Color;
-import com.spinyowl.spinygui.core.parser.StyleSheetConverter;
-import com.spinyowl.spinygui.core.parser.impl.DefaultNodeConverter;
-import com.spinyowl.spinygui.core.style.manager.StyleManagerImpl;
+import com.spinyowl.spinygui.core.parser.StyleSheetParser;
+import com.spinyowl.spinygui.core.parser.impl.DefaultNodeParser;
 import com.spinyowl.spinygui.core.style.manager.StyleManager;
+import com.spinyowl.spinygui.core.style.manager.StyleManagerImpl;
 import com.spinyowl.spinygui.core.style.stylesheet.RuleSet;
+import com.spinyowl.spinygui.core.style.types.Color;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -50,8 +50,8 @@ public class OtherMain {
           background-color: white;
         }""";
 
-    StyleSheetConverter converter = createConverter();
-    var stylesheet = converter.fromCss(css);
+    StyleSheetParser parser = createParser();
+    var stylesheet = parser.fromCss(css);
 
     Element testLabel = label(Map.of("class", "test"));
 
@@ -103,8 +103,8 @@ public class OtherMain {
             }
             """;
 
-    StyleSheetConverter converter = createConverter();
-    var stylesheet = converter.fromCss(css);
+    StyleSheetParser parser = createParser();
+    var stylesheet = parser.fromCss(css);
 
     var xml = """
               <frame>
@@ -125,7 +125,7 @@ public class OtherMain {
                 </div>
               </frame>
         """;
-    var componentTree = (Element) new DefaultNodeConverter().fromXml(xml);
+    var componentTree = (Element) new DefaultNodeParser().fromXml(xml);
 
     List<RuleSet> ruleSets = stylesheet.ruleSets();
 
@@ -160,8 +160,8 @@ public class OtherMain {
 
   public static void parseText() {
     var xml = "<div>just a text</div>";
-    var nodeConverter = new DefaultNodeConverter();
-    var componentTree = nodeConverter.fromXml(xml);
-    log.info("Component tree: {}", nodeConverter.toXml(componentTree));
+    var nodeParser = new DefaultNodeParser();
+    var componentTree = nodeParser.fromXml(xml);
+    log.info("Component tree: {}", nodeParser.toXml(componentTree));
   }
 }
