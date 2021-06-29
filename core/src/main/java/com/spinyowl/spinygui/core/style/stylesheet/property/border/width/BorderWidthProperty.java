@@ -3,13 +3,14 @@ package com.spinyowl.spinygui.core.style.stylesheet.property.border.width;
 import static com.spinyowl.spinygui.core.style.stylesheet.Properties.BORDER_WIDTH;
 import static com.spinyowl.spinygui.core.style.stylesheet.util.StyleUtils.testMultipleValues;
 import com.spinyowl.spinygui.core.style.NodeStyle;
-import com.spinyowl.spinygui.core.style.types.border.Border;
-import com.spinyowl.spinygui.core.style.types.length.Length;
 import com.spinyowl.spinygui.core.style.stylesheet.Property;
 import com.spinyowl.spinygui.core.style.stylesheet.extractor.ValueExtractor;
 import com.spinyowl.spinygui.core.style.stylesheet.extractor.ValueExtractors;
+import com.spinyowl.spinygui.core.style.types.length.Length;
+import java.util.Arrays;
 
-public class BorderWidthProperty extends Property<Border> {
+@SuppressWarnings("rawtypes")
+public class BorderWidthProperty extends Property<Length[]> {
 
   public static final String THIN = "thin";
   public static final String MEDIUM = "medium";
@@ -28,28 +29,16 @@ public class BorderWidthProperty extends Property<Border> {
         MEDIUM,
         !INHERITED,
         ANIMATABLE,
-        (s, b) -> s.border().width(b),
-        NodeStyle::border,
+        NodeStyle::borderWidth,
+        NodeStyle::borderWidth,
         BorderWidthProperty::extract,
         BorderWidthProperty::test);
   }
 
-  protected static Border extract(String value) {
-    var b = new Border();
-    String[] v = value.split("\\s+");
-    if (v.length == 1) {
-      b.width(extractOne(v[0]));
-    } else if (v.length == 2) {
-      b.width(extractOne(v[0]), extractOne(v[1]));
-    } else if (v.length == 3) {
-      b.width(extractOne(v[0]), extractOne(v[1]), extractOne(v[2]));
-    } else if (v.length >= 4) {
-      b.width(extractOne(v[0]), extractOne(v[1]), extractOne(v[2]), extractOne(v[3]));
-    }
-    return b;
+  protected static Length[] extract(String value) {
+    return Arrays.stream(value.split("\\s+")).map(BorderWidthProperty::extractOne).toArray(Length[]::new);
   }
 
-  @SuppressWarnings("rawtypes")
   public static Length extractOne(String value) {
     String lowerCaseValue = value.toLowerCase();
     return switch (lowerCaseValue) {

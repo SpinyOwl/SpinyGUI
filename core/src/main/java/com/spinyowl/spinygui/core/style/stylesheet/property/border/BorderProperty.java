@@ -2,14 +2,13 @@ package com.spinyowl.spinygui.core.style.stylesheet.property.border;
 
 import static com.spinyowl.spinygui.core.style.stylesheet.Properties.BORDER;
 import com.spinyowl.spinygui.core.style.NodeStyle;
-import com.spinyowl.spinygui.core.style.types.Color;
-import com.spinyowl.spinygui.core.style.types.border.Border;
-import com.spinyowl.spinygui.core.style.types.border.BorderItem;
-import com.spinyowl.spinygui.core.style.types.border.BorderStyle;
 import com.spinyowl.spinygui.core.style.stylesheet.Property;
 import com.spinyowl.spinygui.core.style.stylesheet.extractor.ValueExtractor;
 import com.spinyowl.spinygui.core.style.stylesheet.extractor.ValueExtractors;
 import com.spinyowl.spinygui.core.style.stylesheet.property.border.width.BorderWidthProperty;
+import com.spinyowl.spinygui.core.style.types.Color;
+import com.spinyowl.spinygui.core.style.types.border.Border;
+import com.spinyowl.spinygui.core.style.types.border.BorderStyle;
 
 public class BorderProperty extends Property<Border> {
 
@@ -39,12 +38,24 @@ public class BorderProperty extends Property<Border> {
     if (values.length == 1) {
       return BorderStyle.contains(values[0]);
     } else if (values.length == 2) {
-      return BorderWidthProperty.testOne(values[0]) && BorderStyle.contains(values[1])
-          || BorderStyle.contains(values[0]) && colorValueExtractor.isValid(values[1]);
+      if (BorderStyle.contains(values[0])) {
+        return BorderWidthProperty.testOne(values[1]) || colorValueExtractor.isValid(values[1]);
+      } else if (BorderStyle.contains(values[1])) {
+        return BorderWidthProperty.testOne(values[0]) || colorValueExtractor.isValid(values[0]);
+      }
+      return false;
     } else {
-      return BorderWidthProperty.testOne(values[0])
-          && BorderStyle.contains(values[1])
-          && colorValueExtractor.isValid(values[2]);
+      if (BorderStyle.contains(values[0])) {
+        return BorderWidthProperty.testOne(values[1]) && colorValueExtractor.isValid(values[2])
+            || BorderWidthProperty.testOne(values[2]) && colorValueExtractor.isValid(values[1]);
+      } else if (BorderStyle.contains(values[1])) {
+        return BorderWidthProperty.testOne(values[0]) && colorValueExtractor.isValid(values[2])
+            || BorderWidthProperty.testOne(values[2]) && colorValueExtractor.isValid(values[0]);
+      } else if (BorderStyle.contains(values[2])) {
+        return BorderWidthProperty.testOne(values[1]) && colorValueExtractor.isValid(values[0])
+            || BorderWidthProperty.testOne(values[0]) && colorValueExtractor.isValid(values[1]);
+      }
+      return false;
     }
   }
 
@@ -65,15 +76,48 @@ public class BorderProperty extends Property<Border> {
     } else if (values.length == 2) {
       if (BorderStyle.contains(values[0])) {
         i.style(BorderStyle.find(values[0]));
-        i.color(colorValueExtractor.extract(values[1]));
+        if (colorValueExtractor.isValid(values[1])) {
+          i.color(colorValueExtractor.extract(values[1]));
+        } else {
+          i.width(BorderWidthProperty.extractOne(values[1]));
+        }
       } else if (BorderStyle.contains(values[1])) {
-        i.width(BorderWidthProperty.extractOne(values[0]));
         i.style(BorderStyle.find(values[1]));
+        if (colorValueExtractor.isValid(values[0])) {
+          i.color(colorValueExtractor.extract(values[0]));
+        } else {
+          i.width(BorderWidthProperty.extractOne(values[0]));
+        }
       }
     } else if (values.length == 3) {
-      i.width(BorderWidthProperty.extractOne(values[0]));
-      i.style(BorderStyle.find(values[1]));
-      i.color(colorValueExtractor.extract(values[2]));
+      if (BorderStyle.contains(values[0])) {
+        i.style(BorderStyle.find(values[0]));
+        if (colorValueExtractor.isValid(values[1])) {
+          i.color(colorValueExtractor.extract(values[1]));
+          i.width(BorderWidthProperty.extractOne(values[2]));
+        } else {
+          i.width(BorderWidthProperty.extractOne(values[1]));
+          i.color(colorValueExtractor.extract(values[2]));
+        }
+      } else if (BorderStyle.contains(values[1])) {
+        i.style(BorderStyle.find(values[1]));
+        if (colorValueExtractor.isValid(values[0])) {
+          i.color(colorValueExtractor.extract(values[0]));
+          i.width(BorderWidthProperty.extractOne(values[2]));
+        } else {
+          i.width(BorderWidthProperty.extractOne(values[0]));
+          i.color(colorValueExtractor.extract(values[2]));
+        }
+      } else if (BorderStyle.contains(values[2])) {
+        i.style(BorderStyle.find(values[2]));
+        if (colorValueExtractor.isValid(values[0])) {
+          i.color(colorValueExtractor.extract(values[0]));
+          i.width(BorderWidthProperty.extractOne(values[1]));
+        } else {
+          i.width(BorderWidthProperty.extractOne(values[0]));
+          i.color(colorValueExtractor.extract(values[1]));
+        }
+      }
     }
     return i;
   }

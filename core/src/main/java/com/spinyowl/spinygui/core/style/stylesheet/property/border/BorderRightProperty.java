@@ -1,7 +1,7 @@
 package com.spinyowl.spinygui.core.style.stylesheet.property.border;
 
 import static com.spinyowl.spinygui.core.style.stylesheet.Properties.BORDER_RIGHT;
-import com.spinyowl.spinygui.core.style.types.border.BorderItem;
+import com.spinyowl.spinygui.core.style.NodeStyle;
 import com.spinyowl.spinygui.core.style.stylesheet.Property;
 
 public class BorderRightProperty extends Property<BorderItem> {
@@ -12,9 +12,17 @@ public class BorderRightProperty extends Property<BorderItem> {
         BorderProperty.DEFAULT_VALUE,
         !INHERITED,
         ANIMATABLE,
-        (s, i) -> s.border().right(i),
-        s -> s.border().right(),
+        BorderRightProperty::setBorderRight,
+        BorderRightProperty::getBorderRight,
         BorderProperty::extract,
         BorderProperty::test);
+  }
+
+  private static void setBorderRight(NodeStyle s, BorderItem i) {
+    s.borderRightColor(i.color()).borderRightStyle(i.style()).borderRightWidth(i.width());
+  }
+
+  private static BorderItem getBorderRight(NodeStyle s) {
+    return new BorderItem(s.borderRightColor(), s.borderRightStyle(), s.borderRightWidth());
   }
 }

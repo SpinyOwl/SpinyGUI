@@ -2,6 +2,7 @@ package com.spinyowl.spinygui.core.style.stylesheet.property.border.color;
 
 import static com.spinyowl.spinygui.core.style.stylesheet.Properties.BORDER_TOP_COLOR;
 import static com.spinyowl.spinygui.core.style.stylesheet.property.border.color.BorderColorProperty.DEFAULT_VALUE;
+import com.spinyowl.spinygui.core.style.NodeStyle;
 import com.spinyowl.spinygui.core.style.types.Color;
 import com.spinyowl.spinygui.core.style.stylesheet.Property;
 import com.spinyowl.spinygui.core.style.stylesheet.extractor.ValueExtractor;
@@ -17,8 +18,8 @@ public class BorderTopColorProperty extends Property<Color> {
         DEFAULT_VALUE,
         !INHERITED,
         ANIMATABLE,
-        (s, c) -> s.border().top().color(c),
-        s -> s.border().top().color(),
+        NodeStyle::borderTopColor,
+        NodeStyle::borderTopColor,
         extractor::extract,
         extractor::isValid);
   }

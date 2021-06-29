@@ -16,6 +16,7 @@ import com.spinyowl.spinygui.core.style.types.WhiteSpace;
 import com.spinyowl.spinygui.core.style.types.background.BackgroundOrigin;
 import com.spinyowl.spinygui.core.style.types.background.BackgroundSize;
 import com.spinyowl.spinygui.core.style.types.border.Border;
+import com.spinyowl.spinygui.core.style.types.border.BorderStyle;
 import com.spinyowl.spinygui.core.style.types.flex.AlignContent;
 import com.spinyowl.spinygui.core.style.types.flex.AlignItems;
 import com.spinyowl.spinygui.core.style.types.flex.AlignSelf;
@@ -26,6 +27,7 @@ import com.spinyowl.spinygui.core.style.types.length.Length;
 import com.spinyowl.spinygui.core.style.types.length.Unit;
 import java.util.LinkedHashSet;
 import java.util.Set;
+import java.util.function.Consumer;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
@@ -79,6 +81,18 @@ public class NodeStyle {
   private BackgroundOrigin backgroundOrigin = BackgroundOrigin.PADDING_BOX;
 
   @NonNull private Border border = new Border();
+  @NonNull private Color borderTopColor = Color.TRANSPARENT;
+  @NonNull private BorderStyle borderTopStyle = BorderStyle.NONE;
+  @NonNull private Length<?> borderTopWidth = Length.ZERO;
+  @NonNull private Color borderRightColor = Color.TRANSPARENT;
+  @NonNull private BorderStyle borderRightStyle = BorderStyle.NONE;
+  @NonNull private Length<?> borderRightWidth = Length.ZERO;
+  @NonNull private Color borderBottomColor = Color.TRANSPARENT;
+  @NonNull private BorderStyle borderBottomStyle = BorderStyle.NONE;
+  @NonNull private Length<?> borderBottomWidth = Length.ZERO;
+  @NonNull private Color borderLeftColor = Color.TRANSPARENT;
+  @NonNull private BorderStyle borderLeftStyle = BorderStyle.NONE;
+  @NonNull private Length<?> borderLeftWidth = Length.ZERO;
 
   @NonNull private BorderRadius borderRadius = new BorderRadius();
 
@@ -135,43 +149,52 @@ public class NodeStyle {
   private int zIndex = 0;
   private float opacity = 1;
 
-  public NodeStyle margin(Unit... margin) {
-    switch (margin.length) {
-      case 0:
-        break;
-      case 1:
-        {
-          marginTop = marginRight = marginBottom = marginLeft = margin[0];
-          break;
-        }
-      case 2:
-        {
-          marginTop = marginBottom = margin[0];
-          marginRight = marginLeft = margin[1];
-          break;
-        }
-      case 3:
-        {
-          marginTop = margin[0];
-          marginRight = marginLeft = margin[1];
-          marginBottom = margin[2];
-          break;
-        }
-      case 4:
-      default:
-        {
-          marginTop = margin[0];
-          marginRight = margin[1];
-          marginBottom = margin[2];
-          marginLeft = margin[3];
-          break;
-        }
-    }
-    return this;
-  }
-
   public Unit[] margin() {
     return new Unit[] {marginTop, marginRight, marginBottom, marginLeft};
+  }
+
+  public NodeStyle margin(Unit... margin) {
+    return setOneFourArray(
+        margin, this::marginTop, this::marginRight, this::marginBottom, this::marginLeft);
+  }
+
+  public Color[] borderColor() {
+    return new Color[] {borderTopColor, borderRightColor, borderBottomColor, borderLeftColor};
+  }
+
+  public NodeStyle borderColor(Color[] colors) {
+    return setOneFourArray(
+        colors,
+        this::borderTopColor,
+        this::borderRightColor,
+        this::borderBottomColor,
+        this::borderLeftColor);
+  }
+
+  public BorderStyle[] borderStyle() {
+    return new BorderStyle[] {borderTopStyle, borderRightStyle, borderBottomStyle, borderLeftStyle};
+  }
+
+  public NodeStyle borderStyle(BorderStyle[] styles) {
+    return setOneFourArray(
+        styles,
+        this::borderTopStyle,
+        this::borderRightStyle,
+        this::borderBottomStyle,
+        this::borderLeftStyle);
+  }
+
+  public Length[] borderWidth() {
+    return new Length[] {borderTopWidth, borderRightWidth, borderBottomWidth, borderLeftWidth};
+  }
+
+  public NodeStyle borderWidth(Length[] widths) {
+    return setOneFourArray(
+        widths,
+        this::borderTopWidth,
+        this::borderRightWidth,
+        this::borderBottomWidth,
+        this::borderLeftWidth);
   }
 
   public NodeStyle flex(int flexGrow, int flexShrink, Unit flexBasis) {
@@ -184,6 +207,51 @@ public class NodeStyle {
   public NodeStyle flexFlow(FlexDirection flexDirection, FlexWrap flexWrap) {
     flexDirection(flexDirection);
     flexWrap(flexWrap);
+    return this;
+  }
+
+  private <T> NodeStyle setOneFourArray(
+      @NonNull T[] values,
+      @NonNull Consumer<T> topSetter,
+      @NonNull Consumer<T> rightSetter,
+      @NonNull Consumer<T> bottomSetter,
+      @NonNull Consumer<T> leftSetter) {
+    switch (values.length) {
+      case 0:
+        break;
+      case 1:
+        {
+          topSetter.accept(values[0]);
+          rightSetter.accept(values[0]);
+          bottomSetter.accept(values[0]);
+          leftSetter.accept(values[0]);
+          break;
+        }
+      case 2:
+        {
+          topSetter.accept(values[0]);
+          rightSetter.accept(values[1]);
+          bottomSetter.accept(values[0]);
+          leftSetter.accept(values[1]);
+          break;
+        }
+      case 3:
+        {
+          topSetter.accept(values[0]);
+          rightSetter.accept(values[1]);
+          bottomSetter.accept(values[2]);
+          leftSetter.accept(values[1]);
+          break;
+        }
+      case 4:
+      default:
+        {
+          topSetter.accept(values[0]);
+          rightSetter.accept(values[1]);
+          bottomSetter.accept(values[2]);
+          leftSetter.accept(values[3]);
+        }
+    }
     return this;
   }
 }
