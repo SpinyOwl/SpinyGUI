@@ -151,8 +151,8 @@ public class NodeStyle {
     return new Unit[] {marginTop, marginRight, marginBottom, marginLeft};
   }
 
-  public NodeStyle margin(Unit... margin) {
-    return setOneFourArray(
+  public void margin(Unit... margin) {
+    setOneFourArray(
         margin, this::marginTop, this::marginRight, this::marginBottom, this::marginLeft);
   }
 
@@ -160,8 +160,8 @@ public class NodeStyle {
     return new Color[] {borderTopColor, borderRightColor, borderBottomColor, borderLeftColor};
   }
 
-  public NodeStyle borderColor(Color[] colors) {
-    return setOneFourArray(
+  public void borderColor(Color... colors) {
+    setOneFourArray(
         colors,
         this::borderTopColor,
         this::borderRightColor,
@@ -173,8 +173,8 @@ public class NodeStyle {
     return new BorderStyle[] {borderTopStyle, borderRightStyle, borderBottomStyle, borderLeftStyle};
   }
 
-  public NodeStyle borderStyle(BorderStyle[] styles) {
-    return setOneFourArray(
+  public void borderStyle(BorderStyle[] styles) {
+    setOneFourArray(
         styles,
         this::borderTopStyle,
         this::borderRightStyle,
@@ -186,8 +186,8 @@ public class NodeStyle {
     return new Length[] {borderTopWidth, borderRightWidth, borderBottomWidth, borderLeftWidth};
   }
 
-  public NodeStyle borderWidth(Length[] widths) {
-    return setOneFourArray(
+  public void borderWidth(Length... widths) {
+    setOneFourArray(
         widths,
         this::borderTopWidth,
         this::borderRightWidth,
@@ -195,20 +195,18 @@ public class NodeStyle {
         this::borderLeftWidth);
   }
 
-  public NodeStyle flex(int flexGrow, int flexShrink, Unit flexBasis) {
+  public void flex(int flexGrow, int flexShrink, Unit flexBasis) {
     flexGrow(flexGrow);
     flexShrink(flexShrink);
     flexBasis(flexBasis);
-    return this;
   }
 
-  public NodeStyle flexFlow(FlexDirection flexDirection, FlexWrap flexWrap) {
+  public void flexFlow(FlexDirection flexDirection, FlexWrap flexWrap) {
     flexDirection(flexDirection);
     flexWrap(flexWrap);
-    return this;
   }
 
-  private <T> NodeStyle setOneFourArray(
+  private static <T> void setOneFourArray(
       @NonNull T[] values,
       @NonNull Consumer<T> topSetter,
       @NonNull Consumer<T> rightSetter,
@@ -250,6 +248,5 @@ public class NodeStyle {
           leftSetter.accept(values[3]);
         }
     }
-    return this;
   }
 }

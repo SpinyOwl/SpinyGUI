@@ -19,7 +19,9 @@ public class BorderLeftProperty extends Property<BorderItem> {
   }
 
   private static void setBorderLeft(NodeStyle s, BorderItem i) {
-    s.borderLeftColor(i.color()).borderLeftStyle(i.style()).borderLeftWidth(i.width());
+    s.borderLeftColor(i.color());
+    s.borderLeftStyle(i.style());
+    s.borderLeftWidth(i.width());
   }
 
   private static BorderItem getBorderLeft(NodeStyle s) {

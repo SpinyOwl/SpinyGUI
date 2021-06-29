@@ -19,7 +19,9 @@ public class BorderBottomProperty extends Property<BorderItem> {
   }
 
   private static void setBorderBottom(NodeStyle s, BorderItem i) {
-    s.borderBottomColor(i.color()).borderBottomStyle(i.style()).borderBottomWidth(i.width());
+    s.borderBottomColor(i.color());
+    s.borderBottomStyle(i.style());
+    s.borderBottomWidth(i.width());
   }
 
   private static BorderItem getBorderBottom(NodeStyle s) {
