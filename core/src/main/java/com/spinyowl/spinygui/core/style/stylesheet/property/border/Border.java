@@ -1,7 +1,8 @@
-package com.spinyowl.spinygui.core.style.types.border;
+package com.spinyowl.spinygui.core.style.stylesheet.property.border;
 
 import com.spinyowl.spinygui.core.style.types.Color;
 import com.spinyowl.spinygui.core.style.types.SideStyle;
+import com.spinyowl.spinygui.core.style.types.border.BorderStyle;
 import com.spinyowl.spinygui.core.style.types.length.Length;
 
 public class Border extends SideStyle<BorderItem> {

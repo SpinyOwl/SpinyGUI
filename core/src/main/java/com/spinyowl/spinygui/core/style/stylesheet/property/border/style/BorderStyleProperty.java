@@ -3,13 +3,14 @@ package com.spinyowl.spinygui.core.style.stylesheet.property.border.style;
 import static com.spinyowl.spinygui.core.style.stylesheet.Properties.BORDER_STYLE;
 import static com.spinyowl.spinygui.core.style.stylesheet.util.StyleUtils.testMultipleValues;
 import com.spinyowl.spinygui.core.style.NodeStyle;
-import com.spinyowl.spinygui.core.style.types.border.Border;
-import com.spinyowl.spinygui.core.style.types.border.BorderStyle;
 import com.spinyowl.spinygui.core.style.stylesheet.Property;
+import com.spinyowl.spinygui.core.style.types.border.BorderStyle;
+import java.util.Arrays;
 
-public class BorderStyleProperty extends Property<Border> {
+public class BorderStyleProperty extends Property<BorderStyle[]> {
 
   public static final String DEFAULT_VALUE = "solid";
+  public static final String SPACE_REGEX = "\\s+";
 
   public BorderStyleProperty() {
     super(
@@ -17,32 +18,19 @@ public class BorderStyleProperty extends Property<Border> {
         DEFAULT_VALUE,
         !INHERITED,
         ANIMATABLE,
-        (s, b) -> s.border().style(b),
-        NodeStyle::border,
+        NodeStyle::borderStyle,
+        NodeStyle::borderStyle,
         BorderStyleProperty::extract,
         BorderStyleProperty::test);
   }
 
-  private static Border extract(String value) {
-    String[] v = value.split("\\s+");
-    var border = new Border();
-    if (v.length == 1) {
-      border.style(x(v[0]));
-    } else if (v.length == 2) {
-      border.style(x(v[0]), x(v[1]));
-    } else if (v.length == 3) {
-      border.style(x(v[0]), x(v[1]), x(v[2]));
-    } else if (v.length == 4) {
-      border.style(x(v[0]), x(v[1]), x(v[2]), x(v[3]));
-    }
-    return border;
-  }
-
-  private static BorderStyle x(String v) {
-    return BorderStyle.create(v);
+  private static BorderStyle[] extract(String value) {
+    return Arrays.stream(value.split(SPACE_REGEX))
+        .map(BorderStyle::create)
+        .toArray(BorderStyle[]::new);
   }
 
   private static boolean test(String value) {
-    return testMultipleValues(value, "\\s+", 1, 4, BorderStyle::contains);
+    return testMultipleValues(value, SPACE_REGEX, 1, 4, BorderStyle::contains);
   }
 }

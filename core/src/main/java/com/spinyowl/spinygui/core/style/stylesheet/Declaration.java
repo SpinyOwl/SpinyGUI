@@ -21,6 +21,9 @@ public class Declaration<T> {
   /** Current value of css property. Could not be null. */
   @NonNull protected String value;
 
+  // TODO: Need to store extracted value to not apply extraction each time. Should be refreshed if
+  //       string value changed.
+
   /** Used to reset property value to default. */
   public void resetToDefault() {
     this.value = property.defaultValue();

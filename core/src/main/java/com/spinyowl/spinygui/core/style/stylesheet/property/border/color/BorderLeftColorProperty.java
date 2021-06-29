@@ -2,6 +2,7 @@ package com.spinyowl.spinygui.core.style.stylesheet.property.border.color;
 
 import static com.spinyowl.spinygui.core.style.stylesheet.Properties.BORDER_LEFT_COLOR;
 import static com.spinyowl.spinygui.core.style.stylesheet.property.border.color.BorderColorProperty.DEFAULT_VALUE;
+import com.spinyowl.spinygui.core.style.NodeStyle;
 import com.spinyowl.spinygui.core.style.types.Color;
 import com.spinyowl.spinygui.core.style.stylesheet.Property;
 import com.spinyowl.spinygui.core.style.stylesheet.extractor.ValueExtractor;
@@ -17,8 +18,8 @@ public class BorderLeftColorProperty extends Property<Color> {
         DEFAULT_VALUE,
         !INHERITED,
         ANIMATABLE,
-        (s, c) -> s.border().left().color(c),
-        s -> s.border().left().color(),
+        NodeStyle::borderLeftColor,
+        NodeStyle::borderLeftColor,
         extractor::extract,
         extractor::isValid);
   }
