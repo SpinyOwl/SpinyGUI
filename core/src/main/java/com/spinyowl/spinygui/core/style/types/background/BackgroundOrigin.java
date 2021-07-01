@@ -4,13 +4,14 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import lombok.ToString;
+import lombok.RequiredArgsConstructor;
 
 @Getter
 @EqualsAndHashCode
-@ToString
+@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public class BackgroundOrigin {
 
   private static final Map<String, BackgroundOrigin> VALUES = new ConcurrentHashMap<>();
@@ -26,15 +27,6 @@ public class BackgroundOrigin {
 
   /** Name of position type (should be same as in css specification) */
   private final String name;
-
-  /**
-   * Creates {@link BackgroundOrigin} element with specified name.
-   *
-   * @param name name of {@link BackgroundOrigin} type (should be same as in css specification)
-   */
-  private BackgroundOrigin(String name) {
-    this.name = name;
-  }
 
   /**
    * Used to create new {@link BackgroundOrigin} element with specified name. Note that name will be
@@ -82,5 +74,10 @@ public class BackgroundOrigin {
       return false;
     }
     return values().stream().map(BackgroundOrigin::name).anyMatch(v -> v.equalsIgnoreCase(name));
+  }
+
+  @Override
+  public String toString() {
+    return name;
   }
 }

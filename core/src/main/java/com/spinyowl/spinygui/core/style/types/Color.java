@@ -85,7 +85,7 @@ public class Color {
 
   /**
    * Allowed to parse hex strings in RGB/RGBA/RRGGBB/RRGGBBAA format.
-   *
+   * <p>
    * Example
    *
    * @param value hex value
@@ -109,10 +109,10 @@ public class Color {
   /**
    * Convert HSL values to a RGB Color.
    *
-   * @param hue Hue is specified as degrees in the range 0 - 360.
+   * @param hue        Hue is specified as degrees in the range 0 - 360.
    * @param saturation Saturation is specified as a percentage in the range 1 - 100.
-   * @param lightness lightness is specified as a percentage in the range 1 - 100.
-   * @param alpha the alpha value between 0 - 1
+   * @param lightness  lightness is specified as a percentage in the range 1 - 100.
+   * @param alpha      the alpha value between 0 - 1
    * @return the Color object.
    */
   public static Color hslToColor(int hue, int saturation, int lightness, float alpha) {
@@ -167,5 +167,10 @@ public class Color {
 
   public static boolean exists(String colorName) {
     return colors.containsKey(colorName.toLowerCase());
+  }
+
+  @Override
+  public String toString() {
+    return "rgba(" + r + ", " + g + ", " + b + ", " + a + ")";
   }
 }

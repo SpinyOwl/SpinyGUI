@@ -19,7 +19,7 @@ public final class FlexUtils {
       ObjIntConsumer<Long> pixelConsumer,
       BiConsumer<Long, Float> percentConsumer) {
     if (l != null) {
-      if (PIXEL.equals(l.type()) || Length.ZERO.equals(l)) {
+      if (PIXEL.equals(l.type())) {
         pixelConsumer.accept(node, (Integer) l.value());
       } else if (PERCENT.equals(l.type())) {
         percentConsumer.accept(node, (Float) l.value());
@@ -34,7 +34,7 @@ public final class FlexUtils {
       TriConsumer<Long, Integer, Integer> pixelConsumer,
       TriConsumer<Long, Integer, Float> percentConsumer) {
     if (l != null) {
-      if (PIXEL.equals(l.type()) || Length.ZERO.equals(l)) {
+      if (PIXEL.equals(l.type())) {
         pixelConsumer.accept(node, side, (Integer) l.value());
       } else if (PERCENT.equals(l.type())) {
         percentConsumer.accept(node, side, (Float) l.value());
@@ -64,7 +64,7 @@ public final class FlexUtils {
         autoConsumer.accept(node);
       } else {
         Length<?> l = unit.asLength();
-        if (PIXEL.equals(l.type()) || Length.ZERO.equals(l)) {
+        if (PIXEL.equals(l.type())) {
           pixelConsumer.accept(node, (Integer) l.value());
         } else if (PERCENT.equals(l.type())) {
           percentConsumer.accept(node, (Float) l.value());
@@ -80,7 +80,7 @@ public final class FlexUtils {
       TriConsumer<Long, Integer, Integer> pixelConsumer,
       TriConsumer<Long, Integer, Float> percentConsumer) {
     Length<?> l = unit.asLength();
-    if (PIXEL.equals(l.type()) || Length.ZERO.equals(l)) {
+    if (PIXEL.equals(l.type())) {
       pixelConsumer.accept(node, side, (Integer) l.value());
     } else if (PERCENT.equals(l.type())) {
       percentConsumer.accept(node, side, (Float) l.value());

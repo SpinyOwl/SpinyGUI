@@ -172,7 +172,7 @@ public class FlexLayout implements Layout {
    * @param node root yoga node.
    */
   private void prepareNode(Element component, long node) {
-    NodeStyle style = component.style();
+    NodeStyle style = component.calculatedStyle();
     setFlexDirection(node, style.flexDirection());
     setJustifyContent(node, style.justifyContent());
     setAlignItems(node, style.alignItems());

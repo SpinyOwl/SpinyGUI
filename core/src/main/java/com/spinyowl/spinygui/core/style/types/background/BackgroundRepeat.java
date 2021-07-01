@@ -42,4 +42,9 @@ public class BackgroundRepeat {
     SPACE,
     ROUND
   }
+
+  @Override
+  public String toString() {
+    return repeatX.name().toLowerCase() + " " + repeatY.name().toLowerCase();
+  }
 }

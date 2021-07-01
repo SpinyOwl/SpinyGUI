@@ -8,11 +8,9 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-import lombok.ToString;
 
 /** Specifies whether the flexible items should wrap or not. */
 @Getter
-@ToString
 @EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public final class FlexWrap {
@@ -60,5 +58,9 @@ public final class FlexWrap {
    */
   public static boolean contains(@NonNull String name) {
     return values().stream().map(FlexWrap::name).anyMatch(v -> v.equalsIgnoreCase(name));
+  }
+  @Override
+  public String toString() {
+    return name;
   }
 }

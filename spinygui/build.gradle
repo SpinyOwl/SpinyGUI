@@ -8,8 +8,5 @@ dependencies {
     api project(':core.backend')
     api project(':core.backend.lwjgl.nanovg')
 
-    api project(':core.parser')
-    api project(':core.parser.impl')
-
     api group: 'com.spinyowl', name: 'cbchain', version: '1.0.0';
 }

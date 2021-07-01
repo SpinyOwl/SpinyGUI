@@ -29,4 +29,9 @@ public class AdjacentSiblingSelector extends CombinatorSelector {
     var previous = element.previousElementSibling();
     return previous != null && first.test(previous);
   }
+
+  @Override
+  public String toString() {
+    return first + " + " + second;
+  }
 }

@@ -22,7 +22,7 @@ import lombok.extern.slf4j.Slf4j;
 @Getter
 @Builder
 @RequiredArgsConstructor(access = AccessLevel.PROTECTED)
-public class Property<T> {
+public class  Property<T> {
 
   public static final String INHERIT = "inherit";
   public static final String INITIAL = "initial";
@@ -79,7 +79,6 @@ public class Property<T> {
    * @param value string representation of css property value.
    */
   public final void computeAndApply(Element element, String value) {
-    valueSetter.accept(element.calculatedStyle(), compute(element, value));
   }
 
   /**

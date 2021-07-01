@@ -8,11 +8,9 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-import lombok.ToString;
 
 /** Specifies the alignment for selected items inside a flexible container. */
 @Getter
-@ToString
 @EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public final class AlignSelf {
@@ -69,5 +67,9 @@ public final class AlignSelf {
    */
   public static boolean contains(@NonNull String name) {
     return values().stream().map(AlignSelf::name).anyMatch(v -> v.equalsIgnoreCase(name));
+  }
+  @Override
+  public String toString() {
+    return name;
   }
 }

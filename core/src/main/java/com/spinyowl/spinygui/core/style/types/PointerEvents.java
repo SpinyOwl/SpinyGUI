@@ -76,4 +76,8 @@ public class PointerEvents {
     }
     return values().stream().map(PointerEvents::name).anyMatch(v -> v.equalsIgnoreCase(name));
   }
+  @Override
+  public String toString() {
+    return name;
+  }
 }

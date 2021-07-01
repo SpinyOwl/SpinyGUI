@@ -8,11 +8,9 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-import lombok.ToString;
 
 /** Specifies the direction of the flexible items */
 @Getter
-@ToString
 @EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public final class FlexDirection {
@@ -63,5 +61,9 @@ public final class FlexDirection {
    */
   public static boolean contains(@NonNull String name) {
     return values().stream().map(FlexDirection::name).anyMatch(v -> v.equalsIgnoreCase(name));
+  }
+  @Override
+  public String toString() {
+    return name;
   }
 }

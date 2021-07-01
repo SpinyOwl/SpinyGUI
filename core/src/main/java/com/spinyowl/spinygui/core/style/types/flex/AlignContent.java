@@ -8,14 +8,12 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-import lombok.ToString;
 
 /**
  * Specifies the alignment between the lines inside a flexible container when the items do not use
  * all available space.
  */
 @Getter
-@ToString
 @EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public final class AlignContent {
@@ -69,5 +67,9 @@ public final class AlignContent {
    */
   public static boolean contains(@NonNull String name) {
     return values().stream().map(AlignContent::name).anyMatch(v -> v.equalsIgnoreCase(name));
+  }
+  @Override
+  public String toString() {
+    return name;
   }
 }

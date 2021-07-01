@@ -2,16 +2,15 @@ package com.spinyowl.spinygui.core.style.types.length;
 
 import static com.spinyowl.spinygui.core.style.types.length.LengthType.PERCENT;
 import static com.spinyowl.spinygui.core.style.types.length.LengthType.PIXEL;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 
 @Data
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class Length<T extends Number> implements Unit {
 
-  public static final Length<Integer> ZERO =
-      new Length<>(0, LengthType.of("0", Integer.class, (v, l) -> 0));
+  public static final Length<Integer> ZERO = pixel(0);
 
   @NonNull private final T value;
   @NonNull private final LengthType<T> type;
@@ -45,6 +44,6 @@ public class Length<T extends Number> implements Unit {
 
   @Override
   public String toString() {
-    return value + " " + type;
+    return value + "" + type;
   }
 }

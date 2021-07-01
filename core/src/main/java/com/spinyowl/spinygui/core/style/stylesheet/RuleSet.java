@@ -5,6 +5,7 @@ import com.spinyowl.spinygui.core.style.stylesheet.selector.Selector;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.StringJoiner;
 import java.util.stream.Collectors;
 import lombok.Data;
 import lombok.NonNull;
@@ -69,5 +70,19 @@ public class RuleSet {
     }
 
     elementTree.children().forEach(c -> inspectElementTree(c, elements));
+  }
+
+  @Override
+  public String toString() {
+    var selectorsJoiner = new StringJoiner(", ", "", " ");
+    for (Selector selector : selectors) {
+      selectorsJoiner.add(selector.toString());
+    }
+    var declarationsJoiner = new StringJoiner(";\n", "", ";");
+    for (Declaration<?> declaration : declarations) {
+      declarationsJoiner.add("  " + declaration.toString());
+    }
+
+    return selectorsJoiner + "{\n" + declarationsJoiner + "\n}";
   }
 }

@@ -21,4 +21,9 @@ public class ChildSelector extends CombinatorSelector {
   public boolean test(Element t) {
     return t.parent() != null && second.test(t) && first.test(t.parent());
   }
+
+  @Override
+  public String toString() {
+    return first + " > " + second;
+  }
 }

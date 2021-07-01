@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
+import java.util.StringJoiner;
 import java.util.stream.Collectors;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -56,5 +57,15 @@ public class StyleSheet {
         .filter(Objects::nonNull)
         .sorted(Comparator.comparing(r -> r.specificity(element)))
         .collect(Collectors.toList());
+  }
+
+  @Override
+  public String toString() {
+    var rulesetJoiner = new StringJoiner("\n\n");
+    for (RuleSet ruleSet : ruleSets) {
+      rulesetJoiner.add(ruleSet.toString());
+    }
+
+    return rulesetJoiner.toString();
   }
 }

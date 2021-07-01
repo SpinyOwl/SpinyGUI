@@ -2,9 +2,9 @@ package com.spinyowl.spinygui.core.style.stylesheet;
 
 import static com.spinyowl.spinygui.core.style.stylesheet.Property.INHERIT;
 import static com.spinyowl.spinygui.core.style.stylesheet.Property.INITIAL;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 
 /**
  * Declaration is combination of property and it's value.
@@ -12,7 +12,7 @@ import lombok.NonNull;
  * @param <T> type of property value.
  */
 @Data
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class Declaration<T> {
 
   /** Property definition. */
@@ -20,6 +20,8 @@ public class Declaration<T> {
 
   /** Current value of css property. Could not be null. */
   @NonNull protected String value;
+
+  private boolean enabled = true;
 
   // TODO: Need to store extracted value to not apply extraction each time. Should be refreshed if
   //       string value changed.
@@ -35,5 +37,10 @@ public class Declaration<T> {
 
   public boolean isInherit() {
     return INHERIT.equalsIgnoreCase(value);
+  }
+
+  @Override
+  public String toString() {
+    return property.name() + ": " + value;
   }
 }

@@ -12,6 +12,7 @@ dependencies {
     api group: 'org.apache.commons', name: 'commons-lang3', version: commons_lang_version
 
     api group: 'org.joml', name: 'joml', version: joml_version
+    api group: 'org.antlr', name: 'antlr4-runtime', version: antlr4_version
 
     api group: 'io.github.classgraph', name: 'classgraph', version: classgraph_version
 

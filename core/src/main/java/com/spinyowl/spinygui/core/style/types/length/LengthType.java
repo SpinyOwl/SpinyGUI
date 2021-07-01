@@ -10,9 +10,9 @@ import lombok.NonNull;
 public final class LengthType<T extends Number> {
 
   public static final LengthType<Integer> PIXEL =
-      of("PIXEL", Integer.class, (length, baseValue) -> length.value());
+      of("px", Integer.class, (length, baseValue) -> length.value());
   public static final LengthType<Float> PERCENT =
-      of("PERCENT", Float.class, (length, baseValue) -> (int) (length.value() * baseValue));
+      of("%", Float.class, (length, baseValue) -> (int) (length.value() * baseValue));
 
   @NonNull private final String name;
   @NonNull private Class<T> type;
@@ -30,6 +30,6 @@ public final class LengthType<T extends Number> {
 
   @Override
   public String toString() {
-    return name + "(" + type.getSimpleName() + ")";
+    return name;
   }
 }

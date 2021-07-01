@@ -20,4 +20,8 @@ public class ElementSelector implements Selector {
   public Specificity specificity() {
     return Specificity.of(0, 0, 1);
   }
+  @Override
+  public String toString() {
+    return nodeName;
+  }
 }

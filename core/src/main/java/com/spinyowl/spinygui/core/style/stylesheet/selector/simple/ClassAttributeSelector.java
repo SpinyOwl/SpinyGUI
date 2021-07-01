@@ -31,4 +31,9 @@ public class ClassAttributeSelector implements Selector {
   public Specificity specificity() {
     return Specificity.of(0, 1, 0);
   }
+
+  @Override
+  public String toString() {
+    return "." + className;
+  }
 }

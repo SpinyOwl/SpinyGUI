@@ -77,4 +77,8 @@ public class HorizontalAlign {
     }
     return values().stream().map(HorizontalAlign::name).anyMatch(v -> v.equalsIgnoreCase(name));
   }
+  @Override
+  public String toString() {
+    return name;
+  }
 }

@@ -96,4 +96,9 @@ public final class WhiteSpace {
     }
     return values().stream().map(WhiteSpace::name).anyMatch(v -> v.equalsIgnoreCase(name));
   }
+
+  @Override
+  public String toString() {
+    return name;
+  }
 }

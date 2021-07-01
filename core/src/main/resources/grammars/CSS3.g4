@@ -468,7 +468,7 @@ fragment Nmchar
     | Escape
     ;
 
-// CSS2.2 Grammar defines the following, but I'm not sure how to add them to parser for error handling
+// CSS2.2 Grammar defines the following, but I'm not sure how to add them to com.spinyowl.spinygui.core.com.spinyowl.spinygui.core.parser for error handling
 // BadString :
 // BadUri :
 // BadComment :

@@ -78,4 +78,8 @@ public final class Display {
     }
     return values().stream().map(Display::name).anyMatch(v -> v.equalsIgnoreCase(name));
   }
+  @Override
+  public String toString() {
+    return name;
+  }
 }

@@ -6,4 +6,5 @@ import com.spinyowl.spinygui.core.style.stylesheet.StyleSheet;
 public interface StyleSheetParser {
 
   StyleSheet fromCss(String css);
+  String toCss(StyleSheet styleSheet);
 }

@@ -11,4 +11,9 @@ public class HoverSelector implements PseudoClassSelector {
   public boolean test(Element element) {
     return element.hovered();
   }
+
+  @Override
+  public String toString() {
+    return ":hover";
+  }
 }

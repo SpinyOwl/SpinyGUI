@@ -18,6 +18,7 @@ import javax.xml.transform.OutputKeys;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
+import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
@@ -42,7 +43,7 @@ public final class DefaultNodeParser implements NodeParser {
    * @param node node to convert.
    * @return string with xml representation of provided node.
    */
-  public String toXml(Node node) {
+  public String toXml(@NonNull Node node) {
     return toXml(node, true);
   }
 
@@ -52,13 +53,13 @@ public final class DefaultNodeParser implements NodeParser {
    * @param node node to convert.
    * @return string with xml representation of provided node.
    */
-  public String toXml(Node node, boolean pretty) {
+  public String toXml(@NonNull Node node, boolean pretty) {
     return convertToXml(node, pretty);
   }
 
-  public Node fromXml(String xml) {
+  public Node fromXml(@NonNull String xml) {
     try {
-      if (xml == null || xml.isEmpty()) {
+      if (xml.isEmpty()) {
         return null;
       }
 

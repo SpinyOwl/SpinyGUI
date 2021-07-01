@@ -14,4 +14,9 @@ public class AndSelector extends CombinatorSelector {
   public boolean test(Element element) {
     return first.test(element) && second.test(element);
   }
+
+  @Override
+  public String toString() {
+    return "" + first + second;
+  }
 }

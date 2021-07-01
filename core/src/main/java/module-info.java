@@ -9,7 +9,9 @@ open module com.spinyowl.spinygui.core {
   requires transitive org.slf4j;
   requires transitive ch.qos.logback.core;
   requires transitive ch.qos.logback.classic;
+  requires transitive java.xml;
   requires com.google.common;
+  requires org.antlr.antlr4.runtime;
   requires org.apache.commons.lang3;
 
   exports com.spinyowl.spinygui.core.animation;
@@ -27,6 +29,10 @@ open module com.spinyowl.spinygui.core {
   exports com.spinyowl.spinygui.core.input;
   exports com.spinyowl.spinygui.core.layout;
   exports com.spinyowl.spinygui.core.layout.impl;
+  exports com.spinyowl.spinygui.core.parser;
+  exports com.spinyowl.spinygui.core.parser.impl;
+  exports com.spinyowl.spinygui.core.parser.impl.css.parser.antlr;
+  exports com.spinyowl.spinygui.core.parser.impl.css.parser.visitor;
   exports com.spinyowl.spinygui.core.style.stylesheet;
   exports com.spinyowl.spinygui.core.style.stylesheet.atrule;
   exports com.spinyowl.spinygui.core.style.stylesheet.extractor;

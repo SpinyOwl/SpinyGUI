@@ -1,7 +1,5 @@
 package com.spinyowl.spinygui.core.style.stylesheet.util;
 
-import static com.spinyowl.spinygui.core.style.types.length.LengthType.PERCENT;
-import static com.spinyowl.spinygui.core.style.types.length.LengthType.PIXEL;
 import com.spinyowl.spinygui.core.node.Element;
 import com.spinyowl.spinygui.core.style.NodeStyle;
 import com.spinyowl.spinygui.core.style.types.length.Length;
@@ -64,11 +62,7 @@ public final class StyleUtils {
     else if (length.isAuto()) return baseWidth;
     else if (length.isLength()) {
       var l = length.asLength();
-      if (PIXEL.equals(l.type())) {
-        return PIXEL.type().cast(l.value()).floatValue();
-      } else if (PERCENT.equals(l.type())) {
-        return PERCENT.type().cast(l.value()) * baseWidth / 100f;
-      }
+      return (float) l.convert(baseWidth);
     }
     return null;
   }
