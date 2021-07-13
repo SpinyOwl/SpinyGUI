@@ -8,15 +8,14 @@ import java.util.List;
 import java.util.Objects;
 import java.util.StringJoiner;
 import java.util.stream.Collectors;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import lombok.Data;
+import lombok.NonNull;
 
-@Getter
-@RequiredArgsConstructor
+@Data
 public class StyleSheet {
 
-  private final List<RuleSet> ruleSets;
-  private final List<AtRule> atRules;
+  @NonNull private List<RuleSet> ruleSets;
+  @NonNull private List<AtRule> atRules;
 
   /**
    * Used to search rules in stylesheet that are correspond to specified element.
@@ -38,11 +37,10 @@ public class StyleSheet {
   }
 
   /**
-   * Used to search rules in stylesheet that are correspond to specified element and filter out less
-   * specific selectors from result. Sorted by specificity.
+   * Used to get rules in stylesheet that correspond to specified element sorted by specificity.
    *
    * @param element element to search rules.
-   * @return set of rules that are correspond to specified element.
+   * @return set of rules that correspond to specified element.
    */
   public List<RuleSet> searchSpecificRules(Element element) {
     Objects.requireNonNull(element);

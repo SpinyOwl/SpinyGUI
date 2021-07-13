@@ -7,6 +7,11 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor(staticName = "of")
 public class Specificity implements Comparable<Specificity> {
 
+  public static final Specificity ZERO = Specificity.of(0, 0, 0);
+  public static final Specificity ID = Specificity.of(1, 0, 0);
+  public static final Specificity CLASS = Specificity.of(0, 1, 0);
+  public static final Specificity TYPE = Specificity.of(0, 0, 1);
+
   private final int idSpecificity;
   private final int classSpecificity;
   private final int typeSpecificity;

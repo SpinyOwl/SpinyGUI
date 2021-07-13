@@ -8,6 +8,7 @@ import com.spinyowl.spinygui.core.style.stylesheet.Property;
 public class BackgroundImageProperty extends Property<String> {
 
   public static final String NONE = "none";
+  public static final String EMPTY_STRING = "";
 
   public BackgroundImageProperty() {
     super(
@@ -40,15 +41,15 @@ public class BackgroundImageProperty extends Property<String> {
   private static boolean escaped(String cut, String escapeString) {
     return cut.startsWith(escapeString)
         && cut.endsWith(escapeString)
-        && cut.replace(escapeString, "").length() == cut.length() - 2;
+        && cut.replace(escapeString, EMPTY_STRING).length() == cut.length() - 2;
   }
 
   private static String extractUrl(String value) {
     if (NONE.equals(value)) {
-      return null;
+      return EMPTY_STRING;
     }
     String trimmed = value.trim();
     trimmed = trimmed.substring(4, trimmed.length() - 1); // removed 'url(' and ')'
-    return trimmed.replace("\"", "").replace("'", "");
+    return trimmed.replace("\"", EMPTY_STRING).replace("'", EMPTY_STRING);
   }
 }

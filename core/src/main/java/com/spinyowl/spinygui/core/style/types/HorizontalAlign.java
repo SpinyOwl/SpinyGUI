@@ -10,7 +10,6 @@ import lombok.ToString;
 
 @Getter
 @EqualsAndHashCode
-@ToString
 public class HorizontalAlign {
 
   /** Stores all existing dictionary values. */

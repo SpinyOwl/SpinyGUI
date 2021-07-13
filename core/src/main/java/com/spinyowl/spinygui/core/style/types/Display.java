@@ -11,7 +11,6 @@ import lombok.ToString;
 /** CSS display. Currently supports */
 @Getter
 @EqualsAndHashCode
-@ToString
 public final class Display {
 
   private static final Map<String, Display> VALUES = new ConcurrentHashMap<>();

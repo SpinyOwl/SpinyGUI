@@ -17,8 +17,8 @@ import lombok.NonNull;
 @Data
 public class RuleSet {
 
-  private final @NonNull List<Selector> selectors;
-  private final @NonNull List<Declaration<?>> declarations;
+  @NonNull private List<Selector> selectors;
+  @NonNull private List<Declaration<?>> declarations;
 
   /**
    * Used to check if any selector could be used to reach provided element.

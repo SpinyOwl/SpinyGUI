@@ -11,7 +11,6 @@ import lombok.ToString;
 /** CSS white-space. */
 @Getter
 @EqualsAndHashCode
-@ToString
 public final class WhiteSpace {
 
   private static final Map<String, WhiteSpace> VALUES = new ConcurrentHashMap<>();

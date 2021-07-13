@@ -11,7 +11,6 @@ import lombok.ToString;
 /** CSS position. */
 @Getter
 @EqualsAndHashCode
-@ToString
 public final class Position {
 
   private static final Map<String, Position> VALUES = new ConcurrentHashMap<>();

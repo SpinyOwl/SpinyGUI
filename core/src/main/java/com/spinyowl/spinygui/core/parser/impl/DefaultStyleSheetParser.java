@@ -14,8 +14,10 @@ import com.spinyowl.spinygui.core.style.stylesheet.selector.combinator.ChildSele
 import com.spinyowl.spinygui.core.style.stylesheet.selector.combinator.DescendantSelector;
 import com.spinyowl.spinygui.core.style.stylesheet.selector.combinator.GeneralSiblingSelector;
 import com.spinyowl.spinygui.core.style.stylesheet.selector.pseudo_class.HoverSelector;
+import com.spinyowl.spinygui.core.style.stylesheet.selector.simple.AllSelector;
 import com.spinyowl.spinygui.core.style.stylesheet.selector.simple.ClassAttributeSelector;
 import com.spinyowl.spinygui.core.style.stylesheet.selector.simple.ElementSelector;
+import com.spinyowl.spinygui.core.style.stylesheet.selector.simple.IdAttributeSelector;
 import java.util.StringJoiner;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -54,7 +56,7 @@ public final class DefaultStyleSheetParser implements StyleSheetParser {
   }
 
   public String toCss(@NonNull StyleSheet styleSheet) {
-    StringBuilder builder = new StringBuilder();
+    var builder = new StringBuilder();
     for (RuleSet ruleSet : styleSheet.ruleSets()) {
       var selectorJoiner = new StringJoiner(", ", "", " ");
       for (Selector selector : ruleSet.selectors()) {
@@ -72,29 +74,32 @@ public final class DefaultStyleSheetParser implements StyleSheetParser {
   }
 
   private String getSelectorString(Selector selector) {
-    var selectorString = "";
-    if (selector instanceof AdjacentSiblingSelector adjacentSiblingSelector) {
-      selectorString = getSelectorString(adjacentSiblingSelector.first()) + " + "
-          + getSelectorString(adjacentSiblingSelector.second());
+    if (selector instanceof AdjacentSiblingSelector adjacentSelector) {
+      return getSelectorString(adjacentSelector.first()) + " + "
+          + getSelectorString(adjacentSelector.second());
     } else if (selector instanceof AndSelector andSelector) {
-      selectorString = getSelectorString(andSelector.first())
+      return getSelectorString(andSelector.first())
           + getSelectorString(andSelector.second());
     } else if (selector instanceof ChildSelector childSelector) {
-      selectorString = getSelectorString(childSelector.first()) + " > "
+      return getSelectorString(childSelector.first()) + " > "
           + getSelectorString(childSelector.second());
     } else if (selector instanceof DescendantSelector descendantSelector) {
-      selectorString = getSelectorString(descendantSelector.first()) + " "
+      return getSelectorString(descendantSelector.first()) + " "
           + getSelectorString(descendantSelector.second());
-    } else if (selector instanceof GeneralSiblingSelector generalSiblingSelector) {
-      selectorString = getSelectorString(generalSiblingSelector.first()) + " ~ "
-          + getSelectorString(generalSiblingSelector.second());
+    } else if (selector instanceof GeneralSiblingSelector siblingSelector) {
+      return getSelectorString(siblingSelector.first()) + " ~ "
+          + getSelectorString(siblingSelector.second());
     } else if (selector instanceof HoverSelector) {
-      selectorString = ":hover";
-    } else if (selector instanceof ClassAttributeSelector classAttributeSelector) {
-      selectorString = "." + classAttributeSelector.className();
+      return ":hover";
+    } else if (selector instanceof ClassAttributeSelector classSelector) {
+      return "." + classSelector.className();
     } else if (selector instanceof ElementSelector elementSelector) {
-      selectorString = elementSelector.nodeName();
+      return elementSelector.nodeName();
+    } else if (selector instanceof AllSelector) {
+      return "*";
+    } else if (selector instanceof IdAttributeSelector idSelector) {
+      return "#" + idSelector.id();
     }
-    return selectorString;
+    return "";
   }
 }

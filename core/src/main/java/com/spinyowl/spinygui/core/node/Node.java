@@ -30,7 +30,6 @@ import org.joml.Vector2f;
  */
 @Getter
 @Setter
-@EqualsAndHashCode(exclude = {"parent", "nextSibling", "previousSibling"})
 @ToString(exclude = {"parent", "nextSibling", "previousSibling"})
 @RequiredArgsConstructor
 public abstract class Node {

@@ -20,7 +20,7 @@ subprojects {
     group = 'com.spinyowl'
     version = rootProject.version
 
-    buildDir = new File(rootProject.projectDir, "build/" + project.name)
+    buildDir = new File(rootProject.projectDir, "build/${project.name}")
 
     repositories {
         mavenCentral()

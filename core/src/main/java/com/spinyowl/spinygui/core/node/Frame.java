@@ -6,12 +6,10 @@ import com.spinyowl.spinygui.core.style.stylesheet.StyleSheet;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.CopyOnWriteArrayList;
-import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 /** The root element that holds all stylesheets and other nodes. */
-@ToString
-@EqualsAndHashCode
+@ToString(exclude = {"styleSheets"})
 public class Frame extends Element {
 
   public static final String FRAME_TAG_NAME = "frame";

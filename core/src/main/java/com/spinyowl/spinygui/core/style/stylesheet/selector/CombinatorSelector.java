@@ -1,13 +1,16 @@
 package com.spinyowl.spinygui.core.style.stylesheet.selector;
 
 import com.spinyowl.spinygui.core.style.stylesheet.Specificity;
-import lombok.Data;
+import lombok.Getter;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 
-@Data
+@Getter
+@RequiredArgsConstructor
 public abstract class CombinatorSelector implements Selector {
 
-  protected final Selector first;
-  protected final Selector second;
+  @NonNull protected final Selector first;
+  @NonNull protected final Selector second;
 
   @Override
   public Specificity specificity() {

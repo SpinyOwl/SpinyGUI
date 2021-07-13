@@ -27,6 +27,7 @@ open module com.spinyowl.spinygui.core {
   exports com.spinyowl.spinygui.core.event.processor;
   exports com.spinyowl.spinygui.core.font;
   exports com.spinyowl.spinygui.core.input;
+  exports com.spinyowl.spinygui.core.input.impl;
   exports com.spinyowl.spinygui.core.layout;
   exports com.spinyowl.spinygui.core.layout.impl;
   exports com.spinyowl.spinygui.core.parser;

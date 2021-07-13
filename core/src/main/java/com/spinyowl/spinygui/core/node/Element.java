@@ -4,6 +4,7 @@ import static com.spinyowl.spinygui.core.util.Reference.containsReference;
 import com.spinyowl.spinygui.core.event.Event;
 import com.spinyowl.spinygui.core.event.EventTarget;
 import com.spinyowl.spinygui.core.event.listener.EventListener;
+import com.spinyowl.spinygui.core.style.CalculatedStyle;
 import com.spinyowl.spinygui.core.style.NodeStyle;
 import java.util.Collections;
 import java.util.LinkedList;
@@ -21,7 +22,6 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
-@EqualsAndHashCode(exclude = {"firstChild", "lastChild"})
 public class Element extends Node implements EventTarget {
 
   /** Child nodes. */
@@ -215,7 +215,4 @@ public class Element extends Node implements EventTarget {
     return (Element) previous;
   }
 
-  public Element root() {
-    return parent() == null ? this : parent().root();
-  }
 }

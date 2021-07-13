@@ -17,6 +17,6 @@ public interface PseudoClassSelector extends Selector {
 
   @Override
   default Specificity specificity() {
-    return Specificity.of(0, 1, 0);
+    return Specificity.CLASS;
   }
 }

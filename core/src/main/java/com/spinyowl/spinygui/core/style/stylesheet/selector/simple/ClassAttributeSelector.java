@@ -4,7 +4,9 @@ import com.spinyowl.spinygui.core.node.Element;
 import com.spinyowl.spinygui.core.style.stylesheet.Specificity;
 import com.spinyowl.spinygui.core.style.stylesheet.selector.Selector;
 import java.util.Arrays;
-import lombok.Data;
+import lombok.Getter;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 
 /**
  * The class selector selects elements with a specific class attribute.
@@ -12,10 +14,11 @@ import lombok.Data;
  * <p>To select elements with a specific class, write a period (.) character, followed by the class
  * name.
  */
-@Data
+@Getter
+@RequiredArgsConstructor
 public class ClassAttributeSelector implements Selector {
 
-  private final String className;
+  @NonNull private final String className;
 
   @Override
   public boolean test(Element element) {
@@ -29,7 +32,7 @@ public class ClassAttributeSelector implements Selector {
 
   @Override
   public Specificity specificity() {
-    return Specificity.of(0, 1, 0);
+    return Specificity.CLASS;
   }
 
   @Override

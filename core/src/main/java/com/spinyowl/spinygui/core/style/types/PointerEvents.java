@@ -10,7 +10,6 @@ import lombok.ToString;
 
 @Getter
 @EqualsAndHashCode
-@ToString
 public class PointerEvents {
 
   /** Stores all existing dictionary values. */
