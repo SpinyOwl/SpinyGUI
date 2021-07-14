@@ -4,9 +4,6 @@ include 'spinygui'
 
 include 'core'
 
-include 'core.com.spinyowl.spinygui.core.com.spinyowl.spinygui.core.parser'
-include 'core.com.spinyowl.spinygui.core.com.spinyowl.spinygui.core.parser.impl'
-
 include 'core.backend'
 include 'core.backend.lwjgl.nanovg'
 
