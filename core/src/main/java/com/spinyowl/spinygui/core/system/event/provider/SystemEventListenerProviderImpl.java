@@ -2,10 +2,10 @@ package com.spinyowl.spinygui.core.system.event.provider;
 
 import com.spinyowl.spinygui.core.system.event.SystemEvent;
 import com.spinyowl.spinygui.core.system.event.listener.SystemEventListener;
-import java.util.Map;
 import java.util.HashMap;
+import java.util.Map;
 
-/** Default implementation based on {@link ConcurrentHashMap}. */
+/** Default implementation based on {@link HashMap}. */
 public class SystemEventListenerProviderImpl implements SystemEventListenerProvider {
 
   private final Map<Class<? extends SystemEvent>, SystemEventListener<? extends SystemEvent>>
