@@ -1,19 +1,18 @@
 package com.spinyowl.spinygui.core.style.types;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import lombok.ToString;
 
 @Getter
 @EqualsAndHashCode
 public class PointerEvents {
 
   /** Stores all existing dictionary values. */
-  private static final Map<String, PointerEvents> VALUES = new ConcurrentHashMap<>();
+  private static final Map<String, PointerEvents> VALUES = new HashMap<>();
 
   /** The element reacts to pointer events, like :hover and click. This is default */
   public static final PointerEvents AUTO = PointerEvents.create("auto");
@@ -75,6 +74,7 @@ public class PointerEvents {
     }
     return values().stream().map(PointerEvents::name).anyMatch(v -> v.equalsIgnoreCase(name));
   }
+
   @Override
   public String toString() {
     return name;

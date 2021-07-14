@@ -2,7 +2,7 @@ package com.spinyowl.spinygui.core.style.types.flex;
 
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.HashMap;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -18,7 +18,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public final class JustifyContent {
 
-  private static final Map<String, JustifyContent> VALUES = new ConcurrentHashMap<>();
+  private static final Map<String, JustifyContent> VALUES = new HashMap<>();
   /** Default value. Items are positioned at the beginning of the container. */
   public static final JustifyContent FLEX_START = JustifyContent.create("flex-start");
   /** Items are positioned at the end of the container. */

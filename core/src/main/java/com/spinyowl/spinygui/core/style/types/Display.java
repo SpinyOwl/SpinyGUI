@@ -1,19 +1,18 @@
 package com.spinyowl.spinygui.core.style.types;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import lombok.ToString;
 
 /** CSS display. Currently supports */
 @Getter
 @EqualsAndHashCode
 public final class Display {
 
-  private static final Map<String, Display> VALUES = new ConcurrentHashMap<>();
+  private static final Map<String, Display> VALUES = new HashMap<>();
 
   /** Displays an element as a block-level flex container. */
   public static final Display FLEX = Display.create("flex");

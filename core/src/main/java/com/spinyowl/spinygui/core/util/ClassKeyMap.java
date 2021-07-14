@@ -2,7 +2,7 @@ package com.spinyowl.spinygui.core.util;
 
 import static java.util.Objects.requireNonNull;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.HashMap;
 import java.util.function.Supplier;
 import lombok.NonNull;
 
@@ -28,7 +28,7 @@ public class ClassKeyMap<C, V> {
   }
 
   public ClassKeyMap(@NonNull Class<C> rootClass) {
-    this(ConcurrentHashMap::new, rootClass);
+    this(HashMap::new, rootClass);
   }
 
   public void put(@NonNull Class<? extends C> key, @NonNull V value) {

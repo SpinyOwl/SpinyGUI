@@ -3,7 +3,7 @@ package com.spinyowl.spinygui.core.style.types.background;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.HashMap;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -14,7 +14,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public class BackgroundOrigin {
 
-  private static final Map<String, BackgroundOrigin> VALUES = new ConcurrentHashMap<>();
+  private static final Map<String, BackgroundOrigin> VALUES = new HashMap<>();
 
   /** Default value. The background image starts from the upper left corner of the padding edge. */
   public static final BackgroundOrigin PADDING_BOX = BackgroundOrigin.create("padding-box");

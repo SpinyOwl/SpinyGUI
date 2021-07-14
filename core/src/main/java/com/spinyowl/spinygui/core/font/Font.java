@@ -1,9 +1,9 @@
 package com.spinyowl.spinygui.core.font;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 import lombok.Data;
 import lombok.NonNull;
@@ -15,7 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class Font {
 
-  private static Map<FontKey, Font> fonts = new ConcurrentHashMap<>();
+  private static Map<FontKey, Font> fonts = new HashMap<>();
 
   @NonNull private final String name;
 
@@ -179,15 +179,10 @@ public class Font {
   }
 
   @Data
-  @RequiredArgsConstructor
   private static class FontKey {
-
     @NonNull private final String name;
-
     @NonNull private final FontStyle style;
-
     @NonNull private final FontStretch width;
-
     @NonNull private final FontWeight weight;
   }
 }

@@ -2,7 +2,7 @@ package com.spinyowl.spinygui.core.style.types.flex;
 
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.HashMap;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -15,7 +15,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public final class FlexWrap {
 
-  private static final Map<String, FlexWrap> VALUES = new ConcurrentHashMap<>();
+  private static final Map<String, FlexWrap> VALUES = new HashMap<>();
 
   /** Default value. Specifies that the flexible items will not wrap. */
   public static final FlexWrap NOWRAP = FlexWrap.create("nowrap");

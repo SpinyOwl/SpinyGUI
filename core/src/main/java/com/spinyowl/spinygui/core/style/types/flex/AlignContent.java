@@ -2,7 +2,7 @@ package com.spinyowl.spinygui.core.style.types.flex;
 
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.HashMap;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -18,7 +18,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public final class AlignContent {
 
-  private static final Map<String, AlignContent> VALUES = new ConcurrentHashMap<>();
+  private static final Map<String, AlignContent> VALUES = new HashMap<>();
   /** Default value. Lines stretch to take up the remaining space. */
   public static final AlignContent STRETCH = AlignContent.create("stretch");
   /** Lines are packed toward the center of the flex container. */

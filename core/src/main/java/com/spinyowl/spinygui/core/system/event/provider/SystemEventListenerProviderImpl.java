@@ -3,13 +3,13 @@ package com.spinyowl.spinygui.core.system.event.provider;
 import com.spinyowl.spinygui.core.system.event.SystemEvent;
 import com.spinyowl.spinygui.core.system.event.listener.SystemEventListener;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.HashMap;
 
 /** Default implementation based on {@link ConcurrentHashMap}. */
 public class SystemEventListenerProviderImpl implements SystemEventListenerProvider {
 
   private final Map<Class<? extends SystemEvent>, SystemEventListener<? extends SystemEvent>>
-      listenerMap = new ConcurrentHashMap<>();
+      listenerMap = new HashMap<>();
 
   /**
    * Used to obtain system event listener by system event class.

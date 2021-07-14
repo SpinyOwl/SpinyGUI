@@ -1,9 +1,9 @@
 package com.spinyowl.spinygui.core.font;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -18,7 +18,7 @@ import lombok.ToString;
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public final class FontWeight {
 
-  private static final Map<String, FontWeight> VALUES = new ConcurrentHashMap<>();
+  private static final Map<String, FontWeight> VALUES = new HashMap<>();
 
   // @formatter:off
   public static final FontWeight THIN = FontWeight.create(100, "thin");

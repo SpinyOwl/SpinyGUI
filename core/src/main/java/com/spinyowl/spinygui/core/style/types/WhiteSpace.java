@@ -1,19 +1,18 @@
 package com.spinyowl.spinygui.core.style.types;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import lombok.ToString;
 
 /** CSS white-space. */
 @Getter
 @EqualsAndHashCode
 public final class WhiteSpace {
 
-  private static final Map<String, WhiteSpace> VALUES = new ConcurrentHashMap<>();
+  private static final Map<String, WhiteSpace> VALUES = new HashMap<>();
 
   /**
    * Sequences of whitespace will collapse into a single whitespace. Text will wrap when necessary.

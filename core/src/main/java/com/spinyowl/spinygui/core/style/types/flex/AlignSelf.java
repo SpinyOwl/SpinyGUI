@@ -2,7 +2,7 @@ package com.spinyowl.spinygui.core.style.types.flex;
 
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.HashMap;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -15,7 +15,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public final class AlignSelf {
 
-  private static final Map<String, AlignSelf> VALUES = new ConcurrentHashMap<>();
+  private static final Map<String, AlignSelf> VALUES = new HashMap<>();
 
   /**
    * Default. The element inherits its parent container's align-items property, or "stretch" if it

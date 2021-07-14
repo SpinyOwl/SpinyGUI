@@ -1,8 +1,8 @@
 package com.spinyowl.spinygui.core.font;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -17,7 +17,7 @@ import lombok.ToString;
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public final class FontStretch {
 
-  private static final Map<String, FontStretch> VALUES = new ConcurrentHashMap<>();
+  private static final Map<String, FontStretch> VALUES = new HashMap<>();
 
   // @formatter:off
   public static final FontStretch ULTRA_CONDENSED = FontStretch.create("ultra-condensed");

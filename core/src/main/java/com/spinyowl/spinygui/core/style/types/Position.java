@@ -1,19 +1,18 @@
 package com.spinyowl.spinygui.core.style.types;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import lombok.ToString;
 
 /** CSS position. */
 @Getter
 @EqualsAndHashCode
 public final class Position {
 
-  private static final Map<String, Position> VALUES = new ConcurrentHashMap<>();
+  private static final Map<String, Position> VALUES = new HashMap<>();
 
   /** The element is positioned relative to its first positioned (not static) ancestor element. */
   public static final Position ABSOLUTE = Position.create("absolute");

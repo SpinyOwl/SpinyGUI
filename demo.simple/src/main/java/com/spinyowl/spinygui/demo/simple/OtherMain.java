@@ -12,7 +12,10 @@ import com.spinyowl.spinygui.core.parser.StyleSheetParser;
 import com.spinyowl.spinygui.core.parser.impl.DefaultNodeParser;
 import com.spinyowl.spinygui.core.style.manager.StyleManager;
 import com.spinyowl.spinygui.core.style.manager.StyleManagerImpl;
+import com.spinyowl.spinygui.core.style.stylesheet.PropertiesScanner;
+import com.spinyowl.spinygui.core.style.stylesheet.PropertyStore;
 import com.spinyowl.spinygui.core.style.stylesheet.RuleSet;
+import com.spinyowl.spinygui.core.style.stylesheet.impl.DefaultPropertyStore;
 import com.spinyowl.spinygui.core.style.types.Color;
 import java.util.Arrays;
 import java.util.List;
@@ -31,6 +34,10 @@ public class OtherMain {
 
   public static void createFromCSS() {
     var css = """
+        * {
+          color: #222;
+        }
+
         @font-face {
             font-family: My Font Family;
             src: local("some-font.ttf");
@@ -48,9 +55,19 @@ public class OtherMain {
         button .test, .test:hover {
           box-shadow: 1px 2px 1px red 1px 2px;
           background-color: white;
-        }""";
+        }
+        
+        #some button {
+          color: red;
+        }
+        button #some {
+          color: red;
+        }
+        """;
 
-    StyleSheetParser parser = createParser();
+    PropertyStore propertyStore = new DefaultPropertyStore();
+    PropertiesScanner.fillPropertyStore(propertyStore);
+    StyleSheetParser parser = createParser(propertyStore);
     var stylesheet = parser.fromCss(css);
 
     Element testLabel = label(Map.of("class", "test"));
@@ -75,11 +92,11 @@ public class OtherMain {
       log.info(Arrays.toString(rule.selectors().toArray()) + " --- " + rule.specificity(testLabel));
     }
 
-    StyleManager styleManager = new StyleManagerImpl();
+    StyleManager styleManager = new StyleManagerImpl(propertyStore);
     styleManager.needRecalculate(frame);
     styleManager.recalculate();
 
-    assert (Objects.equals(Color.RED, testLabel.calculatedStyle().color()));
+    log.info("EQUALS: " + Objects.equals(Color.RED, testLabel.calculatedStyle().color()));
   }
 
   public static void searchComponents() {
@@ -104,7 +121,9 @@ public class OtherMain {
             }
             """;
 
-    StyleSheetParser parser = createParser();
+    PropertyStore propertyStore = new DefaultPropertyStore();
+    PropertiesScanner.fillPropertyStore(propertyStore);
+    StyleSheetParser parser = createParser(propertyStore);
     var stylesheet = parser.fromCss(css);
 
     var xml = """

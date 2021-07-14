@@ -14,7 +14,13 @@ import org.joml.Vector2fc;
 public final class NodeUtilities {
 
   private static final Function<Node, Integer> comparator =
-      node -> node instanceof Element ? ((Element) node).style().zIndex() : 0;
+      node -> {
+        if (node instanceof Element element) {
+          Integer index = element.calculatedStyle().zIndex();
+          return index == null ? 0 : index;
+        }
+        return 0;
+      };
 
   private NodeUtilities() {}
 

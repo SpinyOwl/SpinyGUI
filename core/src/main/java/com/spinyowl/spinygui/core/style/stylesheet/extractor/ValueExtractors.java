@@ -9,7 +9,6 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 
@@ -18,7 +17,7 @@ import lombok.extern.slf4j.Slf4j;
 public final class ValueExtractors {
 
   @SuppressWarnings("rawtypes")
-  private static final Map<Class, ValueExtractor> valueExtractorMap = new ConcurrentHashMap<>();
+  private static final Map<Class, ValueExtractor> valueExtractorMap = new HashMap<>();
 
   static {
     initialize();

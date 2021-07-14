@@ -1,8 +1,8 @@
 package com.spinyowl.spinygui.core.font;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -16,7 +16,7 @@ import lombok.ToString;
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public final class FontStyle {
 
-  private static final Map<String, FontStyle> VALUES = new ConcurrentHashMap<>();
+  private static final Map<String, FontStyle> VALUES = new HashMap<>();
 
   // @formatter:off
   public static final FontStyle NORMAL = FontStyle.create("normal");

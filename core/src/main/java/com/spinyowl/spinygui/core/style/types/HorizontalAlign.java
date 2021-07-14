@@ -1,19 +1,18 @@
 package com.spinyowl.spinygui.core.style.types;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import lombok.ToString;
 
 @Getter
 @EqualsAndHashCode
 public class HorizontalAlign {
 
   /** Stores all existing dictionary values. */
-  private static final Map<String, HorizontalAlign> VALUES = new ConcurrentHashMap<>();
+  private static final Map<String, HorizontalAlign> VALUES = new HashMap<>();
   /** Content should be aligned to left border of container. */
   public static final HorizontalAlign LEFT = HorizontalAlign.create("left");
   /** Content should be aligned to center of container. */
