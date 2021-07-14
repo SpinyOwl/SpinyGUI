@@ -92,7 +92,7 @@ public class OtherMain {
       log.info(Arrays.toString(rule.selectors().toArray()) + " --- " + rule.specificity(testLabel));
     }
 
-    StyleManager styleManager = new StyleManagerImpl(propertyStore);
+    StyleManager styleManager = new StyleManagerImpl();
     styleManager.needRecalculate(frame);
     styleManager.recalculate();
 
