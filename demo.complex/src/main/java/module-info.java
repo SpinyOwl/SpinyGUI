@@ -9,11 +9,11 @@ open module com.spinyowl.spinygui.demo.complex {
   requires transitive com.spinyowl.spinygui.core;
   requires transitive com.spinyowl.spinygui.core.backend;
   requires transitive com.spinyowl.spinygui.core.backend.lwjgl.nanovg;
-  requires transitive com.spinyowl.spinygui.core.parser;
-  requires transitive com.spinyowl.spinygui.core.parser.impl;
 
   requires org.lwjgl;
   requires org.lwjgl.natives;
+  requires org.lwjgl.glfw;
+  requires org.lwjgl.glfw.natives;
   requires org.lwjgl.nanovg;
   requires org.lwjgl.nanovg.natives;
   requires org.lwjgl.opengl;
