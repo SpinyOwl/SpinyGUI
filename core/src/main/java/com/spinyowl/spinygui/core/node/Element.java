@@ -4,16 +4,14 @@ import static com.spinyowl.spinygui.core.util.Reference.containsReference;
 import com.spinyowl.spinygui.core.event.Event;
 import com.spinyowl.spinygui.core.event.EventTarget;
 import com.spinyowl.spinygui.core.event.listener.EventListener;
-import com.spinyowl.spinygui.core.style.CalculatedStyle;
 import com.spinyowl.spinygui.core.style.NodeStyle;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import lombok.AccessLevel;
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
@@ -43,14 +41,14 @@ public class Element extends Node implements EventTarget {
   private final NodeStyle calculatedStyle = new NodeStyle();
   /** Node attributes. */
   @Setter(AccessLevel.NONE)
-  private final Map<String, String> attributes = new ConcurrentHashMap<>();
+  private final Map<String, String> attributes = new HashMap<>();
   /**
    * Map of listeners attached that should be attached for node and processed if any event
    * performed.
    */
   @Setter(AccessLevel.NONE)
   private final Map<Class<? extends Event>, List<? extends EventListener>> listenerMap =
-      new ConcurrentHashMap<>();
+      new HashMap<>();
 
   public Element(String nodeName) {
     super(nodeName);
@@ -214,5 +212,4 @@ public class Element extends Node implements EventTarget {
     }
     return (Element) previous;
   }
-
 }
