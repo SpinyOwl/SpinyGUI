@@ -1,17 +1,22 @@
 package com.spinyowl.spinygui.core.style.stylesheet.property.border.radius;
 
+import static com.spinyowl.spinygui.core.style.stylesheet.Properties.BORDER_BOTTOM_LEFT_RADIUS;
+import static com.spinyowl.spinygui.core.style.stylesheet.Properties.BORDER_BOTTOM_RIGHT_RADIUS;
 import static com.spinyowl.spinygui.core.style.stylesheet.Properties.BORDER_RADIUS;
+import static com.spinyowl.spinygui.core.style.stylesheet.Properties.BORDER_TOP_LEFT_RADIUS;
+import static com.spinyowl.spinygui.core.style.stylesheet.Properties.BORDER_TOP_RIGHT_RADIUS;
+import static com.spinyowl.spinygui.core.style.stylesheet.util.StyleUtils.getOneFour;
 import static com.spinyowl.spinygui.core.style.stylesheet.util.StyleUtils.testMultipleValues;
-import com.spinyowl.spinygui.core.style.NodeStyle;
-import com.spinyowl.spinygui.core.style.types.BorderRadius;
-import com.spinyowl.spinygui.core.style.types.length.Length;
 import com.spinyowl.spinygui.core.style.stylesheet.Property;
 import com.spinyowl.spinygui.core.style.stylesheet.extractor.ValueExtractor;
 import com.spinyowl.spinygui.core.style.stylesheet.extractor.ValueExtractors;
+import com.spinyowl.spinygui.core.style.types.length.Length;
+import java.util.Arrays;
+import java.util.Map;
 
-public class BorderRadiusProperty extends Property<BorderRadius> {
+public class BorderRadiusProperty extends Property {
 
-  private static ValueExtractor<Length> extractor = ValueExtractors.of(Length.class);
+  private static final ValueExtractor<Length> extractor = ValueExtractors.of(Length.class);
 
   public BorderRadiusProperty() {
     super(
@@ -19,31 +24,18 @@ public class BorderRadiusProperty extends Property<BorderRadius> {
         "0",
         !INHERITED,
         ANIMATABLE,
-        NodeStyle::borderRadius,
-        NodeStyle::borderRadius,
         BorderRadiusProperty::extract,
-        BorderRadiusProperty::test);
+        BorderRadiusProperty::test,
+        true);
   }
 
-  private static BorderRadius extract(String value) {
-    String[] v = value.split("\\s+");
-    // @formatter:off
-    switch (v.length) {
-      case 1:
-        return new BorderRadius(x(v[0]));
-      case 2:
-        return new BorderRadius(x(v[0]), x(v[1]));
-      case 3:
-        return new BorderRadius(x(v[0]), x(v[1]), x(v[2]));
-      case 4:
-      default:
-        return new BorderRadius(x(v[0]), x(v[1]), x(v[2]), x(v[3]));
-    }
-    // @formatter:on
-  }
-
-  private static Length x(String value) {
-    return extractor.extract(value);
+  private static Map<String, Object> extract(String value) {
+    return getOneFour(
+        Arrays.stream(value.split("\\s+")).map(extractor::extract).toArray(),
+        BORDER_TOP_LEFT_RADIUS,
+        BORDER_TOP_RIGHT_RADIUS,
+        BORDER_BOTTOM_RIGHT_RADIUS,
+        BORDER_BOTTOM_LEFT_RADIUS);
   }
 
   public static boolean test(String value) {

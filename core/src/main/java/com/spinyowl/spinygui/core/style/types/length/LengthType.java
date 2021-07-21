@@ -16,7 +16,6 @@ public final class LengthType<T extends Number> {
 
   @NonNull private final String name;
   @NonNull private Class<T> type;
-
   @NonNull private final LengthConverter<T> converter;
 
   public static <E extends Number> LengthType<E> of(

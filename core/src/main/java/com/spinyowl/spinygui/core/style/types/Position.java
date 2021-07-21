@@ -90,6 +90,7 @@ public final class Position {
     }
     return values().stream().map(Position::name).anyMatch(v -> v.equalsIgnoreCase(name));
   }
+
   @Override
   public String toString() {
     return name;

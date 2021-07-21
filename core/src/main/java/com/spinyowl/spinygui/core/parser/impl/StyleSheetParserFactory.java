@@ -2,6 +2,7 @@ package com.spinyowl.spinygui.core.parser.impl;
 
 import com.spinyowl.spinygui.core.parser.StyleSheetParser;
 import com.spinyowl.spinygui.core.parser.impl.css.parser.visitor.AtRuleVisitor;
+import com.spinyowl.spinygui.core.parser.impl.css.parser.visitor.PropertyListVisitor;
 import com.spinyowl.spinygui.core.parser.impl.css.parser.visitor.PropertyVisitor;
 import com.spinyowl.spinygui.core.parser.impl.css.parser.visitor.RulesetVisitor;
 import com.spinyowl.spinygui.core.parser.impl.css.parser.visitor.SelectorVisitor;
@@ -16,9 +17,10 @@ public final class StyleSheetParserFactory {
   public static StyleSheetParser createParser(PropertyStore propertyStore) {
     var selectorVisitor = new SelectorVisitor();
     var propertyVisitor = new PropertyVisitor(propertyStore);
-    var rulesetVisitor = new RulesetVisitor(selectorVisitor, propertyVisitor);
+    var propertyListVisitor = new PropertyListVisitor(propertyVisitor);
+    var rulesetVisitor = new RulesetVisitor(selectorVisitor, propertyListVisitor);
     var atRuleVisitor = new AtRuleVisitor();
     var styleSheetVisitor = new StyleSheetVisitor(rulesetVisitor, atRuleVisitor);
-    return new DefaultStyleSheetParser(styleSheetVisitor);
+    return new DefaultStyleSheetParser(styleSheetVisitor, propertyListVisitor);
   }
 }

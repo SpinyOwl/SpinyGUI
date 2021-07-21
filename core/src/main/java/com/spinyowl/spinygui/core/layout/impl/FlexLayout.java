@@ -1,7 +1,7 @@
 package com.spinyowl.spinygui.core.layout.impl;
 
-import static com.spinyowl.spinygui.core.layout.impl.FlexUtils.setLength;
-import static com.spinyowl.spinygui.core.layout.impl.FlexUtils.setUnit;
+import static com.spinyowl.spinygui.core.style.types.length.LengthType.PERCENT;
+import static com.spinyowl.spinygui.core.style.types.length.LengthType.PIXEL;
 import static org.lwjgl.util.yoga.Yoga.YGAlignAuto;
 import static org.lwjgl.util.yoga.Yoga.YGAlignBaseline;
 import static org.lwjgl.util.yoga.Yoga.YGAlignCenter;
@@ -54,13 +54,14 @@ import com.spinyowl.spinygui.core.event.processor.EventProcessor;
 import com.spinyowl.spinygui.core.layout.Layout;
 import com.spinyowl.spinygui.core.node.Element;
 import com.spinyowl.spinygui.core.node.Node;
-import com.spinyowl.spinygui.core.style.NodeStyle;
+import com.spinyowl.spinygui.core.style.CalculatedStyle;
 import com.spinyowl.spinygui.core.style.types.Position;
 import com.spinyowl.spinygui.core.style.types.flex.AlignItems;
 import com.spinyowl.spinygui.core.style.types.flex.AlignSelf;
 import com.spinyowl.spinygui.core.style.types.flex.FlexDirection;
 import com.spinyowl.spinygui.core.style.types.flex.FlexWrap;
 import com.spinyowl.spinygui.core.style.types.flex.JustifyContent;
+import com.spinyowl.spinygui.core.style.types.length.Length;
 import com.spinyowl.spinygui.core.style.types.length.Unit;
 import com.spinyowl.spinygui.core.system.event.InvalidateTreeEvent;
 import com.spinyowl.spinygui.core.system.event.processor.SystemEventProcessor;
@@ -68,6 +69,9 @@ import com.spinyowl.spinygui.core.time.TimeService;
 import com.spinyowl.spinygui.core.util.NodeUtilities;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.BiConsumer;
+import java.util.function.LongConsumer;
+import java.util.function.ObjIntConsumer;
 import java.util.stream.Collectors;
 import lombok.Getter;
 import lombok.NonNull;
@@ -92,6 +96,9 @@ public class FlexLayout implements Layout {
    */
   @Override
   public void layout(Element parent) {
+    if(parent.children().isEmpty()) {
+      return;
+    }
     // initialize
     long rootNode = YGNodeNew();
     prepareParentNode(parent, rootNode);
@@ -159,22 +166,16 @@ public class FlexLayout implements Layout {
     return invalidateTree;
   }
 
-  private void prepareParentNode(Element parent, long rootNode) {
-    prepareNode(parent, rootNode);
-    YGNodeStyleSetWidth(rootNode, parent.size().x());
-    YGNodeStyleSetHeight(rootNode, parent.size().y());
-  }
-
   /**
    * Used to prepare root node.
    *
    * @param component parent component associated to root node.
    * @param node root yoga node.
    */
-  private void prepareNode(Element component, long node) {
-    NodeStyle style = component.calculatedStyle();
+  private static void prepareNode(Element component, long node) {
+    var style = component.calculatedStyle();
     setFlexDirection(node, style.flexDirection());
-    setJustifyContent(node, style.justifyContent());
+    setJustifyContent(node, style.justifyContent( ));
     setAlignItems(node, style.alignItems());
     setAlignSelf(node, style.alignSelf());
 
@@ -192,7 +193,7 @@ public class FlexLayout implements Layout {
     setPosition(node, style.right(), YGEdgeRight);
     setPosition(node, style.left(), YGEdgeLeft);
 
-    setFlexBasis(node, style.flexBasis());
+    setFlexBasis(node, style.flexBasis( ));
 
     setPadding(node, style);
     setMargin(node, style);
@@ -208,7 +209,7 @@ public class FlexLayout implements Layout {
     YGNodeStyleSetFlexShrink(node, style.flexShrink());
   }
 
-  private void setMinHeight(long node, NodeStyle style) {
+  private static void setMinHeight(long node, CalculatedStyle style) {
     setLength(
         style.minHeight(),
         node,
@@ -216,12 +217,12 @@ public class FlexLayout implements Layout {
         Yoga::YGNodeStyleSetMinHeightPercent);
   }
 
-  private void setMaxWidth(long node, NodeStyle style) {
+  private static void setMaxWidth(long node, CalculatedStyle style) {
     setLength(
         style.maxWidth(), node, Yoga::YGNodeStyleSetMaxWidth, Yoga::YGNodeStyleSetMaxWidthPercent);
   }
 
-  private void setMaxHeight(long node, NodeStyle style) {
+  private static void setMaxHeight(long node, CalculatedStyle style) {
     setLength(
         style.maxHeight(),
         node,
@@ -229,25 +230,7 @@ public class FlexLayout implements Layout {
         Yoga::YGNodeStyleSetMaxHeightPercent);
   }
 
-  private void setWidth(long node, NodeStyle style) {
-    setUnit(
-        style.width(),
-        node,
-        Yoga::YGNodeStyleSetWidthAuto,
-        Yoga::YGNodeStyleSetWidth,
-        Yoga::YGNodeStyleSetWidthPercent);
-  }
-
-  private void setHeight(long node, NodeStyle style) {
-    setUnit(
-        style.height(),
-        node,
-        Yoga::YGNodeStyleSetHeightAuto,
-        Yoga::YGNodeStyleSetHeight,
-        Yoga::YGNodeStyleSetHeightPercent);
-  }
-
-  private void setPosition(long node, Unit distance, int edge) {
+  private static void setPosition(long node, Unit distance, int edge) {
     setUnit(
         distance,
         node,
@@ -256,7 +239,7 @@ public class FlexLayout implements Layout {
         Yoga::YGNodeStyleSetPositionPercent);
   }
 
-  private void setFlexBasis(long node, Unit flexBasis) {
+  private static void setFlexBasis(long node, Unit flexBasis) {
     setUnit(
         flexBasis,
         node,
@@ -265,9 +248,13 @@ public class FlexLayout implements Layout {
         Yoga::YGNodeStyleSetFlexBasisPercent);
   }
 
-  private void setMinWidth(long node, NodeStyle style) {
-    setLength(
-        style.minWidth(), node, Yoga::YGNodeStyleSetMinWidth, Yoga::YGNodeStyleSetMinWidthPercent);
+  private static void setWidth(long node, CalculatedStyle style) {
+    setUnit(
+        style.width(),
+        node,
+        Yoga::YGNodeStyleSetWidthAuto,
+        Yoga::YGNodeStyleSetWidth,
+        Yoga::YGNodeStyleSetWidthPercent);
   }
 
   private static void setJustifyContent(long node, JustifyContent justifyContent) {
@@ -341,35 +328,54 @@ public class FlexLayout implements Layout {
     }
   }
 
-  private static void setPadding(long node, NodeStyle style) {
-    var padding = style.padding();
+  private static void setHeight(long node, CalculatedStyle style) {
+    setUnit(
+        style.height(),
+        node,
+        Yoga::YGNodeStyleSetHeightAuto,
+        Yoga::YGNodeStyleSetHeight,
+        Yoga::YGNodeStyleSetHeightPercent);
+  }
+
+  private static void setMinWidth(long node, CalculatedStyle style) {
     setLength(
-        padding.left(),
+        style.minWidth(), node, Yoga::YGNodeStyleSetMinWidth, Yoga::YGNodeStyleSetMinWidthPercent);
+  }
+
+  private static void setPadding(long node, CalculatedStyle style) {
+    setLength(
+        style.paddingLeft(),
         node,
         YGEdgeLeft,
         Yoga::YGNodeStyleSetPadding,
         Yoga::YGNodeStyleSetPaddingPercent);
     setLength(
-        padding.top(),
+        style.paddingTop(),
         node,
         YGEdgeTop,
         Yoga::YGNodeStyleSetPadding,
         Yoga::YGNodeStyleSetPaddingPercent);
     setLength(
-        padding.right(),
+        style.paddingRight(),
         node,
         YGEdgeRight,
         Yoga::YGNodeStyleSetPadding,
         Yoga::YGNodeStyleSetPaddingPercent);
     setLength(
-        padding.bottom(),
+        style.paddingBottom(),
         node,
         YGEdgeBottom,
         Yoga::YGNodeStyleSetPadding,
         Yoga::YGNodeStyleSetPaddingPercent);
   }
 
-  private static void setMargin(long node, NodeStyle style) {
+  private static void prepareParentNode(Element parent, long rootNode) {
+    prepareNode(parent, rootNode);
+    YGNodeStyleSetWidth(rootNode, parent.size().x());
+    YGNodeStyleSetHeight(rootNode, parent.size().y());
+  }
+
+  private static void setMargin(long node, CalculatedStyle style) {
     setUnit(
         style.marginLeft(),
         node,
@@ -398,6 +404,100 @@ public class FlexLayout implements Layout {
         Yoga::YGNodeStyleSetMarginAuto,
         Yoga::YGNodeStyleSetMargin,
         Yoga::YGNodeStyleSetMarginPercent);
+  }
+
+  public static void setLength(
+      Length<?> l,
+      long node,
+      ObjIntConsumer<Long> pixelConsumer,
+      BiConsumer<Long, Float> percentConsumer) {
+    if (l != null) {
+      if (PIXEL.equals(l.type())) {
+        pixelConsumer.accept(node, (Integer) l.value());
+      } else if (PERCENT.equals(l.type())) {
+        percentConsumer.accept(node, (Float) l.value());
+      }
+    }
+  }
+
+  public static void setLength(
+      Length<?> l,
+      long node,
+      int side,
+      TriConsumer<Long, Integer, Integer> pixelConsumer,
+      TriConsumer<Long, Integer, Float> percentConsumer) {
+    if (l != null) {
+      if (PIXEL.equals(l.type())) {
+        pixelConsumer.accept(node, side, (Integer) l.value());
+      } else if (PERCENT.equals(l.type())) {
+        percentConsumer.accept(node, side, (Float) l.value());
+      }
+    }
+  }
+
+  public static void setUnit(
+      Unit unit,
+      long node,
+      int side,
+      TriConsumer<Long, Integer, Integer> pixelConsumer,
+      TriConsumer<Long, Integer, Float> percentConsumer) {
+    if (unit != null && !unit.isAuto()) {
+      applyPixelOrPercentToSide(unit, node, side, pixelConsumer, percentConsumer);
+    }
+  }
+
+  public static void setUnit(
+      Unit unit,
+      long node,
+      LongConsumer autoConsumer,
+      ObjIntConsumer<Long> pixelConsumer,
+      BiConsumer<Long, Float> percentConsumer) {
+    if (unit != null) {
+      if (unit.isAuto()) {
+        autoConsumer.accept(node);
+      } else {
+        Length<?> l = unit.asLength();
+        if (PIXEL.equals(l.type())) {
+          pixelConsumer.accept(node, (Integer) l.value());
+        } else if (PERCENT.equals(l.type())) {
+          percentConsumer.accept(node, (Float) l.value());
+        }
+      }
+    }
+  }
+
+  public static void applyPixelOrPercentToSide(
+      Unit unit,
+      long node,
+      int side,
+      TriConsumer<Long, Integer, Integer> pixelConsumer,
+      TriConsumer<Long, Integer, Float> percentConsumer) {
+    Length<?> l = unit.asLength();
+    if (PIXEL.equals(l.type())) {
+      pixelConsumer.accept(node, side, (Integer) l.value());
+    } else if (PERCENT.equals(l.type())) {
+      percentConsumer.accept(node, side, (Float) l.value());
+    }
+  }
+
+  public static void setUnit(
+      Unit unit,
+      long node,
+      int side,
+      ObjIntConsumer<Long> autoConsumer,
+      TriConsumer<Long, Integer, Integer> pixelConsumer,
+      TriConsumer<Long, Integer, Float> percentConsumer) {
+    if (unit != null) {
+      if (unit.isAuto()) {
+        autoConsumer.accept(node, side);
+      } else {
+        applyPixelOrPercentToSide(unit, node, side, pixelConsumer, percentConsumer);
+      }
+    }
+  }
+
+  public interface TriConsumer<T, U, V> {
+    void accept(T t, U u, V v);
   }
 
 }

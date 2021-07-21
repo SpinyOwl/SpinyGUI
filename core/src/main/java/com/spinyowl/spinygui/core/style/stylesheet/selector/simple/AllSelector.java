@@ -4,7 +4,7 @@ import com.spinyowl.spinygui.core.node.Element;
 import com.spinyowl.spinygui.core.style.stylesheet.Specificity;
 import com.spinyowl.spinygui.core.style.stylesheet.selector.Selector;
 
-public class AllSelector  implements Selector {
+public class AllSelector implements Selector {
 
   /**
    * Returns true if provided node could be selected using this selector.

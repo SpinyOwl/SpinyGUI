@@ -1,8 +1,8 @@
 package com.spinyowl.spinygui.core.style.types.flex;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -15,7 +15,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public final class FlexDirection {
 
-  private static final Map<String, FlexDirection> VALUES = new ConcurrentHashMap<>();
+  private static final Map<String, FlexDirection> VALUES = new HashMap<>();
 
   /** Default value. The flexible items are displayed horizontally, as a row. */
   public static final FlexDirection ROW = FlexDirection.create("row");
@@ -62,6 +62,7 @@ public final class FlexDirection {
   public static boolean contains(@NonNull String name) {
     return values().stream().map(FlexDirection::name).anyMatch(v -> v.equalsIgnoreCase(name));
   }
+
   @Override
   public String toString() {
     return name;

@@ -2,11 +2,10 @@ package com.spinyowl.spinygui.core.style.stylesheet.property.border.width;
 
 import static com.spinyowl.spinygui.core.style.stylesheet.Properties.BORDER_TOP_WIDTH;
 import static com.spinyowl.spinygui.core.style.stylesheet.property.border.width.BorderWidthProperty.MEDIUM;
-import com.spinyowl.spinygui.core.style.NodeStyle;
-import com.spinyowl.spinygui.core.style.types.length.Length;
 import com.spinyowl.spinygui.core.style.stylesheet.Property;
+import java.util.Map;
 
-public class BorderTopWidthProperty extends Property<Length> {
+public class BorderTopWidthProperty extends Property {
 
   public BorderTopWidthProperty() {
     super(
@@ -14,9 +13,7 @@ public class BorderTopWidthProperty extends Property<Length> {
         MEDIUM,
         !INHERITED,
         ANIMATABLE,
-        NodeStyle::borderTopWidth,
-        NodeStyle::borderTopWidth,
-        BorderWidthProperty::extractOne,
+        value -> Map.of(BORDER_TOP_WIDTH, BorderWidthProperty.extractOne(value)),
         BorderWidthProperty::testOne);
   }
 }

@@ -1,11 +1,11 @@
 package com.spinyowl.spinygui.core.style.stylesheet.property;
 
 import static com.spinyowl.spinygui.core.style.stylesheet.Properties.POSITION;
-import com.spinyowl.spinygui.core.style.NodeStyle;
-import com.spinyowl.spinygui.core.style.types.Position;
 import com.spinyowl.spinygui.core.style.stylesheet.Property;
+import com.spinyowl.spinygui.core.style.types.Position;
+import java.util.Map;
 
-public class PositionProperty extends Property<Position> {
+public class PositionProperty extends Property {
 
   public PositionProperty() {
     super(
@@ -13,9 +13,7 @@ public class PositionProperty extends Property<Position> {
         Position.RELATIVE.name(),
         INHERITED,
         ANIMATABLE,
-        NodeStyle::position,
-        NodeStyle::position,
-        Position::find,
+        position -> Map.of(POSITION, Position.find(position)),
         Position::contains);
   }
 }

@@ -36,15 +36,15 @@ public class BackgroundRepeat {
     this.repeatY = Objects.requireNonNull(repeatY);
   }
 
+  @Override
+  public String toString() {
+    return repeatX.name().toLowerCase() + " " + repeatY.name().toLowerCase();
+  }
+
   public enum Repeat {
     REPEAT,
     NO_REPEAT,
     SPACE,
     ROUND
-  }
-
-  @Override
-  public String toString() {
-    return repeatX.name().toLowerCase() + " " + repeatY.name().toLowerCase();
   }
 }

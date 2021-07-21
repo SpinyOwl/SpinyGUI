@@ -64,7 +64,7 @@ public class Color {
   float a;
 
   public Color(int r, int g, int b, int a) {
-    this(r, g, b, a / 255f);
+    this(r/255f, g/255f, b/255f, a / 255f);
   }
 
   public Color(int r, int g, int b, float a) {
@@ -100,8 +100,9 @@ public class Color {
     return switch (value.length()) {
       case 8 -> new Color((hex >> 24) & 0xFF, (hex >> 16) & 0xFF, (hex >> 8) & 0xFF, hex & 0xFF);
       case 6 -> new Color((hex >> 16) & 0xFF, (hex >> 8) & 0xFF, hex & 0xFF);
-      case 4 -> new Color((hex >> 12) & 0xF, (hex >> 8) & 0xF, (hex >> 4) & 0xF, hex & 0xF);
-      case 3 -> new Color((hex >> 8) & 0xF, (hex >> 4) & 0xF, hex & 0xF);
+      case 4 -> new Color(((hex >> 12) & 0xF) * 0x11, ((hex >> 8) & 0xF) * 0x11,
+          ((hex >> 4) & 0xF) * 0x11, (hex & 0xF) * 0x11);
+      case 3 -> new Color(((hex >> 8) & 0xF) * 0x11, ((hex >> 4) & 0xF) * 0x11, (hex & 0xF) * 0x11);
       default -> null;
     };
   }

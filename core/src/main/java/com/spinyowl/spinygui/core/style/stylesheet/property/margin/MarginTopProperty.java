@@ -1,13 +1,13 @@
 package com.spinyowl.spinygui.core.style.stylesheet.property.margin;
 
 import static com.spinyowl.spinygui.core.style.stylesheet.Properties.MARGIN_TOP;
-import com.spinyowl.spinygui.core.style.NodeStyle;
 import com.spinyowl.spinygui.core.style.stylesheet.Property;
 import com.spinyowl.spinygui.core.style.stylesheet.extractor.ValueExtractor;
 import com.spinyowl.spinygui.core.style.stylesheet.extractor.ValueExtractors;
 import com.spinyowl.spinygui.core.style.types.length.Unit;
+import java.util.Map;
 
-public class MarginTopProperty extends Property<Unit> {
+public class MarginTopProperty extends Property {
 
   private static final ValueExtractor<Unit> extractor = ValueExtractors.of(Unit.class);
 
@@ -17,9 +17,7 @@ public class MarginTopProperty extends Property<Unit> {
         "0",
         !INHERITED,
         ANIMATABLE,
-        NodeStyle::marginTop,
-        NodeStyle::marginTop,
-        extractor::extract,
+        value -> Map.of(MARGIN_TOP, extractor.extract(value)),
         extractor::isValid);
   }
 }

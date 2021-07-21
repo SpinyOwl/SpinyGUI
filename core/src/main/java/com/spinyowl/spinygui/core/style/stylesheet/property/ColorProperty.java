@@ -1,13 +1,13 @@
 package com.spinyowl.spinygui.core.style.stylesheet.property;
 
 import static com.spinyowl.spinygui.core.style.stylesheet.Properties.COLOR;
-import com.spinyowl.spinygui.core.style.NodeStyle;
-import com.spinyowl.spinygui.core.style.types.Color;
 import com.spinyowl.spinygui.core.style.stylesheet.Property;
 import com.spinyowl.spinygui.core.style.stylesheet.extractor.ValueExtractor;
 import com.spinyowl.spinygui.core.style.stylesheet.extractor.ValueExtractors;
+import com.spinyowl.spinygui.core.style.types.Color;
+import java.util.Map;
 
-public class ColorProperty extends Property<Color> {
+public class ColorProperty extends Property {
 
   private static final ValueExtractor<Color> extractor = ValueExtractors.of(Color.class);
 
@@ -17,9 +17,7 @@ public class ColorProperty extends Property<Color> {
         "black",
         INHERITED,
         ANIMATABLE,
-        NodeStyle::color,
-        NodeStyle::color,
-        extractor::extract,
+        value -> Map.of(COLOR, extractor.extract(value)),
         extractor::isValid);
   }
 }

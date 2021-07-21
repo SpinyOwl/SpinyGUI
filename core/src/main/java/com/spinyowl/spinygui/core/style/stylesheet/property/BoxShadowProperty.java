@@ -1,19 +1,20 @@
 package com.spinyowl.spinygui.core.style.stylesheet.property;
 
 import static com.spinyowl.spinygui.core.style.stylesheet.Properties.BOX_SHADOW;
-import com.spinyowl.spinygui.core.style.NodeStyle;
-import com.spinyowl.spinygui.core.style.types.BoxShadow;
-import com.spinyowl.spinygui.core.style.types.Color;
-import com.spinyowl.spinygui.core.style.types.length.Length;
 import com.spinyowl.spinygui.core.style.stylesheet.Property;
 import com.spinyowl.spinygui.core.style.stylesheet.extractor.ValueExtractor;
 import com.spinyowl.spinygui.core.style.stylesheet.extractor.ValueExtractors;
+import com.spinyowl.spinygui.core.style.types.BoxShadow;
+import com.spinyowl.spinygui.core.style.types.Color;
+import com.spinyowl.spinygui.core.style.types.length.Length;
+import java.util.Map;
 
-public class BoxShadowProperty extends Property<BoxShadow> {
+public class BoxShadowProperty extends Property {
 
   @SuppressWarnings("rawtypes")
   private static final ValueExtractor<Length> lengthValueExtractor =
       ValueExtractors.of(Length.class);
+
   private static final ValueExtractor<Color> colorValueExtractor = ValueExtractors.of(Color.class);
 
   private static final String INSET = "INSET";
@@ -25,8 +26,6 @@ public class BoxShadowProperty extends Property<BoxShadow> {
         NONE,
         !INHERITED,
         ANIMATABLE,
-        NodeStyle::boxShadow,
-        NodeStyle::boxShadow,
         BoxShadowProperty::extract,
         BoxShadowProperty::validate);
   }
@@ -66,8 +65,8 @@ public class BoxShadowProperty extends Property<BoxShadow> {
     return lengthArgs >= 2 && lengthArgs <= 4 && insetArgs <= 1 && colorArgs <= 1;
   }
 
-  private static BoxShadow extract(String s) {
-    if (NONE.equals(s)) return new BoxShadow();
+  private static Map<String, Object> extract(String s) {
+    if (NONE.equals(s)) return Map.of(BOX_SHADOW, new BoxShadow());
 
     String[] args = s.split("\\s+");
 
@@ -97,6 +96,6 @@ public class BoxShadowProperty extends Property<BoxShadow> {
     shadow.color(color);
     shadow.inset(inset);
 
-    return shadow;
+    return Map.of(BOX_SHADOW, shadow);
   }
 }

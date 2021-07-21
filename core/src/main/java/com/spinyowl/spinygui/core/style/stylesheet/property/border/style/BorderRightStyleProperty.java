@@ -1,22 +1,20 @@
 package com.spinyowl.spinygui.core.style.stylesheet.property.border.style;
 
+import static com.spinyowl.spinygui.core.style.stylesheet.Properties.BORDER_LEFT_STYLE;
 import static com.spinyowl.spinygui.core.style.stylesheet.Properties.BORDER_RIGHT_STYLE;
-import static com.spinyowl.spinygui.core.style.stylesheet.property.border.color.BorderColorProperty.DEFAULT_VALUE;
-import com.spinyowl.spinygui.core.style.NodeStyle;
-import com.spinyowl.spinygui.core.style.types.border.BorderStyle;
 import com.spinyowl.spinygui.core.style.stylesheet.Property;
+import com.spinyowl.spinygui.core.style.types.border.BorderStyle;
+import java.util.Map;
 
-public class BorderRightStyleProperty extends Property<BorderStyle> {
+public class BorderRightStyleProperty extends Property {
 
   public BorderRightStyleProperty() {
     super(
         BORDER_RIGHT_STYLE,
-        DEFAULT_VALUE,
+        BorderStyleProperty.DEFAULT_VALUE,
         !INHERITED,
         ANIMATABLE,
-        NodeStyle::borderRightStyle,
-        NodeStyle::borderRightStyle,
-        BorderStyle::find,
+        borderStyle -> Map.of(BORDER_LEFT_STYLE, BorderStyle.find(borderStyle)),
         BorderStyle::contains);
   }
 }

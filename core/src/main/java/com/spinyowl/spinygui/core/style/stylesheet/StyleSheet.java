@@ -1,7 +1,6 @@
 package com.spinyowl.spinygui.core.style.stylesheet;
 
 import com.spinyowl.spinygui.core.node.Element;
-import com.spinyowl.spinygui.core.style.stylesheet.selector.Selector;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -10,6 +9,7 @@ import java.util.StringJoiner;
 import java.util.stream.Collectors;
 import lombok.Data;
 import lombok.NonNull;
+import org.apache.commons.lang3.tuple.Pair;
 
 @Data
 public class StyleSheet {
@@ -45,15 +45,10 @@ public class StyleSheet {
   public List<RuleSet> searchSpecificRules(Element element) {
     Objects.requireNonNull(element);
     return ruleSets.stream()
-        .map(
-            rs ->
-                rs.selectors().stream()
-                    .filter(s -> s.test(element))
-                    .reduce(Selector::mostSpecific)
-                    .map(s -> new RuleSet(List.of(s), rs.declarations()))
-                    .orElse(null))
-        .filter(Objects::nonNull)
-        .sorted(Comparator.comparing(r -> r.specificity(element)))
+        .map(rs -> Pair.of(rs, rs.specificity(element)))
+        .filter(pair -> pair.getRight() != null)
+        .sorted(Comparator.comparing(Pair::getRight))
+        .map(Pair::getLeft)
         .collect(Collectors.toList());
   }
 

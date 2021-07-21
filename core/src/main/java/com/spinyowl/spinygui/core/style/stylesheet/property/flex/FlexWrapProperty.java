@@ -1,11 +1,11 @@
 package com.spinyowl.spinygui.core.style.stylesheet.property.flex;
 
 import static com.spinyowl.spinygui.core.style.stylesheet.Properties.FLEX_WRAP;
-import com.spinyowl.spinygui.core.style.NodeStyle;
-import com.spinyowl.spinygui.core.style.types.flex.FlexWrap;
 import com.spinyowl.spinygui.core.style.stylesheet.Property;
+import com.spinyowl.spinygui.core.style.types.flex.FlexWrap;
+import java.util.Map;
 
-public class FlexWrapProperty extends Property<FlexWrap> {
+public class FlexWrapProperty extends Property {
 
   public FlexWrapProperty() {
     super(
@@ -13,9 +13,7 @@ public class FlexWrapProperty extends Property<FlexWrap> {
         "nowrap",
         !INHERITED,
         !ANIMATABLE,
-        NodeStyle::flexWrap,
-        NodeStyle::flexWrap,
-        FlexWrap::find,
+        flexWrap -> Map.of(FLEX_WRAP, FlexWrap.find(flexWrap)),
         FlexWrap::contains);
   }
 }

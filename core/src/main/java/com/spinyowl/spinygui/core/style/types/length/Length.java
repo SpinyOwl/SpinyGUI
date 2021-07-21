@@ -15,6 +15,14 @@ public class Length<T extends Number> implements Unit {
   @NonNull private final T value;
   @NonNull private final LengthType<T> type;
 
+  public static Length<Integer> pixel(int value) {
+    return new Length<>(value, PIXEL);
+  }
+
+  public static Length<Float> percent(float value) {
+    return new Length<>(value, PERCENT);
+  }
+
   /**
    * Used to convert length to pixels. Base length is 1.
    *
@@ -32,14 +40,6 @@ public class Length<T extends Number> implements Unit {
    */
   public int convert(float baseLength) {
     return type.converter().convert(this, baseLength);
-  }
-
-  public static Length<Integer> pixel(int value) {
-    return new Length<>(value, PIXEL);
-  }
-
-  public static Length<Float> percent(float value) {
-    return new Length<>(value, PERCENT);
   }
 
   @Override

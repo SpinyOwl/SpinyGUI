@@ -13,10 +13,6 @@ public abstract class BackgroundSize {
   private final boolean contain;
   private final boolean cover;
 
-  public BackgroundSizeUnit asUnit() {
-    return (BackgroundSizeUnit) this;
-  }
-
   public static BackgroundSize createSize(Unit sizeX) {
     return new BackgroundSizeUnit(sizeX);
   }
@@ -31,6 +27,10 @@ public abstract class BackgroundSize {
 
   public static BackgroundSize createCover() {
     return new BackgroundSizeCover();
+  }
+
+  public BackgroundSizeUnit asUnit() {
+    return (BackgroundSizeUnit) this;
   }
 
   @Getter

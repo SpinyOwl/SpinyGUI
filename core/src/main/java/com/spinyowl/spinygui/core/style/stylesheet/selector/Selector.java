@@ -9,16 +9,6 @@ import com.spinyowl.spinygui.core.style.stylesheet.Specificity;
  */
 public interface Selector {
 
-  /**
-   * Returns true if provided node could be selected using this selector.
-   *
-   * @param element node to test.
-   * @return true if provided node could be selected using this selector.
-   */
-  boolean test(Element element);
-
-  Specificity specificity();
-
   static Selector mostSpecific(Selector left, Selector right) {
     if (left == null) {
       return right;
@@ -28,4 +18,14 @@ public interface Selector {
     }
     return left.specificity().compareTo(right.specificity()) > 0 ? left : right;
   }
+
+  /**
+   * Returns true if provided node could be selected using this selector.
+   *
+   * @param element node to test.
+   * @return true if provided node could be selected using this selector.
+   */
+  boolean test(Element element);
+
+  Specificity specificity();
 }

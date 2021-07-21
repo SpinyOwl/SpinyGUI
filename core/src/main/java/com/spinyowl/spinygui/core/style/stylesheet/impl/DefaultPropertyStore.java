@@ -2,25 +2,24 @@ package com.spinyowl.spinygui.core.style.stylesheet.impl;
 
 import com.spinyowl.spinygui.core.style.stylesheet.Property;
 import com.spinyowl.spinygui.core.style.stylesheet.PropertyStore;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.concurrent.ConcurrentHashMap;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class DefaultPropertyStore implements PropertyStore {
-  private final Map<String, Property<?>> propertyMap = new ConcurrentHashMap<>();
+  private final Map<String, Property> propertyMap = new HashMap<>();
 
   @Override
-  @SuppressWarnings("rawtypes")
   public Property getProperty(@NonNull String propertyName) {
     return propertyMap.get(propertyName.toLowerCase());
   }
 
   @Override
-  public void addProperty(@NonNull String name, @NonNull Property<?> property) {
+  public void addProperty(@NonNull String name, @NonNull Property property) {
     String propertyName = name.toLowerCase();
     if (!Objects.equals(propertyName, property.name())) {
       throw new IllegalArgumentException("Name should be the same as the property name.");
@@ -43,13 +42,17 @@ public class DefaultPropertyStore implements PropertyStore {
   }
 
   @Override
-  public List<String> getPropertiesNames() {
+  public List<String> getPropertyNames() {
     return List.copyOf(propertyMap.keySet());
   }
 
   @Override
-  @SuppressWarnings("rawtypes")
-  public Map<String, Property> getProperties() {
+  public Map<String, Property> getPropertyMap() {
     return Map.copyOf(propertyMap);
+  }
+
+  @Override
+  public List<Property> getProperties() {
+    return List.copyOf(propertyMap.values());
   }
 }

@@ -11,17 +11,17 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @RequiredArgsConstructor
-public class PropertyVisitor extends CSS3BaseVisitor<Declaration<?>> {
+public class PropertyVisitor extends CSS3BaseVisitor<Declaration> {
 
   @NonNull private final PropertyStore propertyStore;
 
   @Override
-  public Declaration<?> visitKnownDeclaration(KnownDeclarationContext ctx) {
+  public Declaration visitKnownDeclaration(KnownDeclarationContext ctx) {
     String propertyName = ctx.property().getText();
-    Property<?> property = propertyStore.getProperty(propertyName);
+    Property property = propertyStore.getProperty(propertyName);
     String value = ctx.expr().getText();
     if (property != null && value != null) {
-      return new Declaration<>(property, value);
+      return new Declaration(property, value);
     }
     log.warn("Can't parse {} property with {} value", propertyName, value);
     return null;

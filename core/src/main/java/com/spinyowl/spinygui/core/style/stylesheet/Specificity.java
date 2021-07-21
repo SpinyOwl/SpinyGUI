@@ -16,6 +16,10 @@ public class Specificity implements Comparable<Specificity> {
   private final int classSpecificity;
   private final int typeSpecificity;
 
+  public static Specificity max(Specificity left, Specificity right) {
+    return left.compareTo(right) > 0 ? left : right;
+  }
+
   public Specificity add(Specificity specificity) {
     return new Specificity(
         this.idSpecificity + specificity.idSpecificity,
@@ -32,9 +36,5 @@ public class Specificity implements Comparable<Specificity> {
     if (this.classSpecificity < o.classSpecificity) return -1;
     return Integer.compare(this.typeSpecificity, o.typeSpecificity);
     // @formatter:on
-  }
-
-  public static Specificity max(Specificity left, Specificity right) {
-    return left.compareTo(right) > 0 ? left : right;
   }
 }

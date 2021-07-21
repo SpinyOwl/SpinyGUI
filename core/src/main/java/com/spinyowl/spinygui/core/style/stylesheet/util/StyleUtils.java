@@ -1,11 +1,13 @@
 package com.spinyowl.spinygui.core.style.stylesheet.util;
 
 import com.spinyowl.spinygui.core.node.Element;
-import com.spinyowl.spinygui.core.style.NodeStyle;
+import com.spinyowl.spinygui.core.style.CalculatedStyle;
 import com.spinyowl.spinygui.core.style.types.length.Length;
 import com.spinyowl.spinygui.core.style.types.length.Unit;
+import java.util.Map;
 import java.util.Objects;
 import java.util.function.Predicate;
+import lombok.NonNull;
 import org.joml.Vector2fc;
 import org.joml.Vector4f;
 import org.joml.Vector4fc;
@@ -14,7 +16,7 @@ public final class StyleUtils {
 
   private StyleUtils() {}
 
-  public static NodeStyle getParentCalculatedStyle(Element element) {
+  public static CalculatedStyle getParentCalculatedStyle(Element element) {
     Objects.requireNonNull(element);
     var parent = element.parent();
     if (parent == null) {
@@ -83,5 +85,34 @@ public final class StyleUtils {
         componentPosition.y() + componentPadding.y(),
         componentSize.x() - componentPadding.x() - componentPadding.z(),
         componentSize.y() - componentPadding.y() - componentPadding.w());
+  }
+
+  public static Map<String, Object> getOneFour(
+      @NonNull Object[] values,
+      @NonNull String top,
+      @NonNull String right,
+      @NonNull String bottom,
+      @NonNull String left) {
+    switch (values.length) {
+      case 0:
+        return Map.of();
+      case 1:
+        {
+          return Map.of(top, values[0], right, values[0], bottom, values[0], left, values[0]);
+        }
+      case 2:
+        {
+          return Map.of(top, values[0], right, values[1], bottom, values[0], left, values[1]);
+        }
+      case 3:
+        {
+          return Map.of(top, values[0], right, values[1], bottom, values[2], left, values[1]);
+        }
+      case 4:
+      default:
+        {
+          return Map.of(top, values[0], right, values[1], bottom, values[2], left, values[3]);
+        }
+    }
   }
 }

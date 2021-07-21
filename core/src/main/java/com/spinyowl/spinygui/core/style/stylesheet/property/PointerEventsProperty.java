@@ -1,11 +1,11 @@
 package com.spinyowl.spinygui.core.style.stylesheet.property;
 
 import static com.spinyowl.spinygui.core.style.stylesheet.Properties.POINTER_EVENTS;
-import com.spinyowl.spinygui.core.style.NodeStyle;
-import com.spinyowl.spinygui.core.style.types.PointerEvents;
 import com.spinyowl.spinygui.core.style.stylesheet.Property;
+import com.spinyowl.spinygui.core.style.types.PointerEvents;
+import java.util.Map;
 
-public class PointerEventsProperty extends Property<PointerEvents> {
+public class PointerEventsProperty extends Property {
 
   public PointerEventsProperty() {
     super(
@@ -13,9 +13,7 @@ public class PointerEventsProperty extends Property<PointerEvents> {
         PointerEvents.AUTO.name(),
         INHERITED,
         !ANIMATABLE,
-        NodeStyle::pointerEvents,
-        NodeStyle::pointerEvents,
-        PointerEvents::find,
+        pointerEvents -> Map.of(POINTER_EVENTS, PointerEvents.find(pointerEvents)),
         PointerEvents::contains);
   }
 }

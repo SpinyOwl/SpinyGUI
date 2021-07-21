@@ -1,15 +1,29 @@
 package com.spinyowl.spinygui.core.style.stylesheet.property.border;
 
 import static com.spinyowl.spinygui.core.style.stylesheet.Properties.BORDER;
-import com.spinyowl.spinygui.core.style.NodeStyle;
+import static com.spinyowl.spinygui.core.style.stylesheet.Properties.BORDER_BOTTOM_COLOR;
+import static com.spinyowl.spinygui.core.style.stylesheet.Properties.BORDER_BOTTOM_STYLE;
+import static com.spinyowl.spinygui.core.style.stylesheet.Properties.BORDER_BOTTOM_WIDTH;
+import static com.spinyowl.spinygui.core.style.stylesheet.Properties.BORDER_LEFT_COLOR;
+import static com.spinyowl.spinygui.core.style.stylesheet.Properties.BORDER_LEFT_STYLE;
+import static com.spinyowl.spinygui.core.style.stylesheet.Properties.BORDER_LEFT_WIDTH;
+import static com.spinyowl.spinygui.core.style.stylesheet.Properties.BORDER_RIGHT_COLOR;
+import static com.spinyowl.spinygui.core.style.stylesheet.Properties.BORDER_RIGHT_STYLE;
+import static com.spinyowl.spinygui.core.style.stylesheet.Properties.BORDER_RIGHT_WIDTH;
+import static com.spinyowl.spinygui.core.style.stylesheet.Properties.BORDER_TOP_COLOR;
+import static com.spinyowl.spinygui.core.style.stylesheet.Properties.BORDER_TOP_STYLE;
+import static com.spinyowl.spinygui.core.style.stylesheet.Properties.BORDER_TOP_WIDTH;
 import com.spinyowl.spinygui.core.style.stylesheet.Property;
 import com.spinyowl.spinygui.core.style.stylesheet.extractor.ValueExtractor;
 import com.spinyowl.spinygui.core.style.stylesheet.extractor.ValueExtractors;
 import com.spinyowl.spinygui.core.style.stylesheet.property.border.width.BorderWidthProperty;
+import com.spinyowl.spinygui.core.style.stylesheet.util.StyleUtils;
 import com.spinyowl.spinygui.core.style.types.Color;
 import com.spinyowl.spinygui.core.style.types.border.BorderStyle;
+import java.util.HashMap;
+import java.util.Map;
 
-public class BorderProperty extends Property<Border> {
+public class BorderProperty extends Property {
 
   public static final String DEFAULT_VALUE = "medium none transparent";
 
@@ -21,41 +35,9 @@ public class BorderProperty extends Property<Border> {
         DEFAULT_VALUE,
         !INHERITED,
         ANIMATABLE,
-        BorderProperty::setBorder,
-        BorderProperty::getBorder,
         BorderProperty::x,
-        BorderProperty::test);
-  }
-
-  private static Border getBorder(NodeStyle nodeStyle) {
-    return new Border(
-        new BorderItem(
-            nodeStyle.borderTopColor(), nodeStyle.borderTopStyle(), nodeStyle.borderTopWidth()),
-        new BorderItem(
-            nodeStyle.borderRightColor(),
-            nodeStyle.borderRightStyle(),
-            nodeStyle.borderRightWidth()),
-        new BorderItem(
-            nodeStyle.borderBottomColor(),
-            nodeStyle.borderBottomStyle(),
-            nodeStyle.borderBottomWidth()),
-        new BorderItem(
-            nodeStyle.borderLeftColor(), nodeStyle.borderLeftStyle(), nodeStyle.borderLeftWidth()));
-  }
-
-  private static void setBorder(NodeStyle nodeStyle, Border border) {
-    nodeStyle.borderTopColor(border.top().color());
-    nodeStyle.borderTopStyle(border.top().style());
-    nodeStyle.borderTopWidth(border.top().width());
-    nodeStyle.borderRightColor(border.right().color());
-    nodeStyle.borderRightStyle(border.right().style());
-    nodeStyle.borderRightWidth(border.right().width());
-    nodeStyle.borderBottomColor(border.bottom().color());
-    nodeStyle.borderBottomStyle(border.bottom().style());
-    nodeStyle.borderBottomWidth(border.bottom().width());
-    nodeStyle.borderLeftColor(border.left().color());
-    nodeStyle.borderLeftStyle(border.left().style());
-    nodeStyle.borderLeftWidth(border.left().width());
+        BorderProperty::test,
+        true);
   }
 
   public static boolean test(String value) {
@@ -89,66 +71,106 @@ public class BorderProperty extends Property<Border> {
     }
   }
 
-  private static Border x(String value) {
-    var border = new Border();
+  private static Map<String, Object> x(String value) {
     BorderItem i = extract(value);
-    border.style(i.style());
-    border.color(i.color());
-    border.width(i.width());
+    Map<String, Object> border = new HashMap<>();
+    if (i.color() != null) {
+      border.putAll(
+          StyleUtils.getOneFour(
+              new Object[] {i.color()},
+              BORDER_TOP_COLOR,
+              BORDER_RIGHT_COLOR,
+              BORDER_BOTTOM_COLOR,
+              BORDER_LEFT_COLOR));
+    }
+    if (i.width() != null) {
+      border.putAll(
+          StyleUtils.getOneFour(
+              new Object[] {i.color()},
+              BORDER_TOP_WIDTH,
+              BORDER_RIGHT_WIDTH,
+              BORDER_BOTTOM_WIDTH,
+              BORDER_LEFT_WIDTH));
+    }
+    if (i.style() != null) {
+      border.putAll(
+          StyleUtils.getOneFour(
+              new Object[] {i.color()},
+              BORDER_TOP_STYLE,
+              BORDER_RIGHT_STYLE,
+              BORDER_BOTTOM_STYLE,
+              BORDER_LEFT_STYLE));
+    }
+    return border;
+  }
+
+  public static Map<String, Object> extract(
+      String value, String sideStyle, String sideWidth, String sideColor) {
+    BorderItem borderItem = BorderProperty.extract(value);
+    Map<String, Object> border = new HashMap<>();
+    if (borderItem.style() != null) {
+      border.put(sideStyle, borderItem.style());
+    }
+    if (borderItem.width() != null) {
+      border.put(sideWidth, borderItem.width());
+    }
+    if (borderItem.color() != null) {
+      border.put(sideColor, borderItem.color());
+    }
     return border;
   }
 
   public static BorderItem extract(String value) {
-    var i = new BorderItem();
+    var borderItem = new BorderItem();
     String[] values = value.split("\\s+");
     if (values.length == 1) {
-      i.style(BorderStyle.find(values[0]));
+      borderItem.style(BorderStyle.find(values[0]));
     } else if (values.length == 2) {
       if (BorderStyle.contains(values[0])) {
-        i.style(BorderStyle.find(values[0]));
+        borderItem.style(BorderStyle.find(values[0]));
         if (colorValueExtractor.isValid(values[1])) {
-          i.color(colorValueExtractor.extract(values[1]));
+          borderItem.color(colorValueExtractor.extract(values[1]));
         } else {
-          i.width(BorderWidthProperty.extractOne(values[1]));
+          borderItem.width(BorderWidthProperty.extractOne(values[1]));
         }
       } else if (BorderStyle.contains(values[1])) {
-        i.style(BorderStyle.find(values[1]));
+        borderItem.style(BorderStyle.find(values[1]));
         if (colorValueExtractor.isValid(values[0])) {
-          i.color(colorValueExtractor.extract(values[0]));
+          borderItem.color(colorValueExtractor.extract(values[0]));
         } else {
-          i.width(BorderWidthProperty.extractOne(values[0]));
+          borderItem.width(BorderWidthProperty.extractOne(values[0]));
         }
       }
     } else if (values.length == 3) {
       if (BorderStyle.contains(values[0])) {
-        i.style(BorderStyle.find(values[0]));
+        borderItem.style(BorderStyle.find(values[0]));
         if (colorValueExtractor.isValid(values[1])) {
-          i.color(colorValueExtractor.extract(values[1]));
-          i.width(BorderWidthProperty.extractOne(values[2]));
+          borderItem.color(colorValueExtractor.extract(values[1]));
+          borderItem.width(BorderWidthProperty.extractOne(values[2]));
         } else {
-          i.width(BorderWidthProperty.extractOne(values[1]));
-          i.color(colorValueExtractor.extract(values[2]));
+          borderItem.width(BorderWidthProperty.extractOne(values[1]));
+          borderItem.color(colorValueExtractor.extract(values[2]));
         }
       } else if (BorderStyle.contains(values[1])) {
-        i.style(BorderStyle.find(values[1]));
+        borderItem.style(BorderStyle.find(values[1]));
         if (colorValueExtractor.isValid(values[0])) {
-          i.color(colorValueExtractor.extract(values[0]));
-          i.width(BorderWidthProperty.extractOne(values[2]));
+          borderItem.color(colorValueExtractor.extract(values[0]));
+          borderItem.width(BorderWidthProperty.extractOne(values[2]));
         } else {
-          i.width(BorderWidthProperty.extractOne(values[0]));
-          i.color(colorValueExtractor.extract(values[2]));
+          borderItem.width(BorderWidthProperty.extractOne(values[0]));
+          borderItem.color(colorValueExtractor.extract(values[2]));
         }
       } else if (BorderStyle.contains(values[2])) {
-        i.style(BorderStyle.find(values[2]));
+        borderItem.style(BorderStyle.find(values[2]));
         if (colorValueExtractor.isValid(values[0])) {
-          i.color(colorValueExtractor.extract(values[0]));
-          i.width(BorderWidthProperty.extractOne(values[1]));
+          borderItem.color(colorValueExtractor.extract(values[0]));
+          borderItem.width(BorderWidthProperty.extractOne(values[1]));
         } else {
-          i.width(BorderWidthProperty.extractOne(values[0]));
-          i.color(colorValueExtractor.extract(values[1]));
+          borderItem.width(BorderWidthProperty.extractOne(values[0]));
+          borderItem.color(colorValueExtractor.extract(values[1]));
         }
       }
     }
-    return i;
+    return borderItem;
   }
 }

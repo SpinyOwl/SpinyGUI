@@ -1,14 +1,14 @@
 package com.spinyowl.spinygui.core.style.stylesheet.property.background;
 
 import static com.spinyowl.spinygui.core.style.stylesheet.Properties.BACKGROUND_POSITION_Y;
-import com.spinyowl.spinygui.core.style.NodeStyle;
-import com.spinyowl.spinygui.core.style.types.length.Length;
 import com.spinyowl.spinygui.core.style.stylesheet.Property;
 import com.spinyowl.spinygui.core.style.stylesheet.extractor.ValueExtractor;
 import com.spinyowl.spinygui.core.style.stylesheet.extractor.ValueExtractors;
+import com.spinyowl.spinygui.core.style.types.length.Length;
 import java.util.List;
+import java.util.Map;
 
-public class BackgroundPositionYProperty extends Property<Length> {
+public class BackgroundPositionYProperty extends Property {
 
   private static final ValueExtractor<Length> extractor = ValueExtractors.of(Length.class);
   private static final String TOP = "top";
@@ -22,9 +22,7 @@ public class BackgroundPositionYProperty extends Property<Length> {
         "0%",
         !INHERITED,
         ANIMATABLE,
-        NodeStyle::backgroundPositionY,
-        NodeStyle::backgroundPositionY,
-        BackgroundPositionYProperty::extract,
+        value -> Map.of(BACKGROUND_POSITION_Y,extract(value)),
         BackgroundPositionYProperty::test);
   }
 

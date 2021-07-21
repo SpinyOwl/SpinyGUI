@@ -145,7 +145,7 @@ public final class NodeUtilities {
   }
 
   private static boolean clickable(final Element element) {
-    return !PointerEvents.NONE.equals(element.style().pointerEvents());
+    return !PointerEvents.NONE.equals(element.calculatedStyle().pointerEvents());
   }
 
   /**
@@ -177,6 +177,6 @@ public final class NodeUtilities {
   }
 
   public static boolean visible(Element element) {
-    return !Display.NONE.equals(element.style().display());
+    return !Display.NONE.equals(element.calculatedStyle().display());
   }
 }

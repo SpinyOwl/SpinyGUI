@@ -76,6 +76,7 @@ public class VerticalAlign {
     }
     return values().stream().map(VerticalAlign::name).anyMatch(v -> v.equalsIgnoreCase(name));
   }
+
   @Override
   public String toString() {
     return name;

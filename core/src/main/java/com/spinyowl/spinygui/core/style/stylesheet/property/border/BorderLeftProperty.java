@@ -1,10 +1,12 @@
 package com.spinyowl.spinygui.core.style.stylesheet.property.border;
 
 import static com.spinyowl.spinygui.core.style.stylesheet.Properties.BORDER_LEFT;
-import com.spinyowl.spinygui.core.style.NodeStyle;
+import static com.spinyowl.spinygui.core.style.stylesheet.Properties.BORDER_LEFT_COLOR;
+import static com.spinyowl.spinygui.core.style.stylesheet.Properties.BORDER_LEFT_STYLE;
+import static com.spinyowl.spinygui.core.style.stylesheet.Properties.BORDER_LEFT_WIDTH;
 import com.spinyowl.spinygui.core.style.stylesheet.Property;
 
-public class BorderLeftProperty extends Property<BorderItem> {
+public class BorderLeftProperty extends Property {
 
   public BorderLeftProperty() {
     super(
@@ -12,19 +14,9 @@ public class BorderLeftProperty extends Property<BorderItem> {
         BorderProperty.DEFAULT_VALUE,
         !INHERITED,
         ANIMATABLE,
-        BorderLeftProperty::setBorderLeft,
-        BorderLeftProperty::getBorderLeft,
-        BorderProperty::extract,
-        BorderProperty::test);
-  }
-
-  private static void setBorderLeft(NodeStyle s, BorderItem i) {
-    s.borderLeftColor(i.color());
-    s.borderLeftStyle(i.style());
-    s.borderLeftWidth(i.width());
-  }
-
-  private static BorderItem getBorderLeft(NodeStyle s) {
-    return new BorderItem(s.borderLeftColor(), s.borderLeftStyle(), s.borderLeftWidth());
+        value ->
+            BorderProperty.extract(value, BORDER_LEFT_STYLE, BORDER_LEFT_WIDTH, BORDER_LEFT_COLOR),
+        BorderProperty::test,
+        true);
   }
 }

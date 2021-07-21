@@ -24,13 +24,13 @@ public final class PropertiesScanner {
 
     for (ClassInfo classInfo : scanResult.getSubclasses(Property.class.getName())) {
       @SuppressWarnings("unchecked")
-      Class<Property<?>> clazz = (Class<Property<?>>) classInfo.loadClass();
+      Class<Property> clazz = (Class<Property>) classInfo.loadClass();
       Priority annotation = clazz.getAnnotation(Priority.class);
       var priority = 0;
       if (annotation != null) {
         priority = annotation.value();
       }
-      Property<?> property = null;
+      Property property = null;
       try {
         property = clazz.getConstructor().newInstance();
 
@@ -64,7 +64,7 @@ public final class PropertiesScanner {
 
   @Data
   private static final class PropertyPriority {
-    private final Property<?> property;
+    private final Property property;
     private final int priority;
   }
 }

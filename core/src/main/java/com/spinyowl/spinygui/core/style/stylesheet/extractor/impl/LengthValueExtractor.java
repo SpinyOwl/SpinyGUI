@@ -1,8 +1,8 @@
 package com.spinyowl.spinygui.core.style.stylesheet.extractor.impl;
 
 import static com.spinyowl.spinygui.core.style.stylesheet.extractor.impl.UnitValueExtractor.getLength;
-import com.spinyowl.spinygui.core.style.types.length.Length;
 import com.spinyowl.spinygui.core.style.stylesheet.extractor.ValueExtractor;
+import com.spinyowl.spinygui.core.style.types.length.Length;
 
 /** Used to extract {@link Length} value from string. */
 public class LengthValueExtractor implements ValueExtractor<Length> {

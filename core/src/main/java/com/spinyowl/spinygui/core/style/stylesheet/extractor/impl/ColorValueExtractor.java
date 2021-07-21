@@ -2,9 +2,9 @@ package com.spinyowl.spinygui.core.style.stylesheet.extractor.impl;
 
 import static java.lang.Float.parseFloat;
 import static java.lang.Integer.parseInt;
-import com.spinyowl.spinygui.core.style.types.Color;
 import com.spinyowl.spinygui.core.style.stylesheet.extractor.ValueExtractor;
 import com.spinyowl.spinygui.core.style.stylesheet.extractor.ValueExtractorException;
+import com.spinyowl.spinygui.core.style.types.Color;
 
 /**
  * Extractor which extracts {@link Color} from string.

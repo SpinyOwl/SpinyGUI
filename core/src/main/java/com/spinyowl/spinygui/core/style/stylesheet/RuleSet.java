@@ -18,7 +18,7 @@ import lombok.NonNull;
 public class RuleSet {
 
   @NonNull private List<Selector> selectors;
-  @NonNull private List<Declaration<?>> declarations;
+  @NonNull private List<Declaration> declarations;
 
   /**
    * Used to check if any selector could be used to reach provided element.
@@ -34,7 +34,8 @@ public class RuleSet {
    * Used to calculate specificity based on selectors in ruleset for provided element.
    *
    * @param element element to calculate specificity.
-   * @return specificity for element based on selectors in ruleset.
+   * @return specificity for element based on selectors in ruleset or null if there are no selectors
+   *     applicable to element.
    */
   public Specificity specificity(Element element) {
     return selectors.stream()
@@ -79,7 +80,7 @@ public class RuleSet {
       selectorsJoiner.add(selector.toString());
     }
     var declarationsJoiner = new StringJoiner(";\n", "", ";");
-    for (Declaration<?> declaration : declarations) {
+    for (Declaration declaration : declarations) {
       declarationsJoiner.add("  " + declaration.toString());
     }
 

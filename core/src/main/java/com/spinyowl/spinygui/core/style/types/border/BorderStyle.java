@@ -1,8 +1,8 @@
 package com.spinyowl.spinygui.core.style.types.border;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-import java.util.HashMap;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -92,6 +92,7 @@ public final class BorderStyle {
   public static boolean contains(@NonNull String name) {
     return values().stream().map(BorderStyle::name).anyMatch(v -> v.equalsIgnoreCase(name));
   }
+
   @Override
   public String toString() {
     return name;

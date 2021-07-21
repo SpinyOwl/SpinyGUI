@@ -1,11 +1,11 @@
 package com.spinyowl.spinygui.core.style.stylesheet.property.flex;
 
 import static com.spinyowl.spinygui.core.style.stylesheet.Properties.ALIGN_ITEMS;
-import com.spinyowl.spinygui.core.style.NodeStyle;
-import com.spinyowl.spinygui.core.style.types.flex.AlignItems;
 import com.spinyowl.spinygui.core.style.stylesheet.Property;
+import com.spinyowl.spinygui.core.style.types.flex.AlignItems;
+import java.util.Map;
 
-public class AlignItemsProperty extends Property<AlignItems> {
+public class AlignItemsProperty extends Property {
 
   public AlignItemsProperty() {
     super(
@@ -13,9 +13,7 @@ public class AlignItemsProperty extends Property<AlignItems> {
         "stretch",
         !INHERITED,
         !ANIMATABLE,
-        NodeStyle::alignItems,
-        NodeStyle::alignItems,
-        AlignItems::find,
+        alignItems -> Map.of(ALIGN_ITEMS, AlignItems.find(alignItems)),
         AlignItems::contains);
   }
 }

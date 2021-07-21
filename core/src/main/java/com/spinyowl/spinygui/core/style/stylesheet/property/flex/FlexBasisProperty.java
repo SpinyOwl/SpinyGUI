@@ -1,13 +1,13 @@
 package com.spinyowl.spinygui.core.style.stylesheet.property.flex;
 
 import static com.spinyowl.spinygui.core.style.stylesheet.Properties.FLEX_BASIS;
-import com.spinyowl.spinygui.core.style.NodeStyle;
-import com.spinyowl.spinygui.core.style.types.length.Unit;
 import com.spinyowl.spinygui.core.style.stylesheet.Property;
 import com.spinyowl.spinygui.core.style.stylesheet.extractor.ValueExtractor;
 import com.spinyowl.spinygui.core.style.stylesheet.extractor.ValueExtractors;
+import com.spinyowl.spinygui.core.style.types.length.Unit;
+import java.util.Map;
 
-public class FlexBasisProperty extends Property<Unit> {
+public class FlexBasisProperty extends Property {
 
   public static final String AUTO = "auto";
   private static final ValueExtractor<Unit> extractor = ValueExtractors.of(Unit.class);
@@ -18,9 +18,7 @@ public class FlexBasisProperty extends Property<Unit> {
         AUTO,
         !INHERITED,
         !ANIMATABLE,
-        NodeStyle::flexBasis,
-        NodeStyle::flexBasis,
-        extractor::extract,
+        value -> Map.of(FLEX_BASIS, extractor.extract(value)),
         extractor::isValid);
   }
 }

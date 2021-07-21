@@ -1,14 +1,16 @@
 package com.spinyowl.spinygui.core.style.stylesheet.property.background;
 
 import static com.spinyowl.spinygui.core.style.stylesheet.Properties.BACKGROUND_POSITION;
-import com.spinyowl.spinygui.core.style.NodeStyle;
+import static com.spinyowl.spinygui.core.style.stylesheet.Properties.BACKGROUND_POSITION_X;
+import static com.spinyowl.spinygui.core.style.stylesheet.Properties.BACKGROUND_POSITION_Y;
 import com.spinyowl.spinygui.core.style.stylesheet.Property;
 import com.spinyowl.spinygui.core.style.stylesheet.extractor.ValueExtractor;
 import com.spinyowl.spinygui.core.style.stylesheet.extractor.ValueExtractors;
 import com.spinyowl.spinygui.core.style.types.length.Length;
 import java.util.List;
+import java.util.Map;
 
-public class BackgroundPositionProperty extends Property<Length<?>[]> {
+public class BackgroundPositionProperty extends Property {
 
   private static final ValueExtractor<Length> extractor = ValueExtractors.of(Length.class);
   private static final String SPLITERATOR = "\\s+";
@@ -26,19 +28,9 @@ public class BackgroundPositionProperty extends Property<Length<?>[]> {
         "0% 0%",
         !INHERITED,
         ANIMATABLE,
-        BackgroundPositionProperty::setBackgroundPosition,
-        BackgroundPositionProperty::getBackgroundPosition,
         BackgroundPositionProperty::extract,
-        BackgroundPositionProperty::test);
-  }
-
-  private static Length<?>[] extract(String value) {
-    String[] values = value.split(SPLITERATOR);
-    if (values.length == 1) {
-      return new Length[] {extract(values[0], X_VALUES), Length.percent(50)};
-    } else {
-      return new Length[] {extract(values[0], X_VALUES), extract(values[1], Y_VALUES)};
-    }
+        BackgroundPositionProperty::test,
+        true);
   }
 
   private static Length<?> extract(String value, List<String> values) {
@@ -61,12 +53,20 @@ public class BackgroundPositionProperty extends Property<Length<?>[]> {
     }
   }
 
-  private static void setBackgroundPosition(NodeStyle nodeStyle, Length<?>[] backgroundPosition) {
-    nodeStyle.backgroundPositionX(backgroundPosition[0]);
-    nodeStyle.backgroundPositionY(backgroundPosition[1]);
-  }
-
-  private static Length<?>[] getBackgroundPosition(NodeStyle nodeStyle1) {
-    return new Length[] {nodeStyle1.backgroundPositionX(), nodeStyle1.backgroundPositionY()};
+  private static Map<String, Object> extract(String value) {
+    String[] values = value.split(SPLITERATOR);
+    if (values.length == 1) {
+      return Map.of(
+          BACKGROUND_POSITION_X,
+          extract(values[0], X_VALUES),
+          BACKGROUND_POSITION_Y,
+          Length.percent(50));
+    } else {
+      return Map.of(
+          BACKGROUND_POSITION_X,
+          extract(values[0], X_VALUES),
+          BACKGROUND_POSITION_Y,
+          extract(values[1], Y_VALUES));
+    }
   }
 }

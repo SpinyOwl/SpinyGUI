@@ -2,14 +2,14 @@ package com.spinyowl.spinygui.core.input.impl;
 
 import com.spinyowl.spinygui.core.input.Shortcut;
 import com.spinyowl.spinygui.core.input.ShortcutRegistry;
+import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 import lombok.NonNull;
 
 /** Used to store shortcuts. */
 public class ShortcutRegistryImpl implements ShortcutRegistry {
 
-  private final Map<String, Shortcut> shortcuts = new ConcurrentHashMap<>();
+  private final Map<String, Shortcut> shortcuts = new HashMap<>();
 
   /**
    * Used to set shortcut for specified name (for example 'copy').

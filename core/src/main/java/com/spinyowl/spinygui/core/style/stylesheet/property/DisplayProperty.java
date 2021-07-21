@@ -1,11 +1,11 @@
 package com.spinyowl.spinygui.core.style.stylesheet.property;
 
 import static com.spinyowl.spinygui.core.style.stylesheet.Properties.DISPLAY;
-import com.spinyowl.spinygui.core.style.NodeStyle;
-import com.spinyowl.spinygui.core.style.types.Display;
 import com.spinyowl.spinygui.core.style.stylesheet.Property;
+import com.spinyowl.spinygui.core.style.types.Display;
+import java.util.Map;
 
-public class DisplayProperty extends Property<Display> {
+public class DisplayProperty extends Property {
 
   public DisplayProperty() {
     super(
@@ -13,9 +13,7 @@ public class DisplayProperty extends Property<Display> {
         Display.FLEX.name(),
         INHERITED,
         ANIMATABLE,
-        NodeStyle::display,
-        NodeStyle::display,
-        Display::find,
+        display -> Map.of(DISPLAY, Display.find(display)),
         Display::contains);
   }
 }

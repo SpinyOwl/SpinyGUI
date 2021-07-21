@@ -9,14 +9,14 @@ import com.spinyowl.spinygui.core.node.Element;
 import com.spinyowl.spinygui.core.style.types.Display;
 import com.spinyowl.spinygui.core.system.event.processor.SystemEventProcessor;
 import com.spinyowl.spinygui.core.time.TimeService;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
-import java.util.concurrent.ConcurrentHashMap;
 import lombok.NonNull;
 
 public class LayoutManagerImpl implements LayoutManager {
 
-  private final Map<Display, Layout> layoutMap = new ConcurrentHashMap<>();
+  private final Map<Display, Layout> layoutMap = new HashMap<>();
 
   public LayoutManagerImpl(
       @NonNull SystemEventProcessor systemEventProcessor,
@@ -37,7 +37,7 @@ public class LayoutManagerImpl implements LayoutManager {
   @Override
   public void layout(Element element) {
     if (element != null && visible(element) && visibleInParents(element)) {
-      var layout = layoutMap.get(element.style().display());
+      var layout = layoutMap.get(element.calculatedStyle().display());
       if (layout != null) {
         layout.layout(element);
       }

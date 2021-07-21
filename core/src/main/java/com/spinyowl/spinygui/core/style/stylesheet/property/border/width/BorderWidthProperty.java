@@ -1,16 +1,20 @@
 package com.spinyowl.spinygui.core.style.stylesheet.property.border.width;
 
+import static com.spinyowl.spinygui.core.style.stylesheet.Properties.BORDER_BOTTOM_WIDTH;
+import static com.spinyowl.spinygui.core.style.stylesheet.Properties.BORDER_LEFT_WIDTH;
+import static com.spinyowl.spinygui.core.style.stylesheet.Properties.BORDER_RIGHT_WIDTH;
+import static com.spinyowl.spinygui.core.style.stylesheet.Properties.BORDER_TOP_WIDTH;
 import static com.spinyowl.spinygui.core.style.stylesheet.Properties.BORDER_WIDTH;
+import static com.spinyowl.spinygui.core.style.stylesheet.util.StyleUtils.getOneFour;
 import static com.spinyowl.spinygui.core.style.stylesheet.util.StyleUtils.testMultipleValues;
-import com.spinyowl.spinygui.core.style.NodeStyle;
 import com.spinyowl.spinygui.core.style.stylesheet.Property;
 import com.spinyowl.spinygui.core.style.stylesheet.extractor.ValueExtractor;
 import com.spinyowl.spinygui.core.style.stylesheet.extractor.ValueExtractors;
 import com.spinyowl.spinygui.core.style.types.length.Length;
 import java.util.Arrays;
+import java.util.Map;
 
-@SuppressWarnings("rawtypes")
-public class BorderWidthProperty extends Property<Length[]> {
+public class BorderWidthProperty extends Property {
 
   public static final String THIN = "thin";
   public static final String MEDIUM = "medium";
@@ -29,16 +33,16 @@ public class BorderWidthProperty extends Property<Length[]> {
         MEDIUM,
         !INHERITED,
         ANIMATABLE,
-        NodeStyle::borderWidth,
-        NodeStyle::borderWidth,
         BorderWidthProperty::extract,
-        BorderWidthProperty::test);
+        BorderWidthProperty::test, true);
   }
 
-  protected static Length[] extract(String value) {
-    return Arrays.stream(value.split("\\s+")).map(BorderWidthProperty::extractOne).toArray(Length[]::new);
+  protected static Map<String, Object> extract(String value) {
+    return getOneFour(Arrays.stream(value.split("\\s+")).map(BorderWidthProperty::extractOne).toArray(),
+        BORDER_TOP_WIDTH,BORDER_RIGHT_WIDTH,BORDER_BOTTOM_WIDTH, BORDER_LEFT_WIDTH);
   }
 
+  @SuppressWarnings("rawtypes")
   public static Length extractOne(String value) {
     String lowerCaseValue = value.toLowerCase();
     return switch (lowerCaseValue) {

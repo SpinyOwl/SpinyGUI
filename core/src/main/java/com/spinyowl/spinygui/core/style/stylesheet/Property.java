@@ -1,10 +1,9 @@
 package com.spinyowl.spinygui.core.style.stylesheet;
 
 import com.spinyowl.spinygui.core.node.Element;
-import com.spinyowl.spinygui.core.style.NodeStyle;
 import com.spinyowl.spinygui.core.style.stylesheet.util.StyleUtils;
+import java.util.Map;
 import java.util.Objects;
-import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import lombok.AccessLevel;
@@ -22,7 +21,7 @@ import lombok.extern.slf4j.Slf4j;
 @Getter
 @Builder
 @RequiredArgsConstructor(access = AccessLevel.PROTECTED)
-public class  Property<T> {
+public class Property {
 
   public static final String INHERIT = "inherit";
   public static final String INITIAL = "initial";
@@ -60,25 +59,22 @@ public class  Property<T> {
   /** Defines if css property could be animated. */
   protected final boolean animatable;
 
-  /** Used to set calculated value to node style. */
-  @NonNull protected final BiConsumer<NodeStyle, T> valueSetter;
-
-  /** Used to get calculated value from node style. */
-  @NonNull protected final Function<NodeStyle, T> valueGetter;
-
   /** Used to extract and compute value from string representation. */
-  @NonNull protected final Function<String, T> valueExtractor;
+  @NonNull protected final Function<String, Map<String, Object>> valueExtractor;
 
   /** Used to validate string value before extraction. */
   @NonNull protected final Predicate<String> valueValidator;
 
-  /**
-   * Used to compute css style property value for specified element.
-   *
-   * @param element element to update calculated style.
-   * @param value string representation of css property value.
-   */
-  public final void computeAndApply(Element element, String value) {
+  protected final boolean shorthand;
+
+  public Property(
+      String name,
+      String defaultValue,
+      boolean inherited,
+      boolean animatable,
+      Function<String, Map<String, Object>> valueExtractor,
+      Predicate<String> valueValidator) {
+    this(name, defaultValue, inherited, animatable, valueExtractor, valueValidator, false);
   }
 
   /**
@@ -88,10 +84,10 @@ public class  Property<T> {
    * @param value string representation of css property value.
    * @return computed value.
    */
-  public T compute(Element element, String value) {
+  public Map<String, Object> compute(Element element, String value) {
     Objects.requireNonNull(element);
 
-    T computedValue = null;
+    Map<String, Object> computedValue = null;
     if (value == null) {
       computedValue = computeAbsent(element);
     } else {
@@ -120,16 +116,21 @@ public class  Property<T> {
     return computedValue;
   }
 
-  public T computeAbsent(Element element) {
+  public Map<String, Object> computeAbsent(Element element) {
     return inherited() ? this.inheritedValue(element) : defaultComputedValue();
   }
 
-  public T inheritedValue(Element element) {
-    NodeStyle parentStyle = StyleUtils.getParentCalculatedStyle(element);
-    return parentStyle != null ? valueGetter.apply(parentStyle) : defaultComputedValue();
+  public Map<String, Object> inheritedValue(Element element) {
+    var parentStyle = StyleUtils.getParentCalculatedStyle(element);
+    if (shorthand) {
+      return Map.of();
+    }
+    return parentStyle != null
+        ? Map.of(this.name, parentStyle.get(this.name))
+        : defaultComputedValue();
   }
 
-  public T defaultComputedValue() {
-    return valueExtractor.apply(defaultValue);
+  public Map<String, Object> defaultComputedValue() {
+    return shorthand ? Map.of() : valueExtractor.apply(defaultValue);
   }
 }

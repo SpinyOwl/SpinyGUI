@@ -2,29 +2,24 @@ package com.spinyowl.spinygui.core.style.stylesheet;
 
 import static com.spinyowl.spinygui.core.style.stylesheet.Property.INHERIT;
 import static com.spinyowl.spinygui.core.style.stylesheet.Property.INITIAL;
+import com.spinyowl.spinygui.core.node.Element;
+import java.util.Map;
 import lombok.Data;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 
-/**
- * Declaration is combination of property and it's value.
- *
- * @param <T> type of property value.
- */
+/** Declaration is combination of property and it's value. */
 @Data
 @RequiredArgsConstructor
-public class Declaration<T> {
+public class Declaration {
 
   /** Property definition. */
-  @NonNull private final Property<T> property;
+  @NonNull private final Property property;
 
   /** Current value of css property. Could not be null. */
   @NonNull protected String value;
 
   private boolean enabled = true;
-
-  // TODO: Need to store extracted value to not apply extraction each time. Should be refreshed if
-  //       string value changed.
 
   /** Used to reset property value to default. */
   public void resetToDefault() {
@@ -37,6 +32,10 @@ public class Declaration<T> {
 
   public boolean isInherit() {
     return INHERIT.equalsIgnoreCase(value);
+  }
+
+  public Map<String, Object> compute(Element element) {
+    return property.compute(element, value);
   }
 
   @Override

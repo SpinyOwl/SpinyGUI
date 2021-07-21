@@ -18,6 +18,7 @@ import com.spinyowl.spinygui.core.style.stylesheet.selector.simple.AllSelector;
 import com.spinyowl.spinygui.core.style.stylesheet.selector.simple.ClassAttributeSelector;
 import com.spinyowl.spinygui.core.style.stylesheet.selector.simple.ElementSelector;
 import com.spinyowl.spinygui.core.style.stylesheet.selector.simple.IdAttributeSelector;
+import java.util.List;
 import java.util.StringJoiner;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -30,8 +31,8 @@ import org.antlr.v4.runtime.CommonTokenStream;
 @RequiredArgsConstructor
 public final class DefaultStyleSheetParser implements StyleSheetParser {
 
-  @NonNull
-  private final CSS3BaseVisitor<StyleSheet> styleSheetVisitor;
+  @NonNull private final CSS3BaseVisitor<StyleSheet> styleSheetVisitor;
+  @NonNull private final CSS3BaseVisitor<List<Declaration>> declarationListVisitor;
 
   /**
    * Used to create StyleSheet from css.
@@ -39,7 +40,7 @@ public final class DefaultStyleSheetParser implements StyleSheetParser {
    * @param css css source
    * @return StyleSheet
    */
-  public StyleSheet fromCss(@NonNull String css) {
+  public StyleSheet parseStyleSheet(@NonNull String css) {
     try {
       var charStream = CharStreams.fromString(css);
       var lexer = new CSS3Lexer(charStream);
@@ -55,25 +56,51 @@ public final class DefaultStyleSheetParser implements StyleSheetParser {
     }
   }
 
+  @Override
+  public List<Declaration> parseDeclarations(String css) {
+    try {
+      var charStream = CharStreams.fromString(css);
+      var lexer = new CSS3Lexer(charStream);
+
+      var tokenStream = new CommonTokenStream(lexer);
+      var parser = new CSS3Parser(tokenStream);
+      return declarationListVisitor.visit(parser.declarationList());
+    } catch (Exception e) {
+      throw new ParseException(e);
+    }
+  }
+
   public String toCss(@NonNull StyleSheet styleSheet) {
     var builder = new StringBuilder();
     for (RuleSet ruleSet : styleSheet.ruleSets()) {
-      var selectorJoiner = new StringJoiner(", ", "", " ");
-      for (Selector selector : ruleSet.selectors()) {
-        selectorJoiner.add(getSelectorString(selector));
-      }
-      builder.append(selectorJoiner).append("{");
 
-      var declarationsJoiner = new StringJoiner(";\n", "\n", ";\n");
-      for (Declaration<?> declaration : ruleSet.declarations()) {
-        declarationsJoiner.add("  " + (declaration.property().name() + ": " + declaration.value()));
-      }
-      builder.append(declarationsJoiner).append("}\n");
+      builder.append(toCss(ruleSet)).append("\n");
     }
     return builder.toString();
   }
 
-  private String getSelectorString(Selector selector) {
+  public String toCss(RuleSet ruleSet) {
+    StringBuilder builder = new StringBuilder();
+    var selectorJoiner = new StringJoiner(", ", "", " ");
+    for (Selector selector : ruleSet.selectors()) {
+      selectorJoiner.add(getSelectorString(selector));
+    }
+    builder.append(selectorJoiner).append("{");
+
+    var declarationsJoiner = new StringJoiner(";\n", "\n", ";\n");
+    for (Declaration declaration : ruleSet.declarations()) {
+      declarationsJoiner.add("  " + toCss(declaration));
+    }
+    String declarations = declarationsJoiner.toString();
+    builder.append(declarations).append("}");
+    return builder.toString();
+  }
+
+  public String toCss(Declaration declaration) {
+    return declaration.property().name() + ": " + declaration.value();
+  }
+
+  String getSelectorString(Selector selector) {
     if (selector instanceof AdjacentSiblingSelector adjacentSelector) {
       return getSelectorString(adjacentSelector.first()) + " + "
           + getSelectorString(adjacentSelector.second());

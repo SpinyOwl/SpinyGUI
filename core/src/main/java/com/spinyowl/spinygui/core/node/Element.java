@@ -4,7 +4,7 @@ import static com.spinyowl.spinygui.core.util.Reference.containsReference;
 import com.spinyowl.spinygui.core.event.Event;
 import com.spinyowl.spinygui.core.event.EventTarget;
 import com.spinyowl.spinygui.core.event.listener.EventListener;
-import com.spinyowl.spinygui.core.style.NodeStyle;
+import com.spinyowl.spinygui.core.style.CalculatedStyle;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -33,15 +33,15 @@ public class Element extends Node implements EventTarget {
   @Setter(AccessLevel.NONE)
   private Node lastChild;
 
-  /** Used to overload styles from stylesheet. */
-  @Setter(AccessLevel.NONE)
-  private final NodeStyle style = new NodeStyle();
-  /** Styles from stylesheet. Updated by style manager every frame state changes. */
-  @Setter(AccessLevel.NONE)
-  private final NodeStyle calculatedStyle = new NodeStyle();
+  /**
+   * Used to store all calculated styles (from defaults, stylesheets and element style attribute).
+   */
+  private final CalculatedStyle calculatedStyle = new CalculatedStyle(this);
+
   /** Node attributes. */
   @Setter(AccessLevel.NONE)
   private final Map<String, String> attributes = new HashMap<>();
+
   /**
    * Map of listeners attached that should be attached for node and processed if any event
    * performed.
@@ -54,22 +54,10 @@ public class Element extends Node implements EventTarget {
     super(nodeName);
   }
 
-  /**
-   * Shorthand to set attribute.
-   *
-   * @param key attribute name.
-   * @param value attribute value.
-   */
   public void setAttribute(String key, String value) {
     attributes.put(key, value);
   }
 
-  /**
-   * Shorthand to get attribute.
-   *
-   * @param key attribute name.
-   * @return attribute value.
-   */
   public String getAttribute(String key) {
     return attributes.get(key);
   }
@@ -82,13 +70,6 @@ public class Element extends Node implements EventTarget {
     return !attributes.isEmpty();
   }
 
-  /**
-   * Used to add event listener for specified event class.
-   *
-   * @param eventClass event class.
-   * @param listener event listener to add.
-   * @param <T> type of event for which adding event listener.
-   */
   public <T extends Event> void addListener(Class<T> eventClass, EventListener<T> listener) {
     getOrCreate(eventClass).add(listener);
   }
@@ -97,13 +78,6 @@ public class Element extends Node implements EventTarget {
     getOrCreate(eventClass).remove(listener);
   }
 
-  /**
-   * Returns listener list for specified event class.
-   *
-   * @param eventClass event class.
-   * @param <T> type of event.
-   * @return list of event listeners for specified event class.
-   */
   public <T extends Event> List<EventListener<T>> getListeners(Class<T> eventClass) {
     return getOrCreate(eventClass);
   }
@@ -123,11 +97,6 @@ public class Element extends Node implements EventTarget {
     return listenerMap.containsKey(eventClass) && !listenerMap.get(eventClass).isEmpty();
   }
 
-  /**
-   * Used to remove child node.
-   *
-   * @param node node to remove.
-   */
   @Override
   public void removeChild(@NonNull Node node) {
     unlinkSiblings(node);
@@ -147,11 +116,6 @@ public class Element extends Node implements EventTarget {
     }
   }
 
-  /**
-   * Used to add child node.
-   *
-   * @param node node to add.
-   */
   @Override
   public void addChild(@NonNull Node node) {
     if (node == this || containsReference(childNodes, node)) {
@@ -182,11 +146,6 @@ public class Element extends Node implements EventTarget {
     lastChild = node;
   }
 
-  /**
-   * Used to get child nodes.
-   *
-   * @return list of child nodes.
-   */
   @Override
   public List<Node> childNodes() {
     return Collections.unmodifiableList(childNodes);
@@ -211,5 +170,13 @@ public class Element extends Node implements EventTarget {
       previous = previous.previousSibling();
     }
     return (Element) previous;
+  }
+
+  public String style() {
+    return attributes().get("style");
+  }
+
+  public void style(String style) {
+    attributes().put("style", style);
   }
 }
