@@ -68,7 +68,7 @@ public class OtherMain {
     PropertyStore propertyStore = new DefaultPropertyStore();
     PropertiesScanner.fillPropertyStore(propertyStore);
     StyleSheetParser parser = createParser(propertyStore);
-    var stylesheet = parser.fromCss(css);
+    var stylesheet = parser.parseStyleSheet(css);
 
     Element testLabel = label(Map.of("class", "test"));
 
@@ -92,7 +92,7 @@ public class OtherMain {
       log.info(Arrays.toString(rule.selectors().toArray()) + " --- " + rule.specificity(testLabel));
     }
 
-    StyleManager styleManager = new StyleManagerImpl();
+    StyleManager styleManager = new StyleManagerImpl(propertyStore, parser);
     styleManager.needRecalculate(frame);
     styleManager.recalculate();
 
@@ -124,7 +124,7 @@ public class OtherMain {
     PropertyStore propertyStore = new DefaultPropertyStore();
     PropertiesScanner.fillPropertyStore(propertyStore);
     StyleSheetParser parser = createParser(propertyStore);
-    var stylesheet = parser.fromCss(css);
+    var stylesheet = parser.parseStyleSheet(css);
 
     var xml = """
               <frame>

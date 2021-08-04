@@ -1,9 +1,9 @@
 package com.spinyowl.spinygui.core.style.stylesheet.property.flex;
 
-import static com.spinyowl.spinygui.core.style.stylesheet.Properties.JUSTIFY_CONTENT;
 import com.spinyowl.spinygui.core.style.stylesheet.Property;
 import com.spinyowl.spinygui.core.style.types.flex.JustifyContent;
-import java.util.Map;
+
+import static com.spinyowl.spinygui.core.style.stylesheet.Properties.JUSTIFY_CONTENT;
 
 public class JustifyContentProperty extends Property {
 
@@ -13,7 +13,8 @@ public class JustifyContentProperty extends Property {
         "flex-start",
         !INHERITED,
         !ANIMATABLE,
-        justifyContent -> Map.of(JUSTIFY_CONTENT, JustifyContent.find(justifyContent)),
+        (justifyContent, styles) ->
+            styles.put(JUSTIFY_CONTENT, JustifyContent.find(justifyContent)),
         JustifyContent::contains);
   }
 }

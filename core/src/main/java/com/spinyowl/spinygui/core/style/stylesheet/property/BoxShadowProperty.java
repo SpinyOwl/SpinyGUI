@@ -1,13 +1,15 @@
 package com.spinyowl.spinygui.core.style.stylesheet.property;
 
-import static com.spinyowl.spinygui.core.style.stylesheet.Properties.BOX_SHADOW;
 import com.spinyowl.spinygui.core.style.stylesheet.Property;
 import com.spinyowl.spinygui.core.style.stylesheet.extractor.ValueExtractor;
 import com.spinyowl.spinygui.core.style.stylesheet.extractor.ValueExtractors;
 import com.spinyowl.spinygui.core.style.types.BoxShadow;
 import com.spinyowl.spinygui.core.style.types.Color;
 import com.spinyowl.spinygui.core.style.types.length.Length;
+
 import java.util.Map;
+
+import static com.spinyowl.spinygui.core.style.stylesheet.Properties.BOX_SHADOW;
 
 public class BoxShadowProperty extends Property {
 
@@ -65,37 +67,40 @@ public class BoxShadowProperty extends Property {
     return lengthArgs >= 2 && lengthArgs <= 4 && insetArgs <= 1 && colorArgs <= 1;
   }
 
-  private static Map<String, Object> extract(String s) {
-    if (NONE.equals(s)) return Map.of(BOX_SHADOW, new BoxShadow());
+  private static void extract(String s, Map<String, Object> styles) {
+    if (NONE.equals(s)) {
+      styles.put(BOX_SHADOW, BoxShadow.NO_SHADOW);
+    } else {
 
-    String[] args = s.split("\\s+");
+      String[] args = s.split("\\s+");
 
-    var shadow = new BoxShadow();
-    var shadowArgs = new Float[4];
-    int shadowArgIndex = -1;
-    Color color = null;
-    Boolean inset = null;
+      var shadow = new BoxShadow();
+      var shadowArgs = new Float[4];
+      int shadowArgIndex = -1;
+      Color color = null;
+      Boolean inset = null;
 
-    for (String arg : args) {
-      if (INSET.equals(arg)) {
-        inset = Boolean.TRUE;
-      } else if (lengthValueExtractor.isValid(arg)) {
-        shadowArgs[++shadowArgIndex] = lengthValueExtractor.extract(arg).value().floatValue();
-      } else if (colorValueExtractor.isValid(arg)) {
-        color = colorValueExtractor.extract(arg);
+      for (String arg : args) {
+        if (INSET.equals(arg)) {
+          inset = Boolean.TRUE;
+        } else if (lengthValueExtractor.isValid(arg)) {
+          shadowArgs[++shadowArgIndex] = lengthValueExtractor.extract(arg).value().floatValue();
+        } else if (colorValueExtractor.isValid(arg)) {
+          color = colorValueExtractor.extract(arg);
+        }
       }
-    }
-    // @formatter:off
-    if (color == null) color = Color.BLACK;
-    if (inset == null) inset = Boolean.FALSE;
-    // @formatter:on
-    shadow.hOffset(shadowArgs[0]);
-    shadow.vOffset(shadowArgs[1]);
-    shadow.blur(shadowArgs[2] == null ? 0f : shadowArgs[2]);
-    shadow.spread(shadowArgs[3]);
-    shadow.color(color);
-    shadow.inset(inset);
+      // @formatter:off
+      if (color == null) color = Color.BLACK;
+      if (inset == null) inset = Boolean.FALSE;
+      // @formatter:on
+      shadow.hOffset(shadowArgs[0]);
+      shadow.vOffset(shadowArgs[1]);
+      shadow.blur(shadowArgs[2] == null ? 0f : shadowArgs[2]);
+      shadow.spread(shadowArgs[3]);
+      shadow.color(color);
+      shadow.inset(inset);
 
-    return Map.of(BOX_SHADOW, shadow);
+      styles.put(BOX_SHADOW, shadow);
+    }
   }
 }

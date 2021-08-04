@@ -6,6 +6,7 @@ import java.util.Objects;
 import java.util.Set;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.NonNull;
 
 /** CSS white-space. */
 @Getter
@@ -57,8 +58,7 @@ public final class WhiteSpace {
    * @param name name of white-space element.
    * @return new white-space element (or existing one).
    */
-  public static WhiteSpace create(String name) {
-    Objects.requireNonNull(name);
+  public static WhiteSpace create(@NonNull String name) {
     return VALUES.computeIfAbsent(name.toLowerCase(), WhiteSpace::new);
   }
 
@@ -69,8 +69,7 @@ public final class WhiteSpace {
    * @param name name of white-space element.
    * @return existing white-space element or null.
    */
-  public static WhiteSpace find(String name) {
-    Objects.requireNonNull(name);
+  public static WhiteSpace find(@NonNull String name) {
     return VALUES.get(name.toLowerCase());
   }
 
@@ -89,10 +88,7 @@ public final class WhiteSpace {
    * @param name white-space name.
    * @return true if there is a white-space value wth specified name.
    */
-  public static boolean contains(String name) {
-    if (name == null) {
-      return false;
-    }
+  public static boolean contains(@NonNull String name) {
     return values().stream().map(WhiteSpace::name).anyMatch(v -> v.equalsIgnoreCase(name));
   }
 

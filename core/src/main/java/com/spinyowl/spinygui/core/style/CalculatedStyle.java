@@ -100,7 +100,7 @@ public class CalculatedStyle {
   /** List of rulesets that applicable to element, sorted by specificity */
   private List<RuleSet> rules = List.of();
 
-  private Map<String, Object> styles;
+  private final Map<String, Object> styles = new HashMap<>();
 
   /**
    * Used to update list of rules.
@@ -111,13 +111,11 @@ public class CalculatedStyle {
     if (!this.rules.equals(rules)) {
       this.rules = List.copyOf(rules);
 
-      Map<String, Object> map = new HashMap<>();
       for (RuleSet rule : rules) {
         for (Declaration declaration : rule.declarations()) {
-          map.putAll(declaration.compute(element));
+          declaration.compute(element, styles);
         }
       }
-      styles = map;
     }
   }
 
@@ -136,7 +134,7 @@ public class CalculatedStyle {
    * @return map of property key to calculated property values.
    */
   public Map<String, Object> styles() {
-    if (styles == null) {
+    if (styles.isEmpty()) {
       rules(rules);
     }
     return styles;
@@ -152,6 +150,16 @@ public class CalculatedStyle {
   @SuppressWarnings("unchecked")
   public <T> T get(String property) {
     return (T) styles().get(property);
+  }
+
+  /**
+   * Used to get property value by property key with automatic cast to specific type.
+   *
+   * @param property property name to get.
+   * @return property value.
+   */
+  public Object getSafe(String property) {
+    return styles().get(property);
   }
 
   public Color color() {

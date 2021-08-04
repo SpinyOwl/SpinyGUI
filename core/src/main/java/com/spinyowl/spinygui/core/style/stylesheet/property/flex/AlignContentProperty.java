@@ -1,9 +1,9 @@
 package com.spinyowl.spinygui.core.style.stylesheet.property.flex;
 
-import static com.spinyowl.spinygui.core.style.stylesheet.Properties.ALIGN_CONTENT;
 import com.spinyowl.spinygui.core.style.stylesheet.Property;
 import com.spinyowl.spinygui.core.style.types.flex.AlignContent;
-import java.util.Map;
+
+import static com.spinyowl.spinygui.core.style.stylesheet.Properties.ALIGN_CONTENT;
 
 public class AlignContentProperty extends Property {
 
@@ -13,7 +13,7 @@ public class AlignContentProperty extends Property {
         "stretch",
         !INHERITED,
         !ANIMATABLE,
-        alignContent -> Map.of(ALIGN_CONTENT, AlignContent.find(alignContent)),
+        (alignContent, styles) -> styles.put(ALIGN_CONTENT, AlignContent.find(alignContent)),
         AlignContent::contains);
   }
 }

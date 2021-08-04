@@ -1,11 +1,11 @@
 package com.spinyowl.spinygui.core.style.stylesheet.property.position;
 
-import static com.spinyowl.spinygui.core.style.stylesheet.Properties.RIGHT;
 import com.spinyowl.spinygui.core.style.stylesheet.Property;
 import com.spinyowl.spinygui.core.style.stylesheet.extractor.ValueExtractor;
 import com.spinyowl.spinygui.core.style.stylesheet.extractor.ValueExtractors;
 import com.spinyowl.spinygui.core.style.types.length.Unit;
-import java.util.Map;
+
+import static com.spinyowl.spinygui.core.style.stylesheet.Properties.RIGHT;
 
 public class RightProperty extends Property {
   private static final ValueExtractor<Unit> extractor = ValueExtractors.of(Unit.class);
@@ -16,7 +16,7 @@ public class RightProperty extends Property {
         "auto",
         !INHERITED,
         ANIMATABLE,
-        value -> Map.of(RIGHT, extractor.extract(value)),
+        (value, styles) -> styles.put(RIGHT, extractor.extract(value)),
         extractor::isValid);
   }
 }

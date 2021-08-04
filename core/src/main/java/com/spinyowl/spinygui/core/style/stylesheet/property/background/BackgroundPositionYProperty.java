@@ -1,12 +1,13 @@
 package com.spinyowl.spinygui.core.style.stylesheet.property.background;
 
-import static com.spinyowl.spinygui.core.style.stylesheet.Properties.BACKGROUND_POSITION_Y;
 import com.spinyowl.spinygui.core.style.stylesheet.Property;
 import com.spinyowl.spinygui.core.style.stylesheet.extractor.ValueExtractor;
 import com.spinyowl.spinygui.core.style.stylesheet.extractor.ValueExtractors;
 import com.spinyowl.spinygui.core.style.types.length.Length;
+
 import java.util.List;
-import java.util.Map;
+
+import static com.spinyowl.spinygui.core.style.stylesheet.Properties.BACKGROUND_POSITION_Y;
 
 public class BackgroundPositionYProperty extends Property {
 
@@ -22,7 +23,7 @@ public class BackgroundPositionYProperty extends Property {
         "0%",
         !INHERITED,
         ANIMATABLE,
-        value -> Map.of(BACKGROUND_POSITION_Y,extract(value)),
+        (value, styles) -> styles.put(BACKGROUND_POSITION_Y,extract(value)),
         BackgroundPositionYProperty::test);
   }
 

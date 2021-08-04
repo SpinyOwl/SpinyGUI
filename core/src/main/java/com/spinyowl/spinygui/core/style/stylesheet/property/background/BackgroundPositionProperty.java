@@ -1,14 +1,14 @@
 package com.spinyowl.spinygui.core.style.stylesheet.property.background;
 
-import static com.spinyowl.spinygui.core.style.stylesheet.Properties.BACKGROUND_POSITION;
-import static com.spinyowl.spinygui.core.style.stylesheet.Properties.BACKGROUND_POSITION_X;
-import static com.spinyowl.spinygui.core.style.stylesheet.Properties.BACKGROUND_POSITION_Y;
 import com.spinyowl.spinygui.core.style.stylesheet.Property;
 import com.spinyowl.spinygui.core.style.stylesheet.extractor.ValueExtractor;
 import com.spinyowl.spinygui.core.style.stylesheet.extractor.ValueExtractors;
 import com.spinyowl.spinygui.core.style.types.length.Length;
+
 import java.util.List;
 import java.util.Map;
+
+import static com.spinyowl.spinygui.core.style.stylesheet.Properties.*;
 
 public class BackgroundPositionProperty extends Property {
 
@@ -53,20 +53,14 @@ public class BackgroundPositionProperty extends Property {
     }
   }
 
-  private static Map<String, Object> extract(String value) {
+  protected static void extract(String value, Map<String, Object> styles) {
     String[] values = value.split(SPLITERATOR);
     if (values.length == 1) {
-      return Map.of(
-          BACKGROUND_POSITION_X,
-          extract(values[0], X_VALUES),
-          BACKGROUND_POSITION_Y,
-          Length.percent(50));
+      styles.put(BACKGROUND_POSITION_X, extract(values[0], X_VALUES));
+      styles.put(BACKGROUND_POSITION_Y, Length.percent(50));
     } else {
-      return Map.of(
-          BACKGROUND_POSITION_X,
-          extract(values[0], X_VALUES),
-          BACKGROUND_POSITION_Y,
-          extract(values[1], Y_VALUES));
+      styles.put(BACKGROUND_POSITION_X, extract(values[0], X_VALUES));
+      styles.put(BACKGROUND_POSITION_Y, extract(values[1], Y_VALUES));
     }
   }
 }

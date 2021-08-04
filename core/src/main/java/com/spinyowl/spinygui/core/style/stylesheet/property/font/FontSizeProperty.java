@@ -1,12 +1,13 @@
 package com.spinyowl.spinygui.core.style.stylesheet.property.font;
 
-import static com.spinyowl.spinygui.core.style.stylesheet.Properties.FONT_SIZE;
 import com.spinyowl.spinygui.core.style.stylesheet.Property;
 import com.spinyowl.spinygui.core.style.stylesheet.extractor.ValueExtractor;
 import com.spinyowl.spinygui.core.style.stylesheet.extractor.ValueExtractors;
 import com.spinyowl.spinygui.core.style.types.length.Length;
+
 import java.util.List;
-import java.util.Map;
+
+import static com.spinyowl.spinygui.core.style.stylesheet.Properties.FONT_SIZE;
 
 public class FontSizeProperty extends Property {
 
@@ -29,7 +30,7 @@ public class FontSizeProperty extends Property {
         MEDIUM,
         INHERITED,
         ANIMATABLE,
-        value -> Map.of(FONT_SIZE, extract(value)),
+        (value, styles) -> styles.put(FONT_SIZE, extract(value)),
         FontSizeProperty::test);
   }
 

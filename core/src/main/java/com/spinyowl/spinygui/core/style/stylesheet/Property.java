@@ -2,20 +2,16 @@ package com.spinyowl.spinygui.core.style.stylesheet;
 
 import com.spinyowl.spinygui.core.node.Element;
 import com.spinyowl.spinygui.core.style.stylesheet.util.StyleUtils;
-import java.util.Map;
-import java.util.Objects;
-import java.util.function.Function;
-import java.util.function.Predicate;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
 import lombok.extern.slf4j.Slf4j;
+
+import java.util.Map;
+import java.util.function.BiConsumer;
+import java.util.function.Predicate;
 
 /**
  * Root class that describes property. Should be used to create new classes which implement {@link
- * Property#compute(Element, String)}}.
+ * Property#compute(Element, String, Map)} )}}.
  */
 @Slf4j
 @Getter
@@ -59,20 +55,21 @@ public class Property {
   /** Defines if css property could be animated. */
   protected final boolean animatable;
 
-  /** Used to extract and compute value from string representation. */
-  @NonNull protected final Function<String, Map<String, Object>> valueExtractor;
+  /** Used to extract and compute value from string representation and put to style map. */
+  @NonNull protected final BiConsumer<String, Map<String, Object>> valueExtractor;
 
   /** Used to validate string value before extraction. */
   @NonNull protected final Predicate<String> valueValidator;
 
   protected final boolean shorthand;
 
+
   public Property(
       String name,
       String defaultValue,
       boolean inherited,
       boolean animatable,
-      Function<String, Map<String, Object>> valueExtractor,
+      BiConsumer<String, Map<String, Object>> valueExtractor,
       Predicate<String> valueValidator) {
     this(name, defaultValue, inherited, animatable, valueExtractor, valueValidator, false);
   }
@@ -82,55 +79,52 @@ public class Property {
    *
    * @param element element to update calculated style.
    * @param value string representation of css property value.
-   * @return computed value.
    */
-  public Map<String, Object> compute(Element element, String value) {
-    Objects.requireNonNull(element);
-
-    Map<String, Object> computedValue = null;
+  public void compute(@NonNull Element element, String value, @NonNull Map<String, Object> styles) {
     if (value == null) {
-      computedValue = computeAbsent(element);
+      computeAbsent(element, styles);
+    } else if (INITIAL.equalsIgnoreCase(value)) {
+      valueExtractor.accept(defaultValue, styles);
+    } else if (INHERIT.equalsIgnoreCase(value)) {
+      inheritedValue(element, styles);
+    } else if (valueValidator.test(value)) {
+      try {
+        valueExtractor.accept(value, styles);
+      } catch (Exception t) {
+        log.error(
+            "Error during extracting value from '{}' with '{}' extractor. {}",
+            value,
+            valueExtractor,
+            t.getMessage());
+
+        // in case if we have exception - recalculating value.
+        computeAbsent(element, styles);
+      }
+    }
+  }
+
+  public void computeAbsent(Element element, @NonNull Map<String, Object> styles) {
+    if (inherited()) {
+      this.inheritedValue(element, styles);
     } else {
-
-      if (INITIAL.equalsIgnoreCase(value)) {
-        computedValue = valueExtractor.apply(defaultValue);
-      } else if (INHERIT.equalsIgnoreCase(value)) {
-        computedValue = inheritedValue(element);
-      } else if (valueValidator.test(value)) {
-        try {
-          computedValue = valueExtractor.apply(value);
-        } catch (Exception t) {
-          log.error(
-              "Error during extracting value from '{}' with '{}' extractor. {}",
-              value,
-              valueExtractor,
-              t.getMessage());
-          computedValue = null;
-        }
-      }
-      // in case if we have some exception or value extractor returned null - recalculating value.
-      if (computedValue == null) {
-        computedValue = computeAbsent(element);
-      }
+      defaultComputedValue(styles);
     }
-    return computedValue;
   }
 
-  public Map<String, Object> computeAbsent(Element element) {
-    return inherited() ? this.inheritedValue(element) : defaultComputedValue();
-  }
-
-  public Map<String, Object> inheritedValue(Element element) {
+  public void inheritedValue(Element element, @NonNull Map<String, Object> styles) {
     var parentStyle = StyleUtils.getParentCalculatedStyle(element);
-    if (shorthand) {
-      return Map.of();
+    if (!shorthand) {
+      if (parentStyle != null) {
+        styles.put(this.name, parentStyle.getSafe(this.name));
+      } else {
+        defaultComputedValue(styles);
+      }
     }
-    return parentStyle != null
-        ? Map.of(this.name, parentStyle.get(this.name))
-        : defaultComputedValue();
   }
 
-  public Map<String, Object> defaultComputedValue() {
-    return shorthand ? Map.of() : valueExtractor.apply(defaultValue);
+  public void defaultComputedValue(@NonNull Map<String, Object> styles) {
+    if (!shorthand) {
+      valueExtractor.accept(defaultValue, styles);
+    }
   }
 }

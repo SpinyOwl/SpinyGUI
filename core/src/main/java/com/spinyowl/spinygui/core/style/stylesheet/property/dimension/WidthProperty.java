@@ -1,11 +1,11 @@
 package com.spinyowl.spinygui.core.style.stylesheet.property.dimension;
 
-import static com.spinyowl.spinygui.core.style.stylesheet.Properties.WIDTH;
 import com.spinyowl.spinygui.core.style.stylesheet.Property;
 import com.spinyowl.spinygui.core.style.stylesheet.extractor.ValueExtractor;
 import com.spinyowl.spinygui.core.style.stylesheet.extractor.ValueExtractors;
 import com.spinyowl.spinygui.core.style.types.length.Unit;
-import java.util.Map;
+
+import static com.spinyowl.spinygui.core.style.stylesheet.Properties.WIDTH;
 
 public class WidthProperty extends Property {
 
@@ -17,7 +17,7 @@ public class WidthProperty extends Property {
         "auto",
         !INHERITED,
         ANIMATABLE,
-        value -> Map.of(WIDTH, extractor.extract(value)),
+        (value, styles) -> styles.put(WIDTH, extractor.extract(value)),
         extractor::isValid);
   }
 }

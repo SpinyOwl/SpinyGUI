@@ -1,12 +1,11 @@
 package com.spinyowl.spinygui.core.style.stylesheet.property.border.color;
 
-import static com.spinyowl.spinygui.core.style.stylesheet.Properties.BORDER_BOTTOM_COLOR;
-import static com.spinyowl.spinygui.core.style.stylesheet.property.border.color.BorderColorProperty.DEFAULT_VALUE;
 import com.spinyowl.spinygui.core.style.stylesheet.Property;
 import com.spinyowl.spinygui.core.style.stylesheet.extractor.ValueExtractor;
 import com.spinyowl.spinygui.core.style.stylesheet.extractor.ValueExtractors;
 import com.spinyowl.spinygui.core.style.types.Color;
-import java.util.Map;
+
+import static com.spinyowl.spinygui.core.style.stylesheet.Properties.BORDER_BOTTOM_COLOR;
 
 public class BorderBottomColorProperty extends Property {
 
@@ -18,7 +17,7 @@ public class BorderBottomColorProperty extends Property {
         BorderColorProperty.DEFAULT_VALUE,
         !INHERITED,
         ANIMATABLE,
-        value -> Map.of(BORDER_BOTTOM_COLOR, extractor.extract(value)),
+        (value, styles) -> styles.put(BORDER_BOTTOM_COLOR, extractor.extract(value)),
         extractor::isValid);
   }
 }

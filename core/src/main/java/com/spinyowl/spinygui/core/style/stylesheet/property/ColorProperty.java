@@ -1,11 +1,11 @@
 package com.spinyowl.spinygui.core.style.stylesheet.property;
 
-import static com.spinyowl.spinygui.core.style.stylesheet.Properties.COLOR;
 import com.spinyowl.spinygui.core.style.stylesheet.Property;
 import com.spinyowl.spinygui.core.style.stylesheet.extractor.ValueExtractor;
 import com.spinyowl.spinygui.core.style.stylesheet.extractor.ValueExtractors;
 import com.spinyowl.spinygui.core.style.types.Color;
-import java.util.Map;
+
+import static com.spinyowl.spinygui.core.style.stylesheet.Properties.COLOR;
 
 public class ColorProperty extends Property {
 
@@ -17,7 +17,7 @@ public class ColorProperty extends Property {
         "black",
         INHERITED,
         ANIMATABLE,
-        value -> Map.of(COLOR, extractor.extract(value)),
+        (value, styles) -> styles.put(COLOR, extractor.extract(value)),
         extractor::isValid);
   }
 }

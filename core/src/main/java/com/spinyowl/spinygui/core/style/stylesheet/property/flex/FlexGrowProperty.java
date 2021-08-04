@@ -1,10 +1,10 @@
 package com.spinyowl.spinygui.core.style.stylesheet.property.flex;
 
-import static com.spinyowl.spinygui.core.style.stylesheet.Properties.FLEX_GROW;
 import com.spinyowl.spinygui.core.style.stylesheet.Property;
 import com.spinyowl.spinygui.core.style.stylesheet.extractor.ValueExtractor;
 import com.spinyowl.spinygui.core.style.stylesheet.extractor.ValueExtractors;
-import java.util.Map;
+
+import static com.spinyowl.spinygui.core.style.stylesheet.Properties.FLEX_GROW;
 
 public class FlexGrowProperty extends Property {
 
@@ -16,7 +16,7 @@ public class FlexGrowProperty extends Property {
         "0",
         !INHERITED,
         !ANIMATABLE,
-        value -> Map.of(FLEX_GROW, extractor.extract(value)),
+        (value, styles) -> styles.put(FLEX_GROW, extractor.extract(value)),
         extractor::isValid);
   }
 }

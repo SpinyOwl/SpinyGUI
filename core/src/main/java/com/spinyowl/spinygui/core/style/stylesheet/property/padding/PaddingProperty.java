@@ -1,18 +1,16 @@
 package com.spinyowl.spinygui.core.style.stylesheet.property.padding;
 
-import static com.spinyowl.spinygui.core.style.stylesheet.Properties.PADDING;
-import static com.spinyowl.spinygui.core.style.stylesheet.Properties.PADDING_BOTTOM;
-import static com.spinyowl.spinygui.core.style.stylesheet.Properties.PADDING_LEFT;
-import static com.spinyowl.spinygui.core.style.stylesheet.Properties.PADDING_RIGHT;
-import static com.spinyowl.spinygui.core.style.stylesheet.Properties.PADDING_TOP;
-import static com.spinyowl.spinygui.core.style.stylesheet.util.StyleUtils.getOneFour;
-import static com.spinyowl.spinygui.core.style.stylesheet.util.StyleUtils.testMultipleValues;
 import com.spinyowl.spinygui.core.style.stylesheet.Property;
 import com.spinyowl.spinygui.core.style.stylesheet.extractor.ValueExtractor;
 import com.spinyowl.spinygui.core.style.stylesheet.extractor.ValueExtractors;
 import com.spinyowl.spinygui.core.style.types.length.Length;
+
 import java.util.Arrays;
 import java.util.Map;
+
+import static com.spinyowl.spinygui.core.style.stylesheet.Properties.*;
+import static com.spinyowl.spinygui.core.style.stylesheet.util.StyleUtils.setOneFour;
+import static com.spinyowl.spinygui.core.style.stylesheet.util.StyleUtils.testMultipleValues;
 
 public class PaddingProperty extends Property {
 
@@ -30,13 +28,14 @@ public class PaddingProperty extends Property {
         true);
   }
 
-  public static Map<String, Object> extract(String value) {
-    return getOneFour(
+  public static void extract(String value, Map<String, Object> styles) {
+    setOneFour(
         Arrays.stream(value.split("\\s+")).map(lengthValueExtractor::extract).toArray(),
         PADDING_TOP,
         PADDING_RIGHT,
         PADDING_BOTTOM,
-        PADDING_LEFT);
+        PADDING_LEFT,
+        styles);
   }
 
   public static boolean test(String value) {

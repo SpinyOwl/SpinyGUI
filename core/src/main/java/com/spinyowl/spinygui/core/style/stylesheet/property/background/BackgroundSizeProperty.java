@@ -1,14 +1,15 @@
 package com.spinyowl.spinygui.core.style.stylesheet.property.background;
 
-import static com.spinyowl.spinygui.core.style.stylesheet.Properties.BACKGROUND_SIZE;
-import static com.spinyowl.spinygui.core.style.stylesheet.util.StyleUtils.testMultipleValues;
 import com.spinyowl.spinygui.core.style.stylesheet.Property;
 import com.spinyowl.spinygui.core.style.stylesheet.extractor.ValueExtractor;
 import com.spinyowl.spinygui.core.style.stylesheet.extractor.ValueExtractors;
 import com.spinyowl.spinygui.core.style.types.background.BackgroundSize;
 import com.spinyowl.spinygui.core.style.types.length.Unit;
+
 import java.util.List;
-import java.util.Map;
+
+import static com.spinyowl.spinygui.core.style.stylesheet.Properties.BACKGROUND_SIZE;
+import static com.spinyowl.spinygui.core.style.stylesheet.util.StyleUtils.testMultipleValues;
 
 public class BackgroundSizeProperty extends Property {
 
@@ -23,7 +24,7 @@ public class BackgroundSizeProperty extends Property {
         "auto",
         !INHERITED,
         ANIMATABLE,
-        value -> Map.of(BACKGROUND_SIZE, extract(value)),
+        (value, styles) -> styles.put(BACKGROUND_SIZE, extract(value)),
         BackgroundSizeProperty::test);
   }
 

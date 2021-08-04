@@ -16,8 +16,7 @@ public final class StyleUtils {
 
   private StyleUtils() {}
 
-  public static CalculatedStyle getParentCalculatedStyle(Element element) {
-    Objects.requireNonNull(element);
+  public static CalculatedStyle getParentCalculatedStyle(@NonNull Element element) {
     var parent = element.parent();
     if (parent == null) {
       return null;
@@ -114,5 +113,39 @@ public final class StyleUtils {
           return Map.of(top, values[0], right, values[1], bottom, values[2], left, values[3]);
         }
     }
+  }
+
+  public static void setOneFour(
+      @NonNull Object[] values,
+      @NonNull String top,
+      @NonNull String right,
+      @NonNull String bottom,
+      @NonNull String left,
+      @NonNull Map<String, Object> styles) {
+    if (values.length == 1) {
+      setFour(styles, top, values[0], right, values[0], bottom, values[0], left, values[0]);
+    } else if (values.length == 2) {
+      setFour(styles, top, values[0], right, values[1], bottom, values[0], left, values[1]);
+    } else if (values.length == 3) {
+      setFour(styles, top, values[0], right, values[1], bottom, values[2], left, values[1]);
+    } else if (values.length > 3) {
+      setFour(styles, top, values[0], right, values[1], bottom, values[2], left, values[3]);
+    }
+  }
+
+  private static void setFour(
+      Map<String, Object> styles,
+      String top,
+      Object topValue,
+      String right,
+      Object rightValue,
+      String bottom,
+      Object bottomValue,
+      String left,
+      Object leftValue) {
+    styles.put(top, topValue);
+    styles.put(right, rightValue);
+    styles.put(bottom, bottomValue);
+    styles.put(left, leftValue);
   }
 }

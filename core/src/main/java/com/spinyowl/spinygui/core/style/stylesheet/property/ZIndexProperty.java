@@ -1,10 +1,10 @@
 package com.spinyowl.spinygui.core.style.stylesheet.property;
 
-import static com.spinyowl.spinygui.core.style.stylesheet.Properties.Z_INDEX;
 import com.spinyowl.spinygui.core.style.stylesheet.Property;
 import com.spinyowl.spinygui.core.style.stylesheet.extractor.ValueExtractor;
 import com.spinyowl.spinygui.core.style.stylesheet.extractor.ValueExtractors;
-import java.util.Map;
+
+import static com.spinyowl.spinygui.core.style.stylesheet.Properties.Z_INDEX;
 
 public class ZIndexProperty extends Property {
 
@@ -17,7 +17,8 @@ public class ZIndexProperty extends Property {
         AUTO,
         !INHERITED,
         !ANIMATABLE,
-        v -> Map.of(Z_INDEX, AUTO.equals(v) ? 0 : extractor.extract(v)),
+        (zIndex, styles) ->
+            styles.put(Z_INDEX, AUTO.equals(zIndex) ? 0 : extractor.extract(zIndex)),
         value -> AUTO.equals(value) || extractor.isValid(value));
   }
 }

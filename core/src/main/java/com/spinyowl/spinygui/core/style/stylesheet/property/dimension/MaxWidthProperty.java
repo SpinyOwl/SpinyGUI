@@ -1,11 +1,11 @@
 package com.spinyowl.spinygui.core.style.stylesheet.property.dimension;
 
-import static com.spinyowl.spinygui.core.style.stylesheet.Properties.MAX_WIDTH;
 import com.spinyowl.spinygui.core.style.stylesheet.Property;
 import com.spinyowl.spinygui.core.style.stylesheet.extractor.ValueExtractor;
 import com.spinyowl.spinygui.core.style.stylesheet.extractor.ValueExtractors;
 import com.spinyowl.spinygui.core.style.types.length.Length;
-import java.util.Map;
+
+import static com.spinyowl.spinygui.core.style.stylesheet.Properties.MAX_WIDTH;
 
 public class MaxWidthProperty extends Property {
 
@@ -17,8 +17,8 @@ public class MaxWidthProperty extends Property {
         "none",
         !INHERITED,
         ANIMATABLE,
-        value ->
-            Map.of(
+        (value, styles) ->
+            styles.put(
                 MAX_WIDTH,
                 "none".equalsIgnoreCase(value)
                     ? Length.pixel(Integer.MAX_VALUE)

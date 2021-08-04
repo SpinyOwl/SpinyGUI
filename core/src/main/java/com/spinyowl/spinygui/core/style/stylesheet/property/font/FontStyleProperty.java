@@ -1,9 +1,9 @@
 package com.spinyowl.spinygui.core.style.stylesheet.property.font;
 
-import static com.spinyowl.spinygui.core.style.stylesheet.Properties.FONT_STYLE;
 import com.spinyowl.spinygui.core.font.FontStyle;
 import com.spinyowl.spinygui.core.style.stylesheet.Property;
-import java.util.Map;
+
+import static com.spinyowl.spinygui.core.style.stylesheet.Properties.FONT_STYLE;
 
 public class FontStyleProperty extends Property {
 
@@ -13,7 +13,7 @@ public class FontStyleProperty extends Property {
         "normal",
         INHERITED,
         !ANIMATABLE,
-        fontStyle -> Map.of(FONT_STYLE, FontStyle.find(fontStyle)),
+        (fontStyle, styles) -> styles.put(FONT_STYLE, FontStyle.find(fontStyle)),
         FontStyle::contains);
   }
 }

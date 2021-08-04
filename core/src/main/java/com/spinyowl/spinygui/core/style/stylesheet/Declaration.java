@@ -34,8 +34,8 @@ public class Declaration {
     return INHERIT.equalsIgnoreCase(value);
   }
 
-  public Map<String, Object> compute(Element element) {
-    return property.compute(element, value);
+  public void compute(Element element, Map<String, Object> styles) {
+    property.compute(element, value, styles);
   }
 
   @Override

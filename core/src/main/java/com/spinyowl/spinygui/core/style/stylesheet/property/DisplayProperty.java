@@ -1,9 +1,9 @@
 package com.spinyowl.spinygui.core.style.stylesheet.property;
 
-import static com.spinyowl.spinygui.core.style.stylesheet.Properties.DISPLAY;
 import com.spinyowl.spinygui.core.style.stylesheet.Property;
 import com.spinyowl.spinygui.core.style.types.Display;
-import java.util.Map;
+
+import static com.spinyowl.spinygui.core.style.stylesheet.Properties.DISPLAY;
 
 public class DisplayProperty extends Property {
 
@@ -13,7 +13,7 @@ public class DisplayProperty extends Property {
         Display.FLEX.name(),
         INHERITED,
         ANIMATABLE,
-        display -> Map.of(DISPLAY, Display.find(display)),
+        (display, styles) -> styles.put(DISPLAY, Display.find(display)),
         Display::contains);
   }
 }

@@ -1,9 +1,9 @@
 package com.spinyowl.spinygui.core.style.stylesheet.property.font;
 
-import static com.spinyowl.spinygui.core.style.stylesheet.Properties.FONT_WEIGHT;
 import com.spinyowl.spinygui.core.font.FontWeight;
 import com.spinyowl.spinygui.core.style.stylesheet.Property;
-import java.util.Map;
+
+import static com.spinyowl.spinygui.core.style.stylesheet.Properties.FONT_WEIGHT;
 
 public class FontWeightProperty extends Property {
 
@@ -13,7 +13,7 @@ public class FontWeightProperty extends Property {
         "normal",
         INHERITED,
         ANIMATABLE,
-        fontWeight -> Map.of(FONT_WEIGHT, FontWeight.find(fontWeight)),
+        (fontWeight, styles) -> styles.put(FONT_WEIGHT, FontWeight.find(fontWeight)),
         FontWeight::contains);
   }
 }

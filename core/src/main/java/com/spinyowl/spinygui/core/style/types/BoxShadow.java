@@ -8,6 +8,8 @@ import lombok.NonNull;
 @NoArgsConstructor
 public class BoxShadow {
 
+  public static final BoxShadow NO_SHADOW = new BoxShadow();
+
   private boolean inset;
 
   private float hOffset;

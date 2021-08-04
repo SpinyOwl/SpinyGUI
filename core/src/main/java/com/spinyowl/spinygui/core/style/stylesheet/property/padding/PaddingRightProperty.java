@@ -1,11 +1,11 @@
 package com.spinyowl.spinygui.core.style.stylesheet.property.padding;
 
-import static com.spinyowl.spinygui.core.style.stylesheet.Properties.PADDING_RIGHT;
 import com.spinyowl.spinygui.core.style.stylesheet.Property;
 import com.spinyowl.spinygui.core.style.stylesheet.extractor.ValueExtractor;
 import com.spinyowl.spinygui.core.style.stylesheet.extractor.ValueExtractors;
 import com.spinyowl.spinygui.core.style.types.length.Length;
-import java.util.Map;
+
+import static com.spinyowl.spinygui.core.style.stylesheet.Properties.PADDING_RIGHT;
 
 public class PaddingRightProperty extends Property {
 
@@ -17,7 +17,7 @@ public class PaddingRightProperty extends Property {
         "0",
         !INHERITED,
         ANIMATABLE,
-        value -> Map.of(PADDING_RIGHT, extractor.extract(value)),
+        (value, styles) -> styles.put(PADDING_RIGHT, extractor.extract(value)),
         extractor::isValid);
   }
 }

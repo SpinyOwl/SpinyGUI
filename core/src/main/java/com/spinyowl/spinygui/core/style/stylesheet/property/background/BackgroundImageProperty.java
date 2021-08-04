@@ -1,8 +1,8 @@
 package com.spinyowl.spinygui.core.style.stylesheet.property.background;
 
-import static com.spinyowl.spinygui.core.style.stylesheet.Properties.BACKGROUND_IMAGE;
 import com.spinyowl.spinygui.core.style.stylesheet.Property;
-import java.util.Map;
+
+import static com.spinyowl.spinygui.core.style.stylesheet.Properties.BACKGROUND_IMAGE;
 
 /** Currently supports only url/none argument. */
 public class BackgroundImageProperty extends Property {
@@ -16,7 +16,7 @@ public class BackgroundImageProperty extends Property {
         NONE,
         !INHERITED,
         !ANIMATABLE,
-        value -> Map.of(BACKGROUND_IMAGE, extractUrl(value)),
+        (value, styles) -> styles.put(BACKGROUND_IMAGE, extractUrl(value)),
         BackgroundImageProperty::test);
   }
 

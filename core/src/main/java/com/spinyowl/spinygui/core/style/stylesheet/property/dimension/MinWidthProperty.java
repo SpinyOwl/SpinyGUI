@@ -1,11 +1,11 @@
 package com.spinyowl.spinygui.core.style.stylesheet.property.dimension;
 
-import static com.spinyowl.spinygui.core.style.stylesheet.Properties.MIN_WIDTH;
 import com.spinyowl.spinygui.core.style.stylesheet.Property;
 import com.spinyowl.spinygui.core.style.stylesheet.extractor.ValueExtractor;
 import com.spinyowl.spinygui.core.style.stylesheet.extractor.ValueExtractors;
 import com.spinyowl.spinygui.core.style.types.length.Length;
-import java.util.Map;
+
+import static com.spinyowl.spinygui.core.style.stylesheet.Properties.MIN_WIDTH;
 
 public class MinWidthProperty extends Property {
 
@@ -17,7 +17,7 @@ public class MinWidthProperty extends Property {
         "0px",
         !INHERITED,
         ANIMATABLE,
-        value -> Map.of(MIN_WIDTH, extractor.extract(value)),
+        (value, styles) -> styles.put(MIN_WIDTH, extractor.extract(value)),
         extractor::isValid);
   }
 }

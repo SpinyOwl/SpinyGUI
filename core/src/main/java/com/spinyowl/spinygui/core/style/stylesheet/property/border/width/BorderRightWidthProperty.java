@@ -1,9 +1,9 @@
 package com.spinyowl.spinygui.core.style.stylesheet.property.border.width;
 
+import com.spinyowl.spinygui.core.style.stylesheet.Property;
+
 import static com.spinyowl.spinygui.core.style.stylesheet.Properties.BORDER_RIGHT_WIDTH;
 import static com.spinyowl.spinygui.core.style.stylesheet.property.border.width.BorderWidthProperty.MEDIUM;
-import com.spinyowl.spinygui.core.style.stylesheet.Property;
-import java.util.Map;
 
 public class BorderRightWidthProperty extends Property {
 
@@ -13,7 +13,7 @@ public class BorderRightWidthProperty extends Property {
         MEDIUM,
         !INHERITED,
         ANIMATABLE,
-        value -> Map.of(BORDER_RIGHT_WIDTH, BorderWidthProperty.extractOne(value)),
+        (value, styles) -> styles.put(BORDER_RIGHT_WIDTH, BorderWidthProperty.extractOne(value)),
         BorderWidthProperty::testOne);
   }
 }

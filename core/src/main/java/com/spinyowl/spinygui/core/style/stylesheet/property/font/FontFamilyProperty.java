@@ -1,11 +1,12 @@
 package com.spinyowl.spinygui.core.style.stylesheet.property.font;
 
-import static com.spinyowl.spinygui.core.style.stylesheet.Properties.FONT_FAMILY;
 import com.spinyowl.spinygui.core.font.Font;
 import com.spinyowl.spinygui.core.style.stylesheet.Property;
+
 import java.util.Arrays;
-import java.util.Map;
 import java.util.stream.Collectors;
+
+import static com.spinyowl.spinygui.core.style.stylesheet.Properties.FONT_FAMILY;
 
 public class FontFamilyProperty extends Property {
 
@@ -15,8 +16,8 @@ public class FontFamilyProperty extends Property {
         "default",
         INHERITED,
         !ANIMATABLE,
-        v ->
-            Map.of(
+        (v, styles) ->
+            styles.put(
                 FONT_FAMILY,
                 Arrays.stream(v.split(",\\s+"))
                     .map(FontFamilyProperty::trimAndUnwrap)

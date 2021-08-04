@@ -1,18 +1,16 @@
 package com.spinyowl.spinygui.core.style.stylesheet.property.border.color;
 
-import static com.spinyowl.spinygui.core.style.stylesheet.Properties.BORDER_BOTTOM_COLOR;
-import static com.spinyowl.spinygui.core.style.stylesheet.Properties.BORDER_COLOR;
-import static com.spinyowl.spinygui.core.style.stylesheet.Properties.BORDER_LEFT_COLOR;
-import static com.spinyowl.spinygui.core.style.stylesheet.Properties.BORDER_RIGHT_COLOR;
-import static com.spinyowl.spinygui.core.style.stylesheet.Properties.BORDER_TOP_COLOR;
-import static com.spinyowl.spinygui.core.style.stylesheet.util.StyleUtils.getOneFour;
-import static com.spinyowl.spinygui.core.style.stylesheet.util.StyleUtils.testMultipleValues;
 import com.spinyowl.spinygui.core.style.stylesheet.Property;
 import com.spinyowl.spinygui.core.style.stylesheet.extractor.ValueExtractor;
 import com.spinyowl.spinygui.core.style.stylesheet.extractor.ValueExtractors;
 import com.spinyowl.spinygui.core.style.types.Color;
+
 import java.util.Arrays;
 import java.util.Map;
+
+import static com.spinyowl.spinygui.core.style.stylesheet.Properties.*;
+import static com.spinyowl.spinygui.core.style.stylesheet.util.StyleUtils.setOneFour;
+import static com.spinyowl.spinygui.core.style.stylesheet.util.StyleUtils.testMultipleValues;
 
 public class BorderColorProperty extends Property {
 
@@ -30,13 +28,14 @@ public class BorderColorProperty extends Property {
         true);
   }
 
-  private static Map<String, Object> extract(String value) {
-    return getOneFour(
+  protected static void extract(String value, Map<String, Object> styles) {
+    setOneFour(
         Arrays.stream(value.split("\\s+")).map(extractor::extract).toArray(Color[]::new),
         BORDER_TOP_COLOR,
         BORDER_RIGHT_COLOR,
         BORDER_BOTTOM_COLOR,
-        BORDER_LEFT_COLOR);
+        BORDER_LEFT_COLOR,
+        styles);
   }
 
   private static boolean test(String value) {

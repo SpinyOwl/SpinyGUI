@@ -1,18 +1,16 @@
 package com.spinyowl.spinygui.core.style.stylesheet.property.border.width;
 
-import static com.spinyowl.spinygui.core.style.stylesheet.Properties.BORDER_BOTTOM_WIDTH;
-import static com.spinyowl.spinygui.core.style.stylesheet.Properties.BORDER_LEFT_WIDTH;
-import static com.spinyowl.spinygui.core.style.stylesheet.Properties.BORDER_RIGHT_WIDTH;
-import static com.spinyowl.spinygui.core.style.stylesheet.Properties.BORDER_TOP_WIDTH;
-import static com.spinyowl.spinygui.core.style.stylesheet.Properties.BORDER_WIDTH;
-import static com.spinyowl.spinygui.core.style.stylesheet.util.StyleUtils.getOneFour;
-import static com.spinyowl.spinygui.core.style.stylesheet.util.StyleUtils.testMultipleValues;
 import com.spinyowl.spinygui.core.style.stylesheet.Property;
 import com.spinyowl.spinygui.core.style.stylesheet.extractor.ValueExtractor;
 import com.spinyowl.spinygui.core.style.stylesheet.extractor.ValueExtractors;
 import com.spinyowl.spinygui.core.style.types.length.Length;
+
 import java.util.Arrays;
 import java.util.Map;
+
+import static com.spinyowl.spinygui.core.style.stylesheet.Properties.*;
+import static com.spinyowl.spinygui.core.style.stylesheet.util.StyleUtils.setOneFour;
+import static com.spinyowl.spinygui.core.style.stylesheet.util.StyleUtils.testMultipleValues;
 
 public class BorderWidthProperty extends Property {
 
@@ -37,9 +35,13 @@ public class BorderWidthProperty extends Property {
         BorderWidthProperty::test, true);
   }
 
-  protected static Map<String, Object> extract(String value) {
-    return getOneFour(Arrays.stream(value.split("\\s+")).map(BorderWidthProperty::extractOne).toArray(),
-        BORDER_TOP_WIDTH,BORDER_RIGHT_WIDTH,BORDER_BOTTOM_WIDTH, BORDER_LEFT_WIDTH);
+  protected static void extract(String value, Map<String, Object> styles) {
+    setOneFour(Arrays.stream(value.split("\\s+")).map(BorderWidthProperty::extractOne).toArray(),
+        BORDER_TOP_WIDTH,
+            BORDER_RIGHT_WIDTH,
+            BORDER_BOTTOM_WIDTH,
+            BORDER_LEFT_WIDTH,
+            styles);
   }
 
   @SuppressWarnings("rawtypes")

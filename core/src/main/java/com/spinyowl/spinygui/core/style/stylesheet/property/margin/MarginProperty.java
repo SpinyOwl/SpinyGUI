@@ -1,18 +1,16 @@
 package com.spinyowl.spinygui.core.style.stylesheet.property.margin;
 
-import static com.spinyowl.spinygui.core.style.stylesheet.Properties.MARGIN;
-import static com.spinyowl.spinygui.core.style.stylesheet.Properties.MARGIN_BOTTOM;
-import static com.spinyowl.spinygui.core.style.stylesheet.Properties.MARGIN_LEFT;
-import static com.spinyowl.spinygui.core.style.stylesheet.Properties.MARGIN_RIGHT;
-import static com.spinyowl.spinygui.core.style.stylesheet.Properties.MARGIN_TOP;
-import static com.spinyowl.spinygui.core.style.stylesheet.util.StyleUtils.getOneFour;
-import static com.spinyowl.spinygui.core.style.stylesheet.util.StyleUtils.testMultipleValues;
 import com.spinyowl.spinygui.core.style.stylesheet.Property;
 import com.spinyowl.spinygui.core.style.stylesheet.extractor.ValueExtractor;
 import com.spinyowl.spinygui.core.style.stylesheet.extractor.ValueExtractors;
 import com.spinyowl.spinygui.core.style.types.length.Unit;
+
 import java.util.Arrays;
 import java.util.Map;
+
+import static com.spinyowl.spinygui.core.style.stylesheet.Properties.*;
+import static com.spinyowl.spinygui.core.style.stylesheet.util.StyleUtils.setOneFour;
+import static com.spinyowl.spinygui.core.style.stylesheet.util.StyleUtils.testMultipleValues;
 
 public class MarginProperty extends Property {
 
@@ -22,13 +20,14 @@ public class MarginProperty extends Property {
     super(MARGIN, "0", !INHERITED, ANIMATABLE, MarginProperty::extract, MarginProperty::test, true);
   }
 
-  private static Map<String, Object> extract(String value) {
-    return getOneFour(
+  private static void extract(String value, Map<String, Object> styles) {
+    setOneFour(
         Arrays.stream(value.trim().split("\\s+")).map(unitValueExtractor::extract).toArray(),
         MARGIN_TOP,
         MARGIN_RIGHT,
         MARGIN_BOTTOM,
-        MARGIN_LEFT);
+        MARGIN_LEFT,
+        styles);
   }
 
   public static boolean test(String value) {

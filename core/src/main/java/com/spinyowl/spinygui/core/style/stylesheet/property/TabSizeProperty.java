@@ -1,10 +1,10 @@
 package com.spinyowl.spinygui.core.style.stylesheet.property;
 
-import static com.spinyowl.spinygui.core.style.stylesheet.Properties.TAB_SIZE;
 import com.spinyowl.spinygui.core.style.stylesheet.Property;
 import com.spinyowl.spinygui.core.style.stylesheet.extractor.ValueExtractor;
 import com.spinyowl.spinygui.core.style.stylesheet.extractor.ValueExtractors;
-import java.util.Map;
+
+import static com.spinyowl.spinygui.core.style.stylesheet.Properties.TAB_SIZE;
 
 public class TabSizeProperty extends Property {
 
@@ -16,7 +16,7 @@ public class TabSizeProperty extends Property {
         "4",
         INHERITED,
         !ANIMATABLE,
-        value -> Map.of(TAB_SIZE, extractor.extract(value)),
+        (value, styles) -> styles.put(TAB_SIZE, extractor.extract(value)),
         extractor::isValid);
   }
 }

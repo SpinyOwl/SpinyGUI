@@ -1,11 +1,11 @@
 package com.spinyowl.spinygui.core.style.stylesheet.property.background;
 
-import static com.spinyowl.spinygui.core.style.stylesheet.Properties.BACKGROUND_COLOR;
 import com.spinyowl.spinygui.core.style.stylesheet.Property;
 import com.spinyowl.spinygui.core.style.stylesheet.extractor.ValueExtractor;
 import com.spinyowl.spinygui.core.style.stylesheet.extractor.ValueExtractors;
 import com.spinyowl.spinygui.core.style.types.Color;
-import java.util.Map;
+
+import static com.spinyowl.spinygui.core.style.stylesheet.Properties.BACKGROUND_COLOR;
 
 public class BackgroundColorProperty extends Property {
 
@@ -17,7 +17,7 @@ public class BackgroundColorProperty extends Property {
         "transparent",
         !INHERITED,
         ANIMATABLE,
-        value -> Map.of(BACKGROUND_COLOR, colorExtractor.extract(value)),
+        (value, styles) -> styles.put(BACKGROUND_COLOR, colorExtractor.extract(value)),
         colorExtractor::isValid);
   }
 }
