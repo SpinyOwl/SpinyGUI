@@ -8,10 +8,6 @@ import lombok.ToString;
 
 /**
  * Draft animation realization.
- *
- * <p>Created by ShchAlexander on 31.07.2017.
- *
- * @author ShchAlexander
  */
 @RequiredArgsConstructor
 @Getter

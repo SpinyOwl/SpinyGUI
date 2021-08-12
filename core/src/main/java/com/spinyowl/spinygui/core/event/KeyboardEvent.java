@@ -10,7 +10,6 @@ import lombok.Getter;
 import lombok.NonNull;
 import lombok.ToString;
 
-/** Created by ShchAlexander on 2/13/2017. */
 @Getter
 @ToString
 @EqualsAndHashCode

@@ -2,8 +2,6 @@ package com.spinyowl.spinygui.core.animation;
 
 /**
  * Animation processor.
- *
- * @author ShchAlexander.
  */
 public interface Animator {
 

@@ -6,7 +6,6 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
 
-/** Created by Shcherbin Alexander on 6/10/2016. */
 @Getter
 @ToString
 @EqualsAndHashCode

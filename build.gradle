@@ -3,6 +3,8 @@ plugins {
     id "checkstyle"
 }
 
+wrapper.jarFile("${project.projectDir}/_gradle/wrapper/gradle-wrapper.jar")
+
 project.group = 'com.spinyowl'
 
 printProjectInfo()

@@ -4,6 +4,9 @@ plugins {
 }
 
 dependencies {
+    // https://mvnrepository.com/artifact/commons-io/commons-io
+    implementation group: 'commons-io', name: 'commons-io', version: '2.11.0'
+
     // https://mvnrepository.com/artifact/com.google.guava/guava
     api group: 'com.google.guava', name: 'guava', version: guava_version
 

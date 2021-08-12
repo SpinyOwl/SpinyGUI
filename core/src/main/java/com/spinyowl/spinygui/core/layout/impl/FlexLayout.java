@@ -79,7 +79,6 @@ import lombok.RequiredArgsConstructor;
 import org.joml.Vector2f;
 import org.lwjgl.util.yoga.Yoga;
 
-/** @author Aliaksandr_Shcherbin. */
 @Getter
 @RequiredArgsConstructor
 public class FlexLayout implements Layout {
@@ -496,6 +495,7 @@ public class FlexLayout implements Layout {
     }
   }
 
+  @FunctionalInterface
   public interface TriConsumer<T, U, V> {
     void accept(T t, U u, V v);
   }

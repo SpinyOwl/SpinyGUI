@@ -13,6 +13,7 @@ open module com.spinyowl.spinygui.core {
   requires com.google.common;
   requires org.antlr.antlr4.runtime;
   requires org.apache.commons.lang3;
+  requires org.apache.commons.io;
 
   exports com.spinyowl.spinygui.core.animation;
   exports com.spinyowl.spinygui.core.node;

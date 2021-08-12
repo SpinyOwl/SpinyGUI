@@ -13,9 +13,6 @@ import com.spinyowl.spinygui.core.parser.impl.DefaultNodeParser;
 import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 
-/**
- * Created by ShchAlexander on 09.08.2018.
- */
 @Slf4j
 public class Main {
 
