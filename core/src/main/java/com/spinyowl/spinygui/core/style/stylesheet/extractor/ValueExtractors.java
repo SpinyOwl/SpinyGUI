@@ -3,19 +3,22 @@ package com.spinyowl.spinygui.core.style.stylesheet.extractor;
 import com.spinyowl.spinygui.core.style.stylesheet.annotation.Priority;
 import io.github.classgraph.ClassGraph;
 import io.github.classgraph.ClassInfo;
+import io.github.classgraph.ScanResult;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import lombok.AccessLevel;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-/**
- * Class keeps all existing value extractors.
- */
+/** Class keeps all existing value extractors. */
 @Slf4j
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class ValueExtractors {
 
   @SuppressWarnings("rawtypes")
@@ -25,12 +28,15 @@ public final class ValueExtractors {
     initialize();
   }
 
-  private ValueExtractors() {
-  }
-
   private static void initialize() {
     var scanResult = new ClassGraph().enableAllInfo().scan();
     var extractorsToAdd = new HashMap<Class<?>, List<ValueExtractorPriority>>();
+    findExtractors(scanResult, extractorsToAdd);
+    fillInExtractorMap(extractorsToAdd);
+  }
+
+  private static void findExtractors(
+      ScanResult scanResult, HashMap<Class<?>, List<ValueExtractorPriority>> extractorsToAdd) {
     for (ClassInfo classInfo : scanResult.getClassesImplementing(ValueExtractor.class.getName())) {
       @SuppressWarnings("unchecked")
       Class<ValueExtractor<?>> clazz = (Class<ValueExtractor<?>>) classInfo.loadClass();
@@ -57,21 +63,29 @@ public final class ValueExtractors {
             .add(new ValueExtractorPriority(extractor, priority));
       }
     }
+  }
 
+  @SuppressWarnings("unchecked")
+  private static void fillInExtractorMap(
+      HashMap<Class<?>, List<ValueExtractorPriority>> extractorsToAdd) {
     for (var entry : extractorsToAdd.entrySet()) {
       var clazz = entry.getKey();
       var list = entry.getValue();
+      @SuppressWarnings("rawtypes")
+      ValueExtractor extractor;
       if (list.size() > 1) {
-        list.sort(Comparator.comparingInt(o -> -o.priority()));
+        extractor = Collections.max(list, Comparator.comparingInt(o -> -o.priority())).extractor;
         if (log.isWarnEnabled()) {
           log.warn(
               "Found several tag mappings for tag {} : {}. Using {}",
               clazz,
               Arrays.toString(list.stream().map(c -> c.extractor().getClass().getName()).toArray()),
-              list.get(0).extractor().getClass().getName());
+              extractor.getClass().getName());
         }
+      } else {
+        extractor = list.get(0).extractor;
       }
-      add(clazz, (ValueExtractor) list.get(0).extractor());
+      add(clazz, extractor);
     }
   }
 

@@ -6,7 +6,6 @@ import com.spinyowl.spinygui.core.style.stylesheet.AtRule;
 import com.spinyowl.spinygui.core.style.stylesheet.RuleSet;
 import com.spinyowl.spinygui.core.style.stylesheet.StyleSheet;
 import java.util.Objects;
-import java.util.stream.Collectors;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 
@@ -19,16 +18,10 @@ public class StyleSheetVisitor extends CSS3BaseVisitor<StyleSheet> {
   @Override
   public StyleSheet visitStylesheet(StylesheetContext ctx) {
     var ruleSetList =
-        ctx.nestedStatement().stream()
-            .map(rulesetVisitor::visit)
-            .filter(Objects::nonNull)
-            .collect(Collectors.toList());
+        ctx.nestedStatement().stream().map(rulesetVisitor::visit).filter(Objects::nonNull).toList();
 
     var rules =
-        ctx.nestedStatement().stream()
-            .map(atRuleVisitor::visit)
-            .filter(Objects::nonNull)
-            .collect(Collectors.toList());
+        ctx.nestedStatement().stream().map(atRuleVisitor::visit).filter(Objects::nonNull).toList();
 
     return new StyleSheet(ruleSetList, rules);
   }
