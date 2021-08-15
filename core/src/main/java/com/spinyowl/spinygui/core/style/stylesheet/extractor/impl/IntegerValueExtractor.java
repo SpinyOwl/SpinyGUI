@@ -36,7 +36,7 @@ public class IntegerValueExtractor implements ValueExtractor<Integer> {
     try {
       return Integer.parseInt(value);
     } catch (NumberFormatException e) {
-      throw new ValueExtractorException(getType(), value);
+      throw new ValueExtractorException(getType(), value, e);
     }
   }
 }

@@ -2,12 +2,15 @@ package com.spinyowl.spinygui.core.style.stylesheet;
 
 import com.spinyowl.spinygui.core.node.Element;
 import com.spinyowl.spinygui.core.style.stylesheet.util.StyleUtils;
-import lombok.*;
-import lombok.extern.slf4j.Slf4j;
-
 import java.util.Map;
 import java.util.function.BiConsumer;
 import java.util.function.Predicate;
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * Root class that describes property. Should be used to create new classes which implement {@link
@@ -25,8 +28,11 @@ public class Property {
   public static final boolean ANIMATABLE = true;
   public static final boolean INHERITED = true;
 
-  /** Name of css property. */
-  @NonNull protected final String name;
+  /**
+   * Name of css property.
+   */
+  @NonNull
+  protected final String name;
 
   /**
    * Default value of css property. Could not be null. This value used for next cases:
@@ -38,28 +44,36 @@ public class Property {
    *       specified in style.
    * </ul>
    */
-  @NonNull protected final String defaultValue;
+  @NonNull
+  protected final String defaultValue;
 
   /**
-   * Defines if css property for element should be inherited from parent element. <br>
-   * When no value for an inherited property has been specified on an element, the element gets the
-   * computed value of that property on its parent element. Only the root element of the document
-   * gets the initial value given in the property's summary. <br>
-   * When no value for a non-inherited property has been specified on an element, the element gets
-   * the initial value of that property (as specified in the property's summary). <br>
-   * The <b>inherit</b> keyword allows authors to explicitly specify inheritance. It works on both
-   * inherited and non-inherited properties.
+   * Defines if css property for element should be inherited from parent element. <br> When no value
+   * for an inherited property has been specified on an element, the element gets the computed value
+   * of that property on its parent element. Only the root element of the document gets the initial
+   * value given in the property's summary. <br> When no value for a non-inherited property has been
+   * specified on an element, the element gets the initial value of that property (as specified in
+   * the property's summary). <br> The <b>inherit</b> keyword allows authors to explicitly specify
+   * inheritance. It works on both inherited and non-inherited properties.
    */
   protected final boolean inherited;
 
-  /** Defines if css property could be animated. */
+  /**
+   * Defines if css property could be animated.
+   */
   protected final boolean animatable;
 
-  /** Used to extract and compute value from string representation and put to style map. */
-  @NonNull protected final BiConsumer<String, Map<String, Object>> valueExtractor;
+  /**
+   * Used to extract and compute value from string representation and put to style map.
+   */
+  @NonNull
+  protected final BiConsumer<String, Map<String, Object>> valueExtractor;
 
-  /** Used to validate string value before extraction. */
-  @NonNull protected final Predicate<String> valueValidator;
+  /**
+   * Used to validate string value before extraction.
+   */
+  @NonNull
+  protected final Predicate<String> valueValidator;
 
   protected final boolean shorthand;
 
@@ -78,7 +92,7 @@ public class Property {
    * Used to compute css style property value for specified element.
    *
    * @param element element to update calculated style.
-   * @param value string representation of css property value.
+   * @param value   string representation of css property value.
    */
   public void compute(@NonNull Element element, String value, @NonNull Map<String, Object> styles) {
     if (value == null) {
@@ -91,11 +105,13 @@ public class Property {
       try {
         valueExtractor.accept(value, styles);
       } catch (Exception t) {
-        log.error(
-            "Error during extracting value from '{}' with '{}' extractor. {}",
-            value,
-            valueExtractor,
-            t.getMessage());
+        if (log.isErrorEnabled()) {
+          log.error(
+              "Error during extracting value from '{}' with '{}' extractor. {}",
+              value,
+              valueExtractor,
+              t.getMessage());
+        }
 
         // in case if we have exception - recalculating value.
         computeAbsent(element, styles);

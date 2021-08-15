@@ -12,7 +12,9 @@ import java.util.Map;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 
-/** Class keeps all existing value extractors. */
+/**
+ * Class keeps all existing value extractors.
+ */
 @Slf4j
 public final class ValueExtractors {
 
@@ -23,7 +25,8 @@ public final class ValueExtractors {
     initialize();
   }
 
-  private ValueExtractors() {}
+  private ValueExtractors() {
+  }
 
   private static void initialize() {
     var scanResult = new ClassGraph().enableAllInfo().scan();
@@ -41,7 +44,9 @@ public final class ValueExtractors {
         extractor = clazz.getConstructor().newInstance();
 
       } catch (Exception e) {
-        log.error("Can't initialize value extractor {}.", clazz.getName());
+        if (log.isErrorEnabled()) {
+          log.error("Can't initialize value extractor {}.", clazz.getName());
+        }
         if (log.isDebugEnabled()) {
           log.debug(e.getMessage(), e);
         }
@@ -58,11 +63,13 @@ public final class ValueExtractors {
       var list = entry.getValue();
       if (list.size() > 1) {
         list.sort(Comparator.comparingInt(o -> -o.priority()));
-        log.warn(
-            "Found several tag mappings for tag {} : {}. Using {}",
-            clazz,
-            Arrays.toString(list.stream().map(c -> c.extractor().getClass().getName()).toArray()),
-            list.get(0).extractor().getClass().getName());
+        if (log.isWarnEnabled()) {
+          log.warn(
+              "Found several tag mappings for tag {} : {}. Using {}",
+              clazz,
+              Arrays.toString(list.stream().map(c -> c.extractor().getClass().getName()).toArray()),
+              list.get(0).extractor().getClass().getName());
+        }
       }
       add(clazz, (ValueExtractor) list.get(0).extractor());
     }
@@ -83,6 +90,7 @@ public final class ValueExtractors {
 
   @Data
   private static final class ValueExtractorPriority {
+
     private final ValueExtractor<?> extractor;
     private final int priority;
   }

@@ -1,16 +1,18 @@
 package com.spinyowl.spinygui.core.style.stylesheet.property.border.color;
 
+import static com.spinyowl.spinygui.core.style.stylesheet.Properties.BORDER_BOTTOM_COLOR;
+import static com.spinyowl.spinygui.core.style.stylesheet.Properties.BORDER_COLOR;
+import static com.spinyowl.spinygui.core.style.stylesheet.Properties.BORDER_LEFT_COLOR;
+import static com.spinyowl.spinygui.core.style.stylesheet.Properties.BORDER_RIGHT_COLOR;
+import static com.spinyowl.spinygui.core.style.stylesheet.Properties.BORDER_TOP_COLOR;
+import static com.spinyowl.spinygui.core.style.stylesheet.util.StyleUtils.setOneFour;
+import static com.spinyowl.spinygui.core.style.stylesheet.util.StyleUtils.testMultipleValues;
 import com.spinyowl.spinygui.core.style.stylesheet.Property;
 import com.spinyowl.spinygui.core.style.stylesheet.extractor.ValueExtractor;
 import com.spinyowl.spinygui.core.style.stylesheet.extractor.ValueExtractors;
 import com.spinyowl.spinygui.core.style.types.Color;
-
 import java.util.Arrays;
 import java.util.Map;
-
-import static com.spinyowl.spinygui.core.style.stylesheet.Properties.*;
-import static com.spinyowl.spinygui.core.style.stylesheet.util.StyleUtils.setOneFour;
-import static com.spinyowl.spinygui.core.style.stylesheet.util.StyleUtils.testMultipleValues;
 
 public class BorderColorProperty extends Property {
 

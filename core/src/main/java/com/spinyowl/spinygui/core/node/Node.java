@@ -6,7 +6,6 @@ import com.spinyowl.spinygui.core.node.intersection.Intersections;
 import java.util.List;
 import java.util.Map;
 import lombok.AccessLevel;
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;

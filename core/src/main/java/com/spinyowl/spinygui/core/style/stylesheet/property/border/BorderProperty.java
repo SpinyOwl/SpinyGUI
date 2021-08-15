@@ -1,5 +1,18 @@
 package com.spinyowl.spinygui.core.style.stylesheet.property.border;
 
+import static com.spinyowl.spinygui.core.style.stylesheet.Properties.BORDER;
+import static com.spinyowl.spinygui.core.style.stylesheet.Properties.BORDER_BOTTOM_COLOR;
+import static com.spinyowl.spinygui.core.style.stylesheet.Properties.BORDER_BOTTOM_STYLE;
+import static com.spinyowl.spinygui.core.style.stylesheet.Properties.BORDER_BOTTOM_WIDTH;
+import static com.spinyowl.spinygui.core.style.stylesheet.Properties.BORDER_LEFT_COLOR;
+import static com.spinyowl.spinygui.core.style.stylesheet.Properties.BORDER_LEFT_STYLE;
+import static com.spinyowl.spinygui.core.style.stylesheet.Properties.BORDER_LEFT_WIDTH;
+import static com.spinyowl.spinygui.core.style.stylesheet.Properties.BORDER_RIGHT_COLOR;
+import static com.spinyowl.spinygui.core.style.stylesheet.Properties.BORDER_RIGHT_STYLE;
+import static com.spinyowl.spinygui.core.style.stylesheet.Properties.BORDER_RIGHT_WIDTH;
+import static com.spinyowl.spinygui.core.style.stylesheet.Properties.BORDER_TOP_COLOR;
+import static com.spinyowl.spinygui.core.style.stylesheet.Properties.BORDER_TOP_STYLE;
+import static com.spinyowl.spinygui.core.style.stylesheet.Properties.BORDER_TOP_WIDTH;
 import com.spinyowl.spinygui.core.style.stylesheet.Property;
 import com.spinyowl.spinygui.core.style.stylesheet.extractor.ValueExtractor;
 import com.spinyowl.spinygui.core.style.stylesheet.extractor.ValueExtractors;
@@ -7,10 +20,7 @@ import com.spinyowl.spinygui.core.style.stylesheet.property.border.width.BorderW
 import com.spinyowl.spinygui.core.style.stylesheet.util.StyleUtils;
 import com.spinyowl.spinygui.core.style.types.Color;
 import com.spinyowl.spinygui.core.style.types.border.BorderStyle;
-
 import java.util.Map;
-
-import static com.spinyowl.spinygui.core.style.stylesheet.Properties.*;
 
 public class BorderProperty extends Property {
 

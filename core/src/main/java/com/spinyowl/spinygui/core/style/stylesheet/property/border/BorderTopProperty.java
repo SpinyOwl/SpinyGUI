@@ -1,8 +1,10 @@
 package com.spinyowl.spinygui.core.style.stylesheet.property.border;
 
+import static com.spinyowl.spinygui.core.style.stylesheet.Properties.BORDER_TOP;
+import static com.spinyowl.spinygui.core.style.stylesheet.Properties.BORDER_TOP_COLOR;
+import static com.spinyowl.spinygui.core.style.stylesheet.Properties.BORDER_TOP_STYLE;
+import static com.spinyowl.spinygui.core.style.stylesheet.Properties.BORDER_TOP_WIDTH;
 import com.spinyowl.spinygui.core.style.stylesheet.Property;
-
-import static com.spinyowl.spinygui.core.style.stylesheet.Properties.*;
 
 public class BorderTopProperty extends Property {
 

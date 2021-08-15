@@ -1,14 +1,16 @@
 package com.spinyowl.spinygui.core.style.stylesheet.property.border.style;
 
-import com.spinyowl.spinygui.core.style.stylesheet.Property;
-import com.spinyowl.spinygui.core.style.types.border.BorderStyle;
-
-import java.util.Arrays;
-import java.util.Map;
-
-import static com.spinyowl.spinygui.core.style.stylesheet.Properties.*;
+import static com.spinyowl.spinygui.core.style.stylesheet.Properties.BORDER_BOTTOM_STYLE;
+import static com.spinyowl.spinygui.core.style.stylesheet.Properties.BORDER_LEFT_STYLE;
+import static com.spinyowl.spinygui.core.style.stylesheet.Properties.BORDER_RIGHT_STYLE;
+import static com.spinyowl.spinygui.core.style.stylesheet.Properties.BORDER_STYLE;
+import static com.spinyowl.spinygui.core.style.stylesheet.Properties.BORDER_TOP_STYLE;
 import static com.spinyowl.spinygui.core.style.stylesheet.util.StyleUtils.setOneFour;
 import static com.spinyowl.spinygui.core.style.stylesheet.util.StyleUtils.testMultipleValues;
+import com.spinyowl.spinygui.core.style.stylesheet.Property;
+import com.spinyowl.spinygui.core.style.types.border.BorderStyle;
+import java.util.Arrays;
+import java.util.Map;
 
 public class BorderStyleProperty extends Property {
 

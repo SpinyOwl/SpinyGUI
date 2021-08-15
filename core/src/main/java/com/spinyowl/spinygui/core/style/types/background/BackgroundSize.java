@@ -7,8 +7,9 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
+@Getter
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public abstract class BackgroundSize {
+public class BackgroundSize {
   private final boolean unit;
   private final boolean contain;
   private final boolean cover;
@@ -33,7 +34,6 @@ public abstract class BackgroundSize {
     return (BackgroundSizeUnit) this;
   }
 
-  @Getter
   @EqualsAndHashCode
   @ToString
   public static class BackgroundSizeContain extends BackgroundSize {
@@ -42,7 +42,6 @@ public abstract class BackgroundSize {
     }
   }
 
-  @Getter
   @EqualsAndHashCode
   @ToString
   public static class BackgroundSizeCover extends BackgroundSize {

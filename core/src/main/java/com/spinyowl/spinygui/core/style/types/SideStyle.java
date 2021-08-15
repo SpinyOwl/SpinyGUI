@@ -6,7 +6,7 @@ import lombok.NonNull;
 
 @Data
 @NoArgsConstructor
-public abstract class SideStyle<T> {
+public class SideStyle<T> {
 
   @NonNull private T top;
   @NonNull private T bottom;

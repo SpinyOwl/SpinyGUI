@@ -2,7 +2,6 @@ package com.spinyowl.spinygui.core.parser.impl.css.parser.visitor;
 
 import com.spinyowl.spinygui.core.parser.impl.css.parser.antlr.CSS3BaseVisitor;
 import com.spinyowl.spinygui.core.parser.impl.css.parser.antlr.CSS3Parser.ClassNameContext;
-import com.spinyowl.spinygui.core.parser.impl.css.parser.antlr.CSS3Parser.IdentContext;
 import com.spinyowl.spinygui.core.parser.impl.css.parser.antlr.CSS3Parser.PseudoContext;
 import com.spinyowl.spinygui.core.parser.impl.css.parser.antlr.CSS3Parser.SelectorContext;
 import com.spinyowl.spinygui.core.parser.impl.css.parser.antlr.CSS3Parser.SelectorGroupContext;

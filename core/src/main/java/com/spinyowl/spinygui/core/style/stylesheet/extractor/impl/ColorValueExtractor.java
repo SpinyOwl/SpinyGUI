@@ -87,7 +87,7 @@ public class ColorValueExtractor implements ValueExtractor<Color> {
           parseInt(hsla[2].trim()), parseFloat(hsla[3].trim()));
     }
 
-    throw new ValueExtractorException(getType(), value);
+    throw new ValueExtractorException(getType(), value, "Unsupported color format.");
   }
 
   private String[] getArgs(String value, int startIndex) {

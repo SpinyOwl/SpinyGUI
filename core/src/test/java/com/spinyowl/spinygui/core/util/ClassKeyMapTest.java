@@ -26,7 +26,7 @@ class ClassKeyMapTest {
   private static class I extends A {}
 
   // Value classes
-  private abstract static class P<T extends A> {
+  private static class P<T extends A> {
     String execute(T source) {
       return source.getClass().getSimpleName() + this.getClass().getSimpleName();
     }

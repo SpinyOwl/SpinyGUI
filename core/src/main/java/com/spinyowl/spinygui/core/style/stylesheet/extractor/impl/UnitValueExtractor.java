@@ -32,7 +32,7 @@ public class UnitValueExtractor implements ValueExtractor<Unit> {
       return Length.pixel(0);
     }
 
-    throw new ValueExtractorException(Length.class, value);
+    throw new ValueExtractorException(Length.class, value, "Unsupported length type.");
   }
 
   @Override

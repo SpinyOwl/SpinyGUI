@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.stream.Collectors;
 import lombok.Data;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -40,7 +39,7 @@ public class Font {
 
     var key = new FontKey(font.name(), font.style(), font.width(), font.weight());
 
-    if (fonts.containsKey(key)) {
+    if (fonts.containsKey(key) && log.isWarnEnabled()) {
       log.warn("Font '{}' will be replaced.", font.name());
     }
     fonts.put(key, font);
@@ -152,7 +151,7 @@ public class Font {
     return fonts.keySet().stream()
         .filter(k -> checkFont(k, name, style, weight, width))
         .map(fonts::get)
-        .collect(Collectors.toList());
+        .toList();
   }
 
   /**

@@ -22,7 +22,7 @@ public class FloatValueExtractor implements ValueExtractor<Float> {
     try {
       return NumberUtils.createFloat(value);
     } catch (NumberFormatException e) {
-      throw new ValueExtractorException(getType(), value);
+      throw new ValueExtractorException(getType(), value, e);
     }
   }
 }

@@ -1,16 +1,18 @@
 package com.spinyowl.spinygui.core.style.stylesheet.property.border.radius;
 
+import static com.spinyowl.spinygui.core.style.stylesheet.Properties.BORDER_BOTTOM_LEFT_RADIUS;
+import static com.spinyowl.spinygui.core.style.stylesheet.Properties.BORDER_BOTTOM_RIGHT_RADIUS;
+import static com.spinyowl.spinygui.core.style.stylesheet.Properties.BORDER_RADIUS;
+import static com.spinyowl.spinygui.core.style.stylesheet.Properties.BORDER_TOP_LEFT_RADIUS;
+import static com.spinyowl.spinygui.core.style.stylesheet.Properties.BORDER_TOP_RIGHT_RADIUS;
+import static com.spinyowl.spinygui.core.style.stylesheet.util.StyleUtils.setOneFour;
+import static com.spinyowl.spinygui.core.style.stylesheet.util.StyleUtils.testMultipleValues;
 import com.spinyowl.spinygui.core.style.stylesheet.Property;
 import com.spinyowl.spinygui.core.style.stylesheet.extractor.ValueExtractor;
 import com.spinyowl.spinygui.core.style.stylesheet.extractor.ValueExtractors;
 import com.spinyowl.spinygui.core.style.types.length.Length;
-
 import java.util.Arrays;
 import java.util.Map;
-
-import static com.spinyowl.spinygui.core.style.stylesheet.Properties.*;
-import static com.spinyowl.spinygui.core.style.stylesheet.util.StyleUtils.setOneFour;
-import static com.spinyowl.spinygui.core.style.stylesheet.util.StyleUtils.testMultipleValues;
 
 public class BorderRadiusProperty extends Property {
 

@@ -2,7 +2,6 @@ package com.spinyowl.spinygui.core.style.types;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;

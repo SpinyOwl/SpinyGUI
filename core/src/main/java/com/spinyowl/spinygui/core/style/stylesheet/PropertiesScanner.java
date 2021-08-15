@@ -1,11 +1,13 @@
 package com.spinyowl.spinygui.core.style.stylesheet;
 
+import static java.util.Comparator.comparingInt;
 import com.spinyowl.spinygui.core.style.stylesheet.annotation.Priority;
 import io.github.classgraph.ClassGraph;
 import io.github.classgraph.ClassInfo;
+import io.github.classgraph.ScanResult;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Comparator;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import lombok.AccessLevel;
@@ -22,6 +24,12 @@ public final class PropertiesScanner {
     var scanResult = new ClassGraph().enableAllInfo().scan();
     var propertiesToAdd = new HashMap<String, List<PropertyPriority>>();
 
+    findPropertiesToAdd(scanResult, propertiesToAdd);
+    fillInPropertyStore(propertyStore, propertiesToAdd);
+  }
+
+  private static void findPropertiesToAdd(
+      ScanResult scanResult, HashMap<String, List<PropertyPriority>> propertiesToAdd) {
     for (ClassInfo classInfo : scanResult.getSubclasses(Property.class.getName())) {
       @SuppressWarnings("unchecked")
       Class<Property> clazz = (Class<Property>) classInfo.loadClass();
@@ -35,7 +43,9 @@ public final class PropertiesScanner {
         property = clazz.getConstructor().newInstance();
 
       } catch (Exception e) {
-        log.error("Can't initialize property handler {}.", clazz.getName());
+        if (log.isErrorEnabled()) {
+          log.error("Can't initialize property handler {}.", clazz.getName());
+        }
         if (log.isDebugEnabled()) {
           log.debug(e.getMessage(), e);
         }
@@ -46,24 +56,33 @@ public final class PropertiesScanner {
             .add(new PropertyPriority(property, priority));
       }
     }
+  }
 
+  private static void fillInPropertyStore(
+      PropertyStore propertyStore, HashMap<String, List<PropertyPriority>> propertiesToAdd) {
     for (var entry : propertiesToAdd.entrySet()) {
       String name = entry.getKey();
       var list = entry.getValue();
+      Property property;
       if (list.size() > 1) {
-        list.sort(Comparator.comparingInt(o -> -o.priority()));
-        log.warn(
-            "Found several tag mappings for tag {} : {}. Using {}",
-            name,
-            Arrays.toString(list.stream().map(c -> c.property().getClass().getName()).toArray()),
-            list.get(0).property().getClass().getName());
+        property = Collections.max(list, comparingInt(o -> -o.priority())).property;
+        if (log.isWarnEnabled()) {
+          log.warn(
+              "Found several tag mappings for tag {} : {}. Using {}",
+              name,
+              Arrays.toString(list.stream().map(c -> c.property().getClass().getName()).toArray()),
+              property.getClass().getName());
+        }
+      } else {
+        property = list.get(0).property;
       }
-      propertyStore.addProperty(name, list.get(0).property());
+      propertyStore.addProperty(name, property);
     }
   }
 
   @Data
   private static final class PropertyPriority {
+
     private final Property property;
     private final int priority;
   }

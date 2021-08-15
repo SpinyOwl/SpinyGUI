@@ -33,7 +33,7 @@ public class BoxShadowProperty extends Property {
   }
 
   private static boolean validate(String s) {
-    if (s.equals("none")) {
+    if ("none".equals(s)) {
       return true;
     }
 

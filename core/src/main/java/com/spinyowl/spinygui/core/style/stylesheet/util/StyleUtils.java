@@ -5,7 +5,6 @@ import com.spinyowl.spinygui.core.style.CalculatedStyle;
 import com.spinyowl.spinygui.core.style.types.length.Length;
 import com.spinyowl.spinygui.core.style.types.length.Unit;
 import java.util.Map;
-import java.util.Objects;
 import java.util.function.Predicate;
 import lombok.NonNull;
 import org.joml.Vector2fc;

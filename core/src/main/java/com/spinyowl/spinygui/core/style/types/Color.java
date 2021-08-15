@@ -92,12 +92,9 @@ public class Color {
    * @return color
    */
   public static Color fromHex(String value) {
-    if (value.startsWith("#")) {
-      value = value.substring(1);
-    }
-    value = value.trim();
-    var hex = Integer.parseInt(value, 16);
-    return switch (value.length()) {
+    String hexValue = (value.startsWith("#") ? value.substring(1): value).trim();
+    var hex = Integer.parseInt(hexValue, 16);
+    return switch (hexValue.length()) {
       case 8 -> new Color((hex >> 24) & 0xFF, (hex >> 16) & 0xFF, (hex >> 8) & 0xFF, hex & 0xFF);
       case 6 -> new Color((hex >> 16) & 0xFF, (hex >> 8) & 0xFF, hex & 0xFF);
       case 4 -> new Color(((hex >> 12) & 0xF) * 0x11, ((hex >> 8) & 0xF) * 0x11,
@@ -157,11 +154,12 @@ public class Color {
 
   // @formatter:off
   private static float hueToRGB(float p, float q, float h) {
-    if (h < 0) h += 1;
-    if (h > 1) h -= 1;
-    if (6 * h < 1) return p + ((q - p) * 6 * h);
-    if (2 * h < 1) return q;
-    if (3 * h < 2) return p + ((q - p) * 6 * ((2.0f / 3.0f) - h));
+    float hh = h;
+    if (hh < 0) hh += 1;
+    if (hh > 1) hh -= 1;
+    if (6 * hh < 1) return p + ((q - p) * 6 * hh);
+    if (2 * hh < 1) return q;
+    if (3 * hh < 2) return p + ((q - p) * 6 * ((2.0f / 3.0f) - hh));
     return p;
   }
   // @formatter:on

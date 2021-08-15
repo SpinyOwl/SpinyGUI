@@ -1,8 +1,10 @@
 package com.spinyowl.spinygui.core.style.stylesheet.property.border;
 
+import static com.spinyowl.spinygui.core.style.stylesheet.Properties.BORDER_LEFT;
+import static com.spinyowl.spinygui.core.style.stylesheet.Properties.BORDER_LEFT_COLOR;
+import static com.spinyowl.spinygui.core.style.stylesheet.Properties.BORDER_LEFT_STYLE;
+import static com.spinyowl.spinygui.core.style.stylesheet.Properties.BORDER_LEFT_WIDTH;
 import com.spinyowl.spinygui.core.style.stylesheet.Property;
-
-import static com.spinyowl.spinygui.core.style.stylesheet.Properties.*;
 
 public class BorderLeftProperty extends Property {
 

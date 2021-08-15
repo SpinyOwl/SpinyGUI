@@ -27,7 +27,9 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
-/** Node marshaller. Used to convert node to xml and vise versa. */
+/**
+ * Node marshaller. Used to convert node to xml and vise versa.
+ */
 @Slf4j
 public final class DefaultNodeParser implements NodeParser {
 
@@ -81,7 +83,7 @@ public final class DefaultNodeParser implements NodeParser {
   /**
    * Used to convert node with all child elements to an xml string.
    *
-   * @param node node to convert.
+   * @param node   node to convert.
    * @param pretty defines if should be pretty printed.
    * @return String with xml representation of node.
    */
@@ -108,20 +110,24 @@ public final class DefaultNodeParser implements NodeParser {
       }
       transformer.transform(new DOMSource(document), result);
     } catch (Exception e) {
-      log.error(e.getMessage(), e);
+      if (log.isErrorEnabled()) {
+        log.error(e.getMessage(), e);
+      }
     }
     return stringWriter.toString();
   }
 
   private static org.w3c.dom.Node createContent(Document document, Node node) {
-    if (node instanceof Text) {
-      return document.createTextNode(((Text) node).content());
-    } else if (node instanceof Element) {
-      return createElement(document, (Element) node);
+    if (node instanceof Text text) {
+      return document.createTextNode(text.content());
+    } else if (node instanceof Element element) {
+      return createElement(document, element);
     } else {
-      log.warn(
-          "Attempt to marshal {} class which is not Text or Element child -> skipping.",
-          node.getClass().getName());
+      if (log.isWarnEnabled()) {
+        log.warn(
+            "Attempt to marshal {} class which is not Text or Element child -> skipping.",
+            node.getClass().getName());
+      }
       return null;
     }
   }
@@ -153,13 +159,15 @@ public final class DefaultNodeParser implements NodeParser {
         return null;
       }
       return new Text(wholeText);
-    } else if (node instanceof org.w3c.dom.Element) {
-      return createNodeFromElement((org.w3c.dom.Element) node, context);
+    } else if (node instanceof org.w3c.dom.Element element) {
+      return createNodeFromElement(element, context);
     } else {
-      log.warn(
-          "Content type '{}' is not supported. Content value '{}'.",
-          node.getNodeType(),
-          node.getNodeValue());
+      if (log.isWarnEnabled()) {
+        log.warn(
+            "Content type '{}' is not supported. Content value '{}'.",
+            node.getNodeType(),
+            node.getNodeValue());
+      }
       return null;
     }
   }
@@ -200,7 +208,9 @@ public final class DefaultNodeParser implements NodeParser {
           node.addChild(componentFromContent);
         }
       } catch (Exception e) {
-        log.error(e.getMessage(), e);
+        if (log.isErrorEnabled()) {
+          log.error(e.getMessage(), e);
+        }
       }
     }
   }
@@ -220,6 +230,7 @@ public final class DefaultNodeParser implements NodeParser {
   }
 
   private static final class NodeConverterContext {
+
     private boolean hasFrame;
     private boolean hasRoot;
     private Frame frame; // used for direct access to store stylesheets directly.

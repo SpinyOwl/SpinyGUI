@@ -1,8 +1,10 @@
 package com.spinyowl.spinygui.core.style.stylesheet.property.border;
 
+import static com.spinyowl.spinygui.core.style.stylesheet.Properties.BORDER_RIGHT;
+import static com.spinyowl.spinygui.core.style.stylesheet.Properties.BORDER_RIGHT_COLOR;
+import static com.spinyowl.spinygui.core.style.stylesheet.Properties.BORDER_RIGHT_STYLE;
+import static com.spinyowl.spinygui.core.style.stylesheet.Properties.BORDER_RIGHT_WIDTH;
 import com.spinyowl.spinygui.core.style.stylesheet.Property;
-
-import static com.spinyowl.spinygui.core.style.stylesheet.Properties.*;
 
 public class BorderRightProperty extends Property {
 

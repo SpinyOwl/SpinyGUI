@@ -48,8 +48,6 @@ import static org.lwjgl.util.yoga.Yoga.YGWrapNoWrap;
 import static org.lwjgl.util.yoga.Yoga.YGWrapReverse;
 import static org.lwjgl.util.yoga.Yoga.YGWrapWrap;
 import static org.lwjgl.util.yoga.Yoga.nYGNodeCalculateLayout;
-import com.spinyowl.spinygui.core.event.ChangePositionEvent;
-import com.spinyowl.spinygui.core.event.ChangeSizeEvent;
 import com.spinyowl.spinygui.core.event.processor.EventProcessor;
 import com.spinyowl.spinygui.core.layout.Layout;
 import com.spinyowl.spinygui.core.node.Element;
@@ -134,22 +132,6 @@ public class FlexLayout implements Layout {
     }
 
     YGNodeFree(rootNode);
-  }
-
-  private boolean generateEvents(
-      Node childComponent, Vector2f newPos, Vector2f oldPos, Vector2f newSize, Vector2f oldSize) {
-    var invalidateTree = false;
-    if (childComponent instanceof Element element) {
-      if (!oldPos.equals(newPos, THRESHOLD)) {
-        eventProcessor.push(ChangePositionEvent.of(element, element, oldPos, newPos));
-        invalidateTree = true;
-      }
-      if (!oldSize.equals(newSize, THRESHOLD)) {
-        eventProcessor.push(ChangeSizeEvent.of(element, element, oldSize, newSize));
-        invalidateTree = true;
-      }
-    }
-    return invalidateTree;
   }
 
   /**

@@ -9,7 +9,7 @@ import lombok.ToString;
 @Getter
 @ToString
 @EqualsAndHashCode
-public abstract class SystemEvent {
+public class SystemEvent {
 
   /** The frame that received the event. */
   private final Frame frame;

@@ -1,16 +1,18 @@
 package com.spinyowl.spinygui.core.style.stylesheet.property.margin;
 
+import static com.spinyowl.spinygui.core.style.stylesheet.Properties.MARGIN;
+import static com.spinyowl.spinygui.core.style.stylesheet.Properties.MARGIN_BOTTOM;
+import static com.spinyowl.spinygui.core.style.stylesheet.Properties.MARGIN_LEFT;
+import static com.spinyowl.spinygui.core.style.stylesheet.Properties.MARGIN_RIGHT;
+import static com.spinyowl.spinygui.core.style.stylesheet.Properties.MARGIN_TOP;
+import static com.spinyowl.spinygui.core.style.stylesheet.util.StyleUtils.setOneFour;
+import static com.spinyowl.spinygui.core.style.stylesheet.util.StyleUtils.testMultipleValues;
 import com.spinyowl.spinygui.core.style.stylesheet.Property;
 import com.spinyowl.spinygui.core.style.stylesheet.extractor.ValueExtractor;
 import com.spinyowl.spinygui.core.style.stylesheet.extractor.ValueExtractors;
 import com.spinyowl.spinygui.core.style.types.length.Unit;
-
 import java.util.Arrays;
 import java.util.Map;
-
-import static com.spinyowl.spinygui.core.style.stylesheet.Properties.*;
-import static com.spinyowl.spinygui.core.style.stylesheet.util.StyleUtils.setOneFour;
-import static com.spinyowl.spinygui.core.style.stylesheet.util.StyleUtils.testMultipleValues;
 
 public class MarginProperty extends Property {
 

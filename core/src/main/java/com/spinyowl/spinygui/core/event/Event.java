@@ -8,7 +8,7 @@ import lombok.ToString;
 @Getter
 @ToString
 @EqualsAndHashCode
-public abstract class Event {
+public class Event {
 
   /** Element which cause event generation. */
   @NonNull private final EventTarget source;
