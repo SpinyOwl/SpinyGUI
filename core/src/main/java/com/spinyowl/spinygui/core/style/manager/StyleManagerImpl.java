@@ -10,6 +10,6 @@ public class StyleManagerImpl extends AbstractStyleManager {
 
   public StyleManagerImpl(
       @NonNull PropertyStore propertyStore, @NonNull StyleSheetParser styleSheetParser) {
-    super(propertyStore, new LinkedBlockingQueue<>(), styleSheetParser);
+    super(propertyStore, styleSheetParser);
   }
 }

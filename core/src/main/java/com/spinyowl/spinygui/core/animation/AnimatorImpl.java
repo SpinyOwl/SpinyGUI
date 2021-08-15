@@ -4,11 +4,13 @@ import com.spinyowl.spinygui.core.time.TimeService;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.function.Supplier;
+import lombok.AccessLevel;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 
 /** Default implementation of {@link Animator} interface. */
-@RequiredArgsConstructor
+@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public class AnimatorImpl implements Animator {
 
   @NonNull private final TimeService timeService;
@@ -23,20 +25,58 @@ public class AnimatorImpl implements Animator {
   /** Used to store previous time. */
   private double previousTime;
 
+  /**
+   * Creates Animator based on provided {@link TimeService}. By default uses {@link
+   * CopyOnWriteArrayList} for all collections.
+   *
+   * @param timeService time service to use.
+   */
   public AnimatorImpl(@NonNull TimeService timeService) {
-    this.timeService = timeService;
-    this.animationsToInitialize = new CopyOnWriteArrayList<>();
-    this.animations = new CopyOnWriteArrayList<>();
-    this.animationsToDestroy = new CopyOnWriteArrayList<>();
-    this.animationsToRemove = new CopyOnWriteArrayList<>();
+    this(
+        timeService,
+        new CopyOnWriteArrayList<>(),
+        new CopyOnWriteArrayList<>(),
+        new CopyOnWriteArrayList<>(),
+        new CopyOnWriteArrayList<>());
   }
 
-  public AnimatorImpl(@NonNull TimeService timeService, List<Animation> animations) {
-    this.timeService = timeService;
-    this.animationsToInitialize = new CopyOnWriteArrayList<>();
-    this.animations = animations;
-    this.animationsToDestroy = new CopyOnWriteArrayList<>();
-    this.animationsToRemove = new CopyOnWriteArrayList<>();
+  /**
+   * Creates Animator based on provided {@link TimeService} and animations list.
+   *
+   * @param timeService time service to use.
+   * @param animationsListSupplier animations list supplier.
+   */
+  public AnimatorImpl(
+      @NonNull TimeService timeService, Supplier<List<Animation>> animationsListSupplier) {
+    this(
+        timeService,
+        new CopyOnWriteArrayList<>(),
+        animationsListSupplier.get(),
+        new CopyOnWriteArrayList<>(),
+        new CopyOnWriteArrayList<>());
+  }
+
+  /**
+   * Creates Animator based on provided {@link TimeService} and animations list.
+   *
+   * @param timeService time service to use.
+   * @param animationsToInitializeListSupplier animations to initialize list supplier.
+   * @param animationsListSupplier animations list supplier.
+   * @param animationsToDestroyListSupplier animations to destroy list supplier.
+   * @param animationsToRemoveListSupplier animations to remove list supplier.
+   */
+  public AnimatorImpl(
+      @NonNull TimeService timeService,
+      Supplier<List<Animation>> animationsToInitializeListSupplier,
+      Supplier<List<Animation>> animationsListSupplier,
+      Supplier<List<Animation>> animationsToDestroyListSupplier,
+      Supplier<List<Animation>> animationsToRemoveListSupplier) {
+    this(
+        timeService,
+        animationsToInitializeListSupplier.get(),
+        animationsListSupplier.get(),
+        animationsToDestroyListSupplier.get(),
+        animationsToRemoveListSupplier.get());
   }
 
   /** This method used to process animations. */

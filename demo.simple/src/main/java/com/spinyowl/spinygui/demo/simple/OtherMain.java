@@ -93,8 +93,7 @@ public class OtherMain {
     }
 
     StyleManager styleManager = new StyleManagerImpl(propertyStore, parser);
-    styleManager.needRecalculate(frame);
-    styleManager.recalculate();
+    styleManager.recalculate(frame);
 
     log.info("EQUALS: " + Objects.equals(Color.RED, testLabel.calculatedStyle().color()));
   }

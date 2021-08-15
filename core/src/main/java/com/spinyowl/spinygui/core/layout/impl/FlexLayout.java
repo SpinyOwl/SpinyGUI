@@ -63,7 +63,6 @@ import com.spinyowl.spinygui.core.style.types.flex.FlexWrap;
 import com.spinyowl.spinygui.core.style.types.flex.JustifyContent;
 import com.spinyowl.spinygui.core.style.types.length.Length;
 import com.spinyowl.spinygui.core.style.types.length.Unit;
-import com.spinyowl.spinygui.core.system.event.InvalidateTreeEvent;
 import com.spinyowl.spinygui.core.system.event.processor.SystemEventProcessor;
 import com.spinyowl.spinygui.core.time.TimeService;
 import com.spinyowl.spinygui.core.util.NodeUtilities;
@@ -116,30 +115,18 @@ public class FlexLayout implements Layout {
     // calculate
     nYGNodeCalculateLayout(rootNode, parent.size().x(), parent.size().y(), YGDirectionLTR);
 
-    var invalidateTree = false;
     // apply to components
     for (var i = 0; i < components.size(); i++) {
       Node childComponent = components.get(i);
       Long yogaNode = childNodes.get(i);
 
       var newPos = new Vector2f(YGNodeLayoutGetLeft(yogaNode), YGNodeLayoutGetTop(yogaNode));
-      var oldPos = new Vector2f(childComponent.position());
       childComponent.position(newPos);
 
       var newSize = new Vector2f(YGNodeLayoutGetWidth(yogaNode), YGNodeLayoutGetHeight(yogaNode));
-      var oldSize = new Vector2f(childComponent.size());
       childComponent.size(newSize);
-
-      invalidateTree =
-          invalidateTree || generateEvents(childComponent, newPos, oldPos, newSize, oldSize);
     }
 
-    if (invalidateTree) {
-      var frame = parent.frame();
-      if(frame!=null) {
-        systemEventProcessor.push(new InvalidateTreeEvent(frame));
-      }
-    }
 
     // free mem
     for (Long childNode : childNodes) {

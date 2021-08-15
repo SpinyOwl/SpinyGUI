@@ -16,7 +16,6 @@ import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Queue;
 import lombok.Data;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -29,7 +28,6 @@ public abstract class AbstractStyleManager implements StyleManager {
       new RuleSet(List.of(new ElementSelector("element")), List.of());
 
   @NonNull private final PropertyStore propertyStore;
-  @NonNull private final Queue<Frame> frameQueue;
   @NonNull private final StyleSheetParser styleSheetParser;
 
   private final Map<Element, StyleData> elementStyleDataMap = new IdentityHashMap<>();
@@ -37,23 +35,7 @@ public abstract class AbstractStyleManager implements StyleManager {
   private List<Property> properties;
   private RuleSet defaultRuleSet;
 
-  public final void needRecalculate(Frame frame) {
-    if (!frameQueue.contains(frame)) {
-      frameQueue.add(frame);
-    }
-  }
-
-  public final void recalculate() {
-    if (!frameQueue.isEmpty()) {
-      var frames = List.copyOf(frameQueue);
-      for (Frame frame : frames) {
-        recalculate(frame);
-      }
-      frameQueue.removeAll(frames);
-    }
-  }
-
-  protected void recalculate(Frame frame) {
+  public void recalculate(Frame frame) {
     frame.styleSheets().forEach(styleSheet -> updateStylesFromStyleSheet(frame, styleSheet));
   }
 

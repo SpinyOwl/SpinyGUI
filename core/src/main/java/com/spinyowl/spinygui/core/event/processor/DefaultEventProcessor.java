@@ -3,36 +3,35 @@ package com.spinyowl.spinygui.core.event.processor;
 import com.spinyowl.spinygui.core.event.Event;
 import com.spinyowl.spinygui.core.event.EventTarget;
 import com.spinyowl.spinygui.core.event.listener.EventListener;
+import java.util.LinkedList;
 import java.util.Queue;
-import java.util.concurrent.LinkedBlockingQueue;
 
 public class DefaultEventProcessor implements EventProcessor {
 
-  private Queue<Event> eventQueueFirst = new LinkedBlockingQueue<>();
-  private Queue<Event> eventQueueSecond = new LinkedBlockingQueue<>();
+  private Queue<Event> first = new LinkedList<>();
+  private Queue<Event> second = new LinkedList<>();
 
   @Override
   public void push(Event event) {
-    eventQueueFirst.add(event);
+    first.add(event);
   }
 
   @Override
   @SuppressWarnings({"rawtypes", "unchecked"})
   public void processEvents() {
     swap();
-    for (var event : eventQueueSecond) {
+    for (var event = second.poll(); event != null; event = second.poll()) {
       EventTarget target = event.target();
       var listeners = target.getListeners(event.getClass());
       for (EventListener listener : listeners) {
         listener.process(event);
       }
     }
-    eventQueueSecond.clear();
   }
 
   private void swap() {
-    Queue<Event> queue = this.eventQueueFirst;
-    this.eventQueueFirst = eventQueueSecond;
-    this.eventQueueSecond = queue;
+    Queue<Event> queue = this.first;
+    this.first = second;
+    this.second = queue;
   }
 }
