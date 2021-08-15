@@ -28,8 +28,8 @@ public class AtRuleVisitor extends CSS3BaseVisitor<AtRule> {
   @Override
   public AtRule visitFontFaceRule(FontFaceRuleContext ctx) {
     for (FontFaceDeclarationContext ffdCtx : ctx.fontFaceDeclaration()) {
-      if (ffdCtx instanceof KnownFontFaceDeclarationContext) {
-        visitKnownFontFaceDeclaration((KnownFontFaceDeclarationContext) ffdCtx);
+      if (ffdCtx instanceof KnownFontFaceDeclarationContext fontFace) {
+        visitKnownFontFaceDeclaration(fontFace);
       }
     }
 
