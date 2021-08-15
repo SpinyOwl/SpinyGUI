@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.StringJoiner;
-import java.util.stream.Collectors;
 import lombok.Data;
 import lombok.NonNull;
 
@@ -55,7 +54,7 @@ public class RuleSet {
     Objects.requireNonNull(elementTree);
     var elements = new ArrayList<Element>();
     inspectElementTree(elementTree, elements);
-    return elements.stream().distinct().collect(Collectors.toList());
+    return elements.stream().distinct().toList();
   }
 
   /**

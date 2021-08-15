@@ -61,5 +61,5 @@ public class SystemEventProcessorImpl implements SystemEventProcessor {
 
   public static SystemEventProcessorImpl create() {
     return SystemEventProcessorImpl.builder().build();
-  };
+  }
 }

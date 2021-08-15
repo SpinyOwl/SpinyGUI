@@ -69,7 +69,6 @@ import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.function.LongConsumer;
 import java.util.function.ObjIntConsumer;
-import java.util.stream.Collectors;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -102,7 +101,7 @@ public class FlexLayout implements Layout {
 
     List<Long> childNodes = new ArrayList<>();
     List<Element> components =
-        parent.children().stream().filter(NodeUtilities::visible).collect(Collectors.toList());
+        parent.children().stream().filter(NodeUtilities::visible).toList();
     for (Element component : components) {
       long childNode = YGNodeNew();
       prepareNode(component, childNode);

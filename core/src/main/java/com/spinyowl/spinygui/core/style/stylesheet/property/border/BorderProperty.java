@@ -49,25 +49,33 @@ public class BorderProperty extends Property {
     if (values.length == 1) {
       return BorderStyle.contains(values[0]);
     } else if (values.length == 2) {
-      if (BorderStyle.contains(values[0])) {
-        return BorderWidthProperty.testOne(values[1]) || colorValueExtractor.isValid(values[1]);
-      } else if (BorderStyle.contains(values[1])) {
-        return BorderWidthProperty.testOne(values[0]) || colorValueExtractor.isValid(values[0]);
-      }
-      return false;
+      return testTwoValues(values);
     } else {
-      if (BorderStyle.contains(values[0])) {
-        return BorderWidthProperty.testOne(values[1]) && colorValueExtractor.isValid(values[2])
-            || BorderWidthProperty.testOne(values[2]) && colorValueExtractor.isValid(values[1]);
-      } else if (BorderStyle.contains(values[1])) {
-        return BorderWidthProperty.testOne(values[0]) && colorValueExtractor.isValid(values[2])
-            || BorderWidthProperty.testOne(values[2]) && colorValueExtractor.isValid(values[0]);
-      } else if (BorderStyle.contains(values[2])) {
-        return BorderWidthProperty.testOne(values[1]) && colorValueExtractor.isValid(values[0])
-            || BorderWidthProperty.testOne(values[0]) && colorValueExtractor.isValid(values[1]);
-      }
-      return false;
+      return testThreeValues(values);
     }
+  }
+
+  private static boolean testThreeValues(String[] values) {
+    if (BorderStyle.contains(values[0])) {
+      return BorderWidthProperty.testOne(values[1]) && colorValueExtractor.isValid(values[2])
+          || BorderWidthProperty.testOne(values[2]) && colorValueExtractor.isValid(values[1]);
+    } else if (BorderStyle.contains(values[1])) {
+      return BorderWidthProperty.testOne(values[0]) && colorValueExtractor.isValid(values[2])
+          || BorderWidthProperty.testOne(values[2]) && colorValueExtractor.isValid(values[0]);
+    } else if (BorderStyle.contains(values[2])) {
+      return BorderWidthProperty.testOne(values[1]) && colorValueExtractor.isValid(values[0])
+          || BorderWidthProperty.testOne(values[0]) && colorValueExtractor.isValid(values[1]);
+    }
+    return false;
+  }
+
+  private static boolean testTwoValues(String[] values) {
+    if (BorderStyle.contains(values[0])) {
+      return BorderWidthProperty.testOne(values[1]) || colorValueExtractor.isValid(values[1]);
+    } else if (BorderStyle.contains(values[1])) {
+      return BorderWidthProperty.testOne(values[0]) || colorValueExtractor.isValid(values[0]);
+    }
+    return false;
   }
 
   private static void x(String value, Map<String, Object> styles) {
