@@ -12,7 +12,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class RulesetVisitor extends CSS3BaseVisitor<RuleSet> {
 
-  @NonNull private final CSS3BaseVisitor<List<Selector>> selectorVisitor;
+  @NonNull private final CSS3BaseVisitor<List<Selector>> selectorGroupVisitor;
   @NonNull private final CSS3BaseVisitor<List<Declaration>> propertyListVisitor;
 
   /**
@@ -24,7 +24,7 @@ public class RulesetVisitor extends CSS3BaseVisitor<RuleSet> {
   @Override
   public RuleSet visitKnownRuleset(KnownRulesetContext ctx) {
 
-    var selectors = selectorVisitor.visit(ctx.selectorGroup());
+    var selectors = selectorGroupVisitor.visit(ctx.selectorGroup());
     var properties = propertyListVisitor.visit(ctx.declarationList());
 
     return new RuleSet(selectors, properties);
