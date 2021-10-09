@@ -92,7 +92,7 @@ public class BorderProperty extends Property {
     if (i.width() != null) {
       styles.putAll(
           StyleUtils.getOneFour(
-              new Object[] {i.color()},
+              new Object[] {i.width()},
               BORDER_TOP_WIDTH,
               BORDER_RIGHT_WIDTH,
               BORDER_BOTTOM_WIDTH,
@@ -101,7 +101,7 @@ public class BorderProperty extends Property {
     if (i.style() != null) {
       styles.putAll(
           StyleUtils.getOneFour(
-              new Object[] {i.color()},
+              new Object[] {i.style()},
               BORDER_TOP_STYLE,
               BORDER_RIGHT_STYLE,
               BORDER_BOTTOM_STYLE,
@@ -133,51 +133,59 @@ public class BorderProperty extends Property {
     if (values.length == 1) {
       borderItem.style(BorderStyle.find(values[0]));
     } else if (values.length == 2) {
-      if (BorderStyle.contains(values[0])) {
-        borderItem.style(BorderStyle.find(values[0]));
-        if (colorValueExtractor.isValid(values[1])) {
-          borderItem.color(colorValueExtractor.extract(values[1]));
-        } else {
-          borderItem.width(BorderWidthProperty.extractOne(values[1]));
-        }
-      } else if (BorderStyle.contains(values[1])) {
-        borderItem.style(BorderStyle.find(values[1]));
-        if (colorValueExtractor.isValid(values[0])) {
-          borderItem.color(colorValueExtractor.extract(values[0]));
-        } else {
-          borderItem.width(BorderWidthProperty.extractOne(values[0]));
-        }
-      }
+      extractTwoValues(borderItem, values);
     } else if (values.length == 3) {
-      if (BorderStyle.contains(values[0])) {
-        borderItem.style(BorderStyle.find(values[0]));
-        if (colorValueExtractor.isValid(values[1])) {
-          borderItem.color(colorValueExtractor.extract(values[1]));
-          borderItem.width(BorderWidthProperty.extractOne(values[2]));
-        } else {
-          borderItem.width(BorderWidthProperty.extractOne(values[1]));
-          borderItem.color(colorValueExtractor.extract(values[2]));
-        }
-      } else if (BorderStyle.contains(values[1])) {
-        borderItem.style(BorderStyle.find(values[1]));
-        if (colorValueExtractor.isValid(values[0])) {
-          borderItem.color(colorValueExtractor.extract(values[0]));
-          borderItem.width(BorderWidthProperty.extractOne(values[2]));
-        } else {
-          borderItem.width(BorderWidthProperty.extractOne(values[0]));
-          borderItem.color(colorValueExtractor.extract(values[2]));
-        }
-      } else if (BorderStyle.contains(values[2])) {
-        borderItem.style(BorderStyle.find(values[2]));
-        if (colorValueExtractor.isValid(values[0])) {
-          borderItem.color(colorValueExtractor.extract(values[0]));
-          borderItem.width(BorderWidthProperty.extractOne(values[1]));
-        } else {
-          borderItem.width(BorderWidthProperty.extractOne(values[0]));
-          borderItem.color(colorValueExtractor.extract(values[1]));
-        }
-      }
+      extractThreeValues(borderItem, values);
     }
     return borderItem;
+  }
+
+  private static void extractTwoValues(BorderItem borderItem, String[] values) {
+    if (BorderStyle.contains(values[0])) {
+      borderItem.style(BorderStyle.find(values[0]));
+      if (colorValueExtractor.isValid(values[1])) {
+        borderItem.color(colorValueExtractor.extract(values[1]));
+      } else {
+        borderItem.width(BorderWidthProperty.extractOne(values[1]));
+      }
+    } else if (BorderStyle.contains(values[1])) {
+      borderItem.style(BorderStyle.find(values[1]));
+      if (colorValueExtractor.isValid(values[0])) {
+        borderItem.color(colorValueExtractor.extract(values[0]));
+      } else {
+        borderItem.width(BorderWidthProperty.extractOne(values[0]));
+      }
+    }
+  }
+
+  private static void extractThreeValues(BorderItem borderItem, String[] values) {
+    if (BorderStyle.contains(values[0])) {
+      borderItem.style(BorderStyle.find(values[0]));
+      if (colorValueExtractor.isValid(values[1])) {
+        borderItem.color(colorValueExtractor.extract(values[1]));
+        borderItem.width(BorderWidthProperty.extractOne(values[2]));
+      } else {
+        borderItem.width(BorderWidthProperty.extractOne(values[1]));
+        borderItem.color(colorValueExtractor.extract(values[2]));
+      }
+    } else if (BorderStyle.contains(values[1])) {
+      borderItem.style(BorderStyle.find(values[1]));
+      if (colorValueExtractor.isValid(values[0])) {
+        borderItem.color(colorValueExtractor.extract(values[0]));
+        borderItem.width(BorderWidthProperty.extractOne(values[2]));
+      } else {
+        borderItem.width(BorderWidthProperty.extractOne(values[0]));
+        borderItem.color(colorValueExtractor.extract(values[2]));
+      }
+    } else if (BorderStyle.contains(values[2])) {
+      borderItem.style(BorderStyle.find(values[2]));
+      if (colorValueExtractor.isValid(values[0])) {
+        borderItem.color(colorValueExtractor.extract(values[0]));
+        borderItem.width(BorderWidthProperty.extractOne(values[1]));
+      } else {
+        borderItem.width(BorderWidthProperty.extractOne(values[0]));
+        borderItem.color(colorValueExtractor.extract(values[1]));
+      }
+    }
   }
 }

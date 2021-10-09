@@ -14,7 +14,7 @@ import java.util.Map;
 
 public class BorderStyleProperty extends Property {
 
-  public static final String DEFAULT_VALUE = "solid";
+  public static final String DEFAULT_VALUE = BorderStyle.NONE.name();
   public static final String SPACE_REGEX = "\\s+";
 
   public BorderStyleProperty() {
