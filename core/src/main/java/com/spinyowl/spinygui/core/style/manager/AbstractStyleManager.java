@@ -36,20 +36,23 @@ public abstract class AbstractStyleManager implements StyleManager {
   private RuleSet defaultRuleSet;
 
   public void recalculate(Frame frame) {
-    frame.styleSheets().forEach(styleSheet -> updateStylesFromStyleSheet(frame, styleSheet));
+    updateStyles(frame, frame.styleSheets());
   }
 
-  private void updateStylesFromStyleSheet(Element element, StyleSheet styleSheet) {
+  private void updateStyles(Element element, List<StyleSheet> styleSheets) {
     List<RuleSet> ruleSets = new ArrayList<>();
-
+    // Initializing with default rulesets.
     ruleSets.add(defaultRuleSet());
-    ruleSets.addAll(styleSheet.searchSpecificRules(element));
+    // find all rule sets applicable to element.
+    for (StyleSheet styleSheet : styleSheets) {
+      ruleSets.addAll(styleSheet.searchSpecificRules(element));
+    }
+    // at the end we need to add styles specified in "style" attribute.
     ruleSets.add(elementStyleRuleSet(element));
 
     element.calculatedStyle().rules(ruleSets);
-    element
-        .children()
-        .forEach(childElement -> updateStylesFromStyleSheet(childElement, styleSheet));
+
+    element.children().forEach(child -> updateStyles(child, styleSheets));
   }
 
   private RuleSet elementStyleRuleSet(Element element) {
