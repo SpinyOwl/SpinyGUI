@@ -5,12 +5,13 @@ import static com.spinyowl.spinygui.core.style.stylesheet.Properties.BORDER_LEFT
 import static com.spinyowl.spinygui.core.style.stylesheet.Properties.BORDER_RIGHT_WIDTH;
 import static com.spinyowl.spinygui.core.style.stylesheet.Properties.BORDER_TOP_WIDTH;
 import static com.spinyowl.spinygui.core.style.stylesheet.Properties.BORDER_WIDTH;
-import static com.spinyowl.spinygui.core.style.stylesheet.util.StyleUtils.setOneFour;
 import static com.spinyowl.spinygui.core.style.stylesheet.util.StyleUtils.testMultipleValues;
 import com.spinyowl.spinygui.core.style.stylesheet.Property;
 import com.spinyowl.spinygui.core.style.stylesheet.extractor.ValueExtractor;
 import com.spinyowl.spinygui.core.style.stylesheet.extractor.ValueExtractors;
+import com.spinyowl.spinygui.core.style.stylesheet.util.StyleUtils;
 import com.spinyowl.spinygui.core.style.types.length.Length;
+import com.spinyowl.spinygui.core.style.types.length.Length.PixelLength;
 import java.util.Arrays;
 import java.util.Map;
 
@@ -20,12 +21,11 @@ public class BorderWidthProperty extends Property {
   public static final String MEDIUM = "medium";
   public static final String THICK = "thick";
 
-  public static final Length<Integer> THIN_VALUE = Length.pixel(2);
-  public static final Length<Integer> MEDIUM_VALUE = Length.pixel(4);
-  public static final Length<Integer> THICK_VALUE = Length.pixel(6);
+  public static final PixelLength THIN_VALUE = Length.pixel(2);
+  public static final PixelLength MEDIUM_VALUE = Length.pixel(4);
+  public static final PixelLength THICK_VALUE = Length.pixel(6);
 
-  @SuppressWarnings("rawtypes")
-  private static final ValueExtractor<Length> extractor = ValueExtractors.of(Length.class);
+  private static final ValueExtractor<PixelLength> extractor = ValueExtractors.of(PixelLength.class);
 
   public BorderWidthProperty() {
     super(
@@ -38,7 +38,7 @@ public class BorderWidthProperty extends Property {
   }
 
   protected static void extract(String value, Map<String, Object> styles) {
-    setOneFour(Arrays.stream(value.split("\\s+")).map(BorderWidthProperty::extractOne).toArray(),
+    StyleUtils.setOneFour(Arrays.stream(value.split("\\s+")).map(BorderWidthProperty::extractOne).toArray(),
         BORDER_TOP_WIDTH,
             BORDER_RIGHT_WIDTH,
             BORDER_BOTTOM_WIDTH,
@@ -46,8 +46,7 @@ public class BorderWidthProperty extends Property {
             styles);
   }
 
-  @SuppressWarnings("rawtypes")
-  public static Length extractOne(String value) {
+  public static PixelLength extractOne(String value) {
     String lowerCaseValue = value.toLowerCase();
     return switch (lowerCaseValue) {
       case THIN -> THIN_VALUE;

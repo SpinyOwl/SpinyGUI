@@ -10,17 +10,29 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class Length<T extends Number> implements Unit {
 
-  public static final Length<Integer> ZERO = pixel(0);
+  public static final PixelLength ZERO = pixel(0);
 
   @NonNull private final T value;
   @NonNull private final LengthType<T> type;
 
-  public static Length<Integer> pixel(int value) {
-    return new Length<>(value, PIXEL);
+  public static class PixelLength extends Length<Integer> {
+    public PixelLength(@NonNull Integer value) {
+      super(value, PIXEL);
+    }
   }
 
-  public static Length<Float> percent(float value) {
-    return new Length<>(value, PERCENT);
+  public static class PercentLength extends Length<Float> {
+    public PercentLength(@NonNull Float value) {
+      super(value, PERCENT);
+    }
+  }
+
+  public static PixelLength pixel(int value) {
+    return new PixelLength(value);
+  }
+
+  public static PercentLength percent(float value) {
+    return new PercentLength(value);
   }
 
   /**

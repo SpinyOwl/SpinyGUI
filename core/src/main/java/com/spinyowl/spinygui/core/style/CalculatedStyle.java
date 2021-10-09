@@ -85,6 +85,7 @@ import com.spinyowl.spinygui.core.style.types.flex.FlexDirection;
 import com.spinyowl.spinygui.core.style.types.flex.FlexWrap;
 import com.spinyowl.spinygui.core.style.types.flex.JustifyContent;
 import com.spinyowl.spinygui.core.style.types.length.Length;
+import com.spinyowl.spinygui.core.style.types.length.Length.PixelLength;
 import com.spinyowl.spinygui.core.style.types.length.Unit;
 import java.util.Collections;
 import java.util.HashMap;
@@ -262,19 +263,19 @@ public class CalculatedStyle {
     return get(MARGIN_LEFT);
   }
 
-  public Length borderLeftWidth() {
+  public PixelLength borderLeftWidth() {
     return get(BORDER_LEFT_WIDTH);
   }
 
-  public Length borderRightWidth() {
+  public PixelLength borderRightWidth() {
     return get(BORDER_RIGHT_WIDTH);
   }
 
-  public Length borderTopWidth() {
+  public PixelLength borderTopWidth() {
     return get(BORDER_TOP_WIDTH);
   }
 
-  public Length borderBottomWidth() {
+  public PixelLength borderBottomWidth() {
     return get(BORDER_BOTTOM_WIDTH);
   }
 

@@ -3,6 +3,8 @@ package com.spinyowl.spinygui.core.style.stylesheet.extractor.impl;
 import com.spinyowl.spinygui.core.style.stylesheet.extractor.ValueExtractor;
 import com.spinyowl.spinygui.core.style.stylesheet.extractor.ValueExtractorException;
 import com.spinyowl.spinygui.core.style.types.length.Length;
+import com.spinyowl.spinygui.core.style.types.length.Length.PercentLength;
+import com.spinyowl.spinygui.core.style.types.length.Length.PixelLength;
 import com.spinyowl.spinygui.core.style.types.length.Unit;
 
 /** Used to extract {@link Unit} value from string. */
@@ -19,13 +21,11 @@ public class UnitValueExtractor implements ValueExtractor<Unit> {
       return null;
     }
     if (value.matches(PIXEL_REGEX)) {
-      var pixelValue = value.substring(0, value.length() - 2);
-      return Length.pixel(Integer.parseInt(pixelValue));
+      return getPixelLength(value);
     }
 
     if (value.matches(PERCENTAGE_REGEX)) {
-      var percentageValue = value.substring(0, value.length() - 1);
-      return Length.percent(Float.parseFloat(percentageValue));
+      return getPercentLength(value);
     }
 
     if (value.matches(ZERO_REGEX)) {
@@ -33,6 +33,16 @@ public class UnitValueExtractor implements ValueExtractor<Unit> {
     }
 
     throw new ValueExtractorException(Length.class, value, "Unsupported length type.");
+  }
+
+  public static PercentLength getPercentLength(String value) {
+    var percentageValue = value.substring(0, value.length() - 1);
+    return Length.percent(Float.parseFloat(percentageValue));
+  }
+
+  public static PixelLength getPixelLength(String value) {
+    var pixelValue = value.substring(0, value.length() - 2);
+    return Length.pixel(Integer.parseInt(pixelValue));
   }
 
   @Override
