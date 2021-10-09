@@ -65,7 +65,7 @@ public class SystemCursorPosEventListener
     var prevTargetElements = NodeUtilities.getTargetElementList(frame, previous);
     if (!currentTargetElements.equals(prevTargetElements)) {
       generateEnterEvent(frame, current, currentTargetElements);
-      generateExitEvent(frame, previous, currentTargetElements, prevTargetElements);
+      generateExitEvent(frame, current, currentTargetElements, prevTargetElements);
     }
   }
 
