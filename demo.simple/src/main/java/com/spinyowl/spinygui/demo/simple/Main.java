@@ -51,18 +51,18 @@ public class Main {
         <?xml version="1.0" encoding="UTF-8"?>
         <div>
           <button>asdfasdfasd</button>
-        <button>
-          s
-          Hello World
-          <pre _pre="true">
+          <button>
             s
-            
+            Hello World
+            <pre _pre="true">
+            s
+           \s
             Hello World
           </pre>
-          <div>Bold</div>  
-        </button>  
-        <input name="password" value="PASS_@!@#&amp;" />  
-        <radio-button />
+            <div>Bold</div>
+          </button>
+          <input name="password" value="PASS_@!@#&amp;"/>
+          <radio-button/>
         </div>
         """;
     var unmarshal = nodeParser.fromXml(xml2);

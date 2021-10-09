@@ -24,10 +24,14 @@ import static org.lwjgl.util.yoga.Yoga.YGJustifyFlexStart;
 import static org.lwjgl.util.yoga.Yoga.YGJustifySpaceAround;
 import static org.lwjgl.util.yoga.Yoga.YGJustifySpaceBetween;
 import static org.lwjgl.util.yoga.Yoga.YGJustifySpaceEvenly;
+import static org.lwjgl.util.yoga.Yoga.YGNodeCalculateLayout;
 import static org.lwjgl.util.yoga.Yoga.YGNodeFree;
 import static org.lwjgl.util.yoga.Yoga.YGNodeInsertChild;
+import static org.lwjgl.util.yoga.Yoga.YGNodeLayoutGetBorder;
 import static org.lwjgl.util.yoga.Yoga.YGNodeLayoutGetHeight;
 import static org.lwjgl.util.yoga.Yoga.YGNodeLayoutGetLeft;
+import static org.lwjgl.util.yoga.Yoga.YGNodeLayoutGetMargin;
+import static org.lwjgl.util.yoga.Yoga.YGNodeLayoutGetPadding;
 import static org.lwjgl.util.yoga.Yoga.YGNodeLayoutGetTop;
 import static org.lwjgl.util.yoga.Yoga.YGNodeLayoutGetWidth;
 import static org.lwjgl.util.yoga.Yoga.YGNodeNew;
@@ -38,22 +42,22 @@ import static org.lwjgl.util.yoga.Yoga.YGNodeStyleSetFlexDirection;
 import static org.lwjgl.util.yoga.Yoga.YGNodeStyleSetFlexGrow;
 import static org.lwjgl.util.yoga.Yoga.YGNodeStyleSetFlexShrink;
 import static org.lwjgl.util.yoga.Yoga.YGNodeStyleSetFlexWrap;
-import static org.lwjgl.util.yoga.Yoga.YGNodeStyleSetHeight;
 import static org.lwjgl.util.yoga.Yoga.YGNodeStyleSetJustifyContent;
 import static org.lwjgl.util.yoga.Yoga.YGNodeStyleSetPositionType;
-import static org.lwjgl.util.yoga.Yoga.YGNodeStyleSetWidth;
 import static org.lwjgl.util.yoga.Yoga.YGPositionTypeAbsolute;
 import static org.lwjgl.util.yoga.Yoga.YGPositionTypeRelative;
 import static org.lwjgl.util.yoga.Yoga.YGWrapNoWrap;
 import static org.lwjgl.util.yoga.Yoga.YGWrapReverse;
 import static org.lwjgl.util.yoga.Yoga.YGWrapWrap;
-import static org.lwjgl.util.yoga.Yoga.nYGNodeCalculateLayout;
 import com.spinyowl.spinygui.core.event.processor.EventProcessor;
 import com.spinyowl.spinygui.core.layout.Layout;
 import com.spinyowl.spinygui.core.node.Element;
-import com.spinyowl.spinygui.core.node.Node;
+import com.spinyowl.spinygui.core.node.Node.Box;
+import com.spinyowl.spinygui.core.node.Node.Edges;
 import com.spinyowl.spinygui.core.style.CalculatedStyle;
+import com.spinyowl.spinygui.core.style.types.Display;
 import com.spinyowl.spinygui.core.style.types.Position;
+import com.spinyowl.spinygui.core.style.types.border.BorderStyle;
 import com.spinyowl.spinygui.core.style.types.flex.AlignItems;
 import com.spinyowl.spinygui.core.style.types.flex.AlignSelf;
 import com.spinyowl.spinygui.core.style.types.flex.FlexDirection;
@@ -65,19 +69,18 @@ import com.spinyowl.spinygui.core.system.event.processor.SystemEventProcessor;
 import com.spinyowl.spinygui.core.time.TimeService;
 import com.spinyowl.spinygui.core.util.NodeUtilities;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.function.LongConsumer;
 import java.util.function.ObjIntConsumer;
 import lombok.Getter;
 import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
+import lombok.experimental.SuperBuilder;
 import org.joml.Vector2f;
 import org.lwjgl.util.yoga.Yoga;
 
 @Getter
-@RequiredArgsConstructor
-public class FlexLayout implements Layout {
+@SuperBuilder
+public class FlexLayout extends Layout {
 
   public static final float THRESHOLD = 0.0001f;
   @NonNull private final SystemEventProcessor systemEventProcessor;
@@ -85,9 +88,11 @@ public class FlexLayout implements Layout {
   @NonNull private final TimeService timeService;
 
   /**
-   * Used to lay out child components for parent component.
+   * Used to lay out child elements for provided element.
    *
-   * @param parent component to lay out.
+   * <p>Currently sizes calculated as if all elements has 'box-sizing: border-box'.
+   *
+   * @param parent element to lay out.
    */
   @Override
   public void layout(Element parent) {
@@ -95,38 +100,72 @@ public class FlexLayout implements Layout {
       return;
     }
     // initialize
-    long rootNode = YGNodeNew();
-    prepareParentNode(parent, rootNode);
+    var rootNode = YGNodeNew();
+    prepareNode(parent, rootNode);
     YGNodeStyleSetDisplay(rootNode, YGDisplayFlex);
 
-    List<Long> childNodes = new ArrayList<>();
-    List<Element> components =
-        parent.children().stream().filter(NodeUtilities::visible).toList();
-    for (Element component : components) {
-      long childNode = YGNodeNew();
-      prepareNode(component, childNode);
+    var childNodes = new ArrayList<Long>();
+    var children = parent.children().stream().filter(NodeUtilities::visible).toList();
+    for (var child : children) {
+      var childNode = YGNodeNew();
+      prepareNode(child, childNode);
       YGNodeInsertChild(rootNode, childNode, childNodes.size());
       childNodes.add(childNode);
     }
 
+    Vector2f parentBorderBox = parent.dimensions()
+        .borderBoxSize();
     // calculate
-    nYGNodeCalculateLayout(rootNode, parent.size().x(), parent.size().y(), YGDirectionLTR);
+    YGNodeCalculateLayout(
+        rootNode,
+        parentBorderBox.x,
+        parentBorderBox.y,
+        YGDirectionLTR);
 
-    // apply to components
-    for (var i = 0; i < components.size(); i++) {
-      Node childComponent = components.get(i);
-      Long yogaNode = childNodes.get(i);
+    // apply to children
+    for (var i = 0; i < children.size(); i++) {
+      var child = children.get(i);
+      var yogaNode = childNodes.get(i);
 
-      var newPos = new Vector2f(YGNodeLayoutGetLeft(yogaNode), YGNodeLayoutGetTop(yogaNode));
-      childComponent.position(newPos);
+      Box dimensions = child.dimensions();
+      Edges padding = dimensions.padding();
+      padding.left(YGNodeLayoutGetPadding(yogaNode, YGEdgeLeft));
+      padding.right(YGNodeLayoutGetPadding(yogaNode, YGEdgeRight));
+      padding.top(YGNodeLayoutGetPadding(yogaNode, YGEdgeTop));
+      padding.bottom(YGNodeLayoutGetPadding(yogaNode, YGEdgeBottom));
 
-      var newSize = new Vector2f(YGNodeLayoutGetWidth(yogaNode), YGNodeLayoutGetHeight(yogaNode));
-      childComponent.size(newSize);
+      Edges margin = dimensions.margin();
+      margin.left(YGNodeLayoutGetMargin(yogaNode, YGEdgeLeft));
+      margin.right(YGNodeLayoutGetMargin(yogaNode, YGEdgeRight));
+      margin.top(YGNodeLayoutGetMargin(yogaNode, YGEdgeTop));
+      margin.bottom(YGNodeLayoutGetMargin(yogaNode, YGEdgeBottom));
+
+      Edges border = dimensions.border();
+      border.left(YGNodeLayoutGetBorder(yogaNode, YGEdgeLeft));
+      border.right(YGNodeLayoutGetBorder(yogaNode, YGEdgeRight));
+      border.top(YGNodeLayoutGetBorder(yogaNode, YGEdgeTop));
+      border.bottom(YGNodeLayoutGetBorder(yogaNode, YGEdgeBottom));
+
+      // this size is content size + paddings + borders
+      Vector2f size = new Vector2f(YGNodeLayoutGetWidth(yogaNode), YGNodeLayoutGetHeight(yogaNode));
+      Vector2f contentSize =
+          new Vector2f(size)
+              .sub(padding.left() + padding.right(), padding.top() + padding.bottom())
+              .sub(border.left() + border.right(), border.top() + border.bottom());
+
+      // this position is actually position of border box (relative parent border box position).
+      Vector2f position = new Vector2f(YGNodeLayoutGetLeft(yogaNode), YGNodeLayoutGetTop(yogaNode));
+      Vector2f contentPosition =
+          new Vector2f(position)
+              .add(border.left(), border.top())
+              .add(padding.left(), padding.top());
+
+      dimensions.contentSize(contentSize);
+      dimensions.contentPosition(contentPosition);
     }
 
-
     // free mem
-    for (Long childNode : childNodes) {
+    for (var childNode : childNodes) {
       YGNodeFree(childNode);
     }
 
@@ -136,13 +175,13 @@ public class FlexLayout implements Layout {
   /**
    * Used to prepare root node.
    *
-   * @param component parent component associated to root node.
+   * @param element parent element associated to root node.
    * @param node root yoga node.
    */
-  private static void prepareNode(Element component, long node) {
-    var style = component.calculatedStyle();
+  private static void prepareNode(Element element, long node) {
+    var style = element.calculatedStyle();
     setFlexDirection(node, style.flexDirection());
-    setJustifyContent(node, style.justifyContent( ));
+    setJustifyContent(node, style.justifyContent());
     setAlignItems(node, style.alignItems());
     setAlignSelf(node, style.alignSelf());
 
@@ -160,7 +199,9 @@ public class FlexLayout implements Layout {
     setPosition(node, style.right(), YGEdgeRight);
     setPosition(node, style.left(), YGEdgeLeft);
 
-    setFlexBasis(node, style.flexBasis( ));
+    setBorder(node, style);
+
+    setFlexBasis(node, style.flexBasis());
 
     setPadding(node, style);
     setMargin(node, style);
@@ -168,9 +209,9 @@ public class FlexLayout implements Layout {
     setFlexWrap(node, style.flexWrap());
     YGNodeStyleSetPositionType(
         node,
-        Position.RELATIVE.equals(style.position()) ?
-            YGPositionTypeRelative :
-            YGPositionTypeAbsolute);
+        Position.ABSOLUTE.equals(style.position())
+            ? YGPositionTypeAbsolute
+            : YGPositionTypeRelative);
 
     YGNodeStyleSetFlexGrow(node, style.flexGrow());
     YGNodeStyleSetFlexShrink(node, style.flexShrink());
@@ -199,11 +240,7 @@ public class FlexLayout implements Layout {
 
   private static void setPosition(long node, Unit distance, int edge) {
     setUnit(
-        distance,
-        node,
-        edge,
-        Yoga::YGNodeStyleSetPosition,
-        Yoga::YGNodeStyleSetPositionPercent);
+        distance, node, edge, Yoga::YGNodeStyleSetPosition, Yoga::YGNodeStyleSetPositionPercent);
   }
 
   private static void setFlexBasis(long node, Unit flexBasis) {
@@ -336,10 +373,15 @@ public class FlexLayout implements Layout {
         Yoga::YGNodeStyleSetPaddingPercent);
   }
 
-  private static void prepareParentNode(Element parent, long rootNode) {
-    prepareNode(parent, rootNode);
-    YGNodeStyleSetWidth(rootNode, parent.size().x());
-    YGNodeStyleSetHeight(rootNode, parent.size().y());
+  private static void setBorder(long node, CalculatedStyle style) {
+    if (!BorderStyle.NONE.equals(style.borderLeftStyle()))
+      setLength(style.borderLeftWidth(), node, YGEdgeLeft, Yoga::YGNodeStyleSetBorder);
+    if (!BorderStyle.NONE.equals(style.borderTopStyle()))
+      setLength(style.borderTopWidth(), node, YGEdgeTop, Yoga::YGNodeStyleSetBorder);
+    if (!BorderStyle.NONE.equals(style.borderRightStyle()))
+      setLength(style.borderRightWidth(), node, YGEdgeRight, Yoga::YGNodeStyleSetBorder);
+    if (!BorderStyle.NONE.equals(style.borderBottomStyle()))
+      setLength(style.borderBottomWidth(), node, YGEdgeBottom, Yoga::YGNodeStyleSetBorder);
   }
 
   private static void setMargin(long node, CalculatedStyle style) {
@@ -399,6 +441,13 @@ public class FlexLayout implements Layout {
       } else if (PERCENT.equals(l.type())) {
         percentConsumer.accept(node, side, (Float) l.value());
       }
+    }
+  }
+
+  public static void setLength(
+      Length<?> l, long node, int side, TriConsumer<Long, Integer, Integer> pixelConsumer) {
+    if (l != null && PIXEL.equals(l.type())) {
+      pixelConsumer.accept(node, side, (Integer) l.value());
     }
   }
 
@@ -467,5 +516,4 @@ public class FlexLayout implements Layout {
   public interface TriConsumer<T, U, V> {
     void accept(T t, U u, V v);
   }
-
 }
