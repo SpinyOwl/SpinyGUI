@@ -13,6 +13,7 @@ import com.spinyowl.spinygui.core.node.Frame;
 import com.spinyowl.spinygui.core.system.event.SystemCursorPosEvent;
 import com.spinyowl.spinygui.core.time.TimeService;
 import com.spinyowl.spinygui.core.util.NodeUtilities;
+import java.util.List;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.NonNull;
@@ -48,14 +49,8 @@ public class SystemCursorPosEventListener
 
     var focusedElement = frame.getFocusedElement();
 
-    var prevTarget = NodeUtilities.getTargetElement(frame, previous);
-    var targetElement = NodeUtilities.getTargetElement(frame, current);
-
     // Generate enter / exit events.
-    if (targetElement != prevTarget) {
-      generateEnterEvent(frame, current, targetElement);
-      generateExitEvent(frame, current, prevTarget);
-    }
+    generateEnterAndExitEvents(frame, current, previous);
 
     // Generate drag events.
     if (focusedElement != null && (mouseService.pressed(LEFT) || mouseService.pressed(RIGHT))) {
@@ -65,33 +60,53 @@ public class SystemCursorPosEventListener
     }
   }
 
-  private void generateEnterEvent(Frame frame, Vector2fc current, Element targetElement) {
-    if (targetElement != null) {
-      targetElement.hovered(true);
-      Vector2f intersection = targetElement.absolutePosition().sub(current).negate();
-      CursorEnterEvent enterEvent =
-          CursorEnterEvent.builder()
-              .source(frame)
-              .target(targetElement)
-              .intersection(intersection)
-              .cursorPosition(current)
-              .build();
-      eventProcessor.push(enterEvent);
+  private void generateEnterAndExitEvents(Frame frame, Vector2fc current, Vector2fc previous) {
+    var currentTargetElements = NodeUtilities.getTargetElementList(frame, current);
+    var prevTargetElements = NodeUtilities.getTargetElementList(frame, previous);
+    if (!currentTargetElements.equals(prevTargetElements)) {
+      generateEnterEvent(frame, current, currentTargetElements);
+      generateExitEvent(frame, previous, currentTargetElements, prevTargetElements);
     }
   }
 
-  private void generateExitEvent(Frame frame, Vector2fc current, Element prevTarget) {
-    if (prevTarget != null) {
-      Vector2f intersection = prevTarget.absolutePosition().sub(current).negate();
-      CursorExitEvent exitEvent =
-          CursorExitEvent.builder()
-              .source(frame)
-              .target(prevTarget)
-              .intersection(intersection)
-              .cursorPosition(current)
-              .build();
-      eventProcessor.push(exitEvent);
-      prevTarget.hovered(false);
+  private void generateEnterEvent(
+      Frame frame, Vector2fc current, List<Element> currentTargetElements) {
+    for (Element element : currentTargetElements) {
+      if (!element.hovered()) {
+        element.hovered(true);
+        Vector2f intersection = element.absolutePosition().sub(current).negate();
+        CursorEnterEvent enterEvent =
+            CursorEnterEvent.builder()
+                .source(frame)
+                .target(element)
+                .intersection(intersection)
+                .cursorPosition(current)
+                .build();
+        eventProcessor.push(enterEvent);
+      }
+    }
+  }
+
+  private void generateExitEvent(
+      Frame frame,
+      Vector2fc current,
+      List<Element> currentTargetElements,
+      List<Element> previousTargetElements) {
+
+    if (!currentTargetElements.containsAll(previousTargetElements)) {
+      previousTargetElements.removeAll(currentTargetElements);
+      for (Element prevTarget : previousTargetElements) {
+        Vector2f intersection = prevTarget.absolutePosition().sub(current).negate();
+        CursorExitEvent exitEvent =
+            CursorExitEvent.builder()
+                .source(frame)
+                .target(prevTarget)
+                .intersection(intersection)
+                .cursorPosition(current)
+                .build();
+        eventProcessor.push(exitEvent);
+        prevTarget.hovered(false);
+      }
     }
   }
 }
