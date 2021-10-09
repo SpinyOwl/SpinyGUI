@@ -3,18 +3,17 @@ plugins {
     id "checkstyle"
 }
 
-wrapper.jarFile("${project.projectDir}/_gradle/wrapper/gradle-wrapper.jar")
-
 project.group = 'com.spinyowl'
 
 printProjectInfo()
 
 private void printProjectInfo() {
     println "##################################################"
-    println "# Project info:                                  #"
-    println sprintf("#     group:    %-33s#", project.group)
-    println sprintf("#     name:     %-33s#", project.name)
-    println sprintf("#     version:  %-33s#", project.version)
+    println "# Build info:                                    #"
+    println sprintf("#     Project group:    %-25s#", project.group)
+    println sprintf("#     Project name:     %-25s#", project.name)
+    println sprintf("#     Project version:  %-25s#", project.version)
+    println sprintf("#     Java version:     %-25s#", JavaVersion.current())
     println "##################################################"
 }
 
@@ -35,8 +34,8 @@ subprojects {
             modularity.inferModulePath = true
         }
 
-        sourceCompatibility = 1.16
-        targetCompatibility = 1.16
+        sourceCompatibility = 17
+        targetCompatibility = 17
 
         compileJava.options.encoding = "UTF-8"
         compileTestJava.options.encoding = "UTF-8"
@@ -52,9 +51,9 @@ subprojects {
 
             // api
             // implementation
-            testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.2'
-            testImplementation 'org.junit.jupiter:junit-jupiter-params:5.7.2'
-            testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.2'
+            testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
+            testImplementation 'org.junit.jupiter:junit-jupiter-params:5.8.1'
+            testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
         }
     }
 
@@ -68,7 +67,7 @@ def sonarLogin = System.getProperty("sonarLogin") ?: System.getenv("sonarLogin")
 sonarqube {
     properties {
         property "sonar.projectKey", "SpinyOwl_SpinyGUI"
-        property "sonar.java.source", "16"
+        property "sonar.java.source", "17"
         property "sonar.organization", "spinyowl"
         property "sonar.host.url", "https://sonarcloud.io"
         property "sonar.login", sonarLogin
