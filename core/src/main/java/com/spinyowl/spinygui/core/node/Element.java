@@ -66,6 +66,11 @@ public class Element extends Node implements EventTarget {
     return attributes.containsKey(attribute);
   }
 
+  @Override
+  public void removeAttribute(String attribute) {
+    attributes.remove(attribute);
+  }
+
   public boolean hasAttributes() {
     return !attributes.isEmpty();
   }

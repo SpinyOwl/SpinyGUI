@@ -12,12 +12,12 @@ import lombok.ToString;
 @ToString(exclude = {"styleSheets"})
 public class Frame extends Element {
 
-  public static final String FRAME_TAG_NAME = "frame";
+  public static final String FRAME_TAG_NAME = "winframe";
 
   /** List of stylesheets attached to frame. */
   protected final List<StyleSheet> styleSheets = new CopyOnWriteArrayList<>();
 
-  /** Default constructor which provide {@code "frame"} string to super constructor. */
+  /** Default constructor which provide {@link #FRAME_TAG_NAME} string to super constructor. */
   public Frame() {
     super(FRAME_TAG_NAME);
   }
@@ -87,6 +87,80 @@ public class Frame extends Element {
       }
     }
     return null;
+  }
+
+  /**
+   * Used to find element with specified id. Returns first found occurrence or null if no such
+   * element.
+   *
+   * @param id id to search.
+   * @return first found occurrence or null if no such element.
+   */
+  public Element getElementById(@NonNull String id) {
+    return getElementsWithAttribute("id", id, true).stream().findFirst().orElse(null);
+  }
+
+  /**
+   * Returns list of elements which contain specified attribute.
+   *
+   * @param attribute attribute to check.
+   * @return list of elements with specified attribute.
+   */
+  public List<Element> getElementsWithAttribute(String attribute) {
+    return getElementsWithAttribute(this, new ArrayList<>(), attribute);
+  }
+
+  /**
+   * Returns list of elements which contain specified attribute with specified value.
+   * @param attribute attribute to check.
+   * @param value attribute value to check.
+   * @return list of elements with specified attribute-value pair.
+   */
+  public List<Element> getElementsWithAttribute(String attribute, String value) {
+    return getElementsWithAttribute(attribute, value, false);
+  }
+
+  private List<Element> getElementsWithAttribute(
+      Element element, List<Element> foundElements, String attribute) {
+    checkAttributeAndAdd(element, foundElements, attribute);
+    element.children().forEach(e -> getElementsWithAttribute(e, foundElements, attribute));
+    return foundElements;
+  }
+
+  private void checkAttributeAndAdd(
+      Element element, List<Element> foundElements, String attribute) {
+    if (element.hasAttribute(attribute)) {
+      foundElements.add(element);
+    }
+  }
+
+  private List<Element> getElementsWithAttribute(
+      String attribute, String value, boolean stopAtFirst) {
+    return getElementsWithAttribute(this, new ArrayList<>(), attribute, value, stopAtFirst);
+  }
+
+  private List<Element> getElementsWithAttribute(
+      Element element,
+      List<Element> foundElements,
+      String attribute,
+      String value,
+      boolean stopAtFirst) {
+    if (checkAttributeValueAndAdd(element, foundElements, attribute, value) && stopAtFirst) {
+      return foundElements;
+    }
+    element
+        .children()
+        .forEach(e -> getElementsWithAttribute(e, foundElements, attribute, value, stopAtFirst));
+    return foundElements;
+  }
+
+  private boolean checkAttributeValueAndAdd(
+      Element element, List<Element> foundElements, String attribute, String value) {
+    if (element.hasAttribute(attribute) && Objects.equals(value, element.getAttribute(attribute))) {
+      foundElements.add(element);
+      return true;
+    }
+    return false;
   }
 
   @Override

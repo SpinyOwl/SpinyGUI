@@ -93,6 +93,15 @@ public abstract class Node {
   public abstract void addChild(@NonNull Node node);
 
   /**
+   * Used to add several child node, to an element, as the last child node.
+   *
+   * @param nodes list of nodes to add.
+   */
+  public final void addChildren(@NonNull Node... nodes) {
+    Arrays.stream(nodes).forEach(this::addChild);
+  }
+
+  /**
    * Used to remove child node.
    *
    * @param node node to remove.
@@ -133,7 +142,7 @@ public abstract class Node {
   }
 
   /**
-   * Returns absolute component position.
+   * Returns absolute element position.
    *
    * @return position vector.
    */
@@ -194,6 +203,13 @@ public abstract class Node {
    * @return true if node has specified attribute.
    */
   public abstract boolean hasAttribute(String attribute);
+
+  /**
+   * Removes attribute and returns it's value.
+   *
+   * @param attribute attribute to remove.
+   */
+  public abstract void removeAttribute(String attribute);
 
   /**
    * Returns true if node contains any attribute.

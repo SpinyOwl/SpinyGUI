@@ -109,6 +109,11 @@ public final class Text extends Node {
     return false;
   }
 
+  @Override
+  public void removeAttribute(String attribute) {
+    // do nothing as there is no attributes in text node
+  }
+
   /**
    * Returns true if node contains any attribute.
    *
@@ -121,6 +126,6 @@ public final class Text extends Node {
 
   @Override
   public Map<String, String> attributes() {
-    return null;
+    return Map.of();
   }
 }
