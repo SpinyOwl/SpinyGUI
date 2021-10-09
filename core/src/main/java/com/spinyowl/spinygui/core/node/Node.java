@@ -5,6 +5,7 @@ import com.spinyowl.spinygui.core.node.intersection.Intersections;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.Getter;
@@ -135,7 +136,7 @@ public abstract class Node {
     return childNodes().stream()
         .filter(Element.class::isInstance)
         .map(Element.class::cast)
-        .toList();
+        .collect(Collectors.toList());
   }
 
   /**
