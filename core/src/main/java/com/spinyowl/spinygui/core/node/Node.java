@@ -3,6 +3,7 @@ package com.spinyowl.spinygui.core.node;
 import static java.util.stream.Collectors.toList;
 import com.spinyowl.spinygui.core.node.intersection.Intersection;
 import com.spinyowl.spinygui.core.node.intersection.Intersections;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import lombok.AccessLevel;
