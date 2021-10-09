@@ -21,13 +21,13 @@ public final class Position {
    * element's LEFT position.
    */
   public static final Position RELATIVE = Position.create("relative");
+  /**
+   * Static positioned elements are not affected by the top, bottom, left, and right properties.
+   * Elements render in order, as they appear in the document flow.
+   */
+  public static final Position STATIC = Position.create("static");
 
   // NEXT POSITION OPTIONS ARE CURRENTLY NOT IMPLEMENTED
-  //  /**
-  //   * Default value. Elements render in order, as they appear in the document flow.
-  //   */
-  //  public static final Position STATIC = Position.create("static");
-  //
   //  /**
   //   * The element is positioned relative to the browser window.
   //   */

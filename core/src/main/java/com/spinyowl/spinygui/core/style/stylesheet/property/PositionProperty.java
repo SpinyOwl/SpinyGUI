@@ -10,7 +10,7 @@ public class PositionProperty extends Property {
   public PositionProperty() {
     super(
         POSITION,
-        Position.RELATIVE.name(),
+        Position.STATIC.name(),
         INHERITED,
         ANIMATABLE,
         (position, styles) -> styles.put(POSITION, Position.find(position)),
