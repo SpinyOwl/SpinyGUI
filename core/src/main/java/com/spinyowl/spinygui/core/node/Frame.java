@@ -7,8 +7,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.CopyOnWriteArrayList;
+import lombok.Getter;
 import lombok.NonNull;
+import lombok.Setter;
 import lombok.ToString;
+import org.joml.Vector2f;
 
 /** The root element that holds all stylesheets and other nodes. */
 @ToString(exclude = {"styleSheets"})
@@ -18,6 +21,8 @@ public class Frame extends Element {
 
   /** List of stylesheets attached to frame. */
   protected final List<StyleSheet> styleSheets = new CopyOnWriteArrayList<>();
+
+  @Getter @Setter @NonNull private Vector2f frameSize = new Vector2f();
 
   /** Default constructor which provide {@link #FRAME_TAG_NAME} string to super constructor. */
   public Frame() {
@@ -114,6 +119,7 @@ public class Frame extends Element {
 
   /**
    * Returns list of elements which contain specified attribute with specified value.
+   *
    * @param attribute attribute to check.
    * @param value attribute value to check.
    * @return list of elements with specified attribute-value pair.
@@ -168,5 +174,9 @@ public class Frame extends Element {
   @Override
   public Frame frame() {
     return this;
+  }
+
+  public void frameSize(float x, float y) {
+    this.frameSize.set(x, y);
   }
 }

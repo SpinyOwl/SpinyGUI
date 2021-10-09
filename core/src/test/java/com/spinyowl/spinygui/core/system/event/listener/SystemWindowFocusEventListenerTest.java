@@ -38,7 +38,7 @@ class SystemWindowFocusEventListenerTest {
 
     // Arrange
     Frame frame = new Frame();
-    frame.size(100, 100);
+    frame.dimensions().contentSize(100, 100);
 
     SystemWindowFocusEvent event = createEvent(frame);
 

@@ -55,11 +55,11 @@ class SystemMouseClickEventListenerTest {
     // Arrange
     Element element = div();
     element.focused(true);
-    element.size(20, 20);
-    element.position(20, 20);
+    element.dimensions().contentSize(20, 20);
+    element.dimensions().contentPosition(20, 20);
 
     Frame frame = frame(element);
-    frame.size(100, 100);
+    frame.dimensions().contentSize(100, 100);
 
     SystemMouseClickEvent event =
         SystemMouseClickEvent.builder()
@@ -84,7 +84,7 @@ class SystemMouseClickEventListenerTest {
             .target(element)
             .action(KeyAction.RELEASE)
             .mouseButton(MouseButton.LEFT)
-            .position(new Vector2f(element.position()).sub(current).negate())
+            .position(new Vector2f(element.dimensions().contentPosition()).sub(current).negate())
             .absolutePosition(current)
             .mods(ImmutableSet.of())
             .timestamp(timestamp)
@@ -107,16 +107,16 @@ class SystemMouseClickEventListenerTest {
   void process_pressInCurrentFrame_generatesReleaseEventForFocusedElement() {
     // Arrange
     Element newFocusedElement = div(); // will gain focus
-    newFocusedElement.size(20, 20);
-    newFocusedElement.position(20, 20);
+    newFocusedElement.dimensions().contentSize(20, 20);
+    newFocusedElement.dimensions().contentPosition(20, 20);
 
     Element oldFocusedElement = div(); // will lose focus
     oldFocusedElement.focused(true);
-    oldFocusedElement.size(20, 20);
-    oldFocusedElement.position(50, 20);
+    oldFocusedElement.dimensions().contentSize(20, 20);
+    oldFocusedElement.dimensions().contentPosition(50, 20);
 
     Frame frame = frame(oldFocusedElement, newFocusedElement);
-    frame.size(100, 100);
+    frame.dimensions().contentSize(100, 100);
 
     SystemMouseClickEvent event =
         SystemMouseClickEvent.builder()
@@ -146,7 +146,10 @@ class SystemMouseClickEventListenerTest {
             .action(KeyAction.PRESS)
             .timestamp(timestamp)
             .mouseButton(MouseButton.LEFT)
-            .position(new Vector2f(newFocusedElement.position()).sub(current).negate())
+            .position(
+                new Vector2f(newFocusedElement.dimensions().contentPosition())
+                    .sub(current)
+                    .negate())
             .absolutePosition(current)
             .mods(event.mappedMods())
             .build();
@@ -180,16 +183,16 @@ class SystemMouseClickEventListenerTest {
   void process_releaseInCurrentFrame_generatesReleaseEventForFocusedElement() {
     // Arrange
     Element otherElement = div();
-    otherElement.size(20, 20);
-    otherElement.position(20, 20);
+    otherElement.dimensions().contentSize(20, 20);
+    otherElement.dimensions().contentPosition(20, 20);
 
     Element focusedElement = div(); // will lose focus
     focusedElement.focused(true);
-    focusedElement.size(20, 20);
-    focusedElement.position(50, 20);
+    focusedElement.dimensions().contentSize(20, 20);
+    focusedElement.dimensions().contentPosition(50, 20);
 
     Frame frame = frame(focusedElement, otherElement);
-    frame.size(100, 100);
+    frame.dimensions().contentSize(100, 100);
 
     SystemMouseClickEvent event =
         SystemMouseClickEvent.builder()
@@ -215,7 +218,8 @@ class SystemMouseClickEventListenerTest {
             .action(KeyAction.RELEASE)
             .timestamp(timestamp)
             .mouseButton(MouseButton.LEFT)
-            .position(new Vector2f(focusedElement.position()).sub(current).negate())
+            .position(
+                new Vector2f(focusedElement.dimensions().contentPosition()).sub(current).negate())
             .absolutePosition(current)
             .mods(event.mappedMods())
             .build();
@@ -244,11 +248,11 @@ class SystemMouseClickEventListenerTest {
     // Arrange
     Element focusedElement = div(); // will lose focus
     focusedElement.focused(true);
-    focusedElement.size(20, 20);
-    focusedElement.position(50, 20);
+    focusedElement.dimensions().contentSize(20, 20);
+    focusedElement.dimensions().contentPosition(50, 20);
 
     Frame frame = frame(focusedElement);
-    frame.size(100, 100);
+    frame.dimensions().contentSize(100, 100);
 
     SystemMouseClickEvent event =
         SystemMouseClickEvent.builder()
@@ -274,7 +278,8 @@ class SystemMouseClickEventListenerTest {
             .action(KeyAction.CLICK)
             .timestamp(timestamp)
             .mouseButton(MouseButton.LEFT)
-            .position(new Vector2f(focusedElement.position()).sub(current).negate())
+            .position(
+                new Vector2f(focusedElement.dimensions().contentPosition()).sub(current).negate())
             .absolutePosition(current)
             .mods(event.mappedMods())
             .build();
@@ -287,7 +292,8 @@ class SystemMouseClickEventListenerTest {
             .action(KeyAction.RELEASE)
             .timestamp(timestamp)
             .mouseButton(MouseButton.LEFT)
-            .position(new Vector2f(focusedElement.position()).sub(current).negate())
+            .position(
+                new Vector2f(focusedElement.dimensions().contentPosition()).sub(current).negate())
             .absolutePosition(current)
             .mods(event.mappedMods())
             .build();

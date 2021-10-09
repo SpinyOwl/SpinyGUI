@@ -42,8 +42,8 @@ public final class NodeUtilities {
       var rect = new Vector2f(0, 0);
       var absolutePosition = node.absolutePosition();
 
-      Vector2fc currentSize = node.size();
-      Vector2fc currentPos = node.position();
+      Vector2fc currentSize = node.dimensions().contentSize();
+      Vector2fc currentPos = node.dimensions().contentPosition();
 
       float lx = absolutePosition.x;
       float rx = absolutePosition.x + currentSize.x();
@@ -52,9 +52,10 @@ public final class NodeUtilities {
 
       // check top parent
 
-      if (currentPos.x() > node.parent().size().x()
+      Vector2f parentPaddingBoxSize = node.parent().dimensions().paddingBoxSize();
+      if (currentPos.x() > parentPaddingBoxSize.x
           || currentPos.x() + currentSize.x() < 0
-          || currentPos.y() > node.parent().size().y()
+          || currentPos.y() > parentPaddingBoxSize.y
           || currentPos.y() + currentSize.y() < 0) {
         return false;
       }
@@ -62,8 +63,8 @@ public final class NodeUtilities {
         // check from bottom parent to top parent
         for (int i = parentList.size() - 1; i >= 1; i--) {
           Node parent = parentList.get(i);
-          pos.add(parent.position());
-          rect.set(pos).add(parent.size());
+          pos.add(parent.dimensions().contentPosition());
+          rect.set(pos).add(parent.dimensions().contentSize());
 
           if (lx > rect.x || rx < pos.x || ty > rect.y || by < pos.y) {
             return false;

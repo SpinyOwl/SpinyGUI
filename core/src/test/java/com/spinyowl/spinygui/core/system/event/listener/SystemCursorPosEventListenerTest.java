@@ -52,7 +52,7 @@ class SystemCursorPosEventListenerTest {
     int posY = 1;
 
     Frame frame = new Frame();
-    frame.size(100, 100);
+    frame.dimensions().contentSize(100, 100);
 
     SystemCursorPosEvent event =
         SystemCursorPosEvent.builder().posX(posX).posY(posY).frame(frame).build();
@@ -97,7 +97,7 @@ class SystemCursorPosEventListenerTest {
     int posX = -1;
     int posY = -1;
     Frame frame = new Frame();
-    frame.size(100, 100);
+    frame.dimensions().contentSize(100, 100);
 
     SystemCursorPosEvent event =
         SystemCursorPosEvent.builder().posX(posX).posY(posY).frame(frame).build();
@@ -143,14 +143,14 @@ class SystemCursorPosEventListenerTest {
     int posY = 13;
 
     Frame frame = new Frame();
-    frame.size(100, 100);
+    frame.dimensions().contentSize(100, 100);
 
     SystemCursorPosEvent event =
         SystemCursorPosEvent.builder().posX(posX).posY(posY).frame(frame).build();
 
     Element element = new Element("div");
-    element.size(10, 10);
-    element.position(10, 10);
+    element.dimensions().contentSize(10, 10);
+    element.dimensions().contentPosition(10, 10);
     element.focused(true);
     frame.addChild(element);
 

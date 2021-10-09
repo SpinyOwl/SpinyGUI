@@ -1,12 +1,12 @@
 package com.spinyowl.spinygui.core.node;
 
-import static java.util.stream.Collectors.toList;
 import com.spinyowl.spinygui.core.node.intersection.Intersection;
 import com.spinyowl.spinygui.core.node.intersection.Intersections;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import lombok.AccessLevel;
+import lombok.Data;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -40,11 +40,7 @@ public abstract class Node {
   @Setter(AccessLevel.NONE)
   private Element parent;
 
-  /** Node position. Assigned to node by layout manager. */
-  @NonNull private Vector2f position = new Vector2f();
-
-  /** Node size. Assigned to node by layout manager. */
-  @NonNull private Vector2f size = new Vector2f();
+  private final Box dimensions = new Box();
 
   /** Determines whether this node hovered or not (cursor is over this node). */
   private boolean hovered;
@@ -139,7 +135,7 @@ public abstract class Node {
     return childNodes().stream()
         .filter(Element.class::isInstance)
         .map(Element.class::cast)
-        .collect(toList());
+        .toList();
   }
 
   /**
@@ -148,37 +144,11 @@ public abstract class Node {
    * @return position vector.
    */
   public Vector2f absolutePosition() {
-    var screenPos = new Vector2f(this.position());
-    for (Node p = this.parent(); p != null; p = p.parent()) {
-      screenPos.add(p.position());
+    var borderBox = this.dimensions().borderBoxPosition();
+    if (this.parent != null) {
+      borderBox.add(parent.absolutePosition());
     }
-    return screenPos;
-  }
-
-  /**
-   * Used to set node position in coordinates of parent node.
-   *
-   * <p>Used by layout engine.
-   *
-   * @param x node x position in coordinates of parent node.
-   * @param y node y position in coordinates of parent node.
-   */
-  public Node position(float x, float y) {
-    this.position.set(x, y);
-    return this;
-  }
-
-  /**
-   * Used to set node size.
-   *
-   * <p>Used by layout engine.
-   *
-   * @param width node width.
-   * @param height node height.
-   */
-  public Node size(float width, float height) {
-    this.size.set(width, height);
-    return this;
+    return borderBox;
   }
 
   /**
@@ -223,5 +193,76 @@ public abstract class Node {
 
   public Frame frame() {
     return parent == null ? null : parent.frame();
+  }
+
+  @Data
+  public static final class Box {
+    // content box. wrapped by padding edges, then border, then margin.
+    private final Rect content = new Rect();
+    private final Edges margin = new Edges();
+    private final Edges padding = new Edges();
+    private final Edges border = new Edges();
+
+    public void contentPosition(Vector2f position) {
+      content().x(position.x);
+      content().y(position.y);
+    }
+
+    public void contentPosition(float x, float y) {
+      content().x(x);
+      content().y(y);
+    }
+
+    public Vector2f contentPosition() {
+      return new Vector2f(content().x(), content().y());
+    }
+
+    public void contentSize(float width, float height) {
+      content().width(width);
+      content().height(height);
+    }
+
+    public void contentSize(Vector2f size) {
+      content().width(size.x);
+      content().height(size.y);
+    }
+
+    public Vector2f contentSize() {
+      return new Vector2f(content().width(), content().height());
+    }
+
+    public Vector2f paddingBoxSize() {
+      return contentSize()
+          .add(padding().left() + padding().right(), padding().top() + padding().bottom());
+    }
+
+    public Vector2f paddingBoxPosition() {
+      return new Vector2f(contentPosition()).sub(padding().left(), padding().top());
+    }
+
+    public Vector2f borderBoxSize() {
+      return new Vector2f(paddingBoxSize())
+          .add(border().left() + border().right(), border().top() + border().bottom());
+    }
+
+    public Vector2f borderBoxPosition() {
+      return new Vector2f(paddingBoxPosition()).sub(border().left(), border().top());
+    }
+  }
+
+  @Data
+  public static final class Rect {
+    private float x;
+    private float y;
+    private float width;
+    private float height;
+  }
+
+  @Data
+  public static final class Edges {
+    private float top;
+    private float right;
+    private float bottom;
+    private float left;
   }
 }

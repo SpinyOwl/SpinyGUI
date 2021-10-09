@@ -86,6 +86,7 @@ public class FlexLayout extends Layout {
   @NonNull private final SystemEventProcessor systemEventProcessor;
   @NonNull private final EventProcessor eventProcessor;
   @NonNull private final TimeService timeService;
+  private final BlockLayout blockLayout = BlockLayout.builder().build();
 
   /**
    * Used to lay out child elements for provided element.
@@ -96,6 +97,11 @@ public class FlexLayout extends Layout {
    */
   @Override
   public void layout(Element parent) {
+    if (parent.parent() == null
+        || !Display.FLEX.equals(parent.parent().calculatedStyle().display())) {
+      blockLayout.layout(parent);
+    }
+
     if(parent.children().isEmpty()) {
       return;
     }
