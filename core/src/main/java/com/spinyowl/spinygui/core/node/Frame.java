@@ -6,6 +6,7 @@ import com.spinyowl.spinygui.core.style.stylesheet.StyleSheet;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.CopyOnWriteArrayList;
+import lombok.NonNull;
 import lombok.ToString;
 
 /** The root element that holds all stylesheets and other nodes. */
