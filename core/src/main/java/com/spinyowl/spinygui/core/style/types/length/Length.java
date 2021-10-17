@@ -10,22 +10,10 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class Length<T extends Number> implements Unit {
 
-  public static final PixelLength ZERO = pixel(0);
-
   @NonNull private final T value;
   @NonNull private final LengthType<T> type;
 
-  public static class PixelLength extends Length<Integer> {
-    public PixelLength(@NonNull Integer value) {
-      super(value, PIXEL);
-    }
-  }
-
-  public static class PercentLength extends Length<Float> {
-    public PercentLength(@NonNull Float value) {
-      super(value, PERCENT);
-    }
-  }
+  public static PixelLength zero() { return ZH.I; }
 
   public static PixelLength pixel(int value) {
     return new PixelLength(value);
@@ -40,7 +28,7 @@ public class Length<T extends Number> implements Unit {
    *
    * @return calculated length.
    */
-  public int convert() {
+  public float convert() {
     return type.converter().convert(this);
   }
 
@@ -50,12 +38,28 @@ public class Length<T extends Number> implements Unit {
    * @param baseLength base length (that could be used to calculate relative length).
    * @return calculated length.
    */
-  public int convert(float baseLength) {
+  public float convert(float baseLength) {
     return type.converter().convert(this, baseLength);
   }
 
   @Override
   public String toString() {
     return value + "" + type;
+  }
+
+  public static class PixelLength extends Length<Integer> {
+    public PixelLength(@NonNull Integer value) {
+      super(value, PIXEL);
+    }
+  }
+
+  public static class PercentLength extends Length<Float> {
+    public PercentLength(@NonNull Float value) {
+      super(value, PERCENT);
+    }
+  }
+
+  private static final class ZH {
+    private static final PixelLength I = new PixelLength(0);
   }
 }

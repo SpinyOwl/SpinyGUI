@@ -12,7 +12,7 @@ public final class LengthType<T extends Number> {
   public static final LengthType<Integer> PIXEL =
       of("px", Integer.class, (length, baseValue) -> length.value());
   public static final LengthType<Float> PERCENT =
-      of("%", Float.class, (length, baseValue) -> (int) (length.value() * baseValue));
+      of("%", Float.class, (length, baseValue) -> length.value() * baseValue);
 
   @NonNull private final String name;
   @NonNull private Class<T> type;

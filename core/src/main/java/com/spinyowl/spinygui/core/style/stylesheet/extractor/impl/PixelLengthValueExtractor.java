@@ -24,6 +24,6 @@ public class PixelLengthValueExtractor implements ValueExtractor<PixelLength> {
 
   @Override
   public PixelLength extract(String value) {
-    return value.matches(UnitValueExtractor.PERCENTAGE_REGEX) ? Length.ZERO : getPixelLength(value);
+    return value.matches(UnitValueExtractor.PERCENTAGE_REGEX) ? Length.zero() : getPixelLength(value);
   }
 }
