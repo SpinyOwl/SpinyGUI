@@ -40,22 +40,22 @@ public final class StyleUtils {
    * Used to extract float value of length from {@link Length} value.
    *
    * @param length length
-   * @param baseWidth base width to calculate length using percentage.
+   * @param base base length to calculate length using percentage.
    * @return float(pixels) representation of length.
    */
-  public static Optional<Float> getFloatLengthOptional(Unit length, float baseWidth) {
-    return Optional.ofNullable(getFloatLength(length, baseWidth));
+  public static Optional<Float> getFloatLengthOptional(Unit length, float base) {
+    return Optional.ofNullable(getFloatLength(length, base));
   }
 
   /**
    * Used to extract float value of length from {@link Length} value.
    *
    * @param length length
-   * @param baseWidth base width to calculate length using percentage.
+   * @param base base length to calculate length using percentage.
    * @return float(pixels) representation of length.
    */
-  public static float getFloatLengthNullSafe(Unit length, float baseWidth) {
-    var floatLength = getFloatLength(length, baseWidth);
+  public static float getFloatLengthNullSafe(Unit length, float base) {
+    var floatLength = getFloatLength(length, base);
     return floatLength == null ? 0 : floatLength;
   }
 
@@ -63,15 +63,15 @@ public final class StyleUtils {
    * Used to extract float value of length from {@link Length} value.
    *
    * @param length length
-   * @param baseWidth base width to calculate length using percentage.
+   * @param base base length to calculate length using percentage.
    * @return float(pixels) representation of length.
    */
-  public static Float getFloatLength(Unit length, float baseWidth) {
+  public static Float getFloatLength(Unit length, float base) {
     if (length == null) return null;
-    else if (length.isAuto()) return baseWidth;
+    else if (length.isAuto()) return base;
     else if (length.isLength()) {
       var l = length.asLength();
-      return (float) l.convert(baseWidth);
+      return (float) l.convert(base);
     }
     return null;
   }
