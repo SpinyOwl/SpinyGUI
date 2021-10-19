@@ -113,14 +113,9 @@ public class FlexLayout extends Layout {
       childNodes.add(childNode);
     }
 
-    Vector2f parentBorderBox = parent.dimensions()
-        .borderBoxSize();
+    Vector2f parentBorderBox = parent.dimensions().borderBoxSize();
     // calculate
-    YGNodeCalculateLayout(
-        rootNode,
-        parentBorderBox.x,
-        parentBorderBox.y,
-        YGDirectionLTR);
+    YGNodeCalculateLayout(rootNode, parentBorderBox.x, parentBorderBox.y, YGDirectionLTR);
 
     // apply to children
     for (var i = 0; i < children.size(); i++) {
