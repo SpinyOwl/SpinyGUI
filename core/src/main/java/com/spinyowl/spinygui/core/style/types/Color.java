@@ -20,7 +20,7 @@ public class Color {
 
   private static Map<String, Color> colors = new HashMap<>();
 
-  public static final Color TRANSPARENT = new Color(0f, 0f, 0f, 0f);
+  public static final Color TRANSPARENT = namedColor("transparent", new Color(0f, 0f, 0f, 0f));
   public static final Color ALICEBLUE = namedColor("aliceblue", fromHex("#f0f8ff"));
   public static final Color ANTIQUEWHITE = namedColor("antiquewhite", fromHex("#faebd7"));
   public static final Color AQUA = namedColor("aqua", fromHex("#00ffff"));
@@ -91,7 +91,8 @@ public class Color {
   public static final Color LIGHTBLUE = namedColor("lightblue", fromHex("#add8e6"));
   public static final Color LIGHTCORAL = namedColor("lightcoral", fromHex("#f08080"));
   public static final Color LIGHTCYAN = namedColor("lightcyan", fromHex("#e0ffff"));
-  public static final Color LIGHTGOLDENRODYELLOW = namedColor("lightgoldenrodyellow", fromHex("#fafad2"));
+  public static final Color LIGHTGOLDENRODYELLOW =
+      namedColor("lightgoldenrodyellow", fromHex("#fafad2"));
   public static final Color LIGHTGRAY = namedColor("lightgray", fromHex("#d3d3d3"));
   public static final Color LIGHTGREEN = namedColor("lightgreen", fromHex("#90ee90"));
   public static final Color LIGHTGREY = namedColor("lightgrey", fromHex("#d3d3d3"));
@@ -175,7 +176,7 @@ public class Color {
   float a;
 
   public Color(int r, int g, int b, int a) {
-    this(r/255f, g/255f, b/255f, a / 255f);
+    this(r / 255f, g / 255f, b / 255f, a / 255f);
   }
 
   public Color(int r, int g, int b, float a) {
@@ -192,34 +193,34 @@ public class Color {
 
   /**
    * Allowed to parse hex strings in RGB/RGBA/RRGGBB/RRGGBBAA format.
-   * <p>
-   * Example
+   *
+   * <p>Example
    *
    * @param value hex value
    * @return color
    */
   public static Color fromHex(@NonNull String value) {
-    String hexValue = (value.startsWith("#") ? value.substring(1): value).trim();
+    String hexValue = (value.startsWith("#") ? value.substring(1) : value).trim();
     var hex = Long.parseLong(hexValue, 16);
     return switch (hexValue.length()) {
       case 8 -> new Color(
-          (int)((hex >> 24) & 0xFF),
-          (int)((hex >> 16) & 0xFF),
-          (int)((hex >> 8) & 0xFF),
-          (int)(hex & 0xFF));
+          (int) ((hex >> 24) & 0xFF),
+          (int) ((hex >> 16) & 0xFF),
+          (int) ((hex >> 8) & 0xFF),
+          (int) (hex & 0xFF));
       case 6 -> new Color(
-          (int)((hex >> 16) & 0xFF),
-          (int)((hex >> 8) & 0xFF),
-          (int)(hex & 0xFF));
+          (int) ((hex >> 16) & 0xFF),
+          (int) ((hex >> 8) & 0xFF),
+          (int) (hex & 0xFF));
       case 4 -> new Color(
-          (int)(((hex >> 12) & 0xF) * 0x11),
-          (int)(((hex >> 8) & 0xF) * 0x11),
-          (int)(((hex >> 4) & 0xF) * 0x11),
-          (int)((hex & 0xF) * 0x11));
+          (int) (((hex >> 12) & 0xF) * 0x11),
+          (int) (((hex >> 8) & 0xF) * 0x11),
+          (int) (((hex >> 4) & 0xF) * 0x11),
+          (int) ((hex & 0xF) * 0x11));
       case 3 -> new Color(
-          (int)(((hex >> 8) & 0xF) * 0x11),
-          (int)(((hex >> 4) & 0xF) * 0x11),
-          (int)((hex & 0xF) * 0x11));
+          (int) (((hex >> 8) & 0xF) * 0x11),
+          (int) (((hex >> 4) & 0xF) * 0x11),
+          (int) ((hex & 0xF) * 0x11));
       default -> null;
     };
   }
@@ -227,10 +228,10 @@ public class Color {
   /**
    * Convert HSL values to a RGB Color.
    *
-   * @param hue        Hue is specified as degrees in the range 0 - 360.
+   * @param hue Hue is specified as degrees in the range 0 - 360.
    * @param saturation Saturation is specified as a percentage in the range 1 - 100.
-   * @param lightness  lightness is specified as a percentage in the range 1 - 100.
-   * @param alpha      the alpha value between 0 - 1
+   * @param lightness lightness is specified as a percentage in the range 1 - 100.
+   * @param alpha the alpha value between 0 - 1
    * @return the Color object.
    */
   public static Color hslToColor(int hue, int saturation, int lightness, float alpha) {
@@ -283,8 +284,9 @@ public class Color {
   }
 
   /**
-   * Returns color by name or null if there is no static mapping. Color name converted to
-   * lower case before search.
+   * Returns color by name or null if there is no static mapping. Color name converted to lower case
+   * before search.
+   *
    * @param name color name to search.
    * @return color or null.
    */
@@ -293,7 +295,8 @@ public class Color {
   }
 
   /**
-   * Used to put color  with specified name (in lower case) to static mapping.
+   * Used to put color with specified name (in lower case) to static mapping.
+   *
    * @param name color name.
    * @param color color.
    */
@@ -303,6 +306,7 @@ public class Color {
 
   /**
    * Checks if there is static mapping for color by color name.
+   *
    * @param colorName color name.
    * @return true if static mapping exists.
    */
@@ -312,6 +316,7 @@ public class Color {
 
   /**
    * Puts color to mapping with specified name (in lower case) and returns provided color.
+   *
    * @param name name.
    * @param color color.
    * @return provided color.
