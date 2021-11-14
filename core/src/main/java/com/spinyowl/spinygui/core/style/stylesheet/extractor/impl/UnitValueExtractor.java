@@ -18,7 +18,7 @@ public class UnitValueExtractor implements ValueExtractor<Unit> {
   @SuppressWarnings("rawtypes")
   public static Length getLength(String value) {
     if (value == null || value.isBlank()) {
-      return null;
+      return Length.zero();
     }
     if (value.matches(PIXEL_REGEX)) {
       return getPixelLength(value);

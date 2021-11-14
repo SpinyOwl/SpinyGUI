@@ -71,9 +71,9 @@ public final class StyleUtils {
     else if (length.isAuto()) return base;
     else if (length.isLength()) {
       var l = length.asLength();
-      return (float) l.convert(base);
+      return l.convert(base);
     }
-    return null;
+    return 0F;
   }
 
   public static Map<String, Object> getOneFour(
