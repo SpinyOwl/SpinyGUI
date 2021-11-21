@@ -7,6 +7,7 @@ import java.util.Set;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 
 @Getter
@@ -26,7 +27,7 @@ public class BackgroundOrigin {
   public static final BackgroundOrigin CONTENT_BOX = BackgroundOrigin.create("content-box");
 
   /** Name of position type (should be same as in css specification) */
-  private final String name;
+  @NonNull private final String name;
 
   /**
    * Used to create new {@link BackgroundOrigin} element with specified name. Note that name will be
@@ -36,8 +37,7 @@ public class BackgroundOrigin {
    * @param name name of {@link BackgroundOrigin} element.
    * @return new {@link BackgroundOrigin} element (or existing one).
    */
-  public static BackgroundOrigin create(String name) {
-    Objects.requireNonNull(name);
+  public static BackgroundOrigin create(@NonNull String name) {
     return VALUES.computeIfAbsent(name.toLowerCase(), BackgroundOrigin::new);
   }
 
@@ -49,8 +49,7 @@ public class BackgroundOrigin {
    * @param name name of {@link BackgroundOrigin} element.
    * @return existing {@link BackgroundOrigin} element or null.
    */
-  public static BackgroundOrigin find(String name) {
-    Objects.requireNonNull(name);
+  public static BackgroundOrigin find(@NonNull String name) {
     return VALUES.get(name.toLowerCase());
   }
 
@@ -69,11 +68,8 @@ public class BackgroundOrigin {
    * @param name {@link BackgroundOrigin} name.
    * @return true if there is a BackgroundOrigin value wth specified name.
    */
-  public static boolean contains(String name) {
-    if (name == null) {
-      return false;
-    }
-    return values().stream().map(BackgroundOrigin::name).anyMatch(v -> v.equalsIgnoreCase(name));
+  public static boolean contains(@NonNull String name) {
+    return VALUES.containsKey(name.toLowerCase());
   }
 
   @Override

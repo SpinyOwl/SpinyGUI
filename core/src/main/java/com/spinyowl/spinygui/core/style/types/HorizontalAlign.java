@@ -6,6 +6,7 @@ import java.util.Objects;
 import java.util.Set;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.NonNull;
 
 @Getter
 @EqualsAndHashCode
@@ -21,14 +22,14 @@ public class HorizontalAlign {
   public static final HorizontalAlign RIGHT = HorizontalAlign.create("right");
 
   /** Name of HorizontalAlign element. */
-  private final String name;
+  @NonNull private final String name;
 
   /**
    * Creates HorizontalAlign element with specified name.
    *
    * @param name name of HorizontalAlign type.
    */
-  private HorizontalAlign(String name) {
+  private HorizontalAlign(@NonNull String name) {
     this.name = name;
   }
 
@@ -39,7 +40,7 @@ public class HorizontalAlign {
    * @param name name of HorizontalAlign element.
    * @return new HorizontalAlign element (or existing one).
    */
-  private static HorizontalAlign create(String name) {
+  private static HorizontalAlign create(@NonNull String name) {
     return VALUES.computeIfAbsent(Objects.requireNonNull(name).toLowerCase(), HorizontalAlign::new);
   }
 
@@ -50,7 +51,7 @@ public class HorizontalAlign {
    * @param name name of HorizontalAlign element.
    * @return existing HorizontalAlign element or null.
    */
-  public static HorizontalAlign find(String name) {
+  public static HorizontalAlign find(@NonNull String name) {
     return VALUES.get(Objects.requireNonNull(name).toLowerCase());
   }
 
@@ -69,11 +70,8 @@ public class HorizontalAlign {
    * @param name HorizontalAlign name.
    * @return true if there is a HorizontalAlign value wth specified name.
    */
-  public static boolean contains(String name) {
-    if (name == null) {
-      return false;
-    }
-    return values().stream().map(HorizontalAlign::name).anyMatch(v -> v.equalsIgnoreCase(name));
+  public static boolean contains(@NonNull String name) {
+    return VALUES.containsKey(name.toLowerCase());
   }
 
   @Override

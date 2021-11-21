@@ -66,7 +66,7 @@ public final class JustifyContent {
    * @return true if there is a justify-content value wth specified name.
    */
   public static boolean contains(@NonNull String name) {
-    return values().stream().map(JustifyContent::name).anyMatch(v -> v.equalsIgnoreCase(name));
+    return VALUES.containsKey(name.toLowerCase());
   }
 
   @Override

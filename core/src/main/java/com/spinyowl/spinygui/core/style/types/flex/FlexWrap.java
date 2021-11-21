@@ -57,7 +57,7 @@ public final class FlexWrap {
    * @return true if there is a flex-wrap value wth specified name.
    */
   public static boolean contains(@NonNull String name) {
-    return values().stream().map(FlexWrap::name).anyMatch(v -> v.equalsIgnoreCase(name));
+    return VALUES.containsKey(name.toLowerCase());
   }
 
   @Override

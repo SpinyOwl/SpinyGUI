@@ -2,10 +2,10 @@ package com.spinyowl.spinygui.core.style.types;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.NonNull;
 
 /** CSS display. Currently supports */
 @Getter
@@ -20,15 +20,28 @@ public final class Display {
   /** The element is completely removed. */
   public static final Display NONE = Display.create("none");
 
+  /**
+   * The element generates a block element box, generating line breaks both before and after the
+   * element when in the normal flow.
+   */
+  public static final Display BLOCK = Display.create("block");
+
+  /**
+   * The element generates one or more inline element boxes that do not generate line breaks before
+   * or after themselves. In normal flow, the next element will be on the same line if there is
+   * space.
+   */
+  public static final Display INLINE = Display.create("inline");
+
   /** Name of display type (should be same as in css specification) */
-  private final String name;
+  @NonNull private final String name;
 
   /**
    * Creates display element with specified name.
    *
    * @param name name of display type (should be same as in css specification)
    */
-  private Display(String name) {
+  private Display(@NonNull String name) {
     this.name = name;
   }
 
@@ -39,8 +52,7 @@ public final class Display {
    * @param name name of display element.
    * @return new Display element (or existing one).
    */
-  public static Display create(String name) {
-    Objects.requireNonNull(name);
+  public static Display create(@NonNull String name) {
     return VALUES.computeIfAbsent(name.toLowerCase(), Display::new);
   }
 
@@ -51,7 +63,7 @@ public final class Display {
    * @param name name of display element.
    * @return existing Display element or null.
    */
-  public static Display find(String name) {
+  public static Display find(@NonNull String name) {
     return VALUES.get(name.toLowerCase());
   }
 
@@ -70,11 +82,8 @@ public final class Display {
    * @param name display name.
    * @return true if there is a display value wth specified name.
    */
-  public static boolean contains(String name) {
-    if (name == null) {
-      return false;
-    }
-    return values().stream().map(Display::name).anyMatch(v -> v.equalsIgnoreCase(name));
+  public static boolean contains(@NonNull String name) {
+    return VALUES.containsKey(name.toLowerCase());
   }
 
   @Override

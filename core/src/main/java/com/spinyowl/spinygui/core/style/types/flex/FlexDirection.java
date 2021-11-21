@@ -60,7 +60,7 @@ public final class FlexDirection {
    * @return true if there is a flex-direction value wth specified name.
    */
   public static boolean contains(@NonNull String name) {
-    return values().stream().map(FlexDirection::name).anyMatch(v -> v.equalsIgnoreCase(name));
+    return VALUES.containsKey(name.toLowerCase());
   }
 
   @Override

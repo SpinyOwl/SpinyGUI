@@ -6,6 +6,7 @@ import java.util.Objects;
 import java.util.Set;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.NonNull;
 
 @Getter
 @EqualsAndHashCode
@@ -20,14 +21,14 @@ public class PointerEvents {
   public static final PointerEvents NONE = PointerEvents.create("none");
 
   /** Name of PointerEvents element. */
-  private final String name;
+  @NonNull private final String name;
 
   /**
    * Creates PointerEvents element with specified name.
    *
    * @param name name of PointerEvents type.
    */
-  private PointerEvents(String name) {
+  private PointerEvents(@NonNull String name) {
     this.name = name;
   }
 
@@ -38,7 +39,7 @@ public class PointerEvents {
    * @param name name of PointerEvents element.
    * @return new PointerEvents element (or existing one).
    */
-  public static PointerEvents create(String name) {
+  public static PointerEvents create(@NonNull String name) {
     return VALUES.computeIfAbsent(Objects.requireNonNull(name).toLowerCase(), PointerEvents::new);
   }
 
@@ -49,7 +50,7 @@ public class PointerEvents {
    * @param name name of PointerEvents element.
    * @return existing PointerEvents element or null.
    */
-  public static PointerEvents find(String name) {
+  public static PointerEvents find(@NonNull String name) {
     return VALUES.get(Objects.requireNonNull(name).toLowerCase());
   }
 
@@ -68,11 +69,8 @@ public class PointerEvents {
    * @param name PointerEvents name.
    * @return true if there is a PointerEvents value wth specified name.
    */
-  public static boolean contains(String name) {
-    if (name == null) {
-      return false;
-    }
-    return values().stream().map(PointerEvents::name).anyMatch(v -> v.equalsIgnoreCase(name));
+  public static boolean contains(@NonNull String name) {
+    return VALUES.containsKey(name.toLowerCase());
   }
 
   @Override

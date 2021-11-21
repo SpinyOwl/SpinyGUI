@@ -6,6 +6,7 @@ import java.util.Objects;
 import java.util.Set;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.NonNull;
 
 /** CSS position. */
 @Getter
@@ -34,6 +35,7 @@ public final class Position {
   //  public static final Position FIXED = Position.create("fixed");
 
   /** Name of position type (should be same as in css specification) */
+  @NonNull
   private final String name;
 
   /**
@@ -41,7 +43,7 @@ public final class Position {
    *
    * @param name name of position type (should be same as in css specification)
    */
-  private Position(String name) {
+  private Position(@NonNull String name) {
     this.name = name;
   }
 
@@ -52,7 +54,7 @@ public final class Position {
    * @param name name of position element.
    * @return new position element (or existing one).
    */
-  public static Position create(String name) {
+  public static Position create(@NonNull String name) {
     Objects.requireNonNull(name);
     return VALUES.computeIfAbsent(name.toLowerCase(), Position::new);
   }
@@ -64,7 +66,7 @@ public final class Position {
    * @param name name of position element.
    * @return existing Position element or null.
    */
-  public static Position find(String name) {
+  public static Position find(@NonNull String name) {
     Objects.requireNonNull(name);
     return VALUES.get(name.toLowerCase());
   }
@@ -84,11 +86,8 @@ public final class Position {
    * @param name position name.
    * @return true if there is a position value wth specified name.
    */
-  public static boolean contains(String name) {
-    if (name == null) {
-      return false;
-    }
-    return values().stream().map(Position::name).anyMatch(v -> v.equalsIgnoreCase(name));
+  public static boolean contains(@NonNull String name) {
+    return VALUES.containsKey(name.toLowerCase());
   }
 
   @Override

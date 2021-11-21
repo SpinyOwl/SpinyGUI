@@ -90,7 +90,7 @@ public final class BorderStyle {
    * @return true if there is a border style value wth specified name.
    */
   public static boolean contains(@NonNull String name) {
-    return values().stream().map(BorderStyle::name).anyMatch(v -> v.equalsIgnoreCase(name));
+    return VALUES.containsKey(name.toLowerCase());
   }
 
   @Override

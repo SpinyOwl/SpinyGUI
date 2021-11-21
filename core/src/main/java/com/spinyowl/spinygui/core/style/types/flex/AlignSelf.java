@@ -66,7 +66,7 @@ public final class AlignSelf {
    * @return true if there is a align-self value wth specified name.
    */
   public static boolean contains(@NonNull String name) {
-    return values().stream().map(AlignSelf::name).anyMatch(v -> v.equalsIgnoreCase(name));
+    return VALUES.containsKey(name.toLowerCase());
   }
 
   @Override

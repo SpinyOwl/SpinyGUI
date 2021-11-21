@@ -62,7 +62,7 @@ public final class AlignItems {
    * @return true if there is a align-items value wth specified name.
    */
   public static boolean contains(@NonNull String name) {
-    return values().stream().map(AlignItems::name).anyMatch(v -> v.equalsIgnoreCase(name));
+    return VALUES.containsKey(name.toLowerCase());
   }
 
   @Override

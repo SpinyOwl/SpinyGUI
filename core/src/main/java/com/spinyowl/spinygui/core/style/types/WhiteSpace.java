@@ -39,14 +39,14 @@ public final class WhiteSpace {
   public static final WhiteSpace PRE_WRAP = WhiteSpace.create("pre-wrap");
 
   /** Name of white-space type (should be same as in css specification) */
-  private final String name;
+  @NonNull private final String name;
 
   /**
    * Creates white-space element with specified name.
    *
    * @param name name of white-space type (should be same as in css specification)
    */
-  private WhiteSpace(String name) {
+  private WhiteSpace(@NonNull String name) {
     this.name = name;
   }
 
@@ -88,7 +88,7 @@ public final class WhiteSpace {
    * @return true if there is a white-space value wth specified name.
    */
   public static boolean contains(@NonNull String name) {
-    return values().stream().map(WhiteSpace::name).anyMatch(v -> v.equalsIgnoreCase(name));
+    return VALUES.containsKey(name.toLowerCase());
   }
 
   @Override

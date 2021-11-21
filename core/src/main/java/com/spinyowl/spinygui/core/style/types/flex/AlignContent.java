@@ -66,7 +66,7 @@ public final class AlignContent {
    * @return true if there is a align-content value wth specified name.
    */
   public static boolean contains(@NonNull String name) {
-    return values().stream().map(AlignContent::name).anyMatch(v -> v.equalsIgnoreCase(name));
+    return VALUES.containsKey(name.toLowerCase());
   }
 
   @Override

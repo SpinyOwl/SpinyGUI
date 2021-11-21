@@ -6,6 +6,7 @@ import java.util.Objects;
 import java.util.Set;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.NonNull;
 
 @Getter
 @EqualsAndHashCode
@@ -22,14 +23,14 @@ public class VerticalAlign {
   /** Content should be aligned to baseline of container. */
   public static final VerticalAlign BASELINE = VerticalAlign.create("baseline");
   /** Name of VerticalAlign element. */
-  private final String name;
+  @NonNull private final String name;
 
   /**
    * Creates VerticalAlign element with specified name.
    *
    * @param name name of VerticalAlign type.
    */
-  private VerticalAlign(String name) {
+  private VerticalAlign(@NonNull String name) {
     this.name = name;
   }
 
@@ -40,7 +41,7 @@ public class VerticalAlign {
    * @param name name of VerticalAlign element.
    * @return new VerticalAlign element (or existing one).
    */
-  private static VerticalAlign create(String name) {
+  private static VerticalAlign create(@NonNull String name) {
     return VALUES.computeIfAbsent(Objects.requireNonNull(name).toLowerCase(), VerticalAlign::new);
   }
 
@@ -51,7 +52,7 @@ public class VerticalAlign {
    * @param name name of VerticalAlign element.
    * @return existing VerticalAlign element or null.
    */
-  public static VerticalAlign find(String name) {
+  public static VerticalAlign find(@NonNull String name) {
     return VALUES.get(Objects.requireNonNull(name).toLowerCase());
   }
 
@@ -70,11 +71,8 @@ public class VerticalAlign {
    * @param name VerticalAlign name.
    * @return true if there is a VerticalAlign value wth specified name.
    */
-  public static boolean contains(String name) {
-    if (name == null) {
-      return false;
-    }
-    return values().stream().map(VerticalAlign::name).anyMatch(v -> v.equalsIgnoreCase(name));
+  public static boolean contains(@NonNull String name) {
+    return VALUES.containsKey(name.toLowerCase());
   }
 
   @Override
