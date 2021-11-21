@@ -19,13 +19,15 @@ public final class FontStyle {
   private static final Map<String, FontStyle> VALUES = new HashMap<>();
 
   // @formatter:off
-  public static final FontStyle NORMAL = FontStyle.create("normal");
+  public static final FontStyle NORMAL = FontStyle.create("normal", "regular");
   public static final FontStyle ITALIC = FontStyle.create("italic");
-  public static final FontStyle OBLIQUE = FontStyle.create("oblique");
+  public static final FontStyle OBLIQUE = FontStyle.create("oblique", "slanted");
   // @formatter:on
 
   /** Name of font style type (should be same as in css specification) */
   @NonNull private final String name;
+
+  @NonNull private final String[] aliases;
 
   /**
    * Used to find font style element with specified name. Note that name will be converted to lower
@@ -45,8 +47,13 @@ public final class FontStyle {
    * @param name name of font style element.
    * @return new font style element (or existing one).
    */
-  public static FontStyle create(@NonNull String name) {
-    return VALUES.computeIfAbsent(name.toLowerCase(), FontStyle::new);
+  public static FontStyle create(@NonNull String name, String... aliases) {
+    String[] als = aliases == null ? new String[0] : aliases;
+    var fontStyle = VALUES.computeIfAbsent(name.toLowerCase(), n -> new FontStyle(name, als));
+    for (@NonNull String alias : als) {
+      VALUES.put(alias.toLowerCase(), fontStyle);
+    }
+    return fontStyle;
   }
 
   /**
@@ -65,6 +72,6 @@ public final class FontStyle {
    * @return true if there is a font style value wth specified name.
    */
   public static boolean contains(@NonNull String name) {
-    return values().stream().map(FontStyle::name).anyMatch(v -> v.equalsIgnoreCase(name));
+    return VALUES.containsKey(name.toLowerCase());
   }
 }

@@ -2,7 +2,6 @@ package com.spinyowl.spinygui.core.font;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
@@ -43,6 +42,8 @@ public final class FontWeight {
 
   /** Name of font weight type (should be same as in css specification). */
   @NonNull private final String name;
+  /** Aliases of font weight type. */
+  @NonNull private final String[] aliases;
 
   /**
    * Used to create new font weight element with specified name. Note that name will be converted to
@@ -52,12 +53,11 @@ public final class FontWeight {
    * @return new font weight element (or existing one).
    */
   public static FontWeight create(int weight, @NonNull String name, String... aliases) {
-    Objects.requireNonNull(name);
-    var fontWeight = VALUES.computeIfAbsent(name.toLowerCase(), key -> new FontWeight(weight, key));
-    if (aliases != null) {
-      for (@NonNull String alias : aliases) {
-        VALUES.put(alias.toLowerCase(), new FontWeight(weight, alias));
-      }
+    String[] als = aliases == null ? new String[0] : aliases;
+    var fontWeight =
+        VALUES.computeIfAbsent(name.toLowerCase(), key -> new FontWeight(weight, name, als));
+    for (@NonNull String alias : als) {
+      VALUES.put(alias.toLowerCase(), fontWeight);
     }
     return fontWeight;
   }
@@ -103,6 +103,6 @@ public final class FontWeight {
    * @return true if there is a font weight value wth specified name.
    */
   public static boolean contains(@NonNull String name) {
-    return values().stream().map(FontWeight::name).anyMatch(v -> v.equalsIgnoreCase(name));
+    return VALUES.containsKey(name.toLowerCase());
   }
 }

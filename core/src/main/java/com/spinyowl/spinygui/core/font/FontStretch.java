@@ -19,17 +19,21 @@ public final class FontStretch {
 
   private static final Map<String, FontStretch> VALUES = new HashMap<>();
 
-  // @formatter:off
-  public static final FontStretch ULTRA_CONDENSED = FontStretch.create("ultra-condensed");
-  public static final FontStretch EXTRA_CONDENSED = FontStretch.create("extra-condensed");
+  public static final FontStretch ULTRA_CONDENSED =
+      FontStretch.create("ultra-condensed", "ultra_condensed", "UltraCondensed");
+  public static final FontStretch EXTRA_CONDENSED =
+      FontStretch.create("extra-condensed", "extra_condensed", "ExtraCondensed");
   public static final FontStretch CONDENSED = FontStretch.create("condensed");
-  public static final FontStretch SEMI_CONDENSED = FontStretch.create("semi-condensed");
+  public static final FontStretch SEMI_CONDENSED =
+      FontStretch.create("semi-condensed", "semi_condensed", "SemiCondensed");
   public static final FontStretch NORMAL = FontStretch.create("normal");
-  public static final FontStretch SEMI_EXPANDED = FontStretch.create("semi-expanded");
+  public static final FontStretch SEMI_EXPANDED =
+      FontStretch.create("semi-expanded", "semi_expanded", "SemiExpanded");
   public static final FontStretch EXPANDED = FontStretch.create("expanded");
-  public static final FontStretch EXTRA_EXPANDED = FontStretch.create("extra-expanded");
-  public static final FontStretch ULTRA_EXPANDED = FontStretch.create("ultra-expanded");
-  // @formatter:on
+  public static final FontStretch EXTRA_EXPANDED =
+      FontStretch.create("extra-expanded", "extra_expanded", "ExtraExpanded");
+  public static final FontStretch ULTRA_EXPANDED =
+      FontStretch.create("ultra-expanded", "ultra_expanded", "UltraExpanded");
 
   /** Name of font stretch type (should be same as in css specification) */
   @NonNull private final String name;
@@ -42,8 +46,14 @@ public final class FontStretch {
    * @param name name of font stretch element.
    * @return new font stretch element (or existing one).
    */
-  public static FontStretch create(@NonNull String name) {
-    return VALUES.computeIfAbsent(name.toLowerCase(), FontStretch::new);
+  public static FontStretch create(@NonNull String name, String... aliases) {
+    var fontStretch = VALUES.computeIfAbsent(name.toLowerCase(), FontStretch::new);
+    if (aliases != null) {
+      for (@NonNull String alias : aliases) {
+        VALUES.put(alias.toLowerCase(), fontStretch);
+      }
+    }
+    return fontStretch;
   }
 
   /**
@@ -74,6 +84,6 @@ public final class FontStretch {
    * @return true if there is a font stretch value wth specified name.
    */
   public static boolean contains(@NonNull String name) {
-    return values().stream().map(FontStretch::name).anyMatch(v -> v.equalsIgnoreCase(name));
+    return VALUES.containsKey(name.toLowerCase());
   }
 }

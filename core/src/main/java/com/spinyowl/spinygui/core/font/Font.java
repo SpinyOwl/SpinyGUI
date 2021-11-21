@@ -1,8 +1,10 @@
 package com.spinyowl.spinygui.core.font;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Objects;
 import lombok.Data;
 import lombok.NonNull;
@@ -14,6 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class Font {
 
+  private static final Map<String, Map<FontKey, Font>> fontFamilies = new HashMap<>();
   private static Map<FontKey, Font> fonts = new HashMap<>();
 
   @NonNull private final String name;
@@ -39,6 +42,8 @@ public class Font {
 
     var key = new FontKey(font.name(), font.style(), font.width(), font.weight());
 
+    Map<FontKey, Font> fonts =
+        fontFamilies.computeIfAbsent(font.name(), n -> new LinkedHashMap<>());
     if (fonts.containsKey(key) && log.isWarnEnabled()) {
       log.warn("Font '{}' will be replaced.", font.name());
     }
@@ -148,9 +153,10 @@ public class Font {
    */
   public static List<Font> getFonts(
       String name, FontStyle style, FontWeight weight, FontStretch width) {
-    return fonts.keySet().stream()
-        .filter(k -> checkFont(k, name, style, weight, width))
-        .map(fonts::get)
+    Map<FontKey, Font> fonts = fontFamilies.get(name);
+    return fonts.entrySet().stream()
+        .filter(pair -> checkFont(pair.getKey(), name, style, weight, width))
+        .map(Entry::getValue)
         .toList();
   }
 
@@ -166,7 +172,9 @@ public class Font {
    */
   public static boolean hasFont(
       String name, FontStyle style, FontWeight weight, FontStretch width) {
-    return fonts.keySet().stream().anyMatch(k -> checkFont(k, name, style, weight, width));
+    return fontFamilies.containsKey(name)
+        && fontFamilies.get(name).keySet().stream()
+            .anyMatch(k -> checkFont(k, name, style, weight, width));
   }
 
   private static boolean checkFont(
