@@ -5,7 +5,6 @@ import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
-import com.google.common.collect.ImmutableList;
 import com.spinyowl.spinygui.core.event.FileDropEvent;
 import com.spinyowl.spinygui.core.event.processor.EventProcessor;
 import com.spinyowl.spinygui.core.input.MouseService;
@@ -29,7 +28,7 @@ class SystemFileDropEventListenerTest {
   @Mock private MouseService mouseService;
 
   private SystemEventListener<SystemFileDropEvent> listener;
-  private ImmutableList<String> paths;
+  private String[] paths;
 
   @BeforeEach
   void setUp() {
@@ -39,7 +38,7 @@ class SystemFileDropEventListenerTest {
             .timeService(timeService)
             .mouseService(mouseService)
             .build();
-    paths = ImmutableList.of("first", "second");
+    paths = new String[] {"first", "second"};
   }
 
   @Test
@@ -56,7 +55,7 @@ class SystemFileDropEventListenerTest {
     SystemFileDropEvent systemFileDropEvent = createEvent(frame);
 
     double timestamp = 1D;
-    when(timeService.getCurrentTime()).thenReturn(timestamp);
+    when(timeService.currentTime()).thenReturn(timestamp);
     FileDropEvent expectedFileDropEvent =
         FileDropEvent.builder()
             .source(frame)
@@ -70,7 +69,7 @@ class SystemFileDropEventListenerTest {
     listener.process(systemFileDropEvent, frame);
 
     // Verify
-    verify(timeService).getCurrentTime();
+    verify(timeService).currentTime();
     verify(mouseService).getCursorPositions(frame);
     verify(eventProcessor).push(expectedFileDropEvent);
   }

@@ -16,9 +16,15 @@ import lombok.Builder.Default;
 @Builder
 public class SystemEventProcessorImpl implements SystemEventProcessor {
 
-  @Default private SystemEventListenerProvider eventListenerProvider = new SystemEventListenerProviderImpl();
+  @Default
+  private SystemEventListenerProvider eventListenerProvider = new SystemEventListenerProviderImpl();
+
   @Default private Queue<SystemEvent> first = new ConcurrentLinkedQueue<>();
   @Default private Queue<SystemEvent> second = new ConcurrentLinkedQueue<>();
+
+  public static SystemEventProcessorImpl create() {
+    return SystemEventProcessorImpl.builder().build();
+  }
 
   private void swap() {
     var temp = first;
@@ -28,6 +34,7 @@ public class SystemEventProcessorImpl implements SystemEventProcessor {
 
   /** Used to process stored events in system event processor. */
   @Override
+  @SuppressWarnings({"rawtypes", "unchecked"})
   public void processEvents() {
     swap();
 
@@ -57,9 +64,5 @@ public class SystemEventProcessorImpl implements SystemEventProcessor {
   @Override
   public boolean hasEvents() {
     return !first.isEmpty() || !second.isEmpty();
-  }
-
-  public static SystemEventProcessorImpl create() {
-    return SystemEventProcessorImpl.builder().build();
   }
 }

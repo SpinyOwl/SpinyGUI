@@ -38,7 +38,7 @@ class SystemWindowRefreshEventListenerTest {
     var frame = frame();
     var timestamp = 1D;
 
-    when(timeService.getCurrentTime()).thenReturn(timestamp);
+    when(timeService.currentTime()).thenReturn(timestamp);
 
     var sourceEvent = createEvent(frame);
     var expectedEvent =
@@ -49,7 +49,7 @@ class SystemWindowRefreshEventListenerTest {
     listener.process(sourceEvent, frame);
 
     // Verify
-    verify(timeService).getCurrentTime();
+    verify(timeService).currentTime();
     verify(eventProcessor).push(expectedEvent);
   }
 

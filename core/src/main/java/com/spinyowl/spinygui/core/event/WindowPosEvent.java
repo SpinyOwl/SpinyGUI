@@ -1,28 +1,11 @@
 package com.spinyowl.spinygui.core.event;
 
-import lombok.Builder;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NonNull;
-import lombok.ToString;
+import lombok.Data;
+import lombok.experimental.SuperBuilder;
 
-@Getter
-@ToString
-@EqualsAndHashCode
+@Data
+@SuperBuilder
 public class WindowPosEvent extends Event {
   private final int posX;
   private final int posY;
-
-  @Builder
-  public WindowPosEvent(
-      @NonNull EventTarget source,
-      @NonNull EventTarget target,
-      double timestamp,
-      EventTarget currentTarget,
-      int posX,
-      int posY) {
-    super(source, target, timestamp, currentTarget);
-    this.posX = posX;
-    this.posY = posY;
-  }
 }

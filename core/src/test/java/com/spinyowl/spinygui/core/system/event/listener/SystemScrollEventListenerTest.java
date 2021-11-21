@@ -48,7 +48,7 @@ class SystemScrollEventListenerTest {
     when(mouseService.getCursorPositions(frame)).thenReturn(cursorPositions);
 
     double timestamp = 1D;
-    when(timeService.getCurrentTime()).thenReturn(timestamp);
+    when(timeService.currentTime()).thenReturn(timestamp);
 
     SystemScrollEvent event = createEvent(frame);
 
@@ -67,7 +67,7 @@ class SystemScrollEventListenerTest {
 
     // Verify
     verify(mouseService).getCursorPositions(frame);
-    verify(timeService).getCurrentTime();
+    verify(timeService).currentTime();
     verify(eventProcessor).push(expectedEvent);
   }
 

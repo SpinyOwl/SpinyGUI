@@ -41,7 +41,7 @@ public class SystemScrollEventListener extends AbstractSystemEventListener<Syste
           ScrollEvent.builder()
               .source(frame)
               .target(target)
-              .timestamp(timeService.getCurrentTime())
+              .timestamp(timeService.currentTime())
               .offsetX(event.offsetX())
               .offsetY(event.offsetY())
               .build());

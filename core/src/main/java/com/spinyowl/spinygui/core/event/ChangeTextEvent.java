@@ -1,27 +1,12 @@
 package com.spinyowl.spinygui.core.event;
 
-import lombok.Builder;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NonNull;
-import lombok.ToString;
+import lombok.experimental.SuperBuilder;
 
-@Getter
-@ToString
-@EqualsAndHashCode
+@Data
+@SuperBuilder
 public class ChangeTextEvent extends Event {
-  private final String oldText;
-  private final String newText;
-
-  @Builder
-  public ChangeTextEvent(
-      @NonNull EventTarget source,
-      @NonNull EventTarget target,
-      double timestamp,
-      String oldText,
-      String newText) {
-    super(source, target, timestamp);
-    this.oldText = oldText;
-    this.newText = newText;
-  }
+  @NonNull private final String oldText;
+  @NonNull private final String newText;
 }

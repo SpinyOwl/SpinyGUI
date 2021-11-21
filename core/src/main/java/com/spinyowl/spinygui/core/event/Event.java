@@ -1,13 +1,11 @@
 package com.spinyowl.spinygui.core.event;
 
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NonNull;
-import lombok.ToString;
+import lombok.experimental.SuperBuilder;
 
-@Getter
-@ToString
-@EqualsAndHashCode
+@Data
+@SuperBuilder
 public class Event {
 
   /** Element which cause event generation. */
@@ -22,21 +20,4 @@ public class Event {
    * slated to be sent. It's possible this has been changed along the way through retargeting.
    */
   private EventTarget currentTarget;
-
-  protected Event(
-      @NonNull EventTarget source,
-      @NonNull EventTarget target,
-      double timestamp,
-      EventTarget currentTarget) {
-    this.source = source;
-    this.target = target;
-    this.timestamp = timestamp;
-    this.currentTarget = currentTarget;
-  }
-
-  protected Event(@NonNull EventTarget source, @NonNull EventTarget target, double timestamp) {
-    this.source = source;
-    this.target = target;
-    this.timestamp = timestamp;
-  }
 }

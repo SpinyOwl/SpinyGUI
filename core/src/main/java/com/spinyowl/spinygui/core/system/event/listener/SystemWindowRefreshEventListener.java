@@ -31,7 +31,7 @@ public class SystemWindowRefreshEventListener
         WindowRefreshEvent.builder()
             .source(frame)
             .target(frame)
-            .timestamp(timeService.getCurrentTime())
+            .timestamp(timeService.currentTime())
             .build());
   }
 }

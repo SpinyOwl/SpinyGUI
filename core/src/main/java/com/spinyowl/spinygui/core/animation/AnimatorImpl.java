@@ -81,7 +81,7 @@ public class AnimatorImpl implements Animator {
 
   /** This method used to process animations. */
   public void runAnimations() {
-    double currentTime = timeService.getCurrentTime();
+    double currentTime = timeService.currentTime();
     double delta = currentTime - previousTime;
 
     List<Animation> initializeList = new ArrayList<>(animationsToInitialize);

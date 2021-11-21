@@ -36,7 +36,7 @@ public class SystemCharEventListener extends AbstractSystemEventListener<SystemC
         CharEvent.builder()
             .source(frame)
             .target(focusedElement)
-            .timestamp(timeService.getCurrentTime())
+            .timestamp(timeService.currentTime())
             .input(TextUtil.cpToStr(event.codepoint()))
             .build());
   }

@@ -4,33 +4,14 @@ import com.spinyowl.spinygui.core.input.KeyAction;
 import com.spinyowl.spinygui.core.input.KeyMod;
 import com.spinyowl.spinygui.core.input.KeyboardKey;
 import java.util.Set;
-import lombok.Builder;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NonNull;
-import lombok.ToString;
+import lombok.experimental.SuperBuilder;
 
-@Getter
-@ToString
-@EqualsAndHashCode
+@Data
+@SuperBuilder
 public class KeyboardEvent extends Event {
-
-  private final KeyAction action;
-  private final KeyboardKey key;
-  private final Set<KeyMod> mods;
-
-  @Builder
-  public KeyboardEvent(
-      @NonNull EventTarget source,
-      @NonNull EventTarget target,
-      double timestamp,
-      EventTarget currentTarget,
-      KeyAction action,
-      KeyboardKey key,
-      Set<KeyMod> mods) {
-    super(source, target, timestamp, currentTarget);
-    this.action = action;
-    this.key = key;
-    this.mods = mods;
-  }
+  @NonNull private final KeyAction action;
+  @NonNull private final KeyboardKey key;
+  @NonNull private final Set<KeyMod> mods;
 }
