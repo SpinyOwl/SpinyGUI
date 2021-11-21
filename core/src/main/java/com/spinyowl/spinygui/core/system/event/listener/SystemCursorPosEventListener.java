@@ -79,6 +79,7 @@ public class SystemCursorPosEventListener
             CursorEnterEvent.builder()
                 .source(frame)
                 .target(element)
+                .timestamp(timeService.currentTime())
                 .intersection(intersection)
                 .cursorPosition(current)
                 .build();
@@ -102,6 +103,7 @@ public class SystemCursorPosEventListener
                 .source(frame)
                 .target(prevTarget)
                 .intersection(intersection)
+                .timestamp(timeService.currentTime())
                 .cursorPosition(current)
                 .build();
         eventProcessor.push(exitEvent);

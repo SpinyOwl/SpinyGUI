@@ -9,8 +9,8 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import com.google.common.collect.ImmutableSet;
-import com.spinyowl.spinygui.core.event.FocusEvent.FocusInEvent;
-import com.spinyowl.spinygui.core.event.FocusEvent.FocusOutEvent;
+import com.spinyowl.spinygui.core.event.FocusInEvent;
+import com.spinyowl.spinygui.core.event.FocusOutEvent;
 import com.spinyowl.spinygui.core.event.MouseClickEvent;
 import com.spinyowl.spinygui.core.event.processor.EventProcessor;
 import com.spinyowl.spinygui.core.input.KeyAction;
@@ -76,7 +76,7 @@ class SystemMouseClickEventListenerTest {
     when(mouseService.getCursorPositions(frame)).thenReturn(cursorPositions);
 
     double timestamp = 1;
-    when(timeService.getCurrentTime()).thenReturn(timestamp);
+    when(timeService.currentTime()).thenReturn(timestamp);
 
     MouseClickEvent expectedReleaseEvent =
         MouseClickEvent.builder()
@@ -98,7 +98,7 @@ class SystemMouseClickEventListenerTest {
     verify(mouseService).pressed(event.button().mouseButton(), true);
     verify(mouseService).getCursorPositions(frame);
 
-    verify(timeService).getCurrentTime();
+    verify(timeService).currentTime();
 
     assertFalse(element.focused());
   }
@@ -133,10 +133,15 @@ class SystemMouseClickEventListenerTest {
     when(mouseService.getCursorPositions(frame)).thenReturn(cursorPositions);
 
     double timestamp = 1;
-    when(timeService.getCurrentTime()).thenReturn(timestamp);
+    when(timeService.currentTime()).thenReturn(timestamp);
 
     FocusOutEvent expectedFocusLostEvent =
-        new FocusOutEvent(frame, oldFocusedElement, timestamp, newFocusedElement);
+        FocusOutEvent.builder()
+            .source(frame)
+            .target(oldFocusedElement)
+            .timestamp(timestamp)
+            .nextFocus(newFocusedElement)
+            .build();
     doNothing().when(eventProcessor).push(expectedFocusLostEvent);
 
     MouseClickEvent expectedPressEvent =
@@ -156,7 +161,12 @@ class SystemMouseClickEventListenerTest {
     doNothing().when(eventProcessor).push(expectedPressEvent);
 
     FocusInEvent expectedFocusGainedEvent =
-        new FocusInEvent(frame, newFocusedElement, timestamp, oldFocusedElement);
+        FocusInEvent.builder()
+            .source(frame)
+            .target(newFocusedElement)
+            .timestamp(timestamp)
+            .prevFocus(oldFocusedElement)
+            .build();
     doNothing().when(eventProcessor).push(expectedFocusGainedEvent);
 
     // Act
@@ -166,7 +176,7 @@ class SystemMouseClickEventListenerTest {
     verify(mouseService).pressed(event.button().mouseButton(), true);
     verify(mouseService).getCursorPositions(frame);
 
-    verify(timeService, times(3)).getCurrentTime();
+    verify(timeService, times(3)).currentTime();
 
     verify(eventProcessor).push(expectedFocusLostEvent);
     verify(eventProcessor).push(expectedPressEvent);
@@ -209,7 +219,7 @@ class SystemMouseClickEventListenerTest {
     when(mouseService.getCursorPositions(frame)).thenReturn(cursorPositions);
 
     double timestamp = 1;
-    when(timeService.getCurrentTime()).thenReturn(timestamp);
+    when(timeService.currentTime()).thenReturn(timestamp);
 
     MouseClickEvent expectedReleaseEvent =
         MouseClickEvent.builder()
@@ -232,7 +242,7 @@ class SystemMouseClickEventListenerTest {
     verify(mouseService).pressed(event.button().mouseButton(), false);
     verify(mouseService).getCursorPositions(frame);
 
-    verify(timeService, times(1)).getCurrentTime();
+    verify(timeService, times(1)).currentTime();
 
     verify(eventProcessor).push(expectedReleaseEvent);
 
@@ -269,7 +279,7 @@ class SystemMouseClickEventListenerTest {
     when(mouseService.getCursorPositions(frame)).thenReturn(cursorPositions);
 
     double timestamp = 1;
-    when(timeService.getCurrentTime()).thenReturn(timestamp);
+    when(timeService.currentTime()).thenReturn(timestamp);
 
     MouseClickEvent expectedClickEvent =
         MouseClickEvent.builder()
@@ -306,7 +316,7 @@ class SystemMouseClickEventListenerTest {
     verify(mouseService).pressed(event.button().mouseButton(), false);
     verify(mouseService).getCursorPositions(frame);
 
-    verify(timeService, times(2)).getCurrentTime();
+    verify(timeService, times(2)).currentTime();
 
     verify(eventProcessor).push(expectedClickEvent);
     verify(eventProcessor).push(expectedReleaseEvent);

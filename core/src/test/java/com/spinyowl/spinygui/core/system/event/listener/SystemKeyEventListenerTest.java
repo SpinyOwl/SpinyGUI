@@ -92,7 +92,7 @@ class SystemKeyEventListenerTest {
     var element = div();
     frame.addChild(element);
     double timestamp = 1D;
-    when(timeService.getCurrentTime()).thenReturn(timestamp);
+    when(timeService.currentTime()).thenReturn(timestamp);
     KeyboardLayout keyboardLayout = mock(KeyboardLayout.class);
     when(keyboard.layout()).thenReturn(keyboardLayout);
 
@@ -130,7 +130,7 @@ class SystemKeyEventListenerTest {
     // Verify
     verify(keyboard).layout();
     verify(keyboardLayout).keyCode(keyCode);
-    verify(timeService).getCurrentTime();
+    verify(timeService).currentTime();
     verify(eventProcessor).push(expectedEvent);
   }
 

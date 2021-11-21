@@ -43,7 +43,7 @@ class SystemWindowsCloseEventListenerTest {
     SystemWindowCloseEvent event = createEvent(frame);
 
     double timestamp = 1D;
-    when(timeService.getCurrentTime()).thenReturn(timestamp);
+    when(timeService.currentTime()).thenReturn(timestamp);
 
     WindowCloseEvent expectedEvent =
         WindowCloseEvent.builder().source(frame).target(frame).timestamp(timestamp).build();
@@ -53,7 +53,7 @@ class SystemWindowsCloseEventListenerTest {
     listener.process(event, frame);
 
     // Verify
-    verify(timeService).getCurrentTime();
+    verify(timeService).currentTime();
     verify(eventProcessor).push(expectedEvent);
   }
 

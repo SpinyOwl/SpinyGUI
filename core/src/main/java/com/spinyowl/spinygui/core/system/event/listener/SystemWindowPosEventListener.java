@@ -31,7 +31,7 @@ public class SystemWindowPosEventListener
         WindowPosEvent.builder()
             .source(frame)
             .target(frame)
-            .timestamp(timeService.getCurrentTime())
+            .timestamp(timeService.currentTime())
             .posX(event.posX())
             .posY(event.posY())
             .build());

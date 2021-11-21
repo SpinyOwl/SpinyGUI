@@ -4,8 +4,8 @@ import static com.spinyowl.spinygui.core.system.input.SystemKeyAction.PRESS;
 import static com.spinyowl.spinygui.core.system.input.SystemKeyAction.RELEASE;
 import static com.spinyowl.spinygui.core.util.NodeUtilities.getTargetElement;
 import static com.spinyowl.spinygui.core.util.NodeUtilities.visible;
-import com.spinyowl.spinygui.core.event.FocusEvent.FocusInEvent;
-import com.spinyowl.spinygui.core.event.FocusEvent.FocusOutEvent;
+import com.spinyowl.spinygui.core.event.FocusInEvent;
+import com.spinyowl.spinygui.core.event.FocusOutEvent;
 import com.spinyowl.spinygui.core.event.MouseClickEvent;
 import com.spinyowl.spinygui.core.event.processor.EventProcessor;
 import com.spinyowl.spinygui.core.input.KeyAction;
@@ -32,6 +32,10 @@ public class SystemMouseClickEventListener
       @NonNull MouseService mouseService) {
     super(eventProcessor, timeService);
     this.mouseService = mouseService;
+  }
+
+  private static Vector2fc positionInElement(Vector2fc cursorPos, Element element) {
+    return element.absolutePosition().sub(cursorPos).negate();
   }
 
   /**
@@ -117,12 +121,18 @@ public class SystemMouseClickEventListener
     if (element != focused && visible(element) && element.focused()) {
       element.focused(false);
       element.pressed(false);
-      generateFocusLostEvent(focused, element, frame);
+      generateFocusLostEvent(frame, element, focused);
     }
   }
 
   private void generateFocusGainedEvent(Frame frame, Element target, Element prevFocus) {
-    eventProcessor.push(new FocusInEvent(frame, target, timeService.getCurrentTime(), prevFocus));
+    eventProcessor.push(
+        FocusInEvent.builder()
+            .source(frame)
+            .target(target)
+            .timestamp(timeService.currentTime())
+            .prevFocus(prevFocus)
+            .build());
   }
 
   private void generatePressEvent(
@@ -132,7 +142,7 @@ public class SystemMouseClickEventListener
             .source(frame)
             .target(target)
             .action(KeyAction.PRESS)
-            .timestamp(timeService.getCurrentTime())
+            .timestamp(timeService.currentTime())
             .mouseButton(event.button().mouseButton())
             .position(positionInElement(cursorPosition, target))
             .absolutePosition(cursorPosition)
@@ -140,8 +150,14 @@ public class SystemMouseClickEventListener
             .build());
   }
 
-  private void generateFocusLostEvent(Element focused, Element element, Frame frame) {
-    eventProcessor.push(new FocusOutEvent(frame, element, timeService.getCurrentTime(), focused));
+  private void generateFocusLostEvent(Frame frame, Element target, Element focused) {
+    eventProcessor.push(
+        FocusOutEvent.builder()
+            .source(frame)
+            .target(target)
+            .timestamp(timeService.currentTime())
+            .nextFocus(focused)
+            .build());
   }
 
   private void generateReleaseEvent(
@@ -151,7 +167,7 @@ public class SystemMouseClickEventListener
             .source(frame)
             .target(focusedElement)
             .action(KeyAction.RELEASE)
-            .timestamp(timeService.getCurrentTime())
+            .timestamp(timeService.currentTime())
             .mouseButton(event.button().mouseButton())
             .position(positionInElement(cursorPosition, focusedElement))
             .absolutePosition(cursorPosition)
@@ -166,15 +182,11 @@ public class SystemMouseClickEventListener
             .source(frame)
             .target(target)
             .action(KeyAction.CLICK)
-            .timestamp(timeService.getCurrentTime())
+            .timestamp(timeService.currentTime())
             .mouseButton(event.button().mouseButton())
             .position(positionInElement(cursorPosition, target))
             .absolutePosition(cursorPosition)
             .mods(event.mappedMods())
             .build());
-  }
-
-  private static Vector2fc positionInElement(Vector2fc cursorPos, Element element) {
-    return element.absolutePosition().sub(cursorPos).negate();
   }
 }

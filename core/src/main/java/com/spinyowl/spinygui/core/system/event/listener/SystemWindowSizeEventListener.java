@@ -31,7 +31,7 @@ public class SystemWindowSizeEventListener
         WindowSizeEvent.builder()
             .source(frame)
             .target(frame)
-            .timestamp(timeService.getCurrentTime())
+            .timestamp(timeService.currentTime())
             .width(event.width())
             .height(event.height())
             .build());

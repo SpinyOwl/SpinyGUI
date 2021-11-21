@@ -1,20 +1,14 @@
 package com.spinyowl.spinygui.core.system.event;
 
 import com.spinyowl.spinygui.core.node.Frame;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.ToString;
+import lombok.Data;
+import lombok.experimental.SuperBuilder;
 
-/** Marker interface that defines tree of system events. */
-@Getter
-@ToString
-@EqualsAndHashCode
+/** Defines tree of system events. */
+@Data
+@SuperBuilder
 public class SystemEvent {
 
   /** The frame that received the event. */
   private final Frame frame;
-
-  protected SystemEvent(Frame frame) {
-    this.frame = frame;
-  }
 }

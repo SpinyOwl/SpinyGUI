@@ -31,7 +31,7 @@ public class SystemWindowIconifyEventListener
         WindowIconifyEvent.builder()
             .source(frame)
             .target(frame)
-            .timestamp(timeService.getCurrentTime())
+            .timestamp(timeService.currentTime())
             .iconified(event.iconified())
             .build());
   }

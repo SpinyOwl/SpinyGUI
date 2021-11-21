@@ -30,7 +30,7 @@ public class SystemWindowsCloseEventListener
   public void process(@NonNull SystemWindowCloseEvent event, @NonNull Frame frame) {
     eventProcessor.push(
         WindowCloseEvent.builder()
-            .timestamp(timeService.getCurrentTime())
+            .timestamp(timeService.currentTime())
             .source(frame)
             .target(frame)
             .build());

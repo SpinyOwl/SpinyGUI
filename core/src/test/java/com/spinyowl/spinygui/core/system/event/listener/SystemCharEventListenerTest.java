@@ -48,7 +48,7 @@ class SystemCharEventListenerTest {
     element.focused(true);
     double currentTime = 1;
 
-    when(timeService.getCurrentTime()).thenReturn(currentTime);
+    when(timeService.currentTime()).thenReturn(currentTime);
 
     SystemCharEvent source = createEvent(frame);
 
@@ -66,7 +66,7 @@ class SystemCharEventListenerTest {
     listener.process(source, frame);
 
     // Verify
-    verify(timeService).getCurrentTime();
+    verify(timeService).currentTime();
     verify(eventProcessor).push(expected);
   }
 
@@ -83,7 +83,7 @@ class SystemCharEventListenerTest {
     listener.process(source, frame);
 
     // Verify
-    verify(timeService, times(0)).getCurrentTime();
+    verify(timeService, times(0)).currentTime();
     verify(eventProcessor, times(0)).push(any(CharEvent.class));
   }
 

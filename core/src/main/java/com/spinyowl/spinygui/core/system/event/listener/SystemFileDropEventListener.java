@@ -41,7 +41,7 @@ public class SystemFileDropEventListener extends AbstractSystemEventListener<Sys
           FileDropEvent.builder()
               .source(frame)
               .target(targetElement)
-              .timestamp(timeService.getCurrentTime())
+              .timestamp(timeService.currentTime())
               .paths(event.paths())
               .build());
     }
