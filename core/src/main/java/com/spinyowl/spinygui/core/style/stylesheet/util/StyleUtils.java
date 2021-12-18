@@ -1,8 +1,11 @@
 package com.spinyowl.spinygui.core.style.stylesheet.util;
 
+import com.spinyowl.spinygui.core.font.FontSize;
 import com.spinyowl.spinygui.core.node.Element;
-import com.spinyowl.spinygui.core.style.CalculatedStyle;
+import com.spinyowl.spinygui.core.node.Node;
+import com.spinyowl.spinygui.core.node.Text;
 import com.spinyowl.spinygui.core.style.types.length.Length;
+import com.spinyowl.spinygui.core.style.types.length.LengthType;
 import com.spinyowl.spinygui.core.style.types.length.Unit;
 import java.util.Map;
 import java.util.Optional;
@@ -12,14 +15,6 @@ import lombok.NonNull;
 public final class StyleUtils {
 
   private StyleUtils() {}
-
-  public static CalculatedStyle getParentCalculatedStyle(@NonNull Element element) {
-    var parent = element.parent();
-    if (parent == null) {
-      return null;
-    }
-    return parent.calculatedStyle();
-  }
 
   public static boolean testMultipleValues(
       String value, String splitRegex, int min, int max, Predicate<String> oneValueTester) {
@@ -103,6 +98,26 @@ public final class StyleUtils {
           return Map.of(top, values[0], right, values[1], bottom, values[2], left, values[3]);
         }
     }
+  }
+
+  public static Float getFontSize(@NonNull Node node) {
+    Element element;
+    if (node instanceof Text && node.parent() != null) {
+      element = node.parent();
+    } else if (node instanceof Element e) {
+      element = e;
+    } else {
+      return (float) FontSize.MEDIUM.size();
+    }
+
+    var fontSize = element.calculatedStyle().fontSize();
+    if (LengthType.PERCENT.equals(fontSize.type())) {
+      Element parent = element.parent();
+      Float parentFontSize =
+          parent != null ? getFontSize(parent) : Float.valueOf(FontSize.MEDIUM.size());
+      return getFloatLength(fontSize, parentFontSize);
+    }
+    return fontSize.convert();
   }
 
   public static void setOneFour(

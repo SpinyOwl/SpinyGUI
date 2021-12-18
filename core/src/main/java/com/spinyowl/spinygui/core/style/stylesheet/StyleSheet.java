@@ -4,7 +4,6 @@ import com.spinyowl.spinygui.core.node.Element;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Objects;
 import java.util.StringJoiner;
 import lombok.Data;
 import lombok.NonNull;
@@ -22,9 +21,7 @@ public class StyleSheet {
    * @param element element to search rules.
    * @return set of rules that are correspond to specified element.
    */
-  public List<RuleSet> searchRules(Element element) {
-    Objects.requireNonNull(element);
-
+  public List<RuleSet> searchRules(@NonNull Element element) {
     ArrayList<RuleSet> result = new ArrayList<>();
     for (RuleSet ruleSet : ruleSets) {
       if (ruleSet.test(element)) {
@@ -41,8 +38,7 @@ public class StyleSheet {
    * @param element element to search rules.
    * @return set of rules that correspond to specified element.
    */
-  public List<RuleSet> searchSpecificRules(Element element) {
-    Objects.requireNonNull(element);
+  public List<RuleSet> searchSpecificRules(@NonNull Element element) {
     return ruleSets.stream()
         .map(rs -> Pair.of(rs, rs.specificity(element)))
         .filter(pair -> pair.getRight() != null)
