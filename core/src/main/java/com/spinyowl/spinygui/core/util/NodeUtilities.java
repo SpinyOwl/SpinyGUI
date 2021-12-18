@@ -2,6 +2,7 @@ package com.spinyowl.spinygui.core.util;
 
 import com.spinyowl.spinygui.core.node.Element;
 import com.spinyowl.spinygui.core.node.Node;
+import com.spinyowl.spinygui.core.node.Text;
 import com.spinyowl.spinygui.core.style.types.Display;
 import com.spinyowl.spinygui.core.style.types.PointerEvents;
 import java.util.ArrayList;
@@ -177,7 +178,11 @@ public final class NodeUtilities {
     return targetList;
   }
 
-  public static boolean visible(Element element) {
-    return !Display.NONE.equals(element.calculatedStyle().display());
+  public static boolean visible(Node node) {
+    if (node instanceof Text) return true;
+    if (node instanceof Element element) {
+      return !Display.NONE.equals(element.calculatedStyle().display());
+    }
+    return false;
   }
 }
