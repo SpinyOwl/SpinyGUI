@@ -88,10 +88,10 @@ import com.spinyowl.spinygui.core.style.types.length.Length;
 import com.spinyowl.spinygui.core.style.types.length.Length.PixelLength;
 import com.spinyowl.spinygui.core.style.types.length.Unit;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 
@@ -102,7 +102,7 @@ public class CalculatedStyle {
   /** List of rulesets that applicable to element, sorted by specificity */
   private List<RuleSet> rules = List.of();
 
-  private final Map<String, Object> styles = new HashMap<>();
+  private final Map<String, Object> styles = new TreeMap<>();
 
   /**
    * Used to update list of rules.

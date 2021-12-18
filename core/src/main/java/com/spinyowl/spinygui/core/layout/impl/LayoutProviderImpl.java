@@ -13,19 +13,23 @@ import lombok.NonNull;
 public class LayoutProviderImpl implements LayoutProvider {
 
   private final Map<Display, Layout> layoutMap = new HashMap<>();
+  private final NoneLayout noneLayout;
+  private final FlexLayout flexLayout;
 
   public LayoutProviderImpl(
       @NonNull SystemEventProcessor systemEventProcessor,
       @NonNull EventProcessor eventProcessor,
       @NonNull TimeService timeService) {
-    addLayoutManager(Display.NONE, NoneLayout.builder().build());
-    addLayoutManager(
-        Display.FLEX,
+    noneLayout = NoneLayout.builder().build();
+    addLayoutManager(Display.NONE, noneLayout);
+    flexLayout =
         FlexLayout.builder()
             .systemEventProcessor(systemEventProcessor)
             .eventProcessor(eventProcessor)
             .timeService(timeService)
-            .build());
+            .build();
+    addLayoutManager(Display.FLEX, flexLayout);
+    addLayoutManager(Display.BLOCK, flexLayout);
   }
 
   @Override
