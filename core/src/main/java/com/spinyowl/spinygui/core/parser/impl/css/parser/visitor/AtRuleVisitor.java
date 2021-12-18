@@ -1,5 +1,9 @@
 package com.spinyowl.spinygui.core.parser.impl.css.parser.visitor;
 
+import static com.spinyowl.spinygui.core.style.stylesheet.Properties.FONT_FAMILY;
+import static com.spinyowl.spinygui.core.style.stylesheet.Properties.FONT_STRETCH;
+import static com.spinyowl.spinygui.core.style.stylesheet.Properties.FONT_STYLE;
+import static com.spinyowl.spinygui.core.style.stylesheet.Properties.FONT_WEIGHT;
 import com.spinyowl.spinygui.core.font.FontStretch;
 import com.spinyowl.spinygui.core.font.FontStyle;
 import com.spinyowl.spinygui.core.font.FontWeight;
@@ -12,11 +16,7 @@ import com.spinyowl.spinygui.core.style.stylesheet.atrule.FontFaceRule;
 
 public class AtRuleVisitor extends CSS3BaseVisitor<AtRule> {
 
-  public static final String FONT_FAMILY = "font-family";
   public static final String SRC = "src";
-  public static final String FONT_STRETCH = "font-stretch";
-  public static final String FONT_STYLE = "font-style";
-  public static final String FONT_WEIGHT = "font-weight";
 
   private FontFaceRule fontFaceRule = null;
   private String fontFamily;

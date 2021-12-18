@@ -34,6 +34,7 @@ public final class Properties {
   public static final String FONT_SIZE = "font-size";
   public static final String FONT_STYLE = "font-style";
   public static final String FONT_WEIGHT = "font-weight";
+  public static final String FONT_STRETCH = "font-stretch";
 
   public static final String PADDING = "padding";
   public static final String PADDING_TOP = "padding-top";

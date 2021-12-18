@@ -6,8 +6,8 @@ import static com.spinyowl.spinygui.core.node.NodeBuilder.div;
 import static com.spinyowl.spinygui.core.node.NodeBuilder.input;
 import static com.spinyowl.spinygui.core.node.NodeBuilder.radioButton;
 import static com.spinyowl.spinygui.core.node.NodeBuilder.text;
+import com.spinyowl.spinygui.core.node.Element;
 import com.spinyowl.spinygui.core.node.Frame;
-import com.spinyowl.spinygui.core.node.Node;
 import com.spinyowl.spinygui.core.parser.NodeParser;
 import com.spinyowl.spinygui.core.parser.impl.DefaultNodeParser;
 import java.util.Map;
@@ -18,25 +18,23 @@ public class Main {
 
   public static void main(String[] args) throws Exception {
 
-//        Monitor monitor = Monitor.getPrimaryMonitor();
-//        Window window = Window.createWindow("Example window", 800, 600, monitor);
+    //        Monitor monitor = Monitor.getPrimaryMonitor();
+    //        Window window = Window.createWindow("Example window", 800, 600, monitor);
 
-//        window.addCloseEventListener(Window.EXIT_ON_CLOSE);
+    //        window.addCloseEventListener(Window.EXIT_ON_CLOSE);
 
     NodeParser nodeParser = new DefaultNodeParser();
-    Node element = div(
-        button(
-            Map.of(
-                "name", "myAwesomeButton",
-                "id", "bid1"
-            ),
-            text("\n\n\tFOrmantted text\n\t\n\n asdfasdfa\n"),
-            div(text("Bold")),
-            button(text("\n\n\tFOrmantted text\n\t\n\n asdfasdfa\n"))
-        ),
-        input(TYPE_PASSWORD, "myPass", "PASS_@!@#&"),
-        radioButton("radio", "firstValue")
-    );
+    Element element =
+        div(
+            button(
+                Map.of("name", "myAwesomeButton", "id", "bid1"),
+                text("\n\n\tFOrmantted text\n\t\n\n asdfasdfa\n"),
+                div(text("Bold")),
+                button(text("\n\n\tFOrmantted text\n\t\n\n asdfasdfa\n"))),
+            input(TYPE_PASSWORD, "myPass", "PASS_@!@#&"),
+            radioButton("radio", "firstValue"));
+
+    element.style("background-color: red; border: 1px solid black;");
 
     var frame = new Frame();
     frame.addChild(element);
@@ -46,9 +44,9 @@ public class Main {
 
     String xml = nodeParser.toXml(element, false);
     log.info(xml);
-    //language=XML
-    var xml2 = """
-        <?xml version="1.0" encoding="UTF-8"?>
+    // language=HTML
+    var xml2 =
+        """
         <div>
           <button>asdfasdfasd</button>
           <button>
@@ -72,7 +70,6 @@ public class Main {
     log.info(xml2);
     log.info(nodeParser.toXml(unmarshal));
 
-//        window.setVisible(true);
+    //        window.setVisible(true);
   }
-
 }

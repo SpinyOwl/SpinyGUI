@@ -88,9 +88,10 @@ import com.spinyowl.spinygui.core.style.types.length.Length;
 import com.spinyowl.spinygui.core.style.types.length.Length.PixelLength;
 import com.spinyowl.spinygui.core.style.types.length.Unit;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 
@@ -101,7 +102,7 @@ public class CalculatedStyle {
   /** List of rulesets that applicable to element, sorted by specificity */
   private List<RuleSet> rules = List.of();
 
-  private final Map<String, Object> styles = new HashMap<>();
+  private final Map<String, Object> styles = new TreeMap<>();
 
   /**
    * Used to update list of rules.
@@ -175,10 +176,12 @@ public class CalculatedStyle {
     return get(BACKGROUND_IMAGE);
   }
 
+  @SuppressWarnings("rawtypes")
   public Length backgroundPositionX() {
     return get(BACKGROUND_POSITION_X);
   }
 
+  @SuppressWarnings("rawtypes")
   public Length backgroundPositionY() {
     return get(BACKGROUND_POSITION_Y);
   }
@@ -195,18 +198,22 @@ public class CalculatedStyle {
     return get(BACKGROUND_ORIGIN);
   }
 
+  @SuppressWarnings("rawtypes")
   public Length borderBottomLeftRadius() {
     return get(BORDER_BOTTOM_LEFT_RADIUS);
   }
 
+  @SuppressWarnings("rawtypes")
   public Length borderBottomRightRadius() {
     return get(BORDER_BOTTOM_RIGHT_RADIUS);
   }
 
+  @SuppressWarnings("rawtypes")
   public Length borderTopLeftRadius() {
     return get(BORDER_TOP_LEFT_RADIUS);
   }
 
+  @SuppressWarnings("rawtypes")
   public Length borderTopRightRadius() {
     return get(BORDER_TOP_RIGHT_RADIUS);
   }
@@ -215,10 +222,11 @@ public class CalculatedStyle {
     return get(BOX_SHADOW);
   }
 
-  public String fontFamily() {
+  public Set<String> fontFamilies() {
     return get(FONT_FAMILY);
   }
 
+  @SuppressWarnings("rawtypes")
   public Length fontSize() {
     return get(FONT_SIZE);
   }
@@ -231,18 +239,22 @@ public class CalculatedStyle {
     return get(FONT_WEIGHT);
   }
 
+  @SuppressWarnings("rawtypes")
   public Length paddingTop() {
     return get(PADDING_TOP);
   }
 
+  @SuppressWarnings("rawtypes")
   public Length paddingRight() {
     return get(PADDING_RIGHT);
   }
 
+  @SuppressWarnings("rawtypes")
   public Length paddingBottom() {
     return get(PADDING_BOTTOM);
   }
 
+  @SuppressWarnings("rawtypes")
   public Length paddingLeft() {
     return get(PADDING_LEFT);
   }
@@ -355,18 +367,22 @@ public class CalculatedStyle {
     return get(HEIGHT);
   }
 
+  @SuppressWarnings("rawtypes")
   public Length minWidth() {
     return get(MIN_WIDTH);
   }
 
+  @SuppressWarnings("rawtypes")
   public Length minHeight() {
     return get(MIN_HEIGHT);
   }
 
+  @SuppressWarnings("rawtypes")
   public Length maxWidth() {
     return get(MAX_WIDTH);
   }
 
+  @SuppressWarnings("rawtypes")
   public Length maxHeight() {
     return get(MAX_HEIGHT);
   }

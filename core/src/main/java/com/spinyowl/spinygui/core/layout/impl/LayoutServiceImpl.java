@@ -8,6 +8,8 @@ import com.spinyowl.spinygui.core.layout.LayoutTree;
 import com.spinyowl.spinygui.core.node.Element;
 import com.spinyowl.spinygui.core.node.Frame;
 import com.spinyowl.spinygui.core.node.Node;
+import com.spinyowl.spinygui.core.node.Node.Box;
+import com.spinyowl.spinygui.core.node.Node.Edges;
 import com.spinyowl.spinygui.core.node.Text;
 import com.spinyowl.spinygui.core.style.types.Display;
 import com.spinyowl.spinygui.core.style.types.Position;
@@ -16,18 +18,28 @@ import java.util.List;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 
-/**
- * Layout service is an entry point to layout system. Used to layout provided element.
- */
+/** Layout service is an entry point to layout system. Used to layout provided element. */
 @RequiredArgsConstructor
 public class LayoutServiceImpl implements LayoutService {
 
-  @NonNull
-  private final LayoutProvider layoutProvider;
+  @NonNull private final LayoutProvider layoutProvider;
 
   @Override
   public LayoutTree layout(Frame frame) {
-    layoutElement(frame);
+    if (frame != null && visible(frame)) {
+      var layoutManager = layoutProvider.getLayoutManager(frame.calculatedStyle().display());
+      if (layoutManager != null) {
+        layoutManager.layout(frame);
+      }
+      Box dimensions = frame.dimensions();
+      Edges padding = dimensions.padding();
+      dimensions.contentSize(
+          frame
+              .frameSize()
+              .sub(padding.left() + padding.right(), padding.top() + padding.bottom()));
+
+      frame.children().forEach(this::layoutElement);
+    }
     return createLayoutTree(frame);
   }
 
@@ -66,7 +78,7 @@ public class LayoutServiceImpl implements LayoutService {
         if (childNode instanceof Text childText) {
           normalFlowChildren.add(childText);
         } else if (childNode instanceof Element childElement
-                   && !Display.NONE.equals(childElement.calculatedStyle().display())) {
+            && !Display.NONE.equals(childElement.calculatedStyle().display())) {
           Position elementPosition = childElement.calculatedStyle().position();
           if (Position.STATIC.equals(elementPosition)) {
             normalFlowChildren.add(childElement);
@@ -74,13 +86,12 @@ public class LayoutServiceImpl implements LayoutService {
             positionedChildren.add(childElement);
           } else if (Position.ABSOLUTE.equals(elementPosition)) {
             positionedChildren.add(childElement);
-          }  // unreachable
+          } // unreachable
         }
       }
       normalFlowChildren.forEach(c -> children.add(createLayoutNode(c)));
       positionedChildren.forEach(c -> children.add(createLayoutNode(c)));
       return children;
     }
-
   }
 }

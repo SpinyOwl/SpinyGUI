@@ -13,12 +13,21 @@ import lombok.extern.slf4j.Slf4j;
 @Data
 @RequiredArgsConstructor
 public class Font {
-
   private static final Map<String, List<Font>> fontFamilies = new HashMap<>();
+
+  public static final Font ROBOTO_LIGHT =
+      Font.addFont(
+          new Font(
+              "Roboto",
+              FontStyle.NORMAL,
+              FontStretch.NORMAL,
+              FontWeight.LIGHT,
+              "fonts/Roboto-Light.ttf"));
+  public static final Font DEFAULT = ROBOTO_LIGHT;
 
   @NonNull private final String fontFamily;
   @NonNull private final FontStyle style;
-  @NonNull private final FontStretch width;
+  @NonNull private final FontStretch stretch;
   @NonNull private final FontWeight weight;
 
   @NonNull private final String path;
@@ -31,15 +40,16 @@ public class Font {
     this(fontFamily, style, FontStretch.NORMAL, FontWeight.NORMAL, path);
   }
 
-  public static void addFont(@NonNull Font font) {
+  public static Font addFont(@NonNull Font font) {
     List<Font> fonts = fontFamilies.computeIfAbsent(font.fontFamily(), n -> new LinkedList<>());
-    if (hasFont(font.fontFamily, font.style, font.weight, font.width)) {
+    if (hasFont(font.fontFamily, font.style, font.weight, font.stretch)) {
       if (log.isWarnEnabled()) {
         log.warn("Font '{}' will be replaced.", font.fontFamily());
       }
-      fonts.removeAll(getFonts(font.fontFamily, font.style, font.weight, font.width));
+      fonts.removeAll(getFonts(font.fontFamily, font.style, font.weight, font.stretch));
     }
     fonts.add(font);
+    return font;
   }
 
   /**
@@ -170,6 +180,6 @@ public class Font {
     return (name == null || name.equalsIgnoreCase(font.fontFamily))
         && (style == null || style.equals(font.style))
         && (weight == null || weight.equals(font.weight))
-        && (width == null || width.equals(font.width));
+        && (width == null || width.equals(font.stretch));
   }
 }

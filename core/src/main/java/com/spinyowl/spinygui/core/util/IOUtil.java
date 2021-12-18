@@ -1,22 +1,71 @@
 package com.spinyowl.spinygui.core.util;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.net.URL;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.SneakyThrows;
 import org.apache.commons.io.IOUtils;
 
-import java.io.File;
-import java.io.InputStream;
-import java.net.URL;
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
-
-/**
- * IO utility. Used to read resource as {@link ByteBuffer} or as {@link String}.
- */
+/** IO utility. Used to read resource as {@link ByteBuffer} or as {@link String}. */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class IOUtil {
+
+  /**
+   * Aggregating function that creates {@link ByteBuffer} from:
+   *
+   * <ul>
+   *   <li>file
+   *   <li>resource
+   *   <li>url (http/https) protocol
+   * </ul>
+   *
+   * @param path path to file or resource.
+   * @return file or resource data or null if resource was not found.
+   */
+  @SneakyThrows
+  public static ByteBuffer resourceAsByteBuffer(String path) {
+    String trimmedPath = path.trim();
+
+    if (trimmedPath.startsWith("http://") || trimmedPath.startsWith("https://")) {
+      return asByteBuffer(new URL(trimmedPath));
+    } else {
+      InputStream stream;
+      File file = new File(trimmedPath);
+      if (file.exists() && file.isFile()) {
+        stream = new FileInputStream(file);
+      } else {
+        stream = Thread.currentThread().getContextClassLoader().getResourceAsStream(trimmedPath);
+      }
+      if (stream == null) {
+        return null;
+      }
+      return asByteBuffer(stream);
+    }
+  }
+
+  /**
+   * Aggregating function that creates {@link String} from:
+   *
+   * <ul>
+   *   <li>file
+   *   <li>resource
+   *   <li>url (http/https) protocol
+   * </ul>
+   *
+   * @param path path to file or resource.
+   * @return file or resource data or null if resource was not found.
+   */
+  @SneakyThrows
+  public static String resourceAsString(String path) {
+    ByteBuffer resource = resourceAsByteBuffer(path);
+    return resource == null ? null : asString(resource);
+  }
 
   /**
    * Creates {@link ByteBuffer} from stream.

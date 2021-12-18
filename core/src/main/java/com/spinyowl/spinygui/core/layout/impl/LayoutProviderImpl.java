@@ -18,14 +18,19 @@ public class LayoutProviderImpl implements LayoutProvider {
       @NonNull SystemEventProcessor systemEventProcessor,
       @NonNull EventProcessor eventProcessor,
       @NonNull TimeService timeService) {
-    addLayoutManager(Display.NONE, NoneLayout.builder().build());
-    addLayoutManager(
-        Display.FLEX,
+
+    NoneLayout noneLayout = NoneLayout.builder().build();
+    FlexLayout flexLayout =
         FlexLayout.builder()
             .systemEventProcessor(systemEventProcessor)
             .eventProcessor(eventProcessor)
             .timeService(timeService)
-            .build());
+            .build();
+
+    addLayoutManager(Display.NONE, noneLayout);
+    addLayoutManager(Display.FLEX, flexLayout);
+    addLayoutManager(Display.BLOCK, flexLayout); // TODO: replace with block layout
+    addLayoutManager(Display.INLINE, flexLayout); // TODO: replace with inline layout
   }
 
   @Override
