@@ -4,6 +4,7 @@ import static com.spinyowl.spinygui.core.style.stylesheet.util.StyleUtils.getFlo
 import static com.spinyowl.spinygui.core.style.types.HorizontalAlign.CENTER;
 import static com.spinyowl.spinygui.core.style.types.HorizontalAlign.LEFT;
 import static com.spinyowl.spinygui.core.style.types.VerticalAlign.BOTTOM;
+import static com.spinyowl.spinygui.core.style.types.VerticalAlign.MIDDLE;
 import static com.spinyowl.spinygui.core.style.types.VerticalAlign.TOP;
 import static lombok.AccessLevel.PRIVATE;
 import static org.lwjgl.nanovg.NanoVG.NVG_ALIGN_BASELINE;
@@ -33,8 +34,8 @@ import com.spinyowl.spinygui.core.style.CalculatedStyle;
 import com.spinyowl.spinygui.core.style.types.HorizontalAlign;
 import com.spinyowl.spinygui.core.style.types.VerticalAlign;
 import java.nio.ByteBuffer;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Iterator;
+import java.util.LinkedList;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import org.joml.Vector2f;
@@ -183,51 +184,31 @@ public final class NvgRenderUtils {
   }
 
   /**
-   * Creates scissor for provided bounds.
-   *
-   * @param context nanovg context.
-   * @param bounds bounds.
-   */
-  public static void createScissor(long context, Vector4f bounds) {
-    nvgScissor(context, bounds.x, bounds.y, bounds.z, bounds.w);
-  }
-
-  /**
-   * Intersects scissor for provided bounds.
-   *
-   * @param context nanovg context.
-   * @param bounds bounds.
-   */
-  public static void intersectScissor(long context, Vector4f bounds) {
-    nvgIntersectScissor(context, bounds.x, bounds.y, bounds.z, bounds.w);
-  }
-
-  /**
    * Creates scissor by provided component and it's parent components.
    *
    * @param context nanovg context.
    * @param parent parent component.
    */
   public static void createScissorByParent(long context, Element parent) {
-    List<Element> parents = new ArrayList<>();
-    while (parent != null) {
-      parents.add(parent);
-      parent = parent.parent();
+    var parents = new LinkedList<Element>();
+    Element current = parent;
+    while (current != null) {
+      parents.add(current);
+      current = current.parent();
     }
-    var pos = new Vector2f();
-    int size = parents.size();
-    if (size > 0) {
-      parent = parents.get(size - 1);
-      pos.add(parent.dimensions().paddingBoxPosition());
-      Vector2f s = parent.dimensions().paddingBoxSize();
-      createScissor(context, new Vector4f(pos, s.x, s.y));
-      if (size > 1) {
-        for (int i = size - 2; i >= 0; i--) {
-          parent = parents.get(i);
-          s = parent.dimensions().paddingBoxSize();
-          pos = parent.dimensions().paddingBoxPosition();
-          nvgIntersectScissor(context, pos.x, pos.y, s.x, s.y);
-        }
+    if (!parents.isEmpty()) {
+      Iterator<Element> descendingIterator = parents.descendingIterator();
+
+      current = descendingIterator.next();
+      var pos = current.dimensions().paddingBoxPosition();
+      var size = current.dimensions().paddingBoxSize();
+      nvgScissor(context, pos.x, pos.y, size.x, size.y);
+
+      while (descendingIterator.hasNext()) {
+        current = descendingIterator.next();
+        pos = current.dimensions().paddingBoxPosition();
+        size = current.dimensions().paddingBoxSize();
+        nvgIntersectScissor(context, pos.x, pos.y, size.x, size.y);
       }
     }
   }
@@ -345,7 +326,7 @@ public final class NvgRenderUtils {
       if (verticalAlign == BOTTOM) {
         vAlign = NVG_ALIGN_BOTTOM;
       } else {
-        if (verticalAlign == VerticalAlign.MIDDLE) {
+        if (verticalAlign == MIDDLE) {
           vAlign = NVG_ALIGN_MIDDLE;
         } else {
           vAlign = NVG_ALIGN_BASELINE;
@@ -357,7 +338,7 @@ public final class NvgRenderUtils {
 
   private static int getNvgHorizontalAlign(HorizontalAlign horizontalAlign) {
     int hAlign;
-    if (horizontalAlign == HorizontalAlign.CENTER) {
+    if (horizontalAlign == CENTER) {
       hAlign = NVG_ALIGN_CENTER;
     } else {
       if (horizontalAlign == LEFT) {

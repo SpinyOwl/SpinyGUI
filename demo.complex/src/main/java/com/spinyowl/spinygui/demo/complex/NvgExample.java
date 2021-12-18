@@ -191,6 +191,4 @@ winframe {
 """;
   }
 
-  @Override
-  protected void update() {}
 }

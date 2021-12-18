@@ -30,17 +30,17 @@ public final class IOUtil {
    */
   @SneakyThrows
   public static ByteBuffer resourceAsByteBuffer(String path) {
-    path = path.trim();
+    String trimmedPath = path.trim();
 
-    if (path.startsWith("http://") || path.startsWith("https://")) {
-      return asByteBuffer(new URL(path));
+    if (trimmedPath.startsWith("http://") || trimmedPath.startsWith("https://")) {
+      return asByteBuffer(new URL(trimmedPath));
     } else {
       InputStream stream;
-      File file = new File(path);
+      File file = new File(trimmedPath);
       if (file.exists() && file.isFile()) {
         stream = new FileInputStream(file);
       } else {
-        stream = Thread.currentThread().getContextClassLoader().getResourceAsStream(path);
+        stream = Thread.currentThread().getContextClassLoader().getResourceAsStream(trimmedPath);
       }
       if (stream == null) {
         return null;

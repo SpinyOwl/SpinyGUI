@@ -11,8 +11,6 @@ import com.spinyowl.spinygui.core.node.Element;
 
 public class NvgElementRenderer {
 
-  public NvgElementRenderer() {}
-
   public void render(Element element, long nanovg) {
     if (visible(element) && visibleInParents(element)) {
       var style = element.calculatedStyle();

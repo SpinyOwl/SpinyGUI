@@ -61,7 +61,6 @@ import com.spinyowl.spinygui.core.system.event.processor.SystemEventProcessorImp
 import com.spinyowl.spinygui.core.system.event.provider.SystemEventListenerProviderImpl;
 import com.spinyowl.spinygui.core.time.TimeService;
 import java.time.Instant;
-import java.util.concurrent.TimeUnit;
 import org.joml.Vector2f;
 import org.joml.Vector2i;
 import org.lwjgl.glfw.GLFW;
@@ -84,30 +83,16 @@ public abstract class Demo {
   private SystemEventProcessor systemEventProcessor;
   private LayoutService layoutService;
   private AbstractStyleManager styleManager;
-  //  private CallbackKeeper keeper;
-  private GLCapabilities glCapabilities;
-
-  private long[] monitors;
 
   private Frame frame;
   private long window;
-  private SystemEventListenerProviderImpl systemEventListenerProvider;
   private MouseServiceImpl mouseService;
-  private LayoutProviderImpl layoutProvider;
 
-  public Demo(int width, int height, String title, Renderer renderer) {
+  protected Demo(int width, int height, String title, Renderer renderer) {
     this.width = width;
     this.height = height;
     this.title = title;
     this.renderer = renderer;
-  }
-
-  private static void sleep(long sleepTime) {
-    try {
-      TimeUnit.NANOSECONDS.sleep(sleepTime);
-    } catch (InterruptedException e) {
-      e.printStackTrace();
-    }
   }
 
   public void run() {
@@ -120,7 +105,7 @@ public abstract class Demo {
 
   private void work() {
     glfwMakeContextCurrent(window);
-    glCapabilities = createCapabilities();
+    GLCapabilities glCapabilities = createCapabilities();
 
     renderer.initialize();
 
@@ -163,7 +148,6 @@ public abstract class Demo {
       var framebufferSize = new Vector2i(bw[0], bh[0]);
 
       glfwGetWindowPos(window, wpx, wpy);
-      var windowPos = new Vector2i(wpx[0], wpy[0]);
       glViewport(0, 0, framebufferSize.x, framebufferSize.y);
 
       // frame size should be directly specified as it is not updated by layout service.
@@ -184,7 +168,7 @@ public abstract class Demo {
 
       // also we need to run animations
       animator.runAnimations();
-    } catch (Throwable e) {
+    } catch (Exception e) {
       e.printStackTrace();
     }
 
@@ -194,13 +178,13 @@ public abstract class Demo {
     // process system events and generated gui events
     systemEventProcessor.processEvents();
     eventProcessor.processEvents();
-    //    System.gc();
   }
 
   private void updateFrameDimensions(Vector2f windowSize) {
     frame.frameSize(windowSize.x, windowSize.y);
   }
 
+  @SuppressWarnings("squid:S112")
   private void initialize() {
     if (!GLFW.glfwInit()) {
       throw new RuntimeException("Can't initialize GLFW");
@@ -239,12 +223,14 @@ public abstract class Demo {
 
     initializeSystemEventListener();
 
-    layoutProvider = new LayoutProviderImpl(systemEventProcessor, eventProcessor, timeService);
+    LayoutProviderImpl layoutProvider =
+        new LayoutProviderImpl(systemEventProcessor, eventProcessor, timeService);
     layoutService = new LayoutServiceImpl(layoutProvider);
   }
 
   private void initializeSystemEventListener() {
-    systemEventListenerProvider = new SystemEventListenerProviderImpl();
+    SystemEventListenerProviderImpl systemEventListenerProvider =
+        new SystemEventListenerProviderImpl();
     systemEventListenerProvider.listener(
         SystemCursorPosEvent.class,
         SystemCursorPosEventListener.builder()
