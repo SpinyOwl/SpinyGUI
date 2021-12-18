@@ -17,7 +17,7 @@ import org.apache.commons.io.IOUtils;
 public final class IOUtil {
 
   /**
-   * Creates {@link ByteBuffer} from:
+   * Aggregating function that creates {@link ByteBuffer} from:
    *
    * <ul>
    *   <li>file
@@ -50,7 +50,7 @@ public final class IOUtil {
   }
 
   /**
-   * Creates {@link String} from:
+   * Aggregating function that creates {@link String} from:
    *
    * <ul>
    *   <li>file
