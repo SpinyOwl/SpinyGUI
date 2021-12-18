@@ -12,4 +12,7 @@ open module com.spinyowl.spinygui.core.backend.lwjgl.nanovg {
   requires org.lwjgl.nanovg.natives;
   requires org.lwjgl.opengl;
   requires org.lwjgl.opengl.natives;
+
+  exports com.spinyowl.spinygui.core.backend.renderer.lwjgl.nanovg;
+  exports com.spinyowl.spinygui.core.backend.renderer.lwjgl.nanovg.util;
 }
