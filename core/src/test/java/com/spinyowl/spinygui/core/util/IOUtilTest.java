@@ -13,7 +13,7 @@ import org.junit.jupiter.api.Test;
 class IOUtilTest {
 
   @Test
-  void inputStream_asString() {
+  void toInputStreamSuccessfullyReadsString() {
     String input = "Test text.";
     InputStream inputStream = IOUtils.toInputStream(input, StandardCharsets.UTF_8);
     String result = IOUtil.asString(inputStream);
@@ -21,7 +21,7 @@ class IOUtilTest {
   }
 
   @Test
-  void resourceAsByteBuffer_successfullyRead() throws IOException {
+  void resourceAsByteBufferSuccessfullyRead() throws IOException {
     // Arrange
     String input = "Test text.";
     Path tempFile = Files.createTempFile("temp_test_file", "text");
@@ -36,7 +36,7 @@ class IOUtilTest {
   }
 
   @Test
-  void resourceAsString_successfullyRead() throws IOException {
+  void resourceAsStringSuccessfullyRead() throws IOException {
     // Arrange
     String input = "Test text.";
     Path tempFile = Files.createTempFile("temp_test_file", "text");
@@ -50,16 +50,18 @@ class IOUtilTest {
   }
 
   @Test
-  void file_asString() throws IOException {
+  void asStringSuccessfullyReadsFromFile() throws IOException {
     String input = "Test text.";
     Path tempFile = Files.createTempFile("temp_test_file", "text");
     Files.writeString(tempFile, input);
+
     String result = IOUtil.asString(tempFile.toFile());
+
     Assertions.assertEquals(input, result);
   }
 
   @Test
-  void url_asString() throws IOException {
+  void asStringSuccessfullyReadsFromUrl() throws IOException {
     String input = "Test text.";
     Path tempFile = Files.createTempFile("temp_test_file_url", "text");
     Files.writeString(tempFile, input);
@@ -68,7 +70,7 @@ class IOUtilTest {
   }
 
   @Test
-  void byteBuffer_asString() {
+  void asStringSuccessfullyReadsFromByteBuffer() {
     String input = "Test text.";
     ByteBuffer byteBuffer = ByteBuffer.wrap(input.getBytes());
     String result = IOUtil.asString(byteBuffer);
