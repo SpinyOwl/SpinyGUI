@@ -36,6 +36,10 @@ public class SystemEventProcessorImpl implements SystemEventProcessor {
   @Override
   @SuppressWarnings({"rawtypes", "unchecked"})
   public void processEvents() {
+    if (first.isEmpty()) {
+      return;
+    }
+
     swap();
 
     for (SystemEvent event = second.poll(); event != null; event = second.poll()) {

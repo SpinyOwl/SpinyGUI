@@ -19,6 +19,10 @@ public class DefaultEventProcessor implements EventProcessor {
   @Override
   @SuppressWarnings({"rawtypes", "unchecked"})
   public void processEvents() {
+    if (first.isEmpty()) {
+      return;
+    }
+
     swap();
     for (var event = second.poll(); event != null; event = second.poll()) {
       EventTarget target = event.target();
