@@ -12,6 +12,7 @@ import static org.lwjgl.glfw.GLFW.glfwGetWindowPos;
 import static org.lwjgl.glfw.GLFW.glfwGetWindowSize;
 import static org.lwjgl.glfw.GLFW.glfwMakeContextCurrent;
 import static org.lwjgl.glfw.GLFW.glfwPollEvents;
+import static org.lwjgl.glfw.GLFW.glfwSetCursorEnterCallback;
 import static org.lwjgl.glfw.GLFW.glfwSetCursorPosCallback;
 import static org.lwjgl.glfw.GLFW.glfwSetErrorCallback;
 import static org.lwjgl.glfw.GLFW.glfwSetKeyCallback;
@@ -30,6 +31,7 @@ import static org.lwjgl.opengl.GL11.glClear;
 import static org.lwjgl.opengl.GL11.glClearColor;
 import static org.lwjgl.opengl.GL11.glViewport;
 import static org.lwjgl.system.MemoryUtil.NULL;
+import com.spinyowl.cbchain.impl.ChainCursorEnterCallback;
 import com.spinyowl.cbchain.impl.ChainCursorPosCallback;
 import com.spinyowl.cbchain.impl.ChainErrorCallback;
 import com.spinyowl.cbchain.impl.ChainKeyCallback;
@@ -54,7 +56,9 @@ import com.spinyowl.spinygui.core.style.manager.StyleManagerImpl;
 import com.spinyowl.spinygui.core.style.stylesheet.PropertiesScanner;
 import com.spinyowl.spinygui.core.style.stylesheet.PropertyStore;
 import com.spinyowl.spinygui.core.style.stylesheet.impl.DefaultPropertyStore;
+import com.spinyowl.spinygui.core.system.event.SystemCursorEnterEvent;
 import com.spinyowl.spinygui.core.system.event.SystemCursorPosEvent;
+import com.spinyowl.spinygui.core.system.event.listener.SystemCursorEnterEventListener;
 import com.spinyowl.spinygui.core.system.event.listener.SystemCursorPosEventListener;
 import com.spinyowl.spinygui.core.system.event.processor.SystemEventProcessor;
 import com.spinyowl.spinygui.core.system.event.processor.SystemEventProcessorImpl;
@@ -238,6 +242,13 @@ public abstract class Demo {
             .timeService(timeService)
             .mouseService(mouseService)
             .build());
+    systemEventListenerProvider.listener(
+        SystemCursorEnterEvent.class,
+        SystemCursorEnterEventListener.builder()
+            .eventProcessor(eventProcessor)
+            .mouseService(mouseService)
+            .timeService(timeService)
+            .build());
     systemEventProcessor =
         SystemEventProcessorImpl.builder()
             .eventListenerProvider(systemEventListenerProvider)
@@ -264,6 +275,13 @@ public abstract class Demo {
                     .posY((float) y)
                     .build()));
     glfwSetCursorPosCallback(window, chainCursorPosCallback);
+
+    var chainCursorEnterCallback = new ChainCursorEnterCallback();
+    chainCursorEnterCallback.add(
+        (w, entered) ->
+            systemEventProcessor.push(
+                SystemCursorEnterEvent.builder().frame(frame).entered(entered).build()));
+    glfwSetCursorEnterCallback(window, chainCursorEnterCallback);
 
     var chainKeyCallback = new ChainKeyCallback();
     chainKeyCallback.add(

@@ -165,7 +165,7 @@ winframe {
   min-width: 20px;
   min-height: 20px;
   border: 1px solid black;
-  background: #fff8;
+  background-color: #fff8;
 }
 """;
   }
