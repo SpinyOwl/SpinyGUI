@@ -55,7 +55,9 @@ jobs:
     - name: Setup Java JDK
       uses: actions/setup-java@v3.0.0
       with:
+        distribution: 'adopt'
         java-version: 17
+        cache: 'gradle'
 
     # BUILD
     - name: Build with Gradle
