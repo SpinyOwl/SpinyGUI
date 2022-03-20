@@ -15,15 +15,35 @@ import lombok.extern.slf4j.Slf4j;
 public class Font {
   private static final Map<String, List<Font>> fontFamilies = new HashMap<>();
 
+  private static final String ROBOTO = "Roboto";
+
   public static final Font ROBOTO_LIGHT =
       Font.addFont(
           new Font(
-              "Roboto",
+              ROBOTO,
               FontStyle.NORMAL,
               FontStretch.NORMAL,
               FontWeight.LIGHT,
               "fonts/Roboto-Light.ttf"));
-  public static final Font DEFAULT = ROBOTO_LIGHT;
+
+  public static final Font ROBOTO_BOLD =
+      Font.addFont(
+          new Font(
+              ROBOTO,
+              FontStyle.NORMAL,
+              FontStretch.NORMAL,
+              FontWeight.BOLD,
+              "fonts/Roboto-Bold.ttf"));
+
+  public static final Font ROBOTO_REGULAR =
+      Font.addFont(
+          new Font(
+              ROBOTO,
+              FontStyle.NORMAL,
+              FontStretch.NORMAL,
+              FontWeight.REGULAR,
+              "fonts/Roboto-Regular.ttf"));
+  public static final Font DEFAULT = ROBOTO_REGULAR;
 
   @NonNull private final String fontFamily;
   @NonNull private final FontStyle style;
