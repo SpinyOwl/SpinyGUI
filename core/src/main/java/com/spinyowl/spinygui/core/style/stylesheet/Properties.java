@@ -86,6 +86,8 @@ public final class Properties {
   public static final String WIDTH = "width";
   public static final String HEIGHT = "height";
 
+  public static final String LINE_HEIGHT = "line-height";
+
   public static final String MIN_WIDTH = "min-width";
   public static final String MIN_HEIGHT = "min-height";
 

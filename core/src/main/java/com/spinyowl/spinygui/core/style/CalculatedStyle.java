@@ -42,6 +42,7 @@ import static com.spinyowl.spinygui.core.style.stylesheet.Properties.FONT_WEIGHT
 import static com.spinyowl.spinygui.core.style.stylesheet.Properties.HEIGHT;
 import static com.spinyowl.spinygui.core.style.stylesheet.Properties.JUSTIFY_CONTENT;
 import static com.spinyowl.spinygui.core.style.stylesheet.Properties.LEFT;
+import static com.spinyowl.spinygui.core.style.stylesheet.Properties.LINE_HEIGHT;
 import static com.spinyowl.spinygui.core.style.stylesheet.Properties.MARGIN_BOTTOM;
 import static com.spinyowl.spinygui.core.style.stylesheet.Properties.MARGIN_LEFT;
 import static com.spinyowl.spinygui.core.style.stylesheet.Properties.MARGIN_RIGHT;
@@ -429,5 +430,9 @@ public class CalculatedStyle {
 
   public Float opacity() {
     return get(OPACITY);
+  }
+
+  public Float lineHeight() {
+    return get(LINE_HEIGHT);
   }
 }
