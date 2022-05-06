@@ -26,7 +26,7 @@ public class ColorValueExtractor implements ValueExtractor<Color> {
   private static final String RGB_FUNCTION_REGEX =
       "rgb\\x28((2([0-4][0-9]|5[0-5])|[0-1]?[0-9]?[0-9])(\\s*?,\\s*?)){2}(2([0-4][0-9]|5[0-5])|[0-1]?[0-9]?[0-9])\\x29";
   private static final String RGBA_FUNCTION_REGEX =
-      "rgba\\x28(([2]([0-4][0-9]|[5][0-5])|[0-1]?[0-9]?[0-9])(\\s*?,\\s*?)){3}(1|0(.\\d+)?)\\x29";
+      "rgba\\x28(([2]([0-4][0-9]|[5][0-5])|[0-1]?[0-9]?[0-9])(\\s*?,\\s*?)){3}(0?\\.\\d*|0|1)\\x29";
 
   private static final String HSL_FUNCTION_REGEX =
       "hsl\\x28(3([0-5]\\d|60)|[1-2]\\d\\d|\\d{1,2})((\\s*?,\\s*?)(100|\\d{1,2})%){2}\\x29";

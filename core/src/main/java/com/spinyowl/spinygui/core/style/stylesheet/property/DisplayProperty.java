@@ -10,7 +10,7 @@ public class DisplayProperty extends Property {
   public DisplayProperty() {
     super(
         DISPLAY,
-        Display.FLEX.name(),
+        Display.BLOCK.name(),
         INHERITED,
         ANIMATABLE,
         (display, styles) -> styles.put(DISPLAY, Display.find(display)),

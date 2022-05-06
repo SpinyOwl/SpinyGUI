@@ -41,6 +41,7 @@ public class BorderColorProperty extends Property {
   }
 
   private static boolean test(String value) {
+    // TODO: Causes errors if there are several RGBA expressions.
     return testMultipleValues(value, "\\s+", 1, 4, extractor::isValid);
   }
 }

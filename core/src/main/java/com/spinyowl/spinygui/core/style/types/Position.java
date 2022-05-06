@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NonNull;
@@ -11,41 +12,34 @@ import lombok.NonNull;
 /** CSS position. */
 @Getter
 @EqualsAndHashCode
+@AllArgsConstructor
 public final class Position {
 
   private static final Map<String, Position> VALUES = new HashMap<>();
 
   /** The element is positioned relative to its first positioned (not static) ancestor element. */
-  public static final Position ABSOLUTE = Position.create("absolute");
+  public static final Position ABSOLUTE = Position.create("absolute", true);
   /**
    * The element is positioned relative to its normal position, so "left:20px" adds 20 pixels to the
    * element's LEFT position.
    */
-  public static final Position RELATIVE = Position.create("relative");
+  public static final Position RELATIVE = Position.create("relative", true);
   /**
    * Static positioned elements are not affected by the top, bottom, left, and right properties.
    * Elements render in order, as they appear in the document flow.
    */
-  public static final Position STATIC = Position.create("static");
+  public static final Position STATIC = Position.create("static", false);
 
   // NEXT POSITION OPTIONS ARE CURRENTLY NOT IMPLEMENTED
   //  /**
   //   * The element is positioned relative to the browser window.
   //   */
-  //  public static final Position FIXED = Position.create("fixed");
+  //  public static final Position FIXED = Position.create("fixed", true);
 
   /** Name of position type (should be same as in css specification) */
-  @NonNull
-  private final String name;
+  @NonNull private final String name;
 
-  /**
-   * Creates position element with specified name.
-   *
-   * @param name name of position type (should be same as in css specification)
-   */
-  private Position(@NonNull String name) {
-    this.name = name;
-  }
+  private final boolean positioned;
 
   /**
    * Used to create new position element with specified name. Note that name will be converted to
@@ -54,9 +48,10 @@ public final class Position {
    * @param name name of position element.
    * @return new position element (or existing one).
    */
-  public static Position create(@NonNull String name) {
+  public static Position create(@NonNull String name, boolean positioned) {
     Objects.requireNonNull(name);
-    return VALUES.computeIfAbsent(name.toLowerCase(), Position::new);
+    return VALUES.computeIfAbsent(
+        name.toLowerCase(), position -> new Position(position, positioned));
   }
 
   /**

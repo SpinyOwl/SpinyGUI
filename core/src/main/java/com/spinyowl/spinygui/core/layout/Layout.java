@@ -1,16 +1,14 @@
 package com.spinyowl.spinygui.core.layout;
 
-import com.spinyowl.spinygui.core.node.Element;
-import lombok.experimental.SuperBuilder;
+import com.spinyowl.spinygui.core.node.Node;
 
 /** Layout manager. Used to layout provided element of specified display type. */
-@SuperBuilder
-public abstract class Layout {
+public interface Layout<T extends Node> {
 
   /**
    * Used to lay out element and it's child nodes.
    *
    * @param element element to lay out.
    */
-  public abstract void layout(Element element);
+  void layout(T element, LayoutContext context);
 }

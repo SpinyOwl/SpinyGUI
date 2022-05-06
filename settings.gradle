@@ -6,6 +6,7 @@ include 'core'
 
 include 'core.backend'
 include 'core.backend.lwjgl.nanovg'
+include 'core.backend.lwjgl.skija'
 
 include 'demo.simple'
 include 'demo.complex'

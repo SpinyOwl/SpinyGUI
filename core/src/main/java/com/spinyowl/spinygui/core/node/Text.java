@@ -19,7 +19,16 @@ public final class Text extends Node {
       "Attribute operations are not supported for Text";
   public static final String CHILD_OPERATIONS_ARE_NOT_SUPPORTED =
       "Child operations are not supported for Text";
+//  private Set<String> undo;
+//  private Set<String> redo;
+
   private String content;
+
+  private float textStartX;
+  private float textStartY;
+
+  private float textEndX;
+  private float textEndY;
 
   public Text() {
     super("#text");

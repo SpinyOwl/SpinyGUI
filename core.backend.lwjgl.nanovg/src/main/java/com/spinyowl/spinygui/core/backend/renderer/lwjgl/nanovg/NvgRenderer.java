@@ -11,12 +11,11 @@ import static org.lwjgl.opengl.GL11.glDisable;
 import static org.lwjgl.opengl.GL11.glEnable;
 import static org.lwjgl.opengl.GL11.glGetInteger;
 import com.spinyowl.spinygui.core.backend.renderer.Renderer;
-import com.spinyowl.spinygui.core.layout.LayoutNode;
-import com.spinyowl.spinygui.core.layout.LayoutTree;
 import com.spinyowl.spinygui.core.node.Element;
 import com.spinyowl.spinygui.core.node.Frame;
 import com.spinyowl.spinygui.core.node.Node;
 import com.spinyowl.spinygui.core.node.Text;
+import com.spinyowl.spinygui.core.node.layout.LayoutNode;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import org.joml.Vector2fc;
@@ -75,7 +74,7 @@ public class NvgRenderer implements Renderer {
 
   @Override
   public void render(
-      long window, Vector2fc windowSize, Vector2ic frameBufferSize, LayoutTree layoutTree) {
+      long window, Vector2fc windowSize, Vector2ic frameBufferSize, Frame layoutTree) {
 
     float pixelRatio = windowSize.x() / frameBufferSize.x();
 
@@ -86,26 +85,24 @@ public class NvgRenderer implements Renderer {
     postRender();
   }
 
-  private void renderLayoutTree(LayoutTree layoutTree) {
-    Frame element = layoutTree.frame();
-    List<LayoutNode> children = layoutTree.children();
-
-    renderElement(element, children);
+  private void renderLayoutTree(Frame layoutTree) {
+    List<LayoutNode> merged =
+    renderElement(layoutTree, layoutTree.children());
   }
 
-  private void renderElement(Element element, List<LayoutNode> children) {
-    elementRenderer.render(element, nanovgContext);
-    borderRenderer.render(element, nanovgContext);
+  private void renderElement(LayoutNode node, List<LayoutNode> children) {
+    elementRenderer.render(node, nanovgContext);
+    borderRenderer.render(node, nanovgContext);
 
     children.forEach(this::renderLayoutNode);
   }
 
   private void renderLayoutNode(LayoutNode layoutNode) {
     Node node = layoutNode.node();
-    if (node instanceof Element element) {
-      renderElement(element, layoutNode.children());
-    } else if (node instanceof Text text) {
-      textRenderer.render(text, nanovgContext);
+    if (node instanceof Element) {
+      renderElement(layoutNode, layoutNode.child());
+    } else if (node instanceof Text) {
+      textRenderer.render(layoutNode, nanovgContext);
     }
   }
 

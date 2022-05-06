@@ -1,7 +1,13 @@
 package com.spinyowl.spinygui.core.layout.impl;
 
+import static com.spinyowl.spinygui.core.layout.impl.LayoutUtils.findPositionedAncestor;
+import static com.spinyowl.spinygui.core.layout.impl.LayoutUtils.hasPosition;
+import static com.spinyowl.spinygui.core.layout.impl.LayoutUtils.isPositioned;
+import static com.spinyowl.spinygui.core.style.types.Position.ABSOLUTE;
+import static com.spinyowl.spinygui.core.style.types.Position.STATIC;
 import static com.spinyowl.spinygui.core.style.types.length.LengthType.PERCENT;
 import static com.spinyowl.spinygui.core.style.types.length.LengthType.PIXEL;
+import static com.spinyowl.spinygui.core.util.NodeUtilities.visible;
 import static org.lwjgl.util.yoga.Yoga.YGAlignAuto;
 import static org.lwjgl.util.yoga.Yoga.YGAlignBaseline;
 import static org.lwjgl.util.yoga.Yoga.YGAlignCenter;
@@ -51,11 +57,12 @@ import static org.lwjgl.util.yoga.Yoga.YGWrapReverse;
 import static org.lwjgl.util.yoga.Yoga.YGWrapWrap;
 import com.spinyowl.spinygui.core.event.processor.EventProcessor;
 import com.spinyowl.spinygui.core.layout.Layout;
+import com.spinyowl.spinygui.core.layout.LayoutContext;
+import com.spinyowl.spinygui.core.layout.LayoutService;
 import com.spinyowl.spinygui.core.node.Element;
-import com.spinyowl.spinygui.core.node.Node.Box;
-import com.spinyowl.spinygui.core.node.Node.Edges;
+import com.spinyowl.spinygui.core.node.layout.Dimensions;
+import com.spinyowl.spinygui.core.node.layout.Edges;
 import com.spinyowl.spinygui.core.style.CalculatedStyle;
-import com.spinyowl.spinygui.core.style.types.Display;
 import com.spinyowl.spinygui.core.style.types.Position;
 import com.spinyowl.spinygui.core.style.types.border.BorderStyle;
 import com.spinyowl.spinygui.core.style.types.flex.AlignItems;
@@ -67,25 +74,25 @@ import com.spinyowl.spinygui.core.style.types.length.Length;
 import com.spinyowl.spinygui.core.style.types.length.Unit;
 import com.spinyowl.spinygui.core.system.event.processor.SystemEventProcessor;
 import com.spinyowl.spinygui.core.time.TimeService;
-import com.spinyowl.spinygui.core.util.NodeUtilities;
 import java.util.ArrayList;
 import java.util.function.BiConsumer;
 import java.util.function.LongConsumer;
 import java.util.function.ObjIntConsumer;
 import lombok.Getter;
 import lombok.NonNull;
-import lombok.experimental.SuperBuilder;
+import lombok.RequiredArgsConstructor;
 import org.joml.Vector2f;
 import org.lwjgl.util.yoga.Yoga;
 
 @Getter
-@SuperBuilder
-public class FlexLayout extends Layout {
+@RequiredArgsConstructor
+public class FlexLayout implements Layout<Element> {
 
   public static final float THRESHOLD = 0.0001f;
   @NonNull private final SystemEventProcessor systemEventProcessor;
   @NonNull private final EventProcessor eventProcessor;
   @NonNull private final TimeService timeService;
+  @NonNull private final LayoutService layoutService;
 
   /**
    * Used to lay out child elements for provided element.
@@ -95,19 +102,25 @@ public class FlexLayout extends Layout {
    * @param parent element to lay out.
    */
   @Override
-  public void layout(Element parent) {
-    if(parent.children().isEmpty()) {
-      return;
-    }
+  public void layout(Element parent, LayoutContext context) {
     // initialize
     var rootNode = YGNodeNew();
     prepareNode(parent, rootNode);
     YGNodeStyleSetDisplay(rootNode, YGDisplayFlex);
 
+    layoutService.layoutChildNodes(parent, context);
+
+    Element positionedParent = isPositioned(parent) ? parent : findPositionedAncestor(parent);
+
     var childNodes = new ArrayList<Long>();
-    var children = parent.children().stream().filter(NodeUtilities::visible).toList();
+    var children =
+        parent.children().stream()
+            .filter(node -> shouldPersist(node,positionedParent))
+            .toList();
     for (var child : children) {
       var childNode = YGNodeNew();
+      //      layoutService.layoutNode(child, context);
+
       prepareNode(child, childNode);
       YGNodeInsertChild(rootNode, childNode, childNodes.size());
       childNodes.add(childNode);
@@ -122,7 +135,7 @@ public class FlexLayout extends Layout {
       var child = children.get(i);
       var yogaNode = childNodes.get(i);
 
-      Box dimensions = child.dimensions();
+      Dimensions dimensions = child.dimensions();
       Edges padding = dimensions.padding();
       padding.left(YGNodeLayoutGetPadding(yogaNode, YGEdgeLeft));
       padding.right(YGNodeLayoutGetPadding(yogaNode, YGEdgeRight));
@@ -141,22 +154,33 @@ public class FlexLayout extends Layout {
       border.top(YGNodeLayoutGetBorder(yogaNode, YGEdgeTop));
       border.bottom(YGNodeLayoutGetBorder(yogaNode, YGEdgeBottom));
 
-      // this size is content size + paddings + borders
-      Vector2f size = new Vector2f(YGNodeLayoutGetWidth(yogaNode), YGNodeLayoutGetHeight(yogaNode));
-      Vector2f contentSize =
-          new Vector2f(size)
-              .sub(padding.left() + padding.right(), padding.top() + padding.bottom())
-              .sub(border.left() + border.right(), border.top() + border.bottom());
+      float width =
+          YGNodeLayoutGetWidth(yogaNode)
+              - padding.left()
+              - padding.right()
+              - border.left()
+              - border.right();
+      float height =
+          YGNodeLayoutGetHeight(yogaNode)
+              - padding.top()
+              - padding.bottom()
+              - border.top()
+              - border.bottom();
+      height =
+          child.calculatedStyle().height().isAuto()
+              ? Math.max(dimensions.content().height(), height)
+              : height;
+      dimensions.contentSize(width, height);
 
-      // this position is actually position of border box (relative parent border box position).
-      Vector2f position = new Vector2f(YGNodeLayoutGetLeft(yogaNode), YGNodeLayoutGetTop(yogaNode));
-      Vector2f contentPosition =
-          new Vector2f(position)
-              .add(border.left(), border.top())
-              .add(padding.left(), padding.top());
+      float x = YGNodeLayoutGetLeft(yogaNode) + padding.left() + border.left();
+      float y = YGNodeLayoutGetTop(yogaNode) + padding.top() + border.top();
+      Position childPosition = child.calculatedStyle().position();
+      //      if (childPosition.equals(STATIC)) {
+      dimensions.contentPosition(x, y);
+      //      } else if(childPosition.equals(Position.ABSOLUTE)) {
+      //        Element positionedParent = NodeUtilities.firstPositionedAncestor(child);
 
-      dimensions.contentSize(contentSize);
-      dimensions.contentPosition(contentPosition);
+      //      }
     }
 
     // free mem
@@ -165,6 +189,10 @@ public class FlexLayout extends Layout {
     }
 
     YGNodeFree(rootNode);
+  }
+
+  private boolean shouldPersist(Element node, Element positionedParent) {
+    return visible(node) && (!hasPosition(node, ABSOLUTE) || node.parent() == positionedParent) ;
   }
 
   /**
@@ -181,18 +209,23 @@ public class FlexLayout extends Layout {
     setAlignSelf(node, style.alignSelf());
 
     setMinWidth(node, style);
-    setMinHeight(node, style);
-
     setMaxWidth(node, style);
-    setMaxHeight(node, style);
-
     setWidth(node, style);
+
+    setMinHeight(node, style);
+    setMaxHeight(node, style);
     setHeight(node, style);
 
-    setPosition(node, style.top(), YGEdgeTop);
-    setPosition(node, style.bottom(), YGEdgeBottom);
-    setPosition(node, style.right(), YGEdgeRight);
-    setPosition(node, style.left(), YGEdgeLeft);
+    if (!STATIC.equals(element.calculatedStyle().position())) {
+      setPosition(node, style.top(), YGEdgeTop);
+      setPosition(node, style.bottom(), YGEdgeBottom);
+      setPosition(node, style.right(), YGEdgeRight);
+      setPosition(node, style.left(), YGEdgeLeft);
+
+      YGNodeStyleSetPositionType(
+          node,
+          ABSOLUTE.equals(style.position()) ? YGPositionTypeAbsolute : YGPositionTypeRelative);
+    }
 
     setBorder(node, style);
 
@@ -202,11 +235,6 @@ public class FlexLayout extends Layout {
     setMargin(node, style);
 
     setFlexWrap(node, style.flexWrap());
-    YGNodeStyleSetPositionType(
-        node,
-        Position.ABSOLUTE.equals(style.position())
-            ? YGPositionTypeAbsolute
-            : YGPositionTypeRelative);
 
     YGNodeStyleSetFlexGrow(node, style.flexGrow());
     YGNodeStyleSetFlexShrink(node, style.flexShrink());

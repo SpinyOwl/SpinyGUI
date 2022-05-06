@@ -35,7 +35,7 @@ public class SystemMouseClickEventListener
   }
 
   private static Vector2fc positionInElement(Vector2fc cursorPos, Element element) {
-    return element.absolutePosition().sub(cursorPos).negate();
+    return element.dimensions().borderBoxPosition().sub(cursorPos).negate();
   }
 
   /**

@@ -184,4 +184,12 @@ public class Element extends Node implements EventTarget {
   public void style(String style) {
     attributes().put("style", style);
   }
+
+  public String getClassAttribute() {
+    return attributes.get("class");
+  }
+
+  public String getIdAttribute() {
+    return attributes.get("id");
+  }
 }

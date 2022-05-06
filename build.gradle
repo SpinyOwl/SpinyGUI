@@ -42,7 +42,6 @@ subprojects {
         javadoc.options.encoding = 'UTF-8'
 
         dependencies {
-
             api group: 'org.projectlombok', name: 'lombok', version: lombok_version
             annotationProcessor group: 'org.projectlombok', name: 'lombok', version: lombok_version
 

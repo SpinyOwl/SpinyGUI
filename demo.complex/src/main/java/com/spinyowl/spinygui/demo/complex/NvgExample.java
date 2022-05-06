@@ -4,8 +4,12 @@ import com.spinyowl.spinygui.core.backend.renderer.lwjgl.nanovg.NvgRenderer;
 import com.spinyowl.spinygui.core.event.CursorEnterEvent;
 import com.spinyowl.spinygui.core.node.Element;
 import com.spinyowl.spinygui.core.node.Frame;
+import com.spinyowl.spinygui.core.style.types.Color;
 
 public class NvgExample extends Demo {
+
+  private Frame frame;
+  private String styles;
 
   public NvgExample() {
     super(400, 400, "Example", new NvgRenderer());
@@ -31,61 +35,60 @@ public class NvgExample extends Demo {
         getFlexXml();
 
     // language=CSS
-    String styles =
-        //        """
-        // winframe,
-        // winframe * {
-        //  border: 8px solid #8c8c8c;
-        //  box-sizing: border-box;
-        // }
-        //
-        // winframe:hover,
-        // winframe *:hover {
-        //  border: 8px solid #fc3131;
-        // }
-        //
-        // winframe {
-        //  display: block;
-        //  background-color: green;
-        //  padding: 20px;
-        // }
-        //
-        // .c1 {
-        //  display: block;
-        //  padding: 20px;
-        //
-        //  top: 0;
-        //  left: 0;
-        //  right: 0;
-        //
-        //  background-color: #77aaff;
-        //  height: 80px;
-        //  asd-dc: "";
-        // }
-        //
-        // .c11 {
-        //  position: relative;
-        //
-        //  top: 00px;
-        //  right: 20px;
-        //
-        //  width: 40px;
-        //  height: 40px;
-        //
-        //  background-color: #eee;
-        // }
-        //
-        // .c11:hover {
-        //  background-color: #e45;
-        // }
-        // """;
-        //
-        getFlexCss();
+    //        """
+    // winframe,
+    // winframe * {
+    //  border: 8px solid #8c8c8c;
+    //  box-sizing: border-box;
+    // }
+    //
+    // winframe:hover,
+    // winframe *:hover {
+    //  border: 8px solid #fc3131;
+    // }
+    //
+    // winframe {
+    //  display: block;
+    //  background-color: green;
+    //  padding: 20px;
+    // }
+    //
+    // .c1 {
+    //  display: block;
+    //  padding: 20px;
+    //
+    //  top: 0;
+    //  left: 0;
+    //  right: 0;
+    //
+    //  background-color: #77aaff;
+    //  height: 80px;
+    //  asd-dc: "";
+    // }
+    //
+    // .c11 {
+    //  position: relative;
+    //
+    //  top: 00px;
+    //  right: 20px;
+    //
+    //  width: 40px;
+    //  height: 40px;
+    //
+    //  background-color: #eee;
+    // }
+    //
+    // .c11:hover {
+    //  background-color: #e45;
+    // }
+    // """;
+    //
+    //                getFlexCss();
+    styles = getAbsoluteCss();
 
-    Frame frame =
-        nodeParser
-            .fromXml(xml)
-            .frame(); // in case if root of xml is not 'frame' method will return null.
+    // in case if root of xml is not 'frame' method will return null.
+    frame = nodeParser.fromXml(xml).frame();
+    //    frame.children().forEach(c -> c.style("border-color: " + Color.random().hexString()));
     frame.styleSheets().add(styleSheetParser.parseStyleSheet(styles));
 
     Element c11 = frame.getElementById("c11");
@@ -96,6 +99,40 @@ public class NvgExample extends Demo {
     return frame;
   }
 
+  private String getAbsoluteCss() {
+    // language=CSS
+    return """
+winframe,
+winframe * {
+  border: 8px solid #8c8c8c;
+  box-sizing: border-box; /* default behaviour */
+  overflow: hidden; /* default behaviour */
+}
+winframe:hover,
+winframe *:hover {
+  border: 8px solid #fc3131;
+}
+winframe {
+  background-color: green;
+  padding: 20px;
+  flex-direction: column;
+}
+
+.text {
+  display: block;
+  overflow: auto;
+  height: 90px;
+  font-size: 16px;
+}
+
+#t2 {
+  position: absolute;
+  bottom: 10px;
+}
+
+""";
+  }
+
   private String getFlexCss() {
     // language=css
     return """
@@ -103,7 +140,6 @@ winframe,
 winframe * {
   border: 8px solid #8c8c8c;
   box-sizing: border-box; /* default behaviour */
-  /* position: relative;  default behaviour */
   overflow: hidden; /* default behaviour */
 }
 winframe:hover,
@@ -117,12 +153,18 @@ winframe {
   flex-direction: column;
 }
 
+ .text {
+   display: block;
+   overflow: auto;
+   height: 90px;
+   font-size: 16px;
+ }
+
 .c1,
 .c2 {
   background-color: #77aaff;
   height: 80px;
   left: 0;
-  asd-dc: "";
   right: 0;
   display: flex;
   flex-direction: row;
@@ -175,13 +217,24 @@ winframe {
     return """
 <winframe>
   <div class="c1">c1
-    <div class="c11" id='c11'>c11</div>
+    <div class="c11" id='c11'>c11 Cfjg</div>
     <div class="c12">c12</div>
   </div>
   <div class="text">
     Hello world. Lorem ipsum dolor.
     Hello world. Lorem ipsum dolor.
-    Hello world. Lorem ipsum dolor.
+    Hello world. Lorem ipsum dolor.s
+    Hello World
+  </div>
+
+  <div class='twrapper' style="border-color: pink">
+    <div class='twrapper' style="border-color: blue">
+      <div class="text" id='t2' style="border-color: black">
+        Hello world. Lorem ipsum dolor.
+        Hello world A. Lorem ipsum dolor.
+        Hello world B. Lorem ipsum dolor.
+      </div>
+    </div>
   </div>
   <div class="c2">
     <div class="s">s1</div>
@@ -191,4 +244,47 @@ winframe {
 """;
   }
 
+  @Override
+  protected void update() {
+    // language=CSS
+    String updatedStyles =
+        """
+winframe,
+winframe * {
+  border: 8px solid #8c8c8c;
+  box-sizing: border-box; /* default behaviour */
+  overflow: hidden; /* default behaviour */
+}
+winframe:hover,
+winframe *:hover {
+  border: 8px solid #fc3131;
+}
+winframe {
+  background-color: green;
+  padding: 20px;
+  flex-direction: column;
+}
+
+.text {
+  display: block;
+  overflow: auto;
+  height: 90px;
+  font-size: 16px;
+}
+
+#t2 {
+  position: absolute;
+  bottom: 10px;
+  top: 10px;
+  height: auto;
+  background-color: rgba(190,200,255,.8);
+}
+""";
+
+    if (!styles.equals(updatedStyles)) {
+      styles = updatedStyles;
+      frame.styleSheets().clear();
+      frame.styleSheets().add(styleSheetParser.parseStyleSheet(updatedStyles));
+    }
+  }
 }

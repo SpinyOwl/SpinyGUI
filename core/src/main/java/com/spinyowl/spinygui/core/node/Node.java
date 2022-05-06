@@ -2,18 +2,16 @@ package com.spinyowl.spinygui.core.node;
 
 import com.spinyowl.spinygui.core.node.intersection.Intersection;
 import com.spinyowl.spinygui.core.node.intersection.Intersections;
+import com.spinyowl.spinygui.core.node.layout.LayoutNode;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 import lombok.AccessLevel;
-import lombok.Data;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-import org.joml.Vector2f;
 
 /**
  * Base structure of any node.
@@ -33,15 +31,13 @@ import org.joml.Vector2f;
 @Setter
 @ToString(exclude = {"parent", "nextSibling", "previousSibling"})
 @RequiredArgsConstructor
-public abstract class Node {
+public abstract class Node extends LayoutNode {
 
   @NonNull private final String nodeName;
 
   /** Parent node. */
   @Setter(AccessLevel.NONE)
   private Element parent;
-
-  private final Box dimensions = new Box();
 
   /** Determines whether this node hovered or not (cursor is over this node). */
   private boolean hovered;
@@ -136,20 +132,7 @@ public abstract class Node {
     return childNodes().stream()
         .filter(Element.class::isInstance)
         .map(Element.class::cast)
-        .collect(Collectors.toList());
-  }
-
-  /**
-   * Returns absolute element position.
-   *
-   * @return position vector.
-   */
-  public Vector2f absolutePosition() {
-    var borderBox = this.dimensions().borderBoxPosition();
-    if (this.parent != null) {
-      borderBox.add(parent.absolutePosition());
-    }
-    return borderBox;
+        .toList();
   }
 
   /**
@@ -196,74 +179,11 @@ public abstract class Node {
     return parent == null ? null : parent.frame();
   }
 
-  @Data
-  public static final class Box {
-    // content box. wrapped by padding edges, then border, then margin.
-    private final Rect content = new Rect();
-    private final Edges margin = new Edges();
-    private final Edges padding = new Edges();
-    private final Edges border = new Edges();
-
-    public void contentPosition(Vector2f position) {
-      content().x(position.x);
-      content().y(position.y);
-    }
-
-    public void contentPosition(float x, float y) {
-      content().x(x);
-      content().y(y);
-    }
-
-    public Vector2f contentPosition() {
-      return new Vector2f(content().x(), content().y());
-    }
-
-    public void contentSize(float width, float height) {
-      content().width(width);
-      content().height(height);
-    }
-
-    public void contentSize(Vector2f size) {
-      content().width(size.x);
-      content().height(size.y);
-    }
-
-    public Vector2f contentSize() {
-      return new Vector2f(content().width(), content().height());
-    }
-
-    public Vector2f paddingBoxSize() {
-      return contentSize()
-          .add(padding().left() + padding().right(), padding().top() + padding().bottom());
-    }
-
-    public Vector2f paddingBoxPosition() {
-      return new Vector2f(contentPosition()).sub(padding().left(), padding().top());
-    }
-
-    public Vector2f borderBoxSize() {
-      return new Vector2f(paddingBoxSize())
-          .add(border().left() + border().right(), border().top() + border().bottom());
-    }
-
-    public Vector2f borderBoxPosition() {
-      return new Vector2f(paddingBoxPosition()).sub(border().left(), border().top());
-    }
+  public Element asElement() {
+    return (Element) this;
   }
 
-  @Data
-  public static final class Rect {
-    private float x;
-    private float y;
-    private float width;
-    private float height;
-  }
-
-  @Data
-  public static final class Edges {
-    private float top;
-    private float right;
-    private float bottom;
-    private float left;
+  public Text asText() {
+    return (Text) this;
   }
 }

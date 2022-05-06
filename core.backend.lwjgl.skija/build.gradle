@@ -1,0 +1,51 @@
+plugins {
+    id 'java-library'
+    id 'jacoco'
+}
+repositories {
+    maven {
+        url "https://packages.jetbrains.team/maven/p/skija/maven"
+    }
+}
+
+def skija_artifact = 'skija-windows'
+def skija_version = '0.92.15'
+
+dependencies {
+    api project(':core')
+    api project(':core.backend')
+
+    api group: 'org.lwjgl', name: 'lwjgl', version: lwjgl_version
+    api group: 'org.lwjgl', name: 'lwjgl', version: lwjgl_version, classifier: 'natives-windows'
+    api group: 'org.lwjgl', name: 'lwjgl', version: lwjgl_version, classifier: 'natives-linux'
+    api group: 'org.lwjgl', name: 'lwjgl', version: lwjgl_version, classifier: 'natives-macos'
+
+    api group: 'org.lwjgl', name: 'lwjgl-glfw', version: lwjgl_version
+    api group: 'org.lwjgl', name: 'lwjgl-glfw', version: lwjgl_version, classifier: 'natives-windows'
+    api group: 'org.lwjgl', name: 'lwjgl-glfw', version: lwjgl_version, classifier: 'natives-linux'
+    api group: 'org.lwjgl', name: 'lwjgl-glfw', version: lwjgl_version, classifier: 'natives-macos'
+
+    api group: 'org.lwjgl', name: 'lwjgl-opengl', version: lwjgl_version
+    api group: 'org.lwjgl', name: 'lwjgl-opengl', version: lwjgl_version, classifier: 'natives-windows'
+    api group: 'org.lwjgl', name: 'lwjgl-opengl', version: lwjgl_version, classifier: 'natives-linux'
+    api group: 'org.lwjgl', name: 'lwjgl-opengl', version: lwjgl_version, classifier: 'natives-macos'
+
+    api group: 'org.slf4j', name: 'slf4j-api', version: slf4j_version
+    api group: 'ch.qos.logback', name: 'logback-classic', version: logback_version
+
+
+    api "org.jetbrains.skija:skija-linux:${skija_version}"
+//    api "org.jetbrains.skija:skija-macos:${skija_version}"
+    api "org.jetbrains.skija:skija-macos:0.89.0"
+    api "org.jetbrains.skija:skija-macos-arm64:${skija_version}"
+    api "org.jetbrains.skija:skija-macos-x64:${skija_version}"
+    api "org.jetbrains.skija:skija-windows:${skija_version}"
+}
+
+test {
+    finalizedBy jacocoTestReport // report is always generated after tests run
+}
+jacocoTestReport {
+    dependsOn test // tests are required to run before generating the report
+    reports.xml.required = true
+}

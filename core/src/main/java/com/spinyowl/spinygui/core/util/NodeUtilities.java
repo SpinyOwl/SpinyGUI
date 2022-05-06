@@ -41,7 +41,7 @@ public final class NodeUtilities {
     if (!parentList.isEmpty()) {
       var pos = new Vector2f(0, 0);
       var rect = new Vector2f(0, 0);
-      var absolutePosition = node.absolutePosition();
+      var absolutePosition = node.dimensions().borderBoxPosition();
 
       Vector2fc currentSize = node.dimensions().contentSize();
       Vector2fc currentPos = node.dimensions().contentPosition();
@@ -185,4 +185,5 @@ public final class NodeUtilities {
     }
     return false;
   }
+
 }

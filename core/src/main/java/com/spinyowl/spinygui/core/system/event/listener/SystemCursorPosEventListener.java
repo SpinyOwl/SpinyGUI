@@ -74,7 +74,7 @@ public class SystemCursorPosEventListener
     for (Element element : currentTargetElements) {
       if (!element.hovered()) {
         element.hovered(true);
-        Vector2f intersection = element.absolutePosition().sub(current).negate();
+        Vector2f intersection = element.dimensions().borderBoxPosition().sub(current).negate();
         CursorEnterEvent enterEvent =
             CursorEnterEvent.builder()
                 .source(frame)
@@ -97,7 +97,7 @@ public class SystemCursorPosEventListener
     if (!currentTargetElements.containsAll(previousTargetElements)) {
       previousTargetElements.removeAll(currentTargetElements);
       for (Element prevTarget : previousTargetElements) {
-        Vector2f intersection = prevTarget.absolutePosition().sub(current).negate();
+        Vector2f intersection = prevTarget.dimensions().borderBoxPosition().sub(current).negate();
         CursorExitEvent exitEvent =
             CursorExitEvent.builder()
                 .source(frame)

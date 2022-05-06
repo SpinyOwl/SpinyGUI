@@ -18,6 +18,7 @@ import static org.lwjgl.glfw.GLFW.glfwSetErrorCallback;
 import static org.lwjgl.glfw.GLFW.glfwSetKeyCallback;
 import static org.lwjgl.glfw.GLFW.glfwSetWindowCloseCallback;
 import static org.lwjgl.glfw.GLFW.glfwSetWindowPos;
+import static org.lwjgl.glfw.GLFW.glfwSetWindowSizeCallback;
 import static org.lwjgl.glfw.GLFW.glfwShowWindow;
 import static org.lwjgl.glfw.GLFW.glfwSwapBuffers;
 import static org.lwjgl.glfw.GLFW.glfwSwapInterval;
@@ -36,6 +37,7 @@ import com.spinyowl.cbchain.impl.ChainCursorPosCallback;
 import com.spinyowl.cbchain.impl.ChainErrorCallback;
 import com.spinyowl.cbchain.impl.ChainKeyCallback;
 import com.spinyowl.cbchain.impl.ChainWindowCloseCallback;
+import com.spinyowl.cbchain.impl.ChainWindowSizeCallback;
 import com.spinyowl.spinygui.core.animation.Animator;
 import com.spinyowl.spinygui.core.animation.AnimatorImpl;
 import com.spinyowl.spinygui.core.backend.renderer.Renderer;
@@ -44,7 +46,6 @@ import com.spinyowl.spinygui.core.event.processor.EventProcessor;
 import com.spinyowl.spinygui.core.input.impl.MouseServiceImpl;
 import com.spinyowl.spinygui.core.layout.LayoutService;
 import com.spinyowl.spinygui.core.layout.LayoutTree;
-import com.spinyowl.spinygui.core.layout.impl.LayoutProviderImpl;
 import com.spinyowl.spinygui.core.layout.impl.LayoutServiceImpl;
 import com.spinyowl.spinygui.core.node.Frame;
 import com.spinyowl.spinygui.core.parser.NodeParser;
@@ -58,11 +59,15 @@ import com.spinyowl.spinygui.core.style.stylesheet.PropertyStore;
 import com.spinyowl.spinygui.core.style.stylesheet.impl.DefaultPropertyStore;
 import com.spinyowl.spinygui.core.system.event.SystemCursorEnterEvent;
 import com.spinyowl.spinygui.core.system.event.SystemCursorPosEvent;
+import com.spinyowl.spinygui.core.system.event.SystemWindowSizeEvent;
 import com.spinyowl.spinygui.core.system.event.listener.SystemCursorEnterEventListener;
 import com.spinyowl.spinygui.core.system.event.listener.SystemCursorPosEventListener;
+import com.spinyowl.spinygui.core.system.event.listener.SystemWindowSizeEventListener;
 import com.spinyowl.spinygui.core.system.event.processor.SystemEventProcessor;
 import com.spinyowl.spinygui.core.system.event.processor.SystemEventProcessorImpl;
 import com.spinyowl.spinygui.core.system.event.provider.SystemEventListenerProviderImpl;
+import com.spinyowl.spinygui.core.system.font.FontService;
+import com.spinyowl.spinygui.core.system.font.impl.FontServiceImpl;
 import com.spinyowl.spinygui.core.time.TimeService;
 import java.time.Instant;
 import org.joml.Vector2f;
@@ -160,11 +165,11 @@ public abstract class Demo {
       styleManager.recalculate(frame);
 
       // We need to relayout components after styles changed.
-      LayoutTree layoutTree = layoutService.layout(frame);
+      layoutService.layout(frame);
 
       // After that we can render.
       glClear(GL_COLOR_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
-      renderer.render(window, windowSize, framebufferSize, layoutTree);
+      renderer.render(window, windowSize, framebufferSize, frame);
       glfwSwapBuffers(window);
 
       // update system. could be moved for example to game loop.
@@ -227,9 +232,9 @@ public abstract class Demo {
 
     initializeSystemEventListener();
 
-    LayoutProviderImpl layoutProvider =
-        new LayoutProviderImpl(systemEventProcessor, eventProcessor, timeService);
-    layoutService = new LayoutServiceImpl(layoutProvider);
+    FontService fontService = new FontServiceImpl();
+    layoutService =
+        new LayoutServiceImpl(systemEventProcessor, eventProcessor, timeService, fontService);
   }
 
   private void initializeSystemEventListener() {
@@ -247,6 +252,12 @@ public abstract class Demo {
         SystemCursorEnterEventListener.builder()
             .eventProcessor(eventProcessor)
             .mouseService(mouseService)
+            .timeService(timeService)
+            .build());
+    systemEventListenerProvider.listener(
+        SystemWindowSizeEvent.class,
+        SystemWindowSizeEventListener.builder()
+            .eventProcessor(eventProcessor)
             .timeService(timeService)
             .build());
     systemEventProcessor =
@@ -282,6 +293,13 @@ public abstract class Demo {
             systemEventProcessor.push(
                 SystemCursorEnterEvent.builder().frame(frame).entered(entered).build()));
     glfwSetCursorEnterCallback(window, chainCursorEnterCallback);
+
+    var chainWindowSizeCallback = new ChainWindowSizeCallback();
+    chainWindowSizeCallback.add(
+        (w, wid, hei) ->
+            systemEventProcessor.push(
+                SystemWindowSizeEvent.builder().width(wid).height(hei).frame(frame).build()));
+    glfwSetWindowSizeCallback(window, chainWindowSizeCallback);
 
     var chainKeyCallback = new ChainKeyCallback();
     chainKeyCallback.add(

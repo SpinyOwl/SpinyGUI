@@ -23,7 +23,7 @@ public class PropertyVisitor extends CSS3BaseVisitor<Declaration> {
     if (property != null && value != null) {
       return new Declaration(property, value);
     }
-    log.warn("Can't parse {} property with {} value", propertyName, value);
+//    log.warn("Can't parse {} property with {} value", propertyName, value);
     return null;
   }
 }

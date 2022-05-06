@@ -1,9 +1,11 @@
 package com.spinyowl.spinygui.core.style.types;
 
 import static java.lang.String.format;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Random;
 import lombok.AllArgsConstructor;
 import lombok.NonNull;
 import lombok.Value;
@@ -209,9 +211,7 @@ public class Color {
           (int) ((hex >> 8) & 0xFF),
           (int) (hex & 0xFF));
       case 6 -> new Color(
-          (int) ((hex >> 16) & 0xFF),
-          (int) ((hex >> 8) & 0xFF),
-          (int) (hex & 0xFF));
+          (int) ((hex >> 16) & 0xFF), (int) ((hex >> 8) & 0xFF), (int) (hex & 0xFF));
       case 4 -> new Color(
           (int) (((hex >> 12) & 0xF) * 0x11),
           (int) (((hex >> 8) & 0xF) * 0x11),
@@ -326,8 +326,23 @@ public class Color {
     return color;
   }
 
+  public static Color random() {
+    int index = new Random(System.currentTimeMillis()).nextInt(colors.size());
+    return new ArrayList<>(colors.values()).get(index);
+  }
+
   @Override
   public String toString() {
     return "rgba(" + r + ", " + g + ", " + b + ", " + a + ")";
   }
+
+  public String hexString() {
+    int rr = (int) r * 255;
+    int gg = (int) (g * 255);
+    int bb = (int) (b * 255);
+    int aa = (int) (a * 255);
+    return String.format("#%02x%02x%02x%02x", rr, gg, bb, aa);
+  }
+
+//    return Integer.toHexString((int) (r * 255));
 }
