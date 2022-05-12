@@ -13,9 +13,9 @@ import com.spinyowl.spinygui.core.font.FontStretch;
 import com.spinyowl.spinygui.core.font.FontStyle;
 import com.spinyowl.spinygui.core.font.FontWeight;
 import com.spinyowl.spinygui.core.system.font.FontService;
+import com.spinyowl.spinygui.core.system.font.FontStorage;
 import com.spinyowl.spinygui.core.system.font.TextLineMetrics;
 import com.spinyowl.spinygui.core.system.font.TextMetrics;
-import com.spinyowl.spinygui.core.util.IOUtil;
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 import java.nio.charset.StandardCharsets;
@@ -23,11 +23,13 @@ import java.util.Arrays;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 import org.lwjgl.stb.STBTTFontinfo;
 import org.lwjgl.stb.STBTruetype;
 import org.lwjgl.system.MemoryStack;
 import org.slf4j.Logger;
 
+@RequiredArgsConstructor
 public class FontServiceImpl implements FontService {
   private static final Logger LOG = getLogger(FontServiceImpl.class);
 
@@ -38,8 +40,8 @@ public class FontServiceImpl implements FontService {
   private static final int TYPOGRAPHIC_FONT_FAMILY_INDEX = 16;
   private static final int TYPOGRAPHIC_FONT_SUBFAMILY_INDEX = 17;
 
+  @NonNull private final FontStorage fontStorage;
   private final Map<String, STBTTFontinfo> fontInfoMap = new ConcurrentHashMap<>();
-  private final Map<String, ByteBuffer> dataMap = new ConcurrentHashMap<>();
 
   /** {@inheritDoc} */
   @Override
@@ -244,7 +246,7 @@ public class FontServiceImpl implements FontService {
   }
 
   private STBTTFontinfo createFontInfo(String fontPath) {
-    ByteBuffer fontData = IOUtil.resourceAsByteBuffer(fontPath);
+    ByteBuffer fontData = fontStorage.getFontData(fontPath);
     STBTTFontinfo stbttFontinfo = STBTTFontinfo.create();
     if (fontData == null || !STBTruetype.stbtt_InitFont(stbttFontinfo, fontData)) {
       throw new RuntimeException("Failed to load font from '%s'".formatted(fontPath));
@@ -265,7 +267,6 @@ public class FontServiceImpl implements FontService {
       }
     }
 
-    dataMap.put(fontPath, fontData);
     return stbttFontinfo;
   }
 
@@ -280,15 +281,5 @@ public class FontServiceImpl implements FontService {
     }
     cpOut.put(0, c1);
     return 1;
-  }
-
-  private interface Fic<T> {
-    T apply(
-        IntBuffer pCodePoint,
-        IntBuffer pAdvance,
-        IntBuffer pLeftSideBearing,
-        STBTTFontinfo fontInfo,
-        float scaleFactor,
-        float lineHeight);
   }
 }

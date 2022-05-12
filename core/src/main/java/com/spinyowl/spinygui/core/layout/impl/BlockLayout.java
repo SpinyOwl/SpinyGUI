@@ -183,7 +183,9 @@ public class BlockLayout implements Layout<Element> {
       }
 
       if (style.bottom().isLength() && style.top().isLength()) {
-        if (style.height().isAuto()) borderBoxHeight = bottom - contentY;
+        if (style.height().isAuto())
+          borderBoxHeight =
+              bottom - contentY + dimensions.padding().top() + dimensions.border().top();
         else
           borderBoxHeight =
               getHeight(parentPaddingBoxHeight, childrenHeight + verticalAdditions, style);

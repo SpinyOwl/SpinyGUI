@@ -17,7 +17,10 @@ import com.spinyowl.spinygui.core.system.event.processor.SystemEventProcessor;
 import com.spinyowl.spinygui.core.system.font.FontService;
 import com.spinyowl.spinygui.core.time.TimeService;
 import java.util.LinkedList;
+import java.util.List;
+import lombok.Getter;
 import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 
 /** Layout service is an entry point to layout system. Used to layout provided element. */
 public class LayoutServiceImpl implements LayoutService {
@@ -86,16 +89,31 @@ public class LayoutServiceImpl implements LayoutService {
   }
 
   private void updateLayoutNodes(Frame frame) {
-    updateLayoutNodes(frame, frame, new LinkedList<>(), new LinkedList<>());
+    LNW wrapper = LNW.of(frame);
+    updateLayoutNodes(wrapper, wrapper);
+    populateLayoutNodes(wrapper, null);
   }
 
-  private void updateLayoutNodes(
-      Node node,
-      Node positionedAncestor,
-      LinkedList<Node> normalFlowChildren,
-      LinkedList<Node> positionedChildren) {
+  private void populateLayoutNodes(LNW wrapper, Node parent) {
+    wrapper.node.layoutParent(parent);
+    var layoutChildNodes = new LinkedList<Node>();
+    fillChildNodes(wrapper.normalFlowChildren, layoutChildNodes, wrapper.node);
+    fillChildNodes(wrapper.positionedChildren, layoutChildNodes, wrapper.node);
+    wrapper.node.layoutChildNodes(layoutChildNodes);
+  }
 
-    for (Node childNode : node.childNodes()) {
+  private void fillChildNodes(List<LNW> lnwList, LinkedList<Node> layoutChildNodes, Node parent) {
+    for (LNW lnw : lnwList) {
+      layoutChildNodes.add(lnw.node);
+      populateLayoutNodes(lnw, parent);
+    }
+  }
+
+  private void updateLayoutNodes(LNW nodeWrapper, LNW positionedAncestor) {
+    var normalFlowChildren = new LinkedList<Node>();
+    var positionedChildren = new LinkedList<Node>();
+
+    for (Node childNode : nodeWrapper.node.childNodes()) {
       if (childNode instanceof Text) {
         normalFlowChildren.add(childNode);
       } else if (childNode instanceof Element childElement
@@ -110,109 +128,27 @@ public class LayoutServiceImpl implements LayoutService {
 
     normalFlowChildren.forEach(
         c -> {
-          updateLayoutNodes(c, positionedAncestor, new LinkedList<>(), positionedChildren);
-          //          LayoutNodeImpl ln = new LayoutNodeImpl(c, layoutNode);
-          //          layoutNode.normalFlowChildren().add(fillLayoutNode(c, ln, positionedParent));
+          LNW lnw = LNW.of(c);
+          updateLayoutNodes(lnw, positionedAncestor);
+          nodeWrapper.normalFlowChildren.add(lnw);
         });
     positionedChildren.forEach(
         c -> {
-          updateLayoutNodes(c, c, new LinkedList<>(), new LinkedList<>());
-          //          LayoutNodeImpl ln = new LayoutNodeImpl(c, positionedParent);
-          //          positionedParent.positionedChildren().add(fillLayoutNode(c, ln, ln));
+          LNW lnw = LNW.of(c);
+          updateLayoutNodes(lnw, lnw);
+          positionedAncestor.positionedChildren.add(lnw);
         });
-
-
-    node.layoutChildNodes();
   }
 
-  public static class LNW {
-    @NonNull private Node node;
-  }
+  @Getter
+  @RequiredArgsConstructor
+  private static class LNW {
+    @NonNull private final Node node;
+    @NonNull private final List<LNW> normalFlowChildren = new LinkedList<>();
+    @NonNull private final List<LNW> positionedChildren = new LinkedList<>();
 
-  //  private LayoutTree createLayoutTree(Frame frame) {
-  //    var layoutTree = new LayoutTreeImpl(frame);
-  //    collectChildrenAndPassToAppropriateParent(frame, layoutTree, layoutTree);
-  //    return layoutTree;
-  //  }
-  //
-  //  private LayoutNode fillLayoutNode(
-  //      Node node, TwoListNode layoutNode, TwoListNode positionedParent) {
-  //    if (node instanceof Element element && !element.childNodes().isEmpty()) {
-  //      collectChildrenAndPassToAppropriateParent(element, layoutNode, positionedParent);
-  //    }
-  //    return layoutNode;
-  //  }
-  //
-  //  private void collectChildrenAndPassToAppropriateParent(
-  //      Element element, TwoListNode layoutNode, TwoListNode positionedParent) {
-  //    var normalFlowChildren = new ArrayList<Node>();
-  //    var positionedChildren = new ArrayList<Node>();
-  //
-  //    collectChildNodes(element, normalFlowChildren, positionedChildren);
-  //
-  //    normalFlowChildren.forEach(
-  //        c -> {
-  //          LayoutNodeImpl ln = new LayoutNodeImpl(c, layoutNode);
-  //          layoutNode.normalFlowChildren().add(fillLayoutNode(c, ln, positionedParent));
-  //        });
-  //    positionedChildren.forEach(
-  //        c -> {
-  //          LayoutNodeImpl ln = new LayoutNodeImpl(c, positionedParent);
-  //          positionedParent.positionedChildren().add(fillLayoutNode(c, ln, ln));
-  //        });
-  //  }
-  //
-  //  private void collectChildNodes(
-  //      Element element, List<Node> normalFlowChildren, List<Node> positionedChildren) {
-  //    for (Node childNode : element.childNodes()) {
-  //      if (childNode instanceof Text childText) {
-  //        normalFlowChildren.add(childText);
-  //      } else if (childNode instanceof Element childElement
-  //          && !NONE.equals(childElement.calculatedStyle().display())) {
-  //        if (isPositioned(childElement)) {
-  //          positionedChildren.add(childElement);
-  //        } else {
-  //          normalFlowChildren.add(childElement);
-  //        }
-  //      }
-  //    }
-  //  }
-  //
-  //  private interface TwoListNode extends LayoutNode {
-  //    List<LayoutNode> normalFlowChildren();
-  //
-  //    List<LayoutNode> positionedChildren();
-  //  }
-  //
-  //  @Data
-  //  @RequiredArgsConstructor
-  //  private static class LayoutTreeImpl implements LayoutTree, TwoListNode {
-  //    @NonNull private Frame node;
-  //    private final List<LayoutNode> normalFlowChildren = new LinkedList<>();
-  //    private final List<LayoutNode> positionedChildren = new LinkedList<>();
-  //
-  //    @Override
-  //    public @NonNull List<LayoutNode> children() {
-  //      ArrayList<LayoutNode> children = new ArrayList<>(normalFlowChildren);
-  //      children.addAll(positionedChildren);
-  //      return children;
-  //    }
-  //  }
-  //
-  //  @Data
-  //  @RequiredArgsConstructor
-  //  @ToString(exclude = "parent")
-  //  private static class LayoutNodeImpl implements LayoutNode, TwoListNode {
-  //    @NonNull private Node node;
-  //    private final LayoutNode parent;
-  //    private final List<LayoutNode> normalFlowChildren = new LinkedList<>();
-  //    private final List<LayoutNode> positionedChildren = new LinkedList<>();
-  //
-  //    @Override
-  //    public @NonNull List<LayoutNode> children() {
-  //      ArrayList<LayoutNode> children = new ArrayList<>(normalFlowChildren);
-  //      children.addAll(positionedChildren);
-  //      return children;
-  //    }
-  //  }
+    private static LNW of(@NonNull Node node) {
+      return new LNW(node);
+    }
+  }
 }

@@ -29,8 +29,8 @@ import static org.lwjgl.nanovg.NanoVG.nvgTextAlign;
 import static org.lwjgl.nanovg.NanoVG.nvgTextBounds;
 import static org.lwjgl.system.MemoryUtil.memFree;
 import static org.lwjgl.system.MemoryUtil.memUTF8;
-import com.spinyowl.spinygui.core.layout.LayoutNode;
 import com.spinyowl.spinygui.core.node.Element;
+import com.spinyowl.spinygui.core.node.Node;
 import com.spinyowl.spinygui.core.node.layout.Edges;
 import com.spinyowl.spinygui.core.style.CalculatedStyle;
 import com.spinyowl.spinygui.core.style.types.HorizontalAlign;
@@ -167,10 +167,10 @@ public final class NvgRenderUtils {
    * scissor.
    *
    * @param context nanovg context.
-   * @param layoutNode layout node.
+   * @param node node.
    */
-  public static void inScissor(long context, LayoutNode layoutNode, Runnable runnable) {
-    createScissor(context, layoutNode);
+  public static void inScissor(long context, Node node, Runnable runnable) {
+    createScissor(context, node);
     runnable.run();
     resetScissor(context);
   }
@@ -179,46 +179,45 @@ public final class NvgRenderUtils {
    * Creates scissor for provided component by it's parent components.
    *
    * @param context nanovg context.
-   * @param layoutNode layout node.
+   * @param node node.
    */
-  public static void createScissor(long context, LayoutNode layoutNode) {
-    createScissorByParent(context, layoutNode.parent());
+  public static void createScissor(long context, Node node) {
+    createScissorByParent(context, node.layoutParent());
   }
 
   /**
    * Creates scissor by provided component and it's parent components.
    *
    * @param context nanovg context.
-   * @param parent parent layout node.
+   * @param parent parent node.
    */
-  public static void createScissorByParent(long context, LayoutNode parent) {
+  public static void createScissorByParent(long context, Node parent) {
     if (parent == null) return;
 
-    var parents = new LinkedList<LayoutNode>();
-    LayoutNode current = parent;
+    var parents = new LinkedList<Node>();
+    Node current = parent;
 
     while (current != null) {
       parents.add(current);
-      current = current.parent();
+      current = current.layoutParent();
     }
 
     if (!parents.isEmpty()) {
-      Iterator<LayoutNode> descendingIterator = parents.descendingIterator();
+      Iterator<Node> descendingIterator = parents.descendingIterator();
 
       current = descendingIterator.next();
-      Edges border = current.node().asElement().dimensions().border();
+      Edges border = current.asElement().dimensions().border();
 
-      var pos = new Vector2f();
-      pos.add(current.node().asElement().dimensions().borderBoxPosition());
-      var size = current.node().asElement().dimensions().paddingBoxSize();
+      var pos = current.asElement().dimensions().borderBoxPosition();
+      var size = current.asElement().dimensions().paddingBoxSize();
       nvgScissor(context, pos.x + border.left(), pos.y + border.top(), size.x, size.y);
 
       while (descendingIterator.hasNext()) {
         current = descendingIterator.next();
-        border = current.node().asElement().dimensions().border();
+        border = current.asElement().dimensions().border();
 
-        pos.add(current.node().asElement().dimensions().borderBoxPosition());
-        size = current.node().asElement().dimensions().paddingBoxSize();
+        pos = current.asElement().dimensions().borderBoxPosition();
+        size = current.asElement().dimensions().paddingBoxSize();
         nvgIntersectScissor(context, pos.x + border.left(), pos.y + border.top(), size.x, size.y);
       }
     }

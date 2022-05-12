@@ -45,7 +45,6 @@ import com.spinyowl.spinygui.core.event.processor.DefaultEventProcessor;
 import com.spinyowl.spinygui.core.event.processor.EventProcessor;
 import com.spinyowl.spinygui.core.input.impl.MouseServiceImpl;
 import com.spinyowl.spinygui.core.layout.LayoutService;
-import com.spinyowl.spinygui.core.layout.LayoutTree;
 import com.spinyowl.spinygui.core.layout.impl.LayoutServiceImpl;
 import com.spinyowl.spinygui.core.node.Frame;
 import com.spinyowl.spinygui.core.parser.NodeParser;
@@ -67,7 +66,9 @@ import com.spinyowl.spinygui.core.system.event.processor.SystemEventProcessor;
 import com.spinyowl.spinygui.core.system.event.processor.SystemEventProcessorImpl;
 import com.spinyowl.spinygui.core.system.event.provider.SystemEventListenerProviderImpl;
 import com.spinyowl.spinygui.core.system.font.FontService;
+import com.spinyowl.spinygui.core.system.font.FontStorage;
 import com.spinyowl.spinygui.core.system.font.impl.FontServiceImpl;
+import com.spinyowl.spinygui.core.system.font.impl.FontStorageImpl;
 import com.spinyowl.spinygui.core.time.TimeService;
 import java.time.Instant;
 import org.joml.Vector2f;
@@ -232,7 +233,8 @@ public abstract class Demo {
 
     initializeSystemEventListener();
 
-    FontService fontService = new FontServiceImpl();
+    FontStorage fontStorage = new FontStorageImpl();
+    FontService fontService = new FontServiceImpl(fontStorage);
     layoutService =
         new LayoutServiceImpl(systemEventProcessor, eventProcessor, timeService, fontService);
   }

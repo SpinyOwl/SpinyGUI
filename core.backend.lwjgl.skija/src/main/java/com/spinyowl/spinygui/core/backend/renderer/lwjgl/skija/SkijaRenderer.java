@@ -1,7 +1,7 @@
 package com.spinyowl.spinygui.core.backend.renderer.lwjgl.skija;
 
 import com.spinyowl.spinygui.core.backend.renderer.Renderer;
-import com.spinyowl.spinygui.core.layout.LayoutTree;
+import com.spinyowl.spinygui.core.node.Frame;
 import org.jetbrains.skija.BackendRenderTarget;
 import org.jetbrains.skija.Canvas;
 import org.jetbrains.skija.DirectContext;
@@ -36,8 +36,7 @@ public class SkijaRenderer implements Renderer {
   }
 
   @Override
-  public void render(
-      long window, Vector2fc windowSize, Vector2ic frameBufferSize, LayoutTree layoutTree) {}
+  public void render(long window, Vector2fc windowSize, Vector2ic frameBufferSize, Frame frame) {}
 
   @Override
   public void destroy() {}

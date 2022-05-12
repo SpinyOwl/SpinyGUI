@@ -2,7 +2,7 @@ package com.spinyowl.spinygui.core.node;
 
 import com.spinyowl.spinygui.core.node.intersection.Intersection;
 import com.spinyowl.spinygui.core.node.intersection.Intersections;
-import com.spinyowl.spinygui.core.node.layout.LayoutNode;
+import com.spinyowl.spinygui.core.node.layout.Dimensions;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -31,7 +31,7 @@ import lombok.ToString;
 @Setter
 @ToString(exclude = {"parent", "nextSibling", "previousSibling"})
 @RequiredArgsConstructor
-public abstract class Node extends LayoutNode {
+public abstract class Node {
 
   @NonNull private final String nodeName;
 
@@ -59,6 +59,28 @@ public abstract class Node extends LayoutNode {
 
   @Setter(AccessLevel.MODULE)
   private Node previousSibling;
+
+  /// LAYOUT SECTION
+
+  /**
+   * Parent defined by layout service.
+   *
+   * <p>It could be different from nodes original parent based on position property (for example if
+   * node was removed from normal flow).
+   */
+  private Node layoutParent;
+
+  /**
+   * List of child nodes defined by layout service.
+   *
+   * <p>It could be different from nodes original parent based on position property (for example if
+   * node was removed from normal flow).
+   */
+  private List<Node> layoutChildNodes;
+
+  /** Dimensions of node defined by layout service. */
+  @Setter(AccessLevel.NONE)
+  private final Dimensions dimensions = new Dimensions();
 
   /**
    * Used to set parent node.
