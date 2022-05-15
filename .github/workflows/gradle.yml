@@ -48,38 +48,3 @@ jobs:
   #          JAVA_OPTS: -Xmx3072m -XX:MaxPermSize=512m -XX:ReservedCodeCacheSize=128m
   #          GRADLE_OPTS: -Xmx3800m -XX:ReservedCodeCacheSize=128m -Dorg.gradle.daemon=false
   #        run: ./gradlew test sonarqube
-
-  analyze:
-    name: Analyze
-    needs: [ build ]
-    runs-on: ubuntu-latest
-    permissions:
-      actions: read
-      contents: read
-      security-events: write
-
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
-
-      # Initializes the CodeQL tools for scanning.
-      - name: Initialize CodeQL
-        uses: github/codeql-action/init@v2
-        with:
-          languages: java
-
-      # PREPARE
-      - name: Setup Java JDK
-        uses: actions/setup-java@v3
-        with:
-          distribution: 'temurin'
-          java-version: 17
-          cache: 'gradle'
-
-      # BUILD
-      - name: Build with Gradle
-        run: ./gradlew clean build
-
-      # ANALYZE
-      - name: Perform CodeQL Analysis
-        uses: github/codeql-action/analyze@v2
