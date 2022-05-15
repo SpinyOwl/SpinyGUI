@@ -270,6 +270,7 @@ winframe {
   overflow: auto;
   height: 90px;
   font-size: 16px;
+  border-color: #45AAFF;
 }
 
 #t2 {
@@ -278,6 +279,7 @@ winframe {
   top: 10px;
   height: auto;
   background-color: rgba(190,200,255,.8);
+  border-color: rgba(190,200,255,.8) rgba(90,200,255,.8);
 }
 """;
 

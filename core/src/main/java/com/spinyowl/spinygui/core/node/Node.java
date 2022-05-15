@@ -6,6 +6,7 @@ import com.spinyowl.spinygui.core.node.layout.Dimensions;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NonNull;
@@ -150,11 +151,14 @@ public abstract class Node {
    *
    * @return list of child elements.
    */
+  @SuppressWarnings("squid:S6204")
   public List<Element> children() {
     return childNodes().stream()
         .filter(Element.class::isInstance)
         .map(Element.class::cast)
-        .toList();
+        // we need to collect with `Collectors.toList()` instead of `Stream::toList` as we need it
+        // to be modifiable list.
+        .collect(Collectors.toList());
   }
 
   /**

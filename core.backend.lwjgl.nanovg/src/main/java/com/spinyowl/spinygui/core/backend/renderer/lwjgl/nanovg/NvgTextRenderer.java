@@ -50,18 +50,18 @@ public class NvgTextRenderer {
     Float lineHeight = style.lineHeight();
 
     // find appropriate font.
-    Font fontToUse = findFont(fontFamilies, fontStyle, fontWeight);
+//    Font fontToUse = findFont(fontFamilies, fontStyle, fontWeight);
 
     createScissor(nanovg, node);
 
-    nvgSave(nanovg);
+//    nvgSave(nanovg);
     //    drawRect(nanovg, position, size, Color.ROYALBLUE, 1);
     //    drawRectStroke(nanovg, position, size, Color.RED, 1);
-    nvgFontSize(nanovg, StyleUtils.getFontSize(node));
-    nvgFontFace(nanovg, node.parent().calculatedStyle().font);
-    nvgTextAlign(nanovg, NVG_ALIGN_LEFT | NVG_ALIGN_TOP);
-    nvgTextBox(nanovg, position.x, position.y, size.x, text.content());
-    nvgRestore(nanovg);
+//    nvgFontSize(nanovg, StyleUtils.getFontSize(node));
+//    nvgFontFace(nanovg, node.parent().calculatedStyle().font);
+//    nvgTextAlign(nanovg, NVG_ALIGN_LEFT | NVG_ALIGN_TOP);
+//    nvgTextBox(nanovg, position.x, position.y, size.x, text.content());
+//    nvgRestore(nanovg);
 
     resetScissor(nanovg);
   }

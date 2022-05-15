@@ -10,7 +10,7 @@ import lombok.NonNull;
 import org.slf4j.Logger;
 
 public class FontStorageImpl implements FontStorage {
-  private static final Logger LOG = getLogger(FontStorage.class);
+  private static final Logger LOG = getLogger(FontStorageImpl.class);
   private final Map<String, ByteBuffer> dataMap = new ConcurrentHashMap<>();
 
   @Override

@@ -87,7 +87,7 @@ public final class DefaultStyleSheetParser implements StyleSheetParser {
     }
     builder.append(selectorJoiner).append("{");
 
-    var declarationsJoiner = new StringJoiner(";\n", "\n", ";\n");
+    var declarationsJoiner = new StringJoiner(";\n  ", "\n  ", ";\n");
     for (Declaration declaration : ruleSet.declarations()) {
       declarationsJoiner.add("  " + toCss(declaration));
     }
