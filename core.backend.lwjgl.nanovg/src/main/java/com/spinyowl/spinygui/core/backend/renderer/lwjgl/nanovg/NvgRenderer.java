@@ -66,8 +66,6 @@ public class NvgRenderer implements Renderer {
         nanovgContext = NanoVGGL2.nvgCreate(flags);
       }
 
-      textRenderer.initialize();
-      borderRenderer.initialize();
     }
   }
 

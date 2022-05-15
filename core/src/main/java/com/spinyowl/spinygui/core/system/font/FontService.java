@@ -26,7 +26,7 @@ public interface FontService {
    * Calculates text metrics.
    *
    * @param text text to calculate metrics for.
-   * @param offsetX
+   * @param offsetX starting x offset for the first line of text.
    * @param font font to use.
    * @param fontSize font size.
    * @param lineHeight height of line box. It specifies the minimum height of line boxes within the

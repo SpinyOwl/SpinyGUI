@@ -9,10 +9,6 @@ import com.spinyowl.spinygui.core.style.types.border.BorderStyle;
 
 public class NvgBorderRenderer {
 
-  public void initialize() {
-    // currently no need to implement.
-  }
-
   public void render(Node node, long nanovg) {
     Element element = node.asElement();
 
@@ -29,7 +25,4 @@ public class NvgBorderRenderer {
     resetScissor(nanovg);
   }
 
-  public void destroy() {
-    // currently no need to implement.
-  }
 }

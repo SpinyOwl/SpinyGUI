@@ -1,6 +1,7 @@
 package com.spinyowl.spinygui.core.system.font;
 
 import static org.slf4j.LoggerFactory.getLogger;
+import com.spinyowl.spinygui.core.font.Font;
 import java.io.File;
 import java.util.Collection;
 import java.util.LinkedList;
@@ -15,12 +16,13 @@ public class SystemFontLoader {
   private static final Logger LOG = getLogger(SystemFontLoader.class);
 
   @NonNull private final FontStorage fontStorage;
+  @NonNull private final FontService fontService;
   @NonNull private final FontDirectoriesProvider fontDirectoriesProvider;
 
   /**
    * Loads all system fonts to {@link FontStorage}
    *
-   * @return
+   * @return list of fonts loaded to font storage.
    */
   public List<String> loadSystemFonts() {
     List<String> fontPaths =
@@ -33,7 +35,18 @@ public class SystemFontLoader {
     for (String fontPath : fontPaths) {
       if (fontStorage.loadFont(fontPath) != null) loadedFonts.add(fontPath);
     }
+
+    loadedFonts.forEach(this::loadFontSafe);
+
     return loadedFonts;
+  }
+
+  private void loadFontSafe(String font) {
+    try {
+      Font.addFont(fontService.loadFont(font));
+    } catch (Exception e) {
+      LOG.error("Can't load font {}", font, e);
+    }
   }
 
   /** Returns list of files in given directory. */

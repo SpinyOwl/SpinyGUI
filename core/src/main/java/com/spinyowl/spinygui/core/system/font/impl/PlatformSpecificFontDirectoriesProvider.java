@@ -6,15 +6,17 @@ import lombok.NonNull;
 
 public class PlatformSpecificFontDirectoriesProvider implements FontDirectoriesProvider {
 
+  private static final String OS_NAME = "os.name";
+
   /** Returns list of font directories available on current platform. */
   @Override
   public @NonNull List<String> getFontDirectories() {
-    if (System.getProperty("os.name").toLowerCase().contains("win")) {
+    if (System.getProperty(OS_NAME).toLowerCase().contains("win")) {
       return getWindowsFontDirectories();
-    } else if (System.getProperty("os.name").toLowerCase().contains("mac")) {
+    } else if (System.getProperty(OS_NAME).toLowerCase().contains("mac")) {
       return getMacFontDirectories();
-    } else if (System.getProperty("os.name").toLowerCase().contains("nix")
-        || System.getProperty("os.name").toLowerCase().contains("nux")) {
+    } else if (System.getProperty(OS_NAME).toLowerCase().contains("nix")
+        || System.getProperty(OS_NAME).toLowerCase().contains("nux")) {
       return getLinuxFontDirectories();
     } else {
       return List.of();
