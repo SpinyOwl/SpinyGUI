@@ -4,18 +4,17 @@ import com.spinyowl.spinygui.core.backend.renderer.lwjgl.nanovg.NvgRenderer;
 import com.spinyowl.spinygui.core.event.CursorEnterEvent;
 import com.spinyowl.spinygui.core.node.Element;
 import com.spinyowl.spinygui.core.node.Frame;
-import com.spinyowl.spinygui.core.style.types.Color;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class NvgExample extends Demo {
-
-  private Frame frame;
-  private String styles;
+  private static final Logger LOG = LoggerFactory.getLogger(NvgExample.class);
 
   public NvgExample() {
     super(400, 400, "Example", new NvgRenderer());
   }
 
-  public static void main(String[] args) throws InterruptedException {
+  public static void main(String[] args) {
     Demo demo = new NvgExample();
     demo.run();
   }
@@ -23,78 +22,16 @@ public class NvgExample extends Demo {
   @Override
   protected Frame createGuiElements(int width, int height) {
     // language=html
-    String xml =
-        //        """
-        // <winframe>
-        //  <div class="c1" id='c1'>
-        //    <div class='c11' id='c11'></div>
-        //  </div>
-        // </winframe>
-        // """;
-
-        getFlexXml();
-
-    // language=CSS
-    //        """
-    // winframe,
-    // winframe * {
-    //  border: 8px solid #8c8c8c;
-    //  box-sizing: border-box;
-    // }
-    //
-    // winframe:hover,
-    // winframe *:hover {
-    //  border: 8px solid #fc3131;
-    // }
-    //
-    // winframe {
-    //  display: block;
-    //  background-color: green;
-    //  padding: 20px;
-    // }
-    //
-    // .c1 {
-    //  display: block;
-    //  padding: 20px;
-    //
-    //  top: 0;
-    //  left: 0;
-    //  right: 0;
-    //
-    //  background-color: #77aaff;
-    //  height: 80px;
-    //  asd-dc: "";
-    // }
-    //
-    // .c11 {
-    //  position: relative;
-    //
-    //  top: 00px;
-    //  right: 20px;
-    //
-    //  width: 40px;
-    //  height: 40px;
-    //
-    //  background-color: #eee;
-    // }
-    //
-    // .c11:hover {
-    //  background-color: #e45;
-    // }
-    // """;
-    //
-    //                getFlexCss();
-    styles = getAbsoluteCss();
+    String xml = getXml();
+    String styles = getAbsoluteCss();
 
     // in case if root of xml is not 'frame' method will return null.
-    frame = nodeParser.fromXml(xml).frame();
-    //    frame.children().forEach(c -> c.style("border-color: " + Color.random().hexString()));
+    Frame frame = nodeParser.fromXml(xml).frame();
     frame.styleSheets().add(styleSheetParser.parseStyleSheet(styles));
 
     Element c11 = frame.getElementById("c11");
     c11.addListener(
-        CursorEnterEvent.class,
-        event -> System.out.println("Entered at " + event.cursorPosition()));
+        CursorEnterEvent.class, event -> LOG.info("Entered at {}", event.cursorPosition()));
 
     return frame;
   }
@@ -123,13 +60,17 @@ winframe {
   overflow: auto;
   height: 90px;
   font-size: 16px;
+  border-color: #45AAFF;
 }
 
 #t2 {
   position: absolute;
   bottom: 10px;
+  top: 10px;
+  height: auto;
+  background-color: rgba(190,200,255,.8);
+  border-color: rgba(190,200,255,.8) rgba(90,200,255,.8);
 }
-
 """;
   }
 
@@ -212,7 +153,7 @@ winframe {
 """;
   }
 
-  private String getFlexXml() {
+  private String getXml() {
     // language=html
     return """
 <winframe>
@@ -242,51 +183,5 @@ winframe {
   </div>
 </winframe>
 """;
-  }
-
-  @Override
-  protected void update() {
-    // language=CSS
-    String updatedStyles =
-        """
-winframe,
-winframe * {
-  border: 8px solid #8c8c8c;
-  box-sizing: border-box; /* default behaviour */
-  overflow: hidden; /* default behaviour */
-}
-winframe:hover,
-winframe *:hover {
-  border: 8px solid #fc3131;
-}
-winframe {
-  background-color: green;
-  padding: 20px;
-  flex-direction: column;
-}
-
-.text {
-  display: block;
-  overflow: auto;
-  height: 90px;
-  font-size: 16px;
-  border-color: #45AAFF;
-}
-
-#t2 {
-  position: absolute;
-  bottom: 10px;
-  top: 10px;
-  height: auto;
-  background-color: rgba(190,200,255,.8);
-  border-color: rgba(190,200,255,.8) rgba(90,200,255,.8);
-}
-""";
-
-    if (!styles.equals(updatedStyles)) {
-      styles = updatedStyles;
-      frame.styleSheets().clear();
-      frame.styleSheets().add(styleSheetParser.parseStyleSheet(updatedStyles));
-    }
   }
 }
