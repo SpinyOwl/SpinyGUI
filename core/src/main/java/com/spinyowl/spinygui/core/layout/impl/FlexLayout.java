@@ -62,6 +62,7 @@ import com.spinyowl.spinygui.core.layout.LayoutService;
 import com.spinyowl.spinygui.core.node.Element;
 import com.spinyowl.spinygui.core.node.layout.Dimensions;
 import com.spinyowl.spinygui.core.node.layout.Edges;
+import com.spinyowl.spinygui.core.node.layout.Rect;
 import com.spinyowl.spinygui.core.style.CalculatedStyle;
 import com.spinyowl.spinygui.core.style.types.Position;
 import com.spinyowl.spinygui.core.style.types.border.BorderStyle;
@@ -81,7 +82,6 @@ import java.util.function.ObjIntConsumer;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-import org.joml.Vector2f;
 import org.lwjgl.util.yoga.Yoga;
 
 @Getter
@@ -114,9 +114,7 @@ public class FlexLayout implements Layout<Element> {
 
     var childNodes = new ArrayList<Long>();
     var children =
-        parent.children().stream()
-            .filter(node -> shouldPersist(node,positionedParent))
-            .toList();
+        parent.children().stream().filter(node -> shouldPersist(node, positionedParent)).toList();
     for (var child : children) {
       var childNode = YGNodeNew();
       //      layoutService.layoutNode(child, context);
@@ -126,9 +124,10 @@ public class FlexLayout implements Layout<Element> {
       childNodes.add(childNode);
     }
 
-    Vector2f parentBorderBox = parent.dimensions().borderBoxSize();
+    Rect parentBorderBox = parent.dimensions().borderBox();
     // calculate
-    YGNodeCalculateLayout(rootNode, parentBorderBox.x, parentBorderBox.y, YGDirectionLTR);
+    YGNodeCalculateLayout(
+        rootNode, parentBorderBox.width(), parentBorderBox.height(), YGDirectionLTR);
 
     // apply to children
     for (var i = 0; i < children.size(); i++) {
@@ -171,16 +170,12 @@ public class FlexLayout implements Layout<Element> {
               ? Math.max(dimensions.content().height(), height)
               : height;
       dimensions.contentSize(width, height);
-
+      boolean absoluteParent = ABSOLUTE.equals(parent.calculatedStyle().position());
+      float parrentOffsetX = absoluteParent ? parentBorderBox.x() : 0;
+      float parrentOffsetY = absoluteParent ? parentBorderBox.y() : 0;
       float x = YGNodeLayoutGetLeft(yogaNode) + padding.left() + border.left();
       float y = YGNodeLayoutGetTop(yogaNode) + padding.top() + border.top();
-      Position childPosition = child.calculatedStyle().position();
-      //      if (childPosition.equals(STATIC)) {
-      dimensions.contentPosition(x, y);
-      //      } else if(childPosition.equals(Position.ABSOLUTE)) {
-      //        Element positionedParent = NodeUtilities.firstPositionedAncestor(child);
-
-      //      }
+      dimensions.contentPosition(parrentOffsetX + x, parrentOffsetY + y);
     }
 
     // free mem
@@ -192,7 +187,7 @@ public class FlexLayout implements Layout<Element> {
   }
 
   private boolean shouldPersist(Element node, Element positionedParent) {
-    return visible(node) && (!hasPosition(node, ABSOLUTE) || node.parent() == positionedParent) ;
+    return visible(node) && (!hasPosition(node, ABSOLUTE) || node.parent() == positionedParent);
   }
 
   /**
@@ -216,7 +211,8 @@ public class FlexLayout implements Layout<Element> {
     setMaxHeight(node, style);
     setHeight(node, style);
 
-    if (!STATIC.equals(element.calculatedStyle().position())) {
+    Position position = element.calculatedStyle().position();
+    if (!STATIC.equals(position)) {
       setPosition(node, style.top(), YGEdgeTop);
       setPosition(node, style.bottom(), YGEdgeBottom);
       setPosition(node, style.right(), YGEdgeRight);

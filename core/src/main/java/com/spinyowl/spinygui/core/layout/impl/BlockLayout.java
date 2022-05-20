@@ -103,6 +103,8 @@ public class BlockLayout implements Layout<Element> {
     float contentX;
     float contentWidth;
 
+    float childrenHeight = childrenHeight(element, style, skipChildren, context);
+
     // calculate content x position and width
     if (style.left().isAuto() && style.right().isAuto()) {
 
@@ -132,16 +134,23 @@ public class BlockLayout implements Layout<Element> {
         right -= getFloatLength(style.right(), parentPaddingBoxWidth);
       }
 
-      contentX = left;
-      contentWidth = right - left;
+      if (style.left().isLength() && style.right().isLength()) {
+        contentX = left;
+        contentWidth = right - left;
+      } else {
+        contentWidth = getWidth(parentPaddingBoxWidth, style);
+        if (style.left().isLength()) {
+          contentX = left;
+        } else {
+          contentX = right - contentWidth;
+        }
+      }
     }
 
     contentWidth -= horizontalAdditions;
 
     dimensions.content().x(contentX);
     dimensions.content().width(contentWidth);
-
-    float childrenHeight = childrenHeight(element, style, skipChildren, context);
 
     float contentY;
     float contentHeight;
