@@ -7,9 +7,9 @@ import com.spinyowl.spinygui.core.font.FontWeight;
 import com.spinyowl.spinygui.core.layout.Layout;
 import com.spinyowl.spinygui.core.layout.LayoutContext;
 import com.spinyowl.spinygui.core.node.Element;
-import com.spinyowl.spinygui.core.node.layout.Dimensions;
-import com.spinyowl.spinygui.core.node.layout.Rect;
 import com.spinyowl.spinygui.core.node.Text;
+import com.spinyowl.spinygui.core.node.layout.Box;
+import com.spinyowl.spinygui.core.node.layout.Rect;
 import com.spinyowl.spinygui.core.style.CalculatedStyle;
 import com.spinyowl.spinygui.core.style.stylesheet.util.StyleUtils;
 import com.spinyowl.spinygui.core.system.font.FontService;
@@ -52,8 +52,8 @@ public class TextLayout implements Layout<Text> {
     Font fontToUse = findFont(fontFamilies, fontStyle, fontWeight);
 
     // get width of parent node.
-    Dimensions parentDimensions = parent.dimensions();
-    Rect parentContent = parentDimensions.content();
+    Box parentBox = parent.box();
+    Rect parentContent = parentBox.content();
     float parentWidth = parentContent.width();
 
     // top left by default until `text-align` property not implemented.
@@ -66,15 +66,15 @@ public class TextLayout implements Layout<Text> {
       startY = context.lastTextEndY();
     } else if (context.previousNode() != null) {
       startY =
-          context.previousNode().dimensions().borderBox().height()
-              + context.previousNode().dimensions().borderBox().y();
+          context.previousNode().box().borderBox().height()
+              + context.previousNode().box().borderBox().y();
     }
 
     TextMetrics metrics =
         fontService.getTextMetrics(
             text.content(), startX, fontToUse, fontSize, lineHeight, parentWidth, false);
 
-    Dimensions dimensions = text.dimensions();
+    Box box = text.box();
     text.textStartX(startX);
     text.textStartY(startY);
 
@@ -90,9 +90,9 @@ public class TextLayout implements Layout<Text> {
     text.textEndX(lastTextEndX);
     text.textEndY(lastTextEndY);
 
-    float contentX = parentDimensions.content().x();
-    float contentY = parentDimensions.content().y();
-    dimensions.contentPosition(contentX, contentY + startY);
+    float contentX = parentBox.content().x();
+    float contentY = parentBox.content().y();
+    box.contentPosition(contentX, contentY + startY);
 
     float maxTextWidth =
         metrics.lines().stream()
@@ -100,11 +100,11 @@ public class TextLayout implements Layout<Text> {
             .max(Comparator.naturalOrder())
             .orElse(0f);
 
-    dimensions.contentSize(maxTextWidth, metrics.height());
+    box.contentSize(maxTextWidth, metrics.height());
 
     context.lastTextEndX(lastTextEndX);
     context.lastTextEndY(lastTextEndY);
-    context.lastBlockBottomY(dimensions.borderBox().y() + dimensions.borderBox().height());
+    context.lastBlockBottomY(box.borderBox().y() + box.borderBox().height());
   }
 
   private Font findFont(Set<String> fontFamilies, FontStyle fontStyle, FontWeight fontWeight) {

@@ -15,11 +15,11 @@ public class NvgBorderRenderer {
     createScissor(nanovg, node);
     var style = element.calculatedStyle();
     if (BorderStyle.NONE.equals(style.borderTopStyle())) return;
-    float borderThickness = element.dimensions().border().top();
+    float borderThickness = element.box().border().top();
     drawRectStroke(
         nanovg,
-        element.dimensions().borderBoxPosition().add(borderThickness / 2, borderThickness / 2),
-        element.dimensions().borderBoxSize().sub(borderThickness, borderThickness),
+        element.box().borderBoxPosition().add(borderThickness / 2, borderThickness / 2),
+        element.box().borderBoxSize().sub(borderThickness, borderThickness),
         style.borderTopColor(),
         borderThickness);
     resetScissor(nanovg);

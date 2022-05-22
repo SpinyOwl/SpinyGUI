@@ -206,18 +206,18 @@ public final class NvgRenderUtils {
       Iterator<Node> descendingIterator = parents.descendingIterator();
 
       current = descendingIterator.next();
-      Edges border = current.asElement().dimensions().border();
+      Edges border = current.asElement().box().border();
 
-      var pos = current.asElement().dimensions().borderBoxPosition();
-      var size = current.asElement().dimensions().paddingBoxSize();
+      var pos = current.asElement().box().borderBoxPosition();
+      var size = current.asElement().box().paddingBoxSize();
       nvgScissor(context, pos.x + border.left(), pos.y + border.top(), size.x, size.y);
 
       while (descendingIterator.hasNext()) {
         current = descendingIterator.next();
-        border = current.asElement().dimensions().border();
+        border = current.asElement().box().border();
 
-        pos = current.asElement().dimensions().borderBoxPosition();
-        size = current.asElement().dimensions().paddingBoxSize();
+        pos = current.asElement().box().borderBoxPosition();
+        size = current.asElement().box().paddingBoxSize();
         nvgIntersectScissor(context, pos.x + border.left(), pos.y + border.top(), size.x, size.y);
       }
     }
@@ -242,7 +242,7 @@ public final class NvgRenderUtils {
    * @return vector of four border radius.
    */
   public static Vector4f getBorderRadius(Element element, CalculatedStyle style) {
-    Vector2f borderSize = element.dimensions().borderBoxSize();
+    Vector2f borderSize = element.box().borderBoxSize();
     return new Vector4f(
         getFloatLengthNullSafe(style.borderTopLeftRadius(), borderSize.x),
         getFloatLengthNullSafe(style.borderTopRightRadius(), borderSize.x),
@@ -257,8 +257,8 @@ public final class NvgRenderUtils {
       float vOffset = shadow.vOffset();
       float blur = shadow.blur();
       float spread = shadow.spread();
-      Vector2f absolutePosition = element.dimensions().borderBoxPosition();
-      Vector2f size = element.dimensions().borderBoxSize();
+      Vector2f absolutePosition = element.box().borderBoxPosition();
+      Vector2f size = element.box().borderBoxSize();
 
       float x = absolutePosition.x;
       float y = absolutePosition.y;

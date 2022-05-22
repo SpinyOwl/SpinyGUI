@@ -45,7 +45,7 @@ class SystemFileDropEventListenerTest {
   void process_generatesDropEvent() {
     // Arrange
     Frame frame = new Frame();
-    frame.dimensions().contentSize(100, 100);
+    frame.box().contentSize(100, 100);
 
     Vector2f current = new Vector2f(10, 10);
     Vector2f previous = new Vector2f(9, 9);
@@ -78,7 +78,7 @@ class SystemFileDropEventListenerTest {
   void process_doNothingIfNoTarget() {
     // Arrange
     Frame frame = frame();
-    frame.dimensions().contentSize(100, 100);
+    frame.box().contentSize(100, 100);
     Vector2f current = new Vector2f(110, 110);
     CursorPositions cursorPositions = new CursorPositions(current, current);
     when(mouseService.getCursorPositions(frame)).thenReturn(cursorPositions);

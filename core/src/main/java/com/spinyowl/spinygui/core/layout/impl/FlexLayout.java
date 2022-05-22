@@ -60,7 +60,7 @@ import com.spinyowl.spinygui.core.layout.Layout;
 import com.spinyowl.spinygui.core.layout.LayoutContext;
 import com.spinyowl.spinygui.core.layout.LayoutService;
 import com.spinyowl.spinygui.core.node.Element;
-import com.spinyowl.spinygui.core.node.layout.Dimensions;
+import com.spinyowl.spinygui.core.node.layout.Box;
 import com.spinyowl.spinygui.core.node.layout.Edges;
 import com.spinyowl.spinygui.core.node.layout.Rect;
 import com.spinyowl.spinygui.core.style.CalculatedStyle;
@@ -124,7 +124,7 @@ public class FlexLayout implements Layout<Element> {
       childNodes.add(childNode);
     }
 
-    Rect parentBorderBox = parent.dimensions().borderBox();
+    Rect parentBorderBox = parent.box().borderBox();
     // calculate
     YGNodeCalculateLayout(
         rootNode, parentBorderBox.width(), parentBorderBox.height(), YGDirectionLTR);
@@ -134,20 +134,20 @@ public class FlexLayout implements Layout<Element> {
       var child = children.get(i);
       var yogaNode = childNodes.get(i);
 
-      Dimensions dimensions = child.dimensions();
-      Edges padding = dimensions.padding();
+      Box box = child.box();
+      Edges padding = box.padding();
       padding.left(YGNodeLayoutGetPadding(yogaNode, YGEdgeLeft));
       padding.right(YGNodeLayoutGetPadding(yogaNode, YGEdgeRight));
       padding.top(YGNodeLayoutGetPadding(yogaNode, YGEdgeTop));
       padding.bottom(YGNodeLayoutGetPadding(yogaNode, YGEdgeBottom));
 
-      Edges margin = dimensions.margin();
+      Edges margin = box.margin();
       margin.left(YGNodeLayoutGetMargin(yogaNode, YGEdgeLeft));
       margin.right(YGNodeLayoutGetMargin(yogaNode, YGEdgeRight));
       margin.top(YGNodeLayoutGetMargin(yogaNode, YGEdgeTop));
       margin.bottom(YGNodeLayoutGetMargin(yogaNode, YGEdgeBottom));
 
-      Edges border = dimensions.border();
+      Edges border = box.border();
       border.left(YGNodeLayoutGetBorder(yogaNode, YGEdgeLeft));
       border.right(YGNodeLayoutGetBorder(yogaNode, YGEdgeRight));
       border.top(YGNodeLayoutGetBorder(yogaNode, YGEdgeTop));
@@ -167,15 +167,15 @@ public class FlexLayout implements Layout<Element> {
               - border.bottom();
       height =
           child.calculatedStyle().height().isAuto()
-              ? Math.max(dimensions.content().height(), height)
+              ? Math.max(box.content().height(), height)
               : height;
-      dimensions.contentSize(width, height);
+      box.contentSize(width, height);
       boolean absoluteParent = ABSOLUTE.equals(parent.calculatedStyle().position());
       float parrentOffsetX = absoluteParent ? parentBorderBox.x() : 0;
       float parrentOffsetY = absoluteParent ? parentBorderBox.y() : 0;
       float x = YGNodeLayoutGetLeft(yogaNode) + padding.left() + border.left();
       float y = YGNodeLayoutGetTop(yogaNode) + padding.top() + border.top();
-      dimensions.contentPosition(parrentOffsetX + x, parrentOffsetY + y);
+      box.contentPosition(parrentOffsetX + x, parrentOffsetY + y);
     }
 
     // free mem

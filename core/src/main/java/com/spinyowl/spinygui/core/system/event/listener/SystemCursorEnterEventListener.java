@@ -45,7 +45,7 @@ public class SystemCursorEnterEventListener
       for (var element : targetElements) {
         if (!element.hovered()) {
           element.hovered(true);
-          Vector2f intersection = element.dimensions().borderBoxPosition().sub(current).negate();
+          Vector2f intersection = element.box().borderBoxPosition().sub(current).negate();
           CursorEnterEvent enterEvent =
               CursorEnterEvent.builder()
                   .source(frame)
@@ -61,7 +61,7 @@ public class SystemCursorEnterEventListener
       List<Element> previousTargetElements = NodeUtilities.getTargetElementList(frame, current);
 
       for (Element prevTarget : previousTargetElements) {
-        Vector2f intersection = prevTarget.dimensions().borderBoxPosition().sub(current).negate();
+        Vector2f intersection = prevTarget.box().borderBoxPosition().sub(current).negate();
         CursorExitEvent exitEvent =
             CursorExitEvent.builder()
                 .source(frame)

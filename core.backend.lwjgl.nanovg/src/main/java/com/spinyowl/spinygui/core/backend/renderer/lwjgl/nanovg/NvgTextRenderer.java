@@ -20,9 +20,9 @@ public class NvgTextRenderer {
     //      var style = text.calculatedStyle();
     //      var backgroundColor = style.backgroundColor();
     //      var borderRadius = getBorderRadius(text, style);
-    var position = text.dimensions().paddingBoxPosition();
+    var position = text.box().paddingBoxPosition();
 
-    var size = text.dimensions().paddingBoxSize();
+    var size = text.box().paddingBoxSize();
 
     Element parent = text.parent();
     if (parent == null) return;
