@@ -40,7 +40,7 @@ public final class DefaultStyleSheetParser implements StyleSheetParser {
    * @param css css source
    * @return StyleSheet
    */
-  public StyleSheet parseStyleSheet(@NonNull String css) {
+  public StyleSheet parse(@NonNull String css) {
     try {
       var charStream = CharStreams.fromString(css);
       var lexer = new CSS3Lexer(charStream);

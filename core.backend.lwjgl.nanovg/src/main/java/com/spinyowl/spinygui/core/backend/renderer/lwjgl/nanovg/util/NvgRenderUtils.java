@@ -29,6 +29,7 @@ import static org.lwjgl.nanovg.NanoVG.nvgTextAlign;
 import static org.lwjgl.nanovg.NanoVG.nvgTextBounds;
 import static org.lwjgl.system.MemoryUtil.memFree;
 import static org.lwjgl.system.MemoryUtil.memUTF8;
+
 import com.spinyowl.spinygui.core.node.Element;
 import com.spinyowl.spinygui.core.node.Node;
 import com.spinyowl.spinygui.core.node.layout.Edges;
@@ -208,7 +209,7 @@ public final class NvgRenderUtils {
       current = descendingIterator.next();
       Edges border = current.asElement().box().border();
 
-      var pos = current.asElement().box().borderBoxPosition();
+      var pos = current.absolutePosition();
       var size = current.asElement().box().paddingBoxSize();
       nvgScissor(context, pos.x + border.left(), pos.y + border.top(), size.x, size.y);
 
@@ -216,7 +217,7 @@ public final class NvgRenderUtils {
         current = descendingIterator.next();
         border = current.asElement().box().border();
 
-        pos = current.asElement().box().borderBoxPosition();
+        pos = current.absolutePosition();
         size = current.asElement().box().paddingBoxSize();
         nvgIntersectScissor(context, pos.x + border.left(), pos.y + border.top(), size.x, size.y);
       }

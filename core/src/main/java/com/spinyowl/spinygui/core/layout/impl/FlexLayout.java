@@ -55,6 +55,7 @@ import static org.lwjgl.util.yoga.Yoga.YGPositionTypeRelative;
 import static org.lwjgl.util.yoga.Yoga.YGWrapNoWrap;
 import static org.lwjgl.util.yoga.Yoga.YGWrapReverse;
 import static org.lwjgl.util.yoga.Yoga.YGWrapWrap;
+
 import com.spinyowl.spinygui.core.event.processor.EventProcessor;
 import com.spinyowl.spinygui.core.layout.Layout;
 import com.spinyowl.spinygui.core.layout.LayoutContext;
@@ -117,8 +118,6 @@ public class FlexLayout implements Layout<Element> {
         parent.children().stream().filter(node -> shouldPersist(node, positionedParent)).toList();
     for (var child : children) {
       var childNode = YGNodeNew();
-      //      layoutService.layoutNode(child, context);
-
       prepareNode(child, childNode);
       YGNodeInsertChild(rootNode, childNode, childNodes.size());
       childNodes.add(childNode);
@@ -170,12 +169,9 @@ public class FlexLayout implements Layout<Element> {
               ? Math.max(box.content().height(), height)
               : height;
       box.contentSize(width, height);
-      boolean absoluteParent = ABSOLUTE.equals(parent.calculatedStyle().position());
-      float parrentOffsetX = absoluteParent ? parentBorderBox.x() : 0;
-      float parrentOffsetY = absoluteParent ? parentBorderBox.y() : 0;
       float x = YGNodeLayoutGetLeft(yogaNode) + padding.left() + border.left();
       float y = YGNodeLayoutGetTop(yogaNode) + padding.top() + border.top();
-      box.contentPosition(parrentOffsetX + x, parrentOffsetY + y);
+      box.contentPosition(x, y);
     }
 
     // free mem

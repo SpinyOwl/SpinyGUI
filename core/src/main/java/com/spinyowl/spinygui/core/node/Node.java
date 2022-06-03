@@ -214,11 +214,17 @@ public abstract class Node {
     return (Text) this;
   }
 
+  /** Returns absolute position of node (border-box) on virtual window surface. */
   public Vector2f absolutePosition() {
-    return parent == null ? new Vector2f() : parent.absolutePosition().add(box.borderBoxPosition());
+    var borderBox = this.box().borderBoxPosition();
+    if (this.layoutParent != null) {
+      borderBox.add(layoutParent.absolutePosition());
+    }
+    return borderBox;
   }
 
+  /** Returns size of node (border-box) on virtual window surface. */
   public Vector2f size() {
-    return box.paddingBoxSize();
+    return box.borderBoxSize();
   }
 }

@@ -11,8 +11,8 @@ public class RectangleIntersection implements Intersection {
 
   @Override
   public boolean intersects(Node node, Vector2fc point) {
-    Vector2fc pos = node.box().borderBoxPosition();
-    Vector2fc size = node.box().borderBoxSize();
+    Vector2fc pos = node.absolutePosition();
+    Vector2fc size = node.size();
     return point.x() >= pos.x()
         && point.x() < pos.x() + size.x()
         && point.y() >= pos.y()

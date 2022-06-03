@@ -11,8 +11,9 @@ public interface FontService {
    *
    * @param path path to font file
    * @return loaded font
+   * @throws FontLoadingException in case of font loading failure.
    */
-  Font loadFont(String path);
+  Font loadFont(String path) throws FontLoadingException;
 
   /**
    * Verifies if font exists and available to use.

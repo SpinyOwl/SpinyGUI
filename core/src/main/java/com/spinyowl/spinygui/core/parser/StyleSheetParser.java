@@ -8,7 +8,7 @@ import java.util.List;
 /** Used to read stylesheets from css. */
 public interface StyleSheetParser {
 
-  StyleSheet parseStyleSheet(String css);
+  StyleSheet parse(String css);
 
   List<Declaration> parseDeclarations(String css);
 

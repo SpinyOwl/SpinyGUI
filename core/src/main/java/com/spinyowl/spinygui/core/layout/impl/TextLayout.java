@@ -74,7 +74,6 @@ public class TextLayout implements Layout<Text> {
         fontService.getTextMetrics(
             text.content(), startX, fontToUse, fontSize, lineHeight, parentWidth, false);
 
-    Box box = text.box();
     text.textStartX(startX);
     text.textStartY(startY);
 
@@ -90,9 +89,10 @@ public class TextLayout implements Layout<Text> {
     text.textEndX(lastTextEndX);
     text.textEndY(lastTextEndY);
 
-    float contentX = parentBox.content().x();
-    float contentY = parentBox.content().y();
-    box.contentPosition(contentX, contentY + startY);
+    float contentX = parentBox.border().left() + parentBox.padding().left();
+    float contentY = parentBox.border().top() + parentBox.padding().top();
+
+    text.box().contentPosition(contentX, contentY + startY);
 
     float maxTextWidth =
         metrics.lines().stream()
@@ -100,11 +100,11 @@ public class TextLayout implements Layout<Text> {
             .max(Comparator.naturalOrder())
             .orElse(0f);
 
-    box.contentSize(maxTextWidth, metrics.height());
+    text.box().contentSize(maxTextWidth, metrics.height());
 
     context.lastTextEndX(lastTextEndX);
     context.lastTextEndY(lastTextEndY);
-    context.lastBlockBottomY(box.borderBox().y() + box.borderBox().height());
+    context.lastBlockBottomY(text.box().borderBox().y() + text.box().borderBox().height());
   }
 
   private Font findFont(Set<String> fontFamilies, FontStyle fontStyle, FontWeight fontWeight) {

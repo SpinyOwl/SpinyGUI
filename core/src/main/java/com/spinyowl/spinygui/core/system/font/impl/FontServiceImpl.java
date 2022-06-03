@@ -8,10 +8,12 @@ import static org.lwjgl.stb.STBTruetype.stbtt_GetFontNameString;
 import static org.lwjgl.stb.STBTruetype.stbtt_ScaleForMappingEmToPixels;
 import static org.lwjgl.stb.STBTruetype.stbtt_ScaleForPixelHeight;
 import static org.slf4j.LoggerFactory.getLogger;
+
 import com.spinyowl.spinygui.core.font.Font;
 import com.spinyowl.spinygui.core.font.FontStretch;
 import com.spinyowl.spinygui.core.font.FontStyle;
 import com.spinyowl.spinygui.core.font.FontWeight;
+import com.spinyowl.spinygui.core.system.font.FontLoadingException;
 import com.spinyowl.spinygui.core.system.font.FontService;
 import com.spinyowl.spinygui.core.system.font.FontStorage;
 import com.spinyowl.spinygui.core.system.font.TextLineMetrics;
@@ -46,7 +48,7 @@ public class FontServiceImpl implements FontService {
   /** {@inheritDoc} */
   @Override
   @SuppressWarnings("squid:S3776")
-  public Font loadFont(String path) {
+  public Font loadFont(String path) throws FontLoadingException {
     STBTTFontinfo fontInfo = getFontInfo(path);
     String fontFamily = getFontFamily(fontInfo);
     String subfamily = getSubfamily(fontInfo);
@@ -131,8 +133,8 @@ public class FontServiceImpl implements FontService {
 
       int textLength = text.length();
       float lineWidth = offsetX;
-
       float fullLineHeight = lineHeight * fontSize;
+
       TextLineMetrics.TextLineMetricsBuilder textLineMetrics =
           TextLineMetrics.builder().height(fullLineHeight);
 
@@ -241,15 +243,15 @@ public class FontServiceImpl implements FontService {
     return info;
   }
 
-  private STBTTFontinfo getFontInfo(String fontPath) {
+  private STBTTFontinfo getFontInfo(String fontPath) throws FontLoadingException {
     return fontInfoMap.computeIfAbsent(fontPath, this::createFontInfo);
   }
 
-  private STBTTFontinfo createFontInfo(String fontPath) {
+  private STBTTFontinfo createFontInfo(String fontPath) throws FontLoadingException {
     ByteBuffer fontData = fontStorage.getFontData(fontPath);
     STBTTFontinfo stbttFontinfo = STBTTFontinfo.create();
     if (fontData == null || !STBTruetype.stbtt_InitFont(stbttFontinfo, fontData)) {
-      throw new RuntimeException("Failed to load font from '%s'".formatted(fontPath));
+      throw new FontLoadingException("Failed to load font from '%s'".formatted(fontPath));
     }
 
     for (int i = 0; i < 25; i++) {

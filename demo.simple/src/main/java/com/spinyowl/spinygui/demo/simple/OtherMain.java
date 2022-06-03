@@ -4,6 +4,7 @@ import static com.spinyowl.spinygui.core.node.NodeBuilder.button;
 import static com.spinyowl.spinygui.core.node.NodeBuilder.div;
 import static com.spinyowl.spinygui.core.node.NodeBuilder.label;
 import static com.spinyowl.spinygui.core.parser.impl.StyleSheetParserFactory.createParser;
+
 import com.spinyowl.spinygui.core.node.Element;
 import com.spinyowl.spinygui.core.node.Frame;
 import com.spinyowl.spinygui.core.node.Node;
@@ -68,7 +69,7 @@ public class OtherMain {
     PropertyStore propertyStore = new DefaultPropertyStore();
     PropertiesScanner.fillPropertyStore(propertyStore);
     StyleSheetParser parser = createParser(propertyStore);
-    var stylesheet = parser.parseStyleSheet(css);
+    var stylesheet = parser.parse(css);
 
     Element testLabel = label(Map.of("class", "test"));
 
@@ -123,7 +124,7 @@ public class OtherMain {
     PropertyStore propertyStore = new DefaultPropertyStore();
     PropertiesScanner.fillPropertyStore(propertyStore);
     StyleSheetParser parser = createParser(propertyStore);
-    var stylesheet = parser.parseStyleSheet(css);
+    var stylesheet = parser.parse(css);
 
     var xml = """
               <frame>
