@@ -18,9 +18,9 @@ public class NvgElementRenderer {
       var style = element.calculatedStyle();
       var backgroundColor = style.backgroundColor();
       var borderRadius = getBorderRadius(element, style);
-      var position = element.dimensions().paddingBoxPosition();
 
-      var size = element.dimensions().paddingBoxSize();
+      var position = element.absolutePosition();
+      var size = element.size();
 
       // render self
       createScissor(nanovg, node);

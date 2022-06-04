@@ -41,7 +41,7 @@ class SystemScrollEventListenerTest {
   @Test
   void process_generatesScrollEvent() {
     Frame frame = new Frame();
-    frame.dimensions().contentSize(100, 100);
+    frame.box().contentSize(100, 100);
 
     Vector2f current = new Vector2f(10, 10);
     CursorPositions cursorPositions = new CursorPositions(current, current);
@@ -74,7 +74,7 @@ class SystemScrollEventListenerTest {
   @Test
   void process_doNotGenerateScrollEvent() {
     Frame frame = new Frame();
-    frame.dimensions().contentSize(100, 100);
+    frame.box().contentSize(100, 100);
 
     Vector2f current = new Vector2f(-10, -10);
     CursorPositions cursorPositions = new CursorPositions(current, current);

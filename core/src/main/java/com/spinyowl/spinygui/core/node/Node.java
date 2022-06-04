@@ -2,7 +2,7 @@ package com.spinyowl.spinygui.core.node;
 
 import com.spinyowl.spinygui.core.node.intersection.Intersection;
 import com.spinyowl.spinygui.core.node.intersection.Intersections;
-import com.spinyowl.spinygui.core.node.layout.Dimensions;
+import com.spinyowl.spinygui.core.node.layout.Box;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -13,6 +13,7 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import org.joml.Vector2f;
 
 /**
  * Base structure of any node.
@@ -81,7 +82,7 @@ public abstract class Node {
 
   /** Dimensions of node defined by layout service. */
   @Setter(AccessLevel.NONE)
-  private final Dimensions dimensions = new Dimensions();
+  private final Box box = new Box();
 
   /**
    * Used to set parent node.
@@ -211,5 +212,19 @@ public abstract class Node {
 
   public Text asText() {
     return (Text) this;
+  }
+
+  /** Returns absolute position of node (border-box) on virtual window surface. */
+  public Vector2f absolutePosition() {
+    var borderBox = this.box().borderBoxPosition();
+    if (this.layoutParent != null) {
+      borderBox.add(layoutParent.absolutePosition());
+    }
+    return borderBox;
+  }
+
+  /** Returns size of node (border-box) on virtual window surface. */
+  public Vector2f size() {
+    return box.borderBoxSize();
   }
 }

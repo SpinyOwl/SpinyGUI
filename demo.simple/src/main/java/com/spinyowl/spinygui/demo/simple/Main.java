@@ -3,13 +3,22 @@ package com.spinyowl.spinygui.demo.simple;
 import static com.spinyowl.spinygui.core.node.NodeBuilder.TYPE_PASSWORD;
 import static com.spinyowl.spinygui.core.node.NodeBuilder.button;
 import static com.spinyowl.spinygui.core.node.NodeBuilder.div;
+import static com.spinyowl.spinygui.core.node.NodeBuilder.frame;
 import static com.spinyowl.spinygui.core.node.NodeBuilder.input;
+import static com.spinyowl.spinygui.core.node.NodeBuilder.label;
 import static com.spinyowl.spinygui.core.node.NodeBuilder.radioButton;
 import static com.spinyowl.spinygui.core.node.NodeBuilder.text;
+
+import com.spinyowl.spinygui.core.event.MouseClickEvent;
 import com.spinyowl.spinygui.core.node.Element;
 import com.spinyowl.spinygui.core.node.Frame;
 import com.spinyowl.spinygui.core.parser.NodeParser;
+import com.spinyowl.spinygui.core.parser.StyleSheetParser;
 import com.spinyowl.spinygui.core.parser.impl.DefaultNodeParser;
+import com.spinyowl.spinygui.core.parser.impl.StyleSheetParserFactory;
+import com.spinyowl.spinygui.core.style.stylesheet.PropertiesScanner;
+import com.spinyowl.spinygui.core.style.stylesheet.PropertyStore;
+import com.spinyowl.spinygui.core.style.stylesheet.impl.DefaultPropertyStore;
 import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 
@@ -36,7 +45,15 @@ public class Main {
 
     element.style("background-color: red; border: 1px solid black;");
 
-    var frame = new Frame();
+    Frame frame = frame(div("Hello world!"), div(Map.of("id", "user-info"), label("User name")));
+
+    Element button = new Element("input");
+    button.setAttribute("type", "button");
+    frame.addChild(button);
+
+    button.addListener(MouseClickEvent.class, e -> log.info("Button clicked"));
+
+    //    var frame = new Frame();
     frame.addChild(element);
     log.info(
         String.valueOf(input(TYPE_PASSWORD, "myPass", "PASS_@!@#&").frame() == frame)); // false
@@ -44,26 +61,39 @@ public class Main {
 
     String xml = nodeParser.toXml(element, false);
     log.info(xml);
+
+    // language=xml
+    frame.addChild(nodeParser.fromXml("""
+  <div>Additional content</div>
+"""));
     // language=HTML
-    var xml2 =
+    String xml2 =
         """
-        <div>
-          <button>asdfasdfasd</button>
-          <button>
-            s
-            Hello World
-            <pre _pre="true">
-            s
-           \s
-            Hello World
-          </pre>
-            <div>Bold</div>
-          </button>
-          <input name="password" value="PASS_@!@#&amp;"/>
-          <radio-button/>
-        </div>
+          <div>Hello world!</div>
+          <div id="user-info">
+            <label>User name</label>
+          </div>
         """;
+
     var unmarshal = nodeParser.fromXml(xml2);
+
+    PropertyStore propertyStore = new DefaultPropertyStore();
+    PropertiesScanner.fillPropertyStore(propertyStore);
+    StyleSheetParser styleSheetParser = StyleSheetParserFactory.createParser(propertyStore);
+
+    // language=CSS
+    String styles =
+        """
+        winframe {
+          background-color: azure;
+          padding: 20px;
+        }
+        #user-info {
+          color: darkred;
+          font-weight: bold;
+        }
+        """;
+    frame.styleSheets().add(styleSheetParser.parse(styles));
 
     log.info("UNMARSHALLING IS FINISHED");
     log.info("--------------------------------");

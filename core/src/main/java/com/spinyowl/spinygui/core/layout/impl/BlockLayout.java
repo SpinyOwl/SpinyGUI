@@ -2,17 +2,16 @@ package com.spinyowl.spinygui.core.layout.impl;
 
 import static com.spinyowl.spinygui.core.layout.impl.LayoutUtils.findPositionedAncestor;
 import static com.spinyowl.spinygui.core.layout.impl.LayoutUtils.getChildNodesHeight;
-import static com.spinyowl.spinygui.core.layout.impl.LayoutUtils.getContentX;
-import static com.spinyowl.spinygui.core.layout.impl.LayoutUtils.getContentY;
 import static com.spinyowl.spinygui.core.layout.impl.LayoutUtils.setPadding;
 import static com.spinyowl.spinygui.core.style.stylesheet.util.StyleUtils.getFloatLength;
 import static com.spinyowl.spinygui.core.style.stylesheet.util.StyleUtils.getFloatLengthOptional;
+
 import com.spinyowl.spinygui.core.layout.Layout;
 import com.spinyowl.spinygui.core.layout.LayoutContext;
 import com.spinyowl.spinygui.core.layout.LayoutService;
 import com.spinyowl.spinygui.core.node.Element;
 import com.spinyowl.spinygui.core.node.Frame;
-import com.spinyowl.spinygui.core.node.layout.Dimensions;
+import com.spinyowl.spinygui.core.node.layout.Box;
 import com.spinyowl.spinygui.core.node.layout.Edges;
 import com.spinyowl.spinygui.core.style.CalculatedStyle;
 import com.spinyowl.spinygui.core.style.types.Display;
@@ -40,92 +39,188 @@ public class BlockLayout implements Layout<Element> {
     layout(element, false, context);
   }
 
-  public void layout(Element element, boolean skipChildren, LayoutContext context) {
+  public void layout(Element element, boolean skipChildren, LayoutContext ctx) {
     if (shouldSkip(element)) {
       return;
     }
 
-    Dimensions parentDimensions = getParentDimensions(element, element.parent());
+    Box parentBox = getParentDimensions(element, element.parent());
 
-    Dimensions dimensions = element.dimensions();
     CalculatedStyle style = element.calculatedStyle();
 
     // calculate borders
-    setBorders(dimensions.border(), style);
+    setBorders(element.box().border(), style);
 
     // calculate paddings
     setPadding(
-        parentDimensions.content().width(),
-        parentDimensions.content().height(),
-        style,
-        dimensions.padding());
+        parentBox.content().width(), parentBox.content().height(), style, element.box().padding());
 
     // calculate content position
     Position elementPosition = element.calculatedStyle().position();
     if (Position.STATIC.equals(elementPosition)) {
-      layoutStaticBlock(element, parentDimensions, dimensions, style, skipChildren, context);
+      layoutStaticBlock(element, parentBox, style, skipChildren, ctx);
     } else if (Position.ABSOLUTE.equals(elementPosition)) {
-      //      if (!skipChildren) layoutService.layoutChildNodes(element, context);
-      Element ancestor = findPositionedAncestor(element);
-      layoutAbsoluteBlock(
-          element,
-          parentDimensions,
-          ancestor.dimensions(),
-          dimensions,
-          style,
-          skipChildren,
-          context);
+      layoutAbsoluteBlock(element, parentBox, style, skipChildren, ctx);
     } else if (Position.RELATIVE.equals(elementPosition)) {
-      layoutRelativeBlock(element, parentDimensions, dimensions, style, skipChildren, context);
+      layoutRelativeBlock(element, parentBox, style, skipChildren, ctx);
     }
   }
 
-  private void layoutAbsoluteBlock(
-      Element element,
-      Dimensions parentDimensions,
-      Dimensions ancestorDimensions,
-      Dimensions dimensions,
-      CalculatedStyle style,
-      boolean skipChildren,
-      LayoutContext context) {
+  private void layoutStaticBlock(
+      Element e, Box parentBox, CalculatedStyle style, boolean skipChildren, LayoutContext ctx) {
 
-    float verticalAdditions =
-        dimensions.border().top()
-            + dimensions.padding().top()
-            + dimensions.border().bottom()
-            + dimensions.padding().bottom();
-    float horizontalAdditions =
-        dimensions.border().left()
-            + dimensions.border().right()
-            + dimensions.padding().left()
-            + dimensions.padding().right();
+    Box box = e.box();
+    Edges padding = box.padding();
+    Edges border = box.border();
+    Edges margin = box.margin();
 
-    float contentX;
+    float contentX =
+        parentBox.border().left()
+            + Math.max(parentBox.padding().left(), margin.left())
+            + border.left()
+            + padding.left();
+
+    Float blockBottomY = ctx.lastBlockBottomY();
+    float contentY =
+        border.top()
+            + padding.top()
+            + (blockBottomY != null
+                ? blockBottomY
+                : Math.max(parentBox.padding().top(), margin.top()) + parentBox.border().top());
+
+    box.contentPosition(contentX, contentY);
+
+    float verticalAdditions = border.top() + border.bottom() + padding.top() + padding.bottom();
+    float horizontalAdditions = border.left() + border.right() + padding.left() + padding.right();
+
     float contentWidth;
+    if (e instanceof Frame frame) {
+      contentWidth = frame.frameSize().x;
+    } else {
+      contentWidth = getWidth(parentBox.content().width(), style);
+    }
+    contentWidth -= horizontalAdditions;
+    box.content().width(contentWidth);
 
-    float childrenHeight = childrenHeight(element, style, skipChildren, context);
+    float borderBoxHeight;
+    if (e instanceof Frame frame) {
+      if (!skipChildren) {
+        layoutService.layoutChildNodes(e, ctx);
+      }
+      borderBoxHeight = frame.frameSize().y;
+    } else {
+      float childrenHeight = childrenHeight(e, style, skipChildren, ctx);
+      borderBoxHeight =
+          getHeight(parentBox.content().height(), childrenHeight + verticalAdditions, style);
+    }
+    float contentHeight = borderBoxHeight - verticalAdditions;
+    box.content().height(contentHeight);
+
+    ctx.lastTextEndY(null);
+    ctx.previousNode(e);
+    ctx.lastBlockBottomY(box.borderBox().y() + box.borderBox().height());
+  }
+
+  private void layoutAbsoluteBlock(
+      Element e, Box parentBox, CalculatedStyle style, boolean skipChildren, LayoutContext ctx) {
+    Element ancestor = findPositionedAncestor(e);
+    Box ancestorBox = ancestor.box();
+
+    Box box = e.box();
+    Edges border = box.border();
+    Edges padding = box.padding();
+
+    float verticalAdditions = border.top() + padding.top() + border.bottom() + padding.bottom();
+    float horizontalAdditions = border.left() + border.right() + padding.left() + padding.right();
+
+    // should be called here to calculate children before calculating content width
+    float childrenHeight = childrenHeight(e, style, skipChildren, ctx);
 
     // calculate content x position and width
-    if (style.left().isAuto() && style.right().isAuto()) {
+    calculateHorizontalPositionAndWidth(
+        parentBox, style, ancestorBox, box, border, padding, horizontalAdditions);
 
-      float parentOffset = parentDimensions.content().x();
-      contentX = parentOffset + dimensions.border().left() + dimensions.padding().left();
+    float contentY;
+    float borderBoxHeight;
+    if (style.top().isAuto() && style.bottom().isAuto()) {
+      float parentPaddingBoxHeight = parentBox.paddingBox().height();
+      float parentOffset = parentBox.content().y();
+      contentY = parentOffset + border.top() + padding.top();
+
+      Float blockBottomY = ctx.lastBlockBottomY();
+      if (blockBottomY != null) {
+        contentY = blockBottomY + border.top();
+      }
+
+      borderBoxHeight =
+          getHeight(parentPaddingBoxHeight, childrenHeight + verticalAdditions, style);
+
+    } else {
+      float parentPaddingBoxHeight =
+          ancestorBox.padding().top()
+              + ancestorBox.padding().bottom()
+              + ancestorBox.content().height();
+
+      float parentOffset = ancestorBox.content().y();
+      contentY = parentOffset + border.top() + padding.top();
+      float bottom = contentY + parentPaddingBoxHeight;
+
+      if (style.top().isLength()) {
+        contentY +=
+            getFloatLength(style.top(), parentPaddingBoxHeight) - ancestorBox.padding().top();
+      }
+      if (style.bottom().isLength()) {
+        bottom =
+            parentOffset
+                + ancestorBox.padding().bottom()
+                + ancestorBox.content().height()
+                - getFloatLength(style.bottom(), parentPaddingBoxHeight);
+      }
+
+      if (style.bottom().isLength() && style.top().isLength()) {
+        if (style.height().isAuto()) {
+          borderBoxHeight = bottom - contentY + padding.top() + border.top();
+        } else {
+          borderBoxHeight =
+              getHeight(parentPaddingBoxHeight, childrenHeight + verticalAdditions, style);
+        }
+      } else {
+        borderBoxHeight =
+            getHeight(parentPaddingBoxHeight, childrenHeight + verticalAdditions, style);
+
+        if (style.bottom().isLength()) {
+          contentY = bottom - borderBoxHeight + border.top() + padding.top();
+        }
+      }
+    }
+
+    box.content().y(contentY);
+    box.content().height(borderBoxHeight - verticalAdditions);
+  }
+
+  private void calculateHorizontalPositionAndWidth(
+      Box parentBox,
+      CalculatedStyle style,
+      Box ancestorBox,
+      Box box,
+      Edges border,
+      Edges padding,
+      float horizontalAdditions) {
+    float contentX;
+    float contentWidth;
+    if (style.left().isAuto() && style.right().isAuto()) {
+      float parentOffset = parentBox.content().x();
+      contentX = parentOffset + border.left() + padding.left();
 
       float parentPaddingBoxWidth =
           Math.max(
-              parentDimensions.paddingBox().width(),
-              ancestorDimensions.paddingBox().width()
-                  - parentOffset
-                  + ancestorDimensions.border().right());
+              parentBox.paddingBox().width(),
+              ancestorBox.paddingBox().width() - parentOffset + ancestorBox.border().right());
 
       contentWidth = getWidth(parentPaddingBoxWidth, style);
-
     } else {
-      float parentPaddingBoxWidth = ancestorDimensions.paddingBox().width();
-      float left =
-          dimensions.border().left()
-              + dimensions.padding().left()
-              + ancestorDimensions.border().left();
+      float parentPaddingBoxWidth = ancestorBox.paddingBox().width();
+      float left = border.left() + padding.left() + ancestorBox.border().left();
       float right = left + parentPaddingBoxWidth;
       if (style.left().isLength()) {
         left += getFloatLength(style.left(), parentPaddingBoxWidth);
@@ -149,171 +244,57 @@ public class BlockLayout implements Layout<Element> {
 
     contentWidth -= horizontalAdditions;
 
-    dimensions.content().x(contentX);
-    dimensions.content().width(contentWidth);
-
-    float contentY;
-    float contentHeight;
-    float borderBoxHeight;
-    if (style.top().isAuto() && style.bottom().isAuto()) {
-      float parentPaddingBoxHeight = parentDimensions.paddingBox().height();
-      float parentOffset = parentDimensions.content().y();
-      contentY = parentOffset + dimensions.border().top() + dimensions.padding().top();
-
-      Float blockBottomY = context.lastBlockBottomY();
-      if (blockBottomY != null) {
-        contentY = blockBottomY + dimensions.border().top();
-      }
-
-      borderBoxHeight =
-          getHeight(parentPaddingBoxHeight, childrenHeight + verticalAdditions, style);
-
-    } else {
-      float parentPaddingBoxHeight =
-          ancestorDimensions.padding().top()
-              + ancestorDimensions.padding().bottom()
-              + ancestorDimensions.content().height();
-
-      float parentOffset = ancestorDimensions.content().y();
-      contentY = parentOffset + dimensions.border().top() + dimensions.padding().top();
-
-      float bottom = contentY + parentPaddingBoxHeight;
-      if (style.top().isLength()) {
-        contentY +=
-            getFloatLength(style.top(), parentPaddingBoxHeight)
-                - ancestorDimensions.padding().top();
-      }
-      if (style.bottom().isLength()) {
-        bottom =
-            parentOffset
-                + ancestorDimensions.padding().bottom()
-                + ancestorDimensions.content().height()
-                - (getFloatLength(style.bottom(), parentPaddingBoxHeight));
-      }
-
-      if (style.bottom().isLength() && style.top().isLength()) {
-        if (style.height().isAuto())
-          borderBoxHeight =
-              bottom - contentY + dimensions.padding().top() + dimensions.border().top();
-        else
-          borderBoxHeight =
-              getHeight(parentPaddingBoxHeight, childrenHeight + verticalAdditions, style);
-      } else {
-        borderBoxHeight =
-            getHeight(parentPaddingBoxHeight, childrenHeight + verticalAdditions, style);
-
-        if (style.bottom().isLength()) {
-          contentY =
-              bottom - borderBoxHeight + dimensions.border().top() + dimensions.padding().top();
-        }
-      }
-    }
-
-    contentHeight = borderBoxHeight - verticalAdditions;
-    dimensions.content().y(contentY);
-    dimensions.content().height(contentHeight);
-  }
-
-  private void layoutStaticBlock(
-      Element element,
-      Dimensions parentDimensions,
-      Dimensions dimensions,
-      CalculatedStyle style,
-      boolean skipChildren,
-      LayoutContext context) {
-
-    float contentX = getContentX(element);
-    float contentY = getContentY(element);
-
-    Float blockBottomY = context.lastBlockBottomY();
-    if (blockBottomY != null) {
-      contentY = blockBottomY + dimensions.border().top();
-    }
-
-    dimensions.contentPosition(contentX, contentY);
-
-    float verticalAdditions =
-        dimensions.border().top()
-            + dimensions.border().bottom()
-            + dimensions.padding().top()
-            + dimensions.padding().bottom();
-    float horizontalAdditions =
-        dimensions.border().left()
-            + dimensions.border().right()
-            + dimensions.padding().left()
-            + dimensions.padding().right();
-
-    float contentWidth;
-    if (element instanceof Frame frame) {
-      contentWidth = frame.frameSize().x;
-    } else {
-      contentWidth = getWidth(parentDimensions.content().width(), style);
-    }
-    contentWidth -= horizontalAdditions;
-    dimensions.content().width(contentWidth);
-
-    float borderBoxHeight;
-    if (element instanceof Frame frame) {
-      if (!skipChildren) layoutService.layoutChildNodes(element, context);
-      borderBoxHeight = frame.frameSize().y;
-    } else {
-      float childrenHeight = childrenHeight(element, style, skipChildren, context);
-      borderBoxHeight =
-          getHeight(parentDimensions.content().height(), childrenHeight + verticalAdditions, style);
-    }
-    float contentHeight = borderBoxHeight - verticalAdditions;
-    dimensions.content().height(contentHeight);
-
-    context.lastTextEndY(null);
-    context.previousNode(element);
-    context.lastBlockBottomY(dimensions.borderBox().y() + dimensions.borderBox().height());
+    box.content().x(contentX);
+    box.content().width(contentWidth);
   }
 
   private void layoutRelativeBlock(
       Element element,
-      Dimensions parentDimensions,
-      Dimensions dimensions,
+      Box parentBox,
       CalculatedStyle style,
       boolean skipChildren,
       LayoutContext context) {
-    layoutStaticBlock(element, parentDimensions, dimensions, style, skipChildren, context);
-    float x = dimensions.content().x();
-    float y = dimensions.content().y();
+    Box box = element.box();
+    layoutStaticBlock(element, parentBox, style, skipChildren, context);
+    float x = box.content().x();
+    float y = box.content().y();
 
     if (!style.left().isAuto()) {
-      x += getFloatLength(style.left(), parentDimensions.content().width());
+      x += getFloatLength(style.left(), parentBox.content().width());
     } else if (!style.right().isAuto()) {
-      x -= getFloatLength(style.right(), parentDimensions.content().width());
+      x -= getFloatLength(style.right(), parentBox.content().width());
     }
 
     if (!style.top().isAuto()) {
-      y += getFloatLength(style.top(), parentDimensions.content().height());
+      y += getFloatLength(style.top(), parentBox.content().height());
     } else if (!style.bottom().isAuto()) {
-      y -= getFloatLength(style.bottom(), parentDimensions.content().height());
+      y -= getFloatLength(style.bottom(), parentBox.content().height());
     }
-    dimensions.contentPosition(x, y);
+    box.contentPosition(x, y);
   }
 
-  private Dimensions getParentDimensions(Element element, Element parent) {
-    Dimensions parentDimensions;
+  private Box getParentDimensions(Element element, Element parent) {
+    Box parentBox;
     if (element instanceof Frame frame) {
-      parentDimensions = new Dimensions();
-      parentDimensions.contentSize(frame.frameSize().x, frame.frameSize().y);
+      parentBox = new Box();
+      parentBox.contentSize(frame.frameSize().x, frame.frameSize().y);
     } else if (parent == null) {
-      parentDimensions = new Dimensions();
+      parentBox = new Box();
       var frame = element.frame();
-      parentDimensions.contentSize(frame.frameSize().x, frame.frameSize().y);
+      parentBox.contentSize(frame.frameSize().x, frame.frameSize().y);
     } else {
-      parentDimensions = parent.dimensions();
+      parentBox = parent.box();
     }
-    return parentDimensions;
+    return parentBox;
   }
 
   private float childrenHeight(
       Element element, CalculatedStyle style, boolean skipChildren, LayoutContext context) {
     float childrenHeight = 0;
     Unit height = style.height();
-    if (!skipChildren) layoutService.layoutChildNodes(element, context);
+    if (!skipChildren) {
+      layoutService.layoutChildNodes(element, context);
+    }
     if (style.display().equals(Display.BLOCK) && height.isAuto() && !skipChildren) {
       childrenHeight = getChildNodesHeight(element);
     }

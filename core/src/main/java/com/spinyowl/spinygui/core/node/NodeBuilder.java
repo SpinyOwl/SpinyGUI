@@ -158,6 +158,18 @@ public final class NodeBuilder {
   /**
    * Creates label element with provided child nodes.
    *
+   * @param text text content.
+   * @return label with specified child nodes.
+   */
+  public static Element label(String text) {
+    var label = new Element(NODE_LABEL);
+    label.addChild(text(text));
+    return label;
+  }
+
+  /**
+   * Creates label element with provided child nodes.
+   *
    * @param nodes child nodes to add.
    * @return label with specified child nodes.
    */
@@ -178,6 +190,18 @@ public final class NodeBuilder {
    */
   public static Element label(Map<String, String> attributes, Node... nodes) {
     return addAttributes(label(nodes), attributes);
+  }
+
+  /**
+   * Creates div element with provided child nodes.
+   *
+   * @param text text content.
+   * @return div with specified child nodes.
+   */
+  public static Element div(String text) {
+    var div = new Element(NODE_DIV);
+    div.addChild(text(text));
+    return div;
   }
 
   /**

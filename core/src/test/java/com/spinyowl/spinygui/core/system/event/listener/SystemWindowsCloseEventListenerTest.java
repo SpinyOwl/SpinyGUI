@@ -38,7 +38,7 @@ class SystemWindowsCloseEventListenerTest {
 
     // Arrange
     Frame frame = new Frame();
-    frame.dimensions().contentSize(100, 100);
+    frame.box().contentSize(100, 100);
 
     SystemWindowCloseEvent event = createEvent(frame);
 

@@ -3,8 +3,8 @@ package com.spinyowl.spinygui.core.layout.impl;
 import com.spinyowl.spinygui.core.node.Element;
 import com.spinyowl.spinygui.core.node.Frame;
 import com.spinyowl.spinygui.core.node.Node;
-import com.spinyowl.spinygui.core.node.layout.Edges;
 import com.spinyowl.spinygui.core.node.Text;
+import com.spinyowl.spinygui.core.node.layout.Edges;
 import com.spinyowl.spinygui.core.style.CalculatedStyle;
 import com.spinyowl.spinygui.core.style.types.Display;
 import com.spinyowl.spinygui.core.style.types.Position;
@@ -61,11 +61,9 @@ public final class LayoutUtils {
         element.childNodes().stream().filter(LayoutUtils::affectsHeight).toList();
     return !heightNodes.isEmpty()
         ? heightNodes.stream()
-                .map(
-                    node ->
-                        node.dimensions().borderBox().y() + node.dimensions().borderBox().height())
+                .map(node -> node.box().borderBox().y() + node.box().borderBox().height())
                 .reduce(0F, Float::max)
-            - heightNodes.get(0).dimensions().borderBox().y()
+            - heightNodes.get(0).box().borderBox().y()
         : 0;
   }
 
@@ -88,28 +86,13 @@ public final class LayoutUtils {
   }
 
   public static Element findPositionedAncestor(Element element) {
+    if (element == null) return null;
+    if (element == element.frame()) return element.frame();
+
     Element parent = element.parent();
     if (parent == null) return null;
     if (isPositioned(parent)) return parent;
 
     return findPositionedAncestor(parent);
-  }
-
-  public static float getContentX(Element element) {
-    if (element == null) return 0;
-    Element parent = element.parent();
-    float parentOffset = parent == null ? 0 : parent.dimensions().content().x();
-    return parentOffset
-           + element.dimensions().border().left()
-           + element.dimensions().padding().left();
-  }
-
-  public static float getContentY(Element element) {
-    if (element == null) return 0;
-    Element parent = element.parent();
-    float parentOffset = parent == null ? 0 : parent.dimensions().content().y();
-    return parentOffset
-        + element.dimensions().border().top()
-        + element.dimensions().padding().top();
   }
 }
