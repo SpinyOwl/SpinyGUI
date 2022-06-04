@@ -27,7 +27,7 @@ public abstract class Animation {
     }
   }
 
-  /** Called once during animation life time before animate loop. */
+  /** Called once during animation lifetime before animate loop. */
   protected void initialize() {
     // Could be implemented later.
   }
@@ -43,7 +43,7 @@ public abstract class Animation {
    */
   protected abstract boolean animate(double delta);
 
-  /** Called once during animation life time when animation ended. */
+  /** Called once during animation lifetime when animation ended. */
   protected void destroy() {
     // Could be implemented later.
   }

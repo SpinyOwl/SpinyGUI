@@ -14,7 +14,7 @@ public class ShortcutRegistryImpl implements ShortcutRegistry {
   /**
    * Used to set shortcut for specified name (for example 'copy').
    *
-   * <p>Name would be automatically trimmed and casted to lowercase.
+   * <p>Name would be automatically trimmed and cast to lowercase.
    *
    * @param name shortcut name.
    * @param shortcut shortcut.
@@ -27,7 +27,7 @@ public class ShortcutRegistryImpl implements ShortcutRegistry {
   /**
    * Used to remove specified shortcut.
    *
-   * <p>Name would be automatically casted to lowercase.
+   * <p>Name would be automatically cast to lowercase.
    *
    * @param name shortcut name.
    */
@@ -39,7 +39,7 @@ public class ShortcutRegistryImpl implements ShortcutRegistry {
   /**
    * Used to get shortcut by name.
    *
-   * <p>Name would be automatically casted to lowercase.
+   * <p>Name would be automatically cast to lowercase.
    *
    * @param name shortcut name.
    * @return shortcut for specified name or null if not found.

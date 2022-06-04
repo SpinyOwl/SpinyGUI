@@ -20,7 +20,7 @@ public class KeyboardKey {
    *
    * <p>The scancode is unique for every key, regardless of whether it has a key token. Scancodes
    * are platform-specific but consistent over time, so keys will have different scancodes depending
-   * on the platform but they are safe to save to disk.
+   * on the platform, but they are safe to save to disk.
    */
   private final int scancode;
 }

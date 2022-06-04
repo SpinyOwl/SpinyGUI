@@ -52,7 +52,7 @@ public abstract class Node {
 
   /**
    * Node intersection. During initialization used {@link Intersections#getDefaultIntersection()}.
-   * Used to allow detect intersection of point on virtual window surface and node.
+   * Used to detect intersection of point on virtual window surface and node.
    */
   @NonNull private Intersection intersection = Intersections.getDefaultIntersection();
 
@@ -129,7 +129,7 @@ public abstract class Node {
   /**
    * Returns a collection of a node's child nodes, as {@code List<Node>} object.
    *
-   * <p>The nodes in the collection are sorted as they was added to the element.
+   * <p>The nodes in the collection are sorted as they were added to the element.
    *
    * <p>Tip: To return a collection of a node's element nodes (excluding text and comment nodes),
    * use the {@link #children()} method.
@@ -148,7 +148,7 @@ public abstract class Node {
   /**
    * Returns a collection of an element's child elements, as an {@code List<Element>} object.
    *
-   * <p>The elements in the collection are sorted as they was added tp the element.
+   * <p>The elements in the collection are sorted as they were added tp the element.
    *
    * @return list of child elements.
    */
@@ -187,7 +187,7 @@ public abstract class Node {
   public abstract boolean hasAttribute(String attribute);
 
   /**
-   * Removes attribute and returns it's value.
+   * Removes attribute and returns its value.
    *
    * @param attribute attribute to remove.
    */

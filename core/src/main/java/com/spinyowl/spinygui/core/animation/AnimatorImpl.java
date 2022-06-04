@@ -26,7 +26,7 @@ public class AnimatorImpl implements Animator {
   private double previousTime;
 
   /**
-   * Creates Animator based on provided {@link TimeService}. By default uses {@link
+   * Creates Animator based on provided {@link TimeService}. By default, uses {@link
    * CopyOnWriteArrayList} for all collections.
    *
    * @param timeService time service to use.

@@ -1,7 +1,6 @@
 package com.spinyowl.spinygui.core.layout;
 
 import com.spinyowl.spinygui.core.node.Node;
-import com.spinyowl.spinygui.core.node.Text;
 import lombok.Getter;
 import lombok.Setter;
 

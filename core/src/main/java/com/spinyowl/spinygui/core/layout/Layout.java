@@ -6,7 +6,7 @@ import com.spinyowl.spinygui.core.node.Node;
 public interface Layout<T extends Node> {
 
   /**
-   * Used to lay out element and it's child nodes.
+   * Used to lay out element, and it's child nodes.
    *
    * @param element element to lay out.
    */

@@ -1,6 +1,9 @@
 package com.spinyowl.spinygui.core.parser.impl;
 
 import static com.spinyowl.spinygui.core.node.Frame.FRAME_TAG_NAME;
+import static javax.xml.transform.OutputKeys.INDENT;
+import static javax.xml.transform.OutputKeys.OMIT_XML_DECLARATION;
+
 import com.spinyowl.spinygui.core.node.Element;
 import com.spinyowl.spinygui.core.node.EmptyElement;
 import com.spinyowl.spinygui.core.node.Frame;
@@ -14,7 +17,6 @@ import java.util.List;
 import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.OutputKeys;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
@@ -27,9 +29,7 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
-/**
- * Node marshaller. Used to convert node to xml and vise versa.
- */
+/** Node marshaller. Used to convert node to xml and vise versa. */
 @Slf4j
 public final class DefaultNodeParser implements NodeParser {
 
@@ -37,7 +37,7 @@ public final class DefaultNodeParser implements NodeParser {
       List.of(
           "area", "base", "br", "col", "embed", "hr", "img", "input", "keygen", "link", "meta",
           "param", "source", "track", "wbr");
-
+  private static final String INDENT_AMOUNT = "{http://xml.apache.org/xslt}indent-amount";
 
   /**
    * Used to convert node tree to xml.
@@ -81,10 +81,10 @@ public final class DefaultNodeParser implements NodeParser {
   }
 
   /**
-   * Used to convert node with all child elements to an xml string.
+   * Used to convert node with all child elements to a xml string.
    *
-   * @param node   node to convert.
-   * @param pretty defines if should be pretty printed.
+   * @param node node to convert.
+   * @param pretty defines if node should be pretty printed.
    * @return String with xml representation of node.
    */
   private static String convertToXml(Node node, boolean pretty) {
@@ -104,9 +104,9 @@ public final class DefaultNodeParser implements NodeParser {
       var transformerFactory = TransformerFactory.newDefaultInstance();
       var transformer = transformerFactory.newTransformer();
       if (pretty) {
-        transformer.setOutputProperty(OutputKeys.INDENT, "yes");
-        transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
-        transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2");
+        transformer.setOutputProperty(INDENT, "yes");
+        transformer.setOutputProperty(OMIT_XML_DECLARATION, "yes");
+        transformer.setOutputProperty(INDENT_AMOUNT, "2");
       }
       transformer.transform(new DOMSource(document), result);
     } catch (Exception e) {

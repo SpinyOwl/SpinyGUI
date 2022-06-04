@@ -46,6 +46,7 @@ public class Element extends Node implements EventTarget {
    * Map of listeners attached that should be attached for node and processed if any event
    * performed.
    */
+  @SuppressWarnings("rawtypes")
   @Setter(AccessLevel.NONE)
   private final Map<Class<? extends Event>, List<? extends EventListener>> listenerMap =
       new HashMap<>();
@@ -76,18 +77,19 @@ public class Element extends Node implements EventTarget {
   }
 
   public <T extends Event> void addListener(Class<T> eventClass, EventListener<T> listener) {
-    getOrCreate(eventClass).add(listener);
+    getOrCreateListener(eventClass).add(listener);
   }
 
   public <T extends Event> void removeListener(Class<T> eventClass, EventListener<T> listener) {
-    getOrCreate(eventClass).remove(listener);
+    getOrCreateListener(eventClass).remove(listener);
   }
 
   public <T extends Event> List<EventListener<T>> getListeners(Class<T> eventClass) {
-    return getOrCreate(eventClass);
+    return getOrCreateListener(eventClass);
   }
 
-  private <T extends Event> List<EventListener<T>> getOrCreate(Class<T> eventClass) {
+  @SuppressWarnings("unchecked")
+  private <T extends Event> List<EventListener<T>> getOrCreateListener(Class<T> eventClass) {
     return (List<EventListener<T>>)
         listenerMap.computeIfAbsent(eventClass, aClass -> new CopyOnWriteArrayList<>());
   }

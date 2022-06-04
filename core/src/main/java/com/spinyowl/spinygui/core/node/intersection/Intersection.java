@@ -4,7 +4,7 @@ import com.spinyowl.spinygui.core.node.Node;
 import org.joml.Vector2fc;
 
 /**
- * Intersection class specifies intersection rules for node and point. Used to allow detect
+ * Intersection class specifies intersection rules for node and point. Used to detect
  * intersection of point on virtual window surface and node.
  */
 public interface Intersection {

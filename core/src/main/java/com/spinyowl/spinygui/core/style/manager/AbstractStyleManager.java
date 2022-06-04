@@ -41,7 +41,7 @@ public abstract class AbstractStyleManager implements StyleManager {
 
   private void updateStyles(Element element, List<StyleSheet> styleSheets) {
     List<RuleSet> ruleSets = new ArrayList<>();
-    // Initializing with default rulesets.
+    // Initializing with default rule sets.
     ruleSets.add(defaultRuleSet());
     // find all rule sets applicable to element.
     for (StyleSheet styleSheet : styleSheets) {

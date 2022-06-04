@@ -19,8 +19,8 @@ public final class Text extends Node {
       "Attribute operations are not supported for Text";
   public static final String CHILD_OPERATIONS_ARE_NOT_SUPPORTED =
       "Child operations are not supported for Text";
-//  private Set<String> undo;
-//  private Set<String> redo;
+  //  private Set<String> undo;
+  //  private Set<String> redo;
 
   private String content;
 
@@ -60,10 +60,9 @@ public final class Text extends Node {
   }
 
   /**
-   * The {@link #childNodes()} method returns a collection of a node's child nodes, as {@code
-   * List<Node>} object.
+   * Returns a collection of a node's child nodes, as {@code List<Node>} object.
    *
-   * <p>The nodes in the collection are sorted as they was added to the element.
+   * <p>The nodes in the collection are sorted as they were added to the element.
    *
    * <p>Tip: To return a collection of a node's element nodes (excluding text and comment nodes),
    * use the {@link #children()} method.

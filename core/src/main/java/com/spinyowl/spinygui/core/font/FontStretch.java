@@ -40,7 +40,7 @@ public final class FontStretch {
 
   /**
    * Used to create new font stretch element with specified name. Note that name will be converted
-   * to lower case and it should be the same as names of css font stretch property in css
+   * to lower case, and it should be the same as names of css font stretch property in css
    * specification.
    *
    * @param name name of font stretch element.
@@ -58,7 +58,7 @@ public final class FontStretch {
 
   /**
    * Used to find font stretch element with specified name. Note that name will be converted to
-   * lower case and it should be the same as names of css font stretch property in css
+   * lower case, and it should be the same as names of css font stretch property in css
    * specification.
    *
    * @param name name of font stretch element.

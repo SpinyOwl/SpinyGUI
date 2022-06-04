@@ -55,7 +55,7 @@ public final class FontWeight {
 
   /**
    * Used to create new font weight element with specified name. Note that name will be converted to
-   * lower case and it should be the same as names of css font weight property in css specification.
+   * lower case, and it should be the same as names of css font weight property in css specification.
    *
    * @param name name of font weight element.
    * @return new font weight element (or existing one).
@@ -72,7 +72,7 @@ public final class FontWeight {
 
   /**
    * Used to find font weight element with specified name. Note that name will be converted to lower
-   * case and it should be the same as names of css font weight property in css specification.
+   * case, and it should be the same as names of css font weight property in css specification.
    *
    * @param name name of font weight element.
    * @return existing font weight element or null.

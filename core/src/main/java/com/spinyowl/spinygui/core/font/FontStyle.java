@@ -31,7 +31,7 @@ public final class FontStyle {
 
   /**
    * Used to find font style element with specified name. Note that name will be converted to lower
-   * case and it should be the same as names of css font style property in css specification.
+   * case, and it should be the same as names of css font style property in css specification.
    *
    * @param name name of font style element.
    * @return existing font style element or null.
@@ -42,7 +42,7 @@ public final class FontStyle {
 
   /**
    * Used to create new font style element with specified name. Note that name will be converted to
-   * lower case and it should be the same as names of css font style property in css specification.
+   * lower case, and it should be the same as names of css font style property in css specification.
    *
    * @param name name of font style element.
    * @return new font style element (or existing one).

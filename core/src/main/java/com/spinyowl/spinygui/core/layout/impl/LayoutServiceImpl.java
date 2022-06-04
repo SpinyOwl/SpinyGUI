@@ -5,6 +5,7 @@ import static com.spinyowl.spinygui.core.style.types.Display.BLOCK;
 import static com.spinyowl.spinygui.core.style.types.Display.FLEX;
 import static com.spinyowl.spinygui.core.style.types.Display.NONE;
 import static com.spinyowl.spinygui.core.util.NodeUtilities.visible;
+
 import com.spinyowl.spinygui.core.event.processor.EventProcessor;
 import com.spinyowl.spinygui.core.layout.LayoutContext;
 import com.spinyowl.spinygui.core.layout.LayoutService;
@@ -70,12 +71,12 @@ public class LayoutServiceImpl implements LayoutService {
       context.lastTextEndX(text.textEndX());
       context.lastTextEndY(text.textEndY());
     }
-    // in case if we do not know what type of node it is, we do not layout it.
+    // in case if we do not know what type of node it is, we do not lay out it.
   }
 
   @Override
-  public void layoutChildNodes(@NonNull Element parent, @NonNull LayoutContext context) {
-    var childNodes = parent.childNodes();
+  public void layoutChildNodes(@NonNull Element element, @NonNull LayoutContext context) {
+    var childNodes = element.childNodes();
     if (childNodes.isEmpty()) {
       return;
     }

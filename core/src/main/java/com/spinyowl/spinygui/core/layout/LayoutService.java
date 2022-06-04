@@ -24,9 +24,9 @@ public interface LayoutService {
   void layoutNode(@NonNull Node node, @NonNull LayoutContext context);
 
   /**
-   * Used to layout child nodes of provided parent node.
+   * Used to layout element tree.
    *
-   * @param parent
+   * @param element element to layout.
    */
-  void layoutChildNodes(@NonNull Element parent, @NonNull LayoutContext context);
+  void layoutChildNodes(@NonNull Element element, @NonNull LayoutContext context);
 }

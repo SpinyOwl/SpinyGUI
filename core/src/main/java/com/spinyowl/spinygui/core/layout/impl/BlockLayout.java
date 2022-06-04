@@ -30,7 +30,7 @@ public class BlockLayout implements Layout<Element> {
   @NonNull private final LayoutService layoutService;
 
   /**
-   * Used to lay out element and it's child nodes.
+   * Used to lay out element, and it's child nodes.
    *
    * @param element element to lay out.
    */
