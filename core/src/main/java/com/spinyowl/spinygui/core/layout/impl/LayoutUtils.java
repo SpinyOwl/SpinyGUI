@@ -5,13 +5,13 @@ import com.spinyowl.spinygui.core.node.Frame;
 import com.spinyowl.spinygui.core.node.Node;
 import com.spinyowl.spinygui.core.node.Text;
 import com.spinyowl.spinygui.core.node.layout.Edges;
-import com.spinyowl.spinygui.core.style.CalculatedStyle;
+import com.spinyowl.spinygui.core.style.ResolvedStyle;
 import com.spinyowl.spinygui.core.style.types.Display;
 import com.spinyowl.spinygui.core.style.types.Position;
 import com.spinyowl.spinygui.core.style.types.border.BorderStyle;
 import com.spinyowl.spinygui.core.style.types.length.Length;
+import com.spinyowl.spinygui.core.style.types.length.Length.PercentLength;
 import com.spinyowl.spinygui.core.style.types.length.Length.PixelLength;
-import com.spinyowl.spinygui.core.style.types.length.LengthType;
 import java.util.List;
 import java.util.function.Consumer;
 import lombok.AccessLevel;
@@ -21,14 +21,14 @@ import lombok.NoArgsConstructor;
 public final class LayoutUtils {
 
   public static void setPadding(
-      float parentWidth, float parentHeight, CalculatedStyle style, Edges padding) {
+      float parentWidth, float parentHeight, ResolvedStyle style, Edges padding) {
     applyPadding(parentWidth, style.paddingLeft(), padding::left);
     applyPadding(parentWidth, style.paddingRight(), padding::right);
     applyPadding(parentHeight, style.paddingTop(), padding::top);
     applyPadding(parentHeight, style.paddingBottom(), padding::bottom);
   }
 
-  public static void setBorders(Edges border, CalculatedStyle style) {
+  public static void setBorders(Edges border, ResolvedStyle style) {
     applyBorder(style.borderLeftWidth(), style.borderLeftStyle(), border::left);
     applyBorder(style.borderRightWidth(), style.borderRightStyle(), border::right);
     applyBorder(style.borderTopWidth(), style.borderTopStyle(), border::top);
@@ -41,9 +41,9 @@ public final class LayoutUtils {
       paddingConsumer.accept(0f);
     } else {
       var length = paddingLength.asLength();
-      if (LengthType.PIXEL.equals(length.type())) {
+      if (length instanceof PixelLength) {
         paddingConsumer.accept(length.convert());
-      } else if (LengthType.PERCENT.equals(length.type())) {
+      } else if (length instanceof PercentLength) {
         paddingConsumer.accept(length.convert(base));
       }
     }
@@ -70,19 +70,19 @@ public final class LayoutUtils {
   private static boolean affectsHeight(Node obj) {
     if (obj instanceof Text) return true;
     if (obj instanceof Element el) {
-      if (el.calculatedStyle().display().equals(Display.NONE)) return false;
-      Position position = el.calculatedStyle().position();
+      if (el.resolvedStyle().display().equals(Display.NONE)) return false;
+      Position position = el.resolvedStyle().position();
       return position.equals(Position.STATIC) || position.equals(Position.RELATIVE);
     }
     return true;
   }
 
   public static boolean isPositioned(Element element) {
-    return element.calculatedStyle().position().positioned() || element instanceof Frame;
+    return element.resolvedStyle().position().positioned() || element instanceof Frame;
   }
 
   public static boolean hasPosition(final Element element, final Position position) {
-    return element.calculatedStyle().position().equals(position);
+    return element.resolvedStyle().position().equals(position);
   }
 
   public static Element findPositionedAncestor(Element element) {

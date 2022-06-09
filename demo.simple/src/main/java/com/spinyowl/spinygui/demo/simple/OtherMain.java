@@ -34,7 +34,9 @@ public class OtherMain {
   }
 
   public static void createFromCSS() {
-    var css = """
+    // language=CSS
+    var css =
+        """
         * {
           color: #222;
         }
@@ -57,7 +59,7 @@ public class OtherMain {
           box-shadow: 1px 2px 1px red 1px 2px;
           background-color: white;
         }
-        
+
         #some button {
           color: red;
         }
@@ -96,7 +98,7 @@ public class OtherMain {
     StyleManager styleManager = new StyleManagerImpl(propertyStore, parser);
     styleManager.recalculate(frame);
 
-    log.info("EQUALS: " + Objects.equals(Color.RED, testLabel.calculatedStyle().color()));
+    log.info("EQUALS: " + Objects.equals(Color.RED, testLabel.resolvedStyle().color()));
   }
 
   public static void searchComponents() {
@@ -111,11 +113,11 @@ public class OtherMain {
             button {
               color: black;
             }
-                        
+
             div + p {
               background-color: yellow;
             }
-                        
+
             div ~ p {
               background-color: yellow;
             }
@@ -126,7 +128,8 @@ public class OtherMain {
     StyleSheetParser parser = createParser(propertyStore);
     var stylesheet = parser.parse(css);
 
-    var xml = """
+    var xml =
+        """
               <frame>
                 <div id="1">
                     <div id="2" class="test">

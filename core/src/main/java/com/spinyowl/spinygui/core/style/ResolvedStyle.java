@@ -64,6 +64,7 @@ import static com.spinyowl.spinygui.core.style.stylesheet.Properties.TOP;
 import static com.spinyowl.spinygui.core.style.stylesheet.Properties.WHITE_SPACE;
 import static com.spinyowl.spinygui.core.style.stylesheet.Properties.WIDTH;
 import static com.spinyowl.spinygui.core.style.stylesheet.Properties.Z_INDEX;
+
 import com.spinyowl.spinygui.core.font.FontStyle;
 import com.spinyowl.spinygui.core.font.FontWeight;
 import com.spinyowl.spinygui.core.node.Element;
@@ -97,7 +98,7 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
-public class CalculatedStyle {
+public class ResolvedStyle {
 
   @NonNull private final Element element;
   /** List of rulesets that applicable to element, sorted by specificity */

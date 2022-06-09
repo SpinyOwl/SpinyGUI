@@ -10,7 +10,7 @@ import com.spinyowl.spinygui.core.node.Element;
 import com.spinyowl.spinygui.core.node.Text;
 import com.spinyowl.spinygui.core.node.layout.Box;
 import com.spinyowl.spinygui.core.node.layout.Rect;
-import com.spinyowl.spinygui.core.style.CalculatedStyle;
+import com.spinyowl.spinygui.core.style.ResolvedStyle;
 import com.spinyowl.spinygui.core.style.stylesheet.util.StyleUtils;
 import com.spinyowl.spinygui.core.system.font.FontService;
 import com.spinyowl.spinygui.core.system.font.TextLineMetrics;
@@ -41,7 +41,7 @@ public class TextLayout implements Layout<Text> {
     if (fontSize == null) return;
 
     // get text related styles.
-    CalculatedStyle style = parent.calculatedStyle();
+    ResolvedStyle style = parent.resolvedStyle();
     Set<String> fontFamilies = style.fontFamilies();
     FontStyle fontStyle = style.fontStyle();
     FontWeight fontWeight = style.fontWeight();

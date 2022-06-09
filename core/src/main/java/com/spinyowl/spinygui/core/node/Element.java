@@ -1,10 +1,11 @@
 package com.spinyowl.spinygui.core.node;
 
 import static com.spinyowl.spinygui.core.util.Reference.containsReference;
+
 import com.spinyowl.spinygui.core.event.Event;
 import com.spinyowl.spinygui.core.event.EventTarget;
 import com.spinyowl.spinygui.core.event.listener.EventListener;
-import com.spinyowl.spinygui.core.style.CalculatedStyle;
+import com.spinyowl.spinygui.core.style.ResolvedStyle;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -34,9 +35,10 @@ public class Element extends Node implements EventTarget {
   private Node lastChild;
 
   /**
-   * Used to store all calculated styles (from defaults, stylesheets and element style attribute).
+   * Used to store all resolved styles by style engine (from defaults, stylesheets and element style
+   * attribute).
    */
-  private final CalculatedStyle calculatedStyle = new CalculatedStyle(this);
+  private final ResolvedStyle resolvedStyle = new ResolvedStyle(this);
 
   /** Node attributes. */
   @Setter(AccessLevel.NONE)

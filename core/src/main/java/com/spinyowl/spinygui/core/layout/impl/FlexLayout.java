@@ -5,8 +5,6 @@ import static com.spinyowl.spinygui.core.layout.impl.LayoutUtils.hasPosition;
 import static com.spinyowl.spinygui.core.layout.impl.LayoutUtils.isPositioned;
 import static com.spinyowl.spinygui.core.style.types.Position.ABSOLUTE;
 import static com.spinyowl.spinygui.core.style.types.Position.STATIC;
-import static com.spinyowl.spinygui.core.style.types.length.LengthType.PERCENT;
-import static com.spinyowl.spinygui.core.style.types.length.LengthType.PIXEL;
 import static com.spinyowl.spinygui.core.util.NodeUtilities.visible;
 import static org.lwjgl.util.yoga.Yoga.YGAlignAuto;
 import static org.lwjgl.util.yoga.Yoga.YGAlignBaseline;
@@ -64,7 +62,7 @@ import com.spinyowl.spinygui.core.node.Element;
 import com.spinyowl.spinygui.core.node.layout.Box;
 import com.spinyowl.spinygui.core.node.layout.Edges;
 import com.spinyowl.spinygui.core.node.layout.Rect;
-import com.spinyowl.spinygui.core.style.CalculatedStyle;
+import com.spinyowl.spinygui.core.style.ResolvedStyle;
 import com.spinyowl.spinygui.core.style.types.Position;
 import com.spinyowl.spinygui.core.style.types.border.BorderStyle;
 import com.spinyowl.spinygui.core.style.types.flex.AlignItems;
@@ -73,6 +71,8 @@ import com.spinyowl.spinygui.core.style.types.flex.FlexDirection;
 import com.spinyowl.spinygui.core.style.types.flex.FlexWrap;
 import com.spinyowl.spinygui.core.style.types.flex.JustifyContent;
 import com.spinyowl.spinygui.core.style.types.length.Length;
+import com.spinyowl.spinygui.core.style.types.length.Length.PercentLength;
+import com.spinyowl.spinygui.core.style.types.length.Length.PixelLength;
 import com.spinyowl.spinygui.core.style.types.length.Unit;
 import com.spinyowl.spinygui.core.system.event.processor.SystemEventProcessor;
 import com.spinyowl.spinygui.core.time.TimeService;
@@ -165,7 +165,7 @@ public class FlexLayout implements Layout<Element> {
               - border.top()
               - border.bottom();
       height =
-          child.calculatedStyle().height().isAuto()
+          child.resolvedStyle().height().isAuto()
               ? Math.max(box.content().height(), height)
               : height;
       box.contentSize(width, height);
@@ -193,7 +193,7 @@ public class FlexLayout implements Layout<Element> {
    * @param node root yoga node.
    */
   private static void prepareNode(Element element, long node) {
-    var style = element.calculatedStyle();
+    var style = element.resolvedStyle();
     setFlexDirection(node, style.flexDirection());
     setJustifyContent(node, style.justifyContent());
     setAlignItems(node, style.alignItems());
@@ -207,7 +207,7 @@ public class FlexLayout implements Layout<Element> {
     setMaxHeight(node, style);
     setHeight(node, style);
 
-    Position position = element.calculatedStyle().position();
+    Position position = element.resolvedStyle().position();
     if (!STATIC.equals(position)) {
       setPosition(node, style.top(), YGEdgeTop);
       setPosition(node, style.bottom(), YGEdgeBottom);
@@ -232,7 +232,7 @@ public class FlexLayout implements Layout<Element> {
     YGNodeStyleSetFlexShrink(node, style.flexShrink());
   }
 
-  private static void setMinHeight(long node, CalculatedStyle style) {
+  private static void setMinHeight(long node, ResolvedStyle style) {
     setLength(
         style.minHeight(),
         node,
@@ -240,12 +240,12 @@ public class FlexLayout implements Layout<Element> {
         Yoga::YGNodeStyleSetMinHeightPercent);
   }
 
-  private static void setMaxWidth(long node, CalculatedStyle style) {
+  private static void setMaxWidth(long node, ResolvedStyle style) {
     setLength(
         style.maxWidth(), node, Yoga::YGNodeStyleSetMaxWidth, Yoga::YGNodeStyleSetMaxWidthPercent);
   }
 
-  private static void setMaxHeight(long node, CalculatedStyle style) {
+  private static void setMaxHeight(long node, ResolvedStyle style) {
     setLength(
         style.maxHeight(),
         node,
@@ -267,7 +267,7 @@ public class FlexLayout implements Layout<Element> {
         Yoga::YGNodeStyleSetFlexBasisPercent);
   }
 
-  private static void setWidth(long node, CalculatedStyle style) {
+  private static void setWidth(long node, ResolvedStyle style) {
     setUnit(
         style.width(),
         node,
@@ -347,7 +347,7 @@ public class FlexLayout implements Layout<Element> {
     }
   }
 
-  private static void setHeight(long node, CalculatedStyle style) {
+  private static void setHeight(long node, ResolvedStyle style) {
     setUnit(
         style.height(),
         node,
@@ -356,12 +356,12 @@ public class FlexLayout implements Layout<Element> {
         Yoga::YGNodeStyleSetHeightPercent);
   }
 
-  private static void setMinWidth(long node, CalculatedStyle style) {
+  private static void setMinWidth(long node, ResolvedStyle style) {
     setLength(
         style.minWidth(), node, Yoga::YGNodeStyleSetMinWidth, Yoga::YGNodeStyleSetMinWidthPercent);
   }
 
-  private static void setPadding(long node, CalculatedStyle style) {
+  private static void setPadding(long node, ResolvedStyle style) {
     setLength(
         style.paddingLeft(),
         node,
@@ -388,7 +388,7 @@ public class FlexLayout implements Layout<Element> {
         Yoga::YGNodeStyleSetPaddingPercent);
   }
 
-  private static void setBorder(long node, CalculatedStyle style) {
+  private static void setBorder(long node, ResolvedStyle style) {
     if (!BorderStyle.NONE.equals(style.borderLeftStyle()))
       setLength(style.borderLeftWidth(), node, YGEdgeLeft, Yoga::YGNodeStyleSetBorder);
     if (!BorderStyle.NONE.equals(style.borderTopStyle()))
@@ -399,7 +399,7 @@ public class FlexLayout implements Layout<Element> {
       setLength(style.borderBottomWidth(), node, YGEdgeBottom, Yoga::YGNodeStyleSetBorder);
   }
 
-  private static void setMargin(long node, CalculatedStyle style) {
+  private static void setMargin(long node, ResolvedStyle style) {
     setUnit(
         style.marginLeft(),
         node,
@@ -436,9 +436,9 @@ public class FlexLayout implements Layout<Element> {
       ObjIntConsumer<Long> pixelConsumer,
       BiConsumer<Long, Float> percentConsumer) {
     if (l != null) {
-      if (PIXEL.equals(l.type())) {
+      if (l instanceof PixelLength) {
         pixelConsumer.accept(node, (Integer) l.value());
-      } else if (PERCENT.equals(l.type())) {
+      } else if (l instanceof PercentLength) {
         percentConsumer.accept(node, (Float) l.value());
       }
     }
@@ -451,9 +451,9 @@ public class FlexLayout implements Layout<Element> {
       TriConsumer<Long, Integer, Integer> pixelConsumer,
       TriConsumer<Long, Integer, Float> percentConsumer) {
     if (l != null) {
-      if (PIXEL.equals(l.type())) {
+      if (l instanceof PixelLength) {
         pixelConsumer.accept(node, side, (Integer) l.value());
-      } else if (PERCENT.equals(l.type())) {
+      } else if (l instanceof PercentLength) {
         percentConsumer.accept(node, side, (Float) l.value());
       }
     }
@@ -461,7 +461,7 @@ public class FlexLayout implements Layout<Element> {
 
   public static void setLength(
       Length<?> l, long node, int side, TriConsumer<Long, Integer, Integer> pixelConsumer) {
-    if (l != null && PIXEL.equals(l.type())) {
+    if (l instanceof PixelLength) {
       pixelConsumer.accept(node, side, (Integer) l.value());
     }
   }
@@ -488,9 +488,9 @@ public class FlexLayout implements Layout<Element> {
         autoConsumer.accept(node);
       } else {
         Length<?> l = unit.asLength();
-        if (PIXEL.equals(l.type())) {
+        if (l instanceof PixelLength) {
           pixelConsumer.accept(node, (Integer) l.value());
-        } else if (PERCENT.equals(l.type())) {
+        } else if (l instanceof PercentLength) {
           percentConsumer.accept(node, (Float) l.value());
         }
       }
@@ -504,9 +504,9 @@ public class FlexLayout implements Layout<Element> {
       TriConsumer<Long, Integer, Integer> pixelConsumer,
       TriConsumer<Long, Integer, Float> percentConsumer) {
     Length<?> l = unit.asLength();
-    if (PIXEL.equals(l.type())) {
+    if (l instanceof PixelLength) {
       pixelConsumer.accept(node, side, (Integer) l.value());
-    } else if (PERCENT.equals(l.type())) {
+    } else if (l instanceof PercentLength) {
       percentConsumer.accept(node, side, (Float) l.value());
     }
   }

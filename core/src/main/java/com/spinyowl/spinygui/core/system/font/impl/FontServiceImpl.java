@@ -43,6 +43,7 @@ public class FontServiceImpl implements FontService {
   private static final int TYPOGRAPHIC_FONT_SUBFAMILY_INDEX = 17;
 
   @NonNull private final FontStorage fontStorage;
+  private final boolean roundToPixel;
   private final Map<String, STBTTFontinfo> fontInfoMap = new ConcurrentHashMap<>();
 
   /** {@inheritDoc} */
@@ -134,6 +135,9 @@ public class FontServiceImpl implements FontService {
       int textLength = text.length();
       float lineWidth = offsetX;
       float fullLineHeight = lineHeight * fontSize;
+      if (roundToPixel) {
+        fullLineHeight = Math.round(fullLineHeight);
+      }
 
       TextLineMetrics.TextLineMetricsBuilder textLineMetrics =
           TextLineMetrics.builder().height(fullLineHeight);

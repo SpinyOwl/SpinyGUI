@@ -5,7 +5,7 @@ import com.spinyowl.spinygui.core.node.Element;
 import com.spinyowl.spinygui.core.node.Node;
 import com.spinyowl.spinygui.core.node.Text;
 import com.spinyowl.spinygui.core.style.types.length.Length;
-import com.spinyowl.spinygui.core.style.types.length.LengthType;
+import com.spinyowl.spinygui.core.style.types.length.Length.PercentLength;
 import com.spinyowl.spinygui.core.style.types.length.Unit;
 import java.util.Map;
 import java.util.Optional;
@@ -110,8 +110,8 @@ public final class StyleUtils {
       return (float) FontSize.MEDIUM.size();
     }
 
-    var fontSize = element.calculatedStyle().fontSize();
-    if (LengthType.PERCENT.equals(fontSize.type())) {
+    var fontSize = element.resolvedStyle().fontSize();
+    if (fontSize instanceof PercentLength) {
       Element parent = element.parent();
       Float parentFontSize =
           parent != null ? getFontSize(parent) : Float.valueOf(FontSize.MEDIUM.size());

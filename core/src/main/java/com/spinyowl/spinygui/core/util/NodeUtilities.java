@@ -17,7 +17,7 @@ public final class NodeUtilities {
   private static final Function<Node, Integer> comparator =
       node -> {
         if (node instanceof Element element) {
-          Integer index = element.calculatedStyle().zIndex();
+          Integer index = element.resolvedStyle().zIndex();
           return index == null ? 0 : index;
         }
         return 0;
@@ -147,7 +147,7 @@ public final class NodeUtilities {
   }
 
   private static boolean clickable(final Element element) {
-    return !PointerEvents.NONE.equals(element.calculatedStyle().pointerEvents());
+    return !PointerEvents.NONE.equals(element.resolvedStyle().pointerEvents());
   }
 
   /**
@@ -181,7 +181,7 @@ public final class NodeUtilities {
   public static boolean visible(Node node) {
     if (node instanceof Text) return true;
     if (node instanceof Element element) {
-      return !Display.NONE.equals(element.calculatedStyle().display());
+      return !Display.NONE.equals(element.resolvedStyle().display());
     }
     return false;
   }

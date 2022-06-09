@@ -32,6 +32,7 @@ import static org.lwjgl.opengl.GL11.glClear;
 import static org.lwjgl.opengl.GL11.glClearColor;
 import static org.lwjgl.opengl.GL11.glViewport;
 import static org.lwjgl.system.MemoryUtil.NULL;
+
 import com.spinyowl.cbchain.impl.ChainCursorEnterCallback;
 import com.spinyowl.cbchain.impl.ChainCursorPosCallback;
 import com.spinyowl.cbchain.impl.ChainErrorCallback;
@@ -51,7 +52,7 @@ import com.spinyowl.spinygui.core.parser.NodeParser;
 import com.spinyowl.spinygui.core.parser.StyleSheetParser;
 import com.spinyowl.spinygui.core.parser.impl.DefaultNodeParser;
 import com.spinyowl.spinygui.core.parser.impl.StyleSheetParserFactory;
-import com.spinyowl.spinygui.core.style.manager.AbstractStyleManager;
+import com.spinyowl.spinygui.core.style.manager.StyleManager;
 import com.spinyowl.spinygui.core.style.manager.StyleManagerImpl;
 import com.spinyowl.spinygui.core.style.stylesheet.PropertiesScanner;
 import com.spinyowl.spinygui.core.style.stylesheet.PropertyStore;
@@ -92,7 +93,7 @@ public abstract class Demo {
   private EventProcessor eventProcessor;
   private SystemEventProcessor systemEventProcessor;
   private LayoutService layoutService;
-  private AbstractStyleManager styleManager;
+  private StyleManager styleManager;
 
   private Frame frame;
   private long window;
@@ -234,7 +235,7 @@ public abstract class Demo {
     initializeSystemEventListener();
 
     FontStorage fontStorage = new FontStorageImpl();
-    FontService fontService = new FontServiceImpl(fontStorage);
+    FontService fontService = new FontServiceImpl(fontStorage, true);
     layoutService =
         new LayoutServiceImpl(systemEventProcessor, eventProcessor, timeService, fontService);
   }

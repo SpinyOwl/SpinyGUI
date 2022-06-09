@@ -13,7 +13,7 @@ import com.spinyowl.spinygui.core.node.Element;
 import com.spinyowl.spinygui.core.node.Frame;
 import com.spinyowl.spinygui.core.node.layout.Box;
 import com.spinyowl.spinygui.core.node.layout.Edges;
-import com.spinyowl.spinygui.core.style.CalculatedStyle;
+import com.spinyowl.spinygui.core.style.ResolvedStyle;
 import com.spinyowl.spinygui.core.style.types.Display;
 import com.spinyowl.spinygui.core.style.types.Position;
 import com.spinyowl.spinygui.core.style.types.border.BorderStyle;
@@ -46,7 +46,7 @@ public class BlockLayout implements Layout<Element> {
 
     Box parentBox = getParentDimensions(element, element.parent());
 
-    CalculatedStyle style = element.calculatedStyle();
+    ResolvedStyle style = element.resolvedStyle();
 
     // calculate borders
     setBorders(element.box().border(), style);
@@ -56,7 +56,7 @@ public class BlockLayout implements Layout<Element> {
         parentBox.content().width(), parentBox.content().height(), style, element.box().padding());
 
     // calculate content position
-    Position elementPosition = element.calculatedStyle().position();
+    Position elementPosition = element.resolvedStyle().position();
     if (Position.STATIC.equals(elementPosition)) {
       layoutStaticBlock(element, parentBox, style, skipChildren, ctx);
     } else if (Position.ABSOLUTE.equals(elementPosition)) {
@@ -67,7 +67,7 @@ public class BlockLayout implements Layout<Element> {
   }
 
   private void layoutStaticBlock(
-      Element e, Box parentBox, CalculatedStyle style, boolean skipChildren, LayoutContext ctx) {
+      Element e, Box parentBox, ResolvedStyle style, boolean skipChildren, LayoutContext ctx) {
 
     Box box = e.box();
     Edges padding = box.padding();
@@ -122,7 +122,7 @@ public class BlockLayout implements Layout<Element> {
   }
 
   private void layoutAbsoluteBlock(
-      Element e, Box parentBox, CalculatedStyle style, boolean skipChildren, LayoutContext ctx) {
+      Element e, Box parentBox, ResolvedStyle style, boolean skipChildren, LayoutContext ctx) {
     Element ancestor = findPositionedAncestor(e);
     Box ancestorBox = ancestor.box();
 
@@ -200,7 +200,7 @@ public class BlockLayout implements Layout<Element> {
 
   private void calculateHorizontalPositionAndWidth(
       Box parentBox,
-      CalculatedStyle style,
+      ResolvedStyle style,
       Box ancestorBox,
       Box box,
       Edges border,
@@ -251,7 +251,7 @@ public class BlockLayout implements Layout<Element> {
   private void layoutRelativeBlock(
       Element element,
       Box parentBox,
-      CalculatedStyle style,
+      ResolvedStyle style,
       boolean skipChildren,
       LayoutContext context) {
     Box box = element.box();
@@ -289,7 +289,7 @@ public class BlockLayout implements Layout<Element> {
   }
 
   private float childrenHeight(
-      Element element, CalculatedStyle style, boolean skipChildren, LayoutContext context) {
+      Element element, ResolvedStyle style, boolean skipChildren, LayoutContext context) {
     float childrenHeight = 0;
     Unit height = style.height();
     if (!skipChildren) {
@@ -301,7 +301,7 @@ public class BlockLayout implements Layout<Element> {
     return childrenHeight;
   }
 
-  private float getWidth(float parentWidth, CalculatedStyle style) {
+  private float getWidth(float parentWidth, ResolvedStyle style) {
     Optional<Float> width = getFloatLengthOptional(style.width(), parentWidth);
     Optional<Float> minWidth = getFloatLengthOptional(style.minWidth(), parentWidth);
     Optional<Float> maxWidth = getFloatLengthOptional(style.maxWidth(), parentWidth);
@@ -320,7 +320,7 @@ public class BlockLayout implements Layout<Element> {
    * @param style the element's style.
    * @return the height of the element's content.
    */
-  private float getHeight(float parentHeight, float borderBoxHeight, CalculatedStyle style) {
+  private float getHeight(float parentHeight, float borderBoxHeight, ResolvedStyle style) {
     Optional<Float> height;
     if (!style.height().isAuto()) {
       height = getFloatLengthOptional(style.height(), parentHeight);
@@ -342,7 +342,7 @@ public class BlockLayout implements Layout<Element> {
     return element.frame() == null || (element.parent() == null && !(element instanceof Frame));
   }
 
-  private void setBorders(Edges border, CalculatedStyle style) {
+  private void setBorders(Edges border, ResolvedStyle style) {
     applyPadding(style.borderLeftWidth(), style.borderLeftStyle(), border::left);
     applyPadding(style.borderRightWidth(), style.borderRightStyle(), border::right);
     applyPadding(style.borderTopWidth(), style.borderTopStyle(), border::top);

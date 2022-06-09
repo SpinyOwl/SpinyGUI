@@ -1,4 +1,5 @@
 open module com.spinyowl.spinygui.demo.complex {
+  requires org.antlr.antlr4.runtime;
   requires static lombok;
   requires transitive org.slf4j;
   requires transitive ch.qos.logback.core;

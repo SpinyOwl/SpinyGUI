@@ -113,7 +113,7 @@ public class Property {
   }
 
   public void inheritedValue(Element element, @NonNull Map<String, Object> styles) {
-    var parentStyle = element.parent().calculatedStyle();
+    var parentStyle = element.parent().resolvedStyle();
     if (!shorthand) {
       if (parentStyle != null) {
         styles.put(this.name, parentStyle.getSafe(this.name));

@@ -52,7 +52,7 @@ public class LayoutServiceImpl implements LayoutService {
   public void layoutNode(@NonNull Node node, @NonNull LayoutContext context) {
     if (node instanceof Element element) {
       if (visible(element)) {
-        Display display = element.calculatedStyle().display();
+        Display display = element.resolvedStyle().display();
         if (NONE.equals(display)) {
           noneLayout.layout(element, context);
         } else if (BLOCK.equals(display)) {
@@ -118,7 +118,7 @@ public class LayoutServiceImpl implements LayoutService {
       if (childNode instanceof Text) {
         normalFlowChildren.add(childNode);
       } else if (childNode instanceof Element childElement
-          && !NONE.equals(childElement.calculatedStyle().display())) {
+          && !NONE.equals(childElement.resolvedStyle().display())) {
         if (isPositioned(childElement)) {
           positionedChildren.add(childElement);
         } else {

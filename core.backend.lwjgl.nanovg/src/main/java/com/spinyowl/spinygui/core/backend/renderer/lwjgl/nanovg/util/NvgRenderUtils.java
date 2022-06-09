@@ -33,7 +33,7 @@ import static org.lwjgl.system.MemoryUtil.memUTF8;
 import com.spinyowl.spinygui.core.node.Element;
 import com.spinyowl.spinygui.core.node.Node;
 import com.spinyowl.spinygui.core.node.layout.Edges;
-import com.spinyowl.spinygui.core.style.CalculatedStyle;
+import com.spinyowl.spinygui.core.style.ResolvedStyle;
 import com.spinyowl.spinygui.core.style.types.HorizontalAlign;
 import com.spinyowl.spinygui.core.style.types.VerticalAlign;
 import java.nio.ByteBuffer;
@@ -242,7 +242,7 @@ public final class NvgRenderUtils {
    *
    * @return vector of four border radius.
    */
-  public static Vector4f getBorderRadius(Element element, CalculatedStyle style) {
+  public static Vector4f getBorderRadius(Element element, ResolvedStyle style) {
     Vector2f borderSize = element.box().borderBoxSize();
     return new Vector4f(
         getFloatLengthNullSafe(style.borderTopLeftRadius(), borderSize.x),
@@ -251,7 +251,7 @@ public final class NvgRenderUtils {
         getFloatLengthNullSafe(style.borderBottomLeftRadius(), borderSize.x));
   }
 
-  public static void renderShadow(long context, Element element, CalculatedStyle style) {
+  public static void renderShadow(long context, Element element, ResolvedStyle style) {
     var shadow = style.boxShadow();
     if (shadow != null && shadow.color().a() > 0.01f) {
       float hOffset = shadow.hOffset();

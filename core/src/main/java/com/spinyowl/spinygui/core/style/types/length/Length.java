@@ -1,7 +1,5 @@
 package com.spinyowl.spinygui.core.style.types.length;
 
-import static com.spinyowl.spinygui.core.style.types.length.LengthType.PERCENT;
-import static com.spinyowl.spinygui.core.style.types.length.LengthType.PIXEL;
 import lombok.Data;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -11,9 +9,12 @@ import lombok.RequiredArgsConstructor;
 public class Length<T extends Number> implements Unit {
 
   @NonNull private final T value;
-  @NonNull private final LengthType<T> type;
 
-  public static PixelLength zero() { return ZH.I; }
+  @NonNull private final String type;
+
+  public static PixelLength zero() {
+    return ZH.I;
+  }
 
   public static PixelLength pixel(int value) {
     return new PixelLength(value);
@@ -29,7 +30,7 @@ public class Length<T extends Number> implements Unit {
    * @return calculated length.
    */
   public float convert() {
-    return type.converter().convert(this);
+    return convert(1);
   }
 
   /**
@@ -39,7 +40,7 @@ public class Length<T extends Number> implements Unit {
    * @return calculated length.
    */
   public float convert(float baseLength) {
-    return type.converter().convert(this, baseLength);
+    return value.floatValue() * baseLength;
   }
 
   @Override
@@ -49,13 +50,18 @@ public class Length<T extends Number> implements Unit {
 
   public static class PixelLength extends Length<Integer> {
     public PixelLength(@NonNull Integer value) {
-      super(value, PIXEL);
+      super(value, "px");
+    }
+
+    @Override
+    public float convert(float baseLength) {
+      return super.value;
     }
   }
 
   public static class PercentLength extends Length<Float> {
     public PercentLength(@NonNull Float value) {
-      super(value, PERCENT);
+      super(value, "%");
     }
   }
 

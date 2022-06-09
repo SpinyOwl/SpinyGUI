@@ -7,6 +7,7 @@ import static com.spinyowl.spinygui.core.backend.renderer.lwjgl.nanovg.util.NvgS
 import static com.spinyowl.spinygui.core.util.NodeUtilities.visible;
 import static org.lwjgl.nanovg.NanoVG.nvgRestore;
 import static org.lwjgl.nanovg.NanoVG.nvgSave;
+
 import com.spinyowl.spinygui.core.node.Element;
 import com.spinyowl.spinygui.core.node.Node;
 
@@ -15,7 +16,7 @@ public class NvgElementRenderer {
   public void render(Node node, long nanovg) {
     Element element = node.asElement();
     if (visible(element) /*&& visibleInParents(element)*/) {
-      var style = element.calculatedStyle();
+      var style = element.resolvedStyle();
       var backgroundColor = style.backgroundColor();
       var borderRadius = getBorderRadius(element, style);
 

@@ -15,7 +15,7 @@ public class NvgBorderRenderer {
     Element element = node.asElement();
 
     createScissor(nanovg, node);
-    var style = element.calculatedStyle();
+    var style = element.resolvedStyle();
     if (BorderStyle.NONE.equals(style.borderTopStyle())) return;
     float borderThickness = element.box().border().top();
 
