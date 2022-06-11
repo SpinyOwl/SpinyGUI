@@ -1,46 +1,31 @@
 package com.spinyowl.spinygui.core.layout.impl;
 
 import static com.spinyowl.spinygui.core.layout.impl.LayoutUtils.isPositioned;
-import static com.spinyowl.spinygui.core.style.types.Display.BLOCK;
-import static com.spinyowl.spinygui.core.style.types.Display.FLEX;
 import static com.spinyowl.spinygui.core.style.types.Display.NONE;
 import static com.spinyowl.spinygui.core.util.NodeUtilities.visible;
 
-import com.spinyowl.spinygui.core.event.processor.EventProcessor;
+import com.spinyowl.spinygui.core.layout.ElementLayout;
 import com.spinyowl.spinygui.core.layout.LayoutContext;
 import com.spinyowl.spinygui.core.layout.LayoutService;
+import com.spinyowl.spinygui.core.layout.TextLayout;
 import com.spinyowl.spinygui.core.node.Element;
 import com.spinyowl.spinygui.core.node.Frame;
 import com.spinyowl.spinygui.core.node.Node;
 import com.spinyowl.spinygui.core.node.Text;
 import com.spinyowl.spinygui.core.style.types.Display;
-import com.spinyowl.spinygui.core.system.event.processor.SystemEventProcessor;
-import com.spinyowl.spinygui.core.system.font.FontService;
-import com.spinyowl.spinygui.core.time.TimeService;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 
 /** Layout service is an entry point to layout system. Used to layout provided element. */
+@RequiredArgsConstructor
 public class LayoutServiceImpl implements LayoutService {
 
-  private final NoneLayout noneLayout;
-  private final FlexLayout flexLayout;
-  private final BlockLayout blockLayout;
-  private final TextLayout textLayout;
-
-  public LayoutServiceImpl(
-      @NonNull SystemEventProcessor systemEventProcessor,
-      @NonNull EventProcessor eventProcessor,
-      @NonNull TimeService timeService,
-      @NonNull FontService fontService) {
-    noneLayout = new NoneLayout();
-    textLayout = new TextLayout(fontService);
-    blockLayout = new BlockLayout(this);
-    flexLayout = new FlexLayout(systemEventProcessor, eventProcessor, timeService, this);
-  }
+  @NonNull private final TextLayout textLayout;
+  @NonNull private final Map<Display, ElementLayout> layoutMap;
 
   @Override
   public void layout(@NonNull Frame frame) {
@@ -53,15 +38,10 @@ public class LayoutServiceImpl implements LayoutService {
     if (node instanceof Element element) {
       if (visible(element)) {
         Display display = element.resolvedStyle().display();
-        if (NONE.equals(display)) {
-          noneLayout.layout(element, context);
-        } else if (BLOCK.equals(display)) {
-          blockLayout.layout(element, context);
-        } else if (FLEX.equals(display)) {
-          blockLayout.layout(element, true, context);
-          flexLayout.layout(element, context);
+        ElementLayout layout = layoutMap.get(display);
+        if (layout != null) {
+          layout.layout(element, context);
         }
-        // TODO: inline layout
       }
     } else if (node instanceof Text text) {
       textLayout.layout(text, context);
@@ -71,7 +51,6 @@ public class LayoutServiceImpl implements LayoutService {
       context.lastTextEndX(text.textEndX());
       context.lastTextEndY(text.textEndY());
     }
-    // in case if we do not know what type of node it is, we do not lay out it.
   }
 
   @Override
@@ -80,10 +59,6 @@ public class LayoutServiceImpl implements LayoutService {
     if (childNodes.isEmpty()) {
       return;
     }
-
-    //    if (!INLINE.equals(parent.calculatedStyle().display())) {
-    //      context.cleanup();
-    //    }
 
     LayoutContext inner = new LayoutContext();
     childNodes.forEach(node -> layoutNode(node, inner));

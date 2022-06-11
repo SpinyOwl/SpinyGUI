@@ -4,8 +4,8 @@ import com.google.common.collect.Iterables;
 import com.spinyowl.spinygui.core.font.Font;
 import com.spinyowl.spinygui.core.font.FontStyle;
 import com.spinyowl.spinygui.core.font.FontWeight;
-import com.spinyowl.spinygui.core.layout.Layout;
 import com.spinyowl.spinygui.core.layout.LayoutContext;
+import com.spinyowl.spinygui.core.layout.TextLayout;
 import com.spinyowl.spinygui.core.node.Element;
 import com.spinyowl.spinygui.core.node.Text;
 import com.spinyowl.spinygui.core.node.layout.Box;
@@ -23,14 +23,9 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
-public class TextLayout implements Layout<Text> {
+public class TextLayoutImpl implements TextLayout {
   @NonNull private final FontService fontService;
 
-  /**
-   * Calculates text node's height based on text content.
-   *
-   * @param text text node to calculate heights for.
-   */
   public void layout(Text text, LayoutContext context) {
     if (text == null) return;
 

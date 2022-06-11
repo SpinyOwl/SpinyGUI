@@ -1,18 +1,14 @@
 package com.spinyowl.spinygui.core.layout.impl;
 
-import com.spinyowl.spinygui.core.layout.Layout;
+import com.spinyowl.spinygui.core.layout.ElementLayout;
 import com.spinyowl.spinygui.core.layout.LayoutContext;
 import com.spinyowl.spinygui.core.node.Element;
 
-public class NoneLayout implements Layout<Element> {
+public class NoneLayout implements ElementLayout {
 
-  /**
-   * Used to lay out element, and it's child nodes.
-   *
-   * @param element element to lay out.
-   */
+  /** {@inheritDoc} */
   @Override
   public void layout(Element element, LayoutContext context) {
-    // do nothing.
+    // do nothing, as there is no need to do anything with this or child nodes, it is excluded.
   }
 }

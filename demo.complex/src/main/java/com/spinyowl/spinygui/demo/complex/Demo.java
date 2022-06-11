@@ -46,7 +46,7 @@ import com.spinyowl.spinygui.core.event.processor.DefaultEventProcessor;
 import com.spinyowl.spinygui.core.event.processor.EventProcessor;
 import com.spinyowl.spinygui.core.input.impl.MouseServiceImpl;
 import com.spinyowl.spinygui.core.layout.LayoutService;
-import com.spinyowl.spinygui.core.layout.impl.LayoutServiceImpl;
+import com.spinyowl.spinygui.core.layout.impl.LayoutServiceProvider;
 import com.spinyowl.spinygui.core.node.Frame;
 import com.spinyowl.spinygui.core.parser.NodeParser;
 import com.spinyowl.spinygui.core.parser.StyleSheetParser;
@@ -237,7 +237,8 @@ public abstract class Demo {
     FontStorage fontStorage = new FontStorageImpl();
     FontService fontService = new FontServiceImpl(fontStorage, true);
     layoutService =
-        new LayoutServiceImpl(systemEventProcessor, eventProcessor, timeService, fontService);
+        LayoutServiceProvider.create(
+            systemEventProcessor, eventProcessor, timeService, fontService);
   }
 
   private void initializeSystemEventListener() {
@@ -269,6 +270,7 @@ public abstract class Demo {
             .build();
   }
 
+  @SuppressWarnings({"squid:S1215", "squid:S106"})
   private void initializeCallbacks(long window) {
     var errorCallback = new ChainErrorCallback();
     errorCallback.add(GLFWErrorCallback.createPrint(System.err));
@@ -306,8 +308,9 @@ public abstract class Demo {
 
     var chainKeyCallback = new ChainKeyCallback();
     chainKeyCallback.add(
-        (w1, key, code, action, mods) ->
-            running = !(key == GLFW_KEY_ESCAPE && action != GLFW_RELEASE));
+        (w1, key, code, action, mods) -> {
+          if (key == GLFW_KEY_ESCAPE && action != GLFW_RELEASE) stop();
+        });
     chainKeyCallback.add(
         (w, key, code, action, mods) -> {
           if (key == GLFW_KEY_G && action == GLFW_RELEASE) Runtime.getRuntime().gc();
