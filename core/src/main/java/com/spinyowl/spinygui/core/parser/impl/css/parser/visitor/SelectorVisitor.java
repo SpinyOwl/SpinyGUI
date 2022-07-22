@@ -61,8 +61,10 @@ public class SelectorVisitor extends CSS3BaseVisitor<Selector> {
 
       if (current == null && selector != null) {
         current = selector;
-      } else {
+      } else if (current != null && selector != null) {
         current = new AndSelector(current, selector);
+      } else {
+        current = null; // force to null as it is combination of any and null which is unknown.
       }
     }
 
