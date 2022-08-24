@@ -12,7 +12,7 @@ public class BorderBottomProperty extends Property {
     super(
         BORDER_BOTTOM,
         BorderProperty.DEFAULT_VALUE,
-        !INHERITED,
+        !INHERITABLE,
         ANIMATABLE,
         (value, styles) ->
             BorderProperty.extract(

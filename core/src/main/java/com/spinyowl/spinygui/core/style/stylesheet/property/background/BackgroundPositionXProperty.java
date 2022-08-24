@@ -21,7 +21,7 @@ public class BackgroundPositionXProperty extends Property {
     super(
         BACKGROUND_POSITION_X,
         "0%",
-        !INHERITED,
+        !INHERITABLE,
         ANIMATABLE,
         (value, styles) -> styles.put(BACKGROUND_POSITION_X,extract(value)),
         BackgroundPositionXProperty::test);

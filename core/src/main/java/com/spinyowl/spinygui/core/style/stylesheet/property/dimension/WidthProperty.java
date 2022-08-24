@@ -15,7 +15,7 @@ public class WidthProperty extends Property {
     super(
         WIDTH,
         "auto",
-        !INHERITED,
+        !INHERITABLE,
         ANIMATABLE,
         (value, styles) -> styles.put(WIDTH, extractor.extract(value)),
         extractor::isValid);

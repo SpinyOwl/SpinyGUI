@@ -18,6 +18,7 @@ import com.spinyowl.spinygui.core.parser.impl.DefaultNodeParser;
 import com.spinyowl.spinygui.core.parser.impl.StyleSheetParserFactory;
 import com.spinyowl.spinygui.core.style.stylesheet.PropertiesScanner;
 import com.spinyowl.spinygui.core.style.stylesheet.PropertyStore;
+import com.spinyowl.spinygui.core.style.stylesheet.StyleSheet;
 import com.spinyowl.spinygui.core.style.stylesheet.impl.DefaultPropertyStore;
 import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
@@ -64,15 +65,17 @@ public class Main {
 
     // language=xml
     frame.addChild(nodeParser.fromXml("""
-  <div>Additional content</div>
-"""));
+      <div>Additional content</div>
+    """));
     // language=HTML
     String xml2 =
         """
+        <div>
           <div>Hello world!</div>
           <div id="user-info">
             <label>User name</label>
           </div>
+        </div>
         """;
 
     var unmarshal = nodeParser.fromXml(xml2);
@@ -92,8 +95,13 @@ public class Main {
           color: darkred;
           font-weight: bold;
         }
+
+        winframe::-webkit-scrollbar {
+          width: 10px;
+        }
         """;
-    frame.styleSheets().add(styleSheetParser.parse(styles));
+    StyleSheet styleSheet = styleSheetParser.parse(styles);
+    frame.styleSheets().add(styleSheet);
 
     log.info("UNMARSHALLING IS FINISHED");
     log.info("--------------------------------");

@@ -1,23 +1,36 @@
 package com.spinyowl.spinygui.core.style.stylesheet.property;
 
-import com.spinyowl.spinygui.core.style.stylesheet.Property;
-import com.spinyowl.spinygui.core.style.stylesheet.extractor.ValueExtractor;
-import com.spinyowl.spinygui.core.style.stylesheet.extractor.ValueExtractors;
-import com.spinyowl.spinygui.core.style.types.Color;
-
 import static com.spinyowl.spinygui.core.style.stylesheet.Properties.COLOR;
 
-public class ColorProperty extends Property {
+import com.spinyowl.spinygui.core.style.stylesheet.Property;
+import com.spinyowl.spinygui.core.style.stylesheet.Term;
+import com.spinyowl.spinygui.core.style.stylesheet.term.TermColor;
+import com.spinyowl.spinygui.core.style.stylesheet.term.TermIdent;
+import com.spinyowl.spinygui.core.style.types.Color;
+import java.util.Map;
 
-  private static final ValueExtractor<Color> extractor = ValueExtractors.of(Color.class);
+public class ColorProperty extends Property {
 
   public ColorProperty() {
     super(
         COLOR,
-        "black",
-        INHERITED,
+        new TermColor(Color.BLACK),
+        INHERITABLE,
         ANIMATABLE,
-        (value, styles) -> styles.put(COLOR, extractor.extract(value)),
-        extractor::isValid);
+        ColorProperty::extract,
+        ColorProperty::validate);
+  }
+
+  private static boolean validate(Term<?> obj) {
+    return (obj instanceof TermColor)
+        || (obj instanceof TermIdent ident && Color.exists(ident.value()));
+  }
+
+  private static void extract(Term<?> term, Map<String, Object> styles) {
+    if (term instanceof TermColor termColor) {
+      styles.put(COLOR, termColor.value());
+    } else if (term instanceof TermIdent termIdent) {
+      styles.put(COLOR, Color.get(termIdent.value()));
+    }
   }
 }

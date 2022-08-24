@@ -21,7 +21,7 @@ public class BackgroundPositionYProperty extends Property {
     super(
         BACKGROUND_POSITION_Y,
         "0%",
-        !INHERITED,
+        !INHERITABLE,
         ANIMATABLE,
         (value, styles) -> styles.put(BACKGROUND_POSITION_Y,extract(value)),
         BackgroundPositionYProperty::test);

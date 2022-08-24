@@ -14,7 +14,7 @@ public class LeftProperty extends Property {
     super(
         LEFT,
         "auto",
-        !INHERITED,
+        !INHERITABLE,
         ANIMATABLE,
         (value, styles) -> styles.put(LEFT, extractor.extract(value)),
         extractor::isValid);

@@ -15,7 +15,7 @@ public class MarginRightProperty extends Property {
     super(
         MARGIN_RIGHT,
         "0",
-        !INHERITED,
+        !INHERITABLE,
         ANIMATABLE,
         (value, styles) -> styles.put(MARGIN_RIGHT, extractor.extract(value)),
         extractor::isValid);

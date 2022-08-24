@@ -15,7 +15,7 @@ public class PaddingRightProperty extends Property {
     super(
         PADDING_RIGHT,
         "0",
-        !INHERITED,
+        !INHERITABLE,
         ANIMATABLE,
         (value, styles) -> styles.put(PADDING_RIGHT, extractor.extract(value)),
         extractor::isValid);

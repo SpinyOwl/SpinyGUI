@@ -15,7 +15,7 @@ public class MarginBottomProperty extends Property {
     super(
         MARGIN_BOTTOM,
         "0",
-        !INHERITED,
+        !INHERITABLE,
         ANIMATABLE,
         (value, styles) -> styles.put(MARGIN_BOTTOM, extractor.extract(value)),
         extractor::isValid);

@@ -19,7 +19,7 @@ public class MarginProperty extends Property {
   private static final ValueExtractor<Unit> unitValueExtractor = ValueExtractors.of(Unit.class);
 
   public MarginProperty() {
-    super(MARGIN, "0", !INHERITED, ANIMATABLE, MarginProperty::extract, MarginProperty::test, true);
+    super(MARGIN, "0", !INHERITABLE, ANIMATABLE, MarginProperty::extract, MarginProperty::test, true);
   }
 
   private static void extract(String value, Map<String, Object> styles) {

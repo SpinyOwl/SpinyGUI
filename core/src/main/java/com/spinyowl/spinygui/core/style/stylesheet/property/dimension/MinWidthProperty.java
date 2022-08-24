@@ -15,7 +15,7 @@ public class MinWidthProperty extends Property {
     super(
         MIN_WIDTH,
         "0px",
-        !INHERITED,
+        !INHERITABLE,
         ANIMATABLE,
         (value, styles) -> styles.put(MIN_WIDTH, extractor.extract(value)),
         extractor::isValid);

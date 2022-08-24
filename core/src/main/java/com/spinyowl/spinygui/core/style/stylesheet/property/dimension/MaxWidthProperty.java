@@ -15,7 +15,7 @@ public class MaxWidthProperty extends Property {
     super(
         MAX_WIDTH,
         "none",
-        !INHERITED,
+        !INHERITABLE,
         ANIMATABLE,
         (value, styles) ->
             styles.put(

@@ -11,7 +11,7 @@ public class DisplayProperty extends Property {
     super(
         DISPLAY,
         Display.BLOCK.name(),
-        INHERITED,
+        INHERITABLE,
         ANIMATABLE,
         (display, styles) -> styles.put(DISPLAY, Display.find(display)),
         Display::contains);

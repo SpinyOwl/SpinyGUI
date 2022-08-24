@@ -11,7 +11,7 @@ public class JustifyContentProperty extends Property {
     super(
         JUSTIFY_CONTENT,
         "flex-start",
-        !INHERITED,
+        !INHERITABLE,
         !ANIMATABLE,
         (justifyContent, styles) ->
             styles.put(JUSTIFY_CONTENT, JustifyContent.find(justifyContent)),

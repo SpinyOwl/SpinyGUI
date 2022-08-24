@@ -11,7 +11,7 @@ public class FlexDirectionProperty extends Property {
     super(
         FLEX_DIRECTION,
         "row",
-        !INHERITED,
+        !INHERITABLE,
         !ANIMATABLE,
         (flexDirection, styles) -> styles.put(FLEX_DIRECTION, FlexDirection.find(flexDirection)),
         FlexDirection::contains);

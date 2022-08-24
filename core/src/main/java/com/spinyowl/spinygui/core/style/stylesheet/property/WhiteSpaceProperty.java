@@ -11,7 +11,7 @@ public class WhiteSpaceProperty extends Property {
     super(
         WHITE_SPACE,
         WhiteSpace.NORMAL.name(),
-        INHERITED,
+        INHERITABLE,
         !ANIMATABLE,
         (whiteSpace, styles) -> styles.put(WHITE_SPACE, WhiteSpace.find(whiteSpace)),
         WhiteSpace::contains);

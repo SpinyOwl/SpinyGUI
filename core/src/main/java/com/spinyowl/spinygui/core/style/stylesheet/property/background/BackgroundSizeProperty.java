@@ -22,7 +22,7 @@ public class BackgroundSizeProperty extends Property {
     super(
         BACKGROUND_SIZE,
         "auto",
-        !INHERITED,
+        !INHERITABLE,
         ANIMATABLE,
         (value, styles) -> styles.put(BACKGROUND_SIZE, extract(value)),
         BackgroundSizeProperty::test);

@@ -14,7 +14,7 @@ public class LineHeightProperty extends Property {
     super(
         LINE_HEIGHT,
         DEFAULT_VALUE_KEY,
-        INHERITED,
+        INHERITABLE,
         ANIMATABLE,
         (value, styles) -> styles.put(LINE_HEIGHT, extract(value)),
         LineHeightProperty::test);

@@ -15,7 +15,7 @@ public class BorderLeftColorProperty extends Property {
     super(
         BORDER_LEFT_COLOR,
         BorderColorProperty.DEFAULT_VALUE,
-        !INHERITED,
+        !INHERITABLE,
         ANIMATABLE,
         (value, styles) -> styles.put(BORDER_LEFT_COLOR, extractor.extract(value)),
         extractor::isValid);

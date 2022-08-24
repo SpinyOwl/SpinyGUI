@@ -11,7 +11,7 @@ public class FlexWrapProperty extends Property {
     super(
         FLEX_WRAP,
         "nowrap",
-        !INHERITED,
+        !INHERITABLE,
         !ANIMATABLE,
         (flexWrap, styles) -> styles.put(FLEX_WRAP, FlexWrap.find(flexWrap)),
         FlexWrap::contains);

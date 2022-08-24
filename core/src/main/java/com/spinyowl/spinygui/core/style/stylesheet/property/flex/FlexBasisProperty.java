@@ -16,7 +16,7 @@ public class FlexBasisProperty extends Property {
     super(
         FLEX_BASIS,
         AUTO,
-        !INHERITED,
+        !INHERITABLE,
         !ANIMATABLE,
         (value, styles) -> styles.put(FLEX_BASIS, extractor.extract(value)),
         extractor::isValid);

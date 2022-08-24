@@ -21,7 +21,7 @@ public class BorderStyleProperty extends Property {
     super(
         BORDER_STYLE,
         DEFAULT_VALUE,
-        !INHERITED,
+        !INHERITABLE,
         ANIMATABLE,
         BorderStyleProperty::extract,
         BorderStyleProperty::test,

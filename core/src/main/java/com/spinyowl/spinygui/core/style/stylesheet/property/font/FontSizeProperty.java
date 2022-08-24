@@ -15,7 +15,7 @@ public class FontSizeProperty extends Property {
     super(
         FONT_SIZE,
         FontSize.MEDIUM.name(),
-        INHERITED,
+        INHERITABLE,
         ANIMATABLE,
         (value, styles) -> styles.put(FONT_SIZE, extract(value)),
         FontSizeProperty::test);

@@ -15,7 +15,7 @@ public class ZIndexProperty extends Property {
     super(
         Z_INDEX,
         AUTO,
-        !INHERITED,
+        !INHERITABLE,
         !ANIMATABLE,
         (zIndex, styles) ->
             styles.put(Z_INDEX, AUTO.equals(zIndex) ? 0 : extractor.extract(zIndex)),

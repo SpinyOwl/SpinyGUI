@@ -15,7 +15,7 @@ public class MinHeightProperty extends Property {
     super(
         MIN_HEIGHT,
         "0px",
-        !INHERITED,
+        !INHERITABLE,
         ANIMATABLE,
         (value, styles) -> styles.put(MIN_HEIGHT, extractor.extract(value)),
         extractor::isValid);

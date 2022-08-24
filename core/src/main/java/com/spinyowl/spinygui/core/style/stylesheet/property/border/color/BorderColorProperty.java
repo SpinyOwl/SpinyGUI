@@ -23,7 +23,7 @@ public class BorderColorProperty extends Property {
     super(
         BORDER_COLOR,
         DEFAULT_VALUE,
-        !INHERITED,
+        !INHERITABLE,
         ANIMATABLE,
         BorderColorProperty::extract,
         BorderColorProperty::test,

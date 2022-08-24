@@ -15,7 +15,7 @@ public class MaxHeightProperty extends Property {
     super(
         MAX_HEIGHT,
         "none",
-        !INHERITED,
+        !INHERITABLE,
         ANIMATABLE,
         (value, styles) ->
             styles.put(

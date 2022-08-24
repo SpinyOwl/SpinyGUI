@@ -4,20 +4,10 @@ import com.spinyowl.spinygui.core.node.Element;
 import com.spinyowl.spinygui.core.style.stylesheet.Specificity;
 
 /**
- * Style selector interface.<br>
- * Style selectors are patterns used to select the elements you want to style.
+ * Style selector interface.<br> Style selectors are patterns used to select the elements you want
+ * to style.
  */
-public interface Selector {
-
-  static Selector mostSpecific(Selector left, Selector right) {
-    if (left == null) {
-      return right;
-    }
-    if (right == null) {
-      return left;
-    }
-    return left.specificity().compareTo(right.specificity()) > 0 ? left : right;
-  }
+public interface Selector extends Comparable<Selector> {
 
   /**
    * Returns true if provided node could be selected using this selector.
@@ -28,4 +18,13 @@ public interface Selector {
   boolean test(Element element);
 
   Specificity specificity();
+
+  default Selector last() {
+    return this;
+  }
+
+  @Override
+  default int compareTo(Selector o) {
+    return this.specificity().compareTo(o.specificity());
+  }
 }

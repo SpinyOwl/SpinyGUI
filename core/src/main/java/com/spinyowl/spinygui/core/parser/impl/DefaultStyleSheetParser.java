@@ -8,16 +8,6 @@ import com.spinyowl.spinygui.core.style.stylesheet.Declaration;
 import com.spinyowl.spinygui.core.style.stylesheet.RuleSet;
 import com.spinyowl.spinygui.core.style.stylesheet.StyleSheet;
 import com.spinyowl.spinygui.core.style.stylesheet.selector.Selector;
-import com.spinyowl.spinygui.core.style.stylesheet.selector.combinator.AdjacentSiblingSelector;
-import com.spinyowl.spinygui.core.style.stylesheet.selector.combinator.AndSelector;
-import com.spinyowl.spinygui.core.style.stylesheet.selector.combinator.ChildSelector;
-import com.spinyowl.spinygui.core.style.stylesheet.selector.combinator.DescendantSelector;
-import com.spinyowl.spinygui.core.style.stylesheet.selector.combinator.GeneralSiblingSelector;
-import com.spinyowl.spinygui.core.style.stylesheet.selector.pseudo_class.HoverSelector;
-import com.spinyowl.spinygui.core.style.stylesheet.selector.simple.AllSelector;
-import com.spinyowl.spinygui.core.style.stylesheet.selector.simple.ClassAttributeSelector;
-import com.spinyowl.spinygui.core.style.stylesheet.selector.simple.ElementSelector;
-import com.spinyowl.spinygui.core.style.stylesheet.selector.simple.IdAttributeSelector;
 import java.util.List;
 import java.util.StringJoiner;
 import lombok.NonNull;
@@ -25,9 +15,7 @@ import lombok.RequiredArgsConstructor;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
 
-/**
- * Used to read stylesheets from css.
- */
+/** Used to read stylesheets from css. */
 @RequiredArgsConstructor
 public final class DefaultStyleSheetParser implements StyleSheetParser {
 
@@ -83,7 +71,7 @@ public final class DefaultStyleSheetParser implements StyleSheetParser {
     StringBuilder builder = new StringBuilder();
     var selectorJoiner = new StringJoiner(", ", "", " ");
     for (Selector selector : ruleSet.selectors()) {
-      selectorJoiner.add(getSelectorString(selector));
+      selectorJoiner.add(selector.toString());
     }
     builder.append(selectorJoiner).append("{");
 
@@ -97,36 +85,7 @@ public final class DefaultStyleSheetParser implements StyleSheetParser {
   }
 
   public String toCss(Declaration declaration) {
-    return declaration.property().name() + ": " + declaration.value();
+    return declaration.property().name() + ": " + declaration.stringValue();
   }
 
-  String getSelectorString(Selector selector) {
-    if (selector instanceof AdjacentSiblingSelector adjacentSelector) {
-      return getSelectorString(adjacentSelector.first()) + " + "
-          + getSelectorString(adjacentSelector.second());
-    } else if (selector instanceof AndSelector andSelector) {
-      return getSelectorString(andSelector.first())
-          + getSelectorString(andSelector.second());
-    } else if (selector instanceof ChildSelector childSelector) {
-      return getSelectorString(childSelector.first()) + " > "
-          + getSelectorString(childSelector.second());
-    } else if (selector instanceof DescendantSelector descendantSelector) {
-      return getSelectorString(descendantSelector.first()) + " "
-          + getSelectorString(descendantSelector.second());
-    } else if (selector instanceof GeneralSiblingSelector siblingSelector) {
-      return getSelectorString(siblingSelector.first()) + " ~ "
-          + getSelectorString(siblingSelector.second());
-    } else if (selector instanceof HoverSelector) {
-      return ":hover";
-    } else if (selector instanceof ClassAttributeSelector classSelector) {
-      return "." + classSelector.className();
-    } else if (selector instanceof ElementSelector elementSelector) {
-      return elementSelector.nodeName();
-    } else if (selector instanceof AllSelector) {
-      return "*";
-    } else if (selector instanceof IdAttributeSelector idSelector) {
-      return "#" + idSelector.id();
-    }
-    return "";
-  }
 }

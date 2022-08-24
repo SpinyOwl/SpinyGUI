@@ -11,7 +11,7 @@ public class BorderBottomStyleProperty extends Property {
     super(
         BORDER_BOTTOM_STYLE,
         BorderStyleProperty.DEFAULT_VALUE,
-        !INHERITED,
+        !INHERITABLE,
         ANIMATABLE,
         (borderStyle, styles) -> styles.put(BORDER_BOTTOM_STYLE, BorderStyle.find(borderStyle)),
         BorderStyle::contains);

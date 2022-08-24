@@ -15,7 +15,7 @@ public class HeightProperty extends Property {
     super(
         HEIGHT,
         "auto",
-        !INHERITED,
+        !INHERITABLE,
         ANIMATABLE,
         (value, styles) -> styles.put(HEIGHT, extractor.extract(value)),
         extractor::isValid);

@@ -11,7 +11,7 @@ public class PointerEventsProperty extends Property {
     super(
         POINTER_EVENTS,
         PointerEvents.AUTO.name(),
-        INHERITED,
+        INHERITABLE,
         !ANIMATABLE,
         (pointerEvents, styles) -> styles.put(POINTER_EVENTS, PointerEvents.find(pointerEvents)),
         PointerEvents::contains);

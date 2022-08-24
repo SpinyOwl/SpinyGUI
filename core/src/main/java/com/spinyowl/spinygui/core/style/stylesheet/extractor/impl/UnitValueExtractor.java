@@ -10,8 +10,9 @@ import com.spinyowl.spinygui.core.style.types.length.Unit;
 /** Used to extract {@link Unit} value from string. */
 public class UnitValueExtractor implements ValueExtractor<Unit> {
 
-  public static final String PERCENTAGE_REGEX = "-?(\\d+(\\.\\d*)?|\\.\\d+)%";
-  public static final String PIXEL_REGEX = "-?\\d+[pP][xX]";
+  public static final String NUM = "-?(\\d+(\\.\\d*)?|\\.\\d+)";
+  public static final String PERCENTAGE_REGEX = NUM + "%";
+  public static final String PIXEL_REGEX = NUM + "[pP][xX]";
   public static final String AUTO_REGEX = "[aA][uU][tT][oO]";
   public static final String ZERO_REGEX = "0+";
 
@@ -42,7 +43,7 @@ public class UnitValueExtractor implements ValueExtractor<Unit> {
 
   public static PixelLength getPixelLength(String value) {
     var pixelValue = value.substring(0, value.length() - 2);
-    return Length.pixel(Integer.parseInt(pixelValue));
+    return Length.pixel(Float.parseFloat(pixelValue));
   }
 
   @Override

@@ -15,7 +15,7 @@ public class BorderTopLeftRadiusProperty extends Property {
     super(
         BORDER_TOP_LEFT_RADIUS,
         "0",
-        !INHERITED,
+        !INHERITABLE,
         ANIMATABLE,
         (value, styles) -> styles.put(BORDER_TOP_LEFT_RADIUS, extractor.extract(value)),
         extractor::isValid);

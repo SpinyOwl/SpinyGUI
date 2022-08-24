@@ -23,7 +23,7 @@ public class PaddingProperty extends Property {
     super(
         PADDING,
         "0",
-        !INHERITED,
+        !INHERITABLE,
         ANIMATABLE,
         PaddingProperty::extract,
         PaddingProperty::test,

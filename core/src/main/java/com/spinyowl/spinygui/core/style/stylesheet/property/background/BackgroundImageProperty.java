@@ -14,7 +14,7 @@ public class BackgroundImageProperty extends Property {
     super(
         BACKGROUND_IMAGE,
         NONE,
-        !INHERITED,
+        !INHERITABLE,
         !ANIMATABLE,
         (value, styles) -> styles.put(BACKGROUND_IMAGE, extractUrl(value)),
         BackgroundImageProperty::test);

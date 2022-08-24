@@ -14,7 +14,7 @@ public class TopProperty extends Property {
     super(
         TOP,
         "auto",
-        !INHERITED,
+        !INHERITABLE,
         ANIMATABLE,
         (value, styles) -> styles.put(TOP, extractor.extract(value)),
         extractor::isValid);

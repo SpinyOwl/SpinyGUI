@@ -11,9 +11,10 @@ public class PositionProperty extends Property {
     super(
         POSITION,
         Position.STATIC.name(),
-        INHERITED,
+        INHERITABLE,
         ANIMATABLE,
         (position, styles) -> styles.put(POSITION, Position.find(position)),
         Position::contains);
   }
+
 }

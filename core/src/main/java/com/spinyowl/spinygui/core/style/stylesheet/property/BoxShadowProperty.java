@@ -26,7 +26,7 @@ public class BoxShadowProperty extends Property {
     super(
         BOX_SHADOW,
         NONE,
-        !INHERITED,
+        !INHERITABLE,
         ANIMATABLE,
         BoxShadowProperty::extract,
         BoxShadowProperty::validate);

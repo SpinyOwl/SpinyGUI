@@ -40,6 +40,38 @@ public class OtherMain {
         * {
           color: #222;
         }
+        
+         winframe,
+         winframe * {
+           box-sizing: border-box; /* default behaviour */
+           overflow: hidden; /* default behaviour */
+           background-color: green;
+           padding: 20.1px;
+           flex-direction: column;
+           border: 1px solid #ccc;
+           left: 20;
+         }
+         winframe:hover,
+         winframe *:hover {
+           border: 8px solid #fc3131;
+         }
+         
+         .text {
+           display: block;
+           overflow: auto;
+           height: 90px;
+           font-size: 16px;
+           border-color: #45AAFF;
+         }
+         
+         #t2 {
+           position: absolute;
+           bottom: 10px;
+           top: 10px;
+           height: auto;
+           background-color: rgba(190,200,255,.8);
+           border-color: rgba(190,200,255,.8) rgba(90,200,255,.8);
+         }
 
         @font-face {
             font-family: My Font Family;
@@ -61,10 +93,11 @@ public class OtherMain {
         }
 
         #some button {
-          color: red;
+          color: rgba(150,250,250,1);
         }
         button #some {
           color: red;
+          border-color: rgb(1,1,1) rgb(2, 2, 2) rgb(100, 200, 100) rgb(222, 19, 221)
         }
         """;
 

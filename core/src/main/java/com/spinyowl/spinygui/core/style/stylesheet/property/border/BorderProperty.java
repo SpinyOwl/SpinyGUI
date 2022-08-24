@@ -32,7 +32,7 @@ public class BorderProperty extends Property {
     super(
         BORDER,
         DEFAULT_VALUE,
-        !INHERITED,
+        !INHERITABLE,
         ANIMATABLE,
         BorderProperty::x,
         BorderProperty::test,

@@ -16,7 +16,7 @@ public class Length<T extends Number> implements Unit {
     return ZH.I;
   }
 
-  public static PixelLength pixel(int value) {
+  public static PixelLength pixel(float value) {
     return new PixelLength(value);
   }
 
@@ -48,8 +48,8 @@ public class Length<T extends Number> implements Unit {
     return value + "" + type;
   }
 
-  public static class PixelLength extends Length<Integer> {
-    public PixelLength(@NonNull Integer value) {
+  public static class PixelLength extends Length<Float> {
+    public PixelLength(@NonNull Float value) {
       super(value, "px");
     }
 
@@ -66,6 +66,6 @@ public class Length<T extends Number> implements Unit {
   }
 
   private static final class ZH {
-    private static final PixelLength I = new PixelLength(0);
+    private static final PixelLength I = new PixelLength(0F);
   }
 }

@@ -22,7 +22,7 @@ public class BorderRadiusProperty extends Property {
     super(
         BORDER_RADIUS,
         "0",
-        !INHERITED,
+        !INHERITABLE,
         ANIMATABLE,
         BorderRadiusProperty::extract,
         BorderRadiusProperty::test,

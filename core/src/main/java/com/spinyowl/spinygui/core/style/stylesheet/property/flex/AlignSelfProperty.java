@@ -11,7 +11,7 @@ public class AlignSelfProperty extends Property {
     super(
         ALIGN_SELF,
         "auto",
-        !INHERITED,
+        !INHERITABLE,
         !ANIMATABLE,
         (alignSelf, styles) -> styles.put(ALIGN_SELF, AlignSelf.find(alignSelf)),
         AlignSelf::contains);

@@ -11,7 +11,7 @@ public class FontStyleProperty extends Property {
     super(
         FONT_STYLE,
         "normal",
-        INHERITED,
+        INHERITABLE,
         !ANIMATABLE,
         (fontStyle, styles) -> styles.put(FONT_STYLE, FontStyle.find(fontStyle)),
         FontStyle::contains);

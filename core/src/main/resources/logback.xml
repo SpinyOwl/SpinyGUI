@@ -2,9 +2,7 @@
 
   <appender class="ch.qos.logback.core.ConsoleAppender" name="STDOUT">
     <encoder>
-      <pattern>%black(%d{ISO8601}) %highlight(%-5level) | %blue(%-20t) |
-        %yellow(%40.40C{40}:%-5.5line): %msg %n
-      </pattern>
+      <pattern>%black(%d{ISO8601}) %highlight(%-5level) | %blue(%-20t) | %yellow(%40.40C{40}:%-5.5line): %msg %n</pattern>
     </encoder>
   </appender>
 

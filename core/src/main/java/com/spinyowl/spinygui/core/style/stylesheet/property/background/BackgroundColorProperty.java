@@ -15,7 +15,7 @@ public class BackgroundColorProperty extends Property {
     super(
         BACKGROUND_COLOR,
         "transparent",
-        !INHERITED,
+        !INHERITABLE,
         ANIMATABLE,
         (value, styles) -> styles.put(BACKGROUND_COLOR, colorExtractor.extract(value)),
         colorExtractor::isValid);

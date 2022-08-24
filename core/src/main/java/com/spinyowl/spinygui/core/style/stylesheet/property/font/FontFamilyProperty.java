@@ -12,7 +12,7 @@ public class FontFamilyProperty extends Property {
     super(
         FONT_FAMILY,
         "Roboto",
-        INHERITED,
+        INHERITABLE,
         !ANIMATABLE,
         (v, styles) ->
             styles.put(

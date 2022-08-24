@@ -14,7 +14,7 @@ public class FlexShrinkProperty extends Property {
     super(
         FLEX_SHRINK,
         "0",
-        !INHERITED,
+        !INHERITABLE,
         !ANIMATABLE,
         (value, styles) -> styles.put(FLEX_SHRINK, extractor.extract(value)),
         extractor::isValid);

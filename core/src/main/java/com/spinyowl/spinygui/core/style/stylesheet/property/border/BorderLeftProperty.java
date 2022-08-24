@@ -12,7 +12,7 @@ public class BorderLeftProperty extends Property {
     super(
         BORDER_LEFT,
         BorderProperty.DEFAULT_VALUE,
-        !INHERITED,
+        !INHERITABLE,
         ANIMATABLE,
         (value, styles) ->
             BorderProperty.extract(

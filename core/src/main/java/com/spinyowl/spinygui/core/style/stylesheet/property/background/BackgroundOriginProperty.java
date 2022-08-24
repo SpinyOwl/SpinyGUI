@@ -11,7 +11,7 @@ public class BackgroundOriginProperty extends Property {
     super(
         BACKGROUND_ORIGIN,
         BackgroundOrigin.PADDING_BOX.name(),
-        !INHERITED,
+        !INHERITABLE,
         !ANIMATABLE,
         (value, styles) -> styles.put(BACKGROUND_ORIGIN, BackgroundOrigin.find(value)),
         BackgroundOrigin::contains);

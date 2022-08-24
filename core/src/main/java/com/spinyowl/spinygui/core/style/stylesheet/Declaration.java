@@ -17,29 +17,37 @@ public class Declaration {
   @NonNull private final Property property;
 
   /** Current value of css property. Could not be null. */
-  @NonNull protected String value;
+  @NonNull protected String stringValue;
+
+  protected Term<?> term;
 
   private boolean enabled = true;
 
+  public Declaration(@NonNull Property property, @NonNull String stringValue, Term<?> term) {
+    this.property = property;
+    this.stringValue = stringValue;
+    this.term = term;
+  }
+
   /** Used to reset property value to default. */
   public void resetToDefault() {
-    this.value = property.defaultValue();
+    this.stringValue = property.defaultValue();
   }
 
   public boolean isInitial() {
-    return INITIAL.equalsIgnoreCase(value);
+    return INITIAL.equalsIgnoreCase(stringValue);
   }
 
   public boolean isInherit() {
-    return INHERIT.equalsIgnoreCase(value);
+    return INHERIT.equalsIgnoreCase(stringValue);
   }
 
   public void compute(Element element, Map<String, Object> styles) {
-    property.compute(element, value, styles);
+    property.compute(element, stringValue, styles);
   }
 
   @Override
   public String toString() {
-    return property.name() + ": " + value;
+    return property.name() + ": " + stringValue;
   }
 }

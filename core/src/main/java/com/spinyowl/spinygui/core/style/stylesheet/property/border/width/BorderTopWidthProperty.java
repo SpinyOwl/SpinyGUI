@@ -11,7 +11,7 @@ public class BorderTopWidthProperty extends Property {
     super(
         BORDER_TOP_WIDTH,
         MEDIUM,
-        !INHERITED,
+        !INHERITABLE,
         ANIMATABLE,
         (value, styles) -> styles.put(BORDER_TOP_WIDTH, BorderWidthProperty.extractOne(value)),
         BorderWidthProperty::testOne);

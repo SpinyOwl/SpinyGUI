@@ -14,7 +14,7 @@ public class TabSizeProperty extends Property {
     super(
         TAB_SIZE,
         "4",
-        INHERITED,
+        INHERITABLE,
         !ANIMATABLE,
         (value, styles) -> styles.put(TAB_SIZE, extractor.extract(value)),
         extractor::isValid);

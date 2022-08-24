@@ -9,7 +9,7 @@ public class FontStretchProperty extends Property {
     super(
         FONT_STRETCH,
         "normal",
-        INHERITED,
+        INHERITABLE,
         ANIMATABLE,
         (fontStretch, styles) -> styles.put(FONT_STRETCH, FontStretch.find(fontStretch)),
         FontStretch::contains);

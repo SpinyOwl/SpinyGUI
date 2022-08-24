@@ -31,7 +31,7 @@ public class BorderWidthProperty extends Property {
     super(
         BORDER_WIDTH,
         MEDIUM,
-        !INHERITED,
+        !INHERITABLE,
         ANIMATABLE,
         BorderWidthProperty::extract,
         BorderWidthProperty::test, true);

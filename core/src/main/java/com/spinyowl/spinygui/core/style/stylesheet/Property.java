@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.function.BiConsumer;
 import java.util.function.Predicate;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -23,10 +24,10 @@ public class Property {
   public static final String INITIAL = "initial";
 
   public static final boolean ANIMATABLE = true;
-  public static final boolean INHERITED = true;
+  public static final boolean INHERITABLE = true;
 
   /** Name of css property. */
-  @NonNull protected final String name;
+  @NonNull protected String name;
 
   /**
    * Default value of css property. Could not be null. This value used for next cases:
@@ -38,7 +39,9 @@ public class Property {
    *       specified in style.
    * </ul>
    */
-  @NonNull protected final String defaultValue;
+  @NonNull protected String defaultValue;
+
+  protected Term<?> defaultValueTerm;
 
   /**
    * Defines if css property for element should be inherited from parent element. <br>
@@ -50,27 +53,46 @@ public class Property {
    * The <b>inherit</b> keyword allows authors to explicitly specify inheritance. It works on both
    * inherited and non-inherited properties.
    */
-  protected final boolean inherited;
+  @NonNull protected boolean inheritable;
 
   /** Defines if css property could be animated. */
-  protected final boolean animatable;
+  @NonNull protected boolean animatable;
 
   /** Used to extract and compute value from string representation and put to style map. */
-  @NonNull protected final BiConsumer<String, Map<String, Object>> valueExtractor;
+  @NonNull protected BiConsumer<String, Map<String, Object>> valueExtractor;
+
+  protected Extractor extractor;
 
   /** Used to validate string value before extraction. */
-  @NonNull protected final Predicate<String> valueValidator;
+  @NonNull protected Predicate<String> valueValidator;
 
-  protected final boolean shorthand;
+  protected Validator validator;
+
+  @NonNull protected boolean shorthand;
+
+  public Property(
+      @NonNull String name,
+      @NonNull Term<?> defaultValueTerm,
+      boolean inheritable,
+      boolean animatable,
+      @NonNull Extractor extractor,
+      @NonNull Validator validator) {
+    this.name = name;
+    this.defaultValueTerm = defaultValueTerm;
+    this.inheritable = inheritable;
+    this.animatable = animatable;
+    this.extractor = extractor;
+    this.validator = validator;
+  }
 
   public Property(
       String name,
       String defaultValue,
-      boolean inherited,
+      boolean inheritable,
       boolean animatable,
       BiConsumer<String, Map<String, Object>> valueExtractor,
       Predicate<String> valueValidator) {
-    this(name, defaultValue, inherited, animatable, valueExtractor, valueValidator, false);
+    this(name, defaultValue, inheritable, animatable, valueExtractor, valueValidator, false);
   }
 
   /**
@@ -105,7 +127,7 @@ public class Property {
   }
 
   public void computeAbsent(Element element, @NonNull Map<String, Object> styles) {
-    if (inherited()) {
+    if (inheritable()) {
       this.inheritedValue(element, styles);
     } else {
       defaultComputedValue(styles);
@@ -127,5 +149,40 @@ public class Property {
     if (!shorthand) {
       valueExtractor.accept(defaultValue, styles);
     }
+  }
+
+  @FunctionalInterface
+  public interface Extractor extends BiConsumer<Term<?>, Map<String, Object>> {
+
+    static Extractor from(BiConsumer<Term<?>, Map<String, Object>> biConsumer) {
+      return biConsumer::accept;
+    }
+
+    @Override
+    default void accept(Term<?> term, Map<String, Object> stringObjectMap) {
+      extract(term, stringObjectMap);
+    }
+
+    /**
+     * Used to resolve term to style map.
+     *
+     * @param term term to resolve.
+     * @param resolvedStyles resolved style map.
+     */
+    void extract(Term<?> term, Map<String, Object> resolvedStyles);
+  }
+
+  @FunctionalInterface
+  public interface Validator extends Predicate<Term<?>> {
+    static Validator from(Predicate<Term<?>> predicate) {
+      return predicate::test;
+    }
+
+    @Override
+    default boolean test(Term<?> term) {
+      return validate(term);
+    }
+
+    boolean validate(Term<?> term);
   }
 }

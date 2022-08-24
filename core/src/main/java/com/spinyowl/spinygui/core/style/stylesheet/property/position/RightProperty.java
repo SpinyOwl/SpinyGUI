@@ -14,7 +14,7 @@ public class RightProperty extends Property {
     super(
         RIGHT,
         "auto",
-        !INHERITED,
+        !INHERITABLE,
         ANIMATABLE,
         (value, styles) -> styles.put(RIGHT, extractor.extract(value)),
         extractor::isValid);

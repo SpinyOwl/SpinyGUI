@@ -26,7 +26,7 @@ public class BackgroundPositionProperty extends Property {
     super(
         BACKGROUND_POSITION,
         "0% 0%",
-        !INHERITED,
+        !INHERITABLE,
         ANIMATABLE,
         BackgroundPositionProperty::extract,
         BackgroundPositionProperty::test,

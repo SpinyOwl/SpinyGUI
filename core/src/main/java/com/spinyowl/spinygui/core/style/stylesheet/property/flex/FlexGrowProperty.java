@@ -14,7 +14,7 @@ public class FlexGrowProperty extends Property {
     super(
         FLEX_GROW,
         "0",
-        !INHERITED,
+        !INHERITABLE,
         !ANIMATABLE,
         (value, styles) -> styles.put(FLEX_GROW, extractor.extract(value)),
         extractor::isValid);

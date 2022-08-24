@@ -15,7 +15,7 @@ public class PaddingTopProperty extends Property {
     super(
         PADDING_TOP,
         "0",
-        !INHERITED,
+        !INHERITABLE,
         ANIMATABLE,
         (value, styles) -> styles.put(PADDING_TOP, extractor.extract(value)),
         extractor::isValid);

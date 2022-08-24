@@ -15,7 +15,7 @@ public class PaddingLeftProperty extends Property {
     super(
         PADDING_LEFT,
         "0",
-        !INHERITED,
+        !INHERITABLE,
         ANIMATABLE,
         (value, styles) -> styles.put(PADDING_LEFT, extractor.extract(value)),
         extractor::isValid);

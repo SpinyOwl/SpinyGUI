@@ -10,7 +10,7 @@ public class FontWeightProperty extends Property {
     super(
         FONT_WEIGHT,
         "normal",
-        INHERITED,
+        INHERITABLE,
         ANIMATABLE,
         (fontWeight, styles) -> styles.put(FONT_WEIGHT, FontWeight.find(fontWeight)),
         FontWeight::contains);

@@ -10,7 +10,7 @@ public class BorderRightStyleProperty extends Property {
     super(
         BORDER_RIGHT_STYLE,
         BorderStyleProperty.DEFAULT_VALUE,
-        !INHERITED,
+        !INHERITABLE,
         ANIMATABLE,
         (borderStyle, styles) -> styles.put(BORDER_RIGHT_STYLE, BorderStyle.find(borderStyle)),
         BorderStyle::contains);

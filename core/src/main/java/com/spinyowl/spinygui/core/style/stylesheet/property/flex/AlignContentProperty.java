@@ -11,7 +11,7 @@ public class AlignContentProperty extends Property {
     super(
         ALIGN_CONTENT,
         "stretch",
-        !INHERITED,
+        !INHERITABLE,
         !ANIMATABLE,
         (alignContent, styles) -> styles.put(ALIGN_CONTENT, AlignContent.find(alignContent)),
         AlignContent::contains);

@@ -14,7 +14,7 @@ public class BottomProperty extends Property {
     super(
         BOTTOM,
         "auto",
-        !INHERITED,
+        !INHERITABLE,
         ANIMATABLE,
         (value, styles) -> styles.put(BOTTOM, extractor.extract(value)),
         extractor::isValid);

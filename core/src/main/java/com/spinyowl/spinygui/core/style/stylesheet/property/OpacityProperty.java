@@ -14,7 +14,7 @@ public class OpacityProperty extends Property {
     super(
         OPACITY,
         "1",
-        !INHERITED,
+        !INHERITABLE,
         ANIMATABLE,
         (value, styles) -> styles.put(OPACITY, extractor.extract(value)),
         extractor::isValid);
