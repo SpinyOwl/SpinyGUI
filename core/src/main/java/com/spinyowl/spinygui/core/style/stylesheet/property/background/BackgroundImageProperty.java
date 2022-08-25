@@ -1,8 +1,9 @@
 package com.spinyowl.spinygui.core.style.stylesheet.property.background;
 
-import com.spinyowl.spinygui.core.style.stylesheet.Property;
-
 import static com.spinyowl.spinygui.core.style.stylesheet.Properties.BACKGROUND_IMAGE;
+
+import com.spinyowl.spinygui.core.style.stylesheet.Property;
+import com.spinyowl.spinygui.core.style.stylesheet.term.TermIdent;
 
 /** Currently supports only url/none argument. */
 public class BackgroundImageProperty extends Property {
@@ -13,11 +14,11 @@ public class BackgroundImageProperty extends Property {
   public BackgroundImageProperty() {
     super(
         BACKGROUND_IMAGE,
-        NONE,
+        new TermIdent(NONE),
         !INHERITABLE,
         !ANIMATABLE,
-        (value, styles) -> styles.put(BACKGROUND_IMAGE, extractUrl(value)),
-        BackgroundImageProperty::test);
+        (term, styles) -> styles.put(BACKGROUND_IMAGE, extractUrl(((TermIdent) term).value())),
+        term -> term instanceof TermIdent ti && test(ti.value()));
   }
 
   private static boolean test(String value) {

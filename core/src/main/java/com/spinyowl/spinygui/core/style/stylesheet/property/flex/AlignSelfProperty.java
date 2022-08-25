@@ -1,19 +1,20 @@
 package com.spinyowl.spinygui.core.style.stylesheet.property.flex;
 
-import com.spinyowl.spinygui.core.style.stylesheet.Property;
-import com.spinyowl.spinygui.core.style.types.flex.AlignSelf;
-
 import static com.spinyowl.spinygui.core.style.stylesheet.Properties.ALIGN_SELF;
+
+import com.spinyowl.spinygui.core.style.stylesheet.Property;
+import com.spinyowl.spinygui.core.style.stylesheet.term.TermIdent;
+import com.spinyowl.spinygui.core.style.types.flex.AlignSelf;
 
 public class AlignSelfProperty extends Property {
 
   public AlignSelfProperty() {
     super(
         ALIGN_SELF,
-        "auto",
+        new TermIdent(AlignSelf.AUTO.name()),
         !INHERITABLE,
         !ANIMATABLE,
-        (alignSelf, styles) -> styles.put(ALIGN_SELF, AlignSelf.find(alignSelf)),
-        AlignSelf::contains);
+        put(ALIGN_SELF, TermIdent.class, AlignSelf::find),
+        check(TermIdent.class, AlignSelf::contains));
   }
 }

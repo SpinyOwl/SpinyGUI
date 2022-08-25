@@ -16,7 +16,9 @@ import com.spinyowl.spinygui.core.style.stylesheet.term.TermColor;
 import com.spinyowl.spinygui.core.style.stylesheet.term.TermFloat;
 import com.spinyowl.spinygui.core.style.stylesheet.term.TermIdent;
 import com.spinyowl.spinygui.core.style.stylesheet.term.TermList;
+import com.spinyowl.spinygui.core.style.stylesheet.term.TermList.Operator;
 import com.spinyowl.spinygui.core.style.types.Color;
+import java.util.List;
 import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 
@@ -28,11 +30,27 @@ public class PropertyValueVisitor extends CSS3BaseVisitor<Term<?>> {
   private static final String HSL = "hsl(";
   private static final String HSLA = "hsla(";
 
+  private static Operator getOperator(String operatorText) {
+    Operator operator;
+    if (operatorText.contains(",")) {
+      operator = Operator.COMMA;
+    } else if (operatorText.contains("/")) {
+      operator = Operator.SLASH;
+    } else {
+      operator = Operator.SPACE;
+    }
+    return operator;
+  }
+
   @Override
+  @SuppressWarnings("squid:S6204")
   public Term<?> visitExpr(ExprContext ctx) {
     log.debug("visitExpr. " + ctx.getText());
     if (ctx.term().size() == 1) return super.visit(ctx.term(0));
-    return new TermList(ctx.term().stream().map(super::visit).collect(Collectors.toList()));
+    List<Term<?>> terms = ctx.term().stream().map(super::visit).collect(Collectors.toList());
+    Operator operator = getOperator(ctx.operator(0).getText());
+
+    return new TermList(terms, operator);
   }
 
   @Override
@@ -57,6 +75,11 @@ public class PropertyValueVisitor extends CSS3BaseVisitor<Term<?>> {
   @Override
   public Term<?> visitPercentage(PercentageContext ctx) {
     log.debug("visitPercentage");
+    if (ctx.Minus() != null) {
+      log.debug("-" + ctx.Percentage().getText());
+    } else {
+      log.debug(ctx.Percentage().getText());
+    }
     return super.visitPercentage(ctx);
   }
 
@@ -97,6 +120,8 @@ public class PropertyValueVisitor extends CSS3BaseVisitor<Term<?>> {
       return new TermColor(hsla(ctx, 1f));
     } else if (HSLA.equalsIgnoreCase(text)) {
       return new TermColor(hsla(ctx, childToFloat(ctx, 3)));
+    } else {
+      log.warn("Unknown function: " + ctx.getText());
     }
     return super.visitFunction(ctx);
   }

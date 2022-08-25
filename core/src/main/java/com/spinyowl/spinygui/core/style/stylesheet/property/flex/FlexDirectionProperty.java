@@ -1,19 +1,20 @@
 package com.spinyowl.spinygui.core.style.stylesheet.property.flex;
 
-import com.spinyowl.spinygui.core.style.stylesheet.Property;
-import com.spinyowl.spinygui.core.style.types.flex.FlexDirection;
-
 import static com.spinyowl.spinygui.core.style.stylesheet.Properties.FLEX_DIRECTION;
+
+import com.spinyowl.spinygui.core.style.stylesheet.Property;
+import com.spinyowl.spinygui.core.style.stylesheet.term.TermIdent;
+import com.spinyowl.spinygui.core.style.types.flex.FlexDirection;
 
 public class FlexDirectionProperty extends Property {
 
   public FlexDirectionProperty() {
     super(
         FLEX_DIRECTION,
-        "row",
+        new TermIdent(FlexDirection.ROW.name()),
         !INHERITABLE,
         !ANIMATABLE,
-        (flexDirection, styles) -> styles.put(FLEX_DIRECTION, FlexDirection.find(flexDirection)),
-        FlexDirection::contains);
+        put(FLEX_DIRECTION, TermIdent.class, FlexDirection::find),
+        check(TermIdent.class, FlexDirection::contains));
   }
 }

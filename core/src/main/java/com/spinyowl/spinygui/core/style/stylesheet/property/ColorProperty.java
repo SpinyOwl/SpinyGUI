@@ -18,12 +18,7 @@ public class ColorProperty extends Property {
         INHERITABLE,
         ANIMATABLE,
         ColorProperty::extract,
-        ColorProperty::validate);
-  }
-
-  private static boolean validate(Term<?> obj) {
-    return (obj instanceof TermColor)
-        || (obj instanceof TermIdent ident && Color.exists(ident.value()));
+        check(TermIdent.class, Color::exists).or(TermColor.class::isInstance));
   }
 
   private static void extract(Term<?> term, Map<String, Object> styles) {

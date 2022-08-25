@@ -1,19 +1,20 @@
 package com.spinyowl.spinygui.core.style.stylesheet.property.flex;
 
-import com.spinyowl.spinygui.core.style.stylesheet.Property;
-import com.spinyowl.spinygui.core.style.types.flex.AlignContent;
-
 import static com.spinyowl.spinygui.core.style.stylesheet.Properties.ALIGN_CONTENT;
+
+import com.spinyowl.spinygui.core.style.stylesheet.Property;
+import com.spinyowl.spinygui.core.style.stylesheet.term.TermIdent;
+import com.spinyowl.spinygui.core.style.types.flex.AlignContent;
 
 public class AlignContentProperty extends Property {
 
   public AlignContentProperty() {
     super(
         ALIGN_CONTENT,
-        "stretch",
+        new TermIdent(AlignContent.STRETCH.name()),
         !INHERITABLE,
         !ANIMATABLE,
-        (alignContent, styles) -> styles.put(ALIGN_CONTENT, AlignContent.find(alignContent)),
-        AlignContent::contains);
+        put(ALIGN_CONTENT, TermIdent.class, AlignContent::find),
+        check(TermIdent.class, AlignContent::contains));
   }
 }

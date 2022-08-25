@@ -2,6 +2,7 @@ package com.spinyowl.spinygui.core.style.stylesheet;
 
 import static com.spinyowl.spinygui.core.style.stylesheet.Property.INHERIT;
 import static com.spinyowl.spinygui.core.style.stylesheet.Property.INITIAL;
+
 import com.spinyowl.spinygui.core.node.Element;
 import java.util.Map;
 import lombok.Data;
@@ -31,19 +32,21 @@ public class Declaration {
 
   /** Used to reset property value to default. */
   public void resetToDefault() {
-    this.stringValue = property.defaultValue();
+    this.term = property.defaultValue();
   }
 
+  @SuppressWarnings("squid:S2159")
   public boolean isInitial() {
-    return INITIAL.equalsIgnoreCase(stringValue);
+    return INITIAL.equals(term);
   }
 
+  @SuppressWarnings("squid:S2159")
   public boolean isInherit() {
-    return INHERIT.equalsIgnoreCase(stringValue);
+    return INHERIT.equals(term);
   }
 
   public void compute(Element element, Map<String, Object> styles) {
-    property.compute(element, stringValue, styles);
+    property.compute(element, term, styles);
   }
 
   @Override

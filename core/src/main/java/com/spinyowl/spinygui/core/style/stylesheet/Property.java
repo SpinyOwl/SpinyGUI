@@ -1,27 +1,26 @@
 package com.spinyowl.spinygui.core.style.stylesheet;
 
 import com.spinyowl.spinygui.core.node.Element;
+import com.spinyowl.spinygui.core.style.stylesheet.term.TermIdent;
 import java.util.Map;
 import java.util.function.BiConsumer;
+import java.util.function.Function;
 import java.util.function.Predicate;
-import lombok.AccessLevel;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 /**
  * Root class that describes property. Should be used to create new classes which implement {@link
- * Property#compute(Element, String, Map)} )}}.
+ * Property#compute(Element, Term, Map)} )}}.
  */
 @Slf4j
 @Getter
-@RequiredArgsConstructor(access = AccessLevel.PROTECTED)
+// @RequiredArgsConstructor(access = AccessLevel.PROTECTED)
 public class Property {
 
-  public static final String INHERIT = "inherit";
-  public static final String INITIAL = "initial";
+  public static final TermIdent INHERIT = new TermIdent("inherit");
+  public static final TermIdent INITIAL = new TermIdent("initial");
 
   public static final boolean ANIMATABLE = true;
   public static final boolean INHERITABLE = true;
@@ -39,9 +38,7 @@ public class Property {
    *       specified in style.
    * </ul>
    */
-  @NonNull protected String defaultValue;
-
-  protected Term<?> defaultValueTerm;
+  protected Term<?> defaultValue;
 
   /**
    * Defines if css property for element should be inherited from parent element. <br>
@@ -58,41 +55,51 @@ public class Property {
   /** Defines if css property could be animated. */
   @NonNull protected boolean animatable;
 
-  /** Used to extract and compute value from string representation and put to style map. */
-  @NonNull protected BiConsumer<String, Map<String, Object>> valueExtractor;
+  /** Used to compute value from term and update style map with it. */
+  protected Updater updater;
 
-  protected Extractor extractor;
-
-  /** Used to validate string value before extraction. */
-  @NonNull protected Predicate<String> valueValidator;
-
+  /** Used to validate term value before extraction. */
   protected Validator validator;
 
+  /** Defines if this property is shorthand or not. */
   @NonNull protected boolean shorthand;
 
   public Property(
       @NonNull String name,
-      @NonNull Term<?> defaultValueTerm,
+      @NonNull Term<?> defaultValue,
       boolean inheritable,
       boolean animatable,
-      @NonNull Extractor extractor,
+      @NonNull Property.Updater updater,
       @NonNull Validator validator) {
     this.name = name;
-    this.defaultValueTerm = defaultValueTerm;
+    this.defaultValue = defaultValue;
     this.inheritable = inheritable;
     this.animatable = animatable;
-    this.extractor = extractor;
+    this.updater = updater;
     this.validator = validator;
   }
 
-  public Property(
-      String name,
-      String defaultValue,
-      boolean inheritable,
-      boolean animatable,
-      BiConsumer<String, Map<String, Object>> valueExtractor,
-      Predicate<String> valueValidator) {
-    this(name, defaultValue, inheritable, animatable, valueExtractor, valueValidator, false);
+  /**
+   * Creates validator that checks if term is instance of specified class and if so, casts to this
+   * class and applies provided predicate.
+   */
+  protected static <T> Validator check(Class<? extends Term<T>> clazz, Predicate<T> predicate) {
+    return term -> clazz.isInstance(term) && predicate.test(clazz.cast(term).value);
+  }
+
+  /** Casts term to provided term class and applies function to it's value */
+  protected static <T, O> O convert(
+      Term<?> term, Class<? extends Term<T>> clazz, Function<T, O> function) {
+    return function.apply(clazz.cast(term).value());
+  }
+
+  /**
+   * Uses {@link #convert(Term, Class, Function)} to convert term value using provided function and
+   * puts result to styles map using provided name as key.
+   */
+  public static <T> Updater put(
+      String name, Class<? extends Term<T>> clazz, Function<T, Object> function) {
+    return (term, styles) -> styles.put(name, convert(term, clazz, function));
   }
 
   /**
@@ -101,22 +108,23 @@ public class Property {
    * @param element element to update calculated style.
    * @param value string representation of css property value.
    */
-  public void compute(@NonNull Element element, String value, @NonNull Map<String, Object> styles) {
+  public void compute(
+      @NonNull Element element, Term<?> value, @NonNull Map<String, Object> styles) {
     if (value == null) {
       computeAbsent(element, styles);
-    } else if (INITIAL.equalsIgnoreCase(value)) {
-      valueExtractor.accept(defaultValue, styles);
-    } else if (INHERIT.equalsIgnoreCase(value)) {
+    } else if (INITIAL.equals(value)) {
+      updater.accept(defaultValue, styles);
+    } else if (INHERIT.equals(value)) {
       inheritedValue(element, styles);
-    } else if (valueValidator.test(value)) {
+    } else if (validator.test(value)) {
       try {
-        valueExtractor.accept(value, styles);
+        updater.accept(value, styles);
       } catch (Exception t) {
         if (log.isErrorEnabled()) {
           log.error(
               "Error during extracting value from '{}' with '{}' extractor. {}",
               value,
-              valueExtractor,
+              updater,
               t.getMessage());
         }
 
@@ -147,20 +155,20 @@ public class Property {
 
   public void defaultComputedValue(@NonNull Map<String, Object> styles) {
     if (!shorthand) {
-      valueExtractor.accept(defaultValue, styles);
+      updater.accept(defaultValue, styles);
     }
   }
 
   @FunctionalInterface
-  public interface Extractor extends BiConsumer<Term<?>, Map<String, Object>> {
+  public interface Updater extends BiConsumer<Term<?>, Map<String, Object>> {
 
-    static Extractor from(BiConsumer<Term<?>, Map<String, Object>> biConsumer) {
+    static Updater from(BiConsumer<Term<?>, Map<String, Object>> biConsumer) {
       return biConsumer::accept;
     }
 
     @Override
     default void accept(Term<?> term, Map<String, Object> stringObjectMap) {
-      extract(term, stringObjectMap);
+      update(term, stringObjectMap);
     }
 
     /**
@@ -169,7 +177,7 @@ public class Property {
      * @param term term to resolve.
      * @param resolvedStyles resolved style map.
      */
-    void extract(Term<?> term, Map<String, Object> resolvedStyles);
+    void update(Term<?> term, Map<String, Object> resolvedStyles);
   }
 
   @FunctionalInterface
@@ -184,5 +192,18 @@ public class Property {
     }
 
     boolean validate(Term<?> term);
+
+    default Validator or(@NonNull Validator other) {
+      return t -> validate(t) || other.validate(t);
+    }
+
+    default Validator and(@NonNull Validator other) {
+      return t -> validate(t) && other.validate(t);
+    }
+
+    @Override
+    default Validator negate() {
+      return t -> !validate(t);
+    }
   }
 }
