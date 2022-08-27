@@ -204,6 +204,13 @@ public class Property {
      * @param resolvedStyles resolved style map.
      */
     void update(Term<?> term, Map<String, Object> resolvedStyles);
+
+    default Updater andThen(Updater after) {
+      return (term, styles) -> {
+        this.update(term, styles);
+        after.update(term, styles);
+      };
+    }
   }
 
   @FunctionalInterface

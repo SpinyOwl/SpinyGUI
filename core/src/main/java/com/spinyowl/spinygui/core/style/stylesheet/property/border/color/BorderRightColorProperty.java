@@ -1,15 +1,14 @@
 package com.spinyowl.spinygui.core.style.stylesheet.property.border.color;
 
-import com.spinyowl.spinygui.core.style.stylesheet.Property;
-import com.spinyowl.spinygui.core.style.stylesheet.extractor.ValueExtractor;
-import com.spinyowl.spinygui.core.style.stylesheet.extractor.ValueExtractors;
-import com.spinyowl.spinygui.core.style.types.Color;
-
 import static com.spinyowl.spinygui.core.style.stylesheet.Properties.BORDER_RIGHT_COLOR;
 
-public class BorderRightColorProperty extends Property {
+import com.spinyowl.spinygui.core.style.stylesheet.Property;
+import com.spinyowl.spinygui.core.style.stylesheet.term.TermColor;
+import com.spinyowl.spinygui.core.style.stylesheet.term.TermIdent;
+import com.spinyowl.spinygui.core.style.types.Color;
+import java.util.function.Function;
 
-  private static final ValueExtractor<Color> extractor = ValueExtractors.of(Color.class);
+public class BorderRightColorProperty extends Property {
 
   public BorderRightColorProperty() {
     super(
@@ -17,7 +16,8 @@ public class BorderRightColorProperty extends Property {
         BorderColorProperty.DEFAULT_VALUE,
         !INHERITABLE,
         ANIMATABLE,
-        (value, styles) -> styles.put(BORDER_RIGHT_COLOR, extractor.extract(value)),
-        extractor::isValid);
+        put(BORDER_RIGHT_COLOR, TermIdent.class, Color::get)
+            .andThen(put(BORDER_RIGHT_COLOR, TermColor.class, Function.identity())),
+        check(TermIdent.class, Color::exists).or(TermColor.class::isInstance));
   }
 }

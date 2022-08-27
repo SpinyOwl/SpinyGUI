@@ -5,19 +5,21 @@ import static com.spinyowl.spinygui.core.style.stylesheet.Properties.BORDER_COLO
 import static com.spinyowl.spinygui.core.style.stylesheet.Properties.BORDER_LEFT_COLOR;
 import static com.spinyowl.spinygui.core.style.stylesheet.Properties.BORDER_RIGHT_COLOR;
 import static com.spinyowl.spinygui.core.style.stylesheet.Properties.BORDER_TOP_COLOR;
-import static com.spinyowl.spinygui.core.style.stylesheet.util.StyleUtils.setOneFour;
-import static com.spinyowl.spinygui.core.style.stylesheet.util.StyleUtils.testMultipleValues;
+
 import com.spinyowl.spinygui.core.style.stylesheet.Property;
-import com.spinyowl.spinygui.core.style.stylesheet.extractor.ValueExtractor;
-import com.spinyowl.spinygui.core.style.stylesheet.extractor.ValueExtractors;
+import com.spinyowl.spinygui.core.style.stylesheet.Term;
+import com.spinyowl.spinygui.core.style.stylesheet.term.TermColor;
+import com.spinyowl.spinygui.core.style.stylesheet.term.TermIdent;
+import com.spinyowl.spinygui.core.style.stylesheet.term.TermList;
+import com.spinyowl.spinygui.core.style.stylesheet.util.StyleUtils;
 import com.spinyowl.spinygui.core.style.types.Color;
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 public class BorderColorProperty extends Property {
 
-  public static final String DEFAULT_VALUE = "black";
-  private static final ValueExtractor<Color> extractor = ValueExtractors.of(Color.class);
+  public static final Term<?> DEFAULT_VALUE = new TermIdent("black");
 
   public BorderColorProperty() {
     super(
@@ -25,14 +27,20 @@ public class BorderColorProperty extends Property {
         DEFAULT_VALUE,
         !INHERITABLE,
         ANIMATABLE,
-        BorderColorProperty::extract,
+        BorderColorProperty::update,
         BorderColorProperty::test,
         true);
   }
 
-  protected static void extract(String value, Map<String, Object> styles) {
-    setOneFour(
-        Arrays.stream(value.split("\\s+")).map(extractor::extract).toArray(Color[]::new),
+  protected static void update(Term<?> term, Map<String, Object> styles) {
+    List<Color> colors = new ArrayList<>();
+    convertTermToColorAndAdd(term, colors);
+    if (term instanceof TermList termList) {
+      termList.terms().forEach(t -> convertTermToColorAndAdd(t, colors));
+    }
+
+    StyleUtils.setOneFour(
+        colors.toArray(),
         BORDER_TOP_COLOR,
         BORDER_RIGHT_COLOR,
         BORDER_BOTTOM_COLOR,
@@ -40,8 +48,22 @@ public class BorderColorProperty extends Property {
         styles);
   }
 
-  private static boolean test(String value) {
-    // TODO: Causes errors if there are several RGBA expressions.
-    return testMultipleValues(value, "\\s+", 1, 4, extractor::isValid);
+  private static void convertTermToColorAndAdd(Term<?> term, List<Color> colors) {
+    if (term instanceof TermIdent termIdent) {
+      colors.add(Color.get(termIdent.value()));
+    } else if (term instanceof TermColor termColor) {
+      colors.add(termColor.value());
+    }
+  }
+
+  private static boolean test(Term<?> term) {
+    if (term instanceof TermIdent termIdent) {
+      return Color.exists(termIdent.value());
+    } else if (term instanceof TermColor) {
+      return true;
+    } else if (term instanceof TermList termList) {
+      return termList.terms().stream().allMatch(BorderColorProperty::test);
+    }
+    return false;
   }
 }
