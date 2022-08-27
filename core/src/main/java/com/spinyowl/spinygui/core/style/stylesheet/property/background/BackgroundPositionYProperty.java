@@ -1,44 +1,34 @@
 package com.spinyowl.spinygui.core.style.stylesheet.property.background;
 
-import com.spinyowl.spinygui.core.style.stylesheet.Property;
-import com.spinyowl.spinygui.core.style.stylesheet.extractor.ValueExtractor;
-import com.spinyowl.spinygui.core.style.stylesheet.extractor.ValueExtractors;
-import com.spinyowl.spinygui.core.style.types.length.Length;
-
-import java.util.List;
-
 import static com.spinyowl.spinygui.core.style.stylesheet.Properties.BACKGROUND_POSITION_Y;
+
+import com.spinyowl.spinygui.core.style.stylesheet.Property;
+import com.spinyowl.spinygui.core.style.stylesheet.Term;
+import com.spinyowl.spinygui.core.style.stylesheet.term.TermIdent;
+import com.spinyowl.spinygui.core.style.stylesheet.term.TermLength;
+import com.spinyowl.spinygui.core.style.types.length.Length;
+import java.util.List;
+import java.util.Map;
 
 public class BackgroundPositionYProperty extends Property {
 
-  private static final ValueExtractor<Length> extractor = ValueExtractors.of(Length.class);
-  private static final String TOP = "top";
-  private static final String CENTER = "center";
-  private static final String BOTTOM = "bottom";
-  private static final List<String> values = List.of(TOP, CENTER, BOTTOM);
+  private static final List<String> values = List.of("top", "center", "bottom");
 
   public BackgroundPositionYProperty() {
     super(
         BACKGROUND_POSITION_Y,
-        "0%",
+        new TermLength(Length.zero()),
         !INHERITABLE,
         ANIMATABLE,
-        (value, styles) -> styles.put(BACKGROUND_POSITION_Y,extract(value)),
-        BackgroundPositionYProperty::test);
+        BackgroundPositionYProperty::update,
+        check(TermIdent.class, values::contains).or(TermLength.class::isInstance));
   }
 
-  // @formatter:off
-  private static Length<?> extract(String value) {
-    return switch (value) {
-      case TOP -> Length.percent(0);
-      case CENTER -> Length.percent(50);
-      case BOTTOM -> Length.percent(100);
-      default -> extractor.extract(value);
-    };
-  }
-  // @formatter:on
-
-  private static boolean test(String value) {
-    return values.contains(value) || extractor.isValid(value);
+  private static void update(Term<?> term, Map<String, Object> styles) {
+    if (term instanceof TermLength termLength) {
+      styles.put(BACKGROUND_POSITION_Y, termLength.value());
+    } else if (term instanceof TermIdent termIdent && values.contains(termIdent.value())) {
+      styles.put(BACKGROUND_POSITION_Y, Length.percent(values.indexOf(termIdent.value()) * 50));
+    }
   }
 }

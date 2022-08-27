@@ -12,9 +12,30 @@ import lombok.RequiredArgsConstructor;
 public class TermList extends Term<List<Term<?>>> {
   @NonNull private Operator operator;
 
-  public TermList(List<Term<?>> value, Operator operator) {
+  public TermList(Operator operator, List<Term<?>> value) {
     super(value);
     this.operator = operator;
+  }
+
+  public TermList(Operator operator, Term<?>... value) {
+    super(List.of(value));
+    this.operator = operator;
+  }
+
+  public List<Term<?>> terms() {
+    return value;
+  }
+
+  public Term<?> get(int index) {
+    return value.get(index);
+  }
+
+  public int size() {
+    return value.size();
+  }
+
+  public boolean isEmpty() {
+    return value.isEmpty();
   }
 
   @Getter

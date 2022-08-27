@@ -1,50 +1,86 @@
 package com.spinyowl.spinygui.core.style.stylesheet.property.background;
 
+import static com.spinyowl.spinygui.core.style.stylesheet.Properties.BACKGROUND_SIZE;
+
 import com.spinyowl.spinygui.core.style.stylesheet.Property;
-import com.spinyowl.spinygui.core.style.stylesheet.extractor.ValueExtractor;
-import com.spinyowl.spinygui.core.style.stylesheet.extractor.ValueExtractors;
+import com.spinyowl.spinygui.core.style.stylesheet.Term;
+import com.spinyowl.spinygui.core.style.stylesheet.term.TermIdent;
+import com.spinyowl.spinygui.core.style.stylesheet.term.TermLength;
+import com.spinyowl.spinygui.core.style.stylesheet.term.TermList;
 import com.spinyowl.spinygui.core.style.types.background.BackgroundSize;
 import com.spinyowl.spinygui.core.style.types.length.Unit;
-
 import java.util.List;
-
-import static com.spinyowl.spinygui.core.style.stylesheet.Properties.BACKGROUND_SIZE;
-import static com.spinyowl.spinygui.core.style.stylesheet.util.StyleUtils.testMultipleValues;
+import java.util.Map;
 
 public class BackgroundSizeProperty extends Property {
 
-  private static final ValueExtractor<Unit> extractor = ValueExtractors.of(Unit.class);
+  private static final String AUTO = "auto";
   private static final String COVER = "cover";
   private static final String CONTAIN = "contain";
-  private static final List<String> values = List.of(COVER, CONTAIN);
+  private static final List<String> values = List.of(AUTO, COVER, CONTAIN);
 
   public BackgroundSizeProperty() {
     super(
         BACKGROUND_SIZE,
-        "auto",
+        new TermIdent(AUTO),
         !INHERITABLE,
         ANIMATABLE,
-        (value, styles) -> styles.put(BACKGROUND_SIZE, extract(value)),
-        BackgroundSizeProperty::test);
+        BackgroundSizeProperty::update,
+        getValidator());
   }
 
-  private static BackgroundSize extract(String value) {
-    switch (value) {
-      case COVER:
-        return BackgroundSize.createCover();
-      case CONTAIN:
-        return BackgroundSize.createContain();
-      default:
-        String[] v = value.split("\\s+");
-        if (v.length == 1) {
-          return BackgroundSize.createSize(extractor.extract(v[0]));
-        } else {
-          return BackgroundSize.createSize(extractor.extract(v[0]), extractor.extract(v[1]));
+  private static Validator getValidator() {
+    return check(TermIdent.class, values::contains)
+        .or(TermLength.class::isInstance)
+        .or(
+            check(
+                TermList.class,
+                termList -> {
+                  if (termList.isEmpty()) return false;
+                  if (termList.size() > 2) return false;
+                  if (termList.size() == 1)
+                    return check(TermIdent.class, values::contains)
+                        .or(TermLength.class::isInstance)
+                        .test(termList.get(0));
+                  return testOne(termList.get(0)) && testOne(termList.get(1));
+                }));
+  }
+
+  private static boolean testOne(Term<?> term) {
+    return check(TermIdent.class, AUTO::equals).or(TermLength.class::isInstance).test(term);
+  }
+
+  private static void update(Term<?> term, Map<String, Object> styles) {
+    updateByOneTerm(term, styles);
+    if (term instanceof TermList termList) {
+      if (termList.size() == 1) {
+        updateByOneTerm(termList.get(0), styles);
+      } else {
+        Unit first = Unit.AUTO;
+        Unit second = Unit.AUTO;
+        if (termList.get(0) instanceof TermLength termLength) {
+          first = termLength.value();
         }
+        if (termList.get(1) instanceof TermLength termLength) {
+          second = termLength.value();
+        }
+        styles.put(BACKGROUND_SIZE, BackgroundSize.createSize(first, second));
+      }
     }
   }
 
-  private static boolean test(String value) {
-    return values.contains(value) || testMultipleValues(value, "\\s+", 1, 2, extractor::isValid);
+  private static void updateByOneTerm(Term<?> term, Map<String, Object> styles) {
+    if (term instanceof TermIdent termIdent) {
+      String value = termIdent.value();
+      if (COVER.equals(value)) {
+        styles.put(BACKGROUND_SIZE, BackgroundSize.createCover());
+      } else if (CONTAIN.equals(value)) {
+        styles.put(BACKGROUND_SIZE, BackgroundSize.createContain());
+      } else if (AUTO.equals(value)) {
+        styles.put(BACKGROUND_SIZE, BackgroundSize.createSize(Unit.AUTO));
+      }
+    } else if (term instanceof TermLength termLength) {
+      styles.put(BACKGROUND_SIZE, BackgroundSize.createSize(termLength.value()));
+    }
   }
 }

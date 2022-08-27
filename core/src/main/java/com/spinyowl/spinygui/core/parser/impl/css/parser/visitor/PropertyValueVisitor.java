@@ -50,7 +50,7 @@ public class PropertyValueVisitor extends CSS3BaseVisitor<Term<?>> {
     List<Term<?>> terms = ctx.term().stream().map(super::visit).collect(Collectors.toList());
     Operator operator = getOperator(ctx.operator(0).getText());
 
-    return new TermList(terms, operator);
+    return new TermList(operator, terms);
   }
 
   @Override

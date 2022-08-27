@@ -50,10 +50,10 @@ public class Property {
    * The <b>inherit</b> keyword allows authors to explicitly specify inheritance. It works on both
    * inherited and non-inherited properties.
    */
-  @NonNull protected boolean inheritable;
+  protected boolean inheritable;
 
   /** Defines if css property could be animated. */
-  @NonNull protected boolean animatable;
+  protected boolean animatable;
 
   /** Used to compute value from term and update style map with it. */
   protected Updater updater;
@@ -62,7 +62,7 @@ public class Property {
   protected Validator validator;
 
   /** Defines if this property is shorthand or not. */
-  @NonNull protected boolean shorthand;
+  protected boolean shorthand;
 
   public Property(
       @NonNull String name,
@@ -71,12 +71,24 @@ public class Property {
       boolean animatable,
       @NonNull Property.Updater updater,
       @NonNull Validator validator) {
+    this(name, defaultValue, inheritable, animatable, updater, validator, false);
+  }
+
+  public Property(
+      @NonNull String name,
+      @NonNull Term<?> defaultValue,
+      boolean inheritable,
+      boolean animatable,
+      @NonNull Property.Updater updater,
+      @NonNull Validator validator,
+      boolean shorthand) {
     this.name = name;
     this.defaultValue = defaultValue;
     this.inheritable = inheritable;
     this.animatable = animatable;
     this.updater = updater;
     this.validator = validator;
+    this.shorthand = shorthand;
   }
 
   /**
@@ -93,13 +105,27 @@ public class Property {
     return function.apply(clazz.cast(term).value());
   }
 
+  public static <T> Updater put(
+      String name,
+      Class<? extends Term<T>> clazz,
+      Predicate<T> predicate,
+      Function<T, ?> function) {
+    return (term, styles) -> {
+      if (clazz.isInstance(term) && predicate.test(clazz.cast(term).value())) {
+        styles.put(name, function.apply(clazz.cast(term).value()));
+      }
+    };
+  }
+
   /**
-   * Uses {@link #convert(Term, Class, Function)} to convert term value using provided function and
-   * puts result to styles map using provided name as key.
+   * Checks if term is instance of specified class and if so, casts to this class and applies
+   * provided function to its value. The result is used to update style map with specified name.
    */
   public static <T> Updater put(
-      String name, Class<? extends Term<T>> clazz, Function<T, Object> function) {
-    return (term, styles) -> styles.put(name, convert(term, clazz, function));
+      String name, Class<? extends Term<T>> clazz, Function<T, ?> function) {
+    return (term, styles) -> {
+      if (clazz.isInstance(term)) styles.put(name, convert(term, clazz, function));
+    };
   }
 
   /**
