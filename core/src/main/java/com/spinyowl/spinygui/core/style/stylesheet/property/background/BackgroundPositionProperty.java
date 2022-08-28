@@ -22,7 +22,7 @@ public class BackgroundPositionProperty extends Property {
   public BackgroundPositionProperty() {
     super(
         BACKGROUND_POSITION,
-        new TermList(Operator.SPACE, new TermLength(Length.zero()), new TermLength(Length.zero())),
+        new TermList(Operator.SPACE, new TermLength(Length.ZERO), new TermLength(Length.ZERO)),
         !INHERITABLE,
         ANIMATABLE,
         BackgroundPositionProperty::extract,
@@ -89,6 +89,6 @@ public class BackgroundPositionProperty extends Property {
         return Length.percent(values.indexOf(value) * 100f / (values.size() - 1));
       }
     }
-    return Length.zero();
+    return Length.ZERO;
   }
 }

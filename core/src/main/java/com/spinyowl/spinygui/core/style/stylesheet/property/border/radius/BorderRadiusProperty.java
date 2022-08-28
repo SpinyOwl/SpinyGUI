@@ -6,12 +6,16 @@ import static com.spinyowl.spinygui.core.style.stylesheet.Properties.BORDER_RADI
 import static com.spinyowl.spinygui.core.style.stylesheet.Properties.BORDER_TOP_LEFT_RADIUS;
 import static com.spinyowl.spinygui.core.style.stylesheet.Properties.BORDER_TOP_RIGHT_RADIUS;
 import static com.spinyowl.spinygui.core.style.stylesheet.util.StyleUtils.setOneFour;
-import static com.spinyowl.spinygui.core.style.stylesheet.util.StyleUtils.testMultipleValues;
+
 import com.spinyowl.spinygui.core.style.stylesheet.Property;
+import com.spinyowl.spinygui.core.style.stylesheet.Term;
 import com.spinyowl.spinygui.core.style.stylesheet.extractor.ValueExtractor;
 import com.spinyowl.spinygui.core.style.stylesheet.extractor.ValueExtractors;
+import com.spinyowl.spinygui.core.style.stylesheet.term.TermLength;
+import com.spinyowl.spinygui.core.style.stylesheet.term.TermList;
 import com.spinyowl.spinygui.core.style.types.length.Length;
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 public class BorderRadiusProperty extends Property {
@@ -21,17 +25,30 @@ public class BorderRadiusProperty extends Property {
   public BorderRadiusProperty() {
     super(
         BORDER_RADIUS,
-        "0",
+        new TermLength(Length.ZERO),
         !INHERITABLE,
         ANIMATABLE,
-        BorderRadiusProperty::extract,
+        BorderRadiusProperty::update,
         BorderRadiusProperty::test,
         true);
   }
 
-  protected static void extract(String value, Map<String, Object> styles) {
+  protected static void update(Term<?> term, Map<String, Object> styles) {
+    List<Length<?>> values = new ArrayList<>();
+    if (term instanceof TermLength termLength) {
+      values.add(termLength.value());
+    } else if (term instanceof TermList termList) {
+      termList
+          .terms()
+          .forEach(
+              t -> {
+                if (t instanceof TermLength termLength) {
+                  values.add(termLength.value());
+                }
+              });
+    }
     setOneFour(
-        Arrays.stream(value.split("\\s+")).map(extractor::extract).toArray(),
+        values.toArray(),
         BORDER_TOP_LEFT_RADIUS,
         BORDER_TOP_RIGHT_RADIUS,
         BORDER_BOTTOM_RIGHT_RADIUS,
@@ -39,7 +56,11 @@ public class BorderRadiusProperty extends Property {
         styles);
   }
 
-  public static boolean test(String value) {
-    return testMultipleValues(value, "\\s+", 1, 4, extractor::isValid);
+  public static boolean test(Term<?> term) {
+    if (term instanceof TermLength) return true;
+    if (term instanceof TermList termList) {
+      return termList.terms().stream().allMatch(BorderRadiusProperty::test);
+    }
+    return false;
   }
 }

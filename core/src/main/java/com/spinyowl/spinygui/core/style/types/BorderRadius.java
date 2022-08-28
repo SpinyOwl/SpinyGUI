@@ -11,13 +11,13 @@ import lombok.NonNull;
 public class BorderRadius {
 
   /** Top left border radius. */
-  @NonNull private Length<?> topLeft = Length.zero();
+  @NonNull private Length<?> topLeft = Length.ZERO;
   /** Top right border radius. */
-  @NonNull private Length<?> topRight = Length.zero();
+  @NonNull private Length<?> topRight = Length.ZERO;
   /** Bottom right border radius. */
-  @NonNull private Length<?> bottomRight = Length.zero();
+  @NonNull private Length<?> bottomRight = Length.ZERO;
   /** Bottom left border radius. */
-  @NonNull private Length<?> bottomLeft = Length.zero();
+  @NonNull private Length<?> bottomLeft = Length.ZERO;
 
   /**
    * Used to create border radius.

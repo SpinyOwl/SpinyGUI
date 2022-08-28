@@ -8,13 +8,10 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class Length<T extends Number> implements Unit {
 
+  public static final Length<Integer> ZERO = new Length<>(0, "px");
+
   @NonNull private final T value;
-
   @NonNull private final String type;
-
-  public static PixelLength zero() {
-    return ZH.I;
-  }
 
   public static PixelLength pixel(float value) {
     return new PixelLength(value);

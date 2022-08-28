@@ -17,7 +17,7 @@ public class BackgroundPositionYProperty extends Property {
   public BackgroundPositionYProperty() {
     super(
         BACKGROUND_POSITION_Y,
-        new TermLength(Length.zero()),
+        new TermLength(Length.ZERO),
         !INHERITABLE,
         ANIMATABLE,
         BackgroundPositionYProperty::update,

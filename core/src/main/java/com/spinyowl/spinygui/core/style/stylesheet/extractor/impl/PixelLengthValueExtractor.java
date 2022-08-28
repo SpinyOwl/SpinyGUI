@@ -1,6 +1,7 @@
 package com.spinyowl.spinygui.core.style.stylesheet.extractor.impl;
 
 import static com.spinyowl.spinygui.core.style.stylesheet.extractor.impl.UnitValueExtractor.getPixelLength;
+
 import com.spinyowl.spinygui.core.style.stylesheet.extractor.ValueExtractor;
 import com.spinyowl.spinygui.core.style.types.length.Length;
 import com.spinyowl.spinygui.core.style.types.length.Length.PixelLength;
@@ -24,6 +25,6 @@ public class PixelLengthValueExtractor implements ValueExtractor<PixelLength> {
 
   @Override
   public PixelLength extract(String value) {
-    return value.matches(UnitValueExtractor.PERCENTAGE_REGEX) ? Length.zero() : getPixelLength(value);
+    return value.matches(UnitValueExtractor.PERCENTAGE_REGEX) ? Length.ZERO : getPixelLength(value);
   }
 }
