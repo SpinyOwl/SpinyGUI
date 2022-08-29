@@ -1,6 +1,8 @@
 package com.spinyowl.spinygui.core.style.stylesheet.property.background;
 
 import static com.spinyowl.spinygui.core.style.stylesheet.Properties.BACKGROUND_POSITION_Y;
+import static com.spinyowl.spinygui.core.style.stylesheet.util.StyleUtils.contains;
+import static com.spinyowl.spinygui.core.style.stylesheet.util.StyleUtils.indexOf;
 
 import com.spinyowl.spinygui.core.style.stylesheet.Property;
 import com.spinyowl.spinygui.core.style.stylesheet.Term;
@@ -27,8 +29,8 @@ public class BackgroundPositionYProperty extends Property {
   private static void update(Term<?> term, Map<String, Object> styles) {
     if (term instanceof TermLength termLength) {
       styles.put(BACKGROUND_POSITION_Y, termLength.value());
-    } else if (term instanceof TermIdent termIdent && values.contains(termIdent.value())) {
-      styles.put(BACKGROUND_POSITION_Y, Length.percent(values.indexOf(termIdent.value()) * 50));
+    } else if (term instanceof TermIdent termIdent && contains(termIdent.value(), values)) {
+      styles.put(BACKGROUND_POSITION_Y, Length.percent(indexOf(termIdent.value(), values) * 50));
     }
   }
 }

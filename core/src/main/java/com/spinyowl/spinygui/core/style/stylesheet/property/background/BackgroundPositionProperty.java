@@ -3,6 +3,8 @@ package com.spinyowl.spinygui.core.style.stylesheet.property.background;
 import static com.spinyowl.spinygui.core.style.stylesheet.Properties.BACKGROUND_POSITION;
 import static com.spinyowl.spinygui.core.style.stylesheet.Properties.BACKGROUND_POSITION_X;
 import static com.spinyowl.spinygui.core.style.stylesheet.Properties.BACKGROUND_POSITION_Y;
+import static com.spinyowl.spinygui.core.style.stylesheet.util.StyleUtils.contains;
+import static com.spinyowl.spinygui.core.style.stylesheet.util.StyleUtils.indexOf;
 
 import com.spinyowl.spinygui.core.style.stylesheet.Property;
 import com.spinyowl.spinygui.core.style.stylesheet.Term;
@@ -38,14 +40,14 @@ public class BackgroundPositionProperty extends Property {
       if (termList.isEmpty() || termList.size() > 2) return false;
 
       if (termList.size() == 1) {
-        return check(TermIdent.class, v -> X_VALUES.contains(v) || Y_VALUES.contains(v))
+        return check(TermIdent.class, v -> contains(v, X_VALUES) || contains(v, Y_VALUES))
             .or(TermLength.class::isInstance)
             .test(termList.get(0));
       } else {
-        return check(TermIdent.class, X_VALUES::contains)
+        return check(TermIdent.class, v -> contains(v, X_VALUES))
                 .or(TermLength.class::isInstance)
                 .test(termList.get(0))
-            && check(TermIdent.class, Y_VALUES::contains)
+            && check(TermIdent.class, v -> contains(v, Y_VALUES))
                 .or(TermLength.class::isInstance)
                 .test(termList.get(1));
       }
@@ -63,20 +65,16 @@ public class BackgroundPositionProperty extends Property {
           term2 == null ? Length.percent(50) : extractFromTerm(term2, Y_VALUES));
     } else if (term instanceof TermIdent termIdent) {
       String value = termIdent.value();
-      if (X_VALUES.contains(value)) {
-        styles.put(
-            BACKGROUND_POSITION_X,
-            Length.percent(X_VALUES.indexOf(value) * 100f / (X_VALUES.size() - 1)));
+      if (contains(value, X_VALUES)) {
+        styles.put(BACKGROUND_POSITION_X, Length.percent(indexOf(value, X_VALUES) * 50F));
         styles.put(BACKGROUND_POSITION_Y, Length.percent(50));
-      } else if (Y_VALUES.contains(value)) {
-        styles.put(
-            BACKGROUND_POSITION_Y,
-            Length.percent(Y_VALUES.indexOf(value) * 100f / (Y_VALUES.size() - 1)));
-        styles.put(BACKGROUND_POSITION_X, Length.percent(50));
+      } else if (contains(value, Y_VALUES)) {
+        styles.put(BACKGROUND_POSITION_Y, Length.percent(indexOf(value, Y_VALUES) * 50F));
+        styles.put(BACKGROUND_POSITION_X, Length.percent(50F));
       }
     } else if (term instanceof TermLength termLength) {
       styles.put(BACKGROUND_POSITION_X, termLength.value());
-      styles.put(BACKGROUND_POSITION_Y, Length.percent(50));
+      styles.put(BACKGROUND_POSITION_Y, Length.percent(50F));
     }
   }
 
@@ -86,7 +84,7 @@ public class BackgroundPositionProperty extends Property {
     } else if (term instanceof TermIdent termIdent) {
       String value = termIdent.value();
       if (values.contains(value)) {
-        return Length.percent(values.indexOf(value) * 100f / (values.size() - 1));
+        return Length.percent(indexOf(value, values) * 50F);
       }
     }
     return Length.ZERO;

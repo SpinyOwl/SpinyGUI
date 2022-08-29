@@ -25,7 +25,7 @@ public class BackgroundImageProperty extends Property {
     if (value == null || value.isEmpty()) {
       return false;
     }
-    if (NONE.equals(value)) {
+    if (NONE.equalsIgnoreCase(value)) {
       return true;
     }
     String trim = value.trim();

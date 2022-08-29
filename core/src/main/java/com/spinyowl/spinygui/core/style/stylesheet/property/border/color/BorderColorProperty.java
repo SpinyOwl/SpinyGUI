@@ -62,7 +62,11 @@ public class BorderColorProperty extends Property {
     } else if (term instanceof TermColor) {
       return true;
     } else if (term instanceof TermList termList) {
-      return termList.terms().stream().allMatch(BorderColorProperty::test);
+      return termList.terms().stream()
+          .allMatch(
+              t ->
+                  (t instanceof TermIdent ti && Color.exists(ti.value()))
+                      || t instanceof TermColor);
     }
     return false;
   }

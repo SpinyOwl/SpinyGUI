@@ -6,15 +6,19 @@ import static com.spinyowl.spinygui.core.style.stylesheet.Properties.BORDER_RIGH
 import static com.spinyowl.spinygui.core.style.stylesheet.Properties.BORDER_STYLE;
 import static com.spinyowl.spinygui.core.style.stylesheet.Properties.BORDER_TOP_STYLE;
 import static com.spinyowl.spinygui.core.style.stylesheet.util.StyleUtils.setOneFour;
-import static com.spinyowl.spinygui.core.style.stylesheet.util.StyleUtils.testMultipleValues;
+
 import com.spinyowl.spinygui.core.style.stylesheet.Property;
+import com.spinyowl.spinygui.core.style.stylesheet.Term;
+import com.spinyowl.spinygui.core.style.stylesheet.term.TermIdent;
+import com.spinyowl.spinygui.core.style.stylesheet.term.TermList;
 import com.spinyowl.spinygui.core.style.types.border.BorderStyle;
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 public class BorderStyleProperty extends Property {
 
-  public static final String DEFAULT_VALUE = BorderStyle.NONE.name();
+  public static final Term<?> DEFAULT_VALUE = new TermIdent(BorderStyle.NONE.name());
   public static final String SPACE_REGEX = "\\s+";
 
   public BorderStyleProperty() {
@@ -23,14 +27,27 @@ public class BorderStyleProperty extends Property {
         DEFAULT_VALUE,
         !INHERITABLE,
         ANIMATABLE,
-        BorderStyleProperty::extract,
+        BorderStyleProperty::update,
         BorderStyleProperty::test,
         true);
   }
 
-  private static void extract(String value, Map<String, Object> styles) {
+  private static void update(Term<?> term, Map<String, Object> styles) {
+    List<BorderStyle> values = new ArrayList<>();
+    if (term instanceof TermIdent termIdent) {
+      values.add(BorderStyle.find(termIdent.value()));
+    } else if (term instanceof TermList termList) {
+      termList
+          .terms()
+          .forEach(
+              t -> {
+                if (t instanceof TermIdent termIdent) {
+                  values.add(BorderStyle.find(termIdent.value()));
+                }
+              });
+    }
     setOneFour(
-        Arrays.stream(value.split(SPACE_REGEX)).map(BorderStyle::find).toArray(),
+        values.toArray(),
         BORDER_TOP_STYLE,
         BORDER_RIGHT_STYLE,
         BORDER_BOTTOM_STYLE,
@@ -38,7 +55,14 @@ public class BorderStyleProperty extends Property {
         styles);
   }
 
-  private static boolean test(String value) {
-    return testMultipleValues(value, SPACE_REGEX, 1, 4, BorderStyle::contains);
+  private static boolean test(Term<?> term) {
+    if (term instanceof TermIdent termIdent) {
+      return BorderStyle.contains(termIdent.value());
+    } else if (term instanceof TermList termList) {
+      return termList.terms().stream()
+          .allMatch(
+              t -> t instanceof TermIdent termIdent && BorderStyle.contains(termIdent.value()));
+    }
+    return false;
   }
 }

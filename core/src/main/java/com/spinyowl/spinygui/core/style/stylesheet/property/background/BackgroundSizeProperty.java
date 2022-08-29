@@ -1,6 +1,7 @@
 package com.spinyowl.spinygui.core.style.stylesheet.property.background;
 
 import static com.spinyowl.spinygui.core.style.stylesheet.Properties.BACKGROUND_SIZE;
+import static com.spinyowl.spinygui.core.style.stylesheet.util.StyleUtils.contains;
 
 import com.spinyowl.spinygui.core.style.stylesheet.Property;
 import com.spinyowl.spinygui.core.style.stylesheet.Term;
@@ -30,7 +31,7 @@ public class BackgroundSizeProperty extends Property {
   }
 
   private static Validator getValidator() {
-    return check(TermIdent.class, values::contains)
+    return check(TermIdent.class, v -> contains(v, values))
         .or(TermLength.class::isInstance)
         .or(
             check(
@@ -39,7 +40,7 @@ public class BackgroundSizeProperty extends Property {
                   if (termList.isEmpty()) return false;
                   if (termList.size() > 2) return false;
                   if (termList.size() == 1)
-                    return check(TermIdent.class, values::contains)
+                    return check(TermIdent.class, v -> contains(v, values))
                         .or(TermLength.class::isInstance)
                         .test(termList.get(0));
                   return testOne(termList.get(0)) && testOne(termList.get(1));
@@ -47,7 +48,9 @@ public class BackgroundSizeProperty extends Property {
   }
 
   private static boolean testOne(Term<?> term) {
-    return check(TermIdent.class, AUTO::equals).or(TermLength.class::isInstance).test(term);
+    return check(TermIdent.class, AUTO::equalsIgnoreCase)
+        .or(TermLength.class::isInstance)
+        .test(term);
   }
 
   private static void update(Term<?> term, Map<String, Object> styles) {
@@ -72,11 +75,11 @@ public class BackgroundSizeProperty extends Property {
   private static void updateByOneTerm(Term<?> term, Map<String, Object> styles) {
     if (term instanceof TermIdent termIdent) {
       String value = termIdent.value();
-      if (COVER.equals(value)) {
+      if (COVER.equalsIgnoreCase(value)) {
         styles.put(BACKGROUND_SIZE, BackgroundSize.createCover());
-      } else if (CONTAIN.equals(value)) {
+      } else if (CONTAIN.equalsIgnoreCase(value)) {
         styles.put(BACKGROUND_SIZE, BackgroundSize.createContain());
-      } else if (AUTO.equals(value)) {
+      } else if (AUTO.equalsIgnoreCase(value)) {
         styles.put(BACKGROUND_SIZE, BackgroundSize.createSize(Unit.AUTO));
       }
     } else if (term instanceof TermLength termLength) {

@@ -7,6 +7,7 @@ import com.spinyowl.spinygui.core.node.Text;
 import com.spinyowl.spinygui.core.style.types.length.Length;
 import com.spinyowl.spinygui.core.style.types.length.Length.PercentLength;
 import com.spinyowl.spinygui.core.style.types.length.Unit;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Predicate;
@@ -152,5 +153,16 @@ public final class StyleUtils {
     styles.put(right, rightValue);
     styles.put(bottom, bottomValue);
     styles.put(left, leftValue);
+  }
+
+  public static boolean contains(String termValue, List<String> allowedValues) {
+    return allowedValues.stream().anyMatch(termValue::equalsIgnoreCase);
+  }
+
+  public static int indexOf(String termValue, List<String> allowedValues) {
+    for (int i = 0; i < allowedValues.size(); i++) {
+      if (termValue.equalsIgnoreCase(allowedValues.get(i))) return i;
+    }
+    return -1;
   }
 }

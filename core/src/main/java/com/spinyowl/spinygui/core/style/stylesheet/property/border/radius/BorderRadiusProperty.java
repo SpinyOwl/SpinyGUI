@@ -59,7 +59,7 @@ public class BorderRadiusProperty extends Property {
   public static boolean test(Term<?> term) {
     if (term instanceof TermLength) return true;
     if (term instanceof TermList termList) {
-      return termList.terms().stream().allMatch(BorderRadiusProperty::test);
+      return termList.terms().stream().allMatch(TermLength.class::isInstance);
     }
     return false;
   }
