@@ -61,7 +61,7 @@ public class BorderWidthProperty extends Property {
     extractOne(term).ifPresent(values::add);
   }
 
-  protected static Optional<Length<?>> extractOne(Term<?> term) {
+  public static Optional<Length<?>> extractOne(Term<?> term) {
     if (term instanceof TermIdent termIdent) {
       if (THIN.equalsIgnoreCase(termIdent.value())) {
         return Optional.of(THIN_VALUE);
@@ -77,16 +77,14 @@ public class BorderWidthProperty extends Property {
     return Optional.empty();
   }
 
-  private static boolean test(Term<?> term) {
-    if (term instanceof TermIdent termIdent) return contains(termIdent.value(), VALUES);
-    if (term instanceof TermLength) return true;
-    if (term instanceof TermList termList) {
-      return termList.terms().stream()
-          .allMatch(
-              t ->
-                  t instanceof TermIdent termIdent && contains(termIdent.value(), VALUES)
-                      || t instanceof TermLength);
-    }
-    return false;
+  public static boolean test(Term<?> term) {
+    return term instanceof TermList termList
+        ? termList.terms().stream().allMatch(BorderWidthProperty::testOne)
+        : testOne(term);
+  }
+
+  public static boolean testOne(Term<?> term) {
+    return term instanceof TermIdent termIdent && contains(termIdent.value(), VALUES)
+        || term instanceof TermLength;
   }
 }

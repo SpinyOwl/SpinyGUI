@@ -2,6 +2,7 @@ package com.spinyowl.spinygui.core.layout.impl;
 
 import static com.spinyowl.spinygui.core.layout.impl.LayoutUtils.findPositionedAncestor;
 import static com.spinyowl.spinygui.core.layout.impl.LayoutUtils.getChildNodesHeight;
+import static com.spinyowl.spinygui.core.layout.impl.LayoutUtils.setBorders;
 import static com.spinyowl.spinygui.core.layout.impl.LayoutUtils.setPadding;
 import static com.spinyowl.spinygui.core.style.stylesheet.util.StyleUtils.getFloatLength;
 import static com.spinyowl.spinygui.core.style.stylesheet.util.StyleUtils.getFloatLengthOptional;
@@ -44,7 +45,7 @@ public class BlockLayout implements ElementLayout {
     ResolvedStyle style = element.resolvedStyle();
 
     // calculate borders
-    setBorders(element.box().border(), style);
+    setBorders(style, element.box().border());
 
     // calculate paddings
     setPadding(
@@ -360,13 +361,6 @@ public class BlockLayout implements ElementLayout {
     // skip layout if element has no frame - that means that it is not attached to any
     // node tree (and tree root is frame).
     return element.frame() == null || (element.parent() == null && !(element instanceof Frame));
-  }
-
-  private void setBorders(Edges border, ResolvedStyle style) {
-    applyPadding(style.borderLeftWidth(), style.borderLeftStyle(), border::left);
-    applyPadding(style.borderRightWidth(), style.borderRightStyle(), border::right);
-    applyPadding(style.borderTopWidth(), style.borderTopStyle(), border::top);
-    applyPadding(style.borderBottomWidth(), style.borderBottomStyle(), border::bottom);
   }
 
   private void applyPadding(

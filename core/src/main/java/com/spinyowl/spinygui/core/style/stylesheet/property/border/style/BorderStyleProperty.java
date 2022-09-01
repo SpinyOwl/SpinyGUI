@@ -56,13 +56,12 @@ public class BorderStyleProperty extends Property {
   }
 
   private static boolean test(Term<?> term) {
-    if (term instanceof TermIdent termIdent) {
-      return BorderStyle.contains(termIdent.value());
-    } else if (term instanceof TermList termList) {
-      return termList.terms().stream()
-          .allMatch(
-              t -> t instanceof TermIdent termIdent && BorderStyle.contains(termIdent.value()));
-    }
-    return false;
+    return term instanceof TermList termList
+        ? termList.terms().stream().allMatch(BorderStyleProperty::testOne)
+        : testOne(term);
+  }
+
+  public static boolean testOne(Term<?> term) {
+    return term instanceof TermIdent termIdent && BorderStyle.contains(termIdent.value());
   }
 }

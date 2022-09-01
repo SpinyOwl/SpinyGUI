@@ -4,6 +4,7 @@ import static com.spinyowl.spinygui.core.style.stylesheet.Properties.BORDER_BOTT
 import static com.spinyowl.spinygui.core.style.stylesheet.Properties.BORDER_BOTTOM_COLOR;
 import static com.spinyowl.spinygui.core.style.stylesheet.Properties.BORDER_BOTTOM_STYLE;
 import static com.spinyowl.spinygui.core.style.stylesheet.Properties.BORDER_BOTTOM_WIDTH;
+
 import com.spinyowl.spinygui.core.style.stylesheet.Property;
 
 public class BorderBottomProperty extends Property {
@@ -14,9 +15,9 @@ public class BorderBottomProperty extends Property {
         BorderProperty.DEFAULT_VALUE,
         !INHERITABLE,
         ANIMATABLE,
-        (value, styles) ->
+        (term, styles) ->
             BorderProperty.extract(
-                value, BORDER_BOTTOM_STYLE, BORDER_BOTTOM_WIDTH, BORDER_BOTTOM_COLOR, styles),
+                term, BORDER_BOTTOM_STYLE, BORDER_BOTTOM_WIDTH, BORDER_BOTTOM_COLOR, styles),
         BorderProperty::test,
         true);
   }

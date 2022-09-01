@@ -28,7 +28,7 @@ public final class LayoutUtils {
     applyPadding(parentHeight, style.paddingBottom(), padding::bottom);
   }
 
-  public static void setBorders(Edges border, ResolvedStyle style) {
+  public static void setBorders(ResolvedStyle style, Edges border) {
     applyBorder(style.borderLeftWidth(), style.borderLeftStyle(), border::left);
     applyBorder(style.borderRightWidth(), style.borderRightStyle(), border::right);
     applyBorder(style.borderTopWidth(), style.borderTopStyle(), border::top);

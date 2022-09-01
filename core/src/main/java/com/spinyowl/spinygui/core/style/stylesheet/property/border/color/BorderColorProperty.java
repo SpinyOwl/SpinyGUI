@@ -16,6 +16,7 @@ import com.spinyowl.spinygui.core.style.types.Color;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 public class BorderColorProperty extends Property {
 
@@ -34,9 +35,9 @@ public class BorderColorProperty extends Property {
 
   protected static void update(Term<?> term, Map<String, Object> styles) {
     List<Color> colors = new ArrayList<>();
-    convertTermToColorAndAdd(term, colors);
+    extractOne(term).ifPresent(colors::add);
     if (term instanceof TermList termList) {
-      termList.terms().forEach(t -> convertTermToColorAndAdd(t, colors));
+      termList.terms().forEach(t -> extractOne(term).ifPresent(colors::add));
     }
 
     StyleUtils.setOneFour(
@@ -48,26 +49,22 @@ public class BorderColorProperty extends Property {
         styles);
   }
 
-  private static void convertTermToColorAndAdd(Term<?> term, List<Color> colors) {
+  public static Optional<Color> extractOne(Term<?> term) {
     if (term instanceof TermIdent termIdent) {
-      colors.add(Color.get(termIdent.value()));
+      return Optional.of(Color.get(termIdent.value()));
     } else if (term instanceof TermColor termColor) {
-      colors.add(termColor.value());
+      return Optional.of(termColor.value());
     }
+    return Optional.empty();
   }
 
   private static boolean test(Term<?> term) {
-    if (term instanceof TermIdent termIdent) {
-      return Color.exists(termIdent.value());
-    } else if (term instanceof TermColor) {
-      return true;
-    } else if (term instanceof TermList termList) {
-      return termList.terms().stream()
-          .allMatch(
-              t ->
-                  (t instanceof TermIdent ti && Color.exists(ti.value()))
-                      || t instanceof TermColor);
-    }
-    return false;
+    return term instanceof TermList termList
+        ? termList.terms().stream().allMatch(BorderColorProperty::testOne)
+        : testOne(term);
+  }
+
+  public static boolean testOne(Term<?> term) {
+    return (term instanceof TermIdent ti && Color.exists(ti.value())) || term instanceof TermColor;
   }
 }

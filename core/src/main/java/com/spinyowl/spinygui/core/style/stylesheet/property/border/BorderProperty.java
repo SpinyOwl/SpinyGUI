@@ -13,20 +13,31 @@ import static com.spinyowl.spinygui.core.style.stylesheet.Properties.BORDER_RIGH
 import static com.spinyowl.spinygui.core.style.stylesheet.Properties.BORDER_TOP_COLOR;
 import static com.spinyowl.spinygui.core.style.stylesheet.Properties.BORDER_TOP_STYLE;
 import static com.spinyowl.spinygui.core.style.stylesheet.Properties.BORDER_TOP_WIDTH;
+
 import com.spinyowl.spinygui.core.style.stylesheet.Property;
-import com.spinyowl.spinygui.core.style.stylesheet.extractor.ValueExtractor;
-import com.spinyowl.spinygui.core.style.stylesheet.extractor.ValueExtractors;
+import com.spinyowl.spinygui.core.style.stylesheet.Term;
+import com.spinyowl.spinygui.core.style.stylesheet.property.border.color.BorderColorProperty;
+import com.spinyowl.spinygui.core.style.stylesheet.property.border.style.BorderStyleProperty;
 import com.spinyowl.spinygui.core.style.stylesheet.property.border.width.BorderWidthProperty;
+import com.spinyowl.spinygui.core.style.stylesheet.term.TermColor;
+import com.spinyowl.spinygui.core.style.stylesheet.term.TermIdent;
+import com.spinyowl.spinygui.core.style.stylesheet.term.TermLength;
+import com.spinyowl.spinygui.core.style.stylesheet.term.TermList;
+import com.spinyowl.spinygui.core.style.stylesheet.term.TermList.Operator;
 import com.spinyowl.spinygui.core.style.stylesheet.util.StyleUtils;
-import com.spinyowl.spinygui.core.style.types.Color;
 import com.spinyowl.spinygui.core.style.types.border.BorderStyle;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 public class BorderProperty extends Property {
 
-  public static final String DEFAULT_VALUE = "medium none transparent";
-
-  private static final ValueExtractor<Color> colorValueExtractor = ValueExtractors.of(Color.class);
+  public static final Term<?> DEFAULT_VALUE =
+      new TermList(
+          Operator.SPACE,
+          new TermIdent("medium"),
+          new TermIdent("none"),
+          new TermIdent("transparent"));
 
   public BorderProperty() {
     super(
@@ -39,47 +50,54 @@ public class BorderProperty extends Property {
         true);
   }
 
-  public static boolean test(String value) {
-    String[] values = value.split("\\s+");
+  public static boolean test(Term<?> term) {
+    if (term instanceof TermList list) {
+      if (list.isEmpty() || list.size() > 3) {
+        return false;
+      }
 
-    if (values.length == 0 || values.length > 3) {
-      return false;
-    }
-
-    if (values.length == 1) {
-      return BorderStyle.contains(values[0]);
-    } else if (values.length == 2) {
-      return testTwoValues(values);
+      if (list.size() == 1) {
+        return BorderStyleProperty.testOne(term);
+      } else if (list.size() == 2) {
+        return testTwoValues(list.terms());
+      } else {
+        return testThreeValues(list.terms());
+      }
     } else {
-      return testThreeValues(values);
+      return BorderStyleProperty.testOne(term);
     }
   }
 
-  private static boolean testThreeValues(String[] values) {
-    if (BorderStyle.contains(values[0])) {
-      return BorderWidthProperty.testOne(values[1]) && colorValueExtractor.isValid(values[2])
-          || BorderWidthProperty.testOne(values[2]) && colorValueExtractor.isValid(values[1]);
-    } else if (BorderStyle.contains(values[1])) {
-      return BorderWidthProperty.testOne(values[0]) && colorValueExtractor.isValid(values[2])
-          || BorderWidthProperty.testOne(values[2]) && colorValueExtractor.isValid(values[0]);
-    } else if (BorderStyle.contains(values[2])) {
-      return BorderWidthProperty.testOne(values[1]) && colorValueExtractor.isValid(values[0])
-          || BorderWidthProperty.testOne(values[0]) && colorValueExtractor.isValid(values[1]);
-    }
-    return false;
+  private static boolean testThreeValues(List<Term<?>> terms) {
+    Term<?> first = terms.get(0);
+    Term<?> second = terms.get(1);
+    Term<?> third = terms.get(2);
+    return widthStyleColor(first, second, third)
+        || widthStyleColor(first, third, second)
+        || widthStyleColor(second, first, third)
+        || widthStyleColor(second, third, first)
+        || widthStyleColor(third, first, second)
+        || widthStyleColor(third, second, first);
   }
 
-  private static boolean testTwoValues(String[] values) {
-    if (BorderStyle.contains(values[0])) {
-      return BorderWidthProperty.testOne(values[1]) || colorValueExtractor.isValid(values[1]);
-    } else if (BorderStyle.contains(values[1])) {
-      return BorderWidthProperty.testOne(values[0]) || colorValueExtractor.isValid(values[0]);
-    }
-    return false;
+  private static boolean widthStyleColor(
+      Term<?> probablyWidth, Term<?> probablyStyle, Term<?> probablyColor) {
+    return BorderWidthProperty.testOne(probablyWidth)
+        && BorderStyleProperty.testOne(probablyStyle)
+        && BorderColorProperty.testOne(probablyColor);
   }
 
-  private static void x(String value, Map<String, Object> styles) {
-    BorderItem i = extract(value);
+  private static boolean testTwoValues(List<Term<?>> terms) {
+    return BorderStyleProperty.testOne(terms.get(0))
+            && (BorderWidthProperty.testOne(terms.get(1))
+                || BorderColorProperty.testOne(terms.get(1)))
+        || BorderStyleProperty.testOne(terms.get(1))
+            && (BorderWidthProperty.testOne(terms.get(0))
+                || BorderColorProperty.testOne(terms.get(0)));
+  }
+
+  private static void x(Term<?> term, Map<String, Object> styles) {
+    BorderItem i = extract(term);
     if (i.color() != null) {
       styles.putAll(
           StyleUtils.getOneFour(
@@ -110,12 +128,12 @@ public class BorderProperty extends Property {
   }
 
   public static void extract(
-      String value,
+      Term<?> term,
       String sideStyle,
       String sideWidth,
       String sideColor,
       Map<String, Object> styles) {
-    BorderItem borderItem = BorderProperty.extract(value);
+    BorderItem borderItem = BorderProperty.extract(term);
     if (borderItem.style() != null) {
       styles.put(sideStyle, borderItem.style());
     }
@@ -127,65 +145,72 @@ public class BorderProperty extends Property {
     }
   }
 
-  public static BorderItem extract(String value) {
+  public static BorderItem extract(Term<?> term) {
+    // collect terms
+    List<Term<?>> terms = new ArrayList<>();
+    if (term instanceof TermIdent || term instanceof TermLength || term instanceof TermColor) {
+      terms.add(term);
+    } else if (term instanceof TermList termList) {
+      terms.addAll(termList.terms());
+    }
+
+    // convert to BorderItem
     var borderItem = new BorderItem();
-    String[] values = value.split("\\s+");
-    if (values.length == 1) {
-      borderItem.style(BorderStyle.find(values[0]));
-    } else if (values.length == 2) {
-      extractTwoValues(borderItem, values);
-    } else if (values.length == 3) {
-      extractThreeValues(borderItem, values);
+    if (terms.size() == 1) {
+      borderItem.style(BorderStyle.find(((TermIdent) terms.get(0)).value()));
+    } else if (terms.size() == 2) {
+      extractTwoValues(borderItem, terms);
+    } else if (terms.size() == 3) {
+      extractThreeValues(borderItem, terms);
     }
     return borderItem;
   }
 
-  private static void extractTwoValues(BorderItem borderItem, String[] values) {
-    if (BorderStyle.contains(values[0])) {
-      borderItem.style(BorderStyle.find(values[0]));
-      if (colorValueExtractor.isValid(values[1])) {
-        borderItem.color(colorValueExtractor.extract(values[1]));
-      } else {
-        borderItem.width(BorderWidthProperty.extractOne(values[1]));
-      }
-    } else if (BorderStyle.contains(values[1])) {
-      borderItem.style(BorderStyle.find(values[1]));
-      if (colorValueExtractor.isValid(values[0])) {
-        borderItem.color(colorValueExtractor.extract(values[0]));
-      } else {
-        borderItem.width(BorderWidthProperty.extractOne(values[0]));
-      }
+  private static void extractTwoValues(BorderItem borderItem, List<Term<?>> terms) {
+    Term<?> first = terms.get(0);
+    Term<?> second = terms.get(1);
+
+    if (BorderStyleProperty.testOne(first)) {
+      assignTwoBasedOnFirst(borderItem, (TermIdent) first, second);
+    } else if (BorderStyleProperty.testOne(second)) {
+      assignTwoBasedOnFirst(borderItem, ((TermIdent) second), first);
     }
   }
 
-  private static void extractThreeValues(BorderItem borderItem, String[] values) {
-    if (BorderStyle.contains(values[0])) {
-      borderItem.style(BorderStyle.find(values[0]));
-      if (colorValueExtractor.isValid(values[1])) {
-        borderItem.color(colorValueExtractor.extract(values[1]));
-        borderItem.width(BorderWidthProperty.extractOne(values[2]));
-      } else {
-        borderItem.width(BorderWidthProperty.extractOne(values[1]));
-        borderItem.color(colorValueExtractor.extract(values[2]));
-      }
-    } else if (BorderStyle.contains(values[1])) {
-      borderItem.style(BorderStyle.find(values[1]));
-      if (colorValueExtractor.isValid(values[0])) {
-        borderItem.color(colorValueExtractor.extract(values[0]));
-        borderItem.width(BorderWidthProperty.extractOne(values[2]));
-      } else {
-        borderItem.width(BorderWidthProperty.extractOne(values[0]));
-        borderItem.color(colorValueExtractor.extract(values[2]));
-      }
-    } else if (BorderStyle.contains(values[2])) {
-      borderItem.style(BorderStyle.find(values[2]));
-      if (colorValueExtractor.isValid(values[0])) {
-        borderItem.color(colorValueExtractor.extract(values[0]));
-        borderItem.width(BorderWidthProperty.extractOne(values[1]));
-      } else {
-        borderItem.width(BorderWidthProperty.extractOne(values[0]));
-        borderItem.color(colorValueExtractor.extract(values[1]));
-      }
+  private static void assignTwoBasedOnFirst(
+      BorderItem borderItem, TermIdent first, Term<?> second) {
+    borderItem.style(BorderStyle.find(first.value()));
+
+    if (BorderWidthProperty.testOne(second)) {
+      BorderWidthProperty.extractOne(second).ifPresent(borderItem::width);
+    } else if (BorderColorProperty.testOne(second)) {
+      BorderColorProperty.extractOne(second).ifPresent(borderItem::color);
+    }
+  }
+
+  private static void extractThreeValues(BorderItem borderItem, List<Term<?>> terms) {
+    Term<?> first = terms.get(0);
+    Term<?> second = terms.get(1);
+    Term<?> third = terms.get(2);
+
+    if (BorderStyleProperty.testOne(first)) {
+      assignThreeBasedOnFirst(borderItem, (TermIdent) first, second, third);
+    } else if (BorderStyleProperty.testOne(second)) {
+      assignThreeBasedOnFirst(borderItem, (TermIdent) second, first, third);
+    } else if (BorderStyleProperty.testOne(third)) {
+      assignThreeBasedOnFirst(borderItem, (TermIdent) third, first, second);
+    }
+  }
+
+  private static void assignThreeBasedOnFirst(
+      BorderItem borderItem, TermIdent first, Term<?> second, Term<?> third) {
+    borderItem.style(BorderStyle.find(first.value()));
+    if (BorderWidthProperty.testOne(second)) {
+      BorderWidthProperty.extractOne(second).ifPresent(borderItem::width);
+      BorderColorProperty.extractOne(third).ifPresent(borderItem::color);
+    } else {
+      BorderColorProperty.extractOne(second).ifPresent(borderItem::color);
+      BorderWidthProperty.extractOne(third).ifPresent(borderItem::width);
     }
   }
 }
