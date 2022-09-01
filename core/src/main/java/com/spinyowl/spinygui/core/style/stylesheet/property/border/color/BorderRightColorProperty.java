@@ -6,7 +6,6 @@ import com.spinyowl.spinygui.core.style.stylesheet.Property;
 import com.spinyowl.spinygui.core.style.stylesheet.term.TermColor;
 import com.spinyowl.spinygui.core.style.stylesheet.term.TermIdent;
 import com.spinyowl.spinygui.core.style.types.Color;
-import java.util.function.Function;
 
 public class BorderRightColorProperty extends Property {
 
@@ -17,7 +16,7 @@ public class BorderRightColorProperty extends Property {
         !INHERITABLE,
         ANIMATABLE,
         put(BORDER_RIGHT_COLOR, TermIdent.class, Color::get)
-            .andThen(put(BORDER_RIGHT_COLOR, TermColor.class, Function.identity())),
+            .andThen(put(BORDER_RIGHT_COLOR, TermColor.class)),
         check(TermIdent.class, Color::exists).or(TermColor.class::isInstance));
   }
 }

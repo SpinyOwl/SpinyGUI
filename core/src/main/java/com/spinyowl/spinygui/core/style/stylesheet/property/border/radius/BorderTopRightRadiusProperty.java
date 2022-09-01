@@ -5,7 +5,6 @@ import static com.spinyowl.spinygui.core.style.stylesheet.Properties.BORDER_TOP_
 import com.spinyowl.spinygui.core.style.stylesheet.Property;
 import com.spinyowl.spinygui.core.style.stylesheet.term.TermLength;
 import com.spinyowl.spinygui.core.style.types.length.Length;
-import java.util.function.Function;
 
 public class BorderTopRightRadiusProperty extends Property {
 
@@ -15,7 +14,7 @@ public class BorderTopRightRadiusProperty extends Property {
         new TermLength(Length.ZERO),
         !INHERITABLE,
         ANIMATABLE,
-        put(BORDER_TOP_RIGHT_RADIUS, TermLength.class, Function.identity()),
+        put(BORDER_TOP_RIGHT_RADIUS, TermLength.class),
         TermLength.class::isInstance);
   }
 }

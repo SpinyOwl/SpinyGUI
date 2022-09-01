@@ -1,15 +1,15 @@
 package com.spinyowl.spinygui.core.style.stylesheet.property;
 
-import com.spinyowl.spinygui.core.style.stylesheet.Property;
-import com.spinyowl.spinygui.core.style.stylesheet.extractor.ValueExtractor;
-import com.spinyowl.spinygui.core.style.stylesheet.extractor.ValueExtractors;
-
 import static com.spinyowl.spinygui.core.style.stylesheet.Properties.Z_INDEX;
+
+import com.spinyowl.spinygui.core.style.stylesheet.Property;
+import com.spinyowl.spinygui.core.style.stylesheet.Term;
+import com.spinyowl.spinygui.core.style.stylesheet.term.TermIdent;
+import com.spinyowl.spinygui.core.style.stylesheet.term.TermInteger;
 
 public class ZIndexProperty extends Property {
 
-  private static final ValueExtractor<Integer> extractor = ValueExtractors.of(Integer.class);
-  private static final String AUTO = "auto";
+  private static final Term<?> AUTO = new TermIdent("auto");
 
   public ZIndexProperty() {
     super(
@@ -17,8 +17,7 @@ public class ZIndexProperty extends Property {
         AUTO,
         !INHERITABLE,
         !ANIMATABLE,
-        (zIndex, styles) ->
-            styles.put(Z_INDEX, AUTO.equals(zIndex) ? 0 : extractor.extract(zIndex)),
-        value -> AUTO.equals(value) || extractor.isValid(value));
+        put(Z_INDEX, TermIdent.class, v -> 0).andThen(put(Z_INDEX, TermInteger.class)),
+        check(TermIdent.class, "auto"::equalsIgnoreCase).or(TermInteger.class::isInstance));
   }
 }

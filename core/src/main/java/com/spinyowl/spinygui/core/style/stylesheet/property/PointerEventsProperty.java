@@ -1,19 +1,20 @@
 package com.spinyowl.spinygui.core.style.stylesheet.property;
 
-import com.spinyowl.spinygui.core.style.stylesheet.Property;
-import com.spinyowl.spinygui.core.style.types.PointerEvents;
-
 import static com.spinyowl.spinygui.core.style.stylesheet.Properties.POINTER_EVENTS;
+
+import com.spinyowl.spinygui.core.style.stylesheet.Property;
+import com.spinyowl.spinygui.core.style.stylesheet.term.TermIdent;
+import com.spinyowl.spinygui.core.style.types.PointerEvents;
 
 public class PointerEventsProperty extends Property {
 
   public PointerEventsProperty() {
     super(
         POINTER_EVENTS,
-        PointerEvents.AUTO.name(),
+        new TermIdent(PointerEvents.AUTO.name()),
         INHERITABLE,
         !ANIMATABLE,
-        (pointerEvents, styles) -> styles.put(POINTER_EVENTS, PointerEvents.find(pointerEvents)),
-        PointerEvents::contains);
+        put(POINTER_EVENTS, TermIdent.class, PointerEvents::find),
+        check(TermIdent.class, PointerEvents::contains));
   }
 }

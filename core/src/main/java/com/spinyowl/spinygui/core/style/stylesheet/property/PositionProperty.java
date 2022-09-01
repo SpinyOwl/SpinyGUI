@@ -1,20 +1,20 @@
 package com.spinyowl.spinygui.core.style.stylesheet.property;
 
-import com.spinyowl.spinygui.core.style.stylesheet.Property;
-import com.spinyowl.spinygui.core.style.types.Position;
-
 import static com.spinyowl.spinygui.core.style.stylesheet.Properties.POSITION;
+
+import com.spinyowl.spinygui.core.style.stylesheet.Property;
+import com.spinyowl.spinygui.core.style.stylesheet.term.TermIdent;
+import com.spinyowl.spinygui.core.style.types.Position;
 
 public class PositionProperty extends Property {
 
   public PositionProperty() {
     super(
         POSITION,
-        Position.STATIC.name(),
+        new TermIdent(Position.STATIC.name()),
         INHERITABLE,
         ANIMATABLE,
-        (position, styles) -> styles.put(POSITION, Position.find(position)),
-        Position::contains);
+        put(POSITION, TermIdent.class, Position::find),
+        check(TermIdent.class, Position::contains));
   }
-
 }

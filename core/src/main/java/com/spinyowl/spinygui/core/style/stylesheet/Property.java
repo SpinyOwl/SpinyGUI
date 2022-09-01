@@ -117,6 +117,13 @@ public class Property {
     };
   }
 
+  /** Checks if term is instance of specified class and if so, updates style with term value. */
+  public static <T> Updater put(String name, Class<? extends Term<T>> clazz) {
+    return (term, styles) -> {
+      if (clazz.isInstance(term)) styles.put(name, term.value());
+    };
+  }
+
   /**
    * Checks if term is instance of specified class and if so, casts to this class and applies
    * provided function to its value. The result is used to update style map with specified name.
