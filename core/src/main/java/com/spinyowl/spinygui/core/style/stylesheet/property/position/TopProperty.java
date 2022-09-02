@@ -15,7 +15,7 @@ public class TopProperty extends Property {
         !INHERITABLE,
         ANIMATABLE,
         put(TOP, TermIdent.class, "auto"::equalsIgnoreCase, v -> Unit.AUTO)
-            .andThen(put(TOP, TermLength.class)),
+            .or(put(TOP, TermLength.class)),
         check(TermIdent.class, "auto"::equalsIgnoreCase).or(TermLength.class::isInstance));
   }
 }

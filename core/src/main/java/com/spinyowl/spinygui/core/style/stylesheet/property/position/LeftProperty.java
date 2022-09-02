@@ -16,7 +16,7 @@ public class LeftProperty extends Property {
         !INHERITABLE,
         ANIMATABLE,
         put(LEFT, TermIdent.class, "auto"::equalsIgnoreCase, v -> Unit.AUTO)
-            .andThen(put(LEFT, TermLength.class)),
+            .or(put(LEFT, TermLength.class)),
         check(TermIdent.class, "auto"::equalsIgnoreCase).or(TermLength.class::isInstance));
   }
 }

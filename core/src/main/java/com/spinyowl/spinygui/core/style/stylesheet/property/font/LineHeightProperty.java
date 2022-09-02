@@ -1,33 +1,28 @@
 package com.spinyowl.spinygui.core.style.stylesheet.property.font;
 
 import static com.spinyowl.spinygui.core.style.stylesheet.Properties.LINE_HEIGHT;
+
+import com.spinyowl.spinygui.core.Configuration;
 import com.spinyowl.spinygui.core.style.stylesheet.Property;
-import com.spinyowl.spinygui.core.style.stylesheet.extractor.ValueExtractor;
-import com.spinyowl.spinygui.core.style.stylesheet.extractor.ValueExtractors;
+import com.spinyowl.spinygui.core.style.stylesheet.term.TermFloat;
+import com.spinyowl.spinygui.core.style.stylesheet.term.TermIdent;
 
 public class LineHeightProperty extends Property {
-  private static final ValueExtractor<Float> extractor = ValueExtractors.of(Float.class);
-  private static final String DEFAULT_VALUE_KEY = "normal";
-  private static final float DEFAULT_VALUE = 1.2F;
+
+  public static final String NORMAL = "normal";
 
   public LineHeightProperty() {
     super(
         LINE_HEIGHT,
-        DEFAULT_VALUE_KEY,
+        new TermIdent(NORMAL),
         INHERITABLE,
         ANIMATABLE,
-        (value, styles) -> styles.put(LINE_HEIGHT, extract(value)),
-        LineHeightProperty::test);
-  }
-
-  public static Float extract(String value) {
-    if (DEFAULT_VALUE_KEY.equals(value)) {
-      return DEFAULT_VALUE;
-    }
-    return extractor.extract(value);
-  }
-
-  public static boolean test(String value) {
-    return DEFAULT_VALUE_KEY.equals(value) || extractor.isValid(value);
+        put(
+                LINE_HEIGHT,
+                TermIdent.class,
+                NORMAL::equalsIgnoreCase,
+                v -> Configuration.LINE_HEIGHT.value())
+            .or(put(LINE_HEIGHT, TermFloat.class)),
+        check(TermIdent.class, NORMAL::equalsIgnoreCase).or(TermFloat.class::isInstance));
   }
 }

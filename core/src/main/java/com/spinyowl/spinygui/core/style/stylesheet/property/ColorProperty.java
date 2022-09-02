@@ -15,7 +15,7 @@ public class ColorProperty extends Property {
         new TermColor(Color.BLACK),
         INHERITABLE,
         ANIMATABLE,
-        put(COLOR, TermIdent.class, Color::get).andThen(put(COLOR, TermColor.class)),
+        put(COLOR, TermIdent.class, Color::get).or(put(COLOR, TermColor.class)),
         check(TermIdent.class, Color::exists).or(TermColor.class::isInstance));
   }
 

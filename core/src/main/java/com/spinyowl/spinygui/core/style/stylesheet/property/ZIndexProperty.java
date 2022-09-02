@@ -17,7 +17,7 @@ public class ZIndexProperty extends Property {
         AUTO,
         !INHERITABLE,
         !ANIMATABLE,
-        put(Z_INDEX, TermIdent.class, v -> 0).andThen(put(Z_INDEX, TermInteger.class)),
+        put(Z_INDEX, TermIdent.class, v -> 0).or(put(Z_INDEX, TermInteger.class)),
         check(TermIdent.class, "auto"::equalsIgnoreCase).or(TermInteger.class::isInstance));
   }
 }

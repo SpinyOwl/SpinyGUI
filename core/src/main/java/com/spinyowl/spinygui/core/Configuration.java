@@ -31,7 +31,7 @@ public final class Configuration<T> {
   public static final Configuration<String> TIME_SERVICE =
       new Configuration<>("spinygui.service.time", Initializer.STRING);
 
-  public static final Configuration<Float> DEFAULT_LINE_HEIGHT =
+  public static final Configuration<Float> LINE_HEIGHT =
       new Configuration<>("spinygui.font.lineHeight.default", Initializer.FLOAT, 1.2F);
 
   private final String name;

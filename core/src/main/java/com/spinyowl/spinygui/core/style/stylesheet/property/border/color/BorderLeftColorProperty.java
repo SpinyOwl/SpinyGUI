@@ -16,7 +16,7 @@ public class BorderLeftColorProperty extends Property {
         !INHERITABLE,
         ANIMATABLE,
         put(BORDER_LEFT_COLOR, TermIdent.class, Color::get)
-            .andThen(put(BORDER_LEFT_COLOR, TermColor.class)),
+            .or(put(BORDER_LEFT_COLOR, TermColor.class)),
         check(TermIdent.class, Color::exists).or(TermColor.class::isInstance));
   }
 }

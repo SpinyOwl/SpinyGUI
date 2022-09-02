@@ -50,9 +50,11 @@ public class Property {
    * The <b>inherit</b> keyword allows authors to explicitly specify inheritance. It works on both
    * inherited and non-inherited properties.
    */
+  @SuppressWarnings({"squid:S1845", "squid:S1135"}) // TODO: fix with builder pattern
   protected boolean inheritable;
 
   /** Defines if css property could be animated. */
+  @SuppressWarnings({"squid:S1845", "squid:S1135"}) // TODO: fix with builder pattern
   protected boolean animatable;
 
   /** Used to compute value from term and update style map with it. */
@@ -212,7 +214,7 @@ public class Property {
      */
     void update(Term<?> term, Map<String, Object> resolvedStyles);
 
-    default Updater andThen(Updater after) {
+    default Updater or(Updater after) {
       return (term, styles) -> {
         this.update(term, styles);
         after.update(term, styles);

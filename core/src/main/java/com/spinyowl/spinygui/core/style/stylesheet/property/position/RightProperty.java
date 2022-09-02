@@ -16,7 +16,7 @@ public class RightProperty extends Property {
         !INHERITABLE,
         ANIMATABLE,
         put(RIGHT, TermIdent.class, "auto"::equalsIgnoreCase, v -> Unit.AUTO)
-            .andThen(put(RIGHT, TermLength.class)),
+            .or(put(RIGHT, TermLength.class)),
         check(TermIdent.class, "auto"::equalsIgnoreCase).or(TermLength.class::isInstance));
   }
 }

@@ -15,7 +15,7 @@ public class BottomProperty extends Property {
         !INHERITABLE,
         ANIMATABLE,
         put(BOTTOM, TermIdent.class, "auto"::equalsIgnoreCase, v -> Unit.AUTO)
-            .andThen(put(BOTTOM, TermLength.class)),
+            .or(put(BOTTOM, TermLength.class)),
         check(TermIdent.class, "auto"::equalsIgnoreCase).or(TermLength.class::isInstance));
   }
 }
