@@ -4,33 +4,22 @@ import com.spinyowl.spinygui.core.font.FontSize;
 import com.spinyowl.spinygui.core.node.Element;
 import com.spinyowl.spinygui.core.node.Node;
 import com.spinyowl.spinygui.core.node.Text;
+import com.spinyowl.spinygui.core.style.stylesheet.Term;
+import com.spinyowl.spinygui.core.style.stylesheet.term.TermLength;
+import com.spinyowl.spinygui.core.style.stylesheet.term.TermList;
 import com.spinyowl.spinygui.core.style.types.length.Length;
 import com.spinyowl.spinygui.core.style.types.length.Length.PercentLength;
 import com.spinyowl.spinygui.core.style.types.length.Unit;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.function.Predicate;
+import java.util.stream.Collectors;
 import lombok.NonNull;
 
 public final class StyleUtils {
 
   private StyleUtils() {}
-
-  public static boolean testMultipleValues(
-      String value, String splitRegex, int min, int max, Predicate<String> oneValueTester) {
-    String[] values = value.split(splitRegex);
-    if (values.length < min || values.length > max) {
-      return false;
-    }
-    for (String v : values) {
-      if (!oneValueTester.test(v)) {
-        return false;
-      }
-    }
-
-    return true;
-  }
 
   /**
    * Used to extract float value of length from {@link Length} value.
@@ -121,6 +110,22 @@ public final class StyleUtils {
     return fontSize.convert();
   }
 
+  @SuppressWarnings("squid:S1452")
+  public static List<Length<?>> getOneFourLengths(Term<?> term) {
+    List<Length<?>> values = new ArrayList<>();
+    if (term instanceof TermLength) {
+      values.add(((TermLength) term).value());
+    } else if (term instanceof TermList termList) {
+      values =
+          termList.terms().stream()
+              .filter(TermLength.class::isInstance)
+              .map(TermLength.class::cast)
+              .map(Term::value)
+              .collect(Collectors.toList());
+    }
+    return values;
+  }
+
   public static void setOneFour(
       @NonNull Object[] values,
       @NonNull String top,
@@ -129,30 +134,26 @@ public final class StyleUtils {
       @NonNull String left,
       @NonNull Map<String, Object> styles) {
     if (values.length == 1) {
-      setFour(styles, top, values[0], right, values[0], bottom, values[0], left, values[0]);
+      styles.put(top, values[0]);
+      styles.put(right, values[0]);
+      styles.put(bottom, values[0]);
+      styles.put(left, values[0]);
     } else if (values.length == 2) {
-      setFour(styles, top, values[0], right, values[1], bottom, values[0], left, values[1]);
+      styles.put(top, values[0]);
+      styles.put(right, values[1]);
+      styles.put(bottom, values[0]);
+      styles.put(left, values[1]);
     } else if (values.length == 3) {
-      setFour(styles, top, values[0], right, values[1], bottom, values[2], left, values[1]);
+      styles.put(top, values[0]);
+      styles.put(right, values[1]);
+      styles.put(bottom, values[2]);
+      styles.put(left, values[1]);
     } else if (values.length > 3) {
-      setFour(styles, top, values[0], right, values[1], bottom, values[2], left, values[3]);
+      styles.put(top, values[0]);
+      styles.put(right, values[1]);
+      styles.put(bottom, values[2]);
+      styles.put(left, values[3]);
     }
-  }
-
-  private static void setFour(
-      Map<String, Object> styles,
-      String top,
-      Object topValue,
-      String right,
-      Object rightValue,
-      String bottom,
-      Object bottomValue,
-      String left,
-      Object leftValue) {
-    styles.put(top, topValue);
-    styles.put(right, rightValue);
-    styles.put(bottom, bottomValue);
-    styles.put(left, leftValue);
   }
 
   public static boolean contains(String termValue, List<String> allowedValues) {

@@ -5,26 +5,32 @@ import static com.spinyowl.spinygui.core.style.stylesheet.Properties.MARGIN_BOTT
 import static com.spinyowl.spinygui.core.style.stylesheet.Properties.MARGIN_LEFT;
 import static com.spinyowl.spinygui.core.style.stylesheet.Properties.MARGIN_RIGHT;
 import static com.spinyowl.spinygui.core.style.stylesheet.Properties.MARGIN_TOP;
+import static com.spinyowl.spinygui.core.style.stylesheet.util.StyleUtils.getOneFourLengths;
 import static com.spinyowl.spinygui.core.style.stylesheet.util.StyleUtils.setOneFour;
-import static com.spinyowl.spinygui.core.style.stylesheet.util.StyleUtils.testMultipleValues;
+
 import com.spinyowl.spinygui.core.style.stylesheet.Property;
-import com.spinyowl.spinygui.core.style.stylesheet.extractor.ValueExtractor;
-import com.spinyowl.spinygui.core.style.stylesheet.extractor.ValueExtractors;
-import com.spinyowl.spinygui.core.style.types.length.Unit;
-import java.util.Arrays;
+import com.spinyowl.spinygui.core.style.stylesheet.Term;
+import com.spinyowl.spinygui.core.style.stylesheet.term.TermLength;
+import com.spinyowl.spinygui.core.style.stylesheet.term.TermList;
+import com.spinyowl.spinygui.core.style.types.length.Length;
 import java.util.Map;
 
 public class MarginProperty extends Property {
 
-  private static final ValueExtractor<Unit> unitValueExtractor = ValueExtractors.of(Unit.class);
-
   public MarginProperty() {
-    super(MARGIN, "0", !INHERITABLE, ANIMATABLE, MarginProperty::extract, MarginProperty::test, true);
+    super(
+        MARGIN,
+        new TermLength(Length.ZERO),
+        !INHERITABLE,
+        ANIMATABLE,
+        MarginProperty::extract,
+        MarginProperty::test,
+        true);
   }
 
-  private static void extract(String value, Map<String, Object> styles) {
+  public static void extract(Term<?> term, Map<String, Object> styles) {
     setOneFour(
-        Arrays.stream(value.trim().split("\\s+")).map(unitValueExtractor::extract).toArray(),
+        getOneFourLengths(term).toArray(),
         MARGIN_TOP,
         MARGIN_RIGHT,
         MARGIN_BOTTOM,
@@ -32,7 +38,9 @@ public class MarginProperty extends Property {
         styles);
   }
 
-  public static boolean test(String value) {
-    return testMultipleValues(value, "\\s+", 1, 4, unitValueExtractor::isValid);
+  public static boolean test(Term<?> term) {
+    return term instanceof TermLength
+        || term instanceof TermList list
+            && list.terms().stream().allMatch(TermLength.class::isInstance);
   }
 }

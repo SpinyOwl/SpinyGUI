@@ -1,23 +1,20 @@
 package com.spinyowl.spinygui.core.style.stylesheet.property.margin;
 
-import com.spinyowl.spinygui.core.style.stylesheet.Property;
-import com.spinyowl.spinygui.core.style.stylesheet.extractor.ValueExtractor;
-import com.spinyowl.spinygui.core.style.stylesheet.extractor.ValueExtractors;
-import com.spinyowl.spinygui.core.style.types.length.Unit;
-
 import static com.spinyowl.spinygui.core.style.stylesheet.Properties.MARGIN_LEFT;
 
-public class MarginLeftProperty extends Property {
+import com.spinyowl.spinygui.core.style.stylesheet.Property;
+import com.spinyowl.spinygui.core.style.stylesheet.term.TermLength;
+import com.spinyowl.spinygui.core.style.types.length.Length;
 
-  private static final ValueExtractor<Unit> extractor = ValueExtractors.of(Unit.class);
+public class MarginLeftProperty extends Property {
 
   public MarginLeftProperty() {
     super(
         MARGIN_LEFT,
-        "0",
+        new TermLength(Length.ZERO),
         !INHERITABLE,
         ANIMATABLE,
-        (value, styles) -> styles.put(MARGIN_LEFT, extractor.extract(value)),
-        extractor::isValid);
+        put(MARGIN_LEFT, TermLength.class),
+        TermLength.class::isInstance);
   }
 }
