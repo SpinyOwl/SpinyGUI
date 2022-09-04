@@ -2,13 +2,17 @@ package com.spinyowl.spinygui.core.style.stylesheet.term;
 
 import com.spinyowl.spinygui.core.style.stylesheet.Term;
 import java.util.List;
+import java.util.StringJoiner;
 import lombok.AccessLevel;
-import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 
-@Data
+@Getter
+@Setter
+@EqualsAndHashCode
 public class TermList extends Term<List<Term<?>>> {
   @NonNull private Operator operator;
 
@@ -36,6 +40,13 @@ public class TermList extends Term<List<Term<?>>> {
 
   public boolean isEmpty() {
     return value.isEmpty();
+  }
+
+  @Override
+  public String toString() {
+    StringJoiner joiner = new StringJoiner(operator.value);
+    terms().forEach(term -> joiner.add(term.toString()));
+    return joiner.toString();
   }
 
   @Getter

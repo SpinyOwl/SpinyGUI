@@ -15,6 +15,7 @@ import com.spinyowl.spinygui.core.style.stylesheet.Term;
 import com.spinyowl.spinygui.core.style.stylesheet.term.TermColor;
 import com.spinyowl.spinygui.core.style.stylesheet.term.TermFloat;
 import com.spinyowl.spinygui.core.style.stylesheet.term.TermIdent;
+import com.spinyowl.spinygui.core.style.stylesheet.term.TermInteger;
 import com.spinyowl.spinygui.core.style.stylesheet.term.TermList;
 import com.spinyowl.spinygui.core.style.stylesheet.term.TermList.Operator;
 import com.spinyowl.spinygui.core.style.types.Color;
@@ -104,8 +105,12 @@ public class PropertyValueVisitor extends CSS3BaseVisitor<Term<?>> {
   @Override
   public Term<?> visitNumber(NumberContext ctx) {
     log.debug("visitNumber");
-    float value = Float.parseFloat(ctx.Number().getText());
-    return new TermFloat(ctx.Minus() == null ? value : -value);
+    String number = ctx.Number().getText();
+    if (number.contains(".")) {
+      return new TermFloat(Float.parseFloat(number) * (ctx.Minus() != null ? -1 : 1));
+    } else {
+      return new TermInteger(Integer.parseInt(number) * (ctx.Minus() != null ? -1 : 1));
+    }
   }
 
   @Override

@@ -8,4 +8,8 @@ public class TermLength extends TermUnit<Length<?>> {
   public TermLength(Length<?> value) {
     super(value);
   }
+
+  public String toString() {
+    return value.toString();
+  }
 }

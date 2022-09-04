@@ -8,4 +8,9 @@ public class TermIdent extends Term<String> {
   public TermIdent(String value) {
     super(value);
   }
+
+  @Override
+  public String toString() {
+    return value;
+  }
 }

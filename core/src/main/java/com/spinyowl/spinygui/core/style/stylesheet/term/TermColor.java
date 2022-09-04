@@ -12,6 +12,6 @@ public class TermColor extends Term<Color> {
 
   @Override
   public String toString() {
-    return super.toString();
+    return value.toString();
   }
 }

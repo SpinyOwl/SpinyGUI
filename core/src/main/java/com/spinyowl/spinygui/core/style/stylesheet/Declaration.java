@@ -17,16 +17,12 @@ public class Declaration {
   /** Property definition. */
   @NonNull private final Property property;
 
-  /** Current value of css property. Could not be null. */
-  @NonNull protected String stringValue;
-
   protected Term<?> term;
 
   private boolean enabled = true;
 
-  public Declaration(@NonNull Property property, @NonNull String stringValue, Term<?> term) {
+  public Declaration(@NonNull Property property, Term<?> term) {
     this.property = property;
-    this.stringValue = stringValue;
     this.term = term;
   }
 
@@ -51,6 +47,6 @@ public class Declaration {
 
   @Override
   public String toString() {
-    return property.name() + ": " + stringValue;
+    return property.name() + ": " + term.toString();
   }
 }

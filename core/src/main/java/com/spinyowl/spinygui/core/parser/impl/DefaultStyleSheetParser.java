@@ -85,7 +85,6 @@ public final class DefaultStyleSheetParser implements StyleSheetParser {
   }
 
   public String toCss(Declaration declaration) {
-    return declaration.property().name() + ": " + declaration.stringValue();
+    return declaration.property().name() + ": " + declaration.term().toString();
   }
-
 }
