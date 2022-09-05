@@ -254,10 +254,10 @@ public final class NvgRenderUtils {
   public static void renderShadow(long context, Element element, ResolvedStyle style) {
     var shadow = style.boxShadow();
     if (shadow != null && shadow.color().a() > 0.01f) {
-      float hOffset = shadow.hOffset();
-      float vOffset = shadow.vOffset();
-      float blur = shadow.blur();
-      float spread = shadow.spread();
+      float hOffset = shadow.hOffset().convert();
+      float vOffset = shadow.vOffset().convert();
+      float blur = shadow.blur().convert();
+      float spread = shadow.spread().convert();
       Vector2f absolutePosition = element.box().borderBoxPosition();
       Vector2f size = element.box().borderBoxSize();
 
