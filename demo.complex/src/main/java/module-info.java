@@ -4,7 +4,7 @@ open module com.spinyowl.spinygui.demo.complex {
   requires transitive org.slf4j;
   requires transitive ch.qos.logback.core;
   requires transitive ch.qos.logback.classic;
-
+  requires transitive com.spinyowl.cbchain;
   requires transitive com.spinyowl.spinygui.core;
   requires transitive com.spinyowl.spinygui.core.backend;
   requires transitive com.spinyowl.spinygui.core.backend.lwjgl.nanovg;

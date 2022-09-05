@@ -9,8 +9,6 @@ import static com.spinyowl.spinygui.core.style.stylesheet.util.StyleUtils.setOne
 
 import com.spinyowl.spinygui.core.style.stylesheet.Property;
 import com.spinyowl.spinygui.core.style.stylesheet.Term;
-import com.spinyowl.spinygui.core.style.stylesheet.extractor.ValueExtractor;
-import com.spinyowl.spinygui.core.style.stylesheet.extractor.ValueExtractors;
 import com.spinyowl.spinygui.core.style.stylesheet.term.TermLength;
 import com.spinyowl.spinygui.core.style.stylesheet.term.TermList;
 import com.spinyowl.spinygui.core.style.types.length.Length;
@@ -19,8 +17,6 @@ import java.util.List;
 import java.util.Map;
 
 public class BorderRadiusProperty extends Property {
-
-  private static final ValueExtractor<Length> extractor = ValueExtractors.of(Length.class);
 
   public BorderRadiusProperty() {
     super(
