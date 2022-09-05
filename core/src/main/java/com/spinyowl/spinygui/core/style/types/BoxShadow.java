@@ -1,5 +1,6 @@
 package com.spinyowl.spinygui.core.style.types;
 
+import com.spinyowl.spinygui.core.style.types.length.Length;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
@@ -12,10 +13,10 @@ public class BoxShadow {
 
   private boolean inset;
 
-  private float hOffset;
-  private float vOffset;
-  private float blur;
-  private float spread;
+  private Length<?> hOffset;
+  private Length<?> vOffset;
+  private Length<?> blur;
+  private Length<?> spread;
 
   @NonNull private Color color = Color.TRANSPARENT;
 }
