@@ -1,19 +1,20 @@
 package com.spinyowl.spinygui.core.style.stylesheet.property.font;
 
+import static com.spinyowl.spinygui.core.style.stylesheet.Properties.FONT_STYLE;
+
 import com.spinyowl.spinygui.core.font.FontStyle;
 import com.spinyowl.spinygui.core.style.stylesheet.Property;
-
-import static com.spinyowl.spinygui.core.style.stylesheet.Properties.FONT_STYLE;
+import com.spinyowl.spinygui.core.style.stylesheet.term.TermIdent;
 
 public class FontStyleProperty extends Property {
 
   public FontStyleProperty() {
     super(
         FONT_STYLE,
-        "normal",
+        new TermIdent(FontStyle.NORMAL.name()),
         INHERITABLE,
         !ANIMATABLE,
-        (fontStyle, styles) -> styles.put(FONT_STYLE, FontStyle.find(fontStyle)),
-        FontStyle::contains);
+        put(FONT_STYLE, TermIdent.class, FontStyle::find),
+        check(TermIdent.class, FontStyle::contains));
   }
 }
