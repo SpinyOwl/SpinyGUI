@@ -1,6 +1,5 @@
-// Generated from
-// core/src/main/resources/grammars\CSS3.g4 by ANTLR 4.10.1
-package com.spinyowl.spinygui.core.parser.impl.css.parser.antlr;
+// Generated from java-escape by ANTLR 4.11.1
+package com.spinyowl.spinygui.core.parser.impl.css.antlr;
 
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.ErrorNode;
@@ -10,6 +9,7 @@ import org.antlr.v4.runtime.tree.TerminalNode;
  * This class provides an empty implementation of {@link CSS3Listener}, which can be extended to
  * create a listener which only needs to handle a subset of the available methods.
  */
+@SuppressWarnings("CheckReturnValue")
 public class CSS3BaseListener implements CSS3Listener {
   /**
    * {@inheritDoc}
@@ -661,14 +661,14 @@ public class CSS3BaseListener implements CSS3Listener {
    * <p>The default implementation does nothing.
    */
   @Override
-  public void enterFunction(CSS3Parser.FunctionContext ctx) {}
+  public void enterFunction_(CSS3Parser.Function_Context ctx) {}
   /**
    * {@inheritDoc}
    *
    * <p>The default implementation does nothing.
    */
   @Override
-  public void exitFunction(CSS3Parser.FunctionContext ctx) {}
+  public void exitFunction_(CSS3Parser.Function_Context ctx) {}
   /**
    * {@inheritDoc}
    *
@@ -759,14 +759,14 @@ public class CSS3BaseListener implements CSS3Listener {
    * <p>The default implementation does nothing.
    */
   @Override
-  public void enterAny(CSS3Parser.AnyContext ctx) {}
+  public void enterAny_(CSS3Parser.Any_Context ctx) {}
   /**
    * {@inheritDoc}
    *
    * <p>The default implementation does nothing.
    */
   @Override
-  public void exitAny(CSS3Parser.AnyContext ctx) {}
+  public void exitAny_(CSS3Parser.Any_Context ctx) {}
   /**
    * {@inheritDoc}
    *
@@ -971,14 +971,14 @@ public class CSS3BaseListener implements CSS3Listener {
    * <p>The default implementation does nothing.
    */
   @Override
-  public void enterVar(CSS3Parser.VarContext ctx) {}
+  public void enterVar_(CSS3Parser.Var_Context ctx) {}
   /**
    * {@inheritDoc}
    *
    * <p>The default implementation does nothing.
    */
   @Override
-  public void exitVar(CSS3Parser.VarContext ctx) {}
+  public void exitVar_(CSS3Parser.Var_Context ctx) {}
   /**
    * {@inheritDoc}
    *

@@ -108,7 +108,7 @@ Comma
 Tilde
 PseudoNot
 Number
-String
+String_
 PrefixMatch
 SuffixMatch
 SubstringMatch
@@ -126,7 +126,7 @@ DxImageTransform
 Variable
 Var
 Ident
-Function
+Function_
 
 rule names:
 T__0
@@ -219,7 +219,7 @@ Comma
 Tilde
 PseudoNot
 Number
-String
+String_
 PrefixMatch
 SuffixMatch
 SubstringMatch
@@ -238,7 +238,7 @@ DxImageTransform
 Variable
 Var
 Ident
-Function
+Function_
 
 channel names:
 DEFAULT_TOKEN_CHANNEL

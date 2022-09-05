@@ -1,9 +1,9 @@
 package com.spinyowl.spinygui.core.parser.impl;
 
 import com.spinyowl.spinygui.core.parser.StyleSheetParser;
-import com.spinyowl.spinygui.core.parser.impl.css.parser.antlr.CSS3BaseVisitor;
-import com.spinyowl.spinygui.core.parser.impl.css.parser.antlr.CSS3Lexer;
-import com.spinyowl.spinygui.core.parser.impl.css.parser.antlr.CSS3Parser;
+import com.spinyowl.spinygui.core.parser.impl.css.antlr.CSS3BaseVisitor;
+import com.spinyowl.spinygui.core.parser.impl.css.antlr.CSS3Lexer;
+import com.spinyowl.spinygui.core.parser.impl.css.antlr.CSS3Parser;
 import com.spinyowl.spinygui.core.style.stylesheet.Declaration;
 import com.spinyowl.spinygui.core.style.stylesheet.RuleSet;
 import com.spinyowl.spinygui.core.style.stylesheet.StyleSheet;

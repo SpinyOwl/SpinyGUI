@@ -1,6 +1,5 @@
-// Generated from
-// core/src/main/resources/grammars\CSS3.g4 by ANTLR 4.10.1
-package com.spinyowl.spinygui.core.parser.impl.css.parser.antlr;
+// Generated from java-escape by ANTLR 4.11.1
+package com.spinyowl.spinygui.core.parser.impl.css.antlr;
 
 import org.antlr.v4.runtime.tree.ParseTreeListener;
 
@@ -76,28 +75,28 @@ public interface CSS3Listener extends ParseTreeListener {
   void exitBadImport(CSS3Parser.BadImportContext ctx);
   /**
    * Enter a parse tree produced by the {@code goodNamespace} labeled alternative in {@link
-   * CSS3Parser#namespace}.
+   * CSS3Parser#namespace_}.
    *
    * @param ctx the parse tree
    */
   void enterGoodNamespace(CSS3Parser.GoodNamespaceContext ctx);
   /**
    * Exit a parse tree produced by the {@code goodNamespace} labeled alternative in {@link
-   * CSS3Parser#namespace}.
+   * CSS3Parser#namespace_}.
    *
    * @param ctx the parse tree
    */
   void exitGoodNamespace(CSS3Parser.GoodNamespaceContext ctx);
   /**
    * Enter a parse tree produced by the {@code badNamespace} labeled alternative in {@link
-   * CSS3Parser#namespace}.
+   * CSS3Parser#namespace_}.
    *
    * @param ctx the parse tree
    */
   void enterBadNamespace(CSS3Parser.BadNamespaceContext ctx);
   /**
    * Exit a parse tree produced by the {@code badNamespace} labeled alternative in {@link
-   * CSS3Parser#namespace}.
+   * CSS3Parser#namespace_}.
    *
    * @param ctx the parse tree
    */
@@ -392,56 +391,56 @@ public interface CSS3Listener extends ParseTreeListener {
   void exitNegationArg(CSS3Parser.NegationArgContext ctx);
   /**
    * Enter a parse tree produced by the {@code goodOperator} labeled alternative in {@link
-   * CSS3Parser#operator}.
+   * CSS3Parser#operator_}.
    *
    * @param ctx the parse tree
    */
   void enterGoodOperator(CSS3Parser.GoodOperatorContext ctx);
   /**
    * Exit a parse tree produced by the {@code goodOperator} labeled alternative in {@link
-   * CSS3Parser#operator}.
+   * CSS3Parser#operator_}.
    *
    * @param ctx the parse tree
    */
   void exitGoodOperator(CSS3Parser.GoodOperatorContext ctx);
   /**
    * Enter a parse tree produced by the {@code badOperator} labeled alternative in {@link
-   * CSS3Parser#operator}.
+   * CSS3Parser#operator_}.
    *
    * @param ctx the parse tree
    */
   void enterBadOperator(CSS3Parser.BadOperatorContext ctx);
   /**
    * Exit a parse tree produced by the {@code badOperator} labeled alternative in {@link
-   * CSS3Parser#operator}.
+   * CSS3Parser#operator_}.
    *
    * @param ctx the parse tree
    */
   void exitBadOperator(CSS3Parser.BadOperatorContext ctx);
   /**
    * Enter a parse tree produced by the {@code goodProperty} labeled alternative in {@link
-   * CSS3Parser#property}.
+   * CSS3Parser#property_}.
    *
    * @param ctx the parse tree
    */
   void enterGoodProperty(CSS3Parser.GoodPropertyContext ctx);
   /**
    * Exit a parse tree produced by the {@code goodProperty} labeled alternative in {@link
-   * CSS3Parser#property}.
+   * CSS3Parser#property_}.
    *
    * @param ctx the parse tree
    */
   void exitGoodProperty(CSS3Parser.GoodPropertyContext ctx);
   /**
    * Enter a parse tree produced by the {@code badProperty} labeled alternative in {@link
-   * CSS3Parser#property}.
+   * CSS3Parser#property_}.
    *
    * @param ctx the parse tree
    */
   void enterBadProperty(CSS3Parser.BadPropertyContext ctx);
   /**
    * Exit a parse tree produced by the {@code badProperty} labeled alternative in {@link
-   * CSS3Parser#property}.
+   * CSS3Parser#property_}.
    *
    * @param ctx the parse tree
    */
@@ -593,17 +592,17 @@ public interface CSS3Listener extends ParseTreeListener {
    */
   void exitBadTerm(CSS3Parser.BadTermContext ctx);
   /**
-   * Enter a parse tree produced by {@link CSS3Parser#function}.
+   * Enter a parse tree produced by {@link CSS3Parser#function_}.
    *
    * @param ctx the parse tree
    */
-  void enterFunction(CSS3Parser.FunctionContext ctx);
+  void enterFunction_(CSS3Parser.Function_Context ctx);
   /**
-   * Exit a parse tree produced by {@link CSS3Parser#function}.
+   * Exit a parse tree produced by {@link CSS3Parser#function_}.
    *
    * @param ctx the parse tree
    */
-  void exitFunction(CSS3Parser.FunctionContext ctx);
+  void exitFunction_(CSS3Parser.Function_Context ctx);
   /**
    * Enter a parse tree produced by {@link CSS3Parser#dxImageTransform}.
    *
@@ -677,17 +676,17 @@ public interface CSS3Listener extends ParseTreeListener {
    */
   void exitUnknownDimension(CSS3Parser.UnknownDimensionContext ctx);
   /**
-   * Enter a parse tree produced by {@link CSS3Parser#any}.
+   * Enter a parse tree produced by {@link CSS3Parser#any_}.
    *
    * @param ctx the parse tree
    */
-  void enterAny(CSS3Parser.AnyContext ctx);
+  void enterAny_(CSS3Parser.Any_Context ctx);
   /**
-   * Exit a parse tree produced by {@link CSS3Parser#any}.
+   * Exit a parse tree produced by {@link CSS3Parser#any_}.
    *
    * @param ctx the parse tree
    */
-  void exitAny(CSS3Parser.AnyContext ctx);
+  void exitAny_(CSS3Parser.Any_Context ctx);
   /**
    * Enter a parse tree produced by the {@code unknownAtRule} labeled alternative in {@link
    * CSS3Parser#atRule}.
@@ -859,17 +858,17 @@ public interface CSS3Listener extends ParseTreeListener {
    */
   void exitGeneralEnclosed(CSS3Parser.GeneralEnclosedContext ctx);
   /**
-   * Enter a parse tree produced by {@link CSS3Parser#var}.
+   * Enter a parse tree produced by {@link CSS3Parser#var_}.
    *
    * @param ctx the parse tree
    */
-  void enterVar(CSS3Parser.VarContext ctx);
+  void enterVar_(CSS3Parser.Var_Context ctx);
   /**
-   * Exit a parse tree produced by {@link CSS3Parser#var}.
+   * Exit a parse tree produced by {@link CSS3Parser#var_}.
    *
    * @param ctx the parse tree
    */
-  void exitVar(CSS3Parser.VarContext ctx);
+  void exitVar_(CSS3Parser.Var_Context ctx);
   /**
    * Enter a parse tree produced by {@link CSS3Parser#calc}.
    *

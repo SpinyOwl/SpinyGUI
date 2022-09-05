@@ -1,12 +1,12 @@
-package com.spinyowl.spinygui.core.parser.impl.css.parser.visitor;
+package com.spinyowl.spinygui.core.parser.impl.css.visitor;
 
-import com.spinyowl.spinygui.core.parser.impl.css.parser.antlr.CSS3BaseVisitor;
-import com.spinyowl.spinygui.core.parser.impl.css.parser.antlr.CSS3Parser.ClassNameContext;
-import com.spinyowl.spinygui.core.parser.impl.css.parser.antlr.CSS3Parser.PseudoContext;
-import com.spinyowl.spinygui.core.parser.impl.css.parser.antlr.CSS3Parser.SelectorContext;
-import com.spinyowl.spinygui.core.parser.impl.css.parser.antlr.CSS3Parser.SimpleSelectorSequenceContext;
-import com.spinyowl.spinygui.core.parser.impl.css.parser.antlr.CSS3Parser.TypeSelectorContext;
-import com.spinyowl.spinygui.core.parser.impl.css.parser.antlr.CSS3Parser.UniversalContext;
+import com.spinyowl.spinygui.core.parser.impl.css.antlr.CSS3BaseVisitor;
+import com.spinyowl.spinygui.core.parser.impl.css.antlr.CSS3Parser.ClassNameContext;
+import com.spinyowl.spinygui.core.parser.impl.css.antlr.CSS3Parser.PseudoContext;
+import com.spinyowl.spinygui.core.parser.impl.css.antlr.CSS3Parser.SelectorContext;
+import com.spinyowl.spinygui.core.parser.impl.css.antlr.CSS3Parser.SimpleSelectorSequenceContext;
+import com.spinyowl.spinygui.core.parser.impl.css.antlr.CSS3Parser.TypeSelectorContext;
+import com.spinyowl.spinygui.core.parser.impl.css.antlr.CSS3Parser.UniversalContext;
 import com.spinyowl.spinygui.core.style.stylesheet.selector.Selector;
 import com.spinyowl.spinygui.core.style.stylesheet.selector.combinator.AdjacentSiblingSelector;
 import com.spinyowl.spinygui.core.style.stylesheet.selector.combinator.AndSelector;

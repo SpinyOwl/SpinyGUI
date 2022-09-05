@@ -1,9 +1,12 @@
 plugins {
     id 'java-library'
     id 'jacoco'
+    id 'antlr'
 }
 
 dependencies {
+    antlr "org.antlr:antlr4:4.11.1"
+
     // https://mvnrepository.com/artifact/commons-io/commons-io
     implementation group: 'commons-io', name: 'commons-io', version: '2.11.0'
 
@@ -44,6 +47,17 @@ java {
     withJavadocJar()
     withSourcesJar()
 }
+
+generateGrammarSource {
+    arguments = [
+            "-listener",
+            "-visitor",
+            '-long-messages',
+            "-package", "com.spinyowl.spinygui.core.parser.impl.css.antlr",
+    ]
+    outputDirectory = file("src/main/java")
+}
+compileJava.dependsOn generateGrammarSource
 
 test {
     finalizedBy jacocoTestReport // report is always generated after tests run

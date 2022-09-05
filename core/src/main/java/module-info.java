@@ -32,8 +32,8 @@ open module com.spinyowl.spinygui.core {
   exports com.spinyowl.spinygui.core.node;
   exports com.spinyowl.spinygui.core.parser;
   exports com.spinyowl.spinygui.core.parser.impl;
-  exports com.spinyowl.spinygui.core.parser.impl.css.parser.antlr;
-  exports com.spinyowl.spinygui.core.parser.impl.css.parser.visitor;
+  exports com.spinyowl.spinygui.core.parser.impl.css.antlr;
+  exports com.spinyowl.spinygui.core.parser.impl.css.visitor;
   exports com.spinyowl.spinygui.core.style;
   exports com.spinyowl.spinygui.core.style.manager;
   exports com.spinyowl.spinygui.core.style.stylesheet;

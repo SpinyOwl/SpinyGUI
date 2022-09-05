@@ -1,7 +1,7 @@
-package com.spinyowl.spinygui.core.parser.impl.css.parser.visitor;
+package com.spinyowl.spinygui.core.parser.impl.css.visitor;
 
-import com.spinyowl.spinygui.core.parser.impl.css.parser.antlr.CSS3BaseVisitor;
-import com.spinyowl.spinygui.core.parser.impl.css.parser.antlr.CSS3Parser.DeclarationListContext;
+import com.spinyowl.spinygui.core.parser.impl.css.antlr.CSS3BaseVisitor;
+import com.spinyowl.spinygui.core.parser.impl.css.antlr.CSS3Parser.DeclarationListContext;
 import com.spinyowl.spinygui.core.style.stylesheet.Declaration;
 import java.util.List;
 import java.util.Objects;

@@ -1,16 +1,17 @@
-package com.spinyowl.spinygui.core.parser.impl.css.parser.visitor;
+package com.spinyowl.spinygui.core.parser.impl.css.visitor;
 
 import static com.spinyowl.spinygui.core.style.stylesheet.Properties.FONT_FAMILY;
 import static com.spinyowl.spinygui.core.style.stylesheet.Properties.FONT_STRETCH;
 import static com.spinyowl.spinygui.core.style.stylesheet.Properties.FONT_STYLE;
 import static com.spinyowl.spinygui.core.style.stylesheet.Properties.FONT_WEIGHT;
+
 import com.spinyowl.spinygui.core.font.FontStretch;
 import com.spinyowl.spinygui.core.font.FontStyle;
 import com.spinyowl.spinygui.core.font.FontWeight;
-import com.spinyowl.spinygui.core.parser.impl.css.parser.antlr.CSS3BaseVisitor;
-import com.spinyowl.spinygui.core.parser.impl.css.parser.antlr.CSS3Parser.FontFaceDeclarationContext;
-import com.spinyowl.spinygui.core.parser.impl.css.parser.antlr.CSS3Parser.FontFaceRuleContext;
-import com.spinyowl.spinygui.core.parser.impl.css.parser.antlr.CSS3Parser.KnownFontFaceDeclarationContext;
+import com.spinyowl.spinygui.core.parser.impl.css.antlr.CSS3BaseVisitor;
+import com.spinyowl.spinygui.core.parser.impl.css.antlr.CSS3Parser.FontFaceDeclarationContext;
+import com.spinyowl.spinygui.core.parser.impl.css.antlr.CSS3Parser.FontFaceRuleContext;
+import com.spinyowl.spinygui.core.parser.impl.css.antlr.CSS3Parser.KnownFontFaceDeclarationContext;
 import com.spinyowl.spinygui.core.style.stylesheet.AtRule;
 import com.spinyowl.spinygui.core.style.stylesheet.atrule.FontFaceRule;
 
@@ -44,7 +45,7 @@ public class AtRuleVisitor extends CSS3BaseVisitor<AtRule> {
 
   @Override
   public AtRule visitKnownFontFaceDeclaration(KnownFontFaceDeclarationContext ctx) {
-    String name = ctx.property().getText();
+    String name = ctx.property_().getText();
     String value = ctx.expr().getText();
 
     if (FONT_FAMILY.equalsIgnoreCase(name)) {

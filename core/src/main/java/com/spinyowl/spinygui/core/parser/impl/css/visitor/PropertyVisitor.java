@@ -1,7 +1,7 @@
-package com.spinyowl.spinygui.core.parser.impl.css.parser.visitor;
+package com.spinyowl.spinygui.core.parser.impl.css.visitor;
 
-import com.spinyowl.spinygui.core.parser.impl.css.parser.antlr.CSS3BaseVisitor;
-import com.spinyowl.spinygui.core.parser.impl.css.parser.antlr.CSS3Parser.KnownDeclarationContext;
+import com.spinyowl.spinygui.core.parser.impl.css.antlr.CSS3BaseVisitor;
+import com.spinyowl.spinygui.core.parser.impl.css.antlr.CSS3Parser.KnownDeclarationContext;
 import com.spinyowl.spinygui.core.style.stylesheet.Declaration;
 import com.spinyowl.spinygui.core.style.stylesheet.Property;
 import com.spinyowl.spinygui.core.style.stylesheet.PropertyStore;
@@ -19,7 +19,7 @@ public class PropertyVisitor extends CSS3BaseVisitor<Declaration> {
 
   @Override
   public Declaration visitKnownDeclaration(KnownDeclarationContext ctx) {
-    String propertyName = ctx.property().getText();
+    String propertyName = ctx.property_().getText();
     Property property = propertyStore.getProperty(propertyName);
 
     log.debug("Reading property: {}", propertyName);

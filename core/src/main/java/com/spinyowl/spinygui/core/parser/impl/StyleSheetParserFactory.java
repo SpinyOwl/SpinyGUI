@@ -1,14 +1,14 @@
 package com.spinyowl.spinygui.core.parser.impl;
 
 import com.spinyowl.spinygui.core.parser.StyleSheetParser;
-import com.spinyowl.spinygui.core.parser.impl.css.parser.visitor.AtRuleVisitor;
-import com.spinyowl.spinygui.core.parser.impl.css.parser.visitor.PropertyListVisitor;
-import com.spinyowl.spinygui.core.parser.impl.css.parser.visitor.PropertyValueVisitor;
-import com.spinyowl.spinygui.core.parser.impl.css.parser.visitor.PropertyVisitor;
-import com.spinyowl.spinygui.core.parser.impl.css.parser.visitor.RulesetVisitor;
-import com.spinyowl.spinygui.core.parser.impl.css.parser.visitor.SelectorGroupVisitor;
-import com.spinyowl.spinygui.core.parser.impl.css.parser.visitor.SelectorVisitor;
-import com.spinyowl.spinygui.core.parser.impl.css.parser.visitor.StyleSheetVisitor;
+import com.spinyowl.spinygui.core.parser.impl.css.visitor.AtRuleVisitor;
+import com.spinyowl.spinygui.core.parser.impl.css.visitor.PropertyListVisitor;
+import com.spinyowl.spinygui.core.parser.impl.css.visitor.PropertyValueVisitor;
+import com.spinyowl.spinygui.core.parser.impl.css.visitor.PropertyVisitor;
+import com.spinyowl.spinygui.core.parser.impl.css.visitor.RulesetVisitor;
+import com.spinyowl.spinygui.core.parser.impl.css.visitor.SelectorGroupVisitor;
+import com.spinyowl.spinygui.core.parser.impl.css.visitor.SelectorVisitor;
+import com.spinyowl.spinygui.core.parser.impl.css.visitor.StyleSheetVisitor;
 import com.spinyowl.spinygui.core.style.stylesheet.PropertiesScanner;
 import com.spinyowl.spinygui.core.style.stylesheet.PropertyStore;
 import lombok.AccessLevel;

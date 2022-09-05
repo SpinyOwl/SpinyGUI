@@ -1,6 +1,5 @@
-// Generated from
-// core/src/main/resources/grammars\CSS3.g4 by ANTLR 4.10.1
-package com.spinyowl.spinygui.core.parser.impl.css.parser.antlr;
+// Generated from java-escape by ANTLR 4.11.1
+package com.spinyowl.spinygui.core.parser.impl.css.antlr;
 
 import org.antlr.v4.runtime.tree.AbstractParseTreeVisitor;
 
@@ -11,6 +10,7 @@ import org.antlr.v4.runtime.tree.AbstractParseTreeVisitor;
  * @param <T> The return type of the visit operation. Use {@link Void} for operations with no return
  *     type.
  */
+@SuppressWarnings("CheckReturnValue")
 public class CSS3BaseVisitor<T> extends AbstractParseTreeVisitor<T> implements CSS3Visitor<T> {
   /**
    * {@inheritDoc}
@@ -479,7 +479,7 @@ public class CSS3BaseVisitor<T> extends AbstractParseTreeVisitor<T> implements C
    * ctx}.
    */
   @Override
-  public T visitFunction(CSS3Parser.FunctionContext ctx) {
+  public T visitFunction_(CSS3Parser.Function_Context ctx) {
     return visitChildren(ctx);
   }
   /**
@@ -549,7 +549,7 @@ public class CSS3BaseVisitor<T> extends AbstractParseTreeVisitor<T> implements C
    * ctx}.
    */
   @Override
-  public T visitAny(CSS3Parser.AnyContext ctx) {
+  public T visitAny_(CSS3Parser.Any_Context ctx) {
     return visitChildren(ctx);
   }
   /**
@@ -699,7 +699,7 @@ public class CSS3BaseVisitor<T> extends AbstractParseTreeVisitor<T> implements C
    * ctx}.
    */
   @Override
-  public T visitVar(CSS3Parser.VarContext ctx) {
+  public T visitVar_(CSS3Parser.Var_Context ctx) {
     return visitChildren(ctx);
   }
   /**

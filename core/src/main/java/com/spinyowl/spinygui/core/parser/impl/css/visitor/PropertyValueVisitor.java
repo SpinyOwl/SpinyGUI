@@ -1,16 +1,16 @@
-package com.spinyowl.spinygui.core.parser.impl.css.parser.visitor;
+package com.spinyowl.spinygui.core.parser.impl.css.visitor;
 
-import com.spinyowl.spinygui.core.parser.impl.css.parser.antlr.CSS3BaseVisitor;
-import com.spinyowl.spinygui.core.parser.impl.css.parser.antlr.CSS3Parser.CalcContext;
-import com.spinyowl.spinygui.core.parser.impl.css.parser.antlr.CSS3Parser.DimensionContext;
-import com.spinyowl.spinygui.core.parser.impl.css.parser.antlr.CSS3Parser.ExprContext;
-import com.spinyowl.spinygui.core.parser.impl.css.parser.antlr.CSS3Parser.FunctionContext;
-import com.spinyowl.spinygui.core.parser.impl.css.parser.antlr.CSS3Parser.HexcolorContext;
-import com.spinyowl.spinygui.core.parser.impl.css.parser.antlr.CSS3Parser.IdentContext;
-import com.spinyowl.spinygui.core.parser.impl.css.parser.antlr.CSS3Parser.KnownTermContext;
-import com.spinyowl.spinygui.core.parser.impl.css.parser.antlr.CSS3Parser.NumberContext;
-import com.spinyowl.spinygui.core.parser.impl.css.parser.antlr.CSS3Parser.PercentageContext;
-import com.spinyowl.spinygui.core.parser.impl.css.parser.antlr.CSS3Parser.VarContext;
+import com.spinyowl.spinygui.core.parser.impl.css.antlr.CSS3BaseVisitor;
+import com.spinyowl.spinygui.core.parser.impl.css.antlr.CSS3Parser.CalcContext;
+import com.spinyowl.spinygui.core.parser.impl.css.antlr.CSS3Parser.DimensionContext;
+import com.spinyowl.spinygui.core.parser.impl.css.antlr.CSS3Parser.ExprContext;
+import com.spinyowl.spinygui.core.parser.impl.css.antlr.CSS3Parser.Function_Context;
+import com.spinyowl.spinygui.core.parser.impl.css.antlr.CSS3Parser.HexcolorContext;
+import com.spinyowl.spinygui.core.parser.impl.css.antlr.CSS3Parser.IdentContext;
+import com.spinyowl.spinygui.core.parser.impl.css.antlr.CSS3Parser.KnownTermContext;
+import com.spinyowl.spinygui.core.parser.impl.css.antlr.CSS3Parser.NumberContext;
+import com.spinyowl.spinygui.core.parser.impl.css.antlr.CSS3Parser.PercentageContext;
+import com.spinyowl.spinygui.core.parser.impl.css.antlr.CSS3Parser.Var_Context;
 import com.spinyowl.spinygui.core.style.stylesheet.Term;
 import com.spinyowl.spinygui.core.style.stylesheet.term.TermColor;
 import com.spinyowl.spinygui.core.style.stylesheet.term.TermFloat;
@@ -49,7 +49,7 @@ public class PropertyValueVisitor extends CSS3BaseVisitor<Term<?>> {
     log.debug("visitExpr. " + ctx.getText());
     if (ctx.term().size() == 1) return super.visit(ctx.term(0));
     List<Term<?>> terms = ctx.term().stream().map(super::visit).collect(Collectors.toList());
-    Operator operator = getOperator(ctx.operator(0).getText());
+    Operator operator = getOperator(ctx.operator_(0).getText());
 
     return new TermList(operator, terms);
   }
@@ -85,9 +85,9 @@ public class PropertyValueVisitor extends CSS3BaseVisitor<Term<?>> {
   }
 
   @Override
-  public Term<?> visitVar(VarContext ctx) {
+  public Term<?> visitVar_(Var_Context ctx) {
     log.debug("visitVar");
-    return super.visitVar(ctx);
+    return super.visitVar_(ctx);
   }
 
   @Override
@@ -114,9 +114,9 @@ public class PropertyValueVisitor extends CSS3BaseVisitor<Term<?>> {
   }
 
   @Override
-  public Term<?> visitFunction(FunctionContext ctx) {
+  public Term<?> visitFunction_(Function_Context ctx) {
     log.debug("visitFunction");
-    String text = ctx.Function().getText();
+    String text = ctx.Function_().getText();
     if (RGB.equalsIgnoreCase(text)) {
       return new TermColor(rgba(ctx, 1F));
     } else if (RGBA.equalsIgnoreCase(text)) {
@@ -128,22 +128,22 @@ public class PropertyValueVisitor extends CSS3BaseVisitor<Term<?>> {
     } else {
       log.warn("Unknown function: " + ctx.getText());
     }
-    return super.visitFunction(ctx);
+    return super.visitFunction_(ctx);
   }
 
-  private Color hsla(FunctionContext ctx, float alpha) {
+  private Color hsla(Function_Context ctx, float alpha) {
     return Color.hslToColor(childToInt(ctx, 0), childToInt(ctx, 1), childToInt(ctx, 2), alpha);
   }
 
-  private Color rgba(FunctionContext ctx, float alpha) {
+  private Color rgba(Function_Context ctx, float alpha) {
     return new Color(childToInt(ctx, 0), childToInt(ctx, 1), childToInt(ctx, 2), alpha);
   }
 
-  private float childToFloat(FunctionContext ctx, int i) {
+  private float childToFloat(Function_Context ctx, int i) {
     return Float.parseFloat(ctx.expr().term(i).getText());
   }
 
-  private int childToInt(FunctionContext ctx, int i) {
+  private int childToInt(Function_Context ctx, int i) {
     return Integer.parseInt(ctx.expr().term(i).getText());
   }
 }

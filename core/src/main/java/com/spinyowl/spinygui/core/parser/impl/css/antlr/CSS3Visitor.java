@@ -1,7 +1,5 @@
-// Generated from
-// core/src/main/resources/grammars\CSS3.g4 by ANTLR
-// 4.10.1
-package com.spinyowl.spinygui.core.parser.impl.css.parser.antlr;
+// Generated from java-escape by ANTLR 4.11.1
+package com.spinyowl.spinygui.core.parser.impl.css.antlr;
 
 import org.antlr.v4.runtime.tree.ParseTreeVisitor;
 
@@ -54,7 +52,7 @@ public interface CSS3Visitor<T> extends ParseTreeVisitor<T> {
   T visitBadImport(CSS3Parser.BadImportContext ctx);
   /**
    * Visit a parse tree produced by the {@code goodNamespace} labeled alternative in {@link
-   * CSS3Parser#namespace}.
+   * CSS3Parser#namespace_}.
    *
    * @param ctx the parse tree
    * @return the visitor result
@@ -62,7 +60,7 @@ public interface CSS3Visitor<T> extends ParseTreeVisitor<T> {
   T visitGoodNamespace(CSS3Parser.GoodNamespaceContext ctx);
   /**
    * Visit a parse tree produced by the {@code badNamespace} labeled alternative in {@link
-   * CSS3Parser#namespace}.
+   * CSS3Parser#namespace_}.
    *
    * @param ctx the parse tree
    * @return the visitor result
@@ -238,7 +236,7 @@ public interface CSS3Visitor<T> extends ParseTreeVisitor<T> {
   T visitNegationArg(CSS3Parser.NegationArgContext ctx);
   /**
    * Visit a parse tree produced by the {@code goodOperator} labeled alternative in {@link
-   * CSS3Parser#operator}.
+   * CSS3Parser#operator_}.
    *
    * @param ctx the parse tree
    * @return the visitor result
@@ -246,7 +244,7 @@ public interface CSS3Visitor<T> extends ParseTreeVisitor<T> {
   T visitGoodOperator(CSS3Parser.GoodOperatorContext ctx);
   /**
    * Visit a parse tree produced by the {@code badOperator} labeled alternative in {@link
-   * CSS3Parser#operator}.
+   * CSS3Parser#operator_}.
    *
    * @param ctx the parse tree
    * @return the visitor result
@@ -254,7 +252,7 @@ public interface CSS3Visitor<T> extends ParseTreeVisitor<T> {
   T visitBadOperator(CSS3Parser.BadOperatorContext ctx);
   /**
    * Visit a parse tree produced by the {@code goodProperty} labeled alternative in {@link
-   * CSS3Parser#property}.
+   * CSS3Parser#property_}.
    *
    * @param ctx the parse tree
    * @return the visitor result
@@ -262,7 +260,7 @@ public interface CSS3Visitor<T> extends ParseTreeVisitor<T> {
   T visitGoodProperty(CSS3Parser.GoodPropertyContext ctx);
   /**
    * Visit a parse tree produced by the {@code badProperty} labeled alternative in {@link
-   * CSS3Parser#property}.
+   * CSS3Parser#property_}.
    *
    * @param ctx the parse tree
    * @return the visitor result
@@ -353,12 +351,12 @@ public interface CSS3Visitor<T> extends ParseTreeVisitor<T> {
    */
   T visitBadTerm(CSS3Parser.BadTermContext ctx);
   /**
-   * Visit a parse tree produced by {@link CSS3Parser#function}.
+   * Visit a parse tree produced by {@link CSS3Parser#function_}.
    *
    * @param ctx the parse tree
    * @return the visitor result
    */
-  T visitFunction(CSS3Parser.FunctionContext ctx);
+  T visitFunction_(CSS3Parser.Function_Context ctx);
   /**
    * Visit a parse tree produced by {@link CSS3Parser#dxImageTransform}.
    *
@@ -402,12 +400,12 @@ public interface CSS3Visitor<T> extends ParseTreeVisitor<T> {
    */
   T visitUnknownDimension(CSS3Parser.UnknownDimensionContext ctx);
   /**
-   * Visit a parse tree produced by {@link CSS3Parser#any}.
+   * Visit a parse tree produced by {@link CSS3Parser#any_}.
    *
    * @param ctx the parse tree
    * @return the visitor result
    */
-  T visitAny(CSS3Parser.AnyContext ctx);
+  T visitAny_(CSS3Parser.Any_Context ctx);
   /**
    * Visit a parse tree produced by the {@code unknownAtRule} labeled alternative in {@link
    * CSS3Parser#atRule}.
@@ -508,12 +506,12 @@ public interface CSS3Visitor<T> extends ParseTreeVisitor<T> {
    */
   T visitGeneralEnclosed(CSS3Parser.GeneralEnclosedContext ctx);
   /**
-   * Visit a parse tree produced by {@link CSS3Parser#var}.
+   * Visit a parse tree produced by {@link CSS3Parser#var_}.
    *
    * @param ctx the parse tree
    * @return the visitor result
    */
-  T visitVar(CSS3Parser.VarContext ctx);
+  T visitVar_(CSS3Parser.Var_Context ctx);
   /**
    * Visit a parse tree produced by {@link CSS3Parser#calc}.
    *

@@ -1,6 +1,5 @@
-// Generated from
-// core/src/main/resources/grammars\CSS3.g4 by ANTLR 4.10.1
-package com.spinyowl.spinygui.core.parser.impl.css.parser.antlr;
+// Generated from java-escape by ANTLR 4.11.1
+package com.spinyowl.spinygui.core.parser.impl.css.antlr;
 
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.Lexer;
@@ -13,10 +12,10 @@ import org.antlr.v4.runtime.atn.LexerATNSimulator;
 import org.antlr.v4.runtime.atn.PredictionContextCache;
 import org.antlr.v4.runtime.dfa.DFA;
 
-@SuppressWarnings({"all", "warnings", "unchecked", "unused", "cast"})
+@SuppressWarnings({"all", "warnings", "unchecked", "unused", "cast", "CheckReturnValue"})
 public class CSS3Lexer extends Lexer {
   static {
-    RuntimeMetaData.checkVersion("4.10.1", RuntimeMetaData.VERSION);
+    RuntimeMetaData.checkVersion("4.11.1", RuntimeMetaData.VERSION);
   }
 
   protected static final DFA[] _decisionToDFA;
@@ -64,7 +63,7 @@ public class CSS3Lexer extends Lexer {
       Tilde = 41,
       PseudoNot = 42,
       Number = 43,
-      String = 44,
+      String_ = 44,
       PrefixMatch = 45,
       SuffixMatch = 46,
       SubstringMatch = 47,
@@ -82,7 +81,7 @@ public class CSS3Lexer extends Lexer {
       Variable = 59,
       Var = 60,
       Ident = 61,
-      Function = 62;
+      Function_ = 62;
   public static String[] channelNames = {"DEFAULT_TOKEN_CHANNEL", "HIDDEN"};
 
   public static String[] modeNames = {"DEFAULT_MODE"};
@@ -179,7 +178,7 @@ public class CSS3Lexer extends Lexer {
       "Tilde",
       "PseudoNot",
       "Number",
-      "String",
+      "String_",
       "PrefixMatch",
       "SuffixMatch",
       "SubstringMatch",
@@ -198,7 +197,7 @@ public class CSS3Lexer extends Lexer {
       "Variable",
       "Var",
       "Ident",
-      "Function"
+      "Function_"
     };
   }
 
@@ -318,7 +317,7 @@ public class CSS3Lexer extends Lexer {
       "Tilde",
       "PseudoNot",
       "Number",
-      "String",
+      "String_",
       "PrefixMatch",
       "SuffixMatch",
       "SubstringMatch",
@@ -336,7 +335,7 @@ public class CSS3Lexer extends Lexer {
       "Variable",
       "Var",
       "Ident",
-      "Function"
+      "Function_"
     };
   }
 
