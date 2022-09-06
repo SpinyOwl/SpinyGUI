@@ -1,6 +1,5 @@
 // Generated from java-escape by ANTLR 4.11.1
 package com.spinyowl.spinygui.core.parser.impl.css.antlr;
-
 import org.antlr.v4.runtime.tree.ParseTreeListener;
 
 /** This interface defines a complete listener for a parse tree produced by {@link CSS3Parser}. */

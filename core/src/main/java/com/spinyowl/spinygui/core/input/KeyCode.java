@@ -1,8 +1,8 @@
 package com.spinyowl.spinygui.core.input;
 
 /**
- * Key code is code value of the physical key represented by the event.
- * <p>
+ * Key code is code value of the physical key represented by the event. <br>
+ *
  * <p style="background-color:#FFAAAA; color: black;"><b>NOTE</b>: This ignores the user's keyboard
  * layout, so that if the user presses the key at the "Y" position in a QWERTY keyboard layout (near
  * the middle of the row above the home row), this will always return "KeyY", even if the user has a

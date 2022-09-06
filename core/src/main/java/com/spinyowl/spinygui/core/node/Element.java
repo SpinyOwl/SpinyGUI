@@ -20,7 +20,7 @@ import lombok.ToString;
 
 @Getter
 @Setter
-@ToString
+@ToString(exclude = {"childNodes", "resolvedStyle", "listenerMap"})
 public class Element extends Node implements EventTarget {
 
   /** Child nodes. */
