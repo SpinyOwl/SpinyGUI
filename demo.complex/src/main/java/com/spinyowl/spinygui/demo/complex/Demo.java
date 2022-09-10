@@ -16,6 +16,7 @@ import static org.lwjgl.glfw.GLFW.glfwSetCursorEnterCallback;
 import static org.lwjgl.glfw.GLFW.glfwSetCursorPosCallback;
 import static org.lwjgl.glfw.GLFW.glfwSetErrorCallback;
 import static org.lwjgl.glfw.GLFW.glfwSetKeyCallback;
+import static org.lwjgl.glfw.GLFW.glfwSetScrollCallback;
 import static org.lwjgl.glfw.GLFW.glfwSetWindowCloseCallback;
 import static org.lwjgl.glfw.GLFW.glfwSetWindowPos;
 import static org.lwjgl.glfw.GLFW.glfwSetWindowSizeCallback;
@@ -37,6 +38,7 @@ import com.spinyowl.cbchain.impl.ChainCursorEnterCallback;
 import com.spinyowl.cbchain.impl.ChainCursorPosCallback;
 import com.spinyowl.cbchain.impl.ChainErrorCallback;
 import com.spinyowl.cbchain.impl.ChainKeyCallback;
+import com.spinyowl.cbchain.impl.ChainScrollCallback;
 import com.spinyowl.cbchain.impl.ChainWindowCloseCallback;
 import com.spinyowl.cbchain.impl.ChainWindowSizeCallback;
 import com.spinyowl.spinygui.core.animation.Animator;
@@ -59,9 +61,11 @@ import com.spinyowl.spinygui.core.style.stylesheet.PropertyStore;
 import com.spinyowl.spinygui.core.style.stylesheet.impl.DefaultPropertyStore;
 import com.spinyowl.spinygui.core.system.event.SystemCursorEnterEvent;
 import com.spinyowl.spinygui.core.system.event.SystemCursorPosEvent;
+import com.spinyowl.spinygui.core.system.event.SystemScrollEvent;
 import com.spinyowl.spinygui.core.system.event.SystemWindowSizeEvent;
 import com.spinyowl.spinygui.core.system.event.listener.SystemCursorEnterEventListener;
 import com.spinyowl.spinygui.core.system.event.listener.SystemCursorPosEventListener;
+import com.spinyowl.spinygui.core.system.event.listener.SystemScrollEventListener;
 import com.spinyowl.spinygui.core.system.event.listener.SystemWindowSizeEventListener;
 import com.spinyowl.spinygui.core.system.event.processor.SystemEventProcessor;
 import com.spinyowl.spinygui.core.system.event.processor.SystemEventProcessorImpl;
@@ -264,6 +268,14 @@ public abstract class Demo {
             .eventProcessor(eventProcessor)
             .timeService(timeService)
             .build());
+    systemEventListenerProvider.listener(
+        SystemScrollEvent.class,
+        SystemScrollEventListener.builder()
+            .mouseService(mouseService)
+            .eventProcessor(eventProcessor)
+            .timeService(timeService)
+            .build());
+
     systemEventProcessor =
         SystemEventProcessorImpl.builder()
             .eventListenerProvider(systemEventListenerProvider)
@@ -305,6 +317,17 @@ public abstract class Demo {
             systemEventProcessor.push(
                 SystemWindowSizeEvent.builder().width(wid).height(hei).frame(frame).build()));
     glfwSetWindowSizeCallback(window, chainWindowSizeCallback);
+
+    var chainScrollCallback = new ChainScrollCallback();
+    chainScrollCallback.add(
+        (w, x, y) ->
+            systemEventProcessor.push(
+                SystemScrollEvent.builder()
+                    .frame(frame)
+                    .offsetX((float) x)
+                    .offsetY((float) y)
+                    .build()));
+    glfwSetScrollCallback(window, chainScrollCallback);
 
     var chainKeyCallback = new ChainKeyCallback();
     chainKeyCallback.add(

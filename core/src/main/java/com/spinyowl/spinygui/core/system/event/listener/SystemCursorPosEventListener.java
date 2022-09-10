@@ -2,6 +2,7 @@ package com.spinyowl.spinygui.core.system.event.listener;
 
 import static com.spinyowl.spinygui.core.input.MouseButton.LEFT;
 import static com.spinyowl.spinygui.core.input.MouseButton.RIGHT;
+
 import com.spinyowl.spinygui.core.event.CursorEnterEvent;
 import com.spinyowl.spinygui.core.event.CursorExitEvent;
 import com.spinyowl.spinygui.core.event.MouseDragEvent;
@@ -94,21 +95,19 @@ public class SystemCursorPosEventListener
       List<Element> currentTargetElements,
       List<Element> previousTargetElements) {
 
-    if (!currentTargetElements.containsAll(previousTargetElements)) {
-      previousTargetElements.removeAll(currentTargetElements);
-      for (Element prevTarget : previousTargetElements) {
-        Vector2f intersection = prevTarget.box().borderBoxPosition().sub(current).negate();
-        CursorExitEvent exitEvent =
-            CursorExitEvent.builder()
-                .source(frame)
-                .target(prevTarget)
-                .intersection(intersection)
-                .timestamp(timeService.currentTime())
-                .cursorPosition(current)
-                .build();
-        eventProcessor.push(exitEvent);
-        prevTarget.hovered(false);
-      }
+    previousTargetElements.removeAll(currentTargetElements);
+    for (Element prevTarget : previousTargetElements) {
+      Vector2f intersection = prevTarget.box().borderBoxPosition().sub(current).negate();
+      CursorExitEvent exitEvent =
+          CursorExitEvent.builder()
+              .source(frame)
+              .target(prevTarget)
+              .intersection(intersection)
+              .timestamp(timeService.currentTime())
+              .cursorPosition(current)
+              .build();
+      eventProcessor.push(exitEvent);
+      prevTarget.hovered(false);
     }
   }
 }

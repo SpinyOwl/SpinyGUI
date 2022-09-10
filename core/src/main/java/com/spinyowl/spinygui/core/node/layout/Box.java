@@ -29,6 +29,11 @@ public final class Box {
     content().y(position.y);
   }
 
+  /**
+   * Returns position of content in parent node coordinate system relative to outer border bounds.
+   *
+   * @return position of content in parent node coordinate system.
+   */
   public Vector2f contentPosition() {
     return content().position();
   }
@@ -43,30 +48,65 @@ public final class Box {
     content().height(size.y);
   }
 
+  /**
+   * Returns size of content.
+   *
+   * @return size of content.
+   */
   public Vector2f contentSize() {
     return content().size();
   }
 
+  /**
+   * Returns position of padding box in parent node coordinate system relative to outer border.
+   *
+   * @return position of padding box in parent node coordinate system.
+   */
   public Vector2f paddingBoxPosition() {
     return boxPosition(padding());
   }
 
+  /**
+   * Returns position of border box in parent node coordinate system relative to outer border.
+   *
+   * @return position of border box in parent node coordinate system.
+   */
   public Vector2f borderBoxPosition() {
     return boxPosition(padding(), border());
   }
 
+  /**
+   * Returns position of margin box in parent node coordinate system relative to outer border.
+   *
+   * @return position of margin box in parent node coordinate system.
+   */
   public Vector2f marginBoxPosition() {
     return boxPosition(padding(), border(), margin());
   }
 
+  /**
+   * Returns size of padding box.
+   *
+   * @return size of padding box.
+   */
   public Vector2f paddingBoxSize() {
     return boxSize(padding());
   }
 
+  /**
+   * Returns size of border box.
+   *
+   * @return size of border box.
+   */
   public Vector2f borderBoxSize() {
     return boxSize(padding(), border());
   }
 
+  /**
+   * Returns size of margin box.
+   *
+   * @return size of margin box.
+   */
   public Vector2f marginBoxSize() {
     return boxSize(padding(), border(), margin());
   }

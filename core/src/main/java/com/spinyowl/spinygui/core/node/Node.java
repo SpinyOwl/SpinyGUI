@@ -70,7 +70,7 @@ public abstract class Node {
    * <p>It could be different from nodes original parent based on position property (for example if
    * node was removed from normal flow).
    */
-  private Node layoutParent;
+  private Element layoutParent;
 
   /**
    * List of child nodes defined by layout service.
@@ -218,7 +218,9 @@ public abstract class Node {
   public Vector2f absolutePosition() {
     var borderBox = this.box().borderBoxPosition();
     if (this.layoutParent != null) {
-      borderBox.add(layoutParent.absolutePosition());
+      borderBox
+          .add(layoutParent.absolutePosition())
+          .sub(layoutParent.scrollLeft(), layoutParent.scrollTop());
     }
     return borderBox;
   }

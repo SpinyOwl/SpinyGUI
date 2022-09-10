@@ -87,6 +87,9 @@ winframe:hover,
 winframe *:hover {
   border: 8px solid #fc3131;
 }
+#t2 {
+  width: 500px;
+}
 """;
   }
 
@@ -94,6 +97,7 @@ winframe *:hover {
     // language=html
     return """
 <winframe>
+  <div class="wrapper" style="border-color:cyan">
   <div class="c1">c1
     <div class="c11" id='c11'>c11 Cfjg</div>
     <div class="c12">c12</div>
@@ -117,6 +121,7 @@ winframe *:hover {
   <div class="c2">
     <div class="s">s1</div>
     <div class="s">s2</div>
+  </div>
   </div>
 </winframe>
 """;

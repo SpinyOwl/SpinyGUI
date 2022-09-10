@@ -23,6 +23,31 @@ import lombok.ToString;
 @ToString(exclude = {"childNodes", "resolvedStyle", "listenerMap"})
 public class Element extends Node implements EventTarget {
 
+  /** The number of pixels that an element's content is scrolled vertically. */
+  private float scrollTop;
+  /** The number of pixels that an element's content is scrolled from its left edge. */
+  private float scrollLeft;
+  /**
+   * A measurement of the width of an element's content, including content not visible on the screen
+   * due to overflow.
+   */
+  private float scrollWidth;
+  /**
+   * A measurement of the height of an element's content, including content not visible on the
+   * screen due to overflow.
+   */
+  private float scrollHeight;
+  /**
+   * The inner width of an element in pixels, including padding but excluding borders, margins, and
+   * vertical scrollbars (if rendered).
+   */
+  private float clientWidth;
+  /**
+   * The inner height of an element in pixels, including padding but excluding borders, margins, and
+   * horizontal scrollbars (if present).
+   */
+  private float clientHeight;
+
   /** Child nodes. */
   private final List<Node> childNodes = new LinkedList<>();
 
