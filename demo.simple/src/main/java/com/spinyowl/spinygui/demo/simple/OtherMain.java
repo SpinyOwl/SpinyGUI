@@ -13,10 +13,10 @@ import com.spinyowl.spinygui.core.parser.StyleSheetParser;
 import com.spinyowl.spinygui.core.parser.impl.DefaultNodeParser;
 import com.spinyowl.spinygui.core.style.manager.StyleManager;
 import com.spinyowl.spinygui.core.style.manager.StyleManagerImpl;
-import com.spinyowl.spinygui.core.style.stylesheet.PropertiesScanner;
 import com.spinyowl.spinygui.core.style.stylesheet.PropertyStore;
+import com.spinyowl.spinygui.core.style.stylesheet.PropertyStoreProvider;
 import com.spinyowl.spinygui.core.style.stylesheet.RuleSet;
-import com.spinyowl.spinygui.core.style.stylesheet.impl.DefaultPropertyStore;
+import com.spinyowl.spinygui.core.style.stylesheet.impl.DefaultPropertyStoreProvider;
 import com.spinyowl.spinygui.core.style.types.Color;
 import java.util.Arrays;
 import java.util.List;
@@ -40,7 +40,7 @@ public class OtherMain {
         * {
           color: #222;
         }
-        
+
          winframe,
          winframe * {
            box-sizing: border-box; /* default behaviour */
@@ -49,13 +49,13 @@ public class OtherMain {
            padding: 20.1px;
            flex-direction: column;
            border: 1px solid #ccc;
-           left: 20;
+           left: 20px;
          }
          winframe:hover,
          winframe *:hover {
            border: 8px solid #fc3131;
          }
-         
+
          .text {
            display: block;
            overflow: auto;
@@ -63,7 +63,7 @@ public class OtherMain {
            font-size: 16px;
            border-color: #45AAFF;
          }
-         
+
          #t2 {
            position: absolute;
            bottom: 10px;
@@ -101,8 +101,8 @@ public class OtherMain {
         }
         """;
 
-    PropertyStore propertyStore = new DefaultPropertyStore();
-    PropertiesScanner.fillPropertyStore(propertyStore);
+    PropertyStoreProvider provider = new DefaultPropertyStoreProvider();
+    PropertyStore propertyStore = provider.createPropertyStore();
     StyleSheetParser parser = createParser(propertyStore);
     var stylesheet = parser.parse(css);
 
@@ -156,8 +156,8 @@ public class OtherMain {
             }
             """;
 
-    PropertyStore propertyStore = new DefaultPropertyStore();
-    PropertiesScanner.fillPropertyStore(propertyStore);
+    PropertyStoreProvider provider = new DefaultPropertyStoreProvider();
+    PropertyStore propertyStore = provider.createPropertyStore();
     StyleSheetParser parser = createParser(propertyStore);
     var stylesheet = parser.parse(css);
 

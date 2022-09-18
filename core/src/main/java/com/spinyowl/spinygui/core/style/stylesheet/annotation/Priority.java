@@ -6,8 +6,11 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Used to mark css property / tag to add it to mapping with higher priority. By default, all tags
- * added with 0 priority.
+ * Used to mark property provider to add properties to property store with higher priority. By
+ * default, all tags added with 0 priority.
+ *
+ * <p>Property providers with higher priority will be used to add properties to property store later
+ * which means that properties with higher priority will override properties with lower priority.
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)

@@ -5,6 +5,7 @@ import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
+
 import com.spinyowl.spinygui.core.event.ScrollEvent;
 import com.spinyowl.spinygui.core.event.processor.EventProcessor;
 import com.spinyowl.spinygui.core.input.MouseService;
@@ -22,6 +23,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
 class SystemScrollEventListenerTest {
+
+  public static final int OFFSET_X = 1;
+  public static final int OFFSET_Y = -1;
   @Mock private EventProcessor eventProcessor;
   @Mock private TimeService timeService;
   @Mock private MouseService mouseService;
@@ -57,8 +61,8 @@ class SystemScrollEventListenerTest {
             .source(frame)
             .target(frame)
             .timestamp(timestamp)
-            .offsetX(1)
-            .offsetY(-1)
+            .offsetX(OFFSET_X)
+            .offsetY(OFFSET_Y)
             .build();
     doNothing().when(eventProcessor).push(expectedEvent);
 
@@ -104,6 +108,6 @@ class SystemScrollEventListenerTest {
   }
 
   private SystemScrollEvent createEvent(Frame frame) {
-    return SystemScrollEvent.builder().frame(frame).offsetX(1).offsetY(-1).build();
+    return SystemScrollEvent.builder().frame(frame).offsetX(OFFSET_X).offsetY(OFFSET_Y).build();
   }
 }

@@ -16,10 +16,10 @@ import com.spinyowl.spinygui.core.parser.NodeParser;
 import com.spinyowl.spinygui.core.parser.StyleSheetParser;
 import com.spinyowl.spinygui.core.parser.impl.DefaultNodeParser;
 import com.spinyowl.spinygui.core.parser.impl.StyleSheetParserFactory;
-import com.spinyowl.spinygui.core.style.stylesheet.PropertiesScanner;
 import com.spinyowl.spinygui.core.style.stylesheet.PropertyStore;
+import com.spinyowl.spinygui.core.style.stylesheet.PropertyStoreProvider;
 import com.spinyowl.spinygui.core.style.stylesheet.StyleSheet;
-import com.spinyowl.spinygui.core.style.stylesheet.impl.DefaultPropertyStore;
+import com.spinyowl.spinygui.core.style.stylesheet.impl.DefaultPropertyStoreProvider;
 import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 
@@ -80,8 +80,8 @@ public class Main {
 
     var unmarshal = nodeParser.fromXml(xml2);
 
-    PropertyStore propertyStore = new DefaultPropertyStore();
-    PropertiesScanner.fillPropertyStore(propertyStore);
+    PropertyStoreProvider provider = new DefaultPropertyStoreProvider();
+    PropertyStore propertyStore = provider.createPropertyStore();
     StyleSheetParser styleSheetParser = StyleSheetParserFactory.createParser(propertyStore);
 
     // language=CSS

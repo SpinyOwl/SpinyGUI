@@ -56,9 +56,9 @@ import com.spinyowl.spinygui.core.parser.impl.DefaultNodeParser;
 import com.spinyowl.spinygui.core.parser.impl.StyleSheetParserFactory;
 import com.spinyowl.spinygui.core.style.manager.StyleManager;
 import com.spinyowl.spinygui.core.style.manager.StyleManagerImpl;
-import com.spinyowl.spinygui.core.style.stylesheet.PropertiesScanner;
 import com.spinyowl.spinygui.core.style.stylesheet.PropertyStore;
-import com.spinyowl.spinygui.core.style.stylesheet.impl.DefaultPropertyStore;
+import com.spinyowl.spinygui.core.style.stylesheet.PropertyStoreProvider;
+import com.spinyowl.spinygui.core.style.stylesheet.impl.DefaultPropertyStoreProvider;
 import com.spinyowl.spinygui.core.system.event.SystemCursorEnterEvent;
 import com.spinyowl.spinygui.core.system.event.SystemCursorPosEvent;
 import com.spinyowl.spinygui.core.system.event.SystemScrollEvent;
@@ -228,8 +228,8 @@ public abstract class Demo {
 
     animator = new AnimatorImpl(timeService);
 
-    PropertyStore propertyStore = new DefaultPropertyStore();
-    PropertiesScanner.fillPropertyStore(propertyStore);
+    PropertyStoreProvider provider = new DefaultPropertyStoreProvider();
+    PropertyStore propertyStore = provider.createPropertyStore();
     styleSheetParser = StyleSheetParserFactory.createParser(propertyStore);
     nodeParser = new DefaultNodeParser();
     styleManager = new StyleManagerImpl(propertyStore, styleSheetParser);

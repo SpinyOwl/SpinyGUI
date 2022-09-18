@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
@@ -16,14 +17,12 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 @Getter
+@Builder
 // @RequiredArgsConstructor(access = AccessLevel.PROTECTED)
 public class Property {
 
   public static final TermIdent INHERIT = new TermIdent("inherit");
   public static final TermIdent INITIAL = new TermIdent("initial");
-
-  public static final boolean ANIMATABLE = true;
-  public static final boolean INHERITABLE = true;
 
   /** Name of css property. */
   @NonNull protected String name;
@@ -50,7 +49,6 @@ public class Property {
    * The <b>inherit</b> keyword allows authors to explicitly specify inheritance. It works on both
    * inherited and non-inherited properties.
    */
-  @SuppressWarnings({"squid:S1845", "squid:S1135"}) // TODO: fix with builder pattern
   protected boolean inheritable;
 
   /** Defines if css property could be animated. */
@@ -97,12 +95,12 @@ public class Property {
    * Creates validator that checks if term is instance of specified class and if so, casts to this
    * class and applies provided predicate.
    */
-  protected static <T> Validator check(Class<? extends Term<T>> clazz, Predicate<T> predicate) {
+  public static <T> Validator checkValue(Class<? extends Term<T>> clazz, Predicate<T> predicate) {
     return term -> clazz.isInstance(term) && predicate.test(clazz.cast(term).value);
   }
 
   /** Casts term to provided term class and applies function to it's value */
-  protected static <T, O> O convert(
+  public static <T, O> O convert(
       Term<?> term, Class<? extends Term<T>> clazz, Function<T, O> function) {
     return function.apply(clazz.cast(term).value());
   }
@@ -247,5 +245,9 @@ public class Property {
     default Validator negate() {
       return t -> !validate(t);
     }
+  }
+
+  public static Validator isAuto() {
+    return checkValue(TermIdent.class, "auto"::equalsIgnoreCase);
   }
 }

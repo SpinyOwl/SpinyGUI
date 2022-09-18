@@ -9,7 +9,6 @@ import com.spinyowl.spinygui.core.parser.impl.css.visitor.RulesetVisitor;
 import com.spinyowl.spinygui.core.parser.impl.css.visitor.SelectorGroupVisitor;
 import com.spinyowl.spinygui.core.parser.impl.css.visitor.SelectorVisitor;
 import com.spinyowl.spinygui.core.parser.impl.css.visitor.StyleSheetVisitor;
-import com.spinyowl.spinygui.core.style.stylesheet.PropertiesScanner;
 import com.spinyowl.spinygui.core.style.stylesheet.PropertyStore;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
@@ -24,22 +23,6 @@ public final class StyleSheetParserFactory {
    * @return style sheet parser.
    */
   public static StyleSheetParser createParser(PropertyStore propertyStore) {
-    return createParser(propertyStore, false);
-  }
-
-  /**
-   * Creates stylesheet parser using {@link DefaultStyleSheetParser} implementation and scans for
-   * properties.
-   *
-   * @param propertyStore property store with properties definitions.
-   * @param scan if true - uses PropertiesScanner to scan for Properties and fill propertyStore.
-   * @return style sheet parser.
-   */
-  public static StyleSheetParser createParser(PropertyStore propertyStore, boolean scan) {
-    if (scan) {
-      PropertiesScanner.fillPropertyStore(propertyStore);
-    }
-
     var selectorVisitor = new SelectorVisitor();
     var selectorGroupVisitor = new SelectorGroupVisitor(selectorVisitor);
     var propertyValueVisitor = new PropertyValueVisitor();
