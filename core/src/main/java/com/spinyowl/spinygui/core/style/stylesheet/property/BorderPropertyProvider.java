@@ -48,54 +48,62 @@ public class BorderPropertyProvider implements PropertyProvider {
   @Override
   public List<Property> getProperties() {
     return List.of(
-        new Property(
-            BORDER,
-            DEFAULT_VALUE,
-            false,
-            true,
-            BorderPropertyProvider::update,
-            BorderPropertyProvider::validate,
-            true),
-        new Property(
-            BORDER_BOTTOM,
-            BorderPropertyProvider.DEFAULT_VALUE,
-            false,
-            true,
-            (term, styles) ->
-                BorderPropertyProvider.extract(
-                    term, BORDER_BOTTOM_STYLE, BORDER_BOTTOM_WIDTH, BORDER_BOTTOM_COLOR, styles),
-            BorderPropertyProvider::validate,
-            true),
-        new Property(
-            BORDER_LEFT,
-            BorderPropertyProvider.DEFAULT_VALUE,
-            false,
-            true,
-            (value, styles) ->
-                BorderPropertyProvider.extract(
-                    value, BORDER_LEFT_STYLE, BORDER_LEFT_WIDTH, BORDER_LEFT_COLOR, styles),
-            BorderPropertyProvider::validate,
-            true),
-        new Property(
-            BORDER_RIGHT,
-            BorderPropertyProvider.DEFAULT_VALUE,
-            false,
-            true,
-            (value, styles) ->
-                BorderPropertyProvider.extract(
-                    value, BORDER_RIGHT_STYLE, BORDER_RIGHT_WIDTH, BORDER_RIGHT_COLOR, styles),
-            BorderPropertyProvider::validate,
-            true),
-        new Property(
-            BORDER_TOP,
-            BorderPropertyProvider.DEFAULT_VALUE,
-            false,
-            true,
-            (value, styles) ->
-                BorderPropertyProvider.extract(
-                    value, BORDER_TOP_STYLE, BORDER_TOP_WIDTH, BORDER_TOP_COLOR, styles),
-            BorderPropertyProvider::validate,
-            true));
+        Property.builder()
+            .name(BORDER)
+            .defaultValue(DEFAULT_VALUE)
+            .animatable(true)
+            .updater(BorderPropertyProvider::update)
+            .validator(BorderPropertyProvider::validate)
+            .shorthand(true)
+            .build(),
+        Property.builder()
+            .name(BORDER_BOTTOM)
+            .defaultValue(BorderPropertyProvider.DEFAULT_VALUE)
+            .animatable(true)
+            .updater(
+                (term, styles) ->
+                    BorderPropertyProvider.extract(
+                        term,
+                        BORDER_BOTTOM_STYLE,
+                        BORDER_BOTTOM_WIDTH,
+                        BORDER_BOTTOM_COLOR,
+                        styles))
+            .validator(BorderPropertyProvider::validate)
+            .shorthand(true)
+            .build(),
+        Property.builder()
+            .name(BORDER_LEFT)
+            .defaultValue(BorderPropertyProvider.DEFAULT_VALUE)
+            .animatable(true)
+            .updater(
+                (value, styles) ->
+                    BorderPropertyProvider.extract(
+                        value, BORDER_LEFT_STYLE, BORDER_LEFT_WIDTH, BORDER_LEFT_COLOR, styles))
+            .validator(BorderPropertyProvider::validate)
+            .shorthand(true)
+            .build(),
+        Property.builder()
+            .name(BORDER_RIGHT)
+            .defaultValue(BorderPropertyProvider.DEFAULT_VALUE)
+            .animatable(true)
+            .updater(
+                (value, styles) ->
+                    BorderPropertyProvider.extract(
+                        value, BORDER_RIGHT_STYLE, BORDER_RIGHT_WIDTH, BORDER_RIGHT_COLOR, styles))
+            .validator(BorderPropertyProvider::validate)
+            .shorthand(true)
+            .build(),
+        Property.builder()
+            .name(BORDER_TOP)
+            .defaultValue(BorderPropertyProvider.DEFAULT_VALUE)
+            .animatable(true)
+            .updater(
+                (value, styles) ->
+                    BorderPropertyProvider.extract(
+                        value, BORDER_TOP_STYLE, BORDER_TOP_WIDTH, BORDER_TOP_COLOR, styles))
+            .validator(BorderPropertyProvider::validate)
+            .shorthand(true)
+            .build());
   }
 
   public static boolean validate(Term<?> term) {

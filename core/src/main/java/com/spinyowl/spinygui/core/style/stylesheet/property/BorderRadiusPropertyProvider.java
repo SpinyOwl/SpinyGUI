@@ -23,42 +23,42 @@ public class BorderRadiusPropertyProvider implements PropertyProvider {
   @Override
   public List<Property> getProperties() {
     return List.of(
-        new Property(
-            BORDER_RADIUS,
-            new TermLength(Length.ZERO),
-            false,
-            true,
-            BorderRadiusPropertyProvider::update,
-            BorderRadiusPropertyProvider::test,
-            true),
-        new Property(
-            BORDER_BOTTOM_LEFT_RADIUS,
-            new TermLength(Length.ZERO),
-            false,
-            true,
-            put(BORDER_BOTTOM_LEFT_RADIUS, TermLength.class),
-            TermLength.class::isInstance),
-        new Property(
-            BORDER_BOTTOM_RIGHT_RADIUS,
-            new TermLength(Length.ZERO),
-            false,
-            true,
-            put(BORDER_BOTTOM_RIGHT_RADIUS, TermLength.class),
-            TermLength.class::isInstance),
-        new Property(
-            BORDER_TOP_LEFT_RADIUS,
-            new TermLength(Length.ZERO),
-            false,
-            true,
-            put(BORDER_TOP_LEFT_RADIUS, TermLength.class),
-            TermLength.class::isInstance),
-        new Property(
-            BORDER_TOP_RIGHT_RADIUS,
-            new TermLength(Length.ZERO),
-            false,
-            true,
-            put(BORDER_TOP_RIGHT_RADIUS, TermLength.class),
-            TermLength.class::isInstance));
+        Property.builder()
+            .name(BORDER_RADIUS)
+            .defaultValue(new TermLength(Length.ZERO))
+            .animatable(true)
+            .updater(BorderRadiusPropertyProvider::update)
+            .validator(BorderRadiusPropertyProvider::test)
+            .shorthand(true)
+            .build(),
+        Property.builder()
+            .name(BORDER_BOTTOM_LEFT_RADIUS)
+            .defaultValue(new TermLength(Length.ZERO))
+            .animatable(true)
+            .updater(put(BORDER_BOTTOM_LEFT_RADIUS, TermLength.class))
+            .validator(TermLength.class::isInstance)
+            .build(),
+        Property.builder()
+            .name(BORDER_BOTTOM_RIGHT_RADIUS)
+            .defaultValue(new TermLength(Length.ZERO))
+            .animatable(true)
+            .updater(put(BORDER_BOTTOM_RIGHT_RADIUS, TermLength.class))
+            .validator(TermLength.class::isInstance)
+            .build(),
+        Property.builder()
+            .name(BORDER_TOP_LEFT_RADIUS)
+            .defaultValue(new TermLength(Length.ZERO))
+            .animatable(true)
+            .updater(put(BORDER_TOP_LEFT_RADIUS, TermLength.class))
+            .validator(TermLength.class::isInstance)
+            .build(),
+        Property.builder()
+            .name(BORDER_TOP_RIGHT_RADIUS)
+            .defaultValue(new TermLength(Length.ZERO))
+            .animatable(true)
+            .updater(put(BORDER_TOP_RIGHT_RADIUS, TermLength.class))
+            .validator(TermLength.class::isInstance)
+            .build());
   }
 
   protected static void update(Term<?> term, Map<String, Object> styles) {

@@ -27,13 +27,13 @@ public class BoxShadowPropertyProvider implements PropertyProvider {
   @Override
   public List<Property> getProperties() {
     return List.of(
-        new Property(
-            BOX_SHADOW,
-            new TermIdent(NONE),
-            false,
-            true,
-            BoxShadowPropertyProvider::extract,
-            BoxShadowPropertyProvider::validate));
+        Property.builder()
+            .name(BOX_SHADOW)
+            .defaultValue(new TermIdent(NONE))
+            .animatable(true)
+            .updater(BoxShadowPropertyProvider::extract)
+            .validator(BoxShadowPropertyProvider::validate)
+            .build());
   }
 
   private static boolean validate(Term<?> term) {

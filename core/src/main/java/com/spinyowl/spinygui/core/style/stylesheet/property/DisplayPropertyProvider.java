@@ -16,12 +16,13 @@ public class DisplayPropertyProvider implements PropertyProvider {
   @Override
   public List<Property> getProperties() {
     return List.of(
-        new Property(
-            DISPLAY,
-            new TermIdent(BLOCK.name()),
-            true,
-            true,
-            put(DISPLAY, TermIdent.class, Display::find),
-            checkValue(TermIdent.class, Display::contains)));
+        Property.builder()
+            .name(DISPLAY)
+            .defaultValue(new TermIdent(BLOCK.name()))
+            .inheritable(true)
+            .animatable(true)
+            .updater(put(DISPLAY, TermIdent.class, Display::find))
+            .validator(checkValue(TermIdent.class, Display::contains))
+            .build());
   }
 }

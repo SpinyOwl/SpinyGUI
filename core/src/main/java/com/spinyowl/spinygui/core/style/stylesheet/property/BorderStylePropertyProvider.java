@@ -26,42 +26,42 @@ public class BorderStylePropertyProvider implements PropertyProvider {
   @Override
   public List<Property> getProperties() {
     return List.of(
-        new Property(
-            BORDER_STYLE,
-            DEFAULT_VALUE,
-            false,
-            true,
-            BorderStylePropertyProvider::update,
-            BorderStylePropertyProvider::test,
-            true),
-        new Property(
-            BORDER_BOTTOM_STYLE,
-            BorderStylePropertyProvider.DEFAULT_VALUE,
-            false,
-            true,
-            put(BORDER_BOTTOM_STYLE, TermIdent.class, BorderStyle::find),
-            checkValue(TermIdent.class, BorderStyle::contains)),
-        new Property(
-            BORDER_LEFT_STYLE,
-            BorderStylePropertyProvider.DEFAULT_VALUE,
-            false,
-            true,
-            put(BORDER_LEFT_STYLE, TermIdent.class, BorderStyle::find),
-            checkValue(TermIdent.class, BorderStyle::contains)),
-        new Property(
-            BORDER_RIGHT_STYLE,
-            BorderStylePropertyProvider.DEFAULT_VALUE,
-            false,
-            true,
-            put(BORDER_RIGHT_STYLE, TermIdent.class, BorderStyle::find),
-            checkValue(TermIdent.class, BorderStyle::contains)),
-        new Property(
-            BORDER_TOP_STYLE,
-            BorderStylePropertyProvider.DEFAULT_VALUE,
-            false,
-            true,
-            put(BORDER_TOP_STYLE, TermIdent.class, BorderStyle::find),
-            checkValue(TermIdent.class, BorderStyle::contains)));
+        Property.builder()
+            .name(BORDER_STYLE)
+            .defaultValue(DEFAULT_VALUE)
+            .animatable(true)
+            .updater(BorderStylePropertyProvider::update)
+            .validator(BorderStylePropertyProvider::test)
+            .shorthand(true)
+            .build(),
+        Property.builder()
+            .name(BORDER_BOTTOM_STYLE)
+            .defaultValue(BorderStylePropertyProvider.DEFAULT_VALUE)
+            .animatable(true)
+            .updater(put(BORDER_BOTTOM_STYLE, TermIdent.class, BorderStyle::find))
+            .validator(checkValue(TermIdent.class, BorderStyle::contains))
+            .build(),
+        Property.builder()
+            .name(BORDER_LEFT_STYLE)
+            .defaultValue(BorderStylePropertyProvider.DEFAULT_VALUE)
+            .animatable(true)
+            .updater(put(BORDER_LEFT_STYLE, TermIdent.class, BorderStyle::find))
+            .validator(checkValue(TermIdent.class, BorderStyle::contains))
+            .build(),
+        Property.builder()
+            .name(BORDER_RIGHT_STYLE)
+            .defaultValue(BorderStylePropertyProvider.DEFAULT_VALUE)
+            .animatable(true)
+            .updater(put(BORDER_RIGHT_STYLE, TermIdent.class, BorderStyle::find))
+            .validator(checkValue(TermIdent.class, BorderStyle::contains))
+            .build(),
+        Property.builder()
+            .name(BORDER_TOP_STYLE)
+            .defaultValue(BorderStylePropertyProvider.DEFAULT_VALUE)
+            .animatable(true)
+            .updater(put(BORDER_TOP_STYLE, TermIdent.class, BorderStyle::find))
+            .validator(checkValue(TermIdent.class, BorderStyle::contains))
+            .build());
   }
 
   private static void update(Term<?> term, Map<String, Object> styles) {

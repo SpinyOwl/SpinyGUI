@@ -22,49 +22,53 @@ public class MarginPropertyProvider implements PropertyProvider {
   @Override
   public List<Property> getProperties() {
     return List.of(
-        new Property(
-            MARGIN,
-            new TermLength(Length.ZERO),
-            false,
-            true,
-            (term, styles) ->
-                setOneFour(
-                    getOneFourLengths(term).toArray(),
-                    MARGIN_TOP,
-                    MARGIN_RIGHT,
-                    MARGIN_BOTTOM,
-                    MARGIN_LEFT,
-                    styles),
-            checkValue(TermList.class, list -> list.stream().allMatch(TermLength.class::isInstance))
-                .or(TermLength.class::isInstance),
-            true),
-        new Property(
-            MARGIN_BOTTOM,
-            new TermLength(Length.ZERO),
-            false,
-            true,
-            put(MARGIN_BOTTOM, TermLength.class),
-            TermLength.class::isInstance),
-        new Property(
-            MARGIN_LEFT,
-            new TermLength(Length.ZERO),
-            false,
-            true,
-            put(MARGIN_LEFT, TermLength.class),
-            TermLength.class::isInstance),
-        new Property(
-            MARGIN_RIGHT,
-            new TermLength(Length.ZERO),
-            false,
-            true,
-            put(MARGIN_RIGHT, TermLength.class),
-            TermLength.class::isInstance),
-        new Property(
-            MARGIN_TOP,
-            new TermLength(Length.ZERO),
-            false,
-            true,
-            put(MARGIN_TOP, TermLength.class),
-            TermLength.class::isInstance));
+        Property.builder()
+            .name(MARGIN)
+            .defaultValue(new TermLength(Length.ZERO))
+            .animatable(true)
+            .updater(
+                (term, styles) ->
+                    setOneFour(
+                        getOneFourLengths(term).toArray(),
+                        MARGIN_TOP,
+                        MARGIN_RIGHT,
+                        MARGIN_BOTTOM,
+                        MARGIN_LEFT,
+                        styles))
+            .validator(
+                checkValue(
+                        TermList.class,
+                        list -> list.stream().allMatch(TermLength.class::isInstance))
+                    .or(TermLength.class::isInstance))
+            .shorthand(true)
+            .build(),
+        Property.builder()
+            .name(MARGIN_BOTTOM)
+            .defaultValue(new TermLength(Length.ZERO))
+            .animatable(true)
+            .updater(put(MARGIN_BOTTOM, TermLength.class))
+            .validator(TermLength.class::isInstance)
+            .build(),
+        Property.builder()
+            .name(MARGIN_LEFT)
+            .defaultValue(new TermLength(Length.ZERO))
+            .animatable(true)
+            .updater(put(MARGIN_LEFT, TermLength.class))
+            .validator(TermLength.class::isInstance)
+            .build(),
+        Property.builder()
+            .name(MARGIN_RIGHT)
+            .defaultValue(new TermLength(Length.ZERO))
+            .animatable(true)
+            .updater(put(MARGIN_RIGHT, TermLength.class))
+            .validator(TermLength.class::isInstance)
+            .build(),
+        Property.builder()
+            .name(MARGIN_TOP)
+            .defaultValue(new TermLength(Length.ZERO))
+            .animatable(true)
+            .updater(put(MARGIN_TOP, TermLength.class))
+            .validator(TermLength.class::isInstance)
+            .build());
   }
 }

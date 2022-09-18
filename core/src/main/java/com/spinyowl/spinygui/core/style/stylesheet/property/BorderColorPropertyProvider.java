@@ -63,45 +63,49 @@ public class BorderColorPropertyProvider implements PropertyProvider {
   @Override
   public List<Property> getProperties() {
     return List.of(
-        new Property(
-            BORDER_COLOR,
-            DEFAULT_VALUE,
-            false,
-            true,
-            BorderColorPropertyProvider::update,
-            BorderColorPropertyProvider::test,
-            true),
-        new Property(
-            BORDER_BOTTOM_COLOR,
-            BorderColorPropertyProvider.DEFAULT_VALUE,
-            false,
-            true,
-            put(BORDER_BOTTOM_COLOR, TermIdent.class, Color::get)
-                .or(put(BORDER_BOTTOM_COLOR, TermColor.class)),
-            checkValue(TermIdent.class, Color::exists).or(TermColor.class::isInstance)),
-        new Property(
-            BORDER_LEFT_COLOR,
-            BorderColorPropertyProvider.DEFAULT_VALUE,
-            false,
-            true,
-            put(BORDER_LEFT_COLOR, TermIdent.class, Color::get)
-                .or(put(BORDER_LEFT_COLOR, TermColor.class)),
-            checkValue(TermIdent.class, Color::exists).or(TermColor.class::isInstance)),
-        new Property(
-            BORDER_RIGHT_COLOR,
-            BorderColorPropertyProvider.DEFAULT_VALUE,
-            false,
-            true,
-            put(BORDER_RIGHT_COLOR, TermIdent.class, Color::get)
-                .or(put(BORDER_RIGHT_COLOR, TermColor.class)),
-            checkValue(TermIdent.class, Color::exists).or(TermColor.class::isInstance)),
-        new Property(
-            BORDER_TOP_COLOR,
-            BorderColorPropertyProvider.DEFAULT_VALUE,
-            false,
-            true,
-            put(BORDER_TOP_COLOR, TermIdent.class, Color::get)
-                .or(put(BORDER_TOP_COLOR, TermColor.class)),
-            checkValue(TermIdent.class, Color::exists).or(TermColor.class::isInstance)));
+        Property.builder()
+            .name(BORDER_COLOR)
+            .defaultValue(DEFAULT_VALUE)
+            .animatable(true)
+            .updater(BorderColorPropertyProvider::update)
+            .validator(BorderColorPropertyProvider::test)
+            .shorthand(true)
+            .build(),
+        Property.builder()
+            .name(BORDER_BOTTOM_COLOR)
+            .defaultValue(BorderColorPropertyProvider.DEFAULT_VALUE)
+            .animatable(true)
+            .updater(
+                put(BORDER_BOTTOM_COLOR, TermIdent.class, Color::get)
+                    .or(put(BORDER_BOTTOM_COLOR, TermColor.class)))
+            .validator(checkValue(TermIdent.class, Color::exists).or(TermColor.class::isInstance))
+            .build(),
+        Property.builder()
+            .name(BORDER_LEFT_COLOR)
+            .defaultValue(BorderColorPropertyProvider.DEFAULT_VALUE)
+            .animatable(true)
+            .updater(
+                put(BORDER_LEFT_COLOR, TermIdent.class, Color::get)
+                    .or(put(BORDER_LEFT_COLOR, TermColor.class)))
+            .validator(checkValue(TermIdent.class, Color::exists).or(TermColor.class::isInstance))
+            .build(),
+        Property.builder()
+            .name(BORDER_RIGHT_COLOR)
+            .defaultValue(BorderColorPropertyProvider.DEFAULT_VALUE)
+            .animatable(true)
+            .updater(
+                put(BORDER_RIGHT_COLOR, TermIdent.class, Color::get)
+                    .or(put(BORDER_RIGHT_COLOR, TermColor.class)))
+            .validator(checkValue(TermIdent.class, Color::exists).or(TermColor.class::isInstance))
+            .build(),
+        Property.builder()
+            .name(BORDER_TOP_COLOR)
+            .defaultValue(BorderColorPropertyProvider.DEFAULT_VALUE)
+            .animatable(true)
+            .updater(
+                put(BORDER_TOP_COLOR, TermIdent.class, Color::get)
+                    .or(put(BORDER_TOP_COLOR, TermColor.class)))
+            .validator(checkValue(TermIdent.class, Color::exists).or(TermColor.class::isInstance))
+            .build());
   }
 }

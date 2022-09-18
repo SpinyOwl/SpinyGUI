@@ -36,44 +36,58 @@ public class BorderWidthPropertyProvider implements PropertyProvider {
   @Override
   public List<Property> getProperties() {
     return List.of(
-        new Property(
-            BORDER_WIDTH,
-            DEFAULT,
-            false,
-            true,
-            BorderWidthPropertyProvider::update,
-            checkValue(TermList.class, BorderWidthPropertyProvider::validateList)
-                .or(BorderWidthPropertyProvider::validateOne),
-            true),
-        new Property(
-            BORDER_BOTTOM_WIDTH,
-            DEFAULT,
-            false,
-            true,
-            (term, styles) -> extractOne(term).ifPresent(l -> styles.put(BORDER_BOTTOM_WIDTH, l)),
-            checkValue(TermIdent.class, v -> contains(v, VALUES)).or(TermLength.class::isInstance)),
-        new Property(
-            BORDER_LEFT_WIDTH,
-            DEFAULT,
-            false,
-            true,
-            (term, styles) -> extractOne(term).ifPresent(l -> styles.put(BORDER_LEFT_WIDTH, l)),
-            checkValue(TermIdent.class, v -> contains(v, VALUES)).or(TermLength.class::isInstance)),
-        new Property(
-            BORDER_RIGHT_WIDTH,
-            DEFAULT,
-            false,
-            true,
-            (term, styles) -> extractOne(term).ifPresent(l -> styles.put(BORDER_RIGHT_WIDTH, l)),
-            checkValue(TermIdent.class, v -> contains(v, VALUES)).or(TermLength.class::isInstance)),
-        new Property(
-            BORDER_TOP_WIDTH,
-            DEFAULT,
-            false,
-            true,
-            (term, styles) -> extractOne(term).ifPresent(l -> styles.put(BORDER_TOP_WIDTH, l)),
-            checkValue(TermIdent.class, v -> contains(v, VALUES))
-                .or(TermLength.class::isInstance)));
+        Property.builder()
+            .name(BORDER_WIDTH)
+            .defaultValue(DEFAULT)
+            .animatable(true)
+            .updater(BorderWidthPropertyProvider::update)
+            .validator(
+                checkValue(TermList.class, BorderWidthPropertyProvider::validateList)
+                    .or(BorderWidthPropertyProvider::validateOne))
+            .shorthand(true)
+            .build(),
+        Property.builder()
+            .name(BORDER_BOTTOM_WIDTH)
+            .defaultValue(DEFAULT)
+            .animatable(true)
+            .updater(
+                (term, styles) ->
+                    extractOne(term).ifPresent(l -> styles.put(BORDER_BOTTOM_WIDTH, l)))
+            .validator(
+                checkValue(TermIdent.class, v -> contains(v, VALUES))
+                    .or(TermLength.class::isInstance))
+            .build(),
+        Property.builder()
+            .name(BORDER_LEFT_WIDTH)
+            .defaultValue(DEFAULT)
+            .animatable(true)
+            .updater(
+                (term, styles) -> extractOne(term).ifPresent(l -> styles.put(BORDER_LEFT_WIDTH, l)))
+            .validator(
+                checkValue(TermIdent.class, v -> contains(v, VALUES))
+                    .or(TermLength.class::isInstance))
+            .build(),
+        Property.builder()
+            .name(BORDER_RIGHT_WIDTH)
+            .defaultValue(DEFAULT)
+            .animatable(true)
+            .updater(
+                (term, styles) ->
+                    extractOne(term).ifPresent(l -> styles.put(BORDER_RIGHT_WIDTH, l)))
+            .validator(
+                checkValue(TermIdent.class, v -> contains(v, VALUES))
+                    .or(TermLength.class::isInstance))
+            .build(),
+        Property.builder()
+            .name(BORDER_TOP_WIDTH)
+            .defaultValue(DEFAULT)
+            .animatable(true)
+            .updater(
+                (term, styles) -> extractOne(term).ifPresent(l -> styles.put(BORDER_TOP_WIDTH, l)))
+            .validator(
+                checkValue(TermIdent.class, v -> contains(v, VALUES))
+                    .or(TermLength.class::isInstance))
+            .build());
   }
 
   protected static void update(Term<?> term, Map<String, Object> styles) {

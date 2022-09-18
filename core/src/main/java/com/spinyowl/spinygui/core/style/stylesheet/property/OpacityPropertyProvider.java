@@ -13,12 +13,12 @@ public class OpacityPropertyProvider implements PropertyProvider {
   @Override
   public List<Property> getProperties() {
     return List.of(
-        new Property(
-            OPACITY,
-            new TermFloat(1f),
-            false,
-            true,
-            put(OPACITY, TermFloat.class),
-            TermFloat.class::isInstance));
+        Property.builder()
+            .name(OPACITY)
+            .defaultValue(new TermFloat(1f))
+            .animatable(true)
+            .updater(put(OPACITY, TermFloat.class))
+            .validator(TermFloat.class::isInstance)
+            .build());
   }
 }

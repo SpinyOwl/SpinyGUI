@@ -21,51 +21,53 @@ public class PaddingPropertyProvider implements PropertyProvider {
   @Override
   public List<Property> getProperties() {
     return List.of(
-        new Property(
-            PADDING,
-            new TermLength(Length.ZERO),
-            false,
-            true,
-            (term, styles) ->
-                setOneFour(
-                    getOneFourLengths(term).toArray(),
-                    PADDING_TOP,
-                    PADDING_RIGHT,
-                    PADDING_BOTTOM,
-                    PADDING_LEFT,
-                    styles),
-            term1 ->
-                term1 instanceof TermLength
-                    || term1 instanceof TermList list
-                        && list.terms().stream().allMatch(TermLength.class::isInstance),
-            true),
-        new Property(
-            PADDING_BOTTOM,
-            new TermLength(Length.ZERO),
-            false,
-            true,
-            put(PADDING_BOTTOM, TermLength.class),
-            TermLength.class::isInstance),
-        new Property(
-            PADDING_LEFT,
-            new TermLength(Length.ZERO),
-            false,
-            true,
-            put(PADDING_LEFT, TermLength.class),
-            TermLength.class::isInstance),
-        new Property(
-            PADDING_RIGHT,
-            new TermLength(Length.ZERO),
-            false,
-            true,
-            put(PADDING_RIGHT, TermLength.class),
-            TermLength.class::isInstance),
-        new Property(
-            PADDING_TOP,
-            new TermLength(Length.ZERO),
-            false,
-            true,
-            put(PADDING_TOP, TermLength.class),
-            TermLength.class::isInstance));
+        Property.builder()
+            .name(PADDING)
+            .defaultValue(new TermLength(Length.ZERO))
+            .animatable(true)
+            .updater(
+                (term, styles) ->
+                    setOneFour(
+                        getOneFourLengths(term).toArray(),
+                        PADDING_TOP,
+                        PADDING_RIGHT,
+                        PADDING_BOTTOM,
+                        PADDING_LEFT,
+                        styles))
+            .validator(
+                term1 ->
+                    term1 instanceof TermLength
+                        || term1 instanceof TermList list
+                            && list.terms().stream().allMatch(TermLength.class::isInstance))
+            .shorthand(true)
+            .build(),
+        Property.builder()
+            .name(PADDING_BOTTOM)
+            .defaultValue(new TermLength(Length.ZERO))
+            .animatable(true)
+            .updater(put(PADDING_BOTTOM, TermLength.class))
+            .validator(TermLength.class::isInstance)
+            .build(),
+        Property.builder()
+            .name(PADDING_LEFT)
+            .defaultValue(new TermLength(Length.ZERO))
+            .animatable(true)
+            .updater(put(PADDING_LEFT, TermLength.class))
+            .validator(TermLength.class::isInstance)
+            .build(),
+        Property.builder()
+            .name(PADDING_RIGHT)
+            .defaultValue(new TermLength(Length.ZERO))
+            .animatable(true)
+            .updater(put(PADDING_RIGHT, TermLength.class))
+            .validator(TermLength.class::isInstance)
+            .build(),
+        Property.builder()
+            .name(PADDING_TOP)
+            .defaultValue(new TermLength(Length.ZERO))
+            .animatable(true)
+            .updater(put(PADDING_TOP, TermLength.class))
+            .validator(TermLength.class::isInstance)
+            .build());
   }
 }

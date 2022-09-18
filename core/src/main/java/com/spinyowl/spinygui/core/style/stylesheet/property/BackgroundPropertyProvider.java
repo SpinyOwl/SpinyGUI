@@ -46,62 +46,70 @@ public class BackgroundPropertyProvider implements PropertyProvider {
   @Override
   public List<Property> getProperties() {
     return List.of(
-        new Property(
-            BACKGROUND_SIZE,
-            new TermIdent(AUTO),
-            false,
-            true,
-            BackgroundPropertyProvider::updateBackgroundSize,
-            backgroundSizeValidator()),
-        new Property(
-            BACKGROUND_POSITION_Y,
-            new TermLength(Length.ZERO),
-            false,
-            true,
-            (term, styles) -> updateBackgroundOnePosition(BACKGROUND_POSITION_Y, term, styles),
-            checkValue(TermIdent.class, values::contains).or(TermLength.class::isInstance)),
-        new Property(
-            BACKGROUND_POSITION_X,
-            new TermLength(Length.ZERO),
-            false,
-            true,
-            (term1, styles1) -> updateBackgroundOnePosition(BACKGROUND_POSITION_X, term1, styles1),
-            checkValue(TermIdent.class, values::contains).or(TermLength.class::isInstance)),
-        new Property(
-            BACKGROUND_POSITION,
-            new TermList(Operator.SPACE, new TermLength(Length.ZERO), new TermLength(Length.ZERO)),
-            false,
-            true,
-            BackgroundPropertyProvider::updateBackgroundPosition,
-            BackgroundPropertyProvider::checkBackgroundPosition,
-            true),
-        new Property(
-            BACKGROUND_ORIGIN,
-            new TermIdent(BackgroundOrigin.PADDING_BOX.name()),
-            false,
-            false,
-            put(BACKGROUND_ORIGIN, TermIdent.class, BackgroundOrigin::find),
-            checkValue(TermIdent.class, BackgroundOrigin::contains)),
-        new Property(
-            BACKGROUND_COLOR,
-            new TermColor(Color.TRANSPARENT),
-            false,
-            true,
-            (term, styles) -> {
-              if (term instanceof TermIdent ti) {
-                styles.put(BACKGROUND_COLOR, Color.get(ti.value()));
-              } else if (term instanceof TermColor tc) {
-                styles.put(BACKGROUND_COLOR, tc.value());
-              }
-            },
-            checkValue(TermIdent.class, Color::exists).or(TermColor.class::isInstance)),
-        new Property(
-            BACKGROUND_IMAGE,
-            new TermIdent(NONE),
-            false,
-            false,
-            (term, styles) -> styles.put(BACKGROUND_IMAGE, extractUrl(((TermIdent) term).value())),
-            term -> term instanceof TermIdent ti && test(ti.value())));
+        Property.builder()
+            .name(BACKGROUND_SIZE)
+            .defaultValue(new TermIdent(AUTO))
+            .animatable(true)
+            .updater(BackgroundPropertyProvider::updateBackgroundSize)
+            .validator(backgroundSizeValidator())
+            .build(),
+        Property.builder()
+            .name(BACKGROUND_POSITION_Y)
+            .defaultValue(new TermLength(Length.ZERO))
+            .animatable(true)
+            .updater(
+                (term, styles) -> updateBackgroundOnePosition(BACKGROUND_POSITION_Y, term, styles))
+            .validator(
+                checkValue(TermIdent.class, values::contains).or(TermLength.class::isInstance))
+            .build(),
+        Property.builder()
+            .name(BACKGROUND_POSITION_X)
+            .defaultValue(new TermLength(Length.ZERO))
+            .animatable(true)
+            .updater(
+                (term1, styles1) ->
+                    updateBackgroundOnePosition(BACKGROUND_POSITION_X, term1, styles1))
+            .validator(
+                checkValue(TermIdent.class, values::contains).or(TermLength.class::isInstance))
+            .build(),
+        Property.builder()
+            .name(BACKGROUND_POSITION)
+            .defaultValue(
+                new TermList(
+                    Operator.SPACE, new TermLength(Length.ZERO), new TermLength(Length.ZERO)))
+            .animatable(true)
+            .updater(BackgroundPropertyProvider::updateBackgroundPosition)
+            .validator(BackgroundPropertyProvider::checkBackgroundPosition)
+            .shorthand(true)
+            .build(),
+        Property.builder()
+            .name(BACKGROUND_ORIGIN)
+            .defaultValue(new TermIdent(BackgroundOrigin.PADDING_BOX.name()))
+            .updater(put(BACKGROUND_ORIGIN, TermIdent.class, BackgroundOrigin::find))
+            .validator(checkValue(TermIdent.class, BackgroundOrigin::contains))
+            .build(),
+        Property.builder()
+            .name(BACKGROUND_COLOR)
+            .defaultValue(new TermColor(Color.TRANSPARENT))
+            .animatable(true)
+            .updater(
+                (term, styles) -> {
+                  if (term instanceof TermIdent ti) {
+                    styles.put(BACKGROUND_COLOR, Color.get(ti.value()));
+                  } else if (term instanceof TermColor tc) {
+                    styles.put(BACKGROUND_COLOR, tc.value());
+                  }
+                })
+            .validator(checkValue(TermIdent.class, Color::exists).or(TermColor.class::isInstance))
+            .build(),
+        Property.builder()
+            .name(BACKGROUND_IMAGE)
+            .defaultValue(new TermIdent(NONE))
+            .updater(
+                (term, styles) ->
+                    styles.put(BACKGROUND_IMAGE, extractUrl(((TermIdent) term).value())))
+            .validator(term -> term instanceof TermIdent ti && test(ti.value()))
+            .build());
   }
 
   private static Validator backgroundSizeValidator() {

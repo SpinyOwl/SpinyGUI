@@ -16,13 +16,13 @@ public class ColorPropertyProvider implements PropertyProvider {
   @Override
   public List<Property> getProperties() {
     return List.of(
-        new Property(
-            COLOR,
-            new TermColor(Color.BLACK),
-            true,
-            true,
-            put(COLOR, TermIdent.class, Color::get).or(put(COLOR, TermColor.class)),
-            checkValue(TermIdent.class, Color::exists).or(TermColor.class::isInstance)));
+        Property.builder()
+            .name(COLOR)
+            .defaultValue(new TermColor(Color.BLACK))
+            .inheritable(true)
+            .animatable(true)
+            .updater(put(COLOR, TermIdent.class, Color::get).or(put(COLOR, TermColor.class)))
+            .validator(checkValue(TermIdent.class, Color::exists).or(TermColor.class::isInstance))
+            .build());
   }
-
 }

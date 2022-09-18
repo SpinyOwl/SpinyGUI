@@ -15,12 +15,13 @@ public class PositionPropertyProvider implements PropertyProvider {
   @Override
   public List<Property> getProperties() {
     return List.of(
-        new Property(
-            POSITION,
-            new TermIdent(Position.STATIC.name()),
-            true,
-            true,
-            put(POSITION, TermIdent.class, Position::find),
-            checkValue(TermIdent.class, Position::contains)));
+        Property.builder()
+            .name(POSITION)
+            .defaultValue(new TermIdent(Position.STATIC.name()))
+            .inheritable(true)
+            .animatable(true)
+            .updater(put(POSITION, TermIdent.class, Position::find))
+            .validator(checkValue(TermIdent.class, Position::contains))
+            .build());
   }
 }

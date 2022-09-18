@@ -32,71 +32,65 @@ public class FlexPropertyProvider implements PropertyProvider {
   @Override
   public List<Property> getProperties() {
     return List.of(
-        new Property(
-            ALIGN_CONTENT,
-            new TermIdent(AlignContent.STRETCH.name()),
-            false,
-            false,
-            put(ALIGN_CONTENT, TermIdent.class, AlignContent::find),
-            checkValue(TermIdent.class, AlignContent::contains)),
-        new Property(
-            ALIGN_ITEMS,
-            new TermIdent(AlignItems.STRETCH.name()),
-            false,
-            false,
-            put(ALIGN_ITEMS, TermIdent.class, AlignItems::find),
-            checkValue(TermIdent.class, AlignItems::contains)),
-        new Property(
-            ALIGN_SELF,
-            new TermIdent(AlignSelf.AUTO.name()),
-            false,
-            false,
-            put(ALIGN_SELF, TermIdent.class, AlignSelf::find),
-            checkValue(TermIdent.class, AlignSelf::contains)),
-        new Property(
-            FLEX_BASIS,
-            new TermIdent(AUTO),
-            false,
-            false,
-            (term, styles) -> {
-              if (term instanceof TermIdent) styles.put(FLEX_BASIS, Unit.AUTO);
-              else if (term instanceof TermLength tl) styles.put(FLEX_BASIS, tl.value());
-            },
-            checkValue(TermIdent.class, AUTO::equalsIgnoreCase).or(TermLength.class::isInstance)),
-        new Property(
-            FLEX_DIRECTION,
-            new TermIdent(FlexDirection.ROW.name()),
-            false,
-            false,
-            put(FLEX_DIRECTION, TermIdent.class, FlexDirection::find),
-            checkValue(TermIdent.class, FlexDirection::contains)),
-        new Property(
-            FLEX_GROW,
-            new TermFloat(0F),
-            false,
-            false,
-            put(FLEX_GROW, TermFloat.class, t -> t),
-            TermFloat.class::isInstance),
-        new Property(
-            FLEX_SHRINK,
-            new TermFloat(0F),
-            false,
-            false,
-            put(FLEX_SHRINK, TermFloat.class, t -> t),
-            TermFloat.class::isInstance),
-        new Property(
-            FLEX_WRAP,
-            new TermIdent(FlexWrap.NOWRAP.name()),
-            false,
-            false,
-            put(FLEX_WRAP, TermIdent.class, FlexWrap::find),
-            checkValue(TermIdent.class, FlexWrap::contains)),
-        new Property(
-            JUSTIFY_CONTENT,
-            new TermIdent(JustifyContent.FLEX_START.name()),
-            false,
-            false,
-            put(JUSTIFY_CONTENT, TermIdent.class, JustifyContent::find),
-            checkValue(TermIdent.class, JustifyContent::contains)));
+        Property.builder()
+            .name(ALIGN_CONTENT)
+            .defaultValue(new TermIdent(AlignContent.STRETCH.name()))
+            .updater(put(ALIGN_CONTENT, TermIdent.class, AlignContent::find))
+            .validator(checkValue(TermIdent.class, AlignContent::contains))
+            .build(),
+        Property.builder()
+            .name(ALIGN_ITEMS)
+            .defaultValue(new TermIdent(AlignItems.STRETCH.name()))
+            .updater(put(ALIGN_ITEMS, TermIdent.class, AlignItems::find))
+            .validator(checkValue(TermIdent.class, AlignItems::contains))
+            .build(),
+        Property.builder()
+            .name(ALIGN_SELF)
+            .defaultValue(new TermIdent(AlignSelf.AUTO.name()))
+            .updater(put(ALIGN_SELF, TermIdent.class, AlignSelf::find))
+            .validator(checkValue(TermIdent.class, AlignSelf::contains))
+            .build(),
+        Property.builder()
+            .name(FLEX_BASIS)
+            .defaultValue(new TermIdent(AUTO))
+            .updater(
+                (term, styles) -> {
+                  if (term instanceof TermIdent) styles.put(FLEX_BASIS, Unit.AUTO);
+                  else if (term instanceof TermLength tl) styles.put(FLEX_BASIS, tl.value());
+                })
+            .validator(
+                checkValue(TermIdent.class, AUTO::equalsIgnoreCase)
+                    .or(TermLength.class::isInstance))
+            .build(),
+        Property.builder()
+            .name(FLEX_DIRECTION)
+            .defaultValue(new TermIdent(FlexDirection.ROW.name()))
+            .updater(put(FLEX_DIRECTION, TermIdent.class, FlexDirection::find))
+            .validator(checkValue(TermIdent.class, FlexDirection::contains))
+            .build(),
+        Property.builder()
+            .name(FLEX_GROW)
+            .defaultValue(new TermFloat(0F))
+            .updater(put(FLEX_GROW, TermFloat.class, t -> t))
+            .validator(TermFloat.class::isInstance)
+            .build(),
+        Property.builder()
+            .name(FLEX_SHRINK)
+            .defaultValue(new TermFloat(0F))
+            .updater(put(FLEX_SHRINK, TermFloat.class, t -> t))
+            .validator(TermFloat.class::isInstance)
+            .build(),
+        Property.builder()
+            .name(FLEX_WRAP)
+            .defaultValue(new TermIdent(FlexWrap.NOWRAP.name()))
+            .updater(put(FLEX_WRAP, TermIdent.class, FlexWrap::find))
+            .validator(checkValue(TermIdent.class, FlexWrap::contains))
+            .build(),
+        Property.builder()
+            .name(JUSTIFY_CONTENT)
+            .defaultValue(new TermIdent(JustifyContent.FLEX_START.name()))
+            .updater(put(JUSTIFY_CONTENT, TermIdent.class, JustifyContent::find))
+            .validator(checkValue(TermIdent.class, JustifyContent::contains))
+            .build());
   }
 }

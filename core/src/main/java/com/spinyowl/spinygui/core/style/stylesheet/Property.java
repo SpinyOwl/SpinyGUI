@@ -6,9 +6,11 @@ import java.util.Map;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
-import lombok.Builder;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.SuperBuilder;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -17,8 +19,8 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 @Getter
-@Builder
-// @RequiredArgsConstructor(access = AccessLevel.PROTECTED)
+@SuperBuilder
+@RequiredArgsConstructor(access = AccessLevel.PROTECTED)
 public class Property {
 
   public static final TermIdent INHERIT = new TermIdent("inherit");
@@ -37,7 +39,7 @@ public class Property {
    *       specified in style.
    * </ul>
    */
-  protected Term<?> defaultValue;
+  @NonNull protected Term<?> defaultValue;
 
   /**
    * Defines if css property for element should be inherited from parent element. <br>
@@ -56,40 +58,13 @@ public class Property {
   protected boolean animatable;
 
   /** Used to compute value from term and update style map with it. */
-  protected Updater updater;
+  @NonNull protected Updater updater;
 
   /** Used to validate term value before extraction. */
-  protected Validator validator;
+  @NonNull protected Validator validator;
 
   /** Defines if this property is shorthand or not. */
   protected boolean shorthand;
-
-  public Property(
-      @NonNull String name,
-      @NonNull Term<?> defaultValue,
-      boolean inheritable,
-      boolean animatable,
-      @NonNull Property.Updater updater,
-      @NonNull Validator validator) {
-    this(name, defaultValue, inheritable, animatable, updater, validator, false);
-  }
-
-  public Property(
-      @NonNull String name,
-      @NonNull Term<?> defaultValue,
-      boolean inheritable,
-      boolean animatable,
-      @NonNull Property.Updater updater,
-      @NonNull Validator validator,
-      boolean shorthand) {
-    this.name = name;
-    this.defaultValue = defaultValue;
-    this.inheritable = inheritable;
-    this.animatable = animatable;
-    this.updater = updater;
-    this.validator = validator;
-    this.shorthand = shorthand;
-  }
 
   /**
    * Creates validator that checks if term is instance of specified class and if so, casts to this

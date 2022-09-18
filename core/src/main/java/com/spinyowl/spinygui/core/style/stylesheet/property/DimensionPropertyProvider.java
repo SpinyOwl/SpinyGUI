@@ -27,59 +27,67 @@ public class DimensionPropertyProvider implements PropertyProvider {
   @Override
   public List<Property> getProperties() {
     return List.of(
-        new Property(
-            WIDTH,
-            TERM_AUTO,
-            false,
-            true,
-            put(WIDTH, TermIdent.class, AUTO::equalsIgnoreCase, v -> Unit.AUTO)
-                .or(put(WIDTH, TermLength.class)),
-            isAuto().or(TermLength.class::isInstance)),
-        new Property(
-            HEIGHT,
-            TERM_AUTO,
-            false,
-            true,
-            put(HEIGHT, TermIdent.class, AUTO::equalsIgnoreCase, v -> Unit.AUTO)
-                .or(put(HEIGHT, TermLength.class)),
-            isAuto().or(TermLength.class::isInstance)),
-        new Property(
-            MAX_HEIGHT,
-            TERM_NONE,
-            false,
-            true,
-            put(
-                    MAX_HEIGHT,
-                    TermIdent.class,
-                    "none"::equalsIgnoreCase,
-                    v -> Length.pixel(Integer.MAX_VALUE))
-                .or(put(MAX_HEIGHT, TermLength.class)),
-            checkValue(TermIdent.class, "none"::equalsIgnoreCase).or(TermLength.class::isInstance)),
-        new Property(
-            MAX_WIDTH,
-            TERM_NONE,
-            false,
-            true,
-            put(
-                    MAX_WIDTH,
-                    TermIdent.class,
-                    "none"::equalsIgnoreCase,
-                    v -> Length.pixel(Integer.MAX_VALUE))
-                .or(put(MAX_WIDTH, TermLength.class)),
-            checkValue(TermIdent.class, "none"::equalsIgnoreCase).or(TermLength.class::isInstance)),
-        new Property(
-            MIN_HEIGHT,
-            new TermLength(Length.ZERO),
-            false,
-            true,
-            put(MIN_HEIGHT, TermLength.class),
-            TermLength.class::isInstance),
-        new Property(
-            MIN_WIDTH,
-            new TermLength(Length.ZERO),
-            false,
-            true,
-            put(MIN_WIDTH, TermLength.class),
-            TermLength.class::isInstance));
+        Property.builder()
+            .name(WIDTH)
+            .defaultValue(TERM_AUTO)
+            .animatable(true)
+            .updater(
+                put(WIDTH, TermIdent.class, AUTO::equalsIgnoreCase, v -> Unit.AUTO)
+                    .or(put(WIDTH, TermLength.class)))
+            .validator(isAuto().or(TermLength.class::isInstance))
+            .build(),
+        Property.builder()
+            .name(HEIGHT)
+            .defaultValue(TERM_AUTO)
+            .animatable(true)
+            .updater(
+                put(HEIGHT, TermIdent.class, AUTO::equalsIgnoreCase, v -> Unit.AUTO)
+                    .or(put(HEIGHT, TermLength.class)))
+            .validator(isAuto().or(TermLength.class::isInstance))
+            .build(),
+        Property.builder()
+            .name(MAX_HEIGHT)
+            .defaultValue(TERM_NONE)
+            .animatable(true)
+            .updater(
+                put(
+                        MAX_HEIGHT,
+                        TermIdent.class,
+                        "none"::equalsIgnoreCase,
+                        v -> Length.pixel(Integer.MAX_VALUE))
+                    .or(put(MAX_HEIGHT, TermLength.class)))
+            .validator(
+                checkValue(TermIdent.class, "none"::equalsIgnoreCase)
+                    .or(TermLength.class::isInstance))
+            .build(),
+        Property.builder()
+            .name(MAX_WIDTH)
+            .defaultValue(TERM_NONE)
+            .animatable(true)
+            .updater(
+                put(
+                        MAX_WIDTH,
+                        TermIdent.class,
+                        "none"::equalsIgnoreCase,
+                        v -> Length.pixel(Integer.MAX_VALUE))
+                    .or(put(MAX_WIDTH, TermLength.class)))
+            .validator(
+                checkValue(TermIdent.class, "none"::equalsIgnoreCase)
+                    .or(TermLength.class::isInstance))
+            .build(),
+        Property.builder()
+            .name(MIN_HEIGHT)
+            .defaultValue(new TermLength(Length.ZERO))
+            .animatable(true)
+            .updater(put(MIN_HEIGHT, TermLength.class))
+            .validator(TermLength.class::isInstance)
+            .build(),
+        Property.builder()
+            .name(MIN_WIDTH)
+            .defaultValue(new TermLength(Length.ZERO))
+            .animatable(true)
+            .updater(put(MIN_WIDTH, TermLength.class))
+            .validator(TermLength.class::isInstance)
+            .build());
   }
 }

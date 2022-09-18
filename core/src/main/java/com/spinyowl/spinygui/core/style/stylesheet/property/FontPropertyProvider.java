@@ -32,71 +32,82 @@ public class FontPropertyProvider implements PropertyProvider {
   @Override
   public List<Property> getProperties() {
     return List.of(
-        new Property(
-            FONT_FAMILY,
-            new TermIdent("Roboto"),
-            true,
-            false,
-            put(FONT_FAMILY, TermIdent.class, value -> Set.of(trimAndUnwrap(value)))
-                .or(
-                    put(
-                        FONT_FAMILY,
-                        TermList.class,
-                        list ->
-                            list.stream()
-                                .filter(TermIdent.class::isInstance)
-                                .map(termIdent -> trimAndUnwrap(termIdent.value().toString()))
-                                .collect(Collectors.toSet()))),
-            checkValue(TermIdent.class, Font::hasFont)
-                .or(
-                    checkValue(
-                        TermList.class,
-                        list -> list.stream().allMatch(TermIdent.class::isInstance)))),
-        new Property(
-            FONT_SIZE,
-            new TermIdent(FontSize.MEDIUM.name()),
-            true,
-            true,
-            put(
-                    FONT_SIZE,
-                    TermIdent.class,
-                    FontSize::contains,
-                    name1 -> Length.pixel(FontSize.find(name1).size()))
-                .or(put(FONT_SIZE, TermLength.class)),
-            checkValue(TermIdent.class, FontSize::contains).or(TermLength.class::isInstance)),
-        new Property(
-            FONT_STRETCH,
-            new TermIdent(FontStretch.NORMAL.name()),
-            true,
-            true,
-            put(FONT_STRETCH, TermIdent.class, FontStretch::find),
-            checkValue(TermIdent.class, FontStretch::contains)),
-        new Property(
-            FONT_STYLE,
-            new TermIdent(FontStyle.NORMAL.name()),
-            true,
-            false,
-            put(FONT_STYLE, TermIdent.class, FontStyle::find),
-            checkValue(TermIdent.class, FontStyle::contains)),
-        new Property(
-            FONT_WEIGHT,
-            new TermIdent(FontWeight.NORMAL.name()),
-            true,
-            true,
-            put(FONT_WEIGHT, TermIdent.class, FontWeight::find),
-            checkValue(TermIdent.class, FontWeight::contains)),
-        new Property(
-            LINE_HEIGHT,
-            new TermIdent(NORMAL),
-            true,
-            true,
-            put(
-                    LINE_HEIGHT,
-                    TermIdent.class,
-                    NORMAL::equalsIgnoreCase,
-                    v -> Configuration.LINE_HEIGHT.value())
-                .or(put(LINE_HEIGHT, TermFloat.class)),
-            checkValue(TermIdent.class, NORMAL::equalsIgnoreCase).or(TermFloat.class::isInstance)));
+        Property.builder()
+            .name(FONT_FAMILY)
+            .defaultValue(new TermIdent("Roboto"))
+            .inheritable(true)
+            .updater(
+                put(FONT_FAMILY, TermIdent.class, value -> Set.of(trimAndUnwrap(value)))
+                    .or(
+                        put(
+                            FONT_FAMILY,
+                            TermList.class,
+                            list ->
+                                list.stream()
+                                    .filter(TermIdent.class::isInstance)
+                                    .map(termIdent -> trimAndUnwrap(termIdent.value().toString()))
+                                    .collect(Collectors.toSet()))))
+            .validator(
+                checkValue(TermIdent.class, Font::hasFont)
+                    .or(
+                        checkValue(
+                            TermList.class,
+                            list -> list.stream().allMatch(TermIdent.class::isInstance))))
+            .build(),
+        Property.builder()
+            .name(FONT_SIZE)
+            .defaultValue(new TermIdent(FontSize.MEDIUM.name()))
+            .inheritable(true)
+            .animatable(true)
+            .updater(
+                put(
+                        FONT_SIZE,
+                        TermIdent.class,
+                        FontSize::contains,
+                        name1 -> Length.pixel(FontSize.find(name1).size()))
+                    .or(put(FONT_SIZE, TermLength.class)))
+            .validator(
+                checkValue(TermIdent.class, FontSize::contains).or(TermLength.class::isInstance))
+            .build(),
+        Property.builder()
+            .name(FONT_STRETCH)
+            .defaultValue(new TermIdent(FontStretch.NORMAL.name()))
+            .inheritable(true)
+            .animatable(true)
+            .updater(put(FONT_STRETCH, TermIdent.class, FontStretch::find))
+            .validator(checkValue(TermIdent.class, FontStretch::contains))
+            .build(),
+        Property.builder()
+            .name(FONT_STYLE)
+            .defaultValue(new TermIdent(FontStyle.NORMAL.name()))
+            .inheritable(true)
+            .updater(put(FONT_STYLE, TermIdent.class, FontStyle::find))
+            .validator(checkValue(TermIdent.class, FontStyle::contains))
+            .build(),
+        Property.builder()
+            .name(FONT_WEIGHT)
+            .defaultValue(new TermIdent(FontWeight.NORMAL.name()))
+            .inheritable(true)
+            .animatable(true)
+            .updater(put(FONT_WEIGHT, TermIdent.class, FontWeight::find))
+            .validator(checkValue(TermIdent.class, FontWeight::contains))
+            .build(),
+        Property.builder()
+            .name(LINE_HEIGHT)
+            .defaultValue(new TermIdent(NORMAL))
+            .inheritable(true)
+            .animatable(true)
+            .updater(
+                put(
+                        LINE_HEIGHT,
+                        TermIdent.class,
+                        NORMAL::equalsIgnoreCase,
+                        v -> Configuration.LINE_HEIGHT.value())
+                    .or(put(LINE_HEIGHT, TermFloat.class)))
+            .validator(
+                checkValue(TermIdent.class, NORMAL::equalsIgnoreCase)
+                    .or(TermFloat.class::isInstance))
+            .build());
   }
 
   private static String trimAndUnwrap(String value) {

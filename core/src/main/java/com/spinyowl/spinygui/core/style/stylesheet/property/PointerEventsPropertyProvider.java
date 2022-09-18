@@ -15,12 +15,12 @@ public class PointerEventsPropertyProvider implements PropertyProvider {
   @Override
   public List<Property> getProperties() {
     return List.of(
-        new Property(
-            POINTER_EVENTS,
-            new TermIdent(PointerEvents.AUTO.name()),
-            true,
-            false,
-            put(POINTER_EVENTS, TermIdent.class, PointerEvents::find),
-            checkValue(TermIdent.class, PointerEvents::contains)));
+        Property.builder()
+            .name(POINTER_EVENTS)
+            .defaultValue(new TermIdent(PointerEvents.AUTO.name()))
+            .inheritable(true)
+            .updater(put(POINTER_EVENTS, TermIdent.class, PointerEvents::find))
+            .validator(checkValue(TermIdent.class, PointerEvents::contains))
+            .build());
   }
 }
