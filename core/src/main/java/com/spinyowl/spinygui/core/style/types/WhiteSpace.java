@@ -1,8 +1,11 @@
 package com.spinyowl.spinygui.core.style.types;
 
+import static lombok.AccessLevel.PRIVATE;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NonNull;
@@ -10,6 +13,7 @@ import lombok.NonNull;
 /** CSS white-space. */
 @Getter
 @EqualsAndHashCode
+@AllArgsConstructor(access = PRIVATE)
 public final class WhiteSpace {
 
   private static final Map<String, WhiteSpace> VALUES = new HashMap<>();
@@ -42,17 +46,9 @@ public final class WhiteSpace {
   @NonNull private final String name;
 
   /**
-   * Creates white-space element with specified name.
-   *
-   * @param name name of white-space type (should be same as in css specification)
-   */
-  private WhiteSpace(@NonNull String name) {
-    this.name = name;
-  }
-
-  /**
    * Used to create new white-space element with specified name. Note that name will be converted to
-   * lower case and it should be the same as names of css white-space property in css specification.
+   * lower case, and it should be the same as names of css white-space property in css
+   * specification.
    *
    * @param name name of white-space element.
    * @return new white-space element (or existing one).
@@ -63,7 +59,7 @@ public final class WhiteSpace {
 
   /**
    * Used to find white-space element with specified name. Note that name will be converted to lower
-   * case and it should be the same as names of css white-space property in css specification.
+   * case, and it should be the same as names of css white-space property in css specification.
    *
    * @param name name of white-space element.
    * @return existing white-space element or null.

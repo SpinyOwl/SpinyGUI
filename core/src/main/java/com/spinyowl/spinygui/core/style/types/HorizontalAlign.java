@@ -1,15 +1,18 @@
 package com.spinyowl.spinygui.core.style.types;
 
+import static lombok.AccessLevel.PRIVATE;
+
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
+import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NonNull;
 
 @Getter
 @EqualsAndHashCode
+@AllArgsConstructor(access = PRIVATE)
 public class HorizontalAlign {
 
   /** Stores all existing dictionary values. */
@@ -25,15 +28,6 @@ public class HorizontalAlign {
   @NonNull private final String name;
 
   /**
-   * Creates HorizontalAlign element with specified name.
-   *
-   * @param name name of HorizontalAlign type.
-   */
-  private HorizontalAlign(@NonNull String name) {
-    this.name = name;
-  }
-
-  /**
    * Used to create new HorizontalAlign element with specified name. Note that name will be
    * converted to lower case.
    *
@@ -41,7 +35,7 @@ public class HorizontalAlign {
    * @return new HorizontalAlign element (or existing one).
    */
   private static HorizontalAlign create(@NonNull String name) {
-    return VALUES.computeIfAbsent(Objects.requireNonNull(name).toLowerCase(), HorizontalAlign::new);
+    return VALUES.computeIfAbsent(name.toLowerCase(), HorizontalAlign::new);
   }
 
   /**
@@ -52,7 +46,7 @@ public class HorizontalAlign {
    * @return existing HorizontalAlign element or null.
    */
   public static HorizontalAlign find(@NonNull String name) {
-    return VALUES.get(Objects.requireNonNull(name).toLowerCase());
+    return VALUES.get(name.toLowerCase());
   }
 
   /**

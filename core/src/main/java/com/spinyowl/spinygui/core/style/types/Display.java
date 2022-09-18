@@ -1,8 +1,11 @@
 package com.spinyowl.spinygui.core.style.types;
 
+import static lombok.AccessLevel.PRIVATE;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NonNull;
@@ -10,6 +13,7 @@ import lombok.NonNull;
 /** CSS display. Currently supports */
 @Getter
 @EqualsAndHashCode
+@AllArgsConstructor(access = PRIVATE)
 public final class Display {
 
   private static final Map<String, Display> VALUES = new HashMap<>();
@@ -37,17 +41,8 @@ public final class Display {
   @NonNull private final String name;
 
   /**
-   * Creates display element with specified name.
-   *
-   * @param name name of display type (should be same as in css specification)
-   */
-  private Display(@NonNull String name) {
-    this.name = name;
-  }
-
-  /**
    * Used to create new display element with specified name. Note that name will be converted to
-   * lower case and it should be the same as names of css Display property in css specification.
+   * lower case, and it should be the same as names of css Display property in css specification.
    *
    * @param name name of display element.
    * @return new Display element (or existing one).
@@ -58,7 +53,7 @@ public final class Display {
 
   /**
    * Used to find display element with specified name. Note that name will be converted to lower
-   * case and it should be the same as names of css Display property in css specification.
+   * case, and it should be the same as names of css Display property in css specification.
    *
    * @param name name of display element.
    * @return existing Display element or null.

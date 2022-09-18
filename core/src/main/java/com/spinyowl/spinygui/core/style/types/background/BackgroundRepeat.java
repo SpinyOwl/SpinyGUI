@@ -1,6 +1,6 @@
 package com.spinyowl.spinygui.core.style.types.background;
 
-import java.util.Objects;
+import lombok.NonNull;
 
 public class BackgroundRepeat {
 
@@ -11,29 +11,29 @@ public class BackgroundRepeat {
     repeatY = repeatX = Repeat.REPEAT;
   }
 
-  public BackgroundRepeat(Repeat repeat) {
-    repeatY = repeatX = Objects.requireNonNull(repeat);
+  public BackgroundRepeat(@NonNull Repeat repeat) {
+    repeatY = repeatX = repeat;
   }
 
-  public BackgroundRepeat(Repeat repeatX, Repeat repeatY) {
-    this.repeatX = Objects.requireNonNull(repeatX);
-    this.repeatY = Objects.requireNonNull(repeatY);
+  public BackgroundRepeat(@NonNull Repeat repeatX, @NonNull Repeat repeatY) {
+    this.repeatX = repeatX;
+    this.repeatY = repeatY;
   }
 
   public Repeat getRepeatX() {
     return repeatX;
   }
 
-  public void setRepeatX(Repeat repeatX) {
-    this.repeatX = Objects.requireNonNull(repeatX);
+  public void setRepeatX(@NonNull Repeat repeatX) {
+    this.repeatX = repeatX;
   }
 
   public Repeat getRepeatY() {
     return repeatY;
   }
 
-  public void setRepeatY(Repeat repeatY) {
-    this.repeatY = Objects.requireNonNull(repeatY);
+  public void setRepeatY(@NonNull Repeat repeatY) {
+    this.repeatY = repeatY;
   }
 
   @Override

@@ -1,8 +1,9 @@
 package com.spinyowl.spinygui.core.style.types;
 
+import static lombok.AccessLevel.PRIVATE;
+
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
@@ -12,7 +13,7 @@ import lombok.NonNull;
 /** CSS position. */
 @Getter
 @EqualsAndHashCode
-@AllArgsConstructor
+@AllArgsConstructor(access = PRIVATE)
 public final class Position {
 
   private static final Map<String, Position> VALUES = new HashMap<>();
@@ -49,20 +50,18 @@ public final class Position {
    * @return new position element (or existing one).
    */
   public static Position create(@NonNull String name, boolean positioned) {
-    Objects.requireNonNull(name);
     return VALUES.computeIfAbsent(
         name.toLowerCase(), position -> new Position(position, positioned));
   }
 
   /**
    * Used to find position element with specified name. Note that name will be converted to lower
-   * case and it should be the same as names of css position property in css specification.
+   * case, and it should be the same as names of css position property in css specification.
    *
    * @param name name of position element.
    * @return existing Position element or null.
    */
   public static Position find(@NonNull String name) {
-    Objects.requireNonNull(name);
     return VALUES.get(name.toLowerCase());
   }
 

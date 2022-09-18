@@ -1,6 +1,7 @@
 package com.spinyowl.spinygui.core.style.types;
 
 import static java.lang.String.format;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Locale;
@@ -344,5 +345,5 @@ public class Color {
     return String.format("#%02x%02x%02x%02x", rr, gg, bb, aa);
   }
 
-//    return Integer.toHexString((int) (r * 255));
+  //    return Integer.toHexString((int) (r * 255));
 }
