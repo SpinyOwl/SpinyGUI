@@ -11,12 +11,15 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @RequiredArgsConstructor
-public class PropertyListVisitor extends CSS3BaseVisitor<List<Declaration>> {
+public class DeclarationListVisitor extends CSS3BaseVisitor<List<Declaration>> {
 
-  @NonNull private final PropertyVisitor propertyVisitor;
+  @NonNull private final DeclarationVisitor declarationVisitor;
 
   @Override
   public List<Declaration> visitDeclarationList(DeclarationListContext ctx) {
-    return ctx.declaration().stream().map(propertyVisitor::visit).filter(Objects::nonNull).toList();
+    return ctx.declaration().stream()
+        .map(declarationVisitor::visit)
+        .filter(Objects::nonNull)
+        .toList();
   }
 }

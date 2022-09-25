@@ -12,7 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @RequiredArgsConstructor
-public class PropertyVisitor extends CSS3BaseVisitor<Declaration> {
+public class DeclarationVisitor extends CSS3BaseVisitor<Declaration> {
 
   @NonNull private final PropertyStore propertyStore;
   @NonNull private final PropertyValueVisitor propertyValueVisitor;

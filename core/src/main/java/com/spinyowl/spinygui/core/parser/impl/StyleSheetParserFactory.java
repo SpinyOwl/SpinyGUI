@@ -2,9 +2,9 @@ package com.spinyowl.spinygui.core.parser.impl;
 
 import com.spinyowl.spinygui.core.parser.StyleSheetParser;
 import com.spinyowl.spinygui.core.parser.impl.css.visitor.AtRuleVisitor;
-import com.spinyowl.spinygui.core.parser.impl.css.visitor.PropertyListVisitor;
+import com.spinyowl.spinygui.core.parser.impl.css.visitor.DeclarationListVisitor;
+import com.spinyowl.spinygui.core.parser.impl.css.visitor.DeclarationVisitor;
 import com.spinyowl.spinygui.core.parser.impl.css.visitor.PropertyValueVisitor;
-import com.spinyowl.spinygui.core.parser.impl.css.visitor.PropertyVisitor;
 import com.spinyowl.spinygui.core.parser.impl.css.visitor.RulesetVisitor;
 import com.spinyowl.spinygui.core.parser.impl.css.visitor.SelectorGroupVisitor;
 import com.spinyowl.spinygui.core.parser.impl.css.visitor.SelectorVisitor;
@@ -26,8 +26,8 @@ public final class StyleSheetParserFactory {
     var selectorVisitor = new SelectorVisitor();
     var selectorGroupVisitor = new SelectorGroupVisitor(selectorVisitor);
     var propertyValueVisitor = new PropertyValueVisitor();
-    var propertyVisitor = new PropertyVisitor(propertyStore, propertyValueVisitor);
-    var propertyListVisitor = new PropertyListVisitor(propertyVisitor);
+    var propertyVisitor = new DeclarationVisitor(propertyStore, propertyValueVisitor);
+    var propertyListVisitor = new DeclarationListVisitor(propertyVisitor);
     var rulesetVisitor = new RulesetVisitor(selectorGroupVisitor, propertyListVisitor);
     var atRuleVisitor = new AtRuleVisitor();
     var styleSheetVisitor = new StyleSheetVisitor(rulesetVisitor, atRuleVisitor);
