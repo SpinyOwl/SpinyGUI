@@ -38,7 +38,7 @@ dependencies {
     api group: 'org.lwjgl', name: 'lwjgl-yoga', version: lwjgl_version, classifier: 'natives-macos'
 
     // https://mvnrepository.com/artifact/org.mockito/mockito-core
-    testImplementation group: 'org.mockito', name: 'mockito-core', version: '4.7.0'
+    testImplementation group: 'org.mockito', name: 'mockito-core', version: '4.8.1'
     // https://mvnrepository.com/artifact/org.mockito/mockito-junit-jupiter
     testImplementation group: 'org.mockito', name: 'mockito-junit-jupiter', version: '4.7.0'
 }
