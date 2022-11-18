@@ -1,4 +1,4 @@
-package com.spinyowl.spinygui.core.cursor;
+package com.spinyowl.spinygui.core.system.cursor;
 
 public enum CursorMod {
   /** Meaning the regular arrow cursor is used and cursor motion is not limited. */

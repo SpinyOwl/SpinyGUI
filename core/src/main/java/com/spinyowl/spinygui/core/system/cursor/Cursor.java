@@ -1,4 +1,4 @@
-package com.spinyowl.spinygui.core.cursor;
+package com.spinyowl.spinygui.core.system.cursor;
 
 import com.spinyowl.spinygui.core.image.Image;
 import lombok.EqualsAndHashCode;
