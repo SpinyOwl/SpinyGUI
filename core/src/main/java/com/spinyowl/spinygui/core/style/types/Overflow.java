@@ -17,6 +17,34 @@ public final class Overflow {
 
   private static final Map<String, Overflow> VALUES = new HashMap<>();
 
+  /**
+   * The content is not clipped, and it may be rendered outside the left and right edges. This is
+   * default.
+   */
+  public static final Overflow VISIBLE = Overflow.create("visible");
+
+  /**
+   * The content is clipped - and no scrolling mechanism is provided. No scrollbars provided,
+   * content can be scrolled only programmatically.
+   */
+  public static final Overflow HIDDEN = Overflow.create("hidden");
+
+  /** The content is clipped and a scrolling mechanism is provided. Scrollbars always appear. */
+  public static final Overflow SCROLL = Overflow.create("scroll");
+
+  /**
+   * The content is clipped and a scrolling mechanism is provided. Scrollbars appear only when
+   * necessary.
+   */
+  public static final Overflow AUTO = Overflow.create("auto");
+
+  /**
+   * The content is clipped and a scrolling mechanism is provided. Scrollbars appear only when
+   * necessary. Behaves the same as auto, but with the scrollbars drawn on top of content instead of
+   * taking up space.
+   */
+  public static final Overflow OVERLAY = Overflow.create("overlay");
+
   /** Name of Overflow */
   @NonNull private final String name;
 
