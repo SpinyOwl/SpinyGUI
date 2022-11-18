@@ -31,7 +31,7 @@ import org.joml.Vector2f;
  */
 @Getter
 @Setter
-@ToString(exclude = {"parent", "nextSibling", "previousSibling", "layoutParent"})
+@ToString(exclude = {"parent", "nextSibling", "previousSibling", "offsetParent"})
 @RequiredArgsConstructor
 public abstract class Node {
 
@@ -70,7 +70,7 @@ public abstract class Node {
    * <p>It could be different from nodes original parent based on position property (for example if
    * node was removed from normal flow).
    */
-  private Element layoutParent;
+  private Element offsetParent;
 
   /**
    * List of child nodes defined by layout service.
@@ -217,10 +217,10 @@ public abstract class Node {
   /** Returns absolute position of node (border-box) on virtual window surface. */
   public Vector2f absolutePosition() {
     var borderBox = this.box().borderBoxPosition();
-    if (this.layoutParent != null) {
+    if (this.offsetParent != null) {
       borderBox
-          .add(layoutParent.absolutePosition())
-          .sub(layoutParent.scrollLeft(), layoutParent.scrollTop());
+          .add(offsetParent.absolutePosition())
+          .sub(offsetParent.scrollLeft(), offsetParent.scrollTop());
     }
     return borderBox;
   }

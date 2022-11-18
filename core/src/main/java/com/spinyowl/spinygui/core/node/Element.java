@@ -20,7 +20,7 @@ import lombok.ToString;
 
 @Getter
 @Setter
-@ToString(exclude = {"childNodes", "resolvedStyle", "listenerMap"})
+@ToString(exclude = {"childNodes", "resolvedStyle", "listeners"})
 public class Element extends Node implements EventTarget {
 
   /** The number of pixels that an element's content is scrolled vertically. */
@@ -63,7 +63,8 @@ public class Element extends Node implements EventTarget {
    * Used to store all resolved styles by style engine (from defaults, stylesheets and element style
    * attribute).
    */
-  private final ResolvedStyle resolvedStyle = new ResolvedStyle(this);
+  @Setter(AccessLevel.NONE)
+  private final ResolvedStyle resolvedStyle = new ResolvedStyle();
 
   /** Node attributes. */
   @Setter(AccessLevel.NONE)
@@ -75,7 +76,7 @@ public class Element extends Node implements EventTarget {
    */
   @SuppressWarnings("rawtypes")
   @Setter(AccessLevel.NONE)
-  private final Map<Class<? extends Event>, List<? extends EventListener>> listenerMap =
+  private final Map<Class<? extends Event>, List<? extends EventListener>> listeners =
       new HashMap<>();
 
   public Element(String nodeName) {
@@ -118,7 +119,7 @@ public class Element extends Node implements EventTarget {
   @SuppressWarnings("unchecked")
   private <T extends Event> List<EventListener<T>> getOrCreateListener(Class<T> eventClass) {
     return (List<EventListener<T>>)
-        listenerMap.computeIfAbsent(eventClass, aClass -> new CopyOnWriteArrayList<>());
+        listeners.computeIfAbsent(eventClass, aClass -> new CopyOnWriteArrayList<>());
   }
 
   /**
@@ -128,7 +129,7 @@ public class Element extends Node implements EventTarget {
    * @return true if there is at least one event listener for specified event class.
    */
   public boolean hasListenersFor(Class<? extends Event> eventClass) {
-    return listenerMap.containsKey(eventClass) && !listenerMap.get(eventClass).isEmpty();
+    return listeners.containsKey(eventClass) && !listeners.get(eventClass).isEmpty();
   }
 
   @Override

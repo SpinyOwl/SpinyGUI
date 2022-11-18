@@ -13,6 +13,11 @@ public final class Box {
   /** Padding edges - adds edges to the content */
   private final Edges padding = new Edges();
 
+  /**
+   * Scroll edges - adds edges to the content+padding. Used to define space that used by scrollbars.
+   */
+  private final Edges scroll = new Edges();
+
   /** Border edges - adds edges to the content+padding */
   private final Edges border = new Edges();
 
@@ -99,7 +104,7 @@ public final class Box {
    * @return size of border box.
    */
   public Vector2f borderBoxSize() {
-    return boxSize(padding(), border());
+    return boxSize(padding(), scroll(), border());
   }
 
   /**
@@ -108,7 +113,7 @@ public final class Box {
    * @return size of margin box.
    */
   public Vector2f marginBoxSize() {
-    return boxSize(padding(), border(), margin());
+    return boxSize(padding(), scroll(), border(), margin());
   }
 
   private Vector2f boxPosition(Edges... edges) {
@@ -132,10 +137,10 @@ public final class Box {
   }
 
   public Rect borderBox() {
-    return content.expandedBy(padding, border);
+    return content.expandedBy(padding, scroll, border);
   }
 
   public Rect marginBox() {
-    return content.expandedBy(padding, border, margin);
+    return content.expandedBy(padding, scroll, border, margin);
   }
 }

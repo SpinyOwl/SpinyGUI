@@ -52,6 +52,8 @@ import static com.spinyowl.spinygui.core.style.stylesheet.Properties.MAX_WIDTH;
 import static com.spinyowl.spinygui.core.style.stylesheet.Properties.MIN_HEIGHT;
 import static com.spinyowl.spinygui.core.style.stylesheet.Properties.MIN_WIDTH;
 import static com.spinyowl.spinygui.core.style.stylesheet.Properties.OPACITY;
+import static com.spinyowl.spinygui.core.style.stylesheet.Properties.OVERFLOW_X;
+import static com.spinyowl.spinygui.core.style.stylesheet.Properties.OVERFLOW_Y;
 import static com.spinyowl.spinygui.core.style.stylesheet.Properties.PADDING_BOTTOM;
 import static com.spinyowl.spinygui.core.style.stylesheet.Properties.PADDING_LEFT;
 import static com.spinyowl.spinygui.core.style.stylesheet.Properties.PADDING_RIGHT;
@@ -67,12 +69,11 @@ import static com.spinyowl.spinygui.core.style.stylesheet.Properties.Z_INDEX;
 
 import com.spinyowl.spinygui.core.font.FontStyle;
 import com.spinyowl.spinygui.core.font.FontWeight;
-import com.spinyowl.spinygui.core.node.Element;
-import com.spinyowl.spinygui.core.style.stylesheet.Declaration;
 import com.spinyowl.spinygui.core.style.stylesheet.RuleSet;
 import com.spinyowl.spinygui.core.style.types.BoxShadow;
 import com.spinyowl.spinygui.core.style.types.Color;
 import com.spinyowl.spinygui.core.style.types.Display;
+import com.spinyowl.spinygui.core.style.types.Overflow;
 import com.spinyowl.spinygui.core.style.types.PointerEvents;
 import com.spinyowl.spinygui.core.style.types.Position;
 import com.spinyowl.spinygui.core.style.types.WhiteSpace;
@@ -94,17 +95,18 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
+import lombok.Getter;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 public class ResolvedStyle {
 
-  @NonNull private final Element element;
-  /** List of rulesets that applicable to element, sorted by specificity */
+  /** List of rules that applicable to element, sorted by specificity. */
   private List<RuleSet> rules = List.of();
 
-  private final Map<String, Object> styles = new TreeMap<>();
+  /** Map of styles, where key is property name and value is calculated property value. */
+  @Getter private final Map<String, Object> styles = new TreeMap<>();
 
   /**
    * Used to update list of rules.
@@ -112,15 +114,7 @@ public class ResolvedStyle {
    * @param rules new list of rules.
    */
   public void rules(@NonNull List<RuleSet> rules) {
-    if (!this.rules.equals(rules)) {
-      this.rules = List.copyOf(rules);
-
-      for (RuleSet rule : rules) {
-        for (Declaration declaration : rule.declarations()) {
-          declaration.compute(element, styles);
-        }
-      }
-    }
+    this.rules = List.copyOf(rules);
   }
 
   /**
@@ -133,27 +127,19 @@ public class ResolvedStyle {
   }
 
   /**
-   * Returns map of styles, where key is property name and value is calculated property value.
-   *
-   * @return map of property key to calculated property values.
-   */
-  public Map<String, Object> styles() {
-    if (styles.isEmpty()) {
-      rules(rules);
-    }
-    return styles;
-  }
-
-  /**
    * Used to get property value by property key with automatic cast to specific type.
    *
    * @param property property name to get.
    * @param <T> type to cast.
    * @return property value.
    */
-  @SuppressWarnings("unchecked")
   public <T> T get(String property) {
-    return (T) styles().get(property);
+    return get(property, null);
+  }
+
+  @SuppressWarnings("unchecked")
+  public <T> T get(String property, T defaultValue) {
+    return (T) styles().getOrDefault(property, defaultValue);
   }
 
   /**
@@ -394,7 +380,7 @@ public class ResolvedStyle {
   }
 
   public Position position() {
-    return get(POSITION);
+    return get(POSITION, Position.RELATIVE);
   }
 
   public Unit top() {
@@ -435,5 +421,13 @@ public class ResolvedStyle {
 
   public Float lineHeight() {
     return get(LINE_HEIGHT);
+  }
+
+  public Overflow overflowY() {
+    return get(OVERFLOW_Y);
+  }
+
+  public Overflow overflowX() {
+    return get(OVERFLOW_X);
   }
 }

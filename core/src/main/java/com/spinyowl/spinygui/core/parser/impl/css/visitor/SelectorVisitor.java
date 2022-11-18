@@ -13,7 +13,7 @@ import com.spinyowl.spinygui.core.style.stylesheet.selector.combinator.AndSelect
 import com.spinyowl.spinygui.core.style.stylesheet.selector.combinator.ChildSelector;
 import com.spinyowl.spinygui.core.style.stylesheet.selector.combinator.DescendantSelector;
 import com.spinyowl.spinygui.core.style.stylesheet.selector.combinator.GeneralSiblingSelector;
-import com.spinyowl.spinygui.core.style.stylesheet.selector.pseudo_class.HoverSelector;
+import com.spinyowl.spinygui.core.style.stylesheet.selector.pseudoclass.HoverSelector;
 import com.spinyowl.spinygui.core.style.stylesheet.selector.simple.AllSelector;
 import com.spinyowl.spinygui.core.style.stylesheet.selector.simple.ClassAttributeSelector;
 import com.spinyowl.spinygui.core.style.stylesheet.selector.simple.ElementSelector;

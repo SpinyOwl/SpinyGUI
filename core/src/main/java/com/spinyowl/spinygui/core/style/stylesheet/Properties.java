@@ -112,4 +112,6 @@ public final class Properties {
   public static final String OVERFLOW = "overflow";
   public static final String OVERFLOW_X = "overflow-x";
   public static final String OVERFLOW_Y = "overflow-y";
+
+  public static final String CONTENT = "content";
 }

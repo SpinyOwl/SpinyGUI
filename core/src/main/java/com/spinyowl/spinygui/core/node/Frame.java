@@ -172,7 +172,7 @@ public class Frame extends Element {
   }
 
   @Override
-  public Frame frame() {
+  public final Frame frame() {
     return this;
   }
 

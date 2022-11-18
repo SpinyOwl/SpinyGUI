@@ -25,6 +25,16 @@ public final class Rect {
     return rect;
   }
 
+  public void position(float x, float y) {
+    this.x = x;
+    this.y = y;
+  }
+
+  public void size(float width, float height) {
+    this.width = width;
+    this.height = height;
+  }
+
   public Vector2f position() {
     return new Vector2f(x, y);
   }

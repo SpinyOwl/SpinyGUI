@@ -49,7 +49,7 @@ public class SystemScrollEventListener extends AbstractSystemEventListener<Syste
       }
 
       float scrollLeft = target.scrollLeft() - event.offsetX() * multiplier;
-      if (target.scrollWidth() > target.box().content().width()) {
+      if (target.scrollWidth() > target.clientWidth()) {
         target.scrollLeft(scrollLeft);
       }
       eventProcessor.push(

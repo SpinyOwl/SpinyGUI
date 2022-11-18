@@ -148,7 +148,7 @@ public class LayoutServiceImpl implements LayoutService {
    * @param parent layout parent for node in wrapper.
    */
   private void populateLayoutNodes(LayoutNodeWrapper wrapper, Element parent) {
-    wrapper.node.layoutParent(parent);
+    wrapper.node.offsetParent(parent);
     var layoutChildNodes = new LinkedList<Node>();
     fillChildNodes(wrapper.normalFlowChildren, layoutChildNodes, wrapper.node);
     fillChildNodes(wrapper.positionedChildren, layoutChildNodes, wrapper.node);

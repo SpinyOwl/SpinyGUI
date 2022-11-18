@@ -11,8 +11,8 @@ import lombok.ToString;
 /** Defines node that can not contain child elements. */
 @Getter
 @Setter
-@ToString
-@EqualsAndHashCode
+@ToString(callSuper = true)
+@EqualsAndHashCode(callSuper = true)
 public class EmptyElement extends Element {
 
   public EmptyElement(String nodeName) {

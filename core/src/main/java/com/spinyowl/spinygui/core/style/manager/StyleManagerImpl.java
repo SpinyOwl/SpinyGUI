@@ -1,5 +1,7 @@
 package com.spinyowl.spinygui.core.style.manager;
 
+import static org.apache.commons.lang3.StringUtils.isBlank;
+
 import com.spinyowl.spinygui.core.node.Element;
 import com.spinyowl.spinygui.core.node.Frame;
 import com.spinyowl.spinygui.core.parser.StyleSheetParser;
@@ -19,13 +21,9 @@ import java.util.Objects;
 import lombok.Data;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-import org.apache.commons.lang3.StringUtils;
 
 @RequiredArgsConstructor
 public class StyleManagerImpl implements StyleManager {
-
-  private static final RuleSet EMPTY_RULE_SET =
-      new RuleSet(List.of(new ElementSelector("element")), List.of());
 
   @NonNull private final PropertyStore propertyStore;
   @NonNull private final StyleSheetParser styleSheetParser;
@@ -50,35 +48,40 @@ public class StyleManagerImpl implements StyleManager {
     // at the end we need to add styles specified in "style" attribute.
     ruleSets.add(elementStyleRuleSet(element));
 
-    element.resolvedStyle().rules(ruleSets);
+    if (!Objects.equals(element.resolvedStyle().rules(), ruleSets)) {
+      element.resolvedStyle().rules(ruleSets);
+      ruleSets.forEach(
+          ruleSet -> ruleSet.declarations().forEach(declaration -> declaration.apply(element)));
+    }
 
     element.children().forEach(child -> updateStyles(child, styleSheets));
   }
 
   private RuleSet elementStyleRuleSet(Element element) {
+    // obtain style data from cache or create new one.
     StyleData styleData = elementStyleDataMap.computeIfAbsent(element, e -> new StyleData());
-    RuleSet ruleSet;
-    if (!Objects.equals(styleData.style(), element.style()) || styleData.styleRuleset() == null) {
-      try {
-        String style = element.style();
-        List<Declaration> declarations;
-        if (StringUtils.isBlank(style)) {
-          declarations = List.of();
-        } else {
-          declarations = styleSheetParser.parseDeclarations(style);
-        }
-        ruleSet = new RuleSet(List.of(new ElementSelector("element")), declarations);
-
-      } catch (ParseException e) {
-        ruleSet = styleData.styleRuleset == null ? EMPTY_RULE_SET : styleData.styleRuleset;
-      }
-      styleData.style(element.style());
-      styleData.styleRuleset(ruleSet);
-    } else {
-      ruleSet = styleData.styleRuleset;
+    // check that style is the same as cached and return stylesheet if so.
+    if (Objects.equals(styleData.style(), element.style()) && styleData.styleRuleset() != null) {
+      return styleData.styleRuleset;
     }
 
-    return ruleSet;
+    // parse style attribute.
+    try {
+      String style = element.style();
+      styleData.styleRuleset =
+          createElementRuleSet(
+              isBlank(style) ? List.of() : styleSheetParser.parseDeclarations(style));
+    } catch (ParseException e) {
+      if (styleData.styleRuleset == null) {
+        styleData.styleRuleset = createElementRuleSet(List.of());
+      }
+    }
+    styleData.style = element.style();
+    return styleData.styleRuleset;
+  }
+
+  private static RuleSet createElementRuleSet(List<Declaration> declarations) {
+    return new RuleSet(List.of(new ElementSelector("element")), declarations);
   }
 
   public RuleSet defaultRuleSet() {
