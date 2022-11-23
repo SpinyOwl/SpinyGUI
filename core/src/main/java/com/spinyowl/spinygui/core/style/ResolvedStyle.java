@@ -133,11 +133,10 @@ public class ResolvedStyle {
    * @param <T> type to cast.
    * @return property value.
    */
+  @SuppressWarnings("unchecked")
   public <T> T get(String property) {
     return get(property, null);
   }
-
-  @SuppressWarnings("unchecked")
   public <T> T get(String property, T defaultValue) {
     return (T) styles().getOrDefault(property, defaultValue);
   }

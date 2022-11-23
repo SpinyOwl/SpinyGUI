@@ -43,7 +43,8 @@ public class StyleManagerImpl implements StyleManager {
     ruleSets.add(defaultRuleSet());
     // find all rule sets applicable to element.
     for (StyleSheet styleSheet : styleSheets) {
-      ruleSets.addAll(styleSheet.searchSpecificRules(element));
+      List<RuleSet> specificRules = styleSheet.searchSpecificRules(element);
+      ruleSets.addAll(specificRules);
     }
     // at the end we need to add styles specified in "style" attribute.
     ruleSets.add(elementStyleRuleSet(element));
