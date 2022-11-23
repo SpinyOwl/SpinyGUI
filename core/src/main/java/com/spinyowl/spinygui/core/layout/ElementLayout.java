@@ -1,9 +1,7 @@
 package com.spinyowl.spinygui.core.layout;
 
-import com.spinyowl.spinygui.core.node.Element;
-
 /** Defines branch for element node layout implementations. */
-public interface ElementLayout extends Layout<Element> {
+public interface ElementLayout extends Layout<LayoutElement> {
   /** {@inheritDoc} */
-  void layout(Element element, LayoutContext context);
+  void layout(LayoutElement layoutNode, LayoutContext context);
 }

@@ -1,11 +1,9 @@
-package com.spinyowl.spinygui.core.layout.impl;
+package com.spinyowl.spinygui.core.layout;
 
 import com.google.common.collect.Iterables;
 import com.spinyowl.spinygui.core.font.Font;
 import com.spinyowl.spinygui.core.font.FontStyle;
 import com.spinyowl.spinygui.core.font.FontWeight;
-import com.spinyowl.spinygui.core.layout.LayoutContext;
-import com.spinyowl.spinygui.core.layout.TextLayout;
 import com.spinyowl.spinygui.core.node.Element;
 import com.spinyowl.spinygui.core.node.Text;
 import com.spinyowl.spinygui.core.node.layout.Box;
@@ -26,8 +24,8 @@ import lombok.RequiredArgsConstructor;
 public class TextLayoutImpl implements TextLayout {
   @NonNull private final FontService fontService;
 
-  public void layout(Text text, LayoutContext context) {
-    if (text == null) return;
+  public void layout(LayoutNode layoutNode, LayoutContext context) {
+    if (!(layoutNode.node() instanceof Text text)) return;
 
     Element parent = text.parent();
     if (parent == null) return;

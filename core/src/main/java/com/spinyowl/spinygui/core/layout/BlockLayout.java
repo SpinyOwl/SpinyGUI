@@ -1,15 +1,12 @@
-package com.spinyowl.spinygui.core.layout.impl;
+package com.spinyowl.spinygui.core.layout;
 
-import static com.spinyowl.spinygui.core.layout.impl.LayoutUtils.findPositionedAncestor;
-import static com.spinyowl.spinygui.core.layout.impl.LayoutUtils.getChildNodesHeight;
-import static com.spinyowl.spinygui.core.layout.impl.LayoutUtils.setBorders;
-import static com.spinyowl.spinygui.core.layout.impl.LayoutUtils.setPadding;
+import static com.spinyowl.spinygui.core.layout.LayoutUtils.findPositionedAncestor;
+import static com.spinyowl.spinygui.core.layout.LayoutUtils.getChildNodesHeight;
+import static com.spinyowl.spinygui.core.layout.LayoutUtils.setBorders;
+import static com.spinyowl.spinygui.core.layout.LayoutUtils.setPadding;
 import static com.spinyowl.spinygui.core.style.stylesheet.util.StyleUtils.getFloatLength;
 import static com.spinyowl.spinygui.core.style.stylesheet.util.StyleUtils.getFloatLengthOptional;
 
-import com.spinyowl.spinygui.core.layout.ElementLayout;
-import com.spinyowl.spinygui.core.layout.LayoutContext;
-import com.spinyowl.spinygui.core.layout.LayoutService;
 import com.spinyowl.spinygui.core.node.Element;
 import com.spinyowl.spinygui.core.node.Frame;
 import com.spinyowl.spinygui.core.node.layout.Box;
@@ -31,11 +28,12 @@ public class BlockLayout implements ElementLayout {
   @NonNull private final LayoutService layoutService;
 
   @Override
-  public void layout(Element element, LayoutContext context) {
-    layout(element, false, context);
+  public void layout(LayoutElement layoutElement, LayoutContext context) {
+    layout(layoutElement, false, context);
   }
 
-  public void layout(Element element, boolean skipChildren, LayoutContext ctx) {
+  public void layout(LayoutElement layoutElement, boolean skipChildren, LayoutContext ctx) {
+    Element element = layoutElement.element();
     if (shouldSkip(element)) {
       return;
     }
@@ -54,16 +52,21 @@ public class BlockLayout implements ElementLayout {
     // calculate content position
     Position elementPosition = element.resolvedStyle().position();
     if (Position.STATIC.equals(elementPosition)) {
-      layoutStaticBlock(element, parentBox, style, skipChildren, ctx);
+      layoutStaticBlock(layoutElement, element, parentBox, style, skipChildren, ctx);
     } else if (Position.ABSOLUTE.equals(elementPosition)) {
-      layoutAbsoluteBlock(element, parentBox, style, skipChildren, ctx);
+      layoutAbsoluteBlock(layoutElement, element, parentBox, style, skipChildren, ctx);
     } else if (Position.RELATIVE.equals(elementPosition)) {
-      layoutRelativeBlock(element, parentBox, style, skipChildren, ctx);
+      layoutRelativeBlock(layoutElement, element, parentBox, style, skipChildren, ctx);
     }
   }
 
   private void layoutStaticBlock(
-      Element e, Box parentBox, ResolvedStyle style, boolean skipChildren, LayoutContext ctx) {
+      LayoutElement layoutElement,
+      Element e,
+      Box parentBox,
+      ResolvedStyle style,
+      boolean skipChildren,
+      LayoutContext ctx) {
 
     Box box = e.box();
     Edges padding = box.padding();
@@ -101,11 +104,11 @@ public class BlockLayout implements ElementLayout {
     float borderBoxHeight;
     if (e instanceof Frame frame) {
       if (!skipChildren) {
-        layoutService.layoutChildNodes(e, ctx);
+        layoutService.layoutChildNodes(layoutElement, ctx);
       }
       borderBoxHeight = frame.frameSize().y;
     } else {
-      float childrenHeight = childrenHeight(e, style, skipChildren, ctx);
+      float childrenHeight = childrenHeight(layoutElement, e, style, skipChildren, ctx);
       borderBoxHeight =
           getHeight(parentBox.content().height(), childrenHeight + verticalAdditions, style);
     }
@@ -118,7 +121,12 @@ public class BlockLayout implements ElementLayout {
   }
 
   private void layoutAbsoluteBlock(
-      Element e, Box parentBox, ResolvedStyle style, boolean skipChildren, LayoutContext ctx) {
+      LayoutElement layoutElement,
+      Element e,
+      Box parentBox,
+      ResolvedStyle style,
+      boolean skipChildren,
+      LayoutContext ctx) {
     Element ancestor = findPositionedAncestor(e);
 
     float verticalAdditions =
@@ -133,7 +141,7 @@ public class BlockLayout implements ElementLayout {
             + e.box().padding().right();
 
     // should be called here to calculate children before calculating content width
-    float childrenHeight = childrenHeight(e, style, skipChildren, ctx);
+    float childrenHeight = childrenHeight(layoutElement, e, style, skipChildren, ctx);
 
     // calculate content x position and width
     calculateHorizontalPositionAndWidth(
@@ -270,13 +278,14 @@ public class BlockLayout implements ElementLayout {
   }
 
   private void layoutRelativeBlock(
+      LayoutElement layoutElement,
       Element element,
       Box parentBox,
       ResolvedStyle style,
       boolean skipChildren,
       LayoutContext context) {
     Box box = element.box();
-    layoutStaticBlock(element, parentBox, style, skipChildren, context);
+    layoutStaticBlock(layoutElement, element, parentBox, style, skipChildren, context);
     float x = box.content().x();
     float y = box.content().y();
 
@@ -310,11 +319,15 @@ public class BlockLayout implements ElementLayout {
   }
 
   private float childrenHeight(
-      Element element, ResolvedStyle style, boolean skipChildren, LayoutContext context) {
+      LayoutElement layoutElement,
+      Element element,
+      ResolvedStyle style,
+      boolean skipChildren,
+      LayoutContext context) {
     float childrenHeight = 0;
     Unit height = style.height();
     if (!skipChildren) {
-      layoutService.layoutChildNodes(element, context);
+      layoutService.layoutChildNodes(layoutElement, context);
     }
     if (style.display().equals(Display.BLOCK) && height.isAuto() && !skipChildren) {
       childrenHeight = getChildNodesHeight(element);

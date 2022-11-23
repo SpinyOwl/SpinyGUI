@@ -43,7 +43,7 @@ winframe,
 winframe * {
   border: 8px solid #8c8c8c;
   box-sizing: border-box; /* default behaviour */
-  overflow: hidden; /* default behaviour */
+  overflow: scroll; /* default behaviour */
 }
 winframe:hover,
 winframe *:hover {
@@ -81,7 +81,12 @@ winframe,
 winframe * {
   border: 8px solid #8c8c8c;
   box-sizing: border-box; /* default behaviour */
-  overflow: hidden; /* default behaviour */
+  overflow: scroll; /* default behaviour */
+}
+winframe::scrollbar {
+  width: 8px;
+  height: 8px;
+  background-color: #8c8c8c;
 }
 winframe:hover,
 winframe *:hover {
@@ -89,6 +94,9 @@ winframe *:hover {
 }
 #t2 {
   width: 500px;
+}
+#t2::after {
+  content: "Hello world!";
 }
 """;
   }

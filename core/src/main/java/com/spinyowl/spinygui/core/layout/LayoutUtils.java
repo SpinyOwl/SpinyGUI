@@ -1,4 +1,4 @@
-package com.spinyowl.spinygui.core.layout.impl;
+package com.spinyowl.spinygui.core.layout;
 
 import com.spinyowl.spinygui.core.node.Element;
 import com.spinyowl.spinygui.core.node.Frame;
@@ -7,6 +7,7 @@ import com.spinyowl.spinygui.core.node.Text;
 import com.spinyowl.spinygui.core.node.layout.Edges;
 import com.spinyowl.spinygui.core.style.ResolvedStyle;
 import com.spinyowl.spinygui.core.style.types.Display;
+import com.spinyowl.spinygui.core.style.types.Overflow;
 import com.spinyowl.spinygui.core.style.types.Position;
 import com.spinyowl.spinygui.core.style.types.border.BorderStyle;
 import com.spinyowl.spinygui.core.style.types.length.Length;
@@ -19,6 +20,9 @@ import lombok.NoArgsConstructor;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class LayoutUtils {
+
+  private static final List<Overflow> SCROLLABLE_OVERFLOW_VALUES =
+      List.of(Overflow.AUTO, Overflow.SCROLL);
 
   public static void setPadding(
       float parentWidth, float parentHeight, ResolvedStyle style, Edges padding) {
@@ -95,4 +99,20 @@ public final class LayoutUtils {
 
     return findPositionedAncestor(parent);
   }
+
+  //  public static float getVerticalScrollbarWidth(Element element) {
+  //    float width = 0;
+  //    if (SCROLLABLE_OVERFLOW_VALUES.contains(element.resolvedStyle().overflowY())) {
+  //      width = element.verticalScrollbar().box().borderBox().width();
+  //    }
+  //    return width;
+  //  }
+  //
+  //  public static float getHorizontalScrollbarHeight(Element element) {
+  //    float height = 0;
+  //    if (SCROLLABLE_OVERFLOW_VALUES.contains(element.resolvedStyle().overflowX())) {
+  //      height = element.horizontalScrollbar().box().borderBox().height();
+  //    }
+  //    return height;
+  //  }
 }

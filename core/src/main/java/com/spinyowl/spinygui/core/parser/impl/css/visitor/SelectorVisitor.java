@@ -14,6 +14,9 @@ import com.spinyowl.spinygui.core.style.stylesheet.selector.combinator.ChildSele
 import com.spinyowl.spinygui.core.style.stylesheet.selector.combinator.DescendantSelector;
 import com.spinyowl.spinygui.core.style.stylesheet.selector.combinator.GeneralSiblingSelector;
 import com.spinyowl.spinygui.core.style.stylesheet.selector.pseudoclass.HoverSelector;
+import com.spinyowl.spinygui.core.style.stylesheet.selector.pseudoelement.AfterSelector;
+import com.spinyowl.spinygui.core.style.stylesheet.selector.pseudoelement.BeforeSelector;
+import com.spinyowl.spinygui.core.style.stylesheet.selector.pseudoelement.ScrollbarSelector;
 import com.spinyowl.spinygui.core.style.stylesheet.selector.simple.AllSelector;
 import com.spinyowl.spinygui.core.style.stylesheet.selector.simple.ClassAttributeSelector;
 import com.spinyowl.spinygui.core.style.stylesheet.selector.simple.ElementSelector;
@@ -81,6 +84,18 @@ public class SelectorVisitor extends CSS3BaseVisitor<Selector> {
     String selectorName = ctx.ident().getText();
     if ("hover".equals(selectorName)) {
       return new HoverSelector();
+    }
+
+    if ("before".equals(selectorName)) {
+      return new BeforeSelector();
+    }
+
+    if ("after".equals(selectorName)) {
+      return new AfterSelector();
+    }
+
+    if ("scrollbar".equals(selectorName)) {
+      return new ScrollbarSelector();
     }
 
     return null;

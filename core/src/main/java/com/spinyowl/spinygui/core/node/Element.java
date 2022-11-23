@@ -66,6 +66,11 @@ public class Element extends Node implements EventTarget {
   @Setter(AccessLevel.NONE)
   private final ResolvedStyle resolvedStyle = new ResolvedStyle();
 
+  /** Pseudo elements styles. */
+  @Setter(AccessLevel.NONE)
+  @Getter(AccessLevel.NONE)
+  private final Map<String, ResolvedStyle> pseudoStyles = new HashMap<>();
+
   /** Node attributes. */
   @Setter(AccessLevel.NONE)
   private final Map<String, String> attributes = new HashMap<>();
@@ -120,6 +125,10 @@ public class Element extends Node implements EventTarget {
   private <T extends Event> List<EventListener<T>> getOrCreateListener(Class<T> eventClass) {
     return (List<EventListener<T>>)
         listeners.computeIfAbsent(eventClass, aClass -> new CopyOnWriteArrayList<>());
+  }
+
+  public ResolvedStyle resolvedStyle(String pseudo) {
+    return pseudoStyles.computeIfAbsent(pseudo, s -> new ResolvedStyle());
   }
 
   /**

@@ -63,7 +63,6 @@ public abstract class Node {
   private Node previousSibling;
 
   /// LAYOUT SECTION
-
   /**
    * Parent defined by layout service.
    *
@@ -71,14 +70,6 @@ public abstract class Node {
    * node was removed from normal flow).
    */
   private Element offsetParent;
-
-  /**
-   * List of child nodes defined by layout service.
-   *
-   * <p>It could be different from nodes original parent based on position property (for example if
-   * node was removed from normal flow).
-   */
-  private List<Node> layoutChildNodes;
 
   /** Dimensions of node defined by layout service. */
   @Setter(AccessLevel.NONE)

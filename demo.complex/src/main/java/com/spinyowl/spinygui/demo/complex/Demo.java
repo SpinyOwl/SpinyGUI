@@ -48,7 +48,8 @@ import com.spinyowl.spinygui.core.event.processor.DefaultEventProcessor;
 import com.spinyowl.spinygui.core.event.processor.EventProcessor;
 import com.spinyowl.spinygui.core.input.impl.MouseServiceImpl;
 import com.spinyowl.spinygui.core.layout.LayoutService;
-import com.spinyowl.spinygui.core.layout.impl.LayoutServiceProvider;
+import com.spinyowl.spinygui.core.layout.LayoutServiceProvider;
+import com.spinyowl.spinygui.core.layout.Viewport;
 import com.spinyowl.spinygui.core.node.Frame;
 import com.spinyowl.spinygui.core.parser.NodeParser;
 import com.spinyowl.spinygui.core.parser.StyleSheetParser;
@@ -171,11 +172,11 @@ public abstract class Demo {
       styleManager.recalculate(frame);
 
       // We need to relayout components after styles changed.
-      layoutService.layout(frame);
+      Viewport viewport = layoutService.layout(frame);
 
       // After that we can render.
       glClear(GL_COLOR_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
-      renderer.render(window, windowSize, framebufferSize, frame);
+      renderer.render(window, windowSize, framebufferSize, viewport);
       glfwSwapBuffers(window);
 
       // update system. could be moved for example to game loop.
@@ -242,7 +243,7 @@ public abstract class Demo {
     FontService fontService = new FontServiceImpl(fontStorage, true);
     layoutService =
         LayoutServiceProvider.create(
-            systemEventProcessor, eventProcessor, timeService, fontService);
+            systemEventProcessor, eventProcessor, styleManager, timeService, fontService);
   }
 
   private void initializeSystemEventListener() {

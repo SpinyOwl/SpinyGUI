@@ -1,8 +1,8 @@
-package com.spinyowl.spinygui.core.layout.impl;
+package com.spinyowl.spinygui.core.layout;
 
-import static com.spinyowl.spinygui.core.layout.impl.LayoutUtils.findPositionedAncestor;
-import static com.spinyowl.spinygui.core.layout.impl.LayoutUtils.hasPosition;
-import static com.spinyowl.spinygui.core.layout.impl.LayoutUtils.isPositioned;
+import static com.spinyowl.spinygui.core.layout.LayoutUtils.findPositionedAncestor;
+import static com.spinyowl.spinygui.core.layout.LayoutUtils.hasPosition;
+import static com.spinyowl.spinygui.core.layout.LayoutUtils.isPositioned;
 import static com.spinyowl.spinygui.core.style.types.Position.ABSOLUTE;
 import static com.spinyowl.spinygui.core.style.types.Position.STATIC;
 import static com.spinyowl.spinygui.core.util.NodeUtilities.visible;
@@ -55,9 +55,6 @@ import static org.lwjgl.util.yoga.Yoga.YGWrapReverse;
 import static org.lwjgl.util.yoga.Yoga.YGWrapWrap;
 
 import com.spinyowl.spinygui.core.event.processor.EventProcessor;
-import com.spinyowl.spinygui.core.layout.ElementLayout;
-import com.spinyowl.spinygui.core.layout.LayoutContext;
-import com.spinyowl.spinygui.core.layout.LayoutService;
 import com.spinyowl.spinygui.core.node.Element;
 import com.spinyowl.spinygui.core.node.layout.Box;
 import com.spinyowl.spinygui.core.node.layout.Edges;
@@ -101,19 +98,20 @@ public class FlexLayout implements ElementLayout {
    *
    * <p>Currently sizes calculated as if all elements has 'box-sizing: border-box'.
    *
-   * @param parent element to lay out.
+   * @param layoutElement element to lay out.
    */
   @Override
-  public void layout(Element parent, LayoutContext context) {
+  public void layout(LayoutElement layoutElement, LayoutContext context) {
     // initially layout as block
-    blockLayout.layout(parent, true, context);
+    blockLayout.layout(layoutElement, true, context);
+    Element parent = layoutElement.element();
 
     // initialize
     var rootNode = YGNodeNew();
     prepareNode(parent, rootNode);
     YGNodeStyleSetDisplay(rootNode, YGDisplayFlex);
 
-    layoutService.layoutChildNodes(parent, context);
+    layoutService.layoutChildNodes(layoutElement, context);
 
     Element positionedParent = isPositioned(parent) ? parent : findPositionedAncestor(parent);
 

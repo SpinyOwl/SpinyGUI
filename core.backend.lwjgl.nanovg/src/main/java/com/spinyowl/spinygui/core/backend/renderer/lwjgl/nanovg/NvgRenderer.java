@@ -10,9 +10,11 @@ import static org.lwjgl.opengl.GL11.glBlendFunc;
 import static org.lwjgl.opengl.GL11.glDisable;
 import static org.lwjgl.opengl.GL11.glEnable;
 import static org.lwjgl.opengl.GL11.glGetInteger;
+
 import com.spinyowl.spinygui.core.backend.renderer.Renderer;
+import com.spinyowl.spinygui.core.layout.LayoutNode;
+import com.spinyowl.spinygui.core.layout.Viewport;
 import com.spinyowl.spinygui.core.node.Element;
-import com.spinyowl.spinygui.core.node.Frame;
 import com.spinyowl.spinygui.core.node.Node;
 import com.spinyowl.spinygui.core.node.Text;
 import java.util.List;
@@ -65,27 +67,27 @@ public class NvgRenderer implements Renderer {
                 : NanoVGGL2.NVG_STENCIL_STROKES;
         nanovgContext = NanoVGGL2.nvgCreate(flags);
       }
-
     }
   }
 
   @Override
-  public void render(long window, Vector2fc windowSize, Vector2ic frameBufferSize, Frame frame) {
+  public void render(
+      long window, Vector2fc windowSize, Vector2ic frameBufferSize, Viewport viewport) {
 
     float pixelRatio = windowSize.x() / frameBufferSize.x();
 
     preRender(windowSize, pixelRatio);
 
-    renderLayoutTree(frame);
+    renderLayoutTree(viewport);
 
     postRender();
   }
 
-  private void renderLayoutTree(Frame layoutTree) {
-    renderElement(layoutTree, layoutTree.layoutChildNodes());
+  private void renderLayoutTree(Viewport layoutTree) {
+    renderElement(layoutTree.node(), layoutTree.children());
   }
 
-  private void renderElement(Node node, List<Node> children) {
+  private void renderElement(Node node, List<LayoutNode> children) {
     elementRenderer.render(node, nanovgContext);
     borderRenderer.render(node, nanovgContext);
 
@@ -94,9 +96,10 @@ public class NvgRenderer implements Renderer {
     }
   }
 
-  private void renderLayoutNode(Node node) {
+  private void renderLayoutNode(LayoutNode layoutNode) {
+    Node node = layoutNode.node();
     if (node instanceof Element) {
-      renderElement(node, node.layoutChildNodes());
+      renderElement(node, layoutNode.children());
     } else if (node instanceof Text) {
       textRenderer.render(node, nanovgContext);
     }

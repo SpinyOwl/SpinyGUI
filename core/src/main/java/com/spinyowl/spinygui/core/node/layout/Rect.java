@@ -34,7 +34,6 @@ public final class Rect {
     this.width = width;
     this.height = height;
   }
-
   public Vector2f position() {
     return new Vector2f(x, y);
   }
