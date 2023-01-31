@@ -40,7 +40,7 @@ dependencies {
     // https://mvnrepository.com/artifact/org.mockito/mockito-core
     testImplementation group: 'org.mockito', name: 'mockito-core', version: '4.7.0'
     // https://mvnrepository.com/artifact/org.mockito/mockito-junit-jupiter
-    testImplementation group: 'org.mockito', name: 'mockito-junit-jupiter', version: '4.7.0'
+    testImplementation group: 'org.mockito', name: 'mockito-junit-jupiter', version: '5.1.1'
 }
 
 java {
