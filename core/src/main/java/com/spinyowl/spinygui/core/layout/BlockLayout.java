@@ -17,23 +17,27 @@ import com.spinyowl.spinygui.core.style.types.Position;
 import com.spinyowl.spinygui.core.style.types.border.BorderStyle;
 import com.spinyowl.spinygui.core.style.types.length.Length.PixelLength;
 import com.spinyowl.spinygui.core.style.types.length.Unit;
+import com.spinyowl.spinygui.core.system.tree.LayoutContext;
+import com.spinyowl.spinygui.core.system.tree.LayoutNode;
+import com.spinyowl.spinygui.core.system.tree.LayoutService;
 import java.util.Optional;
 import java.util.function.Consumer;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
-public class BlockLayout implements ElementLayout {
+public class BlockLayout implements Layout {
 
   @NonNull private final LayoutService layoutService;
 
   @Override
-  public void layout(LayoutElement layoutElement, LayoutContext context) {
-    layout(layoutElement, false, context);
+  public void layout(LayoutNode layoutNode, LayoutContext context) {
+    if (!layoutNode.isElement()) return;
+    layout(layoutNode, false, context);
   }
 
-  public void layout(LayoutElement layoutElement, boolean skipChildren, LayoutContext ctx) {
-    Element element = layoutElement.element();
+  public void layout(LayoutNode layoutNode, boolean skipChildren, LayoutContext ctx) {
+    Element element = layoutNode.element();
     if (shouldSkip(element)) {
       return;
     }
@@ -52,16 +56,16 @@ public class BlockLayout implements ElementLayout {
     // calculate content position
     Position elementPosition = element.resolvedStyle().position();
     if (Position.STATIC.equals(elementPosition)) {
-      layoutStaticBlock(layoutElement, element, parentBox, style, skipChildren, ctx);
+      layoutStaticBlock(layoutNode, element, parentBox, style, skipChildren, ctx);
     } else if (Position.ABSOLUTE.equals(elementPosition)) {
-      layoutAbsoluteBlock(layoutElement, element, parentBox, style, skipChildren, ctx);
+      layoutAbsoluteBlock(layoutNode, element, parentBox, style, skipChildren, ctx);
     } else if (Position.RELATIVE.equals(elementPosition)) {
-      layoutRelativeBlock(layoutElement, element, parentBox, style, skipChildren, ctx);
+      layoutRelativeBlock(layoutNode, element, parentBox, style, skipChildren, ctx);
     }
   }
 
   private void layoutStaticBlock(
-      LayoutElement layoutElement,
+      LayoutNode layoutNode,
       Element e,
       Box parentBox,
       ResolvedStyle style,
@@ -72,25 +76,28 @@ public class BlockLayout implements ElementLayout {
     Edges padding = box.padding();
     Edges border = box.border();
     Edges margin = box.margin();
+    Edges scroll = box.scroll();
 
     float contentX =
         parentBox.border().left()
             + Math.max(parentBox.padding().left(), margin.left())
             + border.left()
-            + padding.left();
+            + padding.left()
+            + scroll.left();
 
     Float blockBottomY = ctx.lastBlockBottomY();
     float contentY =
         border.top()
             + padding.top()
+            + scroll.top()
             + (blockBottomY != null
                 ? blockBottomY
                 : Math.max(parentBox.padding().top(), margin.top()) + parentBox.border().top());
 
     box.contentPosition(contentX, contentY);
 
-    float verticalAdditions = border.top() + border.bottom() + padding.top() + padding.bottom();
-    float horizontalAdditions = border.left() + border.right() + padding.left() + padding.right();
+    float verticalAdditions = Box.edgesHeight(border, padding, scroll);
+    float horizontalAdditions = Box.edgesWidth(border, padding, scroll);
 
     float contentWidth;
     if (e instanceof Frame frame) {
@@ -104,11 +111,11 @@ public class BlockLayout implements ElementLayout {
     float borderBoxHeight;
     if (e instanceof Frame frame) {
       if (!skipChildren) {
-        layoutService.layoutChildNodes(layoutElement, ctx);
+        layoutService.layoutChildNodes(layoutNode, ctx);
       }
       borderBoxHeight = frame.frameSize().y;
     } else {
-      float childrenHeight = childrenHeight(layoutElement, e, style, skipChildren, ctx);
+      float childrenHeight = childrenHeight(layoutNode, e, style, skipChildren, ctx);
       borderBoxHeight =
           getHeight(parentBox.content().height(), childrenHeight + verticalAdditions, style);
     }
@@ -121,7 +128,7 @@ public class BlockLayout implements ElementLayout {
   }
 
   private void layoutAbsoluteBlock(
-      LayoutElement layoutElement,
+      LayoutNode layoutNode,
       Element e,
       Box parentBox,
       ResolvedStyle style,
@@ -141,7 +148,7 @@ public class BlockLayout implements ElementLayout {
             + e.box().padding().right();
 
     // should be called here to calculate children before calculating content width
-    float childrenHeight = childrenHeight(layoutElement, e, style, skipChildren, ctx);
+    float childrenHeight = childrenHeight(layoutNode, e, style, skipChildren, ctx);
 
     // calculate content x position and width
     calculateHorizontalPositionAndWidth(
@@ -278,14 +285,14 @@ public class BlockLayout implements ElementLayout {
   }
 
   private void layoutRelativeBlock(
-      LayoutElement layoutElement,
+      LayoutNode layoutNode,
       Element element,
       Box parentBox,
       ResolvedStyle style,
       boolean skipChildren,
       LayoutContext context) {
     Box box = element.box();
-    layoutStaticBlock(layoutElement, element, parentBox, style, skipChildren, context);
+    layoutStaticBlock(layoutNode, element, parentBox, style, skipChildren, context);
     float x = box.content().x();
     float y = box.content().y();
 
@@ -319,7 +326,7 @@ public class BlockLayout implements ElementLayout {
   }
 
   private float childrenHeight(
-      LayoutElement layoutElement,
+      LayoutNode layoutNode,
       Element element,
       ResolvedStyle style,
       boolean skipChildren,
@@ -327,7 +334,7 @@ public class BlockLayout implements ElementLayout {
     float childrenHeight = 0;
     Unit height = style.height();
     if (!skipChildren) {
-      layoutService.layoutChildNodes(layoutElement, context);
+      layoutService.layoutChildNodes(layoutNode, context);
     }
     if (style.display().equals(Display.BLOCK) && height.isAuto() && !skipChildren) {
       childrenHeight = getChildNodesHeight(element);

@@ -2,6 +2,7 @@ package com.spinyowl.spinygui.core.style.stylesheet;
 
 import com.spinyowl.spinygui.core.node.Element;
 import com.spinyowl.spinygui.core.style.stylesheet.selector.Selector;
+import com.spinyowl.spinygui.core.style.stylesheet.selector.combinator.AndSelector;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -14,7 +15,7 @@ import lombok.NonNull;
  * by those selectors.
  */
 @Data
-public class RuleSet {
+public class Ruleset {
 
   @NonNull private List<Selector> selectors;
   @NonNull private List<Declaration> declarations;
@@ -84,5 +85,21 @@ public class RuleSet {
     }
 
     return selectorsJoiner + "{\n" + declarationsJoiner + "\n}";
+  }
+
+  public boolean appliesToPseudoElement() {
+    return selectors.stream().anyMatch(Selector::appliesToPseudoElement);
+  }
+
+  public boolean appliesToElement() {
+    return selectors.stream().anyMatch(selector -> !selector.appliesToPseudoElement());
+  }
+
+  public List<String> pseudoElementSelectors() {
+    return selectors.stream()
+        .filter(Selector::appliesToPseudoElement)
+        .map(s -> s instanceof AndSelector and ? and.second() : s)
+        .map(Selector::toString)
+        .toList();
   }
 }

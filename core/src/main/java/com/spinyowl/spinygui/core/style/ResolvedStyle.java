@@ -69,7 +69,7 @@ import static com.spinyowl.spinygui.core.style.stylesheet.Properties.Z_INDEX;
 
 import com.spinyowl.spinygui.core.font.FontStyle;
 import com.spinyowl.spinygui.core.font.FontWeight;
-import com.spinyowl.spinygui.core.style.stylesheet.RuleSet;
+import com.spinyowl.spinygui.core.style.stylesheet.Ruleset;
 import com.spinyowl.spinygui.core.style.types.BoxShadow;
 import com.spinyowl.spinygui.core.style.types.Color;
 import com.spinyowl.spinygui.core.style.types.Display;
@@ -103,7 +103,7 @@ import lombok.RequiredArgsConstructor;
 public class ResolvedStyle {
 
   /** List of rules that applicable to element, sorted by specificity. */
-  private List<RuleSet> rules = List.of();
+  private List<Ruleset> rules = List.of();
 
   /** Map of styles, where key is property name and value is calculated property value. */
   @Getter private final Map<String, Object> styles = new TreeMap<>();
@@ -113,7 +113,7 @@ public class ResolvedStyle {
    *
    * @param rules new list of rules.
    */
-  public void rules(@NonNull List<RuleSet> rules) {
+  public void rules(@NonNull List<Ruleset> rules) {
     this.rules = List.copyOf(rules);
   }
 
@@ -122,7 +122,7 @@ public class ResolvedStyle {
    *
    * @return list of rules.
    */
-  public List<RuleSet> rules() {
+  public List<Ruleset> rules() {
     return Collections.unmodifiableList(rules);
   }
 

@@ -72,6 +72,9 @@ import com.spinyowl.spinygui.core.style.types.length.Length.PercentLength;
 import com.spinyowl.spinygui.core.style.types.length.Length.PixelLength;
 import com.spinyowl.spinygui.core.style.types.length.Unit;
 import com.spinyowl.spinygui.core.system.event.processor.SystemEventProcessor;
+import com.spinyowl.spinygui.core.system.tree.LayoutContext;
+import com.spinyowl.spinygui.core.system.tree.LayoutNode;
+import com.spinyowl.spinygui.core.system.tree.LayoutService;
 import com.spinyowl.spinygui.core.time.TimeService;
 import java.util.ArrayList;
 import java.util.function.BiConsumer;
@@ -84,7 +87,7 @@ import org.lwjgl.util.yoga.Yoga;
 
 @Getter
 @RequiredArgsConstructor
-public class FlexLayout implements ElementLayout {
+public class FlexLayout implements Layout {
 
   public static final float THRESHOLD = 0.0001f;
   @NonNull private final SystemEventProcessor systemEventProcessor;
@@ -98,20 +101,22 @@ public class FlexLayout implements ElementLayout {
    *
    * <p>Currently sizes calculated as if all elements has 'box-sizing: border-box'.
    *
-   * @param layoutElement element to lay out.
+   * @param layoutNode element to lay out.
    */
   @Override
-  public void layout(LayoutElement layoutElement, LayoutContext context) {
+  public void layout(LayoutNode layoutNode, LayoutContext context) {
+    if (!layoutNode.isElement()) return;
+
     // initially layout as block
-    blockLayout.layout(layoutElement, true, context);
-    Element parent = layoutElement.element();
+    blockLayout.layout(layoutNode, true, context);
+    Element parent = layoutNode.element();
 
     // initialize
     var rootNode = YGNodeNew();
     prepareNode(parent, rootNode);
     YGNodeStyleSetDisplay(rootNode, YGDisplayFlex);
 
-    layoutService.layoutChildNodes(layoutElement, context);
+    layoutService.layoutChildNodes(layoutNode, context);
 
     Element positionedParent = isPositioned(parent) ? parent : findPositionedAncestor(parent);
 

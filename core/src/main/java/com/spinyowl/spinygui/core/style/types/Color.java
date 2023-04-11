@@ -3,7 +3,9 @@ package com.spinyowl.spinygui.core.style.types;
 import static java.lang.String.format;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Random;
@@ -22,6 +24,7 @@ public class Color {
       "Color parameter outside of expected range - %s";
 
   private static Map<String, Color> colors = new HashMap<>();
+  private static Map<Color, List<String>> colorNames = new HashMap<>();
 
   public static final Color TRANSPARENT = namedColor("transparent", new Color(0f, 0f, 0f, 0f));
   public static final Color ALICEBLUE = namedColor("aliceblue", fromHex("#f0f8ff"));
@@ -303,6 +306,7 @@ public class Color {
    */
   public static void put(@NonNull String name, @NonNull Color color) {
     colors.put(name.toLowerCase(Locale.ROOT), color);
+    colorNames.computeIfAbsent(color, c -> new ArrayList<>()).add(name);
   }
 
   /**
@@ -313,6 +317,14 @@ public class Color {
    */
   public static boolean exists(@NonNull String colorName) {
     return colors.containsKey(colorName.toLowerCase());
+  }
+
+  public static boolean exists(@NonNull Color color) {
+    return colorNames.containsKey(color);
+  }
+
+  public static List<String> getNames(@NonNull Color color) {
+    return colorNames.getOrDefault(color, Collections.emptyList());
   }
 
   /**

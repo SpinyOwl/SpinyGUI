@@ -60,4 +60,5 @@ open module com.spinyowl.spinygui.core {
   exports com.spinyowl.spinygui.core.time;
   exports com.spinyowl.spinygui.core.util;
   exports com.spinyowl.spinygui.core;
+  exports com.spinyowl.spinygui.core.system.tree;
 }

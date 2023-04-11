@@ -12,7 +12,7 @@ import org.apache.commons.lang3.tuple.Pair;
 @Data
 public class StyleSheet {
 
-  @NonNull private List<RuleSet> ruleSets;
+  @NonNull private List<Ruleset> rulesets;
   @NonNull private List<AtRule> atRules;
 
   /**
@@ -21,9 +21,9 @@ public class StyleSheet {
    * @param element element to search rules.
    * @return set of rules that are correspond to specified element.
    */
-  public List<RuleSet> searchRules(@NonNull Element element) {
-    ArrayList<RuleSet> result = new ArrayList<>();
-    for (RuleSet ruleSet : ruleSets) {
+  public List<Ruleset> searchRules(@NonNull Element element) {
+    ArrayList<Ruleset> result = new ArrayList<>();
+    for (Ruleset ruleSet : rulesets) {
       if (ruleSet.test(element)) {
         result.add(ruleSet);
       }
@@ -38,8 +38,8 @@ public class StyleSheet {
    * @param element element to search rules.
    * @return set of rules that correspond to specified element.
    */
-  public List<RuleSet> searchSpecificRules(@NonNull Element element) {
-    return ruleSets.stream()
+  public List<Ruleset> searchSpecificRules(@NonNull Element element) {
+    return rulesets.stream()
         .map(rs -> Pair.of(rs, rs.specificity(element)))
         .filter(pair -> pair.getRight() != null)
         .sorted(Comparator.comparing(Pair::getRight))
@@ -50,7 +50,7 @@ public class StyleSheet {
   @Override
   public String toString() {
     var rulesetJoiner = new StringJoiner("\n\n");
-    for (RuleSet ruleSet : ruleSets) {
+    for (Ruleset ruleSet : rulesets) {
       rulesetJoiner.add(ruleSet.toString());
     }
 

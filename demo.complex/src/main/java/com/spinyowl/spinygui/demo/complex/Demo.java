@@ -47,9 +47,7 @@ import com.spinyowl.spinygui.core.backend.renderer.Renderer;
 import com.spinyowl.spinygui.core.event.processor.DefaultEventProcessor;
 import com.spinyowl.spinygui.core.event.processor.EventProcessor;
 import com.spinyowl.spinygui.core.input.impl.MouseServiceImpl;
-import com.spinyowl.spinygui.core.layout.LayoutService;
 import com.spinyowl.spinygui.core.layout.LayoutServiceProvider;
-import com.spinyowl.spinygui.core.layout.Viewport;
 import com.spinyowl.spinygui.core.node.Frame;
 import com.spinyowl.spinygui.core.parser.NodeParser;
 import com.spinyowl.spinygui.core.parser.StyleSheetParser;
@@ -75,6 +73,12 @@ import com.spinyowl.spinygui.core.system.font.FontService;
 import com.spinyowl.spinygui.core.system.font.FontStorage;
 import com.spinyowl.spinygui.core.system.font.impl.FontServiceImpl;
 import com.spinyowl.spinygui.core.system.font.impl.FontStorageImpl;
+import com.spinyowl.spinygui.core.system.tree.LayoutNode;
+import com.spinyowl.spinygui.core.system.tree.LayoutService;
+import com.spinyowl.spinygui.core.system.tree.LayoutTreeBuilder;
+import com.spinyowl.spinygui.core.system.tree.LayoutTreeBuilderImpl;
+import com.spinyowl.spinygui.core.system.tree.StyleTreeBuilder;
+import com.spinyowl.spinygui.core.system.tree.StyleTreeBuilderImpl;
 import com.spinyowl.spinygui.core.time.TimeService;
 import java.time.Instant;
 import org.joml.Vector2f;
@@ -98,11 +102,11 @@ public abstract class Demo {
   private EventProcessor eventProcessor;
   private SystemEventProcessor systemEventProcessor;
   private LayoutService layoutService;
-  private StyleManager styleManager;
 
   private Frame frame;
   private long window;
   private MouseServiceImpl mouseService;
+  private StyleManager styleManager;
 
   protected Demo(int width, int height, String title, Renderer renderer) {
     this.width = width;
@@ -117,87 +121,6 @@ public abstract class Demo {
     initialize();
     work();
     destroy();
-  }
-
-  private void work() {
-    glfwMakeContextCurrent(window);
-    GLCapabilities glCapabilities = createCapabilities();
-
-    renderer.initialize();
-
-    glfwMakeContextCurrent(window);
-    setCapabilities(glCapabilities);
-    glfwSwapInterval(0); // disable vsync
-
-    long millis = System.currentTimeMillis();
-    int fps = 0;
-    while (running) {
-      tick();
-      fps++;
-
-      long now = System.currentTimeMillis();
-      if (now >= millis + 1000) {
-        GLFW.glfwSetWindowTitle(window, "FPS: " + fps);
-
-        millis = now;
-        fps = 0;
-      }
-    }
-
-    renderer.destroy();
-  }
-
-  private void tick() {
-    try {
-      glClearColor(1, 1, 1, 1);
-
-      int[] ww = {0};
-      int[] wh = {0};
-      int[] bw = {0};
-      int[] bh = {0};
-      int[] wpx = {0};
-      int[] wpy = {0};
-      glfwGetWindowSize(window, ww, wh);
-      var windowSize = new Vector2f(ww[0], wh[0]);
-
-      glfwGetFramebufferSize(window, bw, bh);
-      var framebufferSize = new Vector2i(bw[0], bh[0]);
-
-      glfwGetWindowPos(window, wpx, wpy);
-      glViewport(0, 0, framebufferSize.x, framebufferSize.y);
-
-      // frame size should be directly specified as it is not updated by layout service.
-      updateFrameDimensions(windowSize);
-      // We need to recalculate styles first.
-      styleManager.recalculate(frame);
-
-      // We need to relayout components after styles changed.
-      Viewport viewport = layoutService.layout(frame);
-
-      // After that we can render.
-      glClear(GL_COLOR_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
-      renderer.render(window, windowSize, framebufferSize, viewport);
-      glfwSwapBuffers(window);
-
-      // update system. could be moved for example to game loop.
-      update();
-
-      // also we need to run animations
-      animator.runAnimations();
-    } catch (Exception e) {
-      e.printStackTrace();
-    }
-
-    // poll system events
-    glfwPollEvents();
-
-    // process system events and generated gui events
-    systemEventProcessor.processEvents();
-    eventProcessor.processEvents();
-  }
-
-  private void updateFrameDimensions(Vector2f windowSize) {
-    frame.frameSize(windowSize.x, windowSize.y);
   }
 
   @SuppressWarnings("squid:S112")
@@ -233,17 +156,22 @@ public abstract class Demo {
     PropertyStore propertyStore = provider.createPropertyStore();
     styleSheetParser = StyleSheetParserFactory.createParser(propertyStore);
     nodeParser = new DefaultNodeParser();
-    styleManager = new StyleManagerImpl(propertyStore, styleSheetParser);
+
+
     mouseService = new MouseServiceImpl();
     eventProcessor = new DefaultEventProcessor();
 
     initializeSystemEventListener();
 
+    StyleTreeBuilder styleTreeBuilder = new StyleTreeBuilderImpl(propertyStore, styleSheetParser);
+    LayoutTreeBuilder layoutTreeBuilder = new LayoutTreeBuilderImpl();
+    styleManager = new StyleManagerImpl(styleTreeBuilder, layoutTreeBuilder, systemEventProcessor);
+
     FontStorage fontStorage = new FontStorageImpl();
     FontService fontService = new FontServiceImpl(fontStorage, true);
     layoutService =
         LayoutServiceProvider.create(
-            systemEventProcessor, eventProcessor, styleManager, timeService, fontService);
+            systemEventProcessor, eventProcessor, timeService, fontService);
   }
 
   private void initializeSystemEventListener() {
@@ -340,6 +268,87 @@ public abstract class Demo {
           if (key == GLFW_KEY_G && action == GLFW_RELEASE) Runtime.getRuntime().gc();
         });
     glfwSetKeyCallback(window, chainKeyCallback);
+  }
+
+  private void work() {
+    glfwMakeContextCurrent(window);
+    GLCapabilities glCapabilities = createCapabilities();
+
+    renderer.initialize();
+
+    glfwMakeContextCurrent(window);
+    setCapabilities(glCapabilities);
+    glfwSwapInterval(0); // disable vsync
+
+    long millis = System.currentTimeMillis();
+    int fps = 0;
+    while (running) {
+      tick();
+      fps++;
+
+      long now = System.currentTimeMillis();
+      if (now >= millis + 1000) {
+        GLFW.glfwSetWindowTitle(window, "FPS: " + fps);
+
+        millis = now;
+        fps = 0;
+      }
+    }
+
+    renderer.destroy();
+  }
+
+  private void tick() {
+    try {
+      glClearColor(1, 1, 1, 1);
+
+      int[] ww = {0};
+      int[] wh = {0};
+      int[] bw = {0};
+      int[] bh = {0};
+      int[] wpx = {0};
+      int[] wpy = {0};
+      glfwGetWindowSize(window, ww, wh);
+      var windowSize = new Vector2f(ww[0], wh[0]);
+
+      glfwGetFramebufferSize(window, bw, bh);
+      var framebufferSize = new Vector2i(bw[0], bh[0]);
+
+      glfwGetWindowPos(window, wpx, wpy);
+      glViewport(0, 0, framebufferSize.x, framebufferSize.y);
+
+      // frame size should be directly specified as it is not updated by layout service.
+      updateFrameDimensions(windowSize);
+
+      LayoutNode layoutNode = styleManager.recalculate(frame, frame.styleSheets());
+
+      // lay out render tree.
+      layoutService.layout(layoutNode);
+
+      // After that we can render.
+      glClear(GL_COLOR_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+      renderer.render(window, windowSize, framebufferSize, layoutNode);
+      glfwSwapBuffers(window);
+
+      // update system. could be moved for example to game loop.
+      update();
+
+      // also we need to run animations
+      animator.runAnimations();
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+
+    // poll system events
+    glfwPollEvents();
+
+    // process system events and generated gui events
+    systemEventProcessor.processEvents();
+    eventProcessor.processEvents();
+  }
+
+  private void updateFrameDimensions(Vector2f windowSize) {
+    frame.frameSize(windowSize.x, windowSize.y);
   }
 
   private void destroy() {

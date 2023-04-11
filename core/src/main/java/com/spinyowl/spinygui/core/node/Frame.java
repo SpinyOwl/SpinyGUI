@@ -13,7 +13,7 @@ import lombok.Setter;
 import lombok.ToString;
 import org.joml.Vector2f;
 
-/** The root element that holds all stylesheets and other nodes. */
+/** The root element that holds all stylesheets and other nodes. In fact this frame actually represents abstraction for window. */
 @ToString(exclude = {"styleSheets"})
 public class Frame extends Element {
 

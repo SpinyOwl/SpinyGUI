@@ -3,6 +3,7 @@ package com.spinyowl.spinygui.core.style.stylesheet.selector.combinator;
 import com.spinyowl.spinygui.core.node.Element;
 import com.spinyowl.spinygui.core.style.stylesheet.selector.CombinatorSelector;
 import com.spinyowl.spinygui.core.style.stylesheet.selector.Selector;
+import java.util.Optional;
 
 /**
  * Adjacent Sibling Selector (+)
@@ -23,11 +24,8 @@ public class AdjacentSiblingSelector extends CombinatorSelector {
 
   @Override
   public boolean test(Element element) {
-    if (!second.test(element)) {
-      return false;
-    }
-    var previous = element.previousElementSibling();
-    return previous != null && first.test(previous);
+    return second.test(element)
+        && Optional.ofNullable(element.previousElementSibling()).map(first::test).orElse(false);
   }
 
   @Override

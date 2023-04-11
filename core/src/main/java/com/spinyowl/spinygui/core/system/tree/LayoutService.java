@@ -1,6 +1,5 @@
-package com.spinyowl.spinygui.core.layout;
+package com.spinyowl.spinygui.core.system.tree;
 
-import com.spinyowl.spinygui.core.node.Frame;
 import lombok.NonNull;
 
 /** Layout service is an entry point to layout system. Used to layout provided element. */
@@ -11,7 +10,7 @@ public interface LayoutService {
    *
    * @param frame frame to lay out.
    */
-  Viewport layout(@NonNull Frame frame);
+  void layout(@NonNull LayoutNode frame);
 
   /**
    * Used to layout node tree.<br>
@@ -26,5 +25,5 @@ public interface LayoutService {
    *
    * @param element element to layout.
    */
-  void layoutChildNodes(@NonNull LayoutElement element, @NonNull LayoutContext context);
+  void layoutChildNodes(@NonNull LayoutNode element, @NonNull LayoutContext context);
 }

@@ -39,7 +39,7 @@ public abstract class Node {
 
   /** Parent node. */
   @Setter(AccessLevel.NONE)
-  private Element parent;
+  protected Element parent;
 
   /** Determines whether this node hovered or not (cursor is over this node). */
   private boolean hovered;

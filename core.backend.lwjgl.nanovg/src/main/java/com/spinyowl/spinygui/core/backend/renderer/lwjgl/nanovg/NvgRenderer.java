@@ -12,11 +12,10 @@ import static org.lwjgl.opengl.GL11.glEnable;
 import static org.lwjgl.opengl.GL11.glGetInteger;
 
 import com.spinyowl.spinygui.core.backend.renderer.Renderer;
-import com.spinyowl.spinygui.core.layout.LayoutNode;
-import com.spinyowl.spinygui.core.layout.Viewport;
 import com.spinyowl.spinygui.core.node.Element;
 import com.spinyowl.spinygui.core.node.Node;
 import com.spinyowl.spinygui.core.node.Text;
+import com.spinyowl.spinygui.core.system.tree.LayoutNode;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import org.joml.Vector2fc;
@@ -72,22 +71,22 @@ public class NvgRenderer implements Renderer {
 
   @Override
   public void render(
-      long window, Vector2fc windowSize, Vector2ic frameBufferSize, Viewport viewport) {
+      long window, Vector2fc windowSize, Vector2ic frameBufferSize, LayoutNode root) {
 
     float pixelRatio = windowSize.x() / frameBufferSize.x();
 
     preRender(windowSize, pixelRatio);
 
-    renderLayoutTree(viewport);
+    renderLayoutTree(root);
 
     postRender();
   }
 
-  private void renderLayoutTree(Viewport layoutTree) {
-    renderElement(layoutTree.node(), layoutTree.children());
+  private void renderLayoutTree(LayoutNode layoutTree) {
+    renderNode(layoutTree.node(), layoutTree.children());
   }
 
-  private void renderElement(Node node, List<LayoutNode> children) {
+  private void renderNode(Node node, List<LayoutNode> children) {
     elementRenderer.render(node, nanovgContext);
     borderRenderer.render(node, nanovgContext);
 
@@ -99,7 +98,7 @@ public class NvgRenderer implements Renderer {
   private void renderLayoutNode(LayoutNode layoutNode) {
     Node node = layoutNode.node();
     if (node instanceof Element) {
-      renderElement(node, layoutNode.children());
+      renderNode(node, layoutNode.children());
     } else if (node instanceof Text) {
       textRenderer.render(node, nanovgContext);
     }

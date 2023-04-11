@@ -132,6 +132,22 @@ public final class Box {
     return boxSize;
   }
 
+  public static float edgesWidth(Edges... edges) {
+    float width = 0;
+    for (Edges edge : edges) {
+      width += edge.left() + edge.right();
+    }
+    return width;
+  }
+
+  public static float edgesHeight(Edges... edges) {
+    float height = 0;
+    for (Edges edge : edges) {
+      height += edge.top() + edge.bottom();
+    }
+    return height;
+  }
+
   public Rect paddingBox() {
     return content.expandedBy(padding);
   }

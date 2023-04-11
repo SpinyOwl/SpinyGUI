@@ -11,13 +11,13 @@ import com.spinyowl.spinygui.core.node.Node;
 import com.spinyowl.spinygui.core.node.Text;
 import com.spinyowl.spinygui.core.parser.StyleSheetParser;
 import com.spinyowl.spinygui.core.parser.impl.DefaultNodeParser;
-import com.spinyowl.spinygui.core.style.manager.StyleManager;
-import com.spinyowl.spinygui.core.style.manager.StyleManagerImpl;
 import com.spinyowl.spinygui.core.style.stylesheet.PropertyStore;
 import com.spinyowl.spinygui.core.style.stylesheet.PropertyStoreProvider;
-import com.spinyowl.spinygui.core.style.stylesheet.RuleSet;
+import com.spinyowl.spinygui.core.style.stylesheet.Ruleset;
 import com.spinyowl.spinygui.core.style.stylesheet.impl.DefaultPropertyStoreProvider;
 import com.spinyowl.spinygui.core.style.types.Color;
+import com.spinyowl.spinygui.core.system.tree.StyleTreeBuilder;
+import com.spinyowl.spinygui.core.system.tree.StyleTreeBuilderImpl;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -110,26 +110,26 @@ public class OtherMain {
 
     Element div = div(button(testLabel));
 
-    List<RuleSet> ruleSets = stylesheet.ruleSets();
+    List<Ruleset> rulesets = stylesheet.rulesets();
 
-    assert (!ruleSets.get(0).test(div));
-    assert (ruleSets.get(0).test(testLabel));
+    assert (!rulesets.get(0).test(div));
+    assert (rulesets.get(0).test(testLabel));
 
-    assert (!ruleSets.get(1).test(testLabel));
+    assert (!rulesets.get(1).test(testLabel));
     testLabel.hovered(true);
-    assert (ruleSets.get(1).test(testLabel));
+    assert (rulesets.get(1).test(testLabel));
 
     var frame = new Frame();
     frame.styleSheets().add(stylesheet);
     frame.addChild(div);
 
-    List<RuleSet> rules = stylesheet.searchSpecificRules(testLabel);
-    for (RuleSet rule : rules) {
+    List<Ruleset> rules = stylesheet.searchSpecificRules(testLabel);
+    for (Ruleset rule : rules) {
       log.info(Arrays.toString(rule.selectors().toArray()) + " --- " + rule.specificity(testLabel));
     }
 
-    StyleManager styleManager = new StyleManagerImpl(propertyStore, parser);
-    styleManager.recalculate(frame);
+    StyleTreeBuilder treeBuilder = new StyleTreeBuilderImpl(propertyStore, parser);
+    treeBuilder.build(frame, frame.styleSheets());
 
     log.info("EQUALS: " + Objects.equals(Color.RED, testLabel.resolvedStyle().color()));
   }
@@ -183,28 +183,28 @@ public class OtherMain {
         """;
     var componentTree = (Element) new DefaultNodeParser().fromXml(xml);
 
-    List<RuleSet> ruleSets = stylesheet.ruleSets();
+    List<Ruleset> rulesets = stylesheet.rulesets();
 
-    var labels = ruleSets.get(0).searchElements(componentTree);
+    var labels = rulesets.get(0).searchElements(componentTree);
     for (Node node : labels) {
       assert (Objects.equals("label", node.nodeName()));
     }
-    var test = ruleSets.get(0).searchElements(componentTree);
+    var test = rulesets.get(0).searchElements(componentTree);
     for (Element node : test) {
       assert (Objects.equals("test", node.getAttribute("class")));
     }
-    var buttons = ruleSets.get(0).searchElements(componentTree);
+    var buttons = rulesets.get(0).searchElements(componentTree);
     for (Node node : buttons) {
       assert (Objects.equals("button", node.nodeName()));
     }
 
-    var siblingParagraphs = ruleSets.get(0).searchElements(componentTree);
+    var siblingParagraphs = rulesets.get(0).searchElements(componentTree);
     assert siblingParagraphs.size() == 1;
     Element first = siblingParagraphs.get(0);
     assert (Objects.equals("p", first.nodeName()));
     assert (Objects.equals(" sibling ", ((Text) first.childNodes().get(0)).content()));
 
-    var immediateParagraphs = ruleSets.get(0).searchElements(componentTree);
+    var immediateParagraphs = rulesets.get(0).searchElements(componentTree);
     assert immediateParagraphs.size() == 1;
     first = immediateParagraphs.get(0);
     assert (Objects.equals("p", first.nodeName()));

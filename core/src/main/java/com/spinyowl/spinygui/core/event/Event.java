@@ -17,7 +17,7 @@ public class Event {
 
   /**
    * Currently registered target for the event. This is the object to which the event is currently
-   * slated to be sent. It's possible this has been changed along the way through retargeting.
+   * stated to be sent. It's possible this has been changed along the way through retargeting.
    */
   private EventTarget currentTarget;
 }

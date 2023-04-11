@@ -81,12 +81,15 @@ winframe,
 winframe * {
   border: 8px solid #8c8c8c;
   box-sizing: border-box; /* default behaviour */
-  overflow: scroll; /* default behaviour */
+  overflow: visible; /* default behaviour */
+}
+winframe {
+  overflow: auto;
 }
 winframe::scrollbar {
   width: 8px;
   height: 8px;
-  background-color: #8c8c8c;
+  background-color: orange;
 }
 winframe:hover,
 winframe *:hover {
@@ -106,30 +109,30 @@ winframe *:hover {
     return """
 <winframe>
   <div class="wrapper" style="border-color:cyan">
-  <div class="c1">c1
-    <div class="c11" id='c11'>c11 Cfjg</div>
-    <div class="c12">c12</div>
-  </div>
-  <div class="text">
-    Hello world. Lorem ipsum dolor.
-    Hello world. Lorem ipsum dolor.
-    Hello world. Lorem ipsum dolor.s
-    Hello World
-  </div>
+    <div class="c1">c1
+      <div class="c11" id='c11'>c11 Cfjg</div>
+      <div class="c12">c12</div>
+    </div>
+    <div class="text">
+      Hello world. Lorem ipsum dolor.
+      Hello world. Lorem ipsum dolor.
+      Hello world. Lorem ipsum dolor.s
+      Hello World
+    </div>
 
-  <div class='twrapper' style="border-color: pink">
-    <div class='twrapper' style="border-color: blue">
-      <div class="text" id='t2' style="border-color: black">
-        Hello world. Lorem ipsum dolor.
-        Hello world A. Lorem ipsum dolor.
-        Hello world B. Lorem ipsum dolor.
+    <div class='twrapper' style="border-color: pink">
+      <div class='twrapper' style="border-color: blue">
+        <div class="text" id='t2' style="border-color: black">
+          Hello world. Lorem ipsum dolor.
+          Hello world A. Lorem ipsum dolor.
+          Hello world B. Lorem ipsum dolor.
+        </div>
       </div>
     </div>
-  </div>
-  <div class="c2">
-    <div class="s">s1</div>
-    <div class="s">s2</div>
-  </div>
+    <div class="c2">
+      <div class="s">s1</div>
+      <div class="s">s2</div>
+    </div>
   </div>
 </winframe>
 """;

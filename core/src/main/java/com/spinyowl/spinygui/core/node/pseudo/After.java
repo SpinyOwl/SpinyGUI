@@ -7,6 +7,6 @@ public class After extends PseudoElement {
   public static final String NAME = "::after";
 
   public After(Element scrollbarHolder) {
-    super(NAME, scrollbarHolder);
+    super(NAME, scrollbarHolder::resolvedStyle);
   }
 }

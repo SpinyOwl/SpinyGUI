@@ -5,7 +5,7 @@ import com.spinyowl.spinygui.core.parser.impl.css.antlr.CSS3BaseVisitor;
 import com.spinyowl.spinygui.core.parser.impl.css.antlr.CSS3Lexer;
 import com.spinyowl.spinygui.core.parser.impl.css.antlr.CSS3Parser;
 import com.spinyowl.spinygui.core.style.stylesheet.Declaration;
-import com.spinyowl.spinygui.core.style.stylesheet.RuleSet;
+import com.spinyowl.spinygui.core.style.stylesheet.Ruleset;
 import com.spinyowl.spinygui.core.style.stylesheet.StyleSheet;
 import com.spinyowl.spinygui.core.style.stylesheet.selector.Selector;
 import java.util.List;
@@ -60,14 +60,14 @@ public final class DefaultStyleSheetParser implements StyleSheetParser {
 
   public String toCss(@NonNull StyleSheet styleSheet) {
     var builder = new StringBuilder();
-    for (RuleSet ruleSet : styleSheet.ruleSets()) {
+    for (Ruleset ruleSet : styleSheet.rulesets()) {
 
       builder.append(toCss(ruleSet)).append("\n");
     }
     return builder.toString();
   }
 
-  public String toCss(RuleSet ruleSet) {
+  public String toCss(Ruleset ruleSet) {
     StringBuilder builder = new StringBuilder();
     var selectorJoiner = new StringJoiner(", ", "", " ");
     for (Selector selector : ruleSet.selectors()) {
