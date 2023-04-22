@@ -81,15 +81,15 @@ winframe,
 winframe * {
   border: 8px solid #8c8c8c;
   box-sizing: border-box; /* default behaviour */
-  overflow: visible; /* default behaviour */
-}
-winframe {
-  overflow: auto;
+  overflow: hidden; /* default behaviour */
 }
 winframe::scrollbar {
   width: 8px;
   height: 8px;
   background-color: orange;
+}
+winframe::scrollbar:hover {
+  background-color: red;
 }
 winframe:hover,
 winframe *:hover {
@@ -100,6 +100,7 @@ winframe *:hover {
 }
 #t2::after {
   content: "Hello world!";
+  background-color: orange;
 }
 """;
   }
@@ -123,9 +124,9 @@ winframe *:hover {
     <div class='twrapper' style="border-color: pink">
       <div class='twrapper' style="border-color: blue">
         <div class="text" id='t2' style="border-color: black">
-          Hello world. Lorem ipsum dolor.
-          Hello world A. Lorem ipsum dolor.
-          Hello world B. Lorem ipsum dolor.
+          Hello world. Lorem ipsum dolor. Hello world A. Lorem ipsum dolor. Hello world. Lorem ipsum dolor. Hello world A. Lorem ipsum dolor.
+          <div>Hello world B. Lorem ipsum dolor.</div>
+          Hello world. Lorem ipsum dolor. Hello world A. Lorem ipsum dolor. Hello world. Lorem ipsum dolor. Hello world A. Lorem ipsum dolor.
         </div>
       </div>
     </div>

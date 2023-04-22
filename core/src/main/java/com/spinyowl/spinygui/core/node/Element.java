@@ -131,6 +131,10 @@ public class Element extends Node implements EventTarget {
     return pseudoStyles.computeIfAbsent(pseudo, s -> new ResolvedStyle());
   }
 
+  public boolean hasResolvedStyle(String pseudo) {
+    return pseudoStyles.containsKey(pseudo) && !pseudoStyles.get(pseudo).rules().isEmpty();
+  }
+
   /**
    * Returns true if there is at least one event listener for specified event class.
    *

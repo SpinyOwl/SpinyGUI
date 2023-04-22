@@ -3,6 +3,7 @@ package com.spinyowl.spinygui.core.style.stylesheet.term;
 import com.spinyowl.spinygui.core.style.stylesheet.Term;
 import lombok.EqualsAndHashCode;
 
+/** Represents float term. */
 @EqualsAndHashCode
 public class TermFloat extends Term<Float> {
 

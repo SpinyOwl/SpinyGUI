@@ -29,6 +29,7 @@ import static com.spinyowl.spinygui.core.style.stylesheet.Properties.BORDER_TOP_
 import static com.spinyowl.spinygui.core.style.stylesheet.Properties.BOTTOM;
 import static com.spinyowl.spinygui.core.style.stylesheet.Properties.BOX_SHADOW;
 import static com.spinyowl.spinygui.core.style.stylesheet.Properties.COLOR;
+import static com.spinyowl.spinygui.core.style.stylesheet.Properties.CONTENT;
 import static com.spinyowl.spinygui.core.style.stylesheet.Properties.DISPLAY;
 import static com.spinyowl.spinygui.core.style.stylesheet.Properties.FLEX_BASIS;
 import static com.spinyowl.spinygui.core.style.stylesheet.Properties.FLEX_DIRECTION;
@@ -137,6 +138,7 @@ public class ResolvedStyle {
   public <T> T get(String property) {
     return get(property, null);
   }
+
   public <T> T get(String property, T defaultValue) {
     return (T) styles().getOrDefault(property, defaultValue);
   }
@@ -428,5 +430,9 @@ public class ResolvedStyle {
 
   public Overflow overflowX() {
     return get(OVERFLOW_X);
+  }
+
+  public String content() {
+    return get(CONTENT);
   }
 }

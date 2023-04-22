@@ -1,12 +1,15 @@
-package com.spinyowl.spinygui.core.layout;
+package com.spinyowl.spinygui.core.layout.mode;
 
-import static com.spinyowl.spinygui.core.layout.LayoutUtils.findPositionedAncestor;
-import static com.spinyowl.spinygui.core.layout.LayoutUtils.getChildNodesHeight;
-import static com.spinyowl.spinygui.core.layout.LayoutUtils.setBorders;
-import static com.spinyowl.spinygui.core.layout.LayoutUtils.setPadding;
+import static com.spinyowl.spinygui.core.layout.mode.LayoutUtils.findPositionedAncestor;
+import static com.spinyowl.spinygui.core.layout.mode.LayoutUtils.getChildNodesHeight;
+import static com.spinyowl.spinygui.core.layout.mode.LayoutUtils.setBorders;
+import static com.spinyowl.spinygui.core.layout.mode.LayoutUtils.setPadding;
 import static com.spinyowl.spinygui.core.style.stylesheet.util.StyleUtils.getFloatLength;
 import static com.spinyowl.spinygui.core.style.stylesheet.util.StyleUtils.getFloatLengthOptional;
 
+import com.spinyowl.spinygui.core.layout.LayoutContext;
+import com.spinyowl.spinygui.core.layout.LayoutNode;
+import com.spinyowl.spinygui.core.layout.LayoutService;
 import com.spinyowl.spinygui.core.node.Element;
 import com.spinyowl.spinygui.core.node.Frame;
 import com.spinyowl.spinygui.core.node.layout.Box;
@@ -14,14 +17,8 @@ import com.spinyowl.spinygui.core.node.layout.Edges;
 import com.spinyowl.spinygui.core.style.ResolvedStyle;
 import com.spinyowl.spinygui.core.style.types.Display;
 import com.spinyowl.spinygui.core.style.types.Position;
-import com.spinyowl.spinygui.core.style.types.border.BorderStyle;
-import com.spinyowl.spinygui.core.style.types.length.Length.PixelLength;
 import com.spinyowl.spinygui.core.style.types.length.Unit;
-import com.spinyowl.spinygui.core.system.tree.LayoutContext;
-import com.spinyowl.spinygui.core.system.tree.LayoutNode;
-import com.spinyowl.spinygui.core.system.tree.LayoutService;
 import java.util.Optional;
-import java.util.function.Consumer;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 
@@ -42,7 +39,7 @@ public class BlockLayout implements Layout {
       return;
     }
 
-    Box parentBox = getParentDimensions(element, element.parent());
+    Box parentBox = getParentDimensions(element, element.offsetParent());
 
     ResolvedStyle style = element.resolvedStyle();
 
@@ -115,7 +112,7 @@ public class BlockLayout implements Layout {
       }
       borderBoxHeight = frame.frameSize().y;
     } else {
-      float childrenHeight = childrenHeight(layoutNode, e, style, skipChildren, ctx);
+      float childrenHeight = childrenHeight(layoutNode, style, skipChildren, ctx);
       borderBoxHeight =
           getHeight(parentBox.content().height(), childrenHeight + verticalAdditions, style);
     }
@@ -148,7 +145,7 @@ public class BlockLayout implements Layout {
             + e.box().padding().right();
 
     // should be called here to calculate children before calculating content width
-    float childrenHeight = childrenHeight(layoutNode, e, style, skipChildren, ctx);
+    float childrenHeight = childrenHeight(layoutNode, style, skipChildren, ctx);
 
     // calculate content x position and width
     calculateHorizontalPositionAndWidth(
@@ -327,7 +324,6 @@ public class BlockLayout implements Layout {
 
   private float childrenHeight(
       LayoutNode layoutNode,
-      Element element,
       ResolvedStyle style,
       boolean skipChildren,
       LayoutContext context) {
@@ -337,7 +333,7 @@ public class BlockLayout implements Layout {
       layoutService.layoutChildNodes(layoutNode, context);
     }
     if (style.display().equals(Display.BLOCK) && height.isAuto() && !skipChildren) {
-      childrenHeight = getChildNodesHeight(element);
+      childrenHeight = getChildNodesHeight(layoutNode);
     }
     return childrenHeight;
   }
@@ -380,13 +376,8 @@ public class BlockLayout implements Layout {
   private boolean shouldSkip(Element element) {
     // skip layout if element has no frame - that means that it is not attached to any
     // node tree (and tree root is frame).
-    return element.frame() == null || (element.parent() == null && !(element instanceof Frame));
-  }
-
-  private void applyPadding(
-      PixelLength borderWidth, BorderStyle borderStyle, Consumer<Float> borderConsumer) {
-    if (borderWidth != null && !BorderStyle.NONE.equals(borderStyle)) {
-      borderConsumer.accept(borderWidth.convert());
-    }
+    return element.parent() == null
+        && element.offsetParent() == null
+        && !(element instanceof Frame);
   }
 }

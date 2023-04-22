@@ -1,4 +1,4 @@
-package com.spinyowl.spinygui.core.style;
+package com.spinyowl.spinygui.core.layout;
 
 import com.spinyowl.spinygui.core.node.Node;
 import com.spinyowl.spinygui.core.style.stylesheet.Ruleset;

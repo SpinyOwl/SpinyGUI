@@ -1,13 +1,12 @@
 package com.spinyowl.spinygui.core.style.manager;
 
+import com.spinyowl.spinygui.core.layout.LayoutNode;
+import com.spinyowl.spinygui.core.layout.LayoutTreeBuilder;
+import com.spinyowl.spinygui.core.layout.StyleTreeBuilder;
+import com.spinyowl.spinygui.core.layout.StyledNode;
 import com.spinyowl.spinygui.core.node.Element;
-import com.spinyowl.spinygui.core.style.StyledNode;
 import com.spinyowl.spinygui.core.style.stylesheet.Ruleset;
 import com.spinyowl.spinygui.core.style.stylesheet.StyleSheet;
-import com.spinyowl.spinygui.core.system.event.processor.SystemEventProcessor;
-import com.spinyowl.spinygui.core.system.tree.LayoutNode;
-import com.spinyowl.spinygui.core.system.tree.LayoutTreeBuilder;
-import com.spinyowl.spinygui.core.system.tree.StyleTreeBuilder;
 import java.util.List;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -17,7 +16,6 @@ public class StyleManagerImpl implements StyleManager {
 
   @NonNull private final StyleTreeBuilder styleTreeBuilder;
   @NonNull private final LayoutTreeBuilder layoutTreeBuilder;
-  @NonNull private final SystemEventProcessor systemEventProcessor;
 
   @Override
   public LayoutNode recalculate(Element element, List<StyleSheet> styleSheets) {

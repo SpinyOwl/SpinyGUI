@@ -1,4 +1,4 @@
-package com.spinyowl.spinygui.core.system.tree;
+package com.spinyowl.spinygui.core.layout;
 
 import com.spinyowl.spinygui.core.node.Node;
 import lombok.Getter;

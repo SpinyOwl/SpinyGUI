@@ -4,9 +4,11 @@ import com.spinyowl.spinygui.core.font.FontSize;
 import com.spinyowl.spinygui.core.node.Element;
 import com.spinyowl.spinygui.core.node.Node;
 import com.spinyowl.spinygui.core.node.Text;
+import com.spinyowl.spinygui.core.node.pseudo.Scrollbar.Orientation;
 import com.spinyowl.spinygui.core.style.stylesheet.Term;
 import com.spinyowl.spinygui.core.style.stylesheet.term.TermLength;
 import com.spinyowl.spinygui.core.style.stylesheet.term.TermList;
+import com.spinyowl.spinygui.core.style.types.Overflow;
 import com.spinyowl.spinygui.core.style.types.length.Length;
 import com.spinyowl.spinygui.core.style.types.length.Length.PercentLength;
 import com.spinyowl.spinygui.core.style.types.length.Unit;
@@ -165,5 +167,14 @@ public final class StyleUtils {
       if (termValue.equalsIgnoreCase(allowedValues.get(i))) return i;
     }
     return -1;
+  }
+
+  public static boolean scrollable(Node node, Orientation orientation) {
+    if (node instanceof Element element) {
+      var style = element.resolvedStyle();
+      var overflow = orientation == Orientation.HORIZONTAL ? style.overflowX() : style.overflowY();
+      return overflow == Overflow.SCROLL || overflow == Overflow.AUTO;
+    }
+    return false;
   }
 }

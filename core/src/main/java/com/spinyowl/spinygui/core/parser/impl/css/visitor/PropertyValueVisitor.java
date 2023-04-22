@@ -7,6 +7,7 @@ import com.spinyowl.spinygui.core.parser.impl.css.antlr.CSS3Parser.ExprContext;
 import com.spinyowl.spinygui.core.parser.impl.css.antlr.CSS3Parser.Function_Context;
 import com.spinyowl.spinygui.core.parser.impl.css.antlr.CSS3Parser.HexcolorContext;
 import com.spinyowl.spinygui.core.parser.impl.css.antlr.CSS3Parser.IdentContext;
+import com.spinyowl.spinygui.core.parser.impl.css.antlr.CSS3Parser.KnownTermContext;
 import com.spinyowl.spinygui.core.parser.impl.css.antlr.CSS3Parser.NumberContext;
 import com.spinyowl.spinygui.core.parser.impl.css.antlr.CSS3Parser.Operator_Context;
 import com.spinyowl.spinygui.core.parser.impl.css.antlr.CSS3Parser.PercentageContext;
@@ -26,6 +27,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.antlr.v4.runtime.tree.RuleNode;
+import org.antlr.v4.runtime.tree.TerminalNode;
 import org.apache.commons.lang3.NotImplementedException;
 
 @Slf4j
@@ -60,6 +62,18 @@ public class PropertyValueVisitor extends CSS3BaseVisitor<Term<?>> {
     Operator operator = getOperator(ctx.operator_(0));
 
     return new TermList(operator, terms);
+  }
+
+  @Override
+  public Term<?> visitKnownTerm(KnownTermContext ctx) {
+    log.debug("visitKnownTerm");
+    return super.visitKnownTerm(ctx);
+  }
+
+  @Override
+  public Term<?> visitTerminal(TerminalNode node) {
+    log.debug("visitTerminal");
+    return new TermIdent(node.getText().replace("\"", ""));
   }
 
   @Override

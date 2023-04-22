@@ -1,8 +1,8 @@
-package com.spinyowl.spinygui.core.layout;
+package com.spinyowl.spinygui.core.layout.mode;
 
-import static com.spinyowl.spinygui.core.layout.LayoutUtils.findPositionedAncestor;
-import static com.spinyowl.spinygui.core.layout.LayoutUtils.hasPosition;
-import static com.spinyowl.spinygui.core.layout.LayoutUtils.isPositioned;
+import static com.spinyowl.spinygui.core.layout.mode.LayoutUtils.findPositionedAncestor;
+import static com.spinyowl.spinygui.core.layout.mode.LayoutUtils.hasPosition;
+import static com.spinyowl.spinygui.core.layout.mode.LayoutUtils.isPositioned;
 import static com.spinyowl.spinygui.core.style.types.Position.ABSOLUTE;
 import static com.spinyowl.spinygui.core.style.types.Position.STATIC;
 import static com.spinyowl.spinygui.core.util.NodeUtilities.visible;
@@ -55,6 +55,9 @@ import static org.lwjgl.util.yoga.Yoga.YGWrapReverse;
 import static org.lwjgl.util.yoga.Yoga.YGWrapWrap;
 
 import com.spinyowl.spinygui.core.event.processor.EventProcessor;
+import com.spinyowl.spinygui.core.layout.LayoutContext;
+import com.spinyowl.spinygui.core.layout.LayoutNode;
+import com.spinyowl.spinygui.core.layout.LayoutService;
 import com.spinyowl.spinygui.core.node.Element;
 import com.spinyowl.spinygui.core.node.layout.Box;
 import com.spinyowl.spinygui.core.node.layout.Edges;
@@ -72,9 +75,6 @@ import com.spinyowl.spinygui.core.style.types.length.Length.PercentLength;
 import com.spinyowl.spinygui.core.style.types.length.Length.PixelLength;
 import com.spinyowl.spinygui.core.style.types.length.Unit;
 import com.spinyowl.spinygui.core.system.event.processor.SystemEventProcessor;
-import com.spinyowl.spinygui.core.system.tree.LayoutContext;
-import com.spinyowl.spinygui.core.system.tree.LayoutNode;
-import com.spinyowl.spinygui.core.system.tree.LayoutService;
 import com.spinyowl.spinygui.core.time.TimeService;
 import java.util.ArrayList;
 import java.util.function.BiConsumer;

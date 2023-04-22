@@ -1,9 +1,11 @@
-package com.spinyowl.spinygui.core.layout;
+package com.spinyowl.spinygui.core.layout.mode;
 
 import com.google.common.collect.Iterables;
 import com.spinyowl.spinygui.core.font.Font;
 import com.spinyowl.spinygui.core.font.FontStyle;
 import com.spinyowl.spinygui.core.font.FontWeight;
+import com.spinyowl.spinygui.core.layout.LayoutContext;
+import com.spinyowl.spinygui.core.layout.LayoutNode;
 import com.spinyowl.spinygui.core.node.Element;
 import com.spinyowl.spinygui.core.node.Text;
 import com.spinyowl.spinygui.core.node.layout.Box;
@@ -13,12 +15,8 @@ import com.spinyowl.spinygui.core.style.stylesheet.util.StyleUtils;
 import com.spinyowl.spinygui.core.system.font.FontService;
 import com.spinyowl.spinygui.core.system.font.TextLineMetrics;
 import com.spinyowl.spinygui.core.system.font.TextMetrics;
-import com.spinyowl.spinygui.core.system.tree.LayoutContext;
-import com.spinyowl.spinygui.core.system.tree.LayoutNode;
-import java.util.Collection;
 import java.util.Comparator;
 import java.util.Set;
-import java.util.stream.Collectors;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 
@@ -44,7 +42,8 @@ public class TextLayoutImpl implements TextLayout {
     Float lineHeight = style.lineHeight();
 
     // find appropriate font.
-    Font fontToUse = findFont(fontFamilies, fontStyle, fontWeight);
+    Font fontToUse =
+        fontService.getFirstAvailableFont(Font.findFonts(fontFamilies, fontStyle, fontWeight));
 
     // get width of parent node.
     Box parentBox = parent.box();
@@ -102,12 +101,4 @@ public class TextLayoutImpl implements TextLayout {
     context.lastBlockBottomY(text.box().borderBox().y() + text.box().borderBox().height());
   }
 
-  private Font findFont(Set<String> fontFamilies, FontStyle fontStyle, FontWeight fontWeight) {
-    Set<Font> fonts =
-        fontFamilies.stream()
-            .map(f -> Font.getFonts(f, fontStyle, fontWeight))
-            .flatMap(Collection::stream)
-            .collect(Collectors.toSet());
-    return fonts.stream().filter(fontService::isFontAvailable).findFirst().orElse(Font.DEFAULT);
-  }
 }

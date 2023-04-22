@@ -1,9 +1,12 @@
 package com.spinyowl.spinygui.core.font;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 import lombok.Data;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -133,6 +136,14 @@ public class Font {
       String name, FontStyle style, FontWeight weight, FontStretch width) {
     List<Font> fonts = fontFamilies.get(name);
     return fonts.stream().filter(font -> checkFont(font, name, style, weight, width)).toList();
+  }
+
+  public static Set<Font> findFonts(
+      Set<String> fontFamilies, FontStyle fontStyle, FontWeight fontWeight) {
+    return fontFamilies.stream()
+        .map(f -> Font.getFonts(f, fontStyle, fontWeight))
+        .flatMap(Collection::stream)
+        .collect(Collectors.toSet());
   }
 
   /**

@@ -1,5 +1,6 @@
-package com.spinyowl.spinygui.core.layout;
+package com.spinyowl.spinygui.core.layout.mode;
 
+import com.spinyowl.spinygui.core.layout.LayoutNode;
 import com.spinyowl.spinygui.core.node.Element;
 import com.spinyowl.spinygui.core.node.Frame;
 import com.spinyowl.spinygui.core.node.Node;
@@ -60,9 +61,12 @@ public final class LayoutUtils {
     }
   }
 
-  public static float getChildNodesHeight(Element element) {
+  public static float getChildNodesHeight(LayoutNode layoutNode) {
     List<Node> heightNodes =
-        element.childNodes().stream().filter(LayoutUtils::affectsHeight).toList();
+        layoutNode.children().stream()
+            .map(LayoutNode::node)
+            .filter(LayoutUtils::affectsHeight)
+            .toList();
     return !heightNodes.isEmpty()
         ? heightNodes.stream()
                 .map(node -> node.box().borderBox().y() + node.box().borderBox().height())

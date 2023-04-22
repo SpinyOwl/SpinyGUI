@@ -1,12 +1,12 @@
-package com.spinyowl.spinygui.core.system.tree;
+package com.spinyowl.spinygui.core.layout;
 
-import static com.spinyowl.spinygui.core.layout.LayoutUtils.hasPosition;
+import static com.spinyowl.spinygui.core.layout.mode.LayoutUtils.hasPosition;
 import static com.spinyowl.spinygui.core.style.types.Overflow.AUTO;
 import static com.spinyowl.spinygui.core.style.types.Overflow.SCROLL;
 import static com.spinyowl.spinygui.core.util.NodeUtilities.visible;
 
-import com.spinyowl.spinygui.core.layout.Layout;
-import com.spinyowl.spinygui.core.layout.TextLayout;
+import com.spinyowl.spinygui.core.layout.mode.Layout;
+import com.spinyowl.spinygui.core.layout.mode.TextLayout;
 import com.spinyowl.spinygui.core.node.Element;
 import com.spinyowl.spinygui.core.node.Node;
 import com.spinyowl.spinygui.core.node.Text;
@@ -38,8 +38,6 @@ public class LayoutServiceImpl implements LayoutService {
     if (layoutNode.isElement()) {
       Element element = layoutNode.element();
       if (visible(element)) {
-        setScrollbarsDimensions(layoutNode, element);
-
         Display display = element.resolvedStyle().display();
         Layout layout = layoutMap.get(display);
         if (layout != null) {
@@ -56,34 +54,6 @@ public class LayoutServiceImpl implements LayoutService {
     }
   }
 
-  private void setScrollbarsDimensions(LayoutNode layoutNode, Element element) {
-    Scrollbar horizontalScrollbar = layoutNode.horizontalScrollbar();
-    if (horizontalScrollbar != null) {
-      layoutMap
-          .get(Display.BLOCK)
-          .layout(layoutNode.horizontalScrollbarLayoutNode(), new LayoutContext());
-    }
-
-    Scrollbar verticalScrollbar = layoutNode.verticalScrollbar();
-    if (verticalScrollbar != null) {
-      layoutMap
-          .get(Display.BLOCK)
-          .layout(layoutNode.verticalScrollbarLayoutNode(), new LayoutContext());
-    }
-    //    if (element instanceof Scrollbar) return;
-    //
-    //    Overflow overflowX = element.resolvedStyle().overflowX();
-    //    if ((SCROLL.equals(overflowX)) && layoutNode.horizontalScrollbar() != null) {
-    //      float scrollbarWidth = layoutNode.horizontalScrollbar().box().borderBox().width();
-    //      element.box().scroll().right(scrollbarWidth);
-    //    }
-    //    Overflow overflowY = element.resolvedStyle().overflowY();
-    //    if ((SCROLL.equals(overflowY)) && layoutNode.horizontalScrollbar() != null) {
-    //      float scrollbarHeight = layoutNode.horizontalScrollbar().box().borderBox().height();
-    //      element.box().scroll().bottom(scrollbarHeight);
-    //    }
-  }
-
   @Override
   public void layoutChildNodes(@NonNull LayoutNode element, @NonNull LayoutContext context) {
     var childNodes = element.children();
@@ -92,7 +62,9 @@ public class LayoutServiceImpl implements LayoutService {
     }
 
     LayoutContext inner = new LayoutContext();
-    childNodes.forEach(node -> layoutNode(node, inner));
+    childNodes.stream()
+        .filter(n -> !(n.node() instanceof Scrollbar))
+        .forEach(node -> layoutNode(node, inner));
   }
 
   private void updateScrollAndClientSize(LayoutNode layoutNode) {
@@ -119,7 +91,8 @@ public class LayoutServiceImpl implements LayoutService {
     float boxContentWidth = box.content().width();
     float clientWidth = boxContentWidth;
     Overflow overflowX = element.resolvedStyle().overflowX();
-    // TODO wrong calculation - need to check additionally if scrollbar is visible before subtracting
+    // TODO wrong calculation - need to check additionally if scrollbar is visible before
+    // subtracting
     if ((SCROLL.equals(overflowX)) || (AUTO.equals(overflowX) && scrollWidth > clientWidth)) {
       if (layoutNode.verticalScrollbar() != null) {
         float scrollbarWidth = layoutNode.verticalScrollbar().box().borderBox().width();

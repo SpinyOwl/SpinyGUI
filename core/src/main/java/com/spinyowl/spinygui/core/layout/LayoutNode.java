@@ -1,18 +1,13 @@
-package com.spinyowl.spinygui.core.system.tree;
+package com.spinyowl.spinygui.core.layout;
 
 import com.spinyowl.spinygui.core.node.Element;
 import com.spinyowl.spinygui.core.node.Node;
-import com.spinyowl.spinygui.core.node.pseudo.Scrollbar;
-import com.spinyowl.spinygui.core.style.StyledNode;
 import java.util.List;
-import lombok.AccessLevel;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.ToString;
 
 @Data
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
 @ToString(exclude = "parent")
 public class LayoutNode {
   /** Node that forms this layout node. */
@@ -25,9 +20,7 @@ public class LayoutNode {
   private List<LayoutNode> normalFlowChildren = List.of();
   private List<LayoutNode> positionedChildren = List.of();
 
-  private Scrollbar verticalScrollbar;
   private LayoutNode verticalScrollbarLayoutNode;
-  private Scrollbar horizontalScrollbar;
   private LayoutNode horizontalScrollbarLayoutNode;
 
   public LayoutNode(@NonNull StyledNode styledNode) {
@@ -38,6 +31,14 @@ public class LayoutNode {
     this.styledNode = styledNode;
     this.parent = parent;
     this.node().offsetParent(parent.element());
+  }
+
+  public Node horizontalScrollbar() {
+    return horizontalScrollbarLayoutNode != null ? horizontalScrollbarLayoutNode.node() : null;
+  }
+
+  public Node verticalScrollbar() {
+    return verticalScrollbarLayoutNode != null ? verticalScrollbarLayoutNode.node() : null;
   }
 
   public Element element() {
@@ -55,5 +56,4 @@ public class LayoutNode {
   public boolean hasParent() {
     return parent != null;
   }
-
 }

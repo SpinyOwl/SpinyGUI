@@ -6,24 +6,26 @@ import com.spinyowl.spinygui.core.system.event.provider.SystemEventListenerProvi
 import com.spinyowl.spinygui.core.system.event.provider.SystemEventListenerProviderImpl;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
-import lombok.Builder;
-import lombok.Builder.Default;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 
 /**
  * Default implementation based on two {@link ConcurrentLinkedQueue} queues which swapped every time
  * during processing.
  */
-@Builder
+@RequiredArgsConstructor
 public class SystemEventProcessorImpl implements SystemEventProcessor {
 
-  @Default
-  private SystemEventListenerProvider eventListenerProvider = new SystemEventListenerProviderImpl();
+  @NonNull private SystemEventListenerProvider eventListenerProvider;
+  @NonNull private Queue<SystemEvent> first;
+  @NonNull private Queue<SystemEvent> second;
 
-  @Default private Queue<SystemEvent> first = new ConcurrentLinkedQueue<>();
-  @Default private Queue<SystemEvent> second = new ConcurrentLinkedQueue<>();
+  public SystemEventProcessorImpl(SystemEventListenerProvider eventListenerProvider) {
+    this(eventListenerProvider, new ConcurrentLinkedQueue<>(), new ConcurrentLinkedQueue<>());
+  }
 
-  public static SystemEventProcessorImpl create() {
-    return SystemEventProcessorImpl.builder().build();
+  public SystemEventProcessorImpl() {
+    this(new SystemEventListenerProviderImpl());
   }
 
   private void swap() {

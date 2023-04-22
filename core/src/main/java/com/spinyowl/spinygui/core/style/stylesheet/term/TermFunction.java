@@ -5,6 +5,7 @@ import java.util.List;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
+/** Represents function term. */
 @Getter
 @EqualsAndHashCode
 public class TermFunction extends TermList {

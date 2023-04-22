@@ -25,8 +25,10 @@ open module com.spinyowl.spinygui.core {
   exports com.spinyowl.spinygui.core.input.impl;
   exports com.spinyowl.spinygui.core.input;
   exports com.spinyowl.spinygui.core.layout;
+  exports com.spinyowl.spinygui.core.layout.mode;
   exports com.spinyowl.spinygui.core.node.intersection;
   exports com.spinyowl.spinygui.core.node.layout;
+  exports com.spinyowl.spinygui.core.node.pseudo;
   exports com.spinyowl.spinygui.core.node;
   exports com.spinyowl.spinygui.core.parser.impl.css.antlr;
   exports com.spinyowl.spinygui.core.parser.impl.css.visitor;
@@ -60,5 +62,4 @@ open module com.spinyowl.spinygui.core {
   exports com.spinyowl.spinygui.core.time;
   exports com.spinyowl.spinygui.core.util;
   exports com.spinyowl.spinygui.core;
-  exports com.spinyowl.spinygui.core.system.tree;
 }

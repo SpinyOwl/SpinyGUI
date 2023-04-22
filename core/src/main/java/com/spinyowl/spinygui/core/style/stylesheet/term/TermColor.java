@@ -4,6 +4,7 @@ import com.spinyowl.spinygui.core.style.stylesheet.Term;
 import com.spinyowl.spinygui.core.style.types.Color;
 import lombok.EqualsAndHashCode;
 
+/** Represents color term. */
 @EqualsAndHashCode
 public class TermColor extends Term<Color> {
   public TermColor(Color value) {

@@ -1,14 +1,15 @@
-package com.spinyowl.spinygui.core.system.tree;
+package com.spinyowl.spinygui.core.layout;
 
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
 import com.spinyowl.spinygui.core.node.Element;
 import com.spinyowl.spinygui.core.node.Node;
+import com.spinyowl.spinygui.core.node.pseudo.PseudoElement;
 import com.spinyowl.spinygui.core.parser.StyleSheetParser;
 import com.spinyowl.spinygui.core.parser.impl.ParseException;
 import com.spinyowl.spinygui.core.style.ResolvedStyle;
-import com.spinyowl.spinygui.core.style.StyledNode;
 import com.spinyowl.spinygui.core.style.stylesheet.Declaration;
+import com.spinyowl.spinygui.core.style.stylesheet.Properties;
 import com.spinyowl.spinygui.core.style.stylesheet.Property;
 import com.spinyowl.spinygui.core.style.stylesheet.PropertyStore;
 import com.spinyowl.spinygui.core.style.stylesheet.Ruleset;
@@ -24,6 +25,7 @@ import java.util.Objects;
 import lombok.Data;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 
 @RequiredArgsConstructor
 public class StyleTreeBuilderImpl implements StyleTreeBuilder {
@@ -41,6 +43,37 @@ public class StyleTreeBuilderImpl implements StyleTreeBuilder {
     List<Ruleset> rules = newRules();
     Map<String, List<Ruleset>> pseudoElementRules = new HashMap<>();
 
+    if (!(element instanceof PseudoElement)) {
+      collectElementAndPseudoElementRules(element, styleSheets, rules, pseudoElementRules);
+
+      // apply rules to element.
+      ResolvedStyle resolvedStyle = element.resolvedStyle();
+      setRules(resolvedStyle, rules);
+    }
+
+    List<StyledNode> children = new ArrayList<>();
+    StyledNode styledNode = new StyledNode(element, rules, pseudoElementRules, children);
+    element.childNodes().forEach(child -> children.add(buildNode(child, styleSheets)));
+
+    if (!(element instanceof PseudoElement)) {
+      pseudoElementRules.forEach(
+          (pseudoElement, pseudoElementRulesets) -> {
+            ResolvedStyle pseudoElementResolvedStyle = element.resolvedStyle(pseudoElement);
+            setRules(pseudoElementResolvedStyle, pseudoElementRulesets);
+            if ("::before".equals(pseudoElement) || "::after".equals(pseudoElement)) {
+              pseudoElementResolvedStyle.styles().put("content", getContent(pseudoElementRulesets));
+            }
+          });
+    }
+
+    return styledNode;
+  }
+
+  private void collectElementAndPseudoElementRules(
+      Element element,
+      List<StyleSheet> styleSheets,
+      List<Ruleset> rules,
+      Map<String, List<Ruleset>> pseudoElementRules) {
     for (StyleSheet styleSheet : styleSheets) {
       List<Ruleset> specificRules = styleSheet.searchSpecificRules(element);
       for (Ruleset specificRule : specificRules) {
@@ -60,25 +93,21 @@ public class StyleTreeBuilderImpl implements StyleTreeBuilder {
     }
 
     rules.add(elementStyleRuleSet(element));
-
-    List<StyledNode> children = new ArrayList<>();
-    StyledNode styledNode = new StyledNode(element, rules, pseudoElementRules, children);
-    element.childNodes().forEach(child -> children.add(buildNode(child, styleSheets)));
-
-    // apply rules to element.
-    ResolvedStyle resolvedStyle = element.resolvedStyle();
-    appendRules(rules, resolvedStyle);
-
-    pseudoElementRules.forEach(
-        (pseudoElement, pseudoElementRulesets) -> {
-          ResolvedStyle pseudoElementResolvedStyle = element.resolvedStyle(pseudoElement);
-          appendRules(pseudoElementRulesets, pseudoElementResolvedStyle);
-        });
-
-    return styledNode;
   }
 
-  private static void appendRules(List<Ruleset> rules, ResolvedStyle resolvedStyle) {
+  private String getContent(List<Ruleset> pseudoElementRulesets) {
+    return pseudoElementRulesets.stream()
+        .map(Ruleset::declarations)
+        .flatMap(List::stream)
+        .filter(declaration -> Properties.CONTENT.equals(declaration.property().name()))
+        .map(Declaration::term)
+        .map(term -> term.value().toString())
+        .filter(StringUtils::isNotBlank)
+        .findFirst()
+        .orElse("");
+  }
+
+  private static void setRules(ResolvedStyle resolvedStyle, List<Ruleset> rules) {
     if (!Objects.equals(resolvedStyle.rules(), rules)) {
       resolvedStyle.rules(rules);
     }

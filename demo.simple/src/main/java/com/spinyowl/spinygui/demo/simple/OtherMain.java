@@ -5,6 +5,8 @@ import static com.spinyowl.spinygui.core.node.NodeBuilder.div;
 import static com.spinyowl.spinygui.core.node.NodeBuilder.label;
 import static com.spinyowl.spinygui.core.parser.impl.StyleSheetParserFactory.createParser;
 
+import com.spinyowl.spinygui.core.layout.StyleTreeBuilder;
+import com.spinyowl.spinygui.core.layout.StyleTreeBuilderImpl;
 import com.spinyowl.spinygui.core.node.Element;
 import com.spinyowl.spinygui.core.node.Frame;
 import com.spinyowl.spinygui.core.node.Node;
@@ -16,8 +18,6 @@ import com.spinyowl.spinygui.core.style.stylesheet.PropertyStoreProvider;
 import com.spinyowl.spinygui.core.style.stylesheet.Ruleset;
 import com.spinyowl.spinygui.core.style.stylesheet.impl.DefaultPropertyStoreProvider;
 import com.spinyowl.spinygui.core.style.types.Color;
-import com.spinyowl.spinygui.core.system.tree.StyleTreeBuilder;
-import com.spinyowl.spinygui.core.system.tree.StyleTreeBuilderImpl;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;

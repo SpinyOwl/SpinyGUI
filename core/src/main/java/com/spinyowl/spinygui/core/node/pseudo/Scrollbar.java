@@ -13,25 +13,25 @@ public class Scrollbar extends PseudoElement {
 
   @NonNull private final Orientation orientation;
 
-  public Scrollbar(@NonNull Orientation orientation, Element scrollbarHolder) {
-    super("::scrollbar", scrollbarHolder::resolvedStyle);
+  public Scrollbar(@NonNull Orientation orientation, Element pseudoParent) {
+    super("::scrollbar", pseudoParent);
     this.orientation = orientation;
 
-    this.parent = scrollbarHolder;
+    this.parent = pseudoParent;
 
-    this.addChild(new ScrollbarButton(ActionType.DECREMENT, scrollbarHolder));
-    ScrollbarTrack scrollbarTrack = new ScrollbarTrack(scrollbarHolder);
-    scrollbarTrack.addChild(new ScrollbarTrackPiece(ActionType.DECREMENT, scrollbarHolder));
-    scrollbarTrack.addChild(new ScrollbarThumb(scrollbarHolder));
-    scrollbarTrack.addChild(new ScrollbarTrackPiece(ActionType.INCREMENT, scrollbarHolder));
+    this.addChild(new ScrollbarButton(ActionType.DECREMENT, pseudoParent));
+    ScrollbarTrack scrollbarTrack = new ScrollbarTrack(pseudoParent);
+    scrollbarTrack.addChild(new ScrollbarTrackPiece(ActionType.DECREMENT, pseudoParent));
+    scrollbarTrack.addChild(new ScrollbarThumb(pseudoParent));
+    scrollbarTrack.addChild(new ScrollbarTrackPiece(ActionType.INCREMENT, pseudoParent));
     this.addChild(scrollbarTrack);
-    this.addChild(new ScrollbarButton(ActionType.INCREMENT, scrollbarHolder));
+    this.addChild(new ScrollbarButton(ActionType.INCREMENT, pseudoParent));
   }
 
   public static class ScrollbarThumb extends PseudoElement {
 
-    public ScrollbarThumb(Element scrollbarHolder) {
-      super("::scrollbar-thumb", scrollbarHolder::resolvedStyle);
+    public ScrollbarThumb(Element pseudoParent) {
+      super("::scrollbar-thumb", pseudoParent);
     }
   }
 
@@ -42,8 +42,8 @@ public class Scrollbar extends PseudoElement {
 
     private final ActionType action;
 
-    public ScrollbarButton(ActionType action, Element scrollbarHolder) {
-      super("::scrollbar-button", scrollbarHolder::resolvedStyle);
+    public ScrollbarButton(ActionType action, Element pseudoParent) {
+      super("::scrollbar-button", pseudoParent);
       this.action = action;
     }
   }
@@ -55,23 +55,23 @@ public class Scrollbar extends PseudoElement {
 
     private final ActionType action;
 
-    public ScrollbarTrackPiece(ActionType action, Element scrollbarHolder) {
-      super("::scrollbar-track-piece", scrollbarHolder::resolvedStyle);
+    public ScrollbarTrackPiece(ActionType action, Element pseudoParent) {
+      super("::scrollbar-track-piece", pseudoParent);
       this.action = action;
     }
   }
 
   public static class ScrollbarTrack extends PseudoElement {
 
-    public ScrollbarTrack(Element scrollbarHolder) {
-      super("::scrollbar-track", scrollbarHolder::resolvedStyle);
+    public ScrollbarTrack(Element pseudoParent) {
+      super("::scrollbar-track", pseudoParent);
     }
   }
 
   public static class ScrollbarCorner extends PseudoElement {
 
-    public ScrollbarCorner(Element scrollbarHolder) {
-      super("::scrollbar-corner", scrollbarHolder::resolvedStyle);
+    public ScrollbarCorner(Element pseudoParent) {
+      super("::scrollbar-corner", pseudoParent);
     }
   }
 

@@ -1,7 +1,6 @@
-package com.spinyowl.spinygui.core.system.tree;
+package com.spinyowl.spinygui.core.layout;
 
 import com.spinyowl.spinygui.core.node.Element;
-import com.spinyowl.spinygui.core.style.StyledNode;
 import com.spinyowl.spinygui.core.style.stylesheet.StyleSheet;
 import java.util.List;
 

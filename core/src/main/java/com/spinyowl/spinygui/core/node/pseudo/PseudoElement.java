@@ -2,21 +2,24 @@ package com.spinyowl.spinygui.core.node.pseudo;
 
 import com.spinyowl.spinygui.core.node.Element;
 import com.spinyowl.spinygui.core.style.ResolvedStyle;
-import java.util.function.Function;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
 
+@Getter
+@EqualsAndHashCode(exclude = "pseudoParent")
 public class PseudoElement extends Element {
 
   protected final String name;
-  protected final Function<String, ResolvedStyle> stylesAccessor;
+  protected final Element pseudoParent;
 
-  public PseudoElement(String nodeName, Function<String, ResolvedStyle> stylesAccessor) {
+  public PseudoElement(String nodeName, Element pseudoParent) {
     super(nodeName);
     this.name = nodeName;
-    this.stylesAccessor = stylesAccessor;
+    this.pseudoParent = pseudoParent;
   }
 
   @Override
   public ResolvedStyle resolvedStyle() {
-    return stylesAccessor.apply(this.nodeName());
+    return pseudoParent.resolvedStyle(name);
   }
 }

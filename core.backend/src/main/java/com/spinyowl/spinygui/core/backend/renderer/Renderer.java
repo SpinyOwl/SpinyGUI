@@ -1,6 +1,6 @@
 package com.spinyowl.spinygui.core.backend.renderer;
 
-import com.spinyowl.spinygui.core.system.tree.LayoutNode;
+import com.spinyowl.spinygui.core.layout.LayoutNode;
 import org.joml.Vector2fc;
 import org.joml.Vector2ic;
 

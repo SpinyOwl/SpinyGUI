@@ -12,10 +12,10 @@ import static org.lwjgl.opengl.GL11.glEnable;
 import static org.lwjgl.opengl.GL11.glGetInteger;
 
 import com.spinyowl.spinygui.core.backend.renderer.Renderer;
+import com.spinyowl.spinygui.core.layout.LayoutNode;
 import com.spinyowl.spinygui.core.node.Element;
 import com.spinyowl.spinygui.core.node.Node;
 import com.spinyowl.spinygui.core.node.Text;
-import com.spinyowl.spinygui.core.system.tree.LayoutNode;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import org.joml.Vector2fc;
@@ -83,7 +83,7 @@ public class NvgRenderer implements Renderer {
   }
 
   private void renderLayoutTree(LayoutNode layoutTree) {
-    renderNode(layoutTree.node(), layoutTree.children());
+    renderLayoutNode(layoutTree);
   }
 
   private void renderNode(Node node, List<LayoutNode> children) {

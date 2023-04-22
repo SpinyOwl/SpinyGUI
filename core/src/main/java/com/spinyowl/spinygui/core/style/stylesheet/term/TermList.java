@@ -10,6 +10,7 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
+/** Represents list of terms. */
 @Getter
 @Setter
 @EqualsAndHashCode

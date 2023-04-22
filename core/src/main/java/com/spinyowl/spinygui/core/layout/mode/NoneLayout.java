@@ -1,7 +1,7 @@
-package com.spinyowl.spinygui.core.layout;
+package com.spinyowl.spinygui.core.layout.mode;
 
-import com.spinyowl.spinygui.core.system.tree.LayoutContext;
-import com.spinyowl.spinygui.core.system.tree.LayoutNode;
+import com.spinyowl.spinygui.core.layout.LayoutContext;
+import com.spinyowl.spinygui.core.layout.LayoutNode;
 
 public class NoneLayout implements Layout {
 

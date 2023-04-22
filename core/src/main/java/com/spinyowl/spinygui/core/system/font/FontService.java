@@ -1,6 +1,7 @@
 package com.spinyowl.spinygui.core.system.font;
 
 import com.spinyowl.spinygui.core.font.Font;
+import java.util.Set;
 import lombok.NonNull;
 
 /** Font service, responsible for loading and caching font data, and calculating text metrics. */
@@ -14,6 +15,10 @@ public interface FontService {
    * @throws FontLoadingException in case of font loading failure.
    */
   Font loadFont(String path) throws FontLoadingException;
+
+  default Font getFirstAvailableFont(Set<Font> fonts) {
+    return fonts.stream().filter(this::isFontAvailable).findFirst().orElse(Font.DEFAULT);
+  }
 
   /**
    * Verifies if font exists and available to use.

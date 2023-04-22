@@ -1,6 +1,4 @@
-package com.spinyowl.spinygui.core.system.tree;
-
-import com.spinyowl.spinygui.core.style.StyledNode;
+package com.spinyowl.spinygui.core.layout;
 
 /** Used to build layout tree from provided styled node. */
 public interface LayoutTreeBuilder {

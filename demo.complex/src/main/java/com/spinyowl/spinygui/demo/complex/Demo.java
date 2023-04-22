@@ -47,7 +47,13 @@ import com.spinyowl.spinygui.core.backend.renderer.Renderer;
 import com.spinyowl.spinygui.core.event.processor.DefaultEventProcessor;
 import com.spinyowl.spinygui.core.event.processor.EventProcessor;
 import com.spinyowl.spinygui.core.input.impl.MouseServiceImpl;
+import com.spinyowl.spinygui.core.layout.LayoutNode;
+import com.spinyowl.spinygui.core.layout.LayoutService;
 import com.spinyowl.spinygui.core.layout.LayoutServiceProvider;
+import com.spinyowl.spinygui.core.layout.LayoutTreeBuilder;
+import com.spinyowl.spinygui.core.layout.LayoutTreeBuilderImpl;
+import com.spinyowl.spinygui.core.layout.StyleTreeBuilder;
+import com.spinyowl.spinygui.core.layout.StyleTreeBuilderImpl;
 import com.spinyowl.spinygui.core.node.Frame;
 import com.spinyowl.spinygui.core.parser.NodeParser;
 import com.spinyowl.spinygui.core.parser.StyleSheetParser;
@@ -68,17 +74,12 @@ import com.spinyowl.spinygui.core.system.event.listener.SystemScrollEventListene
 import com.spinyowl.spinygui.core.system.event.listener.SystemWindowSizeEventListener;
 import com.spinyowl.spinygui.core.system.event.processor.SystemEventProcessor;
 import com.spinyowl.spinygui.core.system.event.processor.SystemEventProcessorImpl;
+import com.spinyowl.spinygui.core.system.event.provider.SystemEventListenerProvider;
 import com.spinyowl.spinygui.core.system.event.provider.SystemEventListenerProviderImpl;
 import com.spinyowl.spinygui.core.system.font.FontService;
 import com.spinyowl.spinygui.core.system.font.FontStorage;
 import com.spinyowl.spinygui.core.system.font.impl.FontServiceImpl;
 import com.spinyowl.spinygui.core.system.font.impl.FontStorageImpl;
-import com.spinyowl.spinygui.core.system.tree.LayoutNode;
-import com.spinyowl.spinygui.core.system.tree.LayoutService;
-import com.spinyowl.spinygui.core.system.tree.LayoutTreeBuilder;
-import com.spinyowl.spinygui.core.system.tree.LayoutTreeBuilderImpl;
-import com.spinyowl.spinygui.core.system.tree.StyleTreeBuilder;
-import com.spinyowl.spinygui.core.system.tree.StyleTreeBuilderImpl;
 import com.spinyowl.spinygui.core.time.TimeService;
 import java.time.Instant;
 import org.joml.Vector2f;
@@ -107,6 +108,8 @@ public abstract class Demo {
   private long window;
   private MouseServiceImpl mouseService;
   private StyleManager styleManager;
+  private FontService fontService;
+  private FontStorage fontStorage;
 
   protected Demo(int width, int height, String title, Renderer renderer) {
     this.width = width;
@@ -157,24 +160,25 @@ public abstract class Demo {
     styleSheetParser = StyleSheetParserFactory.createParser(propertyStore);
     nodeParser = new DefaultNodeParser();
 
-
     mouseService = new MouseServiceImpl();
     eventProcessor = new DefaultEventProcessor();
 
-    initializeSystemEventListener();
+    fontStorage = new FontStorageImpl();
+    fontService = new FontServiceImpl(fontStorage, true);
 
     StyleTreeBuilder styleTreeBuilder = new StyleTreeBuilderImpl(propertyStore, styleSheetParser);
-    LayoutTreeBuilder layoutTreeBuilder = new LayoutTreeBuilderImpl();
-    styleManager = new StyleManagerImpl(styleTreeBuilder, layoutTreeBuilder, systemEventProcessor);
+    LayoutTreeBuilder layoutTreeBuilder = new LayoutTreeBuilderImpl(styleTreeBuilder);
 
-    FontStorage fontStorage = new FontStorageImpl();
-    FontService fontService = new FontServiceImpl(fontStorage, true);
+    SystemEventListenerProvider systemEventListenerProvider = initializeSystemEventListener();
+
+    systemEventProcessor = new SystemEventProcessorImpl(systemEventListenerProvider);
+    styleManager = new StyleManagerImpl(styleTreeBuilder, layoutTreeBuilder);
     layoutService =
         LayoutServiceProvider.create(
             systemEventProcessor, eventProcessor, timeService, fontService);
   }
 
-  private void initializeSystemEventListener() {
+  private SystemEventListenerProvider initializeSystemEventListener() {
     SystemEventListenerProviderImpl systemEventListenerProvider =
         new SystemEventListenerProviderImpl();
     systemEventListenerProvider.listener(
@@ -203,12 +207,10 @@ public abstract class Demo {
             .mouseService(mouseService)
             .eventProcessor(eventProcessor)
             .timeService(timeService)
+            .fontService(fontService)
             .build());
 
-    systemEventProcessor =
-        SystemEventProcessorImpl.builder()
-            .eventListenerProvider(systemEventListenerProvider)
-            .build();
+    return systemEventListenerProvider;
   }
 
   @SuppressWarnings({"squid:S1215", "squid:S106"})
