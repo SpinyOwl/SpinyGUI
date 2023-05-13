@@ -1,11 +1,11 @@
-![REPO SIZE](https://img.shields.io/github/repo-size/SpinyOwl/SpinyGUI.svg)
-![CODE SIZE](https://img.shields.io/github/languages/code-size/SpinyOwl/SpinyGUI.svg)
-[![License](https://img.shields.io/github/license/SpinyOwl/SpinyGUI.svg)](/LICENSE)
-![Build DEVELOP](https://github.com/SpinyOwl/SpinyGUI/workflows/Build%20DEVELOP/badge.svg)
+[![REPO SIZE](https://img.shields.io/github/repo-size/SpinyOwl/SpinyGUI.svg?style=for-the-badge)](/)
+[![CODE SIZE](https://img.shields.io/github/languages/code-size/SpinyOwl/SpinyGUI.svg?style=for-the-badge)](/)
+[![License](https://img.shields.io/github/license/SpinyOwl/SpinyGUI.svg?style=for-the-badge)](/LICENSE)
+[![Support me on Ko-Fi](https://img.shields.io/badge/-Buy_me_a_coffee-FF5E5B?logo=kofi&logoColor=white&style=for-the-badge)](https://ko-fi.com/J3J4L9ASJ)
 
-[![codecov](https://codecov.io/gh/SpinyOwl/SpinyGUI/branch/develop/graph/badge.svg)](https://codecov.io/gh/SpinyOwl/SpinyGUI)
-[![Codacy Badge](https://app.codacy.com/project/badge/Grade/9ad032222b7c432cb4b85ea411a6190b)](https://www.codacy.com/gh/SpinyOwl/SpinyGUI/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=SpinyOwl/SpinyGUI&amp;utm_campaign=Badge_Grade)
-<!-- [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=SpinyOwl_SpinyGUI&metric=alert_status)](https://sonarcloud.io/dashboard?id=SpinyOwl_SpinyGUI) -->
+[![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/SpinyOwl/SpinyGUI/gradle.yml?style=for-the-badge)](https://github.com/SpinyOwl/SpinyGUI/actions/workflows/gradle.yml)
+[![Codacy grade](https://img.shields.io/codacy/grade/9ad032222b7c432cb4b85ea411a6190b?style=for-the-badge)](https://www.codacy.com/gh/SpinyOwl/SpinyGUI/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=SpinyOwl/SpinyGUI&amp;utm_campaign=Badge_Grade)
+[![Codecov](https://img.shields.io/codecov/c/github/SpinyOwl/SpinyGUI?style=for-the-badge)](https://codecov.io/gh/SpinyOwl/SpinyGUI)
 
 [![coverage graph](https://codecov.io/gh/SpinyOwl/SpinyGUI/branch/develop/graphs/icicle.svg)](https://codecov.io/gh/SpinyOwl/SpinyGUI)  
 
