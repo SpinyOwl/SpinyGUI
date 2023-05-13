@@ -4,7 +4,7 @@
 [![Support me on Ko-Fi](https://img.shields.io/badge/-Buy_me_a_coffee-FF5E5B?logo=kofi&logoColor=white&style=for-the-badge)](https://ko-fi.com/J3J4L9ASJ)
 
 [![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/SpinyOwl/SpinyGUI/gradle.yml?style=for-the-badge)](https://github.com/SpinyOwl/SpinyGUI/actions/workflows/gradle.yml)
-[![Sonar Quality Gate](https://img.shields.io/sonar/quality_gate/SpinyOwl_SpinyGUI/master?server=https%3A%2F%2Fsonarcloud.io&style=for-the-badge)](https://sonarcloud.io/summary/overall?id=SpinyOwl_SpinyGUI)
+[![Sonar Quality Gate](https://img.shields.io/sonar/quality_gate/SpinyOwl_SpinyGUI?server=https%3A%2F%2Fsonarcloud.io&style=for-the-badge)](https://sonarcloud.io/summary/overall?id=SpinyOwl_SpinyGUI)
 [![Sonar Coverage](https://img.shields.io/sonar/coverage/SpinyOwl_SpinyGUI?server=https%3A%2F%2Fsonarcloud.io&style=for-the-badge)](https://sonarcloud.io/component_measures?metric=Coverage&id=SpinyOwl_SpinyGUI)
 
 [![coverage graph](https://codecov.io/gh/SpinyOwl/SpinyGUI/branch/develop/graphs/icicle.svg)](https://codecov.io/gh/SpinyOwl/SpinyGUI)  
