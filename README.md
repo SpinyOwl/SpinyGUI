@@ -1,8 +1,7 @@
 [![REPO SIZE](https://img.shields.io/github/repo-size/SpinyOwl/SpinyGUI.svg?style=for-the-badge)](/)
 [![CODE SIZE](https://img.shields.io/github/languages/code-size/SpinyOwl/SpinyGUI.svg?style=for-the-badge)](/)
 [![License](https://img.shields.io/github/license/SpinyOwl/SpinyGUI.svg?style=for-the-badge)](/LICENSE)
-[![Support me on Ko-Fi](https://img.shields.io/badge/-Buy_me_a_coffee-FF5E5B?logo=kofi&logoColor=white&style=for-the-badge)](https://ko-fi.com/J3J4L9ASJ)
-
+[![Support me on Ko-Fi](https://img.shields.io/badge/-Buy_me_a_coffee-FF5E5B?logo=kofi&logoColor=white&style=for-the-badge)](https://ko-fi.com/J3J4L9ASJ)  
 [![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/SpinyOwl/SpinyGUI/gradle.yml?style=for-the-badge)](https://github.com/SpinyOwl/SpinyGUI/actions/workflows/gradle.yml)
 [![Sonar Quality Gate](https://img.shields.io/sonar/quality_gate/SpinyOwl_SpinyGUI?server=https%3A%2F%2Fsonarcloud.io&style=for-the-badge)](https://sonarcloud.io/summary/overall?id=SpinyOwl_SpinyGUI)
 [![Sonar Coverage](https://img.shields.io/sonar/coverage/SpinyOwl_SpinyGUI?server=https%3A%2F%2Fsonarcloud.io&style=for-the-badge)](https://sonarcloud.io/component_measures?metric=Coverage&id=SpinyOwl_SpinyGUI)
