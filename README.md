@@ -4,8 +4,8 @@
 [![Support me on Ko-Fi](https://img.shields.io/badge/-Buy_me_a_coffee-FF5E5B?logo=kofi&logoColor=white&style=for-the-badge)](https://ko-fi.com/J3J4L9ASJ)
 
 [![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/SpinyOwl/SpinyGUI/gradle.yml?style=for-the-badge)](https://github.com/SpinyOwl/SpinyGUI/actions/workflows/gradle.yml)
-[![Codacy grade](https://img.shields.io/codacy/grade/9ad032222b7c432cb4b85ea411a6190b?style=for-the-badge)](https://www.codacy.com/gh/SpinyOwl/SpinyGUI/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=SpinyOwl/SpinyGUI&amp;utm_campaign=Badge_Grade)
-[![Codecov](https://img.shields.io/codecov/c/github/SpinyOwl/SpinyGUI?style=for-the-badge)](https://codecov.io/gh/SpinyOwl/SpinyGUI)
+[![Sonar Quality Gate](https://img.shields.io/sonar/quality_gate/SpinyOwl_SpinyGUI/master?server=https%3A%2F%2Fsonarcloud.io&style=for-the-badge)](https://sonarcloud.io/summary/overall?id=SpinyOwl_SpinyGUI)
+[![Sonar Coverage](https://img.shields.io/sonar/coverage/SpinyOwl_SpinyGUI?server=https%3A%2F%2Fsonarcloud.io&style=for-the-badge)](https://sonarcloud.io/component_measures?metric=Coverage&id=SpinyOwl_SpinyGUI)
 
 [![coverage graph](https://codecov.io/gh/SpinyOwl/SpinyGUI/branch/develop/graphs/icicle.svg)](https://codecov.io/gh/SpinyOwl/SpinyGUI)  
 
