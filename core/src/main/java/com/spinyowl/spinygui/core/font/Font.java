@@ -76,6 +76,15 @@ public class Font {
   }
 
   /**
+   * Returns all fonts.
+   *
+   * @return all fonts.
+   */
+  public static List<Font> getFonts() {
+    return fontFamilies.values().stream().flatMap(List::stream).toList();
+  }
+
+  /**
    * Search for fonts with specified font family name.
    *
    * @param name font family name.

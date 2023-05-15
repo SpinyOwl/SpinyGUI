@@ -1,5 +1,6 @@
 package com.spinyowl.spinygui.core.node;
 
+import com.spinyowl.spinygui.core.system.font.TextMetrics;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -23,6 +24,7 @@ public final class Text extends Node {
   //  private Set<String> redo;
 
   private String content;
+  private TextMetrics metrics;
 
   private float textStartX;
   private float textStartY;

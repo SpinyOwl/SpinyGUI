@@ -5,7 +5,9 @@ import com.spinyowl.spinygui.core.node.Element;
 import com.spinyowl.spinygui.core.node.Frame;
 import com.spinyowl.spinygui.core.node.Node;
 import com.spinyowl.spinygui.core.node.Text;
+import com.spinyowl.spinygui.core.node.layout.Box;
 import com.spinyowl.spinygui.core.node.layout.Edges;
+import com.spinyowl.spinygui.core.node.pseudo.PseudoElement;
 import com.spinyowl.spinygui.core.style.ResolvedStyle;
 import com.spinyowl.spinygui.core.style.types.Display;
 import com.spinyowl.spinygui.core.style.types.Overflow;
@@ -62,20 +64,34 @@ public final class LayoutUtils {
   }
 
   public static float getChildNodesHeight(LayoutNode layoutNode) {
-    List<Node> heightNodes =
+    List<Node> nodes =
         layoutNode.children().stream()
             .map(LayoutNode::node)
-            .filter(LayoutUtils::affectsHeight)
+            .filter(LayoutUtils::affectsSize)
             .toList();
-    return !heightNodes.isEmpty()
-        ? heightNodes.stream()
+    return !nodes.isEmpty()
+        ? nodes.stream()
                 .map(node -> node.box().borderBox().y() + node.box().borderBox().height())
                 .reduce(0F, Float::max)
-            - heightNodes.get(0).box().borderBox().y()
+            - nodes.get(0).box().borderBox().y()
         : 0;
   }
 
-  private static boolean affectsHeight(Node obj) {
+  public static float getChildNodesWidth(LayoutNode layoutNode) {
+    List<Node> nodes =
+        layoutNode.children().stream()
+            .map(LayoutNode::node)
+            .filter(LayoutUtils::affectsSize)
+            .toList();
+    return !nodes.isEmpty()
+        ? nodes.stream()
+                .map(node -> node.box().borderBox().x() + node.box().borderBox().width())
+                .reduce(0F, Float::max)
+            - nodes.get(0).box().borderBox().x()
+        : 0;
+  }
+
+  private static boolean affectsSize(Node obj) {
     if (obj instanceof Text) return true;
     if (obj instanceof Element el) {
       if (el.resolvedStyle().display().equals(Display.NONE)) return false;
@@ -102,6 +118,31 @@ public final class LayoutUtils {
     if (isPositioned(parent)) return parent;
 
     return findPositionedAncestor(parent);
+  }
+
+  public static Box getParentBox(Node node) {
+    Element parent = node.offsetParent();
+    if (node instanceof Frame frame) {
+      Box parentBox = new Box();
+      parentBox.contentSize(frame.frameSize().x, frame.frameSize().y);
+      return parentBox;
+    }
+
+    if (parent == null) {
+      if (node instanceof PseudoElement pseudoElement) {
+        return pseudoElement.pseudoParent().box();
+      } else {
+        Box parentBox = new Box();
+        var frame = node.frame();
+        parentBox.contentSize(frame.frameSize().x, frame.frameSize().y);
+        return parentBox;
+      }
+    }
+
+    if (parent.resolvedStyle().display().equals(Display.INLINE)) {
+      return getParentBox(parent);
+    }
+    return parent.box();
   }
 
   //  public static float getVerticalScrollbarWidth(Element element) {

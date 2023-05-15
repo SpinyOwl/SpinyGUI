@@ -9,8 +9,8 @@ import static com.spinyowl.spinygui.core.style.stylesheet.Properties.BACKGROUND_
 import static com.spinyowl.spinygui.core.style.stylesheet.Properties.BACKGROUND_SIZE;
 import static com.spinyowl.spinygui.core.style.stylesheet.Property.checkValue;
 import static com.spinyowl.spinygui.core.style.stylesheet.Property.put;
-import static com.spinyowl.spinygui.core.style.stylesheet.util.StyleUtils.contains;
 import static com.spinyowl.spinygui.core.style.stylesheet.util.StyleUtils.indexOf;
+import static com.spinyowl.spinygui.core.style.stylesheet.util.StyleUtils.oneOf;
 
 import com.spinyowl.spinygui.core.style.stylesheet.Property;
 import com.spinyowl.spinygui.core.style.stylesheet.Property.Validator;
@@ -113,7 +113,7 @@ public class BackgroundPropertyProvider implements PropertyProvider {
   }
 
   private static Validator backgroundSizeValidator() {
-    return checkValue(TermIdent.class, v -> contains(v, values))
+    return checkValue(TermIdent.class, v -> oneOf(v, values))
         .or(TermLength.class::isInstance)
         .or(
             checkValue(
@@ -122,7 +122,7 @@ public class BackgroundPropertyProvider implements PropertyProvider {
                   if (termList.isEmpty()) return false;
                   if (termList.size() > 2) return false;
                   if (termList.size() == 1)
-                    return checkValue(TermIdent.class, v -> contains(v, values))
+                    return checkValue(TermIdent.class, v -> oneOf(v, values))
                         .or(TermLength.class::isInstance)
                         .test(termList.get(0));
                   return testOne(termList.get(0)) && testOne(termList.get(1));
@@ -173,8 +173,8 @@ public class BackgroundPropertyProvider implements PropertyProvider {
       String p, Term<?> term, Map<String, Object> styles) {
     if (term instanceof TermLength termLength) {
       styles.put(p, termLength.value());
-    } else if (term instanceof TermIdent termIdent && contains(termIdent.value(), values)) {
-      styles.put(p, Length.percent(indexOf(termIdent.value(), values) * 50));
+    } else if (term instanceof TermIdent termIdent && oneOf(termIdent.value(), values)) {
+      styles.put(p, Length.percent(indexOf(termIdent.value(), values) * 50F));
     }
   }
 
@@ -186,14 +186,14 @@ public class BackgroundPropertyProvider implements PropertyProvider {
       if (termList.isEmpty() || termList.size() > 2) return false;
 
       if (termList.size() == 1) {
-        return checkValue(TermIdent.class, v -> contains(v, X_VALUES) || contains(v, Y_VALUES))
+        return checkValue(TermIdent.class, v -> oneOf(v, X_VALUES) || oneOf(v, Y_VALUES))
             .or(TermLength.class::isInstance)
             .test(termList.get(0));
       } else {
-        return checkValue(TermIdent.class, v -> contains(v, X_VALUES))
+        return checkValue(TermIdent.class, v -> oneOf(v, X_VALUES))
                 .or(TermLength.class::isInstance)
                 .test(termList.get(0))
-            && checkValue(TermIdent.class, v -> contains(v, Y_VALUES))
+            && checkValue(TermIdent.class, v -> oneOf(v, Y_VALUES))
                 .or(TermLength.class::isInstance)
                 .test(termList.get(1));
       }
@@ -211,10 +211,10 @@ public class BackgroundPropertyProvider implements PropertyProvider {
           term2 == null ? Length.percent(50) : extractFromTerm(term2, Y_VALUES));
     } else if (term instanceof TermIdent termIdent) {
       String value = termIdent.value();
-      if (contains(value, X_VALUES)) {
+      if (oneOf(value, X_VALUES)) {
         styles.put(BACKGROUND_POSITION_X, Length.percent(indexOf(value, X_VALUES) * 50F));
         styles.put(BACKGROUND_POSITION_Y, Length.percent(50));
-      } else if (contains(value, Y_VALUES)) {
+      } else if (oneOf(value, Y_VALUES)) {
         styles.put(BACKGROUND_POSITION_Y, Length.percent(indexOf(value, Y_VALUES) * 50F));
         styles.put(BACKGROUND_POSITION_X, Length.percent(50F));
       }

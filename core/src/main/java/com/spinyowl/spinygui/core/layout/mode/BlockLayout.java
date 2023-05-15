@@ -1,9 +1,6 @@
 package com.spinyowl.spinygui.core.layout.mode;
 
-import static com.spinyowl.spinygui.core.layout.mode.LayoutUtils.findPositionedAncestor;
-import static com.spinyowl.spinygui.core.layout.mode.LayoutUtils.getChildNodesHeight;
-import static com.spinyowl.spinygui.core.layout.mode.LayoutUtils.setBorders;
-import static com.spinyowl.spinygui.core.layout.mode.LayoutUtils.setPadding;
+import static com.spinyowl.spinygui.core.layout.mode.LayoutUtils.*;
 import static com.spinyowl.spinygui.core.style.stylesheet.util.StyleUtils.getFloatLength;
 import static com.spinyowl.spinygui.core.style.stylesheet.util.StyleUtils.getFloatLengthOptional;
 
@@ -39,7 +36,7 @@ public class BlockLayout implements Layout {
       return;
     }
 
-    Box parentBox = getParentDimensions(element, element.offsetParent());
+    Box parentBox = getParentBox(element);
 
     ResolvedStyle style = element.resolvedStyle();
 
@@ -59,6 +56,8 @@ public class BlockLayout implements Layout {
     } else if (Position.RELATIVE.equals(elementPosition)) {
       layoutRelativeBlock(layoutNode, element, parentBox, style, skipChildren, ctx);
     }
+    ctx.lastTextEndX(null);
+    ctx.lastTextEndY(null);
   }
 
   private void layoutStaticBlock(
@@ -119,7 +118,6 @@ public class BlockLayout implements Layout {
     float contentHeight = borderBoxHeight - verticalAdditions;
     box.content().height(contentHeight);
 
-    ctx.lastTextEndY(null);
     ctx.previousNode(e);
     ctx.lastBlockBottomY(box.borderBox().y() + box.borderBox().height());
   }
@@ -307,26 +305,8 @@ public class BlockLayout implements Layout {
     box.contentPosition(x, y);
   }
 
-  private Box getParentDimensions(Element element, Element parent) {
-    Box parentBox;
-    if (element instanceof Frame frame) {
-      parentBox = new Box();
-      parentBox.contentSize(frame.frameSize().x, frame.frameSize().y);
-    } else if (parent == null) {
-      parentBox = new Box();
-      var frame = element.frame();
-      parentBox.contentSize(frame.frameSize().x, frame.frameSize().y);
-    } else {
-      parentBox = parent.box();
-    }
-    return parentBox;
-  }
-
   private float childrenHeight(
-      LayoutNode layoutNode,
-      ResolvedStyle style,
-      boolean skipChildren,
-      LayoutContext context) {
+      LayoutNode layoutNode, ResolvedStyle style, boolean skipChildren, LayoutContext context) {
     float childrenHeight = 0;
     Unit height = style.height();
     if (!skipChildren) {

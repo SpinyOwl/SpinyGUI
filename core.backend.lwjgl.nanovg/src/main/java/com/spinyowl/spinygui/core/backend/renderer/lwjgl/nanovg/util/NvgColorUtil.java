@@ -18,8 +18,8 @@ public final class NvgColorUtil {
    * @param color color.
    * @param nvgColor color to fill.
    */
-  public static void fillNvgColor(Color color, NVGColor nvgColor) {
-    fillNvgColor(color.r(), color.g(), color.b(), color.a(), nvgColor);
+  public static void fillNvgColor(NVGColor nvgColor, Color color) {
+    fillNvgColor(nvgColor, color.r(), color.g(), color.b(), color.a());
   }
 
   /**
@@ -36,7 +36,7 @@ public final class NvgColorUtil {
    * @param color color to fill.
    */
   public static void fillNvgColorWithRGBA(Vector4fc rgba, NVGColor color) {
-    fillNvgColor(rgba.x(), rgba.y(), rgba.z(), rgba.w(), color);
+    fillNvgColor(color, rgba.x(), rgba.y(), rgba.z(), rgba.w());
   }
 
   /**
@@ -80,20 +80,20 @@ public final class NvgColorUtil {
    */
   public static NVGColor create(float r, float g, float b, float a) {
     var color = NVGColor.calloc();
-    fillNvgColor(r, g, b, a, color);
+    fillNvgColor(color, r, g, b, a);
     return color;
   }
 
   /**
    * Used to fill {@link NVGColor}.
    *
+   * @param color color to fill.
    * @param r red.
    * @param g green.
    * @param b blue.
    * @param a alpha.
-   * @param color color to fill.
    */
-  public static void fillNvgColor(float r, float g, float b, float a, NVGColor color) {
+  public static void fillNvgColor(NVGColor color, float r, float g, float b, float a) {
     color.r(r);
     color.g(g);
     color.b(b);

@@ -1,11 +1,7 @@
 package com.spinyowl.spinygui.core.layout;
 
 import com.spinyowl.spinygui.core.event.processor.EventProcessor;
-import com.spinyowl.spinygui.core.layout.mode.BlockLayout;
-import com.spinyowl.spinygui.core.layout.mode.FlexLayout;
-import com.spinyowl.spinygui.core.layout.mode.Layout;
-import com.spinyowl.spinygui.core.layout.mode.NoneLayout;
-import com.spinyowl.spinygui.core.layout.mode.TextLayoutImpl;
+import com.spinyowl.spinygui.core.layout.mode.*;
 import com.spinyowl.spinygui.core.style.types.Display;
 import com.spinyowl.spinygui.core.system.event.processor.SystemEventProcessor;
 import com.spinyowl.spinygui.core.system.font.FontService;
@@ -36,6 +32,8 @@ public final class LayoutServiceProvider {
         new FlexLayout(
             systemEventProcessor, eventProcessor, timeService, blockLayout, layoutService);
     elementLayoutMap.put(Display.FLEX, flexLayout);
+
+    //    elementLayoutMap.put(Display.INLINE, new InlineLayout(layoutService));
 
     return layoutService;
   }

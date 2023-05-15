@@ -1,6 +1,7 @@
 package com.spinyowl.spinygui.core.system.font.impl;
 
 import static org.slf4j.LoggerFactory.getLogger;
+
 import com.spinyowl.spinygui.core.system.font.FontStorage;
 import com.spinyowl.spinygui.core.util.IOUtil;
 import java.nio.ByteBuffer;
@@ -23,19 +24,19 @@ public class FontStorageImpl implements FontStorage {
    * Error safe method to load font and add font data to file storage. In case of error it will
    * return null.
    *
-   * @param fontPath path to font which should be loaded.
+   * @param path path to font which should be loaded.
    * @return {@link ByteBuffer} with font data or null in case of failure.
    */
   @Override
-  public ByteBuffer loadFont(String fontPath) {
+  public ByteBuffer loadFont(String path) {
     ByteBuffer fontData = null;
     try {
-      fontData = IOUtil.resourceAsByteBuffer(fontPath);
+      fontData = IOUtil.resourceAsByteBuffer(path);
     } catch (Exception e) {
-      LOG.warn("Failed to load font from {}", fontPath);
+      LOG.warn("Failed to load font from {}", path);
     }
     if (fontData != null) {
-      dataMap.put(fontPath, fontData);
+      dataMap.put(path, fontData);
     }
     return fontData;
   }

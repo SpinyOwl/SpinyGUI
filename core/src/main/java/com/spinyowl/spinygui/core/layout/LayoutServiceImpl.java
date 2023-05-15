@@ -52,17 +52,16 @@ public class LayoutServiceImpl implements LayoutService {
       context.lastTextEndX(text.textEndX());
       context.lastTextEndY(text.textEndY());
     }
+    //    if (node instanceof Element e && e.resolvedStyle().display().equals(Display.BLOCK)) {
+    //      context.lastTextEndX(0F);
+    //      context.lastTextEndY(0F);
+    //    }
   }
 
   @Override
   public void layoutChildNodes(@NonNull LayoutNode element, @NonNull LayoutContext context) {
-    var childNodes = element.children();
-    if (childNodes.isEmpty()) {
-      return;
-    }
-
     LayoutContext inner = new LayoutContext();
-    childNodes.stream()
+    element.children().stream()
         .filter(n -> !(n.node() instanceof Scrollbar))
         .forEach(node -> layoutNode(node, inner));
   }

@@ -1,7 +1,6 @@
 package com.spinyowl.spinygui.core.backend.renderer.lwjgl.nanovg;
 
-import static org.lwjgl.nanovg.NanoVG.nvgBeginFrame;
-import static org.lwjgl.nanovg.NanoVG.nvgEndFrame;
+import static org.lwjgl.nanovg.NanoVG.*;
 import static org.lwjgl.opengl.GL11.GL_BLEND;
 import static org.lwjgl.opengl.GL11.GL_DEPTH_TEST;
 import static org.lwjgl.opengl.GL11.GL_ONE_MINUS_SRC_ALPHA;
@@ -12,18 +11,25 @@ import static org.lwjgl.opengl.GL11.glEnable;
 import static org.lwjgl.opengl.GL11.glGetInteger;
 
 import com.spinyowl.spinygui.core.backend.renderer.Renderer;
+import com.spinyowl.spinygui.core.font.Font;
 import com.spinyowl.spinygui.core.layout.LayoutNode;
 import com.spinyowl.spinygui.core.node.Element;
 import com.spinyowl.spinygui.core.node.Node;
 import com.spinyowl.spinygui.core.node.Text;
+import com.spinyowl.spinygui.core.util.IOUtil;
+import java.nio.ByteBuffer;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
+import lombok.extern.slf4j.Slf4j;
 import org.joml.Vector2fc;
 import org.joml.Vector2ic;
 import org.lwjgl.nanovg.NanoVGGL2;
 import org.lwjgl.nanovg.NanoVGGL3;
 import org.lwjgl.opengl.GL30;
 
+@Slf4j
 public class NvgRenderer implements Renderer {
 
   private final boolean antialiasingEnabled;
@@ -31,6 +37,9 @@ public class NvgRenderer implements Renderer {
   private final NvgElementRenderer elementRenderer;
   private final NvgTextRenderer textRenderer;
   private final NvgBorderRenderer borderRenderer;
+
+  private final Map<String, Font> loadedFonts = new HashMap<>();
+  private final Map<String, ByteBuffer> fontData = new HashMap<>();
 
   private boolean isVersionNew;
   private long nanovgContext;
@@ -117,14 +126,32 @@ public class NvgRenderer implements Renderer {
   }
 
   private void preRender(Vector2fc windowSize, float pixelRatio) {
-    //    loadFontsToNvg();
-    //    context.getContextData().put(NVG_CONTEXT, nvgContext);
+    loadFontsToNvg();
 
     glDisable(GL_DEPTH_TEST);
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     nvgBeginFrame(nanovgContext, windowSize.x(), windowSize.y(), pixelRatio);
+  }
+
+  private void loadFontsToNvg() {
+    Font.getFonts().forEach(this::loadFont);
+  }
+
+  private void loadFont(Font font) {
+    String fontName = font.path();
+    if (loadedFonts.containsKey(fontName)) {
+      return;
+    }
+    ByteBuffer byteBuffer = IOUtil.resourceAsByteBuffer(fontName);
+    if (byteBuffer == null) {
+      log.error("Failed to load font: {}", fontName);
+      return;
+    }
+    nvgCreateFontMem(nanovgContext, fontName, byteBuffer, false);
+    fontData.put(fontName, byteBuffer);
+    loadedFonts.put(fontName, font);
   }
 
   public void destroy() {

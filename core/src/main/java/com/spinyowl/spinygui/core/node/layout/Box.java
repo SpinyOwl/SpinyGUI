@@ -5,9 +5,7 @@ import org.joml.Vector2f;
 
 @Data
 public final class Box {
-  /**
-   * Rectangle that defines content size and position relative to frame origin (top left corner).
-   */
+  /** Rectangle that defines content size and position relative to parent node coordinate system. */
   private final Rect content = new Rect();
 
   /** Padding edges - adds edges to the content */

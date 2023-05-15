@@ -1,8 +1,6 @@
 package com.spinyowl.spinygui.core.backend.renderer.lwjgl.nanovg;
 
-import static com.spinyowl.spinygui.core.backend.renderer.lwjgl.nanovg.util.NvgRenderUtils.createScissor;
-import static com.spinyowl.spinygui.core.backend.renderer.lwjgl.nanovg.util.NvgRenderUtils.getBorderRadius;
-import static com.spinyowl.spinygui.core.backend.renderer.lwjgl.nanovg.util.NvgRenderUtils.resetScissor;
+import static com.spinyowl.spinygui.core.backend.renderer.lwjgl.nanovg.util.NvgRenderUtils.*;
 import static com.spinyowl.spinygui.core.backend.renderer.lwjgl.nanovg.util.NvgShapes.drawRect;
 import static com.spinyowl.spinygui.core.util.NodeUtilities.visible;
 import static org.lwjgl.nanovg.NanoVG.nvgRestore;

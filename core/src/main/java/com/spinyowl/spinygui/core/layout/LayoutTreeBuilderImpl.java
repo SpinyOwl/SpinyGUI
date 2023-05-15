@@ -65,7 +65,7 @@ public class LayoutTreeBuilderImpl implements LayoutTreeBuilder {
       StyledNode styledNode = styleTreeBuilder.build(beforeElement, List.of());
       LayoutNode childLayoutNode = new LayoutNode(styledNode, layoutNode);
       normalFlowChildren.add(childLayoutNode);
-      updateLayoutNodes(childLayoutNode, layoutNode);
+      updateLayoutNodes(childLayoutNode, childLayoutNode);
     }
   }
 
@@ -84,7 +84,7 @@ public class LayoutTreeBuilderImpl implements LayoutTreeBuilder {
       } else {
         normalFlowChildren.add(childLayoutNode);
       }
-      updateLayoutNodes(childLayoutNode, layoutNode);
+      updateLayoutNodes(childLayoutNode, childLayoutNode);
     }
   }
 

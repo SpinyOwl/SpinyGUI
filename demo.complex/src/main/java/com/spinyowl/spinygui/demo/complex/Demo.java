@@ -118,11 +118,11 @@ public abstract class Demo {
     this.renderer = renderer;
   }
 
-  public void run() {
+  public void start() {
     System.setProperty("joml.nounsafe", Boolean.TRUE.toString());
     System.setProperty("java.awt.headless", Boolean.TRUE.toString());
     initialize();
-    work();
+    run();
     destroy();
   }
 
@@ -272,7 +272,7 @@ public abstract class Demo {
     glfwSetKeyCallback(window, chainKeyCallback);
   }
 
-  private void work() {
+  private void run() {
     glfwMakeContextCurrent(window);
     GLCapabilities glCapabilities = createCapabilities();
 

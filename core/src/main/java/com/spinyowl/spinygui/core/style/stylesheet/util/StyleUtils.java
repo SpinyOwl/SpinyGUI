@@ -158,7 +158,7 @@ public final class StyleUtils {
     }
   }
 
-  public static boolean contains(String termValue, List<String> allowedValues) {
+  public static boolean oneOf(String termValue, List<String> allowedValues) {
     return allowedValues.stream().anyMatch(termValue::equalsIgnoreCase);
   }
 

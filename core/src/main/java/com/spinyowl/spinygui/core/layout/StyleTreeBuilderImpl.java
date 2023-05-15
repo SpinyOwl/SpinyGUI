@@ -8,12 +8,7 @@ import com.spinyowl.spinygui.core.node.pseudo.PseudoElement;
 import com.spinyowl.spinygui.core.parser.StyleSheetParser;
 import com.spinyowl.spinygui.core.parser.impl.ParseException;
 import com.spinyowl.spinygui.core.style.ResolvedStyle;
-import com.spinyowl.spinygui.core.style.stylesheet.Declaration;
-import com.spinyowl.spinygui.core.style.stylesheet.Properties;
-import com.spinyowl.spinygui.core.style.stylesheet.Property;
-import com.spinyowl.spinygui.core.style.stylesheet.PropertyStore;
-import com.spinyowl.spinygui.core.style.stylesheet.Ruleset;
-import com.spinyowl.spinygui.core.style.stylesheet.StyleSheet;
+import com.spinyowl.spinygui.core.style.stylesheet.*;
 import com.spinyowl.spinygui.core.style.stylesheet.selector.simple.AllSelector;
 import com.spinyowl.spinygui.core.style.stylesheet.selector.simple.ElementSelector;
 import java.util.ArrayList;
@@ -24,10 +19,8 @@ import java.util.Map;
 import java.util.Objects;
 import lombok.Data;
 import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 
-@RequiredArgsConstructor
 public class StyleTreeBuilderImpl implements StyleTreeBuilder {
 
   @NonNull private final PropertyStore propertyStore;
@@ -36,7 +29,16 @@ public class StyleTreeBuilderImpl implements StyleTreeBuilder {
   private final Map<Element, StyleData> elementStyleDataMap = new IdentityHashMap<>();
 
   private List<Property> properties;
-  private Ruleset defaultRuleset;
+  private final Map<String, Ruleset> defaultRulesets = new HashMap<>();
+
+  private final Property displayProperty;
+
+  public StyleTreeBuilderImpl(
+      @NonNull PropertyStore propertyStore, @NonNull StyleSheetParser styleSheetParser) {
+    this.propertyStore = propertyStore;
+    this.styleSheetParser = styleSheetParser;
+    this.displayProperty = propertyStore.getProperty(Properties.DISPLAY);
+  }
 
   @Override
   public StyledNode build(Element element, List<StyleSheet> styleSheets) {
@@ -60,13 +62,20 @@ public class StyleTreeBuilderImpl implements StyleTreeBuilder {
           (pseudoElement, pseudoElementRulesets) -> {
             ResolvedStyle pseudoElementResolvedStyle = element.resolvedStyle(pseudoElement);
             setRules(pseudoElementResolvedStyle, pseudoElementRulesets);
-            if ("::before".equals(pseudoElement) || "::after".equals(pseudoElement)) {
-              pseudoElementResolvedStyle.styles().put("content", getContent(pseudoElementRulesets));
-            }
+            putAdditionalStyles(pseudoElement, pseudoElementRulesets, pseudoElementResolvedStyle);
           });
     }
 
     return styledNode;
+  }
+
+  private void putAdditionalStyles(
+      String pseudoElement,
+      List<Ruleset> pseudoElementRulesets,
+      ResolvedStyle pseudoElementResolvedStyle) {
+    if ("::before".equals(pseudoElement) || "::after".equals(pseudoElement)) {
+      pseudoElementResolvedStyle.styles().put("content", getContent(pseudoElementRulesets));
+    }
   }
 
   private void collectElementAndPseudoElementRules(
@@ -86,7 +95,7 @@ public class StyleTreeBuilderImpl implements StyleTreeBuilder {
               .forEach(
                   pseudoElementSelector ->
                       pseudoElementRules
-                          .computeIfAbsent(pseudoElementSelector, k -> newRules())
+                          .computeIfAbsent(pseudoElementSelector, k -> newRules(k))
                           .add(specificRule));
         }
       }
@@ -121,7 +130,11 @@ public class StyleTreeBuilderImpl implements StyleTreeBuilder {
   }
 
   private List<Ruleset> newRules() {
-    return new ArrayList<>(List.of(defaultRuleset()));
+    return new ArrayList<>(List.of(defaultRuleset(null)));
+  }
+
+  private List<Ruleset> newRules(String pseudoElement) {
+    return new ArrayList<>(List.of(defaultRuleset(pseudoElement)));
   }
 
   private Ruleset elementStyleRuleSet(Element element) {
@@ -151,17 +164,44 @@ public class StyleTreeBuilderImpl implements StyleTreeBuilder {
     return new Ruleset(List.of(new ElementSelector("element.style")), declarations);
   }
 
-  public Ruleset defaultRuleset() {
+  public Ruleset defaultRuleset(String pseudoElement) {
     List<Property> propertyStoreProperties = propertyStore.getProperties();
     if (properties == null || !properties.equals(propertyStoreProperties)) {
       properties = List.copyOf(propertyStoreProperties);
-      List<Declaration> collect = new ArrayList<>();
-      for (Property p : properties) {
-        collect.add(new Declaration(p, p.defaultValue()));
-      }
-      defaultRuleset = new Ruleset(List.of(new AllSelector()), collect);
     }
-    return defaultRuleset;
+    return defaultRulesets.computeIfAbsent(
+        rulesetKey(pseudoElement),
+        key -> {
+          List<Declaration> collect = new ArrayList<>();
+          Map<Property, Term<?>> declarations = declarations(pseudoElement, properties);
+          declarations.entrySet().stream()
+              .map(e -> new Declaration(e.getKey(), e.getValue()))
+              .forEach(collect::add);
+          return new Ruleset(List.of(new AllSelector()), collect);
+        });
+  }
+
+  private static String rulesetKey(String pseudoElement) {
+    return pseudoElement == null ? "" : pseudoElement;
+  }
+
+  public Map<Property, Term<?>> declarations(String pseudoElement, List<Property> properties) {
+    HashMap<Property, Term<?>> map = new HashMap<>();
+    for (Property property : properties) {
+      map.put(property, property.defaultValue());
+    }
+
+    if (pseudoElement != null) {
+      overrideDeclarations(map, pseudoElement);
+    }
+
+    return map;
+  }
+
+  private void overrideDeclarations(HashMap<Property, Term<?>> map, String pseudoElement) {
+    //    if ("::before".equals(pseudoElement) || "::after".equals(pseudoElement)) {
+    //      map.put(displayProperty, new TermIdent("inline"));
+    //    }
   }
 
   @Data

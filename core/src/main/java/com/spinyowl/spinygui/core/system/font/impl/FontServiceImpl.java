@@ -1,13 +1,6 @@
 package com.spinyowl.spinygui.core.system.font.impl;
 
-import static org.lwjgl.stb.STBTruetype.STBTT_MS_EID_UNICODE_BMP;
-import static org.lwjgl.stb.STBTruetype.STBTT_MS_LANG_ENGLISH;
-import static org.lwjgl.stb.STBTruetype.STBTT_PLATFORM_ID_MICROSOFT;
-import static org.lwjgl.stb.STBTruetype.stbtt_GetCodepointHMetrics;
-import static org.lwjgl.stb.STBTruetype.stbtt_GetFontNameString;
-import static org.lwjgl.stb.STBTruetype.stbtt_ScaleForMappingEmToPixels;
-import static org.lwjgl.stb.STBTruetype.stbtt_ScaleForPixelHeight;
-import static org.slf4j.LoggerFactory.getLogger;
+import static org.lwjgl.stb.STBTruetype.*;
 
 import com.spinyowl.spinygui.core.font.Font;
 import com.spinyowl.spinygui.core.font.FontStretch;
@@ -26,14 +19,21 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.lwjgl.stb.STBTTFontinfo;
 import org.lwjgl.stb.STBTruetype;
 import org.lwjgl.system.MemoryStack;
-import org.slf4j.Logger;
 
+// TODO
+//  1. Need to rewrite font service to return all the required data for renderer.
+//  2. As well it is important to take into consideration "pre" styles.
+//  3. Additional point is to add cacheing for calling service with the same parameters.
+//  4. Need to take into consideration word-wrap, word-break and white-space styles.
+//  5. As well we should set normal line-height for font = (abs(ascent) + abs(descent) + gap) *
+// scale_factor.
+@Slf4j
 @RequiredArgsConstructor
 public class FontServiceImpl implements FontService {
-  private static final Logger LOG = getLogger(FontServiceImpl.class);
 
   private static final String SUBINDEX_SPLIT_REGEX = "\\s+";
   private static final String SUBFEATURE_SPLIT_REGEX = "(?=\\p{Upper})";
@@ -83,8 +83,8 @@ public class FontServiceImpl implements FontService {
       }
     }
 
-    if (LOG.isInfoEnabled()) {
-      LOG.info(
+    if (log.isInfoEnabled()) {
+      log.info(
           "Font [ {} | {} ] loaded successfully from '{}'",
           fontFamily,
           Arrays.toString(fontFeatures),
@@ -123,6 +123,8 @@ public class FontServiceImpl implements FontService {
     if (maxWidth < 0.1) {
       TextMetrics.builder().height(0).fullLineHeight(0).build();
     }
+
+    text = text.trim().replaceAll("\\s+", " ");
 
     STBTTFontinfo fontInfo = getFontInfo(font.path());
     try (MemoryStack stack = MemoryStack.stackPush()) {
@@ -176,8 +178,7 @@ public class FontServiceImpl implements FontService {
                   .build());
 
           lineCount++;
-          textLineMetrics =
-              TextLineMetrics.builder().height(fullLineHeight).width(lineWidth - lastSpaceWidth);
+          textLineMetrics = TextLineMetrics.builder();
 
           lineStart = lineEnd;
           lineWidth = lineWidth - lastSpaceWidth;
@@ -186,6 +187,7 @@ public class FontServiceImpl implements FontService {
 
         lineWidth += charWidth;
       }
+      lineEnd = textLength;
       textMetrics.line(
           textLineMetrics
               .characters(text.subSequence(lineStart, lineEnd))
@@ -239,8 +241,7 @@ public class FontServiceImpl implements FontService {
             STBTT_MS_LANG_ENGLISH,
             i);
     if (name != null) {
-      int capacity = name.capacity();
-      byte[] bytes = new byte[capacity];
+      byte[] bytes = new byte[name.capacity()];
       name.get(bytes);
       info = new String(bytes, StandardCharsets.UTF_16);
     }
@@ -256,21 +257,6 @@ public class FontServiceImpl implements FontService {
     STBTTFontinfo stbttFontinfo = STBTTFontinfo.create();
     if (fontData == null || !STBTruetype.stbtt_InitFont(stbttFontinfo, fontData)) {
       throw new FontLoadingException("Failed to load font from '%s'".formatted(fontPath));
-    }
-
-    for (int i = 0; i < 25; i++) {
-      ByteBuffer name =
-          stbtt_GetFontNameString(
-              stbttFontinfo,
-              STBTT_PLATFORM_ID_MICROSOFT,
-              STBTT_MS_EID_UNICODE_BMP,
-              STBTT_MS_LANG_ENGLISH,
-              i);
-      // bytebuffer to string
-      if (name != null) {
-        byte[] bytes = new byte[name.capacity()];
-        name.get(bytes);
-      }
     }
 
     return stbttFontinfo;

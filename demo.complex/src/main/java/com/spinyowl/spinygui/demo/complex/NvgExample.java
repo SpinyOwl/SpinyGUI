@@ -16,12 +16,11 @@ public class NvgExample extends Demo {
 
   public static void main(String[] args) {
     Demo demo = new NvgExample();
-    demo.run();
+    demo.start();
   }
 
   @Override
   protected Frame createGuiElements(int width, int height) {
-    // language=html
     String xml = getXml();
     String styles = getFlexCss();
 
@@ -36,44 +35,6 @@ public class NvgExample extends Demo {
     return frame;
   }
 
-  private String getAbsoluteCss() {
-    // language=CSS
-    return """
-winframe,
-winframe * {
-  border: 8px solid #8c8c8c;
-  box-sizing: border-box; /* default behaviour */
-  overflow: scroll; /* default behaviour */
-}
-winframe:hover,
-winframe *:hover {
-  border: 8px solid #fc3131;
-}
-winframe {
-  background-color: green;
-  padding: 20px;
-  flex-direction: column;
-}
-
-.text {
-  display: block;
-  overflow: auto;
-  height: 90px;
-  font-size: 16px;
-  border-color: #45AAFF;
-}
-
-#t2 {
-  position: absolute;
-  bottom: 10px;
-  top: 10px;
-  height: auto;
-  background-color: rgba(190,200,255,.8);
-  border-color: rgba(190,200,255,.8) rgba(90,200,255,.8);
-}
-""";
-  }
-
   private String getFlexCss() {
     // language=css
     return """
@@ -82,6 +43,7 @@ winframe * {
   border: 8px solid #8c8c8c;
   box-sizing: border-box; /* default behaviour */
   overflow: hidden; /* default behaviour */
+ font-weight: 300;
 }
 winframe::scrollbar {
   width: 8px;
@@ -98,8 +60,12 @@ winframe *:hover {
 #t2 {
   width: 500px;
 }
+#t2::before {
+  content: "Before #t2 text!";
+  background-color: yellow;
+}
 #t2::after {
-  content: "Hello world!";
+  content: "After #t2 text!";
   background-color: orange;
 }
 """;
@@ -115,7 +81,7 @@ winframe *:hover {
       <div class="c12">c12</div>
     </div>
     <div class="text">
-      Hello world. Lorem ipsum dolor.
+      Hello world 1. Lorem ipsum dolor.
       Hello world. Lorem ipsum dolor.
       Hello world. Lorem ipsum dolor.s
       Hello World
@@ -124,9 +90,11 @@ winframe *:hover {
     <div class='twrapper' style="border-color: pink">
       <div class='twrapper' style="border-color: blue">
         <div class="text" id='t2' style="border-color: black">
-          Hello world. Lorem ipsum dolor. Hello world A. Lorem ipsum dolor. Hello world. Lorem ipsum dolor. Hello world A. Lorem ipsum dolor.
-          <div>Hello world B. Lorem ipsum dolor.</div>
-          Hello world. Lorem ipsum dolor. Hello world A. Lorem ipsum dolor. Hello world. Lorem ipsum dolor. Hello world A. Lorem ipsum dolor.
+          Hello world 2. Lorem ipsum dolor. Hello world A. Lorem ipsum dolor. Hello world. Lorem ipsum dolor. Hello world A. Lorem ipsum dolor.
+          <div style='display: none'>Hello world 3. Lorem ipsum dolor.</div>
+          Hello world 4. Lorem ipsum dolor. Hello world A. Lorem ipsum dolor. Hello world. Lorem ipsum dolor. Hello world A. Lorem ipsum dolor.
+          <div>Hello world 5. Lorem ipsum dolor.</div>
+          Hello world 6. Lorem ipsum dolor. Hello world A. Lorem ipsum dolor. Hello world. Lorem ipsum dolor. Hello world A. Lorem ipsum dolor.
         </div>
       </div>
     </div>

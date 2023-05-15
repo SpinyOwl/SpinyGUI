@@ -6,7 +6,7 @@ import static com.spinyowl.spinygui.core.style.stylesheet.Properties.BORDER_RIGH
 import static com.spinyowl.spinygui.core.style.stylesheet.Properties.BORDER_TOP_WIDTH;
 import static com.spinyowl.spinygui.core.style.stylesheet.Properties.BORDER_WIDTH;
 import static com.spinyowl.spinygui.core.style.stylesheet.Property.checkValue;
-import static com.spinyowl.spinygui.core.style.stylesheet.util.StyleUtils.contains;
+import static com.spinyowl.spinygui.core.style.stylesheet.util.StyleUtils.oneOf;
 
 import com.spinyowl.spinygui.core.style.stylesheet.Property;
 import com.spinyowl.spinygui.core.style.stylesheet.PropertyProvider;
@@ -54,8 +54,7 @@ public class BorderWidthPropertyProvider implements PropertyProvider {
                 (term, styles) ->
                     extractOne(term).ifPresent(l -> styles.put(BORDER_BOTTOM_WIDTH, l)))
             .validator(
-                checkValue(TermIdent.class, v -> contains(v, VALUES))
-                    .or(TermLength.class::isInstance))
+                checkValue(TermIdent.class, v -> oneOf(v, VALUES)).or(TermLength.class::isInstance))
             .build(),
         Property.builder()
             .name(BORDER_LEFT_WIDTH)
@@ -64,8 +63,7 @@ public class BorderWidthPropertyProvider implements PropertyProvider {
             .updater(
                 (term, styles) -> extractOne(term).ifPresent(l -> styles.put(BORDER_LEFT_WIDTH, l)))
             .validator(
-                checkValue(TermIdent.class, v -> contains(v, VALUES))
-                    .or(TermLength.class::isInstance))
+                checkValue(TermIdent.class, v -> oneOf(v, VALUES)).or(TermLength.class::isInstance))
             .build(),
         Property.builder()
             .name(BORDER_RIGHT_WIDTH)
@@ -75,8 +73,7 @@ public class BorderWidthPropertyProvider implements PropertyProvider {
                 (term, styles) ->
                     extractOne(term).ifPresent(l -> styles.put(BORDER_RIGHT_WIDTH, l)))
             .validator(
-                checkValue(TermIdent.class, v -> contains(v, VALUES))
-                    .or(TermLength.class::isInstance))
+                checkValue(TermIdent.class, v -> oneOf(v, VALUES)).or(TermLength.class::isInstance))
             .build(),
         Property.builder()
             .name(BORDER_TOP_WIDTH)
@@ -85,8 +82,7 @@ public class BorderWidthPropertyProvider implements PropertyProvider {
             .updater(
                 (term, styles) -> extractOne(term).ifPresent(l -> styles.put(BORDER_TOP_WIDTH, l)))
             .validator(
-                checkValue(TermIdent.class, v -> contains(v, VALUES))
-                    .or(TermLength.class::isInstance))
+                checkValue(TermIdent.class, v -> oneOf(v, VALUES)).or(TermLength.class::isInstance))
             .build());
   }
 
@@ -130,7 +126,7 @@ public class BorderWidthPropertyProvider implements PropertyProvider {
   }
 
   public static boolean validateOne(Term<?> term) {
-    return term instanceof TermIdent termIdent && contains(termIdent.value(), VALUES)
+    return term instanceof TermIdent termIdent && oneOf(termIdent.value(), VALUES)
         || term instanceof TermLength;
   }
 }

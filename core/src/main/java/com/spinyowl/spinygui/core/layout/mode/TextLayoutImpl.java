@@ -1,5 +1,7 @@
 package com.spinyowl.spinygui.core.layout.mode;
 
+import static com.spinyowl.spinygui.core.layout.mode.LayoutUtils.getParentBox;
+
 import com.google.common.collect.Iterables;
 import com.spinyowl.spinygui.core.font.Font;
 import com.spinyowl.spinygui.core.font.FontStyle;
@@ -27,7 +29,7 @@ public class TextLayoutImpl implements TextLayout {
   public void layout(LayoutNode layoutNode, LayoutContext context) {
     if (!(layoutNode.node() instanceof Text text)) return;
 
-    Element parent = text.parent();
+    Element parent = text.offsetParent();
     if (parent == null) return;
 
     Float fontSize = StyleUtils.getFontSize(text);
@@ -46,7 +48,7 @@ public class TextLayoutImpl implements TextLayout {
         fontService.getFirstAvailableFont(Font.findFonts(fontFamilies, fontStyle, fontWeight));
 
     // get width of parent node.
-    Box parentBox = parent.box();
+    Box parentBox = getParentBox(text);
     Rect parentContent = parentBox.content();
     float parentWidth = parentContent.width();
 
@@ -59,14 +61,18 @@ public class TextLayoutImpl implements TextLayout {
     if (context.lastTextEndY() != null) {
       startY = context.lastTextEndY();
     } else if (context.previousNode() != null) {
+      Rect previousNodeBorder = context.previousNode().box().borderBox();
       startY =
-          context.previousNode().box().borderBox().height()
-              + context.previousNode().box().borderBox().y();
+          previousNodeBorder.height()
+              + previousNodeBorder.y()
+              - parentBox.border().top()
+              - parentBox.padding().top();
     }
 
     TextMetrics metrics =
         fontService.getTextMetrics(
             text.content(), startX, fontToUse, fontSize, lineHeight, parentWidth, false);
+    text.metrics(metrics);
 
     text.textStartX(startX);
     text.textStartY(startY);
@@ -100,5 +106,4 @@ public class TextLayoutImpl implements TextLayout {
     context.lastTextEndY(lastTextEndY);
     context.lastBlockBottomY(text.box().borderBox().y() + text.box().borderBox().height());
   }
-
 }

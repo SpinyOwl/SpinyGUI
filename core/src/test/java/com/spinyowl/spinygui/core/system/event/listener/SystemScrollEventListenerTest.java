@@ -1,6 +1,7 @@
 package com.spinyowl.spinygui.core.system.event.listener;
 
 import static com.spinyowl.spinygui.core.node.NodeBuilder.frame;
+import static com.spinyowl.spinygui.core.style.stylesheet.Properties.FONT_SIZE;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
@@ -11,6 +12,7 @@ import com.spinyowl.spinygui.core.event.processor.EventProcessor;
 import com.spinyowl.spinygui.core.input.MouseService;
 import com.spinyowl.spinygui.core.input.MouseService.CursorPositions;
 import com.spinyowl.spinygui.core.node.Frame;
+import com.spinyowl.spinygui.core.style.types.length.Length;
 import com.spinyowl.spinygui.core.system.event.SystemScrollEvent;
 import com.spinyowl.spinygui.core.time.TimeService;
 import org.joml.Vector2f;
@@ -46,6 +48,7 @@ class SystemScrollEventListenerTest {
   void process_generatesScrollEvent() {
     Frame frame = new Frame();
     frame.box().contentSize(100, 100);
+    frame.resolvedStyle().styles().put(FONT_SIZE, Length.pixel(16));
 
     Vector2f current = new Vector2f(10, 10);
     CursorPositions cursorPositions = new CursorPositions(current, current);
