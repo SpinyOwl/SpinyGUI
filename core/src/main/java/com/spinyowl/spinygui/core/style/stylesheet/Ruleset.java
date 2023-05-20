@@ -14,7 +14,7 @@ import lombok.NonNull;
  * by those selectors.
  */
 @Data
-public class RuleSet {
+public class Ruleset {
 
   @NonNull private List<Selector> selectors;
   @NonNull private List<Declaration> declarations;

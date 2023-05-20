@@ -63,7 +63,7 @@ public class Element extends Node implements EventTarget {
    * Used to store all resolved styles by style engine (from defaults, stylesheets and element style
    * attribute).
    */
-  private final ResolvedStyle resolvedStyle = new ResolvedStyle(this);
+  private final ResolvedStyle resolvedStyle = new ResolvedStyle();
 
   /** Node attributes. */
   @Setter(AccessLevel.NONE)

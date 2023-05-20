@@ -5,6 +5,10 @@ import lombok.EqualsAndHashCode;
 
 @EqualsAndHashCode
 public class TermIdent extends Term<String> {
+
+  public static final TermIdent INHERIT = new TermIdent("inherit");
+  public static final TermIdent INITIAL = new TermIdent("initial");
+
   public TermIdent(String value) {
     super(value);
   }

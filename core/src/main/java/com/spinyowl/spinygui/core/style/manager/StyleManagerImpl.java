@@ -7,7 +7,7 @@ import com.spinyowl.spinygui.core.parser.impl.ParseException;
 import com.spinyowl.spinygui.core.style.stylesheet.Declaration;
 import com.spinyowl.spinygui.core.style.stylesheet.Property;
 import com.spinyowl.spinygui.core.style.stylesheet.PropertyStore;
-import com.spinyowl.spinygui.core.style.stylesheet.RuleSet;
+import com.spinyowl.spinygui.core.style.stylesheet.Ruleset;
 import com.spinyowl.spinygui.core.style.stylesheet.StyleSheet;
 import com.spinyowl.spinygui.core.style.stylesheet.selector.simple.AllSelector;
 import com.spinyowl.spinygui.core.style.stylesheet.selector.simple.ElementSelector;
@@ -24,8 +24,8 @@ import org.apache.commons.lang3.StringUtils;
 @RequiredArgsConstructor
 public class StyleManagerImpl implements StyleManager {
 
-  private static final RuleSet EMPTY_RULE_SET =
-      new RuleSet(List.of(new ElementSelector("element")), List.of());
+  private static final Ruleset EMPTY_RULE_SET =
+      new Ruleset(List.of(new ElementSelector("element")), List.of());
 
   @NonNull private final PropertyStore propertyStore;
   @NonNull private final StyleSheetParser styleSheetParser;
@@ -33,31 +33,38 @@ public class StyleManagerImpl implements StyleManager {
   private final Map<Element, StyleData> elementStyleDataMap = new IdentityHashMap<>();
 
   private List<Property> properties;
-  private RuleSet defaultRuleSet;
+  private Ruleset defaultRuleset;
 
   public void recalculate(Frame frame) {
     updateStyles(frame, frame.styleSheets());
+    resolveStyles(frame);
+  }
+
+  private void resolveStyles(Element element) {
+    List<Ruleset> rules = element.resolvedStyle().rules();
+    rules.forEach(rs -> rs.declarations().forEach(declaration -> declaration.apply(element)));
+    element.children().forEach(this::resolveStyles);
   }
 
   private void updateStyles(Element element, List<StyleSheet> styleSheets) {
-    List<RuleSet> ruleSets = new ArrayList<>();
+    List<Ruleset> rulesets = new ArrayList<>();
     // Initializing with default rule sets.
-    ruleSets.add(defaultRuleSet());
+    rulesets.add(defaultRuleset());
     // find all rule sets applicable to element.
     for (StyleSheet styleSheet : styleSheets) {
-      ruleSets.addAll(styleSheet.searchSpecificRules(element));
+      rulesets.addAll(styleSheet.searchSpecificRules(element));
     }
     // at the end we need to add styles specified in "style" attribute.
-    ruleSets.add(elementStyleRuleSet(element));
+    rulesets.add(elementStyleRuleSet(element));
 
-    element.resolvedStyle().rules(ruleSets);
+    element.resolvedStyle().rules(rulesets);
 
     element.children().forEach(child -> updateStyles(child, styleSheets));
   }
 
-  private RuleSet elementStyleRuleSet(Element element) {
+  private Ruleset elementStyleRuleSet(Element element) {
     StyleData styleData = elementStyleDataMap.computeIfAbsent(element, e -> new StyleData());
-    RuleSet ruleSet;
+    Ruleset ruleSet;
     if (!Objects.equals(styleData.style(), element.style()) || styleData.styleRuleset() == null) {
       try {
         String style = element.style();
@@ -67,7 +74,7 @@ public class StyleManagerImpl implements StyleManager {
         } else {
           declarations = styleSheetParser.parseDeclarations(style);
         }
-        ruleSet = new RuleSet(List.of(new ElementSelector("element")), declarations);
+        ruleSet = new Ruleset(List.of(new ElementSelector("element")), declarations);
 
       } catch (ParseException e) {
         ruleSet = styleData.styleRuleset == null ? EMPTY_RULE_SET : styleData.styleRuleset;
@@ -81,7 +88,7 @@ public class StyleManagerImpl implements StyleManager {
     return ruleSet;
   }
 
-  public RuleSet defaultRuleSet() {
+  public Ruleset defaultRuleset() {
     List<Property> propertyStoreProperties = propertyStore.getProperties();
     if (properties == null || !properties.equals(propertyStoreProperties)) {
       properties = List.copyOf(propertyStoreProperties);
@@ -89,14 +96,14 @@ public class StyleManagerImpl implements StyleManager {
       for (Property p : properties) {
         collect.add(new Declaration(p, p.defaultValue()));
       }
-      defaultRuleSet = new RuleSet(List.of(new AllSelector()), collect);
+      defaultRuleset = new Ruleset(List.of(new AllSelector()), collect);
     }
-    return defaultRuleSet;
+    return defaultRuleset;
   }
 
   @Data
   private static class StyleData {
     private String style;
-    private RuleSet styleRuleset;
+    private Ruleset styleRuleset;
   }
 }

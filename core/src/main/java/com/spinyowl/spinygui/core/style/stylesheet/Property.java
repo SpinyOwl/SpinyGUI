@@ -1,5 +1,8 @@
 package com.spinyowl.spinygui.core.style.stylesheet;
 
+import static com.spinyowl.spinygui.core.style.stylesheet.term.TermIdent.INHERIT;
+import static com.spinyowl.spinygui.core.style.stylesheet.term.TermIdent.INITIAL;
+
 import com.spinyowl.spinygui.core.node.Element;
 import com.spinyowl.spinygui.core.style.stylesheet.term.TermIdent;
 import java.util.Map;
@@ -15,16 +18,13 @@ import lombok.extern.slf4j.Slf4j;
 
 /**
  * Root class that describes property. Should be used to create new classes which implement {@link
- * Property#compute(Element, Term, Map)} )}}.
+ * Property#apply(Element, Term)} )}}.
  */
 @Slf4j
 @Getter
 @SuperBuilder
 @RequiredArgsConstructor(access = AccessLevel.PROTECTED)
 public class Property {
-
-  public static final TermIdent INHERIT = new TermIdent("inherit");
-  public static final TermIdent INITIAL = new TermIdent("initial");
 
   /** Name of css property. */
   @NonNull protected String name;
@@ -34,7 +34,7 @@ public class Property {
    *
    * <ul>
    *   <li>element is root element in element tree.
-   *   <li>element value is {@link Property#INITIAL}
+   *   <li>element value is {@link TermIdent#INITIAL}
    *   <li>there was an issue during computing value using value extractor - treats as no property
    *       specified in style.
    * </ul>
@@ -54,7 +54,6 @@ public class Property {
   protected boolean inheritable;
 
   /** Defines if css property could be animated. */
-  @SuppressWarnings({"squid:S1845", "squid:S1135"}) // TODO: fix with builder pattern
   protected boolean animatable;
 
   /** Used to compute value from term and update style map with it. */
@@ -69,17 +68,31 @@ public class Property {
   /**
    * Creates validator that checks if term is instance of specified class and if so, casts to this
    * class and applies provided predicate.
+   *
+   * @param clazz class to check.
+   * @param predicate predicate to apply.
+   * @return validator.
    */
   public static <T> Validator checkValue(Class<? extends Term<T>> clazz, Predicate<T> predicate) {
     return term -> clazz.isInstance(term) && predicate.test(clazz.cast(term).value);
   }
 
-  /** Casts term to provided term class and applies function to it's value */
+  /** Casts term to provided term class and applies function to its value. */
   public static <T, O> O convert(
       Term<?> term, Class<? extends Term<T>> clazz, Function<T, O> function) {
     return function.apply(clazz.cast(term).value());
   }
 
+  /**
+   * Creates conditional updater that checks if term is instance of specified class and if so, casts
+   * to this class and applies provided function.
+   *
+   * @param name name of property.
+   * @param clazz class of term.
+   * @param predicate predicate to check term value.
+   * @param function function to apply to term value.
+   * @return updater.
+   */
   public static <T> Updater put(
       String name,
       Class<? extends Term<T>> clazz,
@@ -92,7 +105,14 @@ public class Property {
     };
   }
 
-  /** Checks if term is instance of specified class and if so, updates style with term value. */
+  /**
+   * Creates conditional updater that checks if term is instance of specified class and if so,
+   * updates style with term value.
+   *
+   * @param name name of property.
+   * @param clazz class of term.
+   * @return updater.
+   */
   public static <T> Updater put(String name, Class<? extends Term<T>> clazz) {
     return (term, styles) -> {
       if (clazz.isInstance(term)) styles.put(name, term.value());
@@ -100,8 +120,14 @@ public class Property {
   }
 
   /**
-   * Checks if term is instance of specified class and if so, casts to this class and applies
-   * provided function to its value. The result is used to update style map with specified name.
+   * Creates conditional updater that checks if term is instance of specified class and if so, casts
+   * to this class and applies provided function to its value. The result is used to update style
+   * map with specified name.
+   *
+   * @param name name of property.
+   * @param clazz class of term.
+   * @param function function to apply to term value.
+   * @return updater.
    */
   public static <T> Updater put(
       String name, Class<? extends Term<T>> clazz, Function<T, ?> function) {
@@ -116,8 +142,8 @@ public class Property {
    * @param element element to update calculated style.
    * @param value string representation of css property value.
    */
-  public void compute(
-      @NonNull Element element, Term<?> value, @NonNull Map<String, Object> styles) {
+  public void apply(@NonNull Element element, Term<?> value) {
+    @NonNull Map<String, Object> styles = element.resolvedStyle().styles();
     if (value == null) {
       computeAbsent(element, styles);
     } else if (INITIAL.equals(value)) {
@@ -167,9 +193,11 @@ public class Property {
     }
   }
 
+  /** Used to compute value from term and update style map with it. */
   @FunctionalInterface
   public interface Updater extends BiConsumer<Term<?>, Map<String, Object>> {
 
+    /** Creates updater from {@link BiConsumer}. */
     static Updater from(BiConsumer<Term<?>, Map<String, Object>> biConsumer) {
       return biConsumer::accept;
     }
@@ -195,6 +223,7 @@ public class Property {
     }
   }
 
+  /** Validator used to check if term is valid for this property. */
   @FunctionalInterface
   public interface Validator extends Predicate<Term<?>> {
     static Validator from(Predicate<Term<?>> predicate) {

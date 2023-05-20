@@ -1,7 +1,7 @@
 package com.spinyowl.spinygui.core.parser;
 
 import com.spinyowl.spinygui.core.style.stylesheet.Declaration;
-import com.spinyowl.spinygui.core.style.stylesheet.RuleSet;
+import com.spinyowl.spinygui.core.style.stylesheet.Ruleset;
 import com.spinyowl.spinygui.core.style.stylesheet.StyleSheet;
 import java.util.List;
 
@@ -14,7 +14,7 @@ public interface StyleSheetParser {
 
   String toCss(StyleSheet styleSheet);
 
-  String toCss(RuleSet ruleSet);
+  String toCss(Ruleset ruleSet);
 
   String toCss(Declaration declaration);
 }

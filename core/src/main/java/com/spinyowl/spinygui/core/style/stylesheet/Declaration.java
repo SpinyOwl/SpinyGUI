@@ -1,10 +1,9 @@
 package com.spinyowl.spinygui.core.style.stylesheet;
 
-import static com.spinyowl.spinygui.core.style.stylesheet.Property.INHERIT;
-import static com.spinyowl.spinygui.core.style.stylesheet.Property.INITIAL;
+import static com.spinyowl.spinygui.core.style.stylesheet.term.TermIdent.INHERIT;
+import static com.spinyowl.spinygui.core.style.stylesheet.term.TermIdent.INITIAL;
 
 import com.spinyowl.spinygui.core.node.Element;
-import java.util.Map;
 import lombok.Data;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +25,12 @@ public class Declaration {
     this.term = term;
   }
 
+  public void apply(Element element) {
+    if (enabled) {
+      property.apply(element, term);
+    }
+  }
+
   /** Used to reset property value to default. */
   public void resetToDefault() {
     this.term = property.defaultValue();
@@ -39,10 +44,6 @@ public class Declaration {
   @SuppressWarnings("squid:S2159")
   public boolean isInherit() {
     return INHERIT.equals(term);
-  }
-
-  public void compute(Element element, Map<String, Object> styles) {
-    property.compute(element, term, styles);
   }
 
   @Override

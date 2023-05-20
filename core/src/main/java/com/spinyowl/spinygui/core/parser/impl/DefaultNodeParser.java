@@ -37,7 +37,7 @@ public final class DefaultNodeParser implements NodeParser {
       List.of(
           "area", "base", "br", "col", "embed", "hr", "img", "input", "keygen", "link", "meta",
           "param", "source", "track", "wbr");
-  private static final String INDENT_AMOUNT = "{http://xml.apache.org/xslt}indent-amount";
+  private static final String INDENT_AMOUNT = "indent_amount";
 
   /**
    * Used to convert node tree to xml.
