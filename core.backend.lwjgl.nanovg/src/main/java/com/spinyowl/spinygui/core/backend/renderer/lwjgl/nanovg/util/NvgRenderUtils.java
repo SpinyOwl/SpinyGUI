@@ -183,7 +183,7 @@ public final class NvgRenderUtils {
    * @param node node.
    */
   public static void createScissor(long context, Node node) {
-    createScissorByParent(context, node.layoutParent());
+    createScissorByParent(context, node.offsetParent());
   }
 
   /**
@@ -200,7 +200,7 @@ public final class NvgRenderUtils {
 
     while (current != null) {
       parents.add(current);
-      current = current.layoutParent();
+      current = current.offsetParent();
     }
 
     if (!parents.isEmpty()) {
