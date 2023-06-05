@@ -9,7 +9,7 @@ dependencies {
     api project(':core.backend')
     api project(':core.backend.lwjgl.nanovg')
 
-    api group: 'com.spinyowl', name: 'cbchain', version: '1.0.1';
+    api group: 'com.spinyowl', name: 'cbchain', version: '1.0.2';
 
     api group: 'org.slf4j', name: 'slf4j-api', version: slf4j_version
     api group: 'ch.qos.logback', name: 'logback-classic', version: logback_version
