@@ -1,5 +1,6 @@
-// Generated from java-escape by ANTLR 4.11.1
+// Generated from com\spinyowl\spinygui\core\parser\impl\css\antlr\CSS3.g4 by ANTLR 4.13.0
 package com.spinyowl.spinygui.core.parser.impl.css.antlr;
+
 import org.antlr.v4.runtime.tree.AbstractParseTreeVisitor;
 
 /**
