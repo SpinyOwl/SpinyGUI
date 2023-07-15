@@ -48,6 +48,8 @@ java {
     withSourcesJar()
 }
 
+sourcesJar.dependsOn generateGrammarSource
+
 generateGrammarSource {
     arguments = [
             "-listener",
