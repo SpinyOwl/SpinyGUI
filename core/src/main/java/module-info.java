@@ -42,7 +42,7 @@ open module com.spinyowl.spinygui.core {
   exports com.spinyowl.spinygui.core.style.stylesheet.property;
   exports com.spinyowl.spinygui.core.style.stylesheet.selector;
   exports com.spinyowl.spinygui.core.style.stylesheet.selector.combinator;
-  exports com.spinyowl.spinygui.core.style.stylesheet.selector.pseudo_class;
+  exports com.spinyowl.spinygui.core.style.stylesheet.selector.pseudoclass;
   exports com.spinyowl.spinygui.core.style.stylesheet.selector.simple;
   exports com.spinyowl.spinygui.core.style.stylesheet.term;
   exports com.spinyowl.spinygui.core.style.stylesheet.util;

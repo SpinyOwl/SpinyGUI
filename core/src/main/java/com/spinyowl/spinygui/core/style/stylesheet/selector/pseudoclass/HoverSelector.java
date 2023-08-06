@@ -1,4 +1,4 @@
-package com.spinyowl.spinygui.core.style.stylesheet.selector.pseudo_class;
+package com.spinyowl.spinygui.core.style.stylesheet.selector.pseudoclass;
 
 import com.spinyowl.spinygui.core.node.Element;
 import com.spinyowl.spinygui.core.style.stylesheet.selector.PseudoClassSelector;

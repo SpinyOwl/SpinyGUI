@@ -19,4 +19,9 @@ public class AndSelector extends CombinatorSelector {
   public String toString() {
     return "" + first + second;
   }
+
+  @Override
+  public boolean appliesToPseudoElement() {
+    return first.appliesToPseudoElement() || second.appliesToPseudoElement();
+  }
 }

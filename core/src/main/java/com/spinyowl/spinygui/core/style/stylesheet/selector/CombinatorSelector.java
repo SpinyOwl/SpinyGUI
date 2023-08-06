@@ -16,4 +16,9 @@ public abstract class CombinatorSelector implements Selector {
   public Specificity specificity() {
     return first.specificity().add(second.specificity());
   }
+
+  @Override
+  public boolean appliesToPseudoElement() {
+    return first.appliesToPseudoElement() && second().appliesToPseudoElement();
+  }
 }

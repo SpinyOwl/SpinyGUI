@@ -18,6 +18,7 @@ public class SystemEventListenerProviderImpl implements SystemEventListenerProvi
    * @return system event listener that correspond to specified system event class.
    */
   @Override
+  @SuppressWarnings("unchecked")
   public <E extends SystemEvent> SystemEventListener<E> listener(Class<E> eventClass) {
     return (SystemEventListener<E>) listenerMap.get(eventClass);
   }

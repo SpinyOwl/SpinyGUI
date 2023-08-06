@@ -37,7 +37,7 @@ public final class DefaultNodeParser implements NodeParser {
       List.of(
           "area", "base", "br", "col", "embed", "hr", "img", "input", "keygen", "link", "meta",
           "param", "source", "track", "wbr");
-  private static final String INDENT_AMOUNT = "indent_amount";
+  private static final String INDENT_AMOUNT = "{http://xml.apache.org/xslt}indent-amount";
 
   /**
    * Used to convert node tree to xml.
@@ -71,7 +71,7 @@ public final class DefaultNodeParser implements NodeParser {
       var documentBuilder = documentBuilderFactory.newDocumentBuilder();
 
       var inputSource = new InputSource();
-      inputSource.setCharacterStream(new StringReader((xml)));
+      inputSource.setCharacterStream(new StringReader(xml));
       var document = documentBuilder.parse(inputSource);
 
       return createNodeFromContent(document.getDocumentElement(), new NodeConverterContext());
@@ -153,14 +153,14 @@ public final class DefaultNodeParser implements NodeParser {
   }
 
   private static Node createNodeFromContent(org.w3c.dom.Node node, NodeConverterContext context) {
-    if (node instanceof org.w3c.dom.Text text) {
+    if (node instanceof org.w3c.dom.Element element) {
+      return createNodeFromElement(element, context);
+    } else if (node instanceof org.w3c.dom.Text text) {
       String wholeText = text.getWholeText().trim();
       if (wholeText.isEmpty()) {
         return null;
       }
       return new Text(wholeText);
-    } else if (node instanceof org.w3c.dom.Element element) {
-      return createNodeFromElement(element, context);
     } else {
       if (log.isWarnEnabled()) {
         log.warn(

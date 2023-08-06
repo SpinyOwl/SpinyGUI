@@ -31,7 +31,7 @@ import org.joml.Vector2f;
  */
 @Getter
 @Setter
-@ToString(exclude = {"parent", "nextSibling", "previousSibling", "layoutParent"})
+@ToString(exclude = {"parent", "nextSibling", "previousSibling", "offsetParent"})
 @RequiredArgsConstructor
 public abstract class Node {
 
