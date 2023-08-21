@@ -1,9 +1,6 @@
 package com.spinyowl.spinygui.core.font;
 
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import lombok.Data;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -66,20 +63,28 @@ public class Font {
       if (log.isWarnEnabled()) {
         log.warn("Font '{}' will be replaced.", font.fontFamily());
       }
-      fonts.removeAll(getFonts(font.fontFamily, font.style, font.weight, font.stretch));
+      fonts.removeAll(find(font.fontFamily, font.style, font.weight, font.stretch));
     }
     fonts.add(font);
     return font;
   }
 
   /**
+   * Returns list of all fonts.
+   *
+   * @return list of all fonts.
+   */
+  public static List<Font> fonts() {
+    return fontFamilies.values().stream().flatMap(List::stream).toList();
+  }
+  /**
    * Search for fonts with specified font family name.
    *
    * @param name font family name.
    * @return obtained font.
    */
-  public static List<Font> getFonts(String name) {
-    return getFonts(name, null, null, null);
+  public static List<Font> find(String name) {
+    return find(name, null, null, null);
   }
 
   /**
@@ -90,8 +95,8 @@ public class Font {
    * @param weight font weight
    * @return obtained font.
    */
-  public static List<Font> getFonts(String name, FontWeight weight) {
-    return getFonts(name, null, weight, null);
+  public static List<Font> find(String name, FontWeight weight) {
+    return find(name, null, weight, null);
   }
 
   /**
@@ -102,8 +107,8 @@ public class Font {
    * @param style font style
    * @return obtained font.
    */
-  public static List<Font> getFonts(String name, FontStyle style) {
-    return getFonts(name, style, null, null);
+  public static List<Font> find(String name, FontStyle style) {
+    return find(name, style, null, null);
   }
 
   /**
@@ -115,8 +120,8 @@ public class Font {
    * @param weight font weight
    * @return obtained font.
    */
-  public static List<Font> getFonts(String name, FontStyle style, FontWeight weight) {
-    return getFonts(name, style, weight, null);
+  public static List<Font> find(String name, FontStyle style, FontWeight weight) {
+    return find(name, style, weight, null);
   }
 
   /**
@@ -129,12 +134,27 @@ public class Font {
    * @param weight font weight
    * @return obtained font.
    */
-  public static List<Font> getFonts(
+  public static List<Font> find(
       String name, FontStyle style, FontWeight weight, FontStretch width) {
     List<Font> fonts = fontFamilies.get(name);
     return fonts.stream().filter(font -> checkFont(font, name, style, weight, width)).toList();
   }
 
+  /**
+   * Search for fonts with specified font names, style and weight.
+   *
+   * @param fontNames list of font names.
+   * @param fontStyle font style.
+   * @param fontWeight font weight.
+   * @return list of fonts.
+   */
+  public static List<Font> find(
+      List<String> fontNames, FontStyle fontStyle, FontWeight fontWeight) {
+    return fontNames.stream()
+        .map(fontName -> Font.find(fontName, fontStyle, fontWeight))
+        .flatMap(List::stream)
+        .toList();
+  }
   /**
    * Returns true if there is any font with specified parameters.
    *

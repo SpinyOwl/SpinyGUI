@@ -105,7 +105,7 @@ public class TextLayoutImpl implements TextLayout {
   private Font findFont(Set<String> fontFamilies, FontStyle fontStyle, FontWeight fontWeight) {
     Set<Font> fonts =
         fontFamilies.stream()
-            .map(f -> Font.getFonts(f, fontStyle, fontWeight))
+            .map(f -> Font.find(f, fontStyle, fontWeight))
             .flatMap(Collection::stream)
             .collect(Collectors.toSet());
     return fonts.stream().filter(fontService::isFontAvailable).findFirst().orElse(Font.DEFAULT);
