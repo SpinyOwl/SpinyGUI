@@ -16,6 +16,7 @@ open module com.spinyowl.spinygui.core {
   requires org.antlr.antlr4.runtime;
   requires org.apache.commons.lang3;
   requires org.apache.commons.io;
+  requires org.jsoup;
 
   exports com.spinyowl.spinygui.core;
   exports com.spinyowl.spinygui.core.animation;

@@ -10,28 +10,19 @@ import com.spinyowl.spinygui.core.node.Frame;
 import com.spinyowl.spinygui.core.node.Node;
 import com.spinyowl.spinygui.core.node.Text;
 import com.spinyowl.spinygui.core.parser.NodeParser;
-import java.io.IOException;
-import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.List;
-import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
-import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
-import org.w3c.dom.Attr;
-import org.w3c.dom.Document;
-import org.w3c.dom.NamedNodeMap;
-import org.w3c.dom.NodeList;
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.select.Elements;
 
-/** Node marshaller. Used to convert node to xml and vise versa. */
 @Slf4j
-public final class DefaultNodeParser implements NodeParser {
+public class DefaultNodeParser implements NodeParser {
 
   private static final List<String> EMPTY_ELEMENTS =
       List.of(
@@ -39,55 +30,104 @@ public final class DefaultNodeParser implements NodeParser {
           "param", "source", "track", "wbr");
   private static final String INDENT_AMOUNT = "{http://xml.apache.org/xslt}indent-amount";
 
-  /**
-   * Used to convert node tree to xml.
-   *
-   * @param node node to convert.
-   * @return string with xml representation of provided node.
-   */
-  public String toXml(@NonNull Node node) {
-    return toXml(node, true);
+  @Override
+  public Node fromHtml(String html) {
+    if (html == null || html.isBlank()) {
+      return null;
+    }
+
+    Document document = Jsoup.parse(html);
+
+    Elements frameElements = document.getElementsByTag(FRAME_TAG_NAME);
+    if (frameElements.size() == 1) {
+      return createNodeFromElement(frameElements.get(0), new NodeConverterContext());
+    }
+    return createNodeFromElement(document, new NodeConverterContext());
   }
 
-  /**
-   * Used to convert node tree to xml.
-   *
-   * @param node node to convert.
-   * @return string with xml representation of provided node.
-   */
-  public String toXml(@NonNull Node node, boolean pretty) {
-    return convertToXml(node, pretty);
-  }
-
-  public Node fromXml(@NonNull String xml) {
-    try {
-      if (xml.isEmpty()) {
+  private Node createNodeFromContent(org.jsoup.nodes.Node node, NodeConverterContext context) {
+    if (node instanceof org.jsoup.nodes.Element element) {
+      return createNodeFromElement(element, context);
+    } else if (node instanceof org.jsoup.nodes.TextNode text) {
+      String wholeText = text.getWholeText().trim();
+      if (wholeText.isEmpty()) {
         return null;
       }
-
-      var documentBuilderFactory = DocumentBuilderFactory.newDefaultInstance();
-      documentBuilderFactory.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, "");
-      documentBuilderFactory.setAttribute(XMLConstants.ACCESS_EXTERNAL_SCHEMA, "");
-      var documentBuilder = documentBuilderFactory.newDocumentBuilder();
-
-      var inputSource = new InputSource();
-      inputSource.setCharacterStream(new StringReader(xml));
-      var document = documentBuilder.parse(inputSource);
-
-      return createNodeFromContent(document.getDocumentElement(), new NodeConverterContext());
-    } catch (ParserConfigurationException | SAXException | IOException e) {
-      throw new ParseException(e);
+      return new Text(wholeText);
+    } else {
+      if (log.isWarnEnabled()) {
+        log.warn(
+            "Content type '{}' is not supported. Content value: {}.",
+            node.nodeName(),
+            node.outerHtml());
+      }
+      return null;
     }
   }
 
-  /**
-   * Used to convert node with all child elements to a xml string.
-   *
-   * @param node node to convert.
-   * @param pretty defines if node should be pretty printed.
-   * @return String with xml representation of node.
-   */
-  private static String convertToXml(Node node, boolean pretty) {
+  private Node createNodeFromElement(
+      org.jsoup.nodes.Element element, NodeConverterContext context) {
+    String tagName = element.tagName().toLowerCase();
+    Node node;
+    if (EMPTY_ELEMENTS.contains(tagName)) {
+      node = new EmptyElement(tagName);
+    } else {
+      if (FRAME_TAG_NAME.equals(tagName)) {
+        node = createFrame(context);
+      } else {
+        node = new Element(tagName);
+      }
+      createChildNodes(element, context, node);
+    }
+    var attributes = element.attributes().asList();
+    for (var i = 0; i < attributes.size(); i++) {
+      var attribute = attributes.get(i);
+      node.attributes().put(attribute.getKey(), attribute.getValue());
+    }
+    context.hasRoot = true;
+    return node;
+  }
+
+  // unmarshaller section
+
+  private void createChildNodes(
+      org.jsoup.nodes.Element element, NodeConverterContext context, Node node) {
+    var childNodes = element.childNodes();
+    for (org.jsoup.nodes.Node childNode : childNodes) {
+      try {
+        var componentFromContent = createNodeFromContent(childNode, context);
+        if (componentFromContent != null) {
+          node.addChild(componentFromContent);
+        }
+      } catch (Exception e) {
+        if (log.isErrorEnabled()) {
+          log.error(e.getMessage(), e);
+        }
+      }
+    }
+  }
+
+  private Node createFrame(NodeConverterContext context) {
+    if (context.hasFrame) {
+      throw new IllegalStateException(
+          "Failed to parse node tree. There could be only one frame element.");
+    }
+    if (context.hasRoot) {
+      throw new IllegalStateException(
+          "Failed to parse node tree. Frame element could be only the root element.");
+    }
+    context.hasFrame = true;
+    context.frame = new Frame();
+    return context.frame;
+  }
+
+  @Override
+  public String toHtml(Node node) {
+    return toHtml(node, true);
+  }
+
+  @Override
+  public String toHtml(Node node, boolean pretty) {
     if (node == null) {
       return null;
     }
@@ -117,7 +157,7 @@ public final class DefaultNodeParser implements NodeParser {
     return stringWriter.toString();
   }
 
-  private static org.w3c.dom.Node createContent(Document document, Node node) {
+  private org.w3c.dom.Node createContent(org.w3c.dom.Document document, Node node) {
     if (node instanceof Text text) {
       return document.createTextNode(text.content());
     } else if (node instanceof Element element) {
@@ -132,7 +172,7 @@ public final class DefaultNodeParser implements NodeParser {
     }
   }
 
-  private static org.w3c.dom.Element createElement(Document document, Element node) {
+  private org.w3c.dom.Element createElement(org.w3c.dom.Document document, Element node) {
     String name = node.nodeName().toLowerCase();
     var element = document.createElement(name);
 
@@ -152,87 +192,9 @@ public final class DefaultNodeParser implements NodeParser {
     return element;
   }
 
-  private static Node createNodeFromContent(org.w3c.dom.Node node, NodeConverterContext context) {
-    if (node instanceof org.w3c.dom.Element element) {
-      return createNodeFromElement(element, context);
-    } else if (node instanceof org.w3c.dom.Text text) {
-      String wholeText = text.getWholeText().trim();
-      if (wholeText.isEmpty()) {
-        return null;
-      }
-      return new Text(wholeText);
-    } else {
-      if (log.isWarnEnabled()) {
-        log.warn(
-            "Content type '{}' is not supported. Content value '{}'.",
-            node.getNodeType(),
-            node.getNodeValue());
-      }
-      return null;
-    }
-  }
-
-  private static Node createNodeFromElement(
-      org.w3c.dom.Element element, NodeConverterContext context) {
-    String tagName = element.getTagName().toLowerCase();
-    Node node;
-    if (EMPTY_ELEMENTS.contains(tagName)) {
-      node = new EmptyElement(tagName);
-    } else {
-      if (FRAME_TAG_NAME.equals(tagName)) {
-        node = createFrame(context);
-      } else {
-        node = new Element(tagName);
-      }
-      createChildNodes(element, context, node);
-    }
-    NamedNodeMap attributes = element.getAttributes();
-    for (var i = 0; i < attributes.getLength(); i++) {
-      var attribute = (Attr) attributes.item(i);
-      node.attributes().put(attribute.getName(), attribute.getValue());
-    }
-    context.hasRoot = true;
-    return node;
-  }
-
-  // unmarshaller section
-
-  private static void createChildNodes(
-      org.w3c.dom.Element element, NodeConverterContext context, Node node) {
-    NodeList childNodes = element.getChildNodes();
-    for (var i = 0; i < childNodes.getLength(); i++) {
-      var childNode = childNodes.item(i);
-      try {
-        var componentFromContent = createNodeFromContent(childNode, context);
-        if (componentFromContent != null) {
-          node.addChild(componentFromContent);
-        }
-      } catch (Exception e) {
-        if (log.isErrorEnabled()) {
-          log.error(e.getMessage(), e);
-        }
-      }
-    }
-  }
-
-  private static Node createFrame(NodeConverterContext context) {
-    if (context.hasFrame) {
-      throw new IllegalStateException(
-          "Failed to parse node tree. There could be only one frame element.");
-    }
-    if (context.hasRoot) {
-      throw new IllegalStateException(
-          "Failed to parse node tree. Frame element should be the root element.");
-    }
-    context.hasFrame = true;
-    context.frame = new Frame();
-    return context.frame;
-  }
-
-  private static final class NodeConverterContext {
-
+  private static class NodeConverterContext {
     private boolean hasFrame;
     private boolean hasRoot;
-    private Frame frame; // used for direct access to store stylesheets directly.
+    private Frame frame;
   }
 }

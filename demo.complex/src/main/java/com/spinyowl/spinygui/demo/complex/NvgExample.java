@@ -26,7 +26,7 @@ public class NvgExample extends Demo {
     String styles = getFlexCss();
 
     // in case if root of xml is not 'frame' method will return null.
-    Frame frame = nodeParser.fromXml(xml).frame();
+    Frame frame = nodeParser.fromHtml(xml).frame();
     frame.styleSheets().add(styleSheetParser.parse(styles));
 
     Element c11 = frame.getElementById("c11");

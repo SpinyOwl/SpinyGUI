@@ -5,9 +5,9 @@ import com.spinyowl.spinygui.core.node.Node;
 /** Node marshaller. Used to convert node to xml and vise versa. */
 public interface NodeParser {
 
-  Node fromXml(String xml);
+  Node fromHtml(String xml);
 
-  String toXml(Node node);
+  String toHtml(Node node);
 
-  String toXml(Node node, boolean pretty);
+  String toHtml(Node node, boolean pretty);
 }

@@ -60,11 +60,11 @@ public class Main {
         String.valueOf(input(TYPE_PASSWORD, "myPass", "PASS_@!@#&").frame() == frame)); // false
     log.info(String.valueOf(element.children().get(2).frame() == frame)); // true
 
-    String xml = nodeParser.toXml(element, false);
+    String xml = nodeParser.toHtml(element, false);
     log.info(xml);
 
     // language=xml
-    frame.addChild(nodeParser.fromXml("""
+    frame.addChild(nodeParser.fromHtml("""
       <div>Additional content</div>
     """));
     // language=HTML
@@ -78,7 +78,7 @@ public class Main {
         </div>
         """;
 
-    var unmarshal = nodeParser.fromXml(xml2);
+    var unmarshal = nodeParser.fromHtml(xml2);
 
     PropertyStoreProvider provider = new DefaultPropertyStoreProvider();
     PropertyStore propertyStore = provider.createPropertyStore();
@@ -106,7 +106,7 @@ public class Main {
     log.info("UNMARSHALLING IS FINISHED");
     log.info("--------------------------------");
     log.info(xml2);
-    log.info(nodeParser.toXml(unmarshal));
+    log.info(nodeParser.toHtml(unmarshal));
 
     //        window.setVisible(true);
   }

@@ -181,7 +181,7 @@ public class OtherMain {
                 </div>
               </frame>
         """;
-    var componentTree = (Element) new DefaultNodeParser().fromXml(xml);
+    var componentTree = (Element) new DefaultNodeParser().fromHtml(xml);
 
     List<Ruleset> rulesets = stylesheet.rulesets();
 
@@ -217,7 +217,7 @@ public class OtherMain {
   public static void parseText() {
     var xml = "<div>just a text</div>";
     var nodeParser = new DefaultNodeParser();
-    var componentTree = nodeParser.fromXml(xml);
-    log.info("Component tree: {}", nodeParser.toXml(componentTree));
+    var componentTree = nodeParser.fromHtml(xml);
+    log.info("Component tree: {}", nodeParser.toHtml(componentTree));
   }
 }
