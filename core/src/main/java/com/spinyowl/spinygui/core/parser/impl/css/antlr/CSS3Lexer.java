@@ -1,4 +1,4 @@
-// Generated from com\spinyowl\spinygui\core\parser\impl\css\antlr\CSS3.g4 by ANTLR 4.13.0
+// Generated from com/spinyowl/spinygui/core/parser/impl/css/antlr/CSS3.g4 by ANTLR 4.13.1
 package com.spinyowl.spinygui.core.parser.impl.css.antlr;
 
 import org.antlr.v4.runtime.*;
@@ -8,10 +8,18 @@ import org.antlr.v4.runtime.atn.*;
 import org.antlr.v4.runtime.dfa.DFA;
 import org.antlr.v4.runtime.misc.*;
 
-@SuppressWarnings({"all", "warnings", "unchecked", "unused", "cast", "CheckReturnValue"})
+@SuppressWarnings({
+  "all",
+  "warnings",
+  "unchecked",
+  "unused",
+  "cast",
+  "CheckReturnValue",
+  "this-escape"
+})
 public class CSS3Lexer extends Lexer {
   static {
-    RuntimeMetaData.checkVersion("4.13.0", RuntimeMetaData.VERSION);
+    RuntimeMetaData.checkVersion("4.13.1", RuntimeMetaData.VERSION);
   }
 
   protected static final DFA[] _decisionToDFA;

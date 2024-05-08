@@ -14,7 +14,7 @@ dependencies {
     api group: 'com.google.guava', name: 'guava', version: guava_version
 
     // https://mvnrepository.com/artifact/org.jsoup/jsoup
-    implementation group: 'org.jsoup', name: 'jsoup', version: '1.16.2'
+    implementation group: 'org.jsoup', name: 'jsoup', version: jsoup_version
 
     api group: 'org.slf4j', name: 'slf4j-api', version: slf4j_version
     api group: 'ch.qos.logback', name: 'logback-classic', version: logback_version

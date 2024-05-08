@@ -22,7 +22,8 @@ subprojects {
     group = 'com.spinyowl'
     version = rootProject.version
 
-    buildDir = new File(rootProject.projectDir, "build/${project.name}")
+    // replace with new api
+    getLayout().getBuildDirectory().set(new File(rootProject.projectDir, "build/${project.name}"))
 
     repositories {
         mavenCentral()
@@ -35,8 +36,8 @@ subprojects {
             modularity.inferModulePath = true
         }
 
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
+        sourceCompatibility = JavaVersion.VERSION_21
+        targetCompatibility = JavaVersion.VERSION_21
 
         compileJava.options.encoding = "UTF-8"
         compileTestJava.options.encoding = "UTF-8"

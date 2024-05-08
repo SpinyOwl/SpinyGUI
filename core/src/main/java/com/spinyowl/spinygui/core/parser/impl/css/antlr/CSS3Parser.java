@@ -1,5 +1,6 @@
-// Generated from com\spinyowl\spinygui\core\parser\impl\css\antlr\CSS3.g4 by ANTLR 4.13.0
+// Generated from com/spinyowl/spinygui/core/parser/impl/css/antlr/CSS3.g4 by ANTLR 4.13.1
 package com.spinyowl.spinygui.core.parser.impl.css.antlr;
+
 import java.util.List;
 import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.atn.*;
@@ -9,7 +10,9 @@ import org.antlr.v4.runtime.tree.*;
 
 @SuppressWarnings({"all", "warnings", "unchecked", "unused", "cast", "CheckReturnValue"})
 public class CSS3Parser extends Parser {
-	static { RuntimeMetaData.checkVersion("4.13.0", RuntimeMetaData.VERSION); }
+  static {
+    RuntimeMetaData.checkVersion("4.13.1", RuntimeMetaData.VERSION);
+  }
 
 	protected static final DFA[] _decisionToDFA;
 	protected static final PredictionContextCache _sharedContextCache =
