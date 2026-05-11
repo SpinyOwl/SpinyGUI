@@ -260,6 +260,22 @@ function packageDescription(pkg) {
   return `Package for ${last.replace(/([a-z])([A-Z])/g, "$1 $2").toLowerCase()} related classes.`;
 }
 
+function packageReferenceSentence(pkg) {
+  const info = packageMap.get(pkg);
+  const classCount = info ? info.classes.length : 0;
+  const descendantCount = info ? descendants(pkg, [...packageMap.keys()]).length : 0;
+  const classText = classCount === 1 ? "1 direct class" : `${classCount} direct classes`;
+  const descendantText =
+    descendantCount === 1
+      ? "1 descendant package"
+      : `${descendantCount} descendant packages`;
+  const description = packageDescription(pkg)
+    .replace(/\s+/g, " ")
+    .replace(/\.\s+/g, "; ")
+    .replace(/\.$/, "");
+  return `This reference describes ${description}, lists ${classText}, and aggregates ${descendantText}.`;
+}
+
 function writePackageDoc(pkg, allPackages) {
   const info = packageMap.get(pkg);
   const outFile = path.join(packageDir(pkg), "README.md");
@@ -298,7 +314,7 @@ function writePackageDoc(pkg, allPackages) {
     lines.push("## Child Packages");
     lines.push("");
     for (const child of children.sort()) {
-      lines.push(`- [${child}](${linkToPackage(child, outFile)}) - ${packageDescription(child)}`);
+      lines.push(`- [${child}](${linkToPackage(child, outFile)}) - ${packageReferenceSentence(child)}`);
     }
     lines.push("");
   }
@@ -352,8 +368,7 @@ function writeRootDoc(allPackages) {
   lines.push("## Package Index");
   lines.push("");
   for (const pkg of allPackages) {
-    const info = packageMap.get(pkg);
-    lines.push(`- [${pkg}](${path.relative(root, path.join(packageDir(pkg), "README.md")).replace(/\\/g, "/")}) - ${info.classes.length} direct class(es); ${packageDescription(pkg)}`);
+    lines.push(`- [${pkg}](${path.relative(root, path.join(packageDir(pkg), "README.md")).replace(/\\/g, "/")}) - ${packageReferenceSentence(pkg)}`);
   }
   lines.push("");
   lines.push("## Reading Order");
@@ -370,13 +385,13 @@ function writeIndex(allPackages) {
   lines.push("");
   lines.push("This folder mirrors Java package documentation generated from the project source tree.");
   lines.push("");
-  lines.push("- Root overview: [`PROJECT_STRUCTURE.md`](../../PROJECT_STRUCTURE.md)");
-  lines.push("- Agent style/principles: [`AGENTS_CODE_STYLE.md`](../../AGENTS_CODE_STYLE.md)");
+  lines.push("- [`PROJECT_STRUCTURE.md`](../../PROJECT_STRUCTURE.md) - This reference gives the root-level overview of Gradle modules, main subsystems, and the full package index.");
+  lines.push("- [`AGENTS_CODE_STYLE.md`](../../AGENTS_CODE_STYLE.md) - This reference describes the coding style, architecture principles, package conventions, and caution areas for future agents.");
   lines.push("");
   lines.push("## Packages by Depth");
   lines.push("");
   for (const pkg of [...allPackages].sort((a, b) => packageDepth(b) - packageDepth(a) || a.localeCompare(b))) {
-    lines.push(`- [${pkg}](${path.relative(path.dirname(file), path.join(packageDir(pkg), "README.md")).replace(/\\/g, "/")})`);
+    lines.push(`- [${pkg}](${path.relative(path.dirname(file), path.join(packageDir(pkg), "README.md")).replace(/\\/g, "/")}) - ${packageReferenceSentence(pkg)}`);
   }
   fs.writeFileSync(file, lines.join("\n"), "utf8");
 }

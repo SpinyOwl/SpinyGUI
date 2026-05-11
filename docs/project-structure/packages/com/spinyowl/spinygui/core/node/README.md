@@ -53,8 +53,8 @@ DOM-like node hierarchy: frames, elements, empty elements, text nodes, and build
 
 ## Child Packages
 
-- [com.spinyowl.spinygui.core.node.intersection](intersection/README.md) - Hit-testing strategy objects for node intersection checks.
-- [com.spinyowl.spinygui.core.node.layout](layout/README.md) - Box-model geometry value objects used by layout and rendering.
+- [com.spinyowl.spinygui.core.node.intersection](intersection/README.md) - This reference describes Hit-testing strategy objects for node intersection checks, lists 3 direct classes, and aggregates 0 descendant packages.
+- [com.spinyowl.spinygui.core.node.layout](layout/README.md) - This reference describes Box-model geometry value objects used by layout and rendering, lists 3 direct classes, and aggregates 0 descendant packages.
 
 ## Aggregated Contents
 

@@ -13,9 +13,9 @@ No direct Java classes were found in this package.
 
 ## Child Packages
 
-- [com.spinyowl.spinygui.core.system.event](event/README.md) - Raw platform/window/input events before conversion into application-level events.
-- [com.spinyowl.spinygui.core.system.font](font/README.md) - Platform font loading, text metrics, and font storage abstractions.
-- [com.spinyowl.spinygui.core.system.input](input/README.md) - Platform-facing key, modifier, action, and mouse-button enums.
+- [com.spinyowl.spinygui.core.system.event](event/README.md) - This reference describes Raw platform/window/input events before conversion into application-level events, lists 16 direct classes, and aggregates 3 descendant packages.
+- [com.spinyowl.spinygui.core.system.font](font/README.md) - This reference describes Platform font loading, text metrics, and font storage abstractions, lists 7 direct classes, and aggregates 1 descendant package.
+- [com.spinyowl.spinygui.core.system.input](input/README.md) - This reference describes Platform-facing key, modifier, action, and mouse-button enums, lists 3 direct classes, and aggregates 0 descendant packages.
 
 ## Aggregated Contents
 

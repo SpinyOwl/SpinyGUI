@@ -2,69 +2,69 @@
 
 This folder mirrors Java package documentation generated from the project source tree.
 
-- Root overview: [`PROJECT_STRUCTURE.md`](../../PROJECT_STRUCTURE.md)
-- Agent style/principles: [`AGENTS_CODE_STYLE.md`](../../AGENTS_CODE_STYLE.md)
+- [`PROJECT_STRUCTURE.md`](../../PROJECT_STRUCTURE.md) - This reference gives the root-level overview of Gradle modules, main subsystems, and the full package index.
+- [`AGENTS_CODE_STYLE.md`](../../AGENTS_CODE_STYLE.md) - This reference describes the coding style, architecture principles, package conventions, and caution areas for future agents.
 
 ## Packages by Depth
 
-- [com.spinyowl.spinygui.core.backend.renderer.lwjgl.nanovg.util](packages/com/spinyowl/spinygui/core/backend/renderer/lwjgl/nanovg/util/README.md)
-- [com.spinyowl.spinygui.core.backend.renderer.lwjgl.nanovg](packages/com/spinyowl/spinygui/core/backend/renderer/lwjgl/nanovg/README.md)
-- [com.spinyowl.spinygui.core.parser.impl.css.antlr](packages/com/spinyowl/spinygui/core/parser/impl/css/antlr/README.md)
-- [com.spinyowl.spinygui.core.parser.impl.css.visitor](packages/com/spinyowl/spinygui/core/parser/impl/css/visitor/README.md)
-- [com.spinyowl.spinygui.core.style.stylesheet.selector.combinator](packages/com/spinyowl/spinygui/core/style/stylesheet/selector/combinator/README.md)
-- [com.spinyowl.spinygui.core.style.stylesheet.selector.pseudoclass](packages/com/spinyowl/spinygui/core/style/stylesheet/selector/pseudoclass/README.md)
-- [com.spinyowl.spinygui.core.style.stylesheet.selector.pseudoelement](packages/com/spinyowl/spinygui/core/style/stylesheet/selector/pseudoelement/README.md)
-- [com.spinyowl.spinygui.core.style.stylesheet.selector.simple](packages/com/spinyowl/spinygui/core/style/stylesheet/selector/simple/README.md)
-- [com.spinyowl.spinygui.core.backend.renderer.lwjgl](packages/com/spinyowl/spinygui/core/backend/renderer/lwjgl/README.md)
-- [com.spinyowl.spinygui.core.parser.impl.css](packages/com/spinyowl/spinygui/core/parser/impl/css/README.md)
-- [com.spinyowl.spinygui.core.style.stylesheet.annotation](packages/com/spinyowl/spinygui/core/style/stylesheet/annotation/README.md)
-- [com.spinyowl.spinygui.core.style.stylesheet.atrule](packages/com/spinyowl/spinygui/core/style/stylesheet/atrule/README.md)
-- [com.spinyowl.spinygui.core.style.stylesheet.impl](packages/com/spinyowl/spinygui/core/style/stylesheet/impl/README.md)
-- [com.spinyowl.spinygui.core.style.stylesheet.property](packages/com/spinyowl/spinygui/core/style/stylesheet/property/README.md)
-- [com.spinyowl.spinygui.core.style.stylesheet.selector](packages/com/spinyowl/spinygui/core/style/stylesheet/selector/README.md)
-- [com.spinyowl.spinygui.core.style.stylesheet.term](packages/com/spinyowl/spinygui/core/style/stylesheet/term/README.md)
-- [com.spinyowl.spinygui.core.style.stylesheet.util](packages/com/spinyowl/spinygui/core/style/stylesheet/util/README.md)
-- [com.spinyowl.spinygui.core.style.types.background](packages/com/spinyowl/spinygui/core/style/types/background/README.md)
-- [com.spinyowl.spinygui.core.style.types.border](packages/com/spinyowl/spinygui/core/style/types/border/README.md)
-- [com.spinyowl.spinygui.core.style.types.flex](packages/com/spinyowl/spinygui/core/style/types/flex/README.md)
-- [com.spinyowl.spinygui.core.style.types.length](packages/com/spinyowl/spinygui/core/style/types/length/README.md)
-- [com.spinyowl.spinygui.core.system.event.listener](packages/com/spinyowl/spinygui/core/system/event/listener/README.md)
-- [com.spinyowl.spinygui.core.system.event.processor](packages/com/spinyowl/spinygui/core/system/event/processor/README.md)
-- [com.spinyowl.spinygui.core.system.event.provider](packages/com/spinyowl/spinygui/core/system/event/provider/README.md)
-- [com.spinyowl.spinygui.core.system.font.impl](packages/com/spinyowl/spinygui/core/system/font/impl/README.md)
-- [com.spinyowl.spinygui.core.backend.renderer](packages/com/spinyowl/spinygui/core/backend/renderer/README.md)
-- [com.spinyowl.spinygui.core.event.listener](packages/com/spinyowl/spinygui/core/event/listener/README.md)
-- [com.spinyowl.spinygui.core.event.processor](packages/com/spinyowl/spinygui/core/event/processor/README.md)
-- [com.spinyowl.spinygui.core.input.impl](packages/com/spinyowl/spinygui/core/input/impl/README.md)
-- [com.spinyowl.spinygui.core.layout.impl](packages/com/spinyowl/spinygui/core/layout/impl/README.md)
-- [com.spinyowl.spinygui.core.node.intersection](packages/com/spinyowl/spinygui/core/node/intersection/README.md)
-- [com.spinyowl.spinygui.core.node.layout](packages/com/spinyowl/spinygui/core/node/layout/README.md)
-- [com.spinyowl.spinygui.core.parser.impl](packages/com/spinyowl/spinygui/core/parser/impl/README.md)
-- [com.spinyowl.spinygui.core.style.manager](packages/com/spinyowl/spinygui/core/style/manager/README.md)
-- [com.spinyowl.spinygui.core.style.stylesheet](packages/com/spinyowl/spinygui/core/style/stylesheet/README.md)
-- [com.spinyowl.spinygui.core.style.types](packages/com/spinyowl/spinygui/core/style/types/README.md)
-- [com.spinyowl.spinygui.core.system.event](packages/com/spinyowl/spinygui/core/system/event/README.md)
-- [com.spinyowl.spinygui.core.system.font](packages/com/spinyowl/spinygui/core/system/font/README.md)
-- [com.spinyowl.spinygui.core.system.input](packages/com/spinyowl/spinygui/core/system/input/README.md)
-- [com.spinyowl.spinygui.core.animation](packages/com/spinyowl/spinygui/core/animation/README.md)
-- [com.spinyowl.spinygui.core.backend](packages/com/spinyowl/spinygui/core/backend/README.md)
-- [com.spinyowl.spinygui.core.clipboard](packages/com/spinyowl/spinygui/core/clipboard/README.md)
-- [com.spinyowl.spinygui.core.cursor](packages/com/spinyowl/spinygui/core/cursor/README.md)
-- [com.spinyowl.spinygui.core.event](packages/com/spinyowl/spinygui/core/event/README.md)
-- [com.spinyowl.spinygui.core.font](packages/com/spinyowl/spinygui/core/font/README.md)
-- [com.spinyowl.spinygui.core.image](packages/com/spinyowl/spinygui/core/image/README.md)
-- [com.spinyowl.spinygui.core.input](packages/com/spinyowl/spinygui/core/input/README.md)
-- [com.spinyowl.spinygui.core.layout](packages/com/spinyowl/spinygui/core/layout/README.md)
-- [com.spinyowl.spinygui.core.node](packages/com/spinyowl/spinygui/core/node/README.md)
-- [com.spinyowl.spinygui.core.parser](packages/com/spinyowl/spinygui/core/parser/README.md)
-- [com.spinyowl.spinygui.core.style](packages/com/spinyowl/spinygui/core/style/README.md)
-- [com.spinyowl.spinygui.core.system](packages/com/spinyowl/spinygui/core/system/README.md)
-- [com.spinyowl.spinygui.core.time](packages/com/spinyowl/spinygui/core/time/README.md)
-- [com.spinyowl.spinygui.core.util](packages/com/spinyowl/spinygui/core/util/README.md)
-- [com.spinyowl.spinygui.demo.complex](packages/com/spinyowl/spinygui/demo/complex/README.md)
-- [com.spinyowl.spinygui.demo.simple](packages/com/spinyowl/spinygui/demo/simple/README.md)
-- [com.spinyowl.spinygui.core](packages/com/spinyowl/spinygui/core/README.md)
-- [com.spinyowl.spinygui.demo](packages/com/spinyowl/spinygui/demo/README.md)
-- [com.spinyowl.spinygui](packages/com/spinyowl/spinygui/README.md)
-- [com.spinyowl](packages/com/spinyowl/README.md)
-- [com](packages/com/README.md)
+- [com.spinyowl.spinygui.core.backend.renderer.lwjgl.nanovg.util](packages/com/spinyowl/spinygui/core/backend/renderer/lwjgl/nanovg/util/README.md) - This reference describes NanoVG drawing and color helpers, lists 3 direct classes, and aggregates 0 descendant packages.
+- [com.spinyowl.spinygui.core.backend.renderer.lwjgl.nanovg](packages/com/spinyowl/spinygui/core/backend/renderer/lwjgl/nanovg/README.md) - This reference describes NanoVG renderer orchestration and specialized element/text/border renderers, lists 4 direct classes, and aggregates 1 descendant package.
+- [com.spinyowl.spinygui.core.parser.impl.css.antlr](packages/com/spinyowl/spinygui/core/parser/impl/css/antlr/README.md) - This reference describes Generated ANTLR CSS3 lexer/parser/listener/visitor artifacts; Regenerate from the grammar instead of hand-editing, lists 6 direct classes, and aggregates 0 descendant packages.
+- [com.spinyowl.spinygui.core.parser.impl.css.visitor](packages/com/spinyowl/spinygui/core/parser/impl/css/visitor/README.md) - This reference describes ANTLR visitors that convert CSS parse trees into stylesheet, selector, declaration, and term model objects, lists 8 direct classes, and aggregates 0 descendant packages.
+- [com.spinyowl.spinygui.core.style.stylesheet.selector.combinator](packages/com/spinyowl/spinygui/core/style/stylesheet/selector/combinator/README.md) - This reference describes Combinator selectors for descendant, child, sibling, adjacent sibling, and compound matching, lists 5 direct classes, and aggregates 0 descendant packages.
+- [com.spinyowl.spinygui.core.style.stylesheet.selector.pseudoclass](packages/com/spinyowl/spinygui/core/style/stylesheet/selector/pseudoclass/README.md) - This reference describes Pseudo-class selector implementations, lists 1 direct class, and aggregates 0 descendant packages.
+- [com.spinyowl.spinygui.core.style.stylesheet.selector.pseudoelement](packages/com/spinyowl/spinygui/core/style/stylesheet/selector/pseudoelement/README.md) - This reference describes Pseudo-element selector implementations, lists 3 direct classes, and aggregates 0 descendant packages.
+- [com.spinyowl.spinygui.core.style.stylesheet.selector.simple](packages/com/spinyowl/spinygui/core/style/stylesheet/selector/simple/README.md) - This reference describes Simple selectors for all, element, class, and id matching, lists 4 direct classes, and aggregates 0 descendant packages.
+- [com.spinyowl.spinygui.core.backend.renderer.lwjgl](packages/com/spinyowl/spinygui/core/backend/renderer/lwjgl/README.md) - This reference describes Package for lwjgl related classes, lists 0 direct classes, and aggregates 2 descendant packages.
+- [com.spinyowl.spinygui.core.parser.impl.css](packages/com/spinyowl/spinygui/core/parser/impl/css/README.md) - This reference describes CSS parser namespace containing generated ANTLR artifacts and handwritten semantic visitors, lists 0 direct classes, and aggregates 2 descendant packages.
+- [com.spinyowl.spinygui.core.style.stylesheet.annotation](packages/com/spinyowl/spinygui/core/style/stylesheet/annotation/README.md) - This reference describes Annotations used by stylesheet property providers, lists 1 direct class, and aggregates 0 descendant packages.
+- [com.spinyowl.spinygui.core.style.stylesheet.atrule](packages/com/spinyowl/spinygui/core/style/stylesheet/atrule/README.md) - This reference describes CSS at-rule model objects, lists 1 direct class, and aggregates 0 descendant packages.
+- [com.spinyowl.spinygui.core.style.stylesheet.impl](packages/com/spinyowl/spinygui/core/style/stylesheet/impl/README.md) - This reference describes Default property-store implementation and provider scanner integration, lists 2 direct classes, and aggregates 0 descendant packages.
+- [com.spinyowl.spinygui.core.style.stylesheet.property](packages/com/spinyowl/spinygui/core/style/stylesheet/property/README.md) - This reference describes CSS property providers that parse declarations into typed style values, lists 21 direct classes, and aggregates 0 descendant packages.
+- [com.spinyowl.spinygui.core.style.stylesheet.selector](packages/com/spinyowl/spinygui/core/style/stylesheet/selector/README.md) - This reference describes Selector contracts and base selector types, lists 4 direct classes, and aggregates 4 descendant packages.
+- [com.spinyowl.spinygui.core.style.stylesheet.term](packages/com/spinyowl/spinygui/core/style/stylesheet/term/README.md) - This reference describes Typed CSS term values produced by parser visitors, lists 9 direct classes, and aggregates 0 descendant packages.
+- [com.spinyowl.spinygui.core.style.stylesheet.util](packages/com/spinyowl/spinygui/core/style/stylesheet/util/README.md) - This reference describes Utility functions for converting and validating stylesheet values, lists 1 direct class, and aggregates 0 descendant packages.
+- [com.spinyowl.spinygui.core.style.types.background](packages/com/spinyowl/spinygui/core/style/types/background/README.md) - This reference describes Background-origin, repeat, and sizing value objects, lists 3 direct classes, and aggregates 0 descendant packages.
+- [com.spinyowl.spinygui.core.style.types.border](packages/com/spinyowl/spinygui/core/style/types/border/README.md) - This reference describes Border item and border-style value objects, lists 2 direct classes, and aggregates 0 descendant packages.
+- [com.spinyowl.spinygui.core.style.types.flex](packages/com/spinyowl/spinygui/core/style/types/flex/README.md) - This reference describes Flexbox alignment, direction, wrapping, and justification value constants, lists 6 direct classes, and aggregates 0 descendant packages.
+- [com.spinyowl.spinygui.core.style.types.length](packages/com/spinyowl/spinygui/core/style/types/length/README.md) - This reference describes CSS length units, length wrappers, and conversion contract, lists 3 direct classes, and aggregates 0 descendant packages.
+- [com.spinyowl.spinygui.core.system.event.listener](packages/com/spinyowl/spinygui/core/system/event/listener/README.md) - This reference describes Adapters that translate raw system events into core event processing and state changes, lists 27 direct classes, and aggregates 0 descendant packages.
+- [com.spinyowl.spinygui.core.system.event.processor](packages/com/spinyowl/spinygui/core/system/event/processor/README.md) - This reference describes System-event processor contract and implementation for dispatching platform events, lists 2 direct classes, and aggregates 0 descendant packages.
+- [com.spinyowl.spinygui.core.system.event.provider](packages/com/spinyowl/spinygui/core/system/event/provider/README.md) - This reference describes Provider for mapping raw system event classes to listener instances, lists 2 direct classes, and aggregates 0 descendant packages.
+- [com.spinyowl.spinygui.core.system.font.impl](packages/com/spinyowl/spinygui/core/system/font/impl/README.md) - This reference describes Default font service, storage, and platform-specific font directory discovery, lists 3 direct classes, and aggregates 0 descendant packages.
+- [com.spinyowl.spinygui.core.backend.renderer](packages/com/spinyowl/spinygui/core/backend/renderer/README.md) - This reference describes Renderer SPI consumed by backend implementations, lists 1 direct class, and aggregates 3 descendant packages.
+- [com.spinyowl.spinygui.core.event.listener](packages/com/spinyowl/spinygui/core/event/listener/README.md) - This reference describes Generic event listener contract for application events, lists 1 direct class, and aggregates 0 descendant packages.
+- [com.spinyowl.spinygui.core.event.processor](packages/com/spinyowl/spinygui/core/event/processor/README.md) - This reference describes Dispatch logic for routing application events to node listeners, lists 2 direct classes, and aggregates 0 descendant packages.
+- [com.spinyowl.spinygui.core.input.impl](packages/com/spinyowl/spinygui/core/input/impl/README.md) - This reference describes Default mutable implementations of input services, lists 3 direct classes, and aggregates 0 descendant packages.
+- [com.spinyowl.spinygui.core.layout.impl](packages/com/spinyowl/spinygui/core/layout/impl/README.md) - This reference describes Concrete layout algorithms and utilities for block, flex, none, text, and layout tree updates, lists 7 direct classes, and aggregates 0 descendant packages.
+- [com.spinyowl.spinygui.core.node.intersection](packages/com/spinyowl/spinygui/core/node/intersection/README.md) - This reference describes Hit-testing strategy objects for node intersection checks, lists 3 direct classes, and aggregates 0 descendant packages.
+- [com.spinyowl.spinygui.core.node.layout](packages/com/spinyowl/spinygui/core/node/layout/README.md) - This reference describes Box-model geometry value objects used by layout and rendering, lists 3 direct classes, and aggregates 0 descendant packages.
+- [com.spinyowl.spinygui.core.parser.impl](packages/com/spinyowl/spinygui/core/parser/impl/README.md) - This reference describes Default parser implementations and parser factory code, lists 4 direct classes, and aggregates 3 descendant packages.
+- [com.spinyowl.spinygui.core.style.manager](packages/com/spinyowl/spinygui/core/style/manager/README.md) - This reference describes Style manager contract and implementation for applying stylesheets to node trees, lists 2 direct classes, and aggregates 0 descendant packages.
+- [com.spinyowl.spinygui.core.style.stylesheet](packages/com/spinyowl/spinygui/core/style/stylesheet/README.md) - This reference describes CSS stylesheet domain model: properties, rulesets, declarations, terms, specificity, and provider registry, lists 12 direct classes, and aggregates 11 descendant packages.
+- [com.spinyowl.spinygui.core.style.types](packages/com/spinyowl/spinygui/core/style/types/README.md) - This reference describes Typed CSS value objects and constants for non-nested style domains, lists 10 direct classes, and aggregates 4 descendant packages.
+- [com.spinyowl.spinygui.core.system.event](packages/com/spinyowl/spinygui/core/system/event/README.md) - This reference describes Raw platform/window/input events before conversion into application-level events, lists 16 direct classes, and aggregates 3 descendant packages.
+- [com.spinyowl.spinygui.core.system.font](packages/com/spinyowl/spinygui/core/system/font/README.md) - This reference describes Platform font loading, text metrics, and font storage abstractions, lists 7 direct classes, and aggregates 1 descendant package.
+- [com.spinyowl.spinygui.core.system.input](packages/com/spinyowl/spinygui/core/system/input/README.md) - This reference describes Platform-facing key, modifier, action, and mouse-button enums, lists 3 direct classes, and aggregates 0 descendant packages.
+- [com.spinyowl.spinygui.core.animation](packages/com/spinyowl/spinygui/core/animation/README.md) - This reference describes Frame-time animation contracts and a simple animator loop, lists 3 direct classes, and aggregates 0 descendant packages.
+- [com.spinyowl.spinygui.core.backend](packages/com/spinyowl/spinygui/core/backend/README.md) - This reference describes Backend namespace folder for renderer APIs and implementations, lists 0 direct classes, and aggregates 4 descendant packages.
+- [com.spinyowl.spinygui.core.clipboard](packages/com/spinyowl/spinygui/core/clipboard/README.md) - This reference describes Clipboard abstraction used by platform integrations, lists 1 direct class, and aggregates 0 descendant packages.
+- [com.spinyowl.spinygui.core.cursor](packages/com/spinyowl/spinygui/core/cursor/README.md) - This reference describes Cursor model and cursor service abstraction, lists 3 direct classes, and aggregates 0 descendant packages.
+- [com.spinyowl.spinygui.core.event](packages/com/spinyowl/spinygui/core/event/README.md) - This reference describes Application-level events emitted to nodes and event targets, lists 21 direct classes, and aggregates 2 descendant packages.
+- [com.spinyowl.spinygui.core.font](packages/com/spinyowl/spinygui/core/font/README.md) - This reference describes CSS-like font value objects: family, size, stretch, style, and weight, lists 5 direct classes, and aggregates 0 descendant packages.
+- [com.spinyowl.spinygui.core.image](packages/com/spinyowl/spinygui/core/image/README.md) - This reference describes Image abstraction used by style and rendering layers, lists 1 direct class, and aggregates 0 descendant packages.
+- [com.spinyowl.spinygui.core.input](packages/com/spinyowl/spinygui/core/input/README.md) - This reference describes Input domain model for keyboard, mouse, shortcuts, and user-facing key mappings, lists 10 direct classes, and aggregates 1 descendant package.
+- [com.spinyowl.spinygui.core.layout](packages/com/spinyowl/spinygui/core/layout/README.md) - This reference describes Layout contracts, layout context, and text/element layout interfaces, lists 5 direct classes, and aggregates 1 descendant package.
+- [com.spinyowl.spinygui.core.node](packages/com/spinyowl/spinygui/core/node/README.md) - This reference describes DOM-like node hierarchy: frames, elements, empty elements, text nodes, and builders, lists 6 direct classes, and aggregates 2 descendant packages.
+- [com.spinyowl.spinygui.core.parser](packages/com/spinyowl/spinygui/core/parser/README.md) - This reference describes Parser interfaces for HTML-like node trees and stylesheets, lists 2 direct classes, and aggregates 4 descendant packages.
+- [com.spinyowl.spinygui.core.style](packages/com/spinyowl/spinygui/core/style/README.md) - This reference describes Resolved style state applied to nodes after rule matching and property conversion, lists 1 direct class, and aggregates 18 descendant packages.
+- [com.spinyowl.spinygui.core.system](packages/com/spinyowl/spinygui/core/system/README.md) - This reference describes Package for system related classes, lists 0 direct classes, and aggregates 7 descendant packages.
+- [com.spinyowl.spinygui.core.time](packages/com/spinyowl/spinygui/core/time/README.md) - This reference describes Time service abstraction for animation and frame timing, lists 1 direct class, and aggregates 0 descendant packages.
+- [com.spinyowl.spinygui.core.util](packages/com/spinyowl/spinygui/core/util/README.md) - This reference describes Small utilities for class-key maps, IO, node visibility, references, and text handling, lists 7 direct classes, and aggregates 0 descendant packages.
+- [com.spinyowl.spinygui.demo.complex](packages/com/spinyowl/spinygui/demo/complex/README.md) - This reference describes Windowed GLFW/LWJGL demo framework and concrete NanoVG demo, lists 2 direct classes, and aggregates 0 descendant packages.
+- [com.spinyowl.spinygui.demo.simple](packages/com/spinyowl/spinygui/demo/simple/README.md) - This reference describes Simple demo entry points, lists 2 direct classes, and aggregates 0 descendant packages.
+- [com.spinyowl.spinygui.core](packages/com/spinyowl/spinygui/core/README.md) - This reference describes Top-level core configuration and shared entry points for the GUI engine, lists 1 direct class, and aggregates 54 descendant packages.
+- [com.spinyowl.spinygui.demo](packages/com/spinyowl/spinygui/demo/README.md) - This reference describes Demo namespace folder for runnable examples, lists 0 direct classes, and aggregates 2 descendant packages.
+- [com.spinyowl.spinygui](packages/com/spinyowl/spinygui/README.md) - This reference describes SpinyGUI namespace folder aggregating core, backend, and demo packages, lists 0 direct classes, and aggregates 58 descendant packages.
+- [com.spinyowl](packages/com/spinyowl/README.md) - This reference describes SpinyOwl namespace folder, lists 0 direct classes, and aggregates 59 descendant packages.
+- [com](packages/com/README.md) - This reference describes Top-level Java namespace folder for project packages, lists 0 direct classes, and aggregates 60 descendant packages.

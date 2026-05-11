@@ -39,7 +39,7 @@ Default parser implementations and parser factory code.
 
 ## Child Packages
 
-- [com.spinyowl.spinygui.core.parser.impl.css](css/README.md) - CSS parser namespace containing generated ANTLR artifacts and handwritten semantic visitors.
+- [com.spinyowl.spinygui.core.parser.impl.css](css/README.md) - This reference describes CSS parser namespace containing generated ANTLR artifacts and handwritten semantic visitors, lists 0 direct classes, and aggregates 2 descendant packages.
 
 ## Aggregated Contents
 

@@ -13,8 +13,8 @@ No direct Java classes were found in this package.
 
 ## Child Packages
 
-- [com.spinyowl.spinygui.demo.complex](complex/README.md) - Windowed GLFW/LWJGL demo framework and concrete NanoVG demo.
-- [com.spinyowl.spinygui.demo.simple](simple/README.md) - Simple demo entry points.
+- [com.spinyowl.spinygui.demo.complex](complex/README.md) - This reference describes Windowed GLFW/LWJGL demo framework and concrete NanoVG demo, lists 2 direct classes, and aggregates 0 descendant packages.
+- [com.spinyowl.spinygui.demo.simple](simple/README.md) - This reference describes Simple demo entry points, lists 2 direct classes, and aggregates 0 descendant packages.
 
 ## Aggregated Contents
 

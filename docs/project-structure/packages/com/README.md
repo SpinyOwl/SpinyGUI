@@ -13,7 +13,7 @@ No direct Java classes were found in this package.
 
 ## Child Packages
 
-- [com.spinyowl](spinyowl/README.md) - SpinyOwl namespace folder.
+- [com.spinyowl](spinyowl/README.md) - This reference describes SpinyOwl namespace folder, lists 0 direct classes, and aggregates 59 descendant packages.
 
 ## Aggregated Contents
 

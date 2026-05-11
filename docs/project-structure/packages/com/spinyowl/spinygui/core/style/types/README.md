@@ -81,10 +81,10 @@ Typed CSS value objects and constants for non-nested style domains.
 
 ## Child Packages
 
-- [com.spinyowl.spinygui.core.style.types.background](background/README.md) - Background-origin, repeat, and sizing value objects.
-- [com.spinyowl.spinygui.core.style.types.border](border/README.md) - Border item and border-style value objects.
-- [com.spinyowl.spinygui.core.style.types.flex](flex/README.md) - Flexbox alignment, direction, wrapping, and justification value constants.
-- [com.spinyowl.spinygui.core.style.types.length](length/README.md) - CSS length units, length wrappers, and conversion contract.
+- [com.spinyowl.spinygui.core.style.types.background](background/README.md) - This reference describes Background-origin, repeat, and sizing value objects, lists 3 direct classes, and aggregates 0 descendant packages.
+- [com.spinyowl.spinygui.core.style.types.border](border/README.md) - This reference describes Border item and border-style value objects, lists 2 direct classes, and aggregates 0 descendant packages.
+- [com.spinyowl.spinygui.core.style.types.flex](flex/README.md) - This reference describes Flexbox alignment, direction, wrapping, and justification value constants, lists 6 direct classes, and aggregates 0 descendant packages.
+- [com.spinyowl.spinygui.core.style.types.length](length/README.md) - This reference describes CSS length units, length wrappers, and conversion contract, lists 3 direct classes, and aggregates 0 descendant packages.
 
 ## Aggregated Contents
 

@@ -13,7 +13,7 @@ No direct Java classes were found in this package.
 
 ## Child Packages
 
-- [com.spinyowl.spinygui.core.backend.renderer.lwjgl.nanovg](nanovg/README.md) - NanoVG renderer orchestration and specialized element/text/border renderers.
+- [com.spinyowl.spinygui.core.backend.renderer.lwjgl.nanovg](nanovg/README.md) - This reference describes NanoVG renderer orchestration and specialized element/text/border renderers, lists 4 direct classes, and aggregates 1 descendant package.
 
 ## Aggregated Contents
 

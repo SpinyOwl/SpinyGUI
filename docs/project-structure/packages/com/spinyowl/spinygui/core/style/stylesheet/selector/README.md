@@ -39,10 +39,10 @@ Selector contracts and base selector types.
 
 ## Child Packages
 
-- [com.spinyowl.spinygui.core.style.stylesheet.selector.combinator](combinator/README.md) - Combinator selectors for descendant, child, sibling, adjacent sibling, and compound matching.
-- [com.spinyowl.spinygui.core.style.stylesheet.selector.pseudoclass](pseudoclass/README.md) - Pseudo-class selector implementations.
-- [com.spinyowl.spinygui.core.style.stylesheet.selector.pseudoelement](pseudoelement/README.md) - Pseudo-element selector implementations.
-- [com.spinyowl.spinygui.core.style.stylesheet.selector.simple](simple/README.md) - Simple selectors for all, element, class, and id matching.
+- [com.spinyowl.spinygui.core.style.stylesheet.selector.combinator](combinator/README.md) - This reference describes Combinator selectors for descendant, child, sibling, adjacent sibling, and compound matching, lists 5 direct classes, and aggregates 0 descendant packages.
+- [com.spinyowl.spinygui.core.style.stylesheet.selector.pseudoclass](pseudoclass/README.md) - This reference describes Pseudo-class selector implementations, lists 1 direct class, and aggregates 0 descendant packages.
+- [com.spinyowl.spinygui.core.style.stylesheet.selector.pseudoelement](pseudoelement/README.md) - This reference describes Pseudo-element selector implementations, lists 3 direct classes, and aggregates 0 descendant packages.
+- [com.spinyowl.spinygui.core.style.stylesheet.selector.simple](simple/README.md) - This reference describes Simple selectors for all, element, class, and id matching, lists 4 direct classes, and aggregates 0 descendant packages.
 
 ## Aggregated Contents
 

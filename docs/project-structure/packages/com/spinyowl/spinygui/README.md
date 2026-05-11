@@ -13,8 +13,8 @@ No direct Java classes were found in this package.
 
 ## Child Packages
 
-- [com.spinyowl.spinygui.core](core/README.md) - Top-level core configuration and shared entry points for the GUI engine.
-- [com.spinyowl.spinygui.demo](demo/README.md) - Demo namespace folder for runnable examples.
+- [com.spinyowl.spinygui.core](core/README.md) - This reference describes Top-level core configuration and shared entry points for the GUI engine, lists 1 direct class, and aggregates 54 descendant packages.
+- [com.spinyowl.spinygui.demo](demo/README.md) - This reference describes Demo namespace folder for runnable examples, lists 0 direct classes, and aggregates 2 descendant packages.
 
 ## Aggregated Contents
 

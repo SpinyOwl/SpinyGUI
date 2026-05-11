@@ -18,7 +18,7 @@ Renderer SPI consumed by backend implementations.
 
 ## Child Packages
 
-- [com.spinyowl.spinygui.core.backend.renderer.lwjgl](lwjgl/README.md) - Package for lwjgl related classes.
+- [com.spinyowl.spinygui.core.backend.renderer.lwjgl](lwjgl/README.md) - This reference describes Package for lwjgl related classes, lists 0 direct classes, and aggregates 2 descendant packages.
 
 ## Aggregated Contents
 

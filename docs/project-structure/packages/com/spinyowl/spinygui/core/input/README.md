@@ -81,7 +81,7 @@ Input domain model for keyboard, mouse, shortcuts, and user-facing key mappings.
 
 ## Child Packages
 
-- [com.spinyowl.spinygui.core.input.impl](impl/README.md) - Default mutable implementations of input services.
+- [com.spinyowl.spinygui.core.input.impl](impl/README.md) - This reference describes Default mutable implementations of input services, lists 3 direct classes, and aggregates 0 descendant packages.
 
 ## Aggregated Contents
 

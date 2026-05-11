@@ -60,7 +60,7 @@ Platform font loading, text metrics, and font storage abstractions.
 
 ## Child Packages
 
-- [com.spinyowl.spinygui.core.system.font.impl](impl/README.md) - Default font service, storage, and platform-specific font directory discovery.
+- [com.spinyowl.spinygui.core.system.font.impl](impl/README.md) - This reference describes Default font service, storage, and platform-specific font directory discovery, lists 3 direct classes, and aggregates 0 descendant packages.
 
 ## Aggregated Contents
 

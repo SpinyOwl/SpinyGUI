@@ -25,7 +25,7 @@ Parser interfaces for HTML-like node trees and stylesheets.
 
 ## Child Packages
 
-- [com.spinyowl.spinygui.core.parser.impl](impl/README.md) - Default parser implementations and parser factory code.
+- [com.spinyowl.spinygui.core.parser.impl](impl/README.md) - This reference describes Default parser implementations and parser factory code, lists 4 direct classes, and aggregates 3 descendant packages.
 
 ## Aggregated Contents
 

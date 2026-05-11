@@ -123,9 +123,9 @@ Raw platform/window/input events before conversion into application-level events
 
 ## Child Packages
 
-- [com.spinyowl.spinygui.core.system.event.listener](listener/README.md) - Adapters that translate raw system events into core event processing and state changes.
-- [com.spinyowl.spinygui.core.system.event.processor](processor/README.md) - System-event processor contract and implementation for dispatching platform events.
-- [com.spinyowl.spinygui.core.system.event.provider](provider/README.md) - Provider for mapping raw system event classes to listener instances.
+- [com.spinyowl.spinygui.core.system.event.listener](listener/README.md) - This reference describes Adapters that translate raw system events into core event processing and state changes, lists 27 direct classes, and aggregates 0 descendant packages.
+- [com.spinyowl.spinygui.core.system.event.processor](processor/README.md) - This reference describes System-event processor contract and implementation for dispatching platform events, lists 2 direct classes, and aggregates 0 descendant packages.
+- [com.spinyowl.spinygui.core.system.event.provider](provider/README.md) - This reference describes Provider for mapping raw system event classes to listener instances, lists 2 direct classes, and aggregates 0 descendant packages.
 
 ## Aggregated Contents
 

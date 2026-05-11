@@ -95,13 +95,13 @@ CSS stylesheet domain model: properties, rulesets, declarations, terms, specific
 
 ## Child Packages
 
-- [com.spinyowl.spinygui.core.style.stylesheet.annotation](annotation/README.md) - Annotations used by stylesheet property providers.
-- [com.spinyowl.spinygui.core.style.stylesheet.atrule](atrule/README.md) - CSS at-rule model objects.
-- [com.spinyowl.spinygui.core.style.stylesheet.impl](impl/README.md) - Default property-store implementation and provider scanner integration.
-- [com.spinyowl.spinygui.core.style.stylesheet.property](property/README.md) - CSS property providers that parse declarations into typed style values.
-- [com.spinyowl.spinygui.core.style.stylesheet.selector](selector/README.md) - Selector contracts and base selector types.
-- [com.spinyowl.spinygui.core.style.stylesheet.term](term/README.md) - Typed CSS term values produced by parser visitors.
-- [com.spinyowl.spinygui.core.style.stylesheet.util](util/README.md) - Utility functions for converting and validating stylesheet values.
+- [com.spinyowl.spinygui.core.style.stylesheet.annotation](annotation/README.md) - This reference describes Annotations used by stylesheet property providers, lists 1 direct class, and aggregates 0 descendant packages.
+- [com.spinyowl.spinygui.core.style.stylesheet.atrule](atrule/README.md) - This reference describes CSS at-rule model objects, lists 1 direct class, and aggregates 0 descendant packages.
+- [com.spinyowl.spinygui.core.style.stylesheet.impl](impl/README.md) - This reference describes Default property-store implementation and provider scanner integration, lists 2 direct classes, and aggregates 0 descendant packages.
+- [com.spinyowl.spinygui.core.style.stylesheet.property](property/README.md) - This reference describes CSS property providers that parse declarations into typed style values, lists 21 direct classes, and aggregates 0 descendant packages.
+- [com.spinyowl.spinygui.core.style.stylesheet.selector](selector/README.md) - This reference describes Selector contracts and base selector types, lists 4 direct classes, and aggregates 4 descendant packages.
+- [com.spinyowl.spinygui.core.style.stylesheet.term](term/README.md) - This reference describes Typed CSS term values produced by parser visitors, lists 9 direct classes, and aggregates 0 descendant packages.
+- [com.spinyowl.spinygui.core.style.stylesheet.util](util/README.md) - This reference describes Utility functions for converting and validating stylesheet values, lists 1 direct class, and aggregates 0 descendant packages.
 
 ## Aggregated Contents
 

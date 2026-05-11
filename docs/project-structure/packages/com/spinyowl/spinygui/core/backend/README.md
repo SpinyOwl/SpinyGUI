@@ -13,7 +13,7 @@ No direct Java classes were found in this package.
 
 ## Child Packages
 
-- [com.spinyowl.spinygui.core.backend.renderer](renderer/README.md) - Renderer SPI consumed by backend implementations.
+- [com.spinyowl.spinygui.core.backend.renderer](renderer/README.md) - This reference describes Renderer SPI consumed by backend implementations, lists 1 direct class, and aggregates 3 descendant packages.
 
 ## Aggregated Contents
 

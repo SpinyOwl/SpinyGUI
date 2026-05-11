@@ -46,7 +46,7 @@ Layout contracts, layout context, and text/element layout interfaces.
 
 ## Child Packages
 
-- [com.spinyowl.spinygui.core.layout.impl](impl/README.md) - Concrete layout algorithms and utilities for block, flex, none, text, and layout tree updates.
+- [com.spinyowl.spinygui.core.layout.impl](impl/README.md) - This reference describes Concrete layout algorithms and utilities for block, flex, none, text, and layout tree updates, lists 7 direct classes, and aggregates 0 descendant packages.
 
 ## Aggregated Contents
 

@@ -18,9 +18,9 @@ Resolved style state applied to nodes after rule matching and property conversio
 
 ## Child Packages
 
-- [com.spinyowl.spinygui.core.style.manager](manager/README.md) - Style manager contract and implementation for applying stylesheets to node trees.
-- [com.spinyowl.spinygui.core.style.stylesheet](stylesheet/README.md) - CSS stylesheet domain model: properties, rulesets, declarations, terms, specificity, and provider registry.
-- [com.spinyowl.spinygui.core.style.types](types/README.md) - Typed CSS value objects and constants for non-nested style domains.
+- [com.spinyowl.spinygui.core.style.manager](manager/README.md) - This reference describes Style manager contract and implementation for applying stylesheets to node trees, lists 2 direct classes, and aggregates 0 descendant packages.
+- [com.spinyowl.spinygui.core.style.stylesheet](stylesheet/README.md) - This reference describes CSS stylesheet domain model: properties, rulesets, declarations, terms, specificity, and provider registry, lists 12 direct classes, and aggregates 11 descendant packages.
+- [com.spinyowl.spinygui.core.style.types](types/README.md) - This reference describes Typed CSS value objects and constants for non-nested style domains, lists 10 direct classes, and aggregates 4 descendant packages.
 
 ## Aggregated Contents
 

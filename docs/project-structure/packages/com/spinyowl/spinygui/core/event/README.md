@@ -158,8 +158,8 @@ Application-level events emitted to nodes and event targets.
 
 ## Child Packages
 
-- [com.spinyowl.spinygui.core.event.listener](listener/README.md) - Generic event listener contract for application events.
-- [com.spinyowl.spinygui.core.event.processor](processor/README.md) - Dispatch logic for routing application events to node listeners.
+- [com.spinyowl.spinygui.core.event.listener](listener/README.md) - This reference describes Generic event listener contract for application events, lists 1 direct class, and aggregates 0 descendant packages.
+- [com.spinyowl.spinygui.core.event.processor](processor/README.md) - This reference describes Dispatch logic for routing application events to node listeners, lists 2 direct classes, and aggregates 0 descendant packages.
 
 ## Aggregated Contents
 

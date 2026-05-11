@@ -39,7 +39,7 @@ NanoVG renderer orchestration and specialized element/text/border renderers.
 
 ## Child Packages
 
-- [com.spinyowl.spinygui.core.backend.renderer.lwjgl.nanovg.util](util/README.md) - NanoVG drawing and color helpers.
+- [com.spinyowl.spinygui.core.backend.renderer.lwjgl.nanovg.util](util/README.md) - This reference describes NanoVG drawing and color helpers, lists 3 direct classes, and aggregates 0 descendant packages.
 
 ## Aggregated Contents
 

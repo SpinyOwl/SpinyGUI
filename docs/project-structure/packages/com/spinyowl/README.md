@@ -13,7 +13,7 @@ No direct Java classes were found in this package.
 
 ## Child Packages
 
-- [com.spinyowl.spinygui](spinygui/README.md) - SpinyGUI namespace folder aggregating core, backend, and demo packages.
+- [com.spinyowl.spinygui](spinygui/README.md) - This reference describes SpinyGUI namespace folder aggregating core, backend, and demo packages, lists 0 direct classes, and aggregates 58 descendant packages.
 
 ## Aggregated Contents
 
