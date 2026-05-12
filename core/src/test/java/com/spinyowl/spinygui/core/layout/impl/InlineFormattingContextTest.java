@@ -5,7 +5,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import com.spinyowl.spinygui.core.font.Font;
 import com.spinyowl.spinygui.core.font.FontStyle;
 import com.spinyowl.spinygui.core.font.FontWeight;
-import com.spinyowl.spinygui.core.layout.FontMetrics;
 import com.spinyowl.spinygui.core.layout.TextMeasurer;
 import com.spinyowl.spinygui.core.node.Element;
 import com.spinyowl.spinygui.core.node.NodeBuilder;
@@ -18,6 +17,8 @@ import com.spinyowl.spinygui.core.style.types.Position;
 import com.spinyowl.spinygui.core.style.types.TextAlign;
 import com.spinyowl.spinygui.core.style.types.WhiteSpace;
 import com.spinyowl.spinygui.core.style.types.length.Length;
+import com.spinyowl.spinygui.core.system.font.FontMetrics;
+import com.spinyowl.spinygui.core.system.font.TextLineMetrics;
 import java.util.List;
 import java.util.Set;
 import lombok.NonNull;
@@ -27,10 +28,12 @@ import org.junit.jupiter.api.Test;
 class InlineFormattingContextTest {
   private InlineFormattingContext formattingContext;
   private Element parent;
+  private FixedTextMeasurer textMeasurer;
 
   @BeforeEach
   void setUp() {
-    formattingContext = new InlineFormattingContext(new FixedTextMeasurer());
+    textMeasurer = new FixedTextMeasurer();
+    formattingContext = new InlineFormattingContext(textMeasurer);
     parent = NodeBuilder.div();
     style(parent, Display.BLOCK);
     parent.box().contentSize(50, 0);
@@ -196,6 +199,17 @@ class InlineFormattingContextTest {
     assertEquals(30, text.box().content().width());
   }
 
+  @Test
+  void layout_whenUnitIsMeasured_usesSingleUnifiedMeasurementResult() {
+    parent.box().content().width(100);
+    Text text = NodeBuilder.text("abc");
+    parent.addChild(text);
+
+    formattingContext.layout(parent, List.of(text), 0);
+
+    assertEquals(1, textMeasurer.measurementCount);
+  }
+
   private void style(Element element, Display display) {
     ResolvedStyle style = element.resolvedStyle();
     style.display(display);
@@ -213,14 +227,23 @@ class InlineFormattingContextTest {
   }
 
   private static class FixedTextMeasurer implements TextMeasurer {
-    @Override
-    public float measure(@NonNull String text, @NonNull Font font, float fontSize) {
-      return text.length() * 10f;
-    }
+    private int measurementCount;
 
     @Override
-    public FontMetrics metrics(@NonNull Font font, float fontSize, float lineHeight) {
-      return new FontMetrics(8, 2, Math.max(0, fontSize * lineHeight - 10));
+    public TextLineMetrics measure(
+        @NonNull String text, @NonNull Font font, float fontSize, float lineHeight) {
+      measurementCount++;
+      FontMetrics fontMetrics = new FontMetrics(8, 2, Math.max(0, fontSize * lineHeight - 10), 10, 8);
+      return TextLineMetrics.builder()
+          .characters(text)
+          .startIndex(0)
+          .endIndex(text.length())
+          .charCount(text.length())
+          .width(text.length() * 10f)
+          .height(fontMetrics.lineHeight())
+          .baseline(fontMetrics.baseline())
+          .fontMetrics(fontMetrics)
+          .build();
     }
   }
 }

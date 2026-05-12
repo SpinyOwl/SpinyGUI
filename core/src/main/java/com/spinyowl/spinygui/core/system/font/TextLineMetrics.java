@@ -16,6 +16,12 @@ public final class TextLineMetrics {
 
   private CharSequence characters;
 
+  /** Start index in the original measured text. */
+  private int startIndex;
+
+  /** End index in the original measured text, exclusive. */
+  private int endIndex;
+
   /** Character count in the line. */
   private int charCount;
 
@@ -24,6 +30,12 @@ public final class TextLineMetrics {
 
   /** Height of the line in pixels. */
   private float height;
+
+  /** Baseline offset from the top of the line in pixels. */
+  private float baseline;
+
+  /** Font metrics used to measure this line. */
+  private FontMetrics fontMetrics;
 
   public String toString() {
     return characters.toString();

@@ -17,7 +17,6 @@ import static com.spinyowl.spinygui.core.style.types.WhiteSpace.PRE_WRAP;
 import com.spinyowl.spinygui.core.font.Font;
 import com.spinyowl.spinygui.core.font.FontStyle;
 import com.spinyowl.spinygui.core.font.FontWeight;
-import com.spinyowl.spinygui.core.layout.FontMetrics;
 import com.spinyowl.spinygui.core.layout.InlineFragment;
 import com.spinyowl.spinygui.core.layout.LineBox;
 import com.spinyowl.spinygui.core.layout.TextMeasurer;
@@ -28,6 +27,7 @@ import com.spinyowl.spinygui.core.style.ResolvedStyle;
 import com.spinyowl.spinygui.core.style.stylesheet.util.StyleUtils;
 import com.spinyowl.spinygui.core.style.types.OverflowWrap;
 import com.spinyowl.spinygui.core.style.types.WhiteSpace;
+import com.spinyowl.spinygui.core.system.font.TextLineMetrics;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
@@ -260,7 +260,7 @@ public class InlineFormattingContext {
   private float addUnit(LineBox line, InlineUnit unit, float cursorX) {
     float width = unit.width(textMeasurer);
     float height = unit.lineHeight(textMeasurer);
-    float baseline = line.y() + unit.metrics(textMeasurer).ascent();
+    float baseline = line.y() + unit.baseline(textMeasurer);
     line.addFragment(
         InlineFragment.builder()
             .node(unit.node)
@@ -391,6 +391,7 @@ public class InlineFormattingContext {
     private final float spacerWidth;
     private final Font font;
     private final float fontSize;
+    private TextLineMetrics measurement;
 
     private InlineUnit(
         Node node,
@@ -416,15 +417,22 @@ public class InlineFormattingContext {
       if (spacer) {
         return spacerWidth;
       }
-      return text == null || text.isEmpty() ? 0 : measurer.measure(text, font, fontSize);
+      return text == null || text.isEmpty() ? 0 : measurement(measurer).width();
     }
 
-    FontMetrics metrics(TextMeasurer measurer) {
-      return measurer.metrics(font, fontSize, style.lineHeight());
+    TextLineMetrics measurement(TextMeasurer measurer) {
+      if (measurement == null) {
+        measurement = measurer.measure(text == null ? "" : text, font, fontSize, style.lineHeight());
+      }
+      return measurement;
     }
 
     float lineHeight(TextMeasurer measurer) {
-      return metrics(measurer).lineHeight(fontSize * style.lineHeight());
+      return measurement(measurer).height();
+    }
+
+    float baseline(TextMeasurer measurer) {
+      return measurement(measurer).baseline();
     }
 
     boolean wraps() {

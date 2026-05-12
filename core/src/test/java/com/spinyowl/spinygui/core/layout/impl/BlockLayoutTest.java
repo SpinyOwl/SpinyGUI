@@ -6,7 +6,6 @@ import com.spinyowl.spinygui.core.font.Font;
 import com.spinyowl.spinygui.core.font.FontStyle;
 import com.spinyowl.spinygui.core.font.FontWeight;
 import com.spinyowl.spinygui.core.layout.ElementLayout;
-import com.spinyowl.spinygui.core.layout.FontMetrics;
 import com.spinyowl.spinygui.core.layout.LayoutContext;
 import com.spinyowl.spinygui.core.layout.LayoutService;
 import com.spinyowl.spinygui.core.layout.TextMeasurer;
@@ -25,6 +24,8 @@ import com.spinyowl.spinygui.core.style.types.WhiteSpace;
 import com.spinyowl.spinygui.core.style.types.border.BorderStyle;
 import com.spinyowl.spinygui.core.style.types.length.Length;
 import com.spinyowl.spinygui.core.style.types.length.Unit;
+import com.spinyowl.spinygui.core.system.font.FontMetrics;
+import com.spinyowl.spinygui.core.system.font.TextLineMetrics;
 import java.util.Set;
 import lombok.NonNull;
 import org.junit.jupiter.api.Test;
@@ -127,13 +128,19 @@ class BlockLayoutTest {
 
   private static class FixedTextMeasurer implements TextMeasurer {
     @Override
-    public float measure(@NonNull String text, @NonNull Font font, float fontSize) {
-      return text.length() * 10f;
-    }
-
-    @Override
-    public FontMetrics metrics(@NonNull Font font, float fontSize, float lineHeight) {
-      return new FontMetrics(8, 2, Math.max(0, fontSize * lineHeight - 10));
+    public TextLineMetrics measure(
+        @NonNull String text, @NonNull Font font, float fontSize, float lineHeight) {
+      FontMetrics fontMetrics = new FontMetrics(8, 2, Math.max(0, fontSize * lineHeight - 10), 10, 8);
+      return TextLineMetrics.builder()
+          .characters(text)
+          .startIndex(0)
+          .endIndex(text.length())
+          .charCount(text.length())
+          .width(text.length() * 10f)
+          .height(fontMetrics.lineHeight())
+          .baseline(fontMetrics.baseline())
+          .fontMetrics(fontMetrics)
+          .build();
     }
   }
 }

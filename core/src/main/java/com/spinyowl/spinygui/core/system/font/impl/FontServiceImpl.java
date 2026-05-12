@@ -13,7 +13,7 @@ import com.spinyowl.spinygui.core.font.Font;
 import com.spinyowl.spinygui.core.font.FontStretch;
 import com.spinyowl.spinygui.core.font.FontStyle;
 import com.spinyowl.spinygui.core.font.FontWeight;
-import com.spinyowl.spinygui.core.layout.FontMetrics;
+import com.spinyowl.spinygui.core.system.font.FontMetrics;
 import com.spinyowl.spinygui.core.system.font.FontLoadingException;
 import com.spinyowl.spinygui.core.system.font.FontService;
 import com.spinyowl.spinygui.core.system.font.FontStorage;
@@ -22,7 +22,9 @@ import com.spinyowl.spinygui.core.system.font.TextMetrics;
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import lombok.NonNull;
@@ -113,7 +115,14 @@ public class FontServiceImpl implements FontService {
         : typographicFontFamily;
   }
 
-  public TextMetrics getTextMetrics(
+  @Override
+  public TextMetrics measureText(
+      @NonNull String text, @NonNull Font font, float fontSize, float lineHeight) {
+    return measureText(text, 0, font, fontSize, lineHeight, Float.MAX_VALUE, false);
+  }
+
+  @Override
+  public TextMetrics measureText(
       @NonNull String text,
       float offsetX,
       @NonNull Font font,
@@ -122,7 +131,7 @@ public class FontServiceImpl implements FontService {
       float maxWidth,
       boolean wordWrap) {
     if (maxWidth < 0.1) {
-      TextMetrics.builder().height(0).fullLineHeight(0).build();
+      return emptyTextMetrics(font, fontSize, lineHeight);
     }
 
     STBTTFontinfo fontInfo = getFontInfo(font.path());
@@ -132,75 +141,115 @@ public class FontServiceImpl implements FontService {
       IntBuffer pLeftSideBearing = stack.mallocInt(1);
 
       float scaleFactor = stbtt_ScaleForMappingEmToPixels(fontInfo, fontSize);
-
-      int textLength = text.length();
-      float lineWidth = offsetX;
-      float fullLineHeight = lineHeight * fontSize;
-      if (roundToPixel) {
-        fullLineHeight = Math.round(fullLineHeight);
-      }
-
-      TextLineMetrics.TextLineMetricsBuilder textLineMetrics =
-          TextLineMetrics.builder().height(fullLineHeight);
-
-      int lastSpace = -1;
-      float lastSpaceWidth = 0;
-
+      FontMetrics fontMetrics = measureFontMetrics(fontInfo, fontSize, lineHeight);
+      int length = text.length();
+      List<TextLineMetrics> lines = new ArrayList<>();
+      float currentWidth = offsetX;
+      float maxLineWidth = 0;
+      int lineCount = 0;
       int lineStart = 0;
-      int lineEnd = 0;
-
+      int lastSpace = -1;
+      int lastSpaceEnd = -1;
+      float lastSpaceWidth = 0;
       int i = 0;
-      int lineCount = 1;
-      TextMetrics.TextMetricsBuilder textMetrics = TextMetrics.builder();
-      while (i < textLength) {
-        int newLineStart = i + 1;
-        // get codepoint
-        int codePointSize = getCodePointSize(text, textLength, i, pCodePoint);
+      while (i < length) {
+        int charStart = i;
+        int codePointSize = getCodePointSize(text, length, i, pCodePoint);
         int codePoint = pCodePoint.get(0);
-        if (Character.isSpaceChar(codePoint)) {
-          lastSpace = i;
-          lastSpaceWidth = lineWidth;
-        }
-        i += codePointSize;
+        int charEnd = i + codePointSize;
 
-        // get char width
+        if (codePoint == '\n') {
+          maxLineWidth =
+              addLine(lines, text, lineStart, charStart, currentWidth, fontMetrics, maxLineWidth);
+          lineCount++;
+          lineStart = charEnd;
+          currentWidth = 0;
+          lastSpace = -1;
+          lastSpaceEnd = -1;
+          lastSpaceWidth = 0;
+          i = charEnd;
+          continue;
+        }
+
         stbtt_GetCodepointHMetrics(fontInfo, codePoint, pAdvance, pLeftSideBearing);
         float charWidth = pAdvance.get(0) * scaleFactor;
 
-        if (lineWidth + charWidth > maxWidth) {
-          lineEnd = wordWrap && lastSpace >= lineStart ? lastSpace + 1 : newLineStart;
-          textMetrics.line(
-              textLineMetrics
-                  .characters(text.subSequence(lineStart, lineEnd))
-                  .height(fullLineHeight)
-                  .width(lineWidth)
-                  .build());
-
+        if (currentWidth + charWidth > maxWidth && lineStart < charStart) {
+          int lineEnd = charStart;
+          int nextLineStart = charStart;
+          float measuredWidth = currentWidth;
+          if (wordWrap && lastSpace >= lineStart) {
+            lineEnd = lastSpace;
+            nextLineStart = lastSpaceEnd;
+            measuredWidth = lastSpaceWidth;
+          }
+          maxLineWidth =
+              addLine(lines, text, lineStart, lineEnd, measuredWidth, fontMetrics, maxLineWidth);
           lineCount++;
-          textLineMetrics =
-              TextLineMetrics.builder().height(fullLineHeight).width(lineWidth - lastSpaceWidth);
-
-          lineStart = lineEnd;
-          lineWidth = lineWidth - lastSpaceWidth;
+          lineStart = nextLineStart;
+          currentWidth = 0;
+          lastSpace = -1;
+          lastSpaceEnd = -1;
           lastSpaceWidth = 0;
+          i = nextLineStart;
+          continue;
         }
 
-        lineWidth += charWidth;
+        if (Character.isSpaceChar(codePoint)) {
+          lastSpace = charStart;
+          lastSpaceEnd = charEnd;
+          lastSpaceWidth = currentWidth;
+        }
+        currentWidth += charWidth;
+        i = charEnd;
       }
-      textMetrics.line(
-          textLineMetrics
-              .characters(text.subSequence(lineStart, lineEnd))
-              .height(fullLineHeight)
-              .width(lineWidth)
-              .build());
-      textMetrics.height(lineCount * fullLineHeight).fullLineHeight(fullLineHeight);
-      return textMetrics.build();
+      maxLineWidth = addLine(lines, text, lineStart, length, currentWidth, fontMetrics, maxLineWidth);
+      lineCount++;
+
+      return TextMetrics.builder()
+          .lines(lines)
+          .width(maxLineWidth)
+          .height(lineCount * fontMetrics.lineHeight())
+          .lineHeight(fontMetrics.lineHeight())
+          .fontMetrics(fontMetrics)
+          .build();
     }
   }
 
   @Override
+  public TextMetrics getTextMetrics(
+      @NonNull String text,
+      float offsetX,
+      @NonNull Font font,
+      float fontSize,
+      float lineHeight,
+      float maxWidth,
+      boolean wordWrap) {
+    return measureText(text, offsetX, font, fontSize, lineHeight, maxWidth, wordWrap);
+  }
+
+  @Override
   public FontMetrics getFontMetrics(@NonNull Font font, float fontSize, float lineHeight) {
-    STBTTFontinfo fontInfo = getFontInfo(font.path());
+    return measureText("", font, fontSize, lineHeight).fontMetrics();
+  }
+
+  @Override
+  public TextLineMetrics getTextLineMetrics(
+      @NonNull String text, @NonNull Font font, float fontSize, float lineHeight) {
+    return measureText(text, font, fontSize, lineHeight).lines().get(0);
+  }
+
+  private TextMetrics emptyTextMetrics(Font font, float fontSize, float lineHeight) {
+    FontMetrics fontMetrics = measureFontMetrics(getFontInfo(font.path()), fontSize, lineHeight);
+    return TextMetrics.builder()
+        .width(0)
+        .height(0)
+        .lineHeight(fontMetrics.lineHeight())
+        .fontMetrics(fontMetrics)
+        .build();
+  }
+
+  private FontMetrics measureFontMetrics(STBTTFontinfo fontInfo, float fontSize, float lineHeight) {
     try (MemoryStack stack = MemoryStack.stackPush()) {
       IntBuffer ascent = stack.mallocInt(1);
       IntBuffer descent = stack.mallocInt(1);
@@ -212,48 +261,40 @@ public class FontServiceImpl implements FontService {
       float metricsAscent = ascent.get(0) * scaleFactor;
       float metricsDescent = Math.abs(descent.get(0) * scaleFactor);
       float metricsLineGap = Math.max(0, lineGap.get(0) * scaleFactor);
-      float naturalLineHeight = metricsAscent + metricsDescent + metricsLineGap;
-      if (requestedLineHeight > naturalLineHeight) {
-        metricsLineGap += requestedLineHeight - naturalLineHeight;
-      }
+      float measuredLineHeight = Math.max(requestedLineHeight, metricsAscent + metricsDescent + metricsLineGap);
       if (roundToPixel) {
         metricsAscent = Math.round(metricsAscent);
         metricsDescent = Math.round(metricsDescent);
         metricsLineGap = Math.round(metricsLineGap);
+        measuredLineHeight = Math.round(measuredLineHeight);
       }
-      return new FontMetrics(metricsAscent, metricsDescent, metricsLineGap);
+      return new FontMetrics(
+          metricsAscent, metricsDescent, metricsLineGap, measuredLineHeight, metricsAscent);
     }
   }
 
-  @Override
-  public TextLineMetrics getTextLineMetrics(
-      @NonNull String text, @NonNull Font font, float fontSize, float lineHeight) {
-    STBTTFontinfo fontInfo = getFontInfo(font.path());
-    try (MemoryStack stack = MemoryStack.stackPush()) {
-      IntBuffer pCodePoint = stack.mallocInt(1);
-      IntBuffer pAdvance = stack.mallocInt(1);
-      IntBuffer pLeftSideBearing = stack.mallocInt(1);
-
-      float scaleFactor = stbtt_ScaleForMappingEmToPixels(fontInfo, fontSize);
-
-      int textLength = text.length();
-
-      float lineWidth = 0;
-      int i = 0;
-      while (i < textLength) {
-        i += getCodePointSize(text, textLength, i, pCodePoint);
-        int codePoint = pCodePoint.get(0);
-
-        // get char width
-        stbtt_GetCodepointHMetrics(fontInfo, codePoint, pAdvance, pLeftSideBearing);
-        lineWidth += pAdvance.get(0) * scaleFactor;
-      }
-      return TextLineMetrics.builder()
-          .height(fontSize * lineHeight)
-          .width(lineWidth)
-          .characters(text)
-          .build();
-    }
+  private float addLine(
+      List<TextLineMetrics> lines,
+      String text,
+      int startIndex,
+      int endIndex,
+      float width,
+      FontMetrics fontMetrics,
+      float currentMaxWidth) {
+    int safeStart = Math.max(0, Math.min(startIndex, text.length()));
+    int safeEnd = Math.max(safeStart, Math.min(endIndex, text.length()));
+    lines.add(
+        TextLineMetrics.builder()
+            .characters(text.subSequence(safeStart, safeEnd))
+            .startIndex(safeStart)
+            .endIndex(safeEnd)
+            .charCount(safeEnd - safeStart)
+            .width(width)
+            .height(fontMetrics.lineHeight())
+            .baseline(fontMetrics.baseline())
+            .fontMetrics(fontMetrics)
+            .build());
+    return Math.max(currentMaxWidth, width);
   }
 
   // obtains font info from the map or if map has no entry, creates it and adds it to the map

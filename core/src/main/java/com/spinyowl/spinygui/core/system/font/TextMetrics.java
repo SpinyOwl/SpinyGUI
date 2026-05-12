@@ -1,6 +1,6 @@
 package com.spinyowl.spinygui.core.system.font;
 
-import com.google.common.collect.ImmutableSet;
+import java.util.List;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -18,8 +18,10 @@ import lombok.ToString;
 @Builder
 public final class TextMetrics {
 
-  @Singular private final ImmutableSet<TextLineMetrics> lines;
+  @Singular private final List<TextLineMetrics> lines;
 
+  private float width;
   private float height;
-  private float fullLineHeight;
+  private float lineHeight;
+  private FontMetrics fontMetrics;
 }

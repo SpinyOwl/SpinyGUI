@@ -66,7 +66,7 @@ public class TextLayoutImpl implements TextLayout {
     }
 
     TextMetrics metrics =
-        fontService.getTextMetrics(
+        fontService.measureText(
             text.content(), startX, fontToUse, fontSize, lineHeight, parentWidth, false);
 
     text.textStartX(startX);
@@ -74,11 +74,11 @@ public class TextLayoutImpl implements TextLayout {
 
     TextLineMetrics lastLine = Iterables.getLast(metrics.lines());
     float lastTextEndX = lastLine.width();
-    float fullLineHeight = metrics.fullLineHeight();
-    float lastTextEndY = metrics.height() - fullLineHeight; // top border of last text line.
+    float measuredLineHeight = metrics.lineHeight();
+    float lastTextEndY = metrics.height() - measuredLineHeight; // top border of last text line.
     if (lastTextEndX >= parentWidth) {
       lastTextEndX = 0;
-      lastTextEndY += fullLineHeight;
+      lastTextEndY += measuredLineHeight;
     }
 
     text.textEndX(lastTextEndX);
