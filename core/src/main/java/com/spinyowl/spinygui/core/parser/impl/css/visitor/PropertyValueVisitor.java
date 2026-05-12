@@ -38,7 +38,7 @@ public class PropertyValueVisitor extends CSS3BaseVisitor<Term<?>> {
   private static final String HSL = "hsl(";
   private static final String HSLA = "hsla(";
 
-  public static final String PIXEL_REGEX = "-?\\d+[pP][xX]";
+  public static final String PIXEL_REGEX = "-?\\d+(\\.\\d+)?[pP][xX]";
 
   private static Operator getOperator(Operator_Context op) {
     String operatorText = op != null ? op.getText() : " ";
@@ -86,10 +86,10 @@ public class PropertyValueVisitor extends CSS3BaseVisitor<Term<?>> {
     String dimensionText = ctx.getText();
     if (dimensionText.matches(PIXEL_REGEX)) {
       return new TermLength(
-          Length.pixel(Integer.parseInt(dimensionText.substring(0, dimensionText.length() - 2))));
+          Length.pixel(Float.parseFloat(dimensionText.substring(0, dimensionText.length() - 2))));
     }
 
-    throw new NotImplementedException("The only dimension supported is pixel and percentage.");
+    throw new NotImplementedException("The only dimension supported is pixel and percentage. Value specified: " + dimensionText);
   }
 
   @Override

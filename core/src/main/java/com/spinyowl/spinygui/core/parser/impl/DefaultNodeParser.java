@@ -42,7 +42,11 @@ public class DefaultNodeParser implements NodeParser {
     if (frameElements.size() == 1) {
       return createNodeFromElement(frameElements.get(0), new NodeConverterContext());
     }
-    return createNodeFromElement(document, new NodeConverterContext());
+    var bodyChildren = document.body().children();
+    if (bodyChildren.size() == 1) {
+      return createNodeFromElement(bodyChildren.first(), new NodeConverterContext());
+    }
+    return createNodeFromElement(document.body(), new NodeConverterContext());
   }
 
   private Node createNodeFromContent(org.jsoup.nodes.Node node, NodeConverterContext context) {
@@ -174,6 +178,7 @@ public class DefaultNodeParser implements NodeParser {
 
   private org.w3c.dom.Element createElement(org.w3c.dom.Document document, Element node) {
     String name = node.nodeName().toLowerCase();
+    log.debug("Creating element with name: {}", name);
     var element = document.createElement(name);
 
     for (var entry : node.attributes().entrySet()) {
