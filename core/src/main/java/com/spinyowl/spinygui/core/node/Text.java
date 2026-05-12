@@ -1,5 +1,7 @@
 package com.spinyowl.spinygui.core.node;
 
+import com.spinyowl.spinygui.core.layout.InlineFragment;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -29,6 +31,16 @@ public final class Text extends Node {
 
   private float textEndX;
   private float textEndY;
+  private final List<InlineFragment> inlineFragments = new ArrayList<>();
+
+  public List<InlineFragment> inlineFragments() {
+    return Collections.unmodifiableList(inlineFragments);
+  }
+
+  public void inlineFragments(List<InlineFragment> fragments) {
+    inlineFragments.clear();
+    inlineFragments.addAll(fragments);
+  }
 
   public Text() {
     super("#text");

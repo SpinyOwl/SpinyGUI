@@ -4,15 +4,16 @@ import static org.lwjgl.stb.STBTruetype.STBTT_MS_EID_UNICODE_BMP;
 import static org.lwjgl.stb.STBTruetype.STBTT_MS_LANG_ENGLISH;
 import static org.lwjgl.stb.STBTruetype.STBTT_PLATFORM_ID_MICROSOFT;
 import static org.lwjgl.stb.STBTruetype.stbtt_GetCodepointHMetrics;
+import static org.lwjgl.stb.STBTruetype.stbtt_GetFontVMetrics;
 import static org.lwjgl.stb.STBTruetype.stbtt_GetFontNameString;
 import static org.lwjgl.stb.STBTruetype.stbtt_ScaleForMappingEmToPixels;
-import static org.lwjgl.stb.STBTruetype.stbtt_ScaleForPixelHeight;
 import static org.slf4j.LoggerFactory.getLogger;
 
 import com.spinyowl.spinygui.core.font.Font;
 import com.spinyowl.spinygui.core.font.FontStretch;
 import com.spinyowl.spinygui.core.font.FontStyle;
 import com.spinyowl.spinygui.core.font.FontWeight;
+import com.spinyowl.spinygui.core.layout.FontMetrics;
 import com.spinyowl.spinygui.core.system.font.FontLoadingException;
 import com.spinyowl.spinygui.core.system.font.FontService;
 import com.spinyowl.spinygui.core.system.font.FontStorage;
@@ -198,6 +199,33 @@ public class FontServiceImpl implements FontService {
   }
 
   @Override
+  public FontMetrics getFontMetrics(@NonNull Font font, float fontSize, float lineHeight) {
+    STBTTFontinfo fontInfo = getFontInfo(font.path());
+    try (MemoryStack stack = MemoryStack.stackPush()) {
+      IntBuffer ascent = stack.mallocInt(1);
+      IntBuffer descent = stack.mallocInt(1);
+      IntBuffer lineGap = stack.mallocInt(1);
+      stbtt_GetFontVMetrics(fontInfo, ascent, descent, lineGap);
+
+      float scaleFactor = stbtt_ScaleForMappingEmToPixels(fontInfo, fontSize);
+      float requestedLineHeight = fontSize * lineHeight;
+      float metricsAscent = ascent.get(0) * scaleFactor;
+      float metricsDescent = Math.abs(descent.get(0) * scaleFactor);
+      float metricsLineGap = Math.max(0, lineGap.get(0) * scaleFactor);
+      float naturalLineHeight = metricsAscent + metricsDescent + metricsLineGap;
+      if (requestedLineHeight > naturalLineHeight) {
+        metricsLineGap += requestedLineHeight - naturalLineHeight;
+      }
+      if (roundToPixel) {
+        metricsAscent = Math.round(metricsAscent);
+        metricsDescent = Math.round(metricsDescent);
+        metricsLineGap = Math.round(metricsLineGap);
+      }
+      return new FontMetrics(metricsAscent, metricsDescent, metricsLineGap);
+    }
+  }
+
+  @Override
   public TextLineMetrics getTextLineMetrics(
       @NonNull String text, @NonNull Font font, float fontSize, float lineHeight) {
     STBTTFontinfo fontInfo = getFontInfo(font.path());
@@ -206,7 +234,7 @@ public class FontServiceImpl implements FontService {
       IntBuffer pAdvance = stack.mallocInt(1);
       IntBuffer pLeftSideBearing = stack.mallocInt(1);
 
-      float scaleFactor = stbtt_ScaleForPixelHeight(fontInfo, fontSize);
+      float scaleFactor = stbtt_ScaleForMappingEmToPixels(fontInfo, fontSize);
 
       int textLength = text.length();
 

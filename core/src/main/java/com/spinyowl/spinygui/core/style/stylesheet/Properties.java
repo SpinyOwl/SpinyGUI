@@ -87,6 +87,7 @@ public final class Properties {
   public static final String HEIGHT = "height";
 
   public static final String LINE_HEIGHT = "line-height";
+  public static final String TEXT_ALIGN = "text-align";
 
   public static final String MIN_WIDTH = "min-width";
   public static final String MIN_HEIGHT = "min-height";
@@ -112,4 +113,5 @@ public final class Properties {
   public static final String OVERFLOW = "overflow";
   public static final String OVERFLOW_X = "overflow-x";
   public static final String OVERFLOW_Y = "overflow-y";
+  public static final String OVERFLOW_WRAP = "overflow-wrap";
 }

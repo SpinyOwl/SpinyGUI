@@ -20,13 +20,15 @@ public final class LayoutServiceProvider {
       @NonNull TimeService timeService,
       @NonNull FontService fontService) {
 
+    var textMeasurer = new FontServiceTextMeasurer(fontService);
     var textLayout = new TextLayoutImpl(fontService);
+    var inlineFormattingContext = new InlineFormattingContext(textMeasurer);
     var elementLayoutMap = new HashMap<Display, ElementLayout>();
     LayoutService layoutService = new LayoutServiceImpl(textLayout, elementLayoutMap);
 
     elementLayoutMap.put(Display.NONE, new NoneLayout());
 
-    var blockLayout = new BlockLayout(layoutService);
+    var blockLayout = new BlockLayout(layoutService, inlineFormattingContext);
     elementLayoutMap.put(Display.BLOCK, blockLayout);
 
     var flexLayout =

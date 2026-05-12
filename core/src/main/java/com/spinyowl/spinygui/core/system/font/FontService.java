@@ -47,6 +47,17 @@ public interface FontService {
       boolean wordWrap);
 
   /**
+   * Calculates font vertical metrics.
+   *
+   * @param font font to use.
+   * @param fontSize font size.
+   * @param lineHeight requested CSS line-height multiplier.
+   * @return font metrics in pixels.
+   */
+  com.spinyowl.spinygui.core.layout.FontMetrics getFontMetrics(
+      @NonNull Font font, float fontSize, float lineHeight);
+
+  /**
    * Calculates text line metrics.
    *
    * @param text text to calculate metrics for.

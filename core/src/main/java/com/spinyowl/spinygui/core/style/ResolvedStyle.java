@@ -52,6 +52,7 @@ import static com.spinyowl.spinygui.core.style.stylesheet.Properties.MAX_WIDTH;
 import static com.spinyowl.spinygui.core.style.stylesheet.Properties.MIN_HEIGHT;
 import static com.spinyowl.spinygui.core.style.stylesheet.Properties.MIN_WIDTH;
 import static com.spinyowl.spinygui.core.style.stylesheet.Properties.OPACITY;
+import static com.spinyowl.spinygui.core.style.stylesheet.Properties.OVERFLOW_WRAP;
 import static com.spinyowl.spinygui.core.style.stylesheet.Properties.PADDING_BOTTOM;
 import static com.spinyowl.spinygui.core.style.stylesheet.Properties.PADDING_LEFT;
 import static com.spinyowl.spinygui.core.style.stylesheet.Properties.PADDING_RIGHT;
@@ -60,6 +61,7 @@ import static com.spinyowl.spinygui.core.style.stylesheet.Properties.POINTER_EVE
 import static com.spinyowl.spinygui.core.style.stylesheet.Properties.POSITION;
 import static com.spinyowl.spinygui.core.style.stylesheet.Properties.RIGHT;
 import static com.spinyowl.spinygui.core.style.stylesheet.Properties.TAB_SIZE;
+import static com.spinyowl.spinygui.core.style.stylesheet.Properties.TEXT_ALIGN;
 import static com.spinyowl.spinygui.core.style.stylesheet.Properties.TOP;
 import static com.spinyowl.spinygui.core.style.stylesheet.Properties.WHITE_SPACE;
 import static com.spinyowl.spinygui.core.style.stylesheet.Properties.WIDTH;
@@ -71,8 +73,10 @@ import com.spinyowl.spinygui.core.style.stylesheet.Ruleset;
 import com.spinyowl.spinygui.core.style.types.BoxShadow;
 import com.spinyowl.spinygui.core.style.types.Color;
 import com.spinyowl.spinygui.core.style.types.Display;
+import com.spinyowl.spinygui.core.style.types.OverflowWrap;
 import com.spinyowl.spinygui.core.style.types.PointerEvents;
 import com.spinyowl.spinygui.core.style.types.Position;
+import com.spinyowl.spinygui.core.style.types.TextAlign;
 import com.spinyowl.spinygui.core.style.types.WhiteSpace;
 import com.spinyowl.spinygui.core.style.types.background.BackgroundOrigin;
 import com.spinyowl.spinygui.core.style.types.background.BackgroundRepeat;
@@ -697,5 +701,21 @@ public class ResolvedStyle {
 
   public void lineHeight(Float lineHeight) {
     set(LINE_HEIGHT, lineHeight);
+  }
+
+  public TextAlign textAlign() {
+    return get(TEXT_ALIGN);
+  }
+
+  public void textAlign(TextAlign textAlign) {
+    set(TEXT_ALIGN, textAlign);
+  }
+
+  public OverflowWrap overflowWrap() {
+    return get(OVERFLOW_WRAP);
+  }
+
+  public void overflowWrap(OverflowWrap overflowWrap) {
+    set(OVERFLOW_WRAP, overflowWrap);
   }
 }

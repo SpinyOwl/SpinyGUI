@@ -12,6 +12,7 @@ import com.spinyowl.spinygui.core.layout.LayoutContext;
 import com.spinyowl.spinygui.core.layout.LayoutService;
 import com.spinyowl.spinygui.core.node.Element;
 import com.spinyowl.spinygui.core.node.Frame;
+import com.spinyowl.spinygui.core.node.Node;
 import com.spinyowl.spinygui.core.node.layout.Box;
 import com.spinyowl.spinygui.core.node.layout.Edges;
 import com.spinyowl.spinygui.core.style.ResolvedStyle;
@@ -20,6 +21,8 @@ import com.spinyowl.spinygui.core.style.types.Position;
 import com.spinyowl.spinygui.core.style.types.border.BorderStyle;
 import com.spinyowl.spinygui.core.style.types.length.Length.PixelLength;
 import com.spinyowl.spinygui.core.style.types.length.Unit;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
 import lombok.NonNull;
@@ -29,6 +32,7 @@ import lombok.RequiredArgsConstructor;
 public class BlockLayout implements ElementLayout {
 
   @NonNull private final LayoutService layoutService;
+  @NonNull private final InlineFormattingContext inlineFormattingContext;
 
   @Override
   public void layout(Element element, LayoutContext context) {
@@ -314,7 +318,7 @@ public class BlockLayout implements ElementLayout {
     float childrenHeight = 0;
     Unit height = style.height();
     if (!skipChildren) {
-      layoutService.layoutChildNodes(element, context);
+      layoutFlowChildren(element);
     }
     if (style.display().equals(Display.BLOCK) && height.isAuto() && !skipChildren) {
       childrenHeight = getChildNodesHeight(element);
@@ -361,6 +365,34 @@ public class BlockLayout implements ElementLayout {
     // skip layout if element has no frame - that means that it is not attached to any
     // node tree (and tree root is frame).
     return element.frame() == null || (element.parent() == null && !(element instanceof Frame));
+  }
+
+  private void layoutFlowChildren(Element element) {
+    LayoutContext context = new LayoutContext();
+    List<Node> inlineNodes = new ArrayList<>();
+    for (Node child : element.childNodes()) {
+      if (inlineFormattingContext.inlineNode(child)) {
+        inlineNodes.add(child);
+      } else {
+        flushInlineNodes(element, context, inlineNodes);
+        layoutService.layoutNode(child, context);
+      }
+    }
+    flushInlineNodes(element, context, inlineNodes);
+  }
+
+  private void flushInlineNodes(Element element, LayoutContext context, List<Node> inlineNodes) {
+    if (inlineNodes.isEmpty()) {
+      return;
+    }
+    float contentStart = element.box().border().top() + element.box().padding().top();
+    float startY =
+        context.lastBlockBottomY() == null
+            ? 0
+            : Math.max(0, context.lastBlockBottomY() - contentStart);
+    float height = inlineFormattingContext.layout(element, inlineNodes, startY);
+    context.lastBlockBottomY(contentStart + startY + height);
+    inlineNodes.clear();
   }
 
   private void applyPadding(
