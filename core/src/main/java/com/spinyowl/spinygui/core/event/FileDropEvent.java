@@ -1,10 +1,17 @@
 package com.spinyowl.spinygui.core.event;
 
-import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.NonNull;
+import lombok.Setter;
+import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 
-@Data
+
+@Getter
+@Setter
+@ToString
+@EqualsAndHashCode
 @SuperBuilder
 public class FileDropEvent extends Event {
   @NonNull private final String[] paths;

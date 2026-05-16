@@ -1,11 +1,17 @@
 package com.spinyowl.spinygui.core.event;
 
-import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.NonNull;
+import lombok.Setter;
+import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 import org.joml.Vector2fc;
 
-@Data
+@Getter
+@Setter
+@ToString
+@EqualsAndHashCode
 @SuperBuilder
 public class CursorEnterEvent extends Event {
   @NonNull private final Vector2fc cursorPosition;

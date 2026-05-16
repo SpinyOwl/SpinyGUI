@@ -3,12 +3,19 @@ package com.spinyowl.spinygui.core.event;
 import com.spinyowl.spinygui.core.input.KeyAction;
 import com.spinyowl.spinygui.core.input.KeyMod;
 import com.spinyowl.spinygui.core.input.KeyboardKey;
-import java.util.Set;
-import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.NonNull;
+import lombok.Setter;
+import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 
-@Data
+import java.util.Set;
+
+@Getter
+@Setter
+@ToString
+@EqualsAndHashCode
 @SuperBuilder
 public class KeyboardEvent extends Event {
   @NonNull private final KeyAction action;
