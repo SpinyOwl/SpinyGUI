@@ -1,4 +1,4 @@
-// Generated from com/spinyowl/spinygui/core/parser/impl/css/antlr/CSS3.g4 by ANTLR 4.13.1
+// Generated from com/spinyowl/spinygui/core/parser/impl/css/antlr/CSS3.g4 by ANTLR 4.13.2
 package com.spinyowl.spinygui.core.parser.impl.css.antlr;
 import org.antlr.v4.runtime.tree.AbstractParseTreeVisitor;
 

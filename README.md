@@ -17,7 +17,7 @@ New implementation should be more flexible.
 
 ## System requirements
 
-SpinyGUI requires Java 15+.
+SpinyGUI requires Java 25+.
 
 ## Links
 

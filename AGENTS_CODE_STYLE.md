@@ -14,7 +14,7 @@ This project is a modular Java GUI library with a browser-engine-like architectu
 ## Java Style
 
 - Java modules are deliberate. Update `module-info.java` when adding exported APIs or new module dependencies.
-- The build uses Java 21 source/target compatibility. README still says Java 15+, so verify before changing compatibility claims.
+- The build uses Java 25 source/target compatibility.
 - Formatting follows the checked-in IntelliJ Google Java style. Keep two-space indentation and readable wrapped method chains.
 - Lombok is part of the project style. Existing code uses `@Getter`, `@Setter`, `@RequiredArgsConstructor`, `@NonNull`, `@ToString`, `@NoArgsConstructor`, and `@Slf4j`.
 - Lombok accessors are fluent and not chained. Prefer `element.box()` over `getBox()` and avoid introducing chained setter assumptions.
