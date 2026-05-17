@@ -1,6 +1,7 @@
 package com.spinyowl.spinygui.core.layout.impl;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.spinyowl.spinygui.core.font.Font;
 import com.spinyowl.spinygui.core.font.FontStyle;
@@ -16,6 +17,7 @@ import com.spinyowl.spinygui.core.style.types.OverflowWrap;
 import com.spinyowl.spinygui.core.style.types.Position;
 import com.spinyowl.spinygui.core.style.types.TextAlign;
 import com.spinyowl.spinygui.core.style.types.WhiteSpace;
+import com.spinyowl.spinygui.core.style.types.border.BorderStyle;
 import com.spinyowl.spinygui.core.style.types.length.Length;
 import com.spinyowl.spinygui.core.system.font.FontMetrics;
 import com.spinyowl.spinygui.core.system.font.TextLineMetrics;
@@ -93,7 +95,10 @@ class InlineFormattingContextTest {
 
     assertEquals(0, first.inlineFragments().get(0).y());
     assertEquals(0, second.inlineFragments().get(0).y());
-    assertEquals(60, second.inlineFragments().get(0).x());
+    assertEquals(" ", second.inlineFragments().get(0).text());
+    assertEquals(50, second.inlineFragments().get(0).x());
+    assertEquals("world", second.inlineFragments().get(1).text());
+    assertEquals(60, second.inlineFragments().get(1).x());
   }
 
   @Test
@@ -112,6 +117,69 @@ class InlineFormattingContextTest {
     assertEquals(10, middle.inlineFragments().get(0).x());
     assertEquals(20, right.inlineFragments().get(0).x());
     assertEquals(10, inline.box().content().width());
+    assertEquals(1, inline.inlineFragments().size());
+    assertEquals(10, inline.inlineFragments().get(0).x());
+  }
+
+  @Test
+  void layout_whenInlineElementWraps_createsElementFragmentForEachLine() {
+    parent.box().content().width(25);
+    Element inline = new Element("span");
+    style(inline, Display.INLINE);
+    inline.resolvedStyle().overflowWrap(OverflowWrap.BREAK_WORD);
+    Text text = NodeBuilder.text("abcd");
+    inline.addChild(text);
+    parent.addChild(inline);
+
+    formattingContext.layout(parent, List.of(inline), 0);
+
+    assertTrue(inline.inlineFragments().size() > 1);
+    assertEquals(0, inline.inlineFragments().get(0).y());
+    assertEquals(10, inline.inlineFragments().get(1).y());
+  }
+
+  @Test
+  void layout_whenNestedInlineHasOwnColor_usesNestedStyleForTextFragment() {
+    parent.box().content().width(200);
+    Element inline = new Element("span");
+    style(inline, Display.INLINE);
+    inline.resolvedStyle().color(Color.RED);
+    Text text = NodeBuilder.text("red");
+    inline.addChild(text);
+    parent.addChild(inline);
+
+    formattingContext.layout(parent, List.of(inline), 0);
+
+    assertEquals(Color.RED, text.inlineFragments().get(0).color());
+  }
+
+  @Test
+  void layout_whenInlineElementHasMarginPaddingAndBorder_advancesCursorButExcludesMarginFragment() {
+    parent.box().content().width(200);
+    Element inline = new Element("span");
+    style(inline, Display.INLINE);
+    inline.resolvedStyle().marginLeft(Length.pixel(5));
+    inline.resolvedStyle().marginRight(Length.pixel(7));
+    inline.resolvedStyle().paddingLeft(Length.pixel(3));
+    inline.resolvedStyle().paddingRight(Length.pixel(4));
+    inline.resolvedStyle().borderLeftWidth(Length.pixel(2));
+    inline.resolvedStyle().borderRightWidth(Length.pixel(2));
+    inline.resolvedStyle().borderTopStyle(BorderStyle.SOLID);
+    inline.resolvedStyle().borderRightStyle(BorderStyle.SOLID);
+    inline.resolvedStyle().borderBottomStyle(BorderStyle.SOLID);
+    inline.resolvedStyle().borderLeftStyle(BorderStyle.SOLID);
+    Text text = NodeBuilder.text("a");
+    Text right = NodeBuilder.text("b");
+    inline.addChild(text);
+    parent.addChildren(inline, right);
+
+    formattingContext.layout(parent, List.of(inline, right), 0);
+
+    assertEquals(10, text.inlineFragments().get(0).x());
+    assertEquals(33, right.inlineFragments().get(0).x());
+    assertEquals(5, inline.inlineFragments().get(0).x());
+    assertEquals(21, inline.inlineFragments().get(0).width());
+    assertEquals(21, inline.box().content().width());
   }
 
   @Test
@@ -184,6 +252,7 @@ class InlineFormattingContextTest {
 
     assertEquals(10, text.inlineFragments().get(0).x());
     assertEquals(30, inline.box().content().width());
+    assertEquals(30, inline.inlineFragments().get(0).width());
   }
 
   @Test

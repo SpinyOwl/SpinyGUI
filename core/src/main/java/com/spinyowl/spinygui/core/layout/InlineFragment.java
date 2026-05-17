@@ -4,10 +4,12 @@ import com.spinyowl.spinygui.core.font.Font;
 import com.spinyowl.spinygui.core.node.Node;
 import com.spinyowl.spinygui.core.style.types.Color;
 import lombok.Builder;
+import lombok.EqualsAndHashCode;
 import lombok.Value;
 
 @Value
 @Builder
+@EqualsAndHashCode(exclude = "node")
 public class InlineFragment {
   Node node;
   String text;

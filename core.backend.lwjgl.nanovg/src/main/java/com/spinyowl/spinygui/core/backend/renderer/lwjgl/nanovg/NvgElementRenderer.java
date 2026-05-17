@@ -10,6 +10,8 @@ import static org.lwjgl.nanovg.NanoVG.nvgSave;
 
 import com.spinyowl.spinygui.core.node.Element;
 import com.spinyowl.spinygui.core.node.Node;
+import com.spinyowl.spinygui.core.style.types.Display;
+import org.joml.Vector2f;
 
 public class NvgElementRenderer {
 
@@ -17,6 +19,23 @@ public class NvgElementRenderer {
     Element element = node.asElement();
     if (visible(element) /*&& visibleInParents(element)*/) {
       var style = element.resolvedStyle();
+      if (Display.INLINE.equals(style.display()) && !element.inlineFragments().isEmpty()) {
+        createScissor(nanovg, node);
+        nvgSave(nanovg);
+        Vector2f offset = inlineFormattingOffset(element);
+        element
+            .inlineFragments()
+            .forEach(
+                fragment ->
+                    drawRect(
+                        nanovg,
+                        new Vector2f(offset.x + fragment.x(), offset.y + fragment.y()),
+                        new Vector2f(fragment.width(), fragment.height()),
+                        style.backgroundColor()));
+        nvgRestore(nanovg);
+        resetScissor(nanovg);
+        return;
+      }
       var backgroundColor = style.backgroundColor();
       var borderRadius = getBorderRadius(element, style);
 
@@ -30,5 +49,13 @@ public class NvgElementRenderer {
       nvgRestore(nanovg);
       resetScissor(nanovg);
     }
+  }
+
+  private Vector2f inlineFormattingOffset(Element element) {
+    Element parent = element.parent();
+    while (parent != null && Display.INLINE.equals(parent.resolvedStyle().display())) {
+      parent = parent.parent();
+    }
+    return parent == null ? new Vector2f() : parent.absolutePosition();
   }
 }

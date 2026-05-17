@@ -61,6 +61,89 @@ class BlockLayoutTest {
     assertEquals(18, blockChild.box().borderBox().y());
   }
 
+  @Test
+  void layout_whenInlineRunPrecedesBlockChild_includesInlineHeightInBlockFlow() {
+    Frame frame = NodeBuilder.frame();
+    frame.frameSize(200, 200);
+    style(frame, 0);
+    Element wrapper = NodeBuilder.div();
+    style(wrapper, 0);
+    Text left = NodeBuilder.text("a");
+    Element inline = new Element("span");
+    style(inline, 0);
+    inline.resolvedStyle().display(Display.INLINE);
+    inline.addChild(NodeBuilder.text("b"));
+    Element blockChild = NodeBuilder.div();
+    style(blockChild, 5);
+    wrapper.addChildren(left, inline, blockChild);
+    frame.addChild(wrapper);
+
+    RecursiveLayoutService layoutService = new RecursiveLayoutService();
+    BlockLayout blockLayout =
+        new BlockLayout(layoutService, new InlineFormattingContext(new FixedTextMeasurer()));
+    layoutService.blockLayout(blockLayout);
+
+    blockLayout.layout(frame, new LayoutContext());
+
+    assertEquals(10, blockChild.box().borderBox().y());
+    assertEquals(20, wrapper.box().content().height());
+  }
+
+  @Test
+  void layout_whenInlineContentFollowsBlock_startsAfterBlock() {
+    Frame frame = NodeBuilder.frame();
+    frame.frameSize(200, 200);
+    style(frame, 0);
+    Element wrapper = NodeBuilder.div();
+    style(wrapper, 0);
+    Element blockChild = NodeBuilder.div();
+    style(blockChild, 5);
+    Text text = NodeBuilder.text("a");
+    wrapper.addChildren(blockChild, text);
+    frame.addChild(wrapper);
+
+    RecursiveLayoutService layoutService = new RecursiveLayoutService();
+    BlockLayout blockLayout =
+        new BlockLayout(layoutService, new InlineFormattingContext(new FixedTextMeasurer()));
+    layoutService.blockLayout(blockLayout);
+
+    blockLayout.layout(frame, new LayoutContext());
+
+    assertEquals(10, text.inlineFragments().get(0).y());
+  }
+
+  @Test
+  void layout_whenDisplayNoneDescendantInsideInline_ignoresDescendant() {
+    Frame frame = NodeBuilder.frame();
+    frame.frameSize(200, 200);
+    style(frame, 0);
+    Element wrapper = NodeBuilder.div();
+    style(wrapper, 0);
+    Element inline = new Element("span");
+    style(inline, 0);
+    inline.resolvedStyle().display(Display.INLINE);
+    Text left = NodeBuilder.text("a");
+    Element hidden = new Element("span");
+    style(hidden, 0);
+    hidden.resolvedStyle().display(Display.NONE);
+    Text hiddenText = NodeBuilder.text("hidden");
+    hidden.addChild(hiddenText);
+    Text right = NodeBuilder.text("b");
+    inline.addChildren(left, hidden, right);
+    wrapper.addChild(inline);
+    frame.addChild(wrapper);
+
+    RecursiveLayoutService layoutService = new RecursiveLayoutService();
+    BlockLayout blockLayout =
+        new BlockLayout(layoutService, new InlineFormattingContext(new FixedTextMeasurer()));
+    layoutService.blockLayout(blockLayout);
+
+    blockLayout.layout(frame, new LayoutContext());
+
+    assertEquals(0, hiddenText.inlineFragments().size());
+    assertEquals(20, inline.box().content().width());
+  }
+
   private void style(Element element, float borderWidth) {
     ResolvedStyle style = element.resolvedStyle();
     style.display(Display.BLOCK);

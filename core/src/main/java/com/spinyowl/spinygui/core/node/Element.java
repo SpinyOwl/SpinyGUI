@@ -5,7 +5,9 @@ import static com.spinyowl.spinygui.core.util.Reference.containsReference;
 import com.spinyowl.spinygui.core.event.Event;
 import com.spinyowl.spinygui.core.event.EventTarget;
 import com.spinyowl.spinygui.core.event.listener.EventListener;
+import com.spinyowl.spinygui.core.layout.InlineFragment;
 import com.spinyowl.spinygui.core.style.ResolvedStyle;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -20,7 +22,7 @@ import lombok.ToString;
 
 @Getter
 @Setter
-@ToString(exclude = {"childNodes", "resolvedStyle", "listenerMap"})
+@ToString(exclude = {"childNodes", "resolvedStyle", "listenerMap", "inlineFragments"})
 public class Element extends Node implements EventTarget {
 
   /** The number of pixels that an element's content is scrolled vertically. */
@@ -50,6 +52,8 @@ public class Element extends Node implements EventTarget {
 
   /** Child nodes. */
   private final List<Node> childNodes = new LinkedList<>();
+
+  private final List<InlineFragment> inlineFragments = new ArrayList<>();
 
   @Getter(AccessLevel.NONE)
   @Setter(AccessLevel.NONE)
@@ -188,6 +192,15 @@ public class Element extends Node implements EventTarget {
   @Override
   public boolean hasChildNodes() {
     return !childNodes.isEmpty();
+  }
+
+  public List<InlineFragment> inlineFragments() {
+    return Collections.unmodifiableList(inlineFragments);
+  }
+
+  public void inlineFragments(List<InlineFragment> fragments) {
+    inlineFragments.clear();
+    inlineFragments.addAll(fragments);
   }
 
   public Element nextElementSibling() {

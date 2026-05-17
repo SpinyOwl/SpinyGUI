@@ -1,9 +1,7 @@
 open module com.spinyowl.spinygui.core.backend.lwjgl.nanovg {
   requires com.spinyowl.spinygui.core;
   requires com.spinyowl.spinygui.core.backend;
-
-  requires lombok;
-
+  requires static lombok;
   requires org.lwjgl;
   requires org.lwjgl.natives;
   requires org.lwjgl.glfw;

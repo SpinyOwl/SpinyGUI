@@ -14,9 +14,9 @@ import org.antlr.v4.runtime.dfa.DFA;
 
 @SuppressWarnings({"all", "warnings", "unchecked", "unused", "cast", "CheckReturnValue", "this-escape"})
 public class CSS3Lexer extends Lexer {
-	static {
-		RuntimeMetaData.checkVersion("4.13.2", RuntimeMetaData.VERSION);
-	}
+  static {
+    RuntimeMetaData.checkVersion("4.13.2", RuntimeMetaData.VERSION);
+  }
 
 	protected static final DFA[] _decisionToDFA;
 	protected static final PredictionContextCache _sharedContextCache =
