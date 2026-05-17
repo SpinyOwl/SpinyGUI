@@ -15,11 +15,12 @@ junit = "6.0.3"
 junitPlatform = "1.10.5"
 logback = "1.5.32"
 lombok = "1.18.46"
-lwjgl = "3.4.1"
+lwjgl = "3.4.2-SNAPSHOT"
 mockito = "5.23.0"
 netty = "4.1.120.Final"
 slf4j = "2.0.18"
 snakeYaml = "2.6"
+
 
 
 [libraries]
@@ -51,7 +52,6 @@ mockitoJunitJupiter = { module = "org.mockito:mockito-junit-jupiter", version.re
 netty = { module = "io.netty:netty-all", version.ref = "netty" }
 slf4j = { module = "org.slf4j:slf4j-api", version.ref = "slf4j" }
 snakeYaml = { module = "org.yaml:snakeyaml", version.ref = "snakeYaml" }
-
 
 [bundles]
 lwjgl = [
