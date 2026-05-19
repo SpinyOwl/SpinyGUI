@@ -1,393 +1,101 @@
 // Generated from com/spinyowl/spinygui/core/parser/impl/css/antlr/CSS3.g4 by ANTLR 4.13.2
 package com.spinyowl.spinygui.core.parser.impl.css.antlr;
-
-import java.util.List;
-import org.antlr.v4.runtime.NoViableAltException;
-import org.antlr.v4.runtime.Parser;
-import org.antlr.v4.runtime.ParserRuleContext;
-import org.antlr.v4.runtime.RecognitionException;
-import org.antlr.v4.runtime.RuntimeMetaData;
-import org.antlr.v4.runtime.Token;
-import org.antlr.v4.runtime.TokenStream;
-import org.antlr.v4.runtime.Vocabulary;
-import org.antlr.v4.runtime.VocabularyImpl;
-import org.antlr.v4.runtime.atn.ATN;
-import org.antlr.v4.runtime.atn.ATNDeserializer;
-import org.antlr.v4.runtime.atn.ParserATNSimulator;
-import org.antlr.v4.runtime.atn.PredictionContextCache;
+import org.antlr.v4.runtime.atn.*;
 import org.antlr.v4.runtime.dfa.DFA;
-import org.antlr.v4.runtime.tree.ParseTreeListener;
-import org.antlr.v4.runtime.tree.ParseTreeVisitor;
-import org.antlr.v4.runtime.tree.TerminalNode;
+import org.antlr.v4.runtime.*;
+import org.antlr.v4.runtime.misc.*;
+import org.antlr.v4.runtime.tree.*;
+import java.util.List;
+import java.util.Iterator;
+import java.util.ArrayList;
 
 @SuppressWarnings({"all", "warnings", "unchecked", "unused", "cast", "CheckReturnValue", "this-escape"})
 public class CSS3Parser extends Parser {
-  static {
-    RuntimeMetaData.checkVersion("4.13.2", RuntimeMetaData.VERSION);
-  }
+	static { RuntimeMetaData.checkVersion("4.13.2", RuntimeMetaData.VERSION); }
 
 	protected static final DFA[] _decisionToDFA;
 	protected static final PredictionContextCache _sharedContextCache =
 		new PredictionContextCache();
-  public static final int T__0 = 1,
-      T__1 = 2,
-      T__2 = 3,
-      T__3 = 4,
-      T__4 = 5,
-      T__5 = 6,
-      T__6 = 7,
-      T__7 = 8,
-      T__8 = 9,
-      T__9 = 10,
-      T__10 = 11,
-      T__11 = 12,
-      T__12 = 13,
-      T__13 = 14,
-      T__14 = 15,
-      Comment = 16,
-      Space = 17,
-      Cdo = 18,
-      Cdc = 19,
-      Includes = 20,
-      DashMatch = 21,
-      Hash = 22,
-      Import = 23,
-      Page = 24,
-      Media = 25,
-      Namespace = 26,
-      Charset = 27,
-      Important = 28,
-      Percentage = 29,
-      Uri = 30,
-      UnicodeRange = 31,
-      MediaOnly = 32,
-      Not = 33,
-      And = 34,
-      Dimension = 35,
-      UnknownDimension = 36,
-      Plus = 37,
-      Minus = 38,
-      Greater = 39,
-      Comma = 40,
-      Tilde = 41,
-      PseudoNot = 42,
-      Number = 43,
-      String_ = 44,
-      PrefixMatch = 45,
-      SuffixMatch = 46,
-      SubstringMatch = 47,
-      FontFace = 48,
-      Supports = 49,
-      Or = 50,
-      Keyframes = 51,
-      From = 52,
-      To = 53,
-      Calc = 54,
-      Viewport = 55,
-      CounterStyle = 56,
-      FontFeatureValues = 57,
-      DxImageTransform = 58,
-      Variable = 59,
-      Var = 60,
-      Ident = 61,
-      Function_ = 62;
-  public static final int RULE_stylesheet = 0,
-      RULE_charset = 1,
-      RULE_imports = 2,
-      RULE_namespace_ = 3,
-      RULE_namespacePrefix = 4,
-      RULE_media = 5,
-      RULE_mediaQueryList = 6,
-      RULE_mediaQuery = 7,
-      RULE_mediaType = 8,
-      RULE_mediaExpression = 9,
-      RULE_mediaFeature = 10,
-      RULE_page = 11,
-      RULE_pseudoPage = 12,
-      RULE_selectorGroup = 13,
-      RULE_selector = 14,
-      RULE_combinator = 15,
-      RULE_simpleSelectorSequence = 16,
-      RULE_typeSelector = 17,
-      RULE_typeNamespacePrefix = 18,
-      RULE_elementName = 19,
-      RULE_universal = 20,
-      RULE_className = 21,
-      RULE_attrib = 22,
-      RULE_pseudo = 23,
-      RULE_functionalPseudo = 24,
-      RULE_expression = 25,
-      RULE_negation = 26,
-      RULE_negationArg = 27,
-      RULE_operator_ = 28,
-      RULE_property_ = 29,
-      RULE_ruleset = 30,
-      RULE_declarationList = 31,
-      RULE_declaration = 32,
-      RULE_prio = 33,
-      RULE_value = 34,
-      RULE_expr = 35,
-      RULE_term = 36,
-      RULE_function_ = 37,
-      RULE_dxImageTransform = 38,
-      RULE_hexcolor = 39,
-      RULE_number = 40,
-      RULE_percentage = 41,
-      RULE_dimension = 42,
-      RULE_unknownDimension = 43,
-      RULE_any_ = 44,
-      RULE_atRule = 45,
-      RULE_atKeyword = 46,
-      RULE_unused = 47,
-      RULE_block = 48,
-      RULE_nestedStatement = 49,
-      RULE_groupRuleBody = 50,
-      RULE_supportsRule = 51,
-      RULE_supportsCondition = 52,
-      RULE_supportsConditionInParens = 53,
-      RULE_supportsNegation = 54,
-      RULE_supportsConjunction = 55,
-      RULE_supportsDisjunction = 56,
-      RULE_supportsDeclarationCondition = 57,
-      RULE_generalEnclosed = 58,
-      RULE_var_ = 59,
-      RULE_calc = 60,
-      RULE_calcSum = 61,
-      RULE_calcProduct = 62,
-      RULE_calcValue = 63,
-      RULE_fontFaceRule = 64,
-      RULE_fontFaceDeclaration = 65,
-      RULE_keyframesRule = 66,
-      RULE_keyframesBlocks = 67,
-      RULE_keyframeSelector = 68,
-      RULE_viewport = 69,
-      RULE_counterStyle = 70,
-      RULE_fontFeatureValuesRule = 71,
-      RULE_fontFamilyNameList = 72,
-      RULE_fontFamilyName = 73,
-      RULE_featureValueBlock = 74,
-      RULE_featureType = 75,
-      RULE_featureValueDefinition = 76,
-      RULE_ident = 77,
-      RULE_ws = 78;
-
+	public static final int
+		T__0=1, T__1=2, T__2=3, T__3=4, T__4=5, T__5=6, T__6=7, T__7=8, T__8=9, 
+		T__9=10, T__10=11, T__11=12, T__12=13, T__13=14, T__14=15, Comment=16, 
+		Space=17, Cdo=18, Cdc=19, Includes=20, DashMatch=21, Hash=22, Import=23, 
+		Page=24, Media=25, Namespace=26, Charset=27, Important=28, Percentage=29, 
+		Uri=30, UnicodeRange=31, MediaOnly=32, Not=33, And=34, Dimension=35, UnknownDimension=36, 
+		Plus=37, Minus=38, Greater=39, Comma=40, Tilde=41, PseudoNot=42, Number=43, 
+		String_=44, PrefixMatch=45, SuffixMatch=46, SubstringMatch=47, FontFace=48, 
+		Supports=49, Or=50, Keyframes=51, From=52, To=53, Calc=54, Viewport=55, 
+		CounterStyle=56, FontFeatureValues=57, DxImageTransform=58, Variable=59, 
+		Var=60, Ident=61, Function_=62;
+	public static final int
+		RULE_stylesheet = 0, RULE_charset = 1, RULE_imports = 2, RULE_namespace_ = 3, 
+		RULE_namespacePrefix = 4, RULE_media = 5, RULE_mediaQueryList = 6, RULE_mediaQuery = 7, 
+		RULE_mediaType = 8, RULE_mediaExpression = 9, RULE_mediaFeature = 10, 
+		RULE_page = 11, RULE_pseudoPage = 12, RULE_selectorGroup = 13, RULE_selector = 14, 
+		RULE_combinator = 15, RULE_simpleSelectorSequence = 16, RULE_typeSelector = 17, 
+		RULE_typeNamespacePrefix = 18, RULE_elementName = 19, RULE_universal = 20, 
+		RULE_className = 21, RULE_attrib = 22, RULE_pseudo = 23, RULE_functionalPseudo = 24, 
+		RULE_expression = 25, RULE_negation = 26, RULE_negationArg = 27, RULE_operator_ = 28, 
+		RULE_property_ = 29, RULE_ruleset = 30, RULE_declarationList = 31, RULE_declaration = 32, 
+		RULE_prio = 33, RULE_value = 34, RULE_expr = 35, RULE_term = 36, RULE_function_ = 37, 
+		RULE_dxImageTransform = 38, RULE_hexcolor = 39, RULE_number = 40, RULE_percentage = 41, 
+		RULE_dimension = 42, RULE_unknownDimension = 43, RULE_any_ = 44, RULE_atRule = 45, 
+		RULE_atKeyword = 46, RULE_unused = 47, RULE_block = 48, RULE_nestedStatement = 49, 
+		RULE_groupRuleBody = 50, RULE_supportsRule = 51, RULE_supportsCondition = 52, 
+		RULE_supportsConditionInParens = 53, RULE_supportsNegation = 54, RULE_supportsConjunction = 55, 
+		RULE_supportsDisjunction = 56, RULE_supportsDeclarationCondition = 57, 
+		RULE_generalEnclosed = 58, RULE_var_ = 59, RULE_calc = 60, RULE_calcSum = 61, 
+		RULE_calcProduct = 62, RULE_calcValue = 63, RULE_fontFaceRule = 64, RULE_fontFaceDeclaration = 65, 
+		RULE_keyframesRule = 66, RULE_keyframesBlocks = 67, RULE_keyframeSelector = 68, 
+		RULE_viewport = 69, RULE_counterStyle = 70, RULE_fontFeatureValuesRule = 71, 
+		RULE_fontFamilyNameList = 72, RULE_fontFamilyName = 73, RULE_featureValueBlock = 74, 
+		RULE_featureType = 75, RULE_featureValueDefinition = 76, RULE_ident = 77, 
+		RULE_ws = 78;
 	private static String[] makeRuleNames() {
-    return new String[] {
-      "stylesheet",
-      "charset",
-      "imports",
-      "namespace_",
-      "namespacePrefix",
-      "media",
-      "mediaQueryList",
-      "mediaQuery",
-      "mediaType",
-      "mediaExpression",
-      "mediaFeature",
-      "page",
-      "pseudoPage",
-      "selectorGroup",
-      "selector",
-      "combinator",
-      "simpleSelectorSequence",
-      "typeSelector",
-      "typeNamespacePrefix",
-      "elementName",
-      "universal",
-      "className",
-      "attrib",
-      "pseudo",
-      "functionalPseudo",
-      "expression",
-      "negation",
-      "negationArg",
-      "operator_",
-      "property_",
-      "ruleset",
-      "declarationList",
-      "declaration",
-      "prio",
-      "value",
-      "expr",
-      "term",
-      "function_",
-      "dxImageTransform",
-      "hexcolor",
-      "number",
-      "percentage",
-      "dimension",
-      "unknownDimension",
-      "any_",
-      "atRule",
-      "atKeyword",
-      "unused",
-      "block",
-      "nestedStatement",
-      "groupRuleBody",
-      "supportsRule",
-      "supportsCondition",
-      "supportsConditionInParens",
-      "supportsNegation",
-      "supportsConjunction",
-      "supportsDisjunction",
-      "supportsDeclarationCondition",
-      "generalEnclosed",
-      "var_",
-      "calc",
-      "calcSum",
-      "calcProduct",
-      "calcValue",
-      "fontFaceRule",
-      "fontFaceDeclaration",
-      "keyframesRule",
-      "keyframesBlocks",
-      "keyframeSelector",
-      "viewport",
-      "counterStyle",
-      "fontFeatureValuesRule",
-      "fontFamilyNameList",
-      "fontFamilyName",
-      "featureValueBlock",
-      "featureType",
-      "featureValueDefinition",
-      "ident",
-      "ws"
-    };
+		return new String[] {
+			"stylesheet", "charset", "imports", "namespace_", "namespacePrefix", 
+			"media", "mediaQueryList", "mediaQuery", "mediaType", "mediaExpression", 
+			"mediaFeature", "page", "pseudoPage", "selectorGroup", "selector", "combinator", 
+			"simpleSelectorSequence", "typeSelector", "typeNamespacePrefix", "elementName", 
+			"universal", "className", "attrib", "pseudo", "functionalPseudo", "expression", 
+			"negation", "negationArg", "operator_", "property_", "ruleset", "declarationList", 
+			"declaration", "prio", "value", "expr", "term", "function_", "dxImageTransform", 
+			"hexcolor", "number", "percentage", "dimension", "unknownDimension", 
+			"any_", "atRule", "atKeyword", "unused", "block", "nestedStatement", 
+			"groupRuleBody", "supportsRule", "supportsCondition", "supportsConditionInParens", 
+			"supportsNegation", "supportsConjunction", "supportsDisjunction", "supportsDeclarationCondition", 
+			"generalEnclosed", "var_", "calc", "calcSum", "calcProduct", "calcValue", 
+			"fontFaceRule", "fontFaceDeclaration", "keyframesRule", "keyframesBlocks", 
+			"keyframeSelector", "viewport", "counterStyle", "fontFeatureValuesRule", 
+			"fontFamilyNameList", "fontFamilyName", "featureValueBlock", "featureType", 
+			"featureValueDefinition", "ident", "ws"
+		};
 	}
 	public static final String[] ruleNames = makeRuleNames();
 
 	private static String[] makeLiteralNames() {
-    return new String[] {
-      null,
-      "';'",
-      "'('",
-      "':'",
-      "')'",
-      "'{'",
-      "'}'",
-      "'*'",
-      "'|'",
-      "'.'",
-      "'['",
-      "'='",
-      "']'",
-      "'/'",
-      "'_'",
-      "'@'",
-      null,
-      null,
-      "'<!--'",
-      "'-->'",
-      "'~='",
-      "'|='",
-      null,
-      null,
-      null,
-      null,
-      null,
-      "'@charset '",
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      "'+'",
-      "'-'",
-      "'>'",
-      "','",
-      "'~'",
-      null,
-      null,
-      null,
-      "'^='",
-      "'$='",
-      "'*='",
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      "'calc('",
-      null,
-      null,
-      null,
-      null,
-      null,
-      "'var('"
-    };
+		return new String[] {
+			null, "';'", "'('", "':'", "')'", "'{'", "'}'", "'*'", "'|'", "'.'", 
+			"'['", "'='", "']'", "'/'", "'_'", "'@'", null, null, "'<!--'", "'-->'", 
+			"'~='", "'|='", null, null, null, null, null, "'@charset '", null, null, 
+			null, null, null, null, null, null, null, "'+'", "'-'", "'>'", "','", 
+			"'~'", null, null, null, "'^='", "'$='", "'*='", null, null, null, null, 
+			null, null, "'calc('", null, null, null, null, null, "'var('"
+		};
 	}
 	private static final String[] _LITERAL_NAMES = makeLiteralNames();
 	private static String[] makeSymbolicNames() {
-    return new String[] {
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      "Comment",
-      "Space",
-      "Cdo",
-      "Cdc",
-      "Includes",
-      "DashMatch",
-      "Hash",
-      "Import",
-      "Page",
-      "Media",
-      "Namespace",
-      "Charset",
-      "Important",
-      "Percentage",
-      "Uri",
-      "UnicodeRange",
-      "MediaOnly",
-      "Not",
-      "And",
-      "Dimension",
-      "UnknownDimension",
-      "Plus",
-      "Minus",
-      "Greater",
-      "Comma",
-      "Tilde",
-      "PseudoNot",
-      "Number",
-      "String_",
-      "PrefixMatch",
-      "SuffixMatch",
-      "SubstringMatch",
-      "FontFace",
-      "Supports",
-      "Or",
-      "Keyframes",
-      "From",
-      "To",
-      "Calc",
-      "Viewport",
-      "CounterStyle",
-      "FontFeatureValues",
-      "DxImageTransform",
-      "Variable",
-      "Var",
-      "Ident",
-      "Function_"
-    };
+		return new String[] {
+			null, null, null, null, null, null, null, null, null, null, null, null, 
+			null, null, null, null, "Comment", "Space", "Cdo", "Cdc", "Includes", 
+			"DashMatch", "Hash", "Import", "Page", "Media", "Namespace", "Charset", 
+			"Important", "Percentage", "Uri", "UnicodeRange", "MediaOnly", "Not", 
+			"And", "Dimension", "UnknownDimension", "Plus", "Minus", "Greater", "Comma", 
+			"Tilde", "PseudoNot", "Number", "String_", "PrefixMatch", "SuffixMatch", 
+			"SubstringMatch", "FontFace", "Supports", "Or", "Keyframes", "From", 
+			"To", "Calc", "Viewport", "CounterStyle", "FontFeatureValues", "DxImageTransform", 
+			"Variable", "Var", "Ident", "Function_"
+		};
 	}
 	private static final String[] _SYMBOLIC_NAMES = makeSymbolicNames();
 	public static final Vocabulary VOCABULARY = new VocabularyImpl(_LITERAL_NAMES, _SYMBOLIC_NAMES);
@@ -679,7 +387,7 @@ public class CSS3Parser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_charset; }
-
+	 
 		public CharsetContext() { }
 		public void copyFrom(CharsetContext ctx) {
 			super.copyFrom(ctx);
@@ -794,7 +502,7 @@ public class CSS3Parser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_imports; }
-
+	 
 		public ImportsContext() { }
 		public void copyFrom(ImportsContext ctx) {
 			super.copyFrom(ctx);
@@ -986,7 +694,7 @@ public class CSS3Parser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_namespace_; }
-
+	 
 		public Namespace_Context() { }
 		public void copyFrom(Namespace_Context ctx) {
 			super.copyFrom(ctx);
@@ -1439,7 +1147,7 @@ public class CSS3Parser extends Parser {
 						setState(305);
 						mediaExpression();
 						}
-                }
+						} 
 					}
 					setState(311);
 					_errHandler.sync(this);
@@ -1466,7 +1174,7 @@ public class CSS3Parser extends Parser {
 						setState(315);
 						mediaExpression();
 						}
-                }
+						} 
 					}
 					setState(321);
 					_errHandler.sync(this);
@@ -2217,7 +1925,7 @@ public class CSS3Parser extends Parser {
 			case PseudoNot:
 				enterOuterAlt(_localctx, 2);
 				{
-            setState(418);
+				setState(418); 
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 				do {
@@ -2259,7 +1967,7 @@ public class CSS3Parser extends Parser {
 						throw new NoViableAltException(this);
 					}
 					}
-              setState(420);
+					setState(420); 
 					_errHandler.sync(this);
 					_la = _input.LA(1);
 				} while ( (((_la) & ~0x3f) == 0 && ((1L << _la) & 4398050706952L) != 0) );
@@ -2886,7 +2594,7 @@ public class CSS3Parser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-        setState(487);
+			setState(487); 
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			do {
@@ -2950,7 +2658,7 @@ public class CSS3Parser extends Parser {
 				ws();
 				}
 				}
-          setState(489);
+				setState(489); 
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 			} while ( (((_la) & ~0x3f) == 0 && ((1L << _la) & 2320506641742561280L) != 0) );
@@ -3132,7 +2840,7 @@ public class CSS3Parser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_operator_; }
-
+	 
 		public Operator_Context() { }
 		public void copyFrom(Operator_Context ctx) {
 			super.copyFrom(ctx);
@@ -3249,7 +2957,7 @@ public class CSS3Parser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_property_; }
-
+	 
 		public Property_Context() { }
 		public void copyFrom(Property_Context ctx) {
 			super.copyFrom(ctx);
@@ -3374,7 +3082,7 @@ public class CSS3Parser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_ruleset; }
-
+	 
 		public RulesetContext() { }
 		public void copyFrom(RulesetContext ctx) {
 			super.copyFrom(ctx);
@@ -3610,7 +3318,7 @@ public class CSS3Parser extends Parser {
 						break;
 					}
 					}
-            }
+					} 
 				}
 				setState(569);
 				_errHandler.sync(this);
@@ -3635,7 +3343,7 @@ public class CSS3Parser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_declaration; }
-
+	 
 		public DeclarationContext() { }
 		public void copyFrom(DeclarationContext ctx) {
 			super.copyFrom(ctx);
@@ -3856,7 +3564,7 @@ public class CSS3Parser extends Parser {
 			int _alt;
 			enterOuterAlt(_localctx, 1);
 			{
-        setState(592);
+			setState(592); 
 			_errHandler.sync(this);
 			_alt = 1;
 			do {
@@ -3916,7 +3624,7 @@ public class CSS3Parser extends Parser {
 				default:
 					throw new NoViableAltException(this);
 				}
-          setState(594);
+				setState(594); 
 				_errHandler.sync(this);
 				_alt = getInterpreter().adaptivePredict(_input,56,_ctx);
 			} while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER );
@@ -3996,7 +3704,7 @@ public class CSS3Parser extends Parser {
 					setState(600);
 					term();
 					}
-            }
+					} 
 				}
 				setState(605);
 				_errHandler.sync(this);
@@ -4021,7 +3729,7 @@ public class CSS3Parser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_term; }
-
+	 
 		public TermContext() { }
 		public void copyFrom(TermContext ctx) {
 			super.copyFrom(ctx);
@@ -5079,7 +4787,7 @@ public class CSS3Parser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_atRule; }
-
+	 
 		public AtRuleContext() { }
 		public void copyFrom(AtRuleContext ctx) {
 			super.copyFrom(ctx);
@@ -6048,7 +5756,7 @@ public class CSS3Parser extends Parser {
 			{
 			setState(834);
 			supportsConditionInParens();
-        setState(844);
+			setState(844); 
 			_errHandler.sync(this);
 			_alt = 1;
 			do {
@@ -6078,7 +5786,7 @@ public class CSS3Parser extends Parser {
 				default:
 					throw new NoViableAltException(this);
 				}
-          setState(846);
+				setState(846); 
 				_errHandler.sync(this);
 				_alt = getInterpreter().adaptivePredict(_input,80,_ctx);
 			} while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER );
@@ -6145,7 +5853,7 @@ public class CSS3Parser extends Parser {
 			{
 			setState(848);
 			supportsConditionInParens();
-        setState(858);
+			setState(858); 
 			_errHandler.sync(this);
 			_alt = 1;
 			do {
@@ -6175,7 +5883,7 @@ public class CSS3Parser extends Parser {
 				default:
 					throw new NoViableAltException(this);
 				}
-          setState(860);
+				setState(860); 
 				_errHandler.sync(this);
 				_alt = getInterpreter().adaptivePredict(_input,81,_ctx);
 			} while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER );
@@ -6907,7 +6615,7 @@ public class CSS3Parser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_fontFaceDeclaration; }
-
+	 
 		public FontFaceDeclarationContext() { }
 		public void copyFrom(FontFaceDeclarationContext ctx) {
 			super.copyFrom(ctx);
@@ -7586,7 +7294,7 @@ public class CSS3Parser extends Parser {
 					setState(1050);
 					fontFamilyName();
 					}
-            }
+					} 
 				}
 				setState(1056);
 				_errHandler.sync(this);
@@ -7677,7 +7385,7 @@ public class CSS3Parser extends Parser {
 						setState(1060);
 						ident();
 						}
-                }
+						} 
 					}
 					setState(1066);
 					_errHandler.sync(this);
@@ -7916,7 +7624,7 @@ public class CSS3Parser extends Parser {
 					setState(1098);
 					number();
 					}
-            }
+					} 
 				}
 				setState(1104);
 				_errHandler.sync(this);
@@ -8048,7 +7756,7 @@ public class CSS3Parser extends Parser {
 						consume();
 					}
 					}
-            }
+					} 
 				}
 				setState(1112);
 				_errHandler.sync(this);
