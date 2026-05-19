@@ -1,0 +1,235 @@
+Supported means the property is registered by a `PropertyProvider` in
+`core.style.stylesheet.property` and can be parsed/applied through the stylesheet property store.
+
+At-rules with dedicated parser support:
+-  [x] `@font-face`
+   - [x] `font-family`
+   - [x] `src`
+   - [x] `font-stretch`
+   - [x] `font-style`
+   - [x] `font-weight`
+
+Checklist of CSS properties:
+-  [x] `align-content`
+-  [x] `align-items`
+-  [x] `align-self`
+-  [ ] `all`
+-  [ ] `animation`
+-  [ ] `animation-delay`
+-  [ ] `animation-direction`
+-  [ ] `animation-duration`
+-  [ ] `animation-fill-mode`
+-  [ ] `animation-iteration-count`
+-  [ ] `animation-name`
+-  [ ] `animation-play-state`
+-  [ ] `animation-timing-function`
+-  [ ] `backface-visibility`
+-  [ ] `background`
+-  [ ] `background-attachment`
+-  [ ] `background-blend-mode`
+-  [ ] `background-clip`
+-  [x] `background-color`
+-  [x] `background-image`
+-  [x] `background-origin`
+-  [x] `background-position`
+-  [x] `background-position-x`
+-  [x] `background-position-y`
+-  [ ] `background-repeat`
+-  [x] `background-size`
+-  [x] `border`
+-  [x] `border-bottom`
+-  [x] `border-bottom-color`
+-  [x] `border-bottom-left-radius`
+-  [x] `border-bottom-right-radius`
+-  [x] `border-bottom-style`
+-  [x] `border-bottom-width`
+-  [ ] `border-collapse`
+-  [x] `border-color`
+-  [ ] `border-image`
+-  [ ] `border-image-outset`
+-  [ ] `border-image-repeat`
+-  [ ] `border-image-slice`
+-  [ ] `border-image-source`
+-  [ ] `border-image-width`
+-  [x] `border-left`
+-  [x] `border-left-color`
+-  [x] `border-left-style`
+-  [x] `border-left-width`
+-  [x] `border-radius`
+-  [x] `border-right`
+-  [x] `border-right-color`
+-  [x] `border-right-style`
+-  [x] `border-right-width`
+-  [ ] `border-spacing`
+-  [x] `border-style`
+-  [x] `border-top`
+-  [x] `border-top-color`
+-  [x] `border-top-left-radius`
+-  [x] `border-top-right-radius`
+-  [x] `border-top-style`
+-  [x] `border-top-width`
+-  [x] `border-width`
+-  [x] `bottom`
+-  [ ] `box-decoration-break`
+-  [x] `box-shadow`
+-  [ ] `box-sizing`
+-  [ ] `break-after`
+-  [ ] `break-before`
+-  [ ] `break-inside`
+-  [ ] `caption-side`
+-  [ ] `caret-color`
+-  [ ] `@charset`
+-  [ ] `clear`
+-  [ ] `clip`
+-  [ ] `clip-path`
+-  [x] `color`
+-  [ ] `column-count`
+-  [ ] `column-fill`
+-  [ ] `column-gap`
+-  [ ] `column-rule`
+-  [ ] `column-rule-color`
+-  [ ] `column-rule-style`
+-  [ ] `column-rule-width`
+-  [ ] `column-span`
+-  [ ] `column-width`
+-  [ ] `columns`
+-  [ ] `content`
+-  [ ] `counter-increment`
+-  [ ] `counter-reset`
+-  [ ] `cursor`
+-  [ ] `direction`
+-  [x] `display`
+   - [x] `flex`
+   - [x] `none`
+   - [x] `block`
+   - [x] `inline`
+-  [ ] `empty-cells`
+-  [ ] `filter`
+-  [ ] `flex`
+-  [x] `flex-basis`
+-  [x] `flex-direction`
+-  [ ] `flex-flow`
+-  [x] `flex-grow`
+-  [x] `flex-shrink`
+-  [x] `flex-wrap`
+-  [ ] `float`
+-  [ ] `font`
+-  [x] `font-family`
+-  [ ] `font-feature-settings`
+-  [ ] `font-kerning`
+-  [x] `font-size`
+-  [ ] `font-size-adjust`
+-  [x] `font-stretch`
+-  [x] `font-style`
+-  [ ] `font-variant`
+-  [ ] `font-variant-caps`
+-  [x] `font-weight`
+-  [ ] `grid`
+-  [ ] `grid-area`
+-  [ ] `grid-auto-columns`
+-  [ ] `grid-auto-flow`
+-  [ ] `grid-auto-rows`
+-  [ ] `grid-column`
+-  [ ] `grid-column-end`
+-  [ ] `grid-column-gap`
+-  [ ] `grid-column-start`
+-  [ ] `grid-gap`
+-  [ ] `grid-row`
+-  [ ] `grid-row-end`
+-  [ ] `grid-row-gap`
+-  [ ] `grid-row-start`
+-  [ ] `grid-template`
+-  [ ] `grid-template-areas`
+-  [ ] `grid-template-columns`
+-  [ ] `grid-template-rows`
+-  [ ] `hanging-punctuation`
+-  [x] `height`
+-  [ ] `hyphens`
+-  [ ] `@import`
+-  [ ] `isolation`
+-  [x] `justify-content`
+-  [ ] `@keyframes`
+-  [x] `left`
+-  [ ] `letter-spacing`
+-  [x] `line-height`
+-  [ ] `list-style`
+-  [ ] `list-style-image`
+-  [ ] `list-style-position`
+-  [ ] `list-style-type`
+-  [x] `margin`
+-  [x] `margin-bottom`
+-  [x] `margin-left`
+-  [x] `margin-right`
+-  [x] `margin-top`
+-  [x] `max-height`
+-  [x] `max-width`
+-  [ ] `@media`
+-  [x] `min-height`
+-  [x] `min-width`
+-  [ ] `mix-blend-mode`
+-  [ ] `object-fit`
+-  [ ] `object-position`
+-  [x] `opacity`
+-  [ ] `order`
+-  [ ] `outline`
+-  [ ] `outline-color`
+-  [ ] `outline-offset`
+-  [ ] `outline-style`
+-  [ ] `outline-width`
+-  [ ] `overflow`
+-  [ ] `overflow-x`
+-  [ ] `overflow-y`
+-  [x] `overflow-wrap`
+-  [x] `padding`
+-  [x] `padding-bottom`
+-  [x] `padding-left`
+-  [x] `padding-right`
+-  [x] `padding-top`
+-  [ ] `page-break-after`
+-  [ ] `page-break-before`
+-  [ ] `page-break-inside`
+-  [ ] `perspective`
+-  [ ] `perspective-origin`
+-  [x] `pointer-events`
+-  [x] `position`
+   - [x] `absolute`
+   - [x] `relative`
+   - [x] `static`
+   - [ ] `fixed`
+-  [ ] `quotes`
+-  [ ] `resize`
+-  [x] `right`
+-  [ ] `scroll-behavior`
+-  [x] `tab-size`
+-  [ ] `table-layout`
+-  [x] `text-align`
+-  [ ] `text-align-last`
+-  [ ] `text-decoration`
+-  [ ] `text-decoration-color`
+-  [ ] `text-decoration-line`
+-  [ ] `text-decoration-style`
+-  [ ] `text-indent`
+-  [ ] `text-justify`
+-  [ ] `text-overflow`
+-  [ ] `text-shadow`
+-  [ ] `text-transform`
+-  [x] `top`
+-  [ ] `transform`
+-  [ ] `transform-origin`
+-  [ ] `transform-style`
+-  [ ] `transition`
+-  [ ] `transition-delay`
+-  [ ] `transition-duration`
+-  [ ] `transition-property`
+-  [ ] `transition-timing-function`
+-  [ ] `unicode-bidi`
+-  [ ] `user-select`
+-  [ ] `vertical-align`
+-  [ ] `visibility`
+-  [x] `white-space`
+-  [x] `width`
+-  [ ] `word-break`
+-  [ ] `word-spacing`
+-  [ ] `word-wrap`
+-  [ ] `writing-mode`
+-  [x] `z-index`
