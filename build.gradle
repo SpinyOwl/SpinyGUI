@@ -1,6 +1,6 @@
 plugins {
     id "org.sonarqube" version "$sonarqube_version"
-    id "net.nemerosa.versioning" version "3.0.0"
+    id "net.nemerosa.versioning" version "3.1.0"
     id "checkstyle"
 }
 
