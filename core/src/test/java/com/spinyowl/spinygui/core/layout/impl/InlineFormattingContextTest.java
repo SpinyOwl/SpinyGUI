@@ -1,5 +1,6 @@
 package com.spinyowl.spinygui.core.layout.impl;
 
+import static com.spinyowl.spinygui.core.style.stylesheet.Properties.WORD_WRAP;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -11,12 +12,16 @@ import com.spinyowl.spinygui.core.node.Element;
 import com.spinyowl.spinygui.core.node.NodeBuilder;
 import com.spinyowl.spinygui.core.node.Text;
 import com.spinyowl.spinygui.core.style.ResolvedStyle;
+import com.spinyowl.spinygui.core.style.stylesheet.Property;
+import com.spinyowl.spinygui.core.style.stylesheet.property.TextPropertyProvider;
+import com.spinyowl.spinygui.core.style.stylesheet.term.TermIdent;
 import com.spinyowl.spinygui.core.style.types.Color;
 import com.spinyowl.spinygui.core.style.types.Display;
 import com.spinyowl.spinygui.core.style.types.OverflowWrap;
 import com.spinyowl.spinygui.core.style.types.Position;
 import com.spinyowl.spinygui.core.style.types.TextAlign;
 import com.spinyowl.spinygui.core.style.types.WhiteSpace;
+import com.spinyowl.spinygui.core.style.types.WordBreak;
 import com.spinyowl.spinygui.core.style.types.border.BorderStyle;
 import com.spinyowl.spinygui.core.style.types.length.Length;
 import com.spinyowl.spinygui.core.system.font.FontMetrics;
@@ -82,6 +87,115 @@ class InlineFormattingContextTest {
     assertEquals("a", text.inlineFragments().get(0).text());
     assertEquals("f", text.inlineFragments().get(5).text());
     assertEquals(10, text.inlineFragments().get(5).y());
+  }
+
+  @Test
+  void layout_whenWordWrapBreakWord_breaksLongWord() {
+    applyStyleProperty(parent, WORD_WRAP, "break-word");
+    Text text = NodeBuilder.text("abcdef");
+    parent.addChild(text);
+
+    float height = formattingContext.layout(parent, List.of(text), 0);
+
+    assertEquals(20, height);
+    assertEquals(6, text.inlineFragments().size());
+    assertEquals("a", text.inlineFragments().get(0).text());
+    assertEquals("f", text.inlineFragments().get(5).text());
+    assertEquals(10, text.inlineFragments().get(5).y());
+  }
+
+  @Test
+  void layout_whenWordWrapAnywhere_breaksLongWord() {
+    applyStyleProperty(parent, WORD_WRAP, "anywhere");
+    Text text = NodeBuilder.text("abcdef");
+    parent.addChild(text);
+
+    float height = formattingContext.layout(parent, List.of(text), 0);
+
+    assertEquals(20, height);
+    assertEquals(6, text.inlineFragments().size());
+    assertEquals("a", text.inlineFragments().get(0).text());
+    assertEquals("f", text.inlineFragments().get(5).text());
+    assertEquals(10, text.inlineFragments().get(5).y());
+  }
+
+  @Test
+  void layout_whenWordBreakBreakWord_breaksLongWord() {
+    parent.resolvedStyle().wordBreak(WordBreak.BREAK_WORD);
+    Text text = NodeBuilder.text("abcdef");
+    parent.addChild(text);
+
+    float height = formattingContext.layout(parent, List.of(text), 0);
+
+    assertEquals(20, height);
+    assertEquals(6, text.inlineFragments().size());
+    assertEquals("a", text.inlineFragments().get(0).text());
+    assertEquals("f", text.inlineFragments().get(5).text());
+    assertEquals(10, text.inlineFragments().get(5).y());
+  }
+
+  @Test
+  void layout_whenWordBreakBreakAll_usesRemainingLineSpace() {
+    Text text = NodeBuilder.text("abc def");
+    parent.resolvedStyle().wordBreak(WordBreak.BREAK_ALL);
+    parent.addChild(text);
+
+    float height = formattingContext.layout(parent, List.of(text), 0);
+
+    assertEquals(20, height);
+    assertEquals("abc", text.inlineFragments().get(0).text());
+    assertEquals(" ", text.inlineFragments().get(1).text());
+    assertEquals("d", text.inlineFragments().get(2).text());
+    assertEquals(40, text.inlineFragments().get(2).x());
+    assertEquals("e", text.inlineFragments().get(3).text());
+    assertEquals(10, text.inlineFragments().get(3).y());
+  }
+
+  @Test
+  void layout_whenWordBreakNormal_preservesSpaceBasedWrapping() {
+    Text text = NodeBuilder.text("abc def");
+    parent.resolvedStyle().wordBreak(WordBreak.NORMAL);
+    parent.addChild(text);
+
+    float height = formattingContext.layout(parent, List.of(text), 0);
+
+    assertEquals(20, height);
+    assertEquals(2, text.inlineFragments().size());
+    assertEquals("abc", text.inlineFragments().get(0).text());
+    assertEquals("def", text.inlineFragments().get(1).text());
+    assertEquals(0, text.inlineFragments().get(1).x());
+  }
+
+  @Test
+  void layout_whenWordBreakKeepAll_behavesLikeNormal() {
+    Text text = NodeBuilder.text("abc def");
+    parent.resolvedStyle().wordBreak(WordBreak.KEEP_ALL);
+    parent.addChild(text);
+
+    float height = formattingContext.layout(parent, List.of(text), 0);
+
+    assertEquals(20, height);
+    assertEquals(2, text.inlineFragments().size());
+    assertEquals("abc", text.inlineFragments().get(0).text());
+    assertEquals("def", text.inlineFragments().get(1).text());
+    assertEquals(0, text.inlineFragments().get(1).x());
+  }
+
+  @Test
+  void layout_whenWhiteSpaceNowrap_ignoresWordBreakBreakAll() {
+    Text text = NodeBuilder.text("abc def");
+    parent.resolvedStyle().whiteSpace(WhiteSpace.NOWRAP);
+    parent.resolvedStyle().wordBreak(WordBreak.BREAK_ALL);
+    parent.addChild(text);
+
+    float height = formattingContext.layout(parent, List.of(text), 0);
+
+    assertEquals(10, height);
+    assertEquals(3, text.inlineFragments().size());
+    assertEquals("abc", text.inlineFragments().get(0).text());
+    assertEquals(" ", text.inlineFragments().get(1).text());
+    assertEquals("def", text.inlineFragments().get(2).text());
+    assertEquals(40, text.inlineFragments().get(2).x());
   }
 
   @Test
@@ -292,7 +406,17 @@ class InlineFormattingContextTest {
     style.whiteSpace(WhiteSpace.NORMAL);
     style.textAlign(TextAlign.LEFT);
     style.overflowWrap(OverflowWrap.NORMAL);
+    style.wordBreak(WordBreak.NORMAL);
     style.tabSize(4);
+  }
+
+  private void applyStyleProperty(Element element, String name, String value) {
+    Property property =
+        new TextPropertyProvider().getProperties().stream()
+            .filter(candidate -> name.equals(candidate.getName()))
+            .findFirst()
+            .orElseThrow();
+    property.apply(element, new TermIdent(value));
   }
 
   private static class FixedTextMeasurer implements TextMeasurer {

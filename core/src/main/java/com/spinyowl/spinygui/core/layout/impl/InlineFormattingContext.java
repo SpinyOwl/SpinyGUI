@@ -13,6 +13,7 @@ import static com.spinyowl.spinygui.core.style.types.WhiteSpace.NOWRAP;
 import static com.spinyowl.spinygui.core.style.types.WhiteSpace.PRE;
 import static com.spinyowl.spinygui.core.style.types.WhiteSpace.PRE_LINE;
 import static com.spinyowl.spinygui.core.style.types.WhiteSpace.PRE_WRAP;
+import static com.spinyowl.spinygui.core.style.types.WordBreak.BREAK_ALL;
 
 import com.spinyowl.spinygui.core.font.Font;
 import com.spinyowl.spinygui.core.font.FontStyle;
@@ -27,6 +28,7 @@ import com.spinyowl.spinygui.core.style.ResolvedStyle;
 import com.spinyowl.spinygui.core.style.stylesheet.util.StyleUtils;
 import com.spinyowl.spinygui.core.style.types.OverflowWrap;
 import com.spinyowl.spinygui.core.style.types.WhiteSpace;
+import com.spinyowl.spinygui.core.style.types.WordBreak;
 import com.spinyowl.spinygui.core.system.font.TextLineMetrics;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -245,7 +247,13 @@ public class InlineFormattingContext {
       }
 
       float width = unit.width(textMeasurer);
-      boolean wrap = unit.wraps() && !line.empty() && cursorX + width > contentX + availableWidth;
+      boolean breakIntoCharacters =
+          unit.breakIntoCharacters(textMeasurer, availableWidth, cursorX, contentX);
+      boolean wrap =
+          !breakIntoCharacters
+              && unit.wraps()
+              && !line.empty()
+              && cursorX + width > contentX + availableWidth;
       if (wrap) {
         trimTrailingSpace(line);
         lines.add(closeLine(line));
@@ -257,7 +265,7 @@ public class InlineFormattingContext {
         }
       }
 
-      if (unit.breakWord(textMeasurer, availableWidth) && cursorX + width > contentX + availableWidth) {
+      if (breakIntoCharacters) {
         for (InlineUnit part : unit.breakIntoCharacters()) {
           if (!line.empty() && cursorX + part.width(textMeasurer) > contentX + availableWidth) {
             lines.add(closeLine(line));
@@ -535,10 +543,23 @@ public class InlineFormattingContext {
 
     boolean breakWord(TextMeasurer measurer, float availableWidth) {
       OverflowWrap overflowWrap = style.overflowWrap();
-      return (BREAK_WORD.equals(overflowWrap) || ANYWHERE.equals(overflowWrap))
+      WordBreak wordBreak = style.wordBreak();
+      return (BREAK_WORD.equals(overflowWrap)
+              || ANYWHERE.equals(overflowWrap)
+              || WordBreak.BREAK_WORD.equals(wordBreak))
           && text != null
           && !space
+          && wraps()
           && width(measurer) > availableWidth;
+    }
+
+    boolean breakIntoCharacters(
+        TextMeasurer measurer, float availableWidth, float cursorX, float contentX) {
+      return text != null
+          && !space
+          && wraps()
+          && (BREAK_ALL.equals(style.wordBreak()) || breakWord(measurer, availableWidth))
+          && cursorX + width(measurer) > contentX + availableWidth;
     }
 
     List<InlineUnit> breakIntoCharacters() {

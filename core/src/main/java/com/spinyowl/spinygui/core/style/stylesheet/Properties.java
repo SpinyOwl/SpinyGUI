@@ -114,4 +114,6 @@ public final class Properties {
   public static final String OVERFLOW_X = "overflow-x";
   public static final String OVERFLOW_Y = "overflow-y";
   public static final String OVERFLOW_WRAP = "overflow-wrap";
+  public static final String WORD_BREAK = "word-break";
+  public static final String WORD_WRAP = "word-wrap";
 }

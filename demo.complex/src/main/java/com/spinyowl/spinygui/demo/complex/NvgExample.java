@@ -90,6 +90,19 @@ winframe *:hover {
 #t2 {
   width: 500px;
 }
+.wrap-demo {
+  display: block;
+  width: 120px;
+  font-size: 16px;
+  border-color: #45AAFF;
+}
+.word-wrap-demo {
+  word-wrap: break-word;
+}
+.word-break-demo {
+  word-break: break-all;
+  border-color: #AA45FF;
+}
 """;
   }
 
@@ -107,6 +120,12 @@ winframe *:hover {
     Hello world. Lorem ipsum dolor.
     Hello world. Lorem ipsum dolor.s
     Hello World
+  </div>
+  <div class="wrap-demo word-wrap-demo">
+    word-wrap: Supercalifragilisticexpialidocious
+  </div>
+  <div class="wrap-demo word-break-demo">
+    word-break: Supercalifragilisticexpialidocious
   </div>
 
   <div class='twrapper' style="border-color: pink">

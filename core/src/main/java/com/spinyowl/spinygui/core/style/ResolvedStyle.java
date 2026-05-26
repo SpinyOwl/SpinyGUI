@@ -65,6 +65,7 @@ import static com.spinyowl.spinygui.core.style.stylesheet.Properties.TEXT_ALIGN;
 import static com.spinyowl.spinygui.core.style.stylesheet.Properties.TOP;
 import static com.spinyowl.spinygui.core.style.stylesheet.Properties.WHITE_SPACE;
 import static com.spinyowl.spinygui.core.style.stylesheet.Properties.WIDTH;
+import static com.spinyowl.spinygui.core.style.stylesheet.Properties.WORD_BREAK;
 import static com.spinyowl.spinygui.core.style.stylesheet.Properties.Z_INDEX;
 
 import com.spinyowl.spinygui.core.font.FontStyle;
@@ -78,6 +79,7 @@ import com.spinyowl.spinygui.core.style.types.PointerEvents;
 import com.spinyowl.spinygui.core.style.types.Position;
 import com.spinyowl.spinygui.core.style.types.TextAlign;
 import com.spinyowl.spinygui.core.style.types.WhiteSpace;
+import com.spinyowl.spinygui.core.style.types.WordBreak;
 import com.spinyowl.spinygui.core.style.types.background.BackgroundOrigin;
 import com.spinyowl.spinygui.core.style.types.background.BackgroundRepeat;
 import com.spinyowl.spinygui.core.style.types.background.BackgroundSize;
@@ -717,5 +719,13 @@ public class ResolvedStyle {
 
   public void overflowWrap(OverflowWrap overflowWrap) {
     set(OVERFLOW_WRAP, overflowWrap);
+  }
+
+  public WordBreak wordBreak() {
+    return get(WORD_BREAK);
+  }
+
+  public void wordBreak(WordBreak wordBreak) {
+    set(WORD_BREAK, wordBreak);
   }
 }
