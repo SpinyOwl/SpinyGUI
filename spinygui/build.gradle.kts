@@ -3,9 +3,9 @@ plugins {
 }
 
 dependencies {
-    api(project(":core"))
-    api(project(":core.backend"))
-    api(project(":core.backend.lwjgl.nanovg"))
+    api(project(":spinygui.core"))
+    api(project(":spinygui.core.backend"))
+    api(project(":spinygui.core.backend.lwjgl.nanovg"))
 
     api(libs.cbchain)
 }

@@ -4,7 +4,7 @@ plugins {
 }
 
 dependencies {
-    api(project(":core"))
+    api(project(":spinygui.core"))
 }
 
 tasks.test {

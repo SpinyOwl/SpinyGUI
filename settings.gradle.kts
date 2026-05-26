@@ -13,9 +13,9 @@ plugins {
 rootProject.name = "SpinyGUI"
 include(
     "spinygui",
-    "core",
-    "core.backend",
-    "core.backend.lwjgl.nanovg",
-    "demo.simple",
-    "demo.complex"
+    "spinygui.core",
+    "spinygui.core.backend",
+    "spinygui.core.backend.lwjgl.nanovg",
+    "spinygui.demo.simple",
+    "spinygui.demo.complex"
 )

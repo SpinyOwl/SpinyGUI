@@ -4,8 +4,8 @@ plugins {
 }
 
 dependencies {
-    api(project(":core"))
-    api(project(":core.backend"))
+    api(project(":spinygui.core"))
+    api(project(":spinygui.core.backend"))
 
     api(libs.lwjgl)
     api(variantOf(libs.lwjgl) { classifier("natives-windows") })
