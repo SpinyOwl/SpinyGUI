@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv=”refresh” content=”2″>
+    <style>
+        /* @import url("https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400&display=swap"); */
+        @font-face {
+            font-family: 'Roboto';
+            font-style: normal;
+            font-weight: 400;
+            src: url(file:///D:/Roboto-Regular.ttf)
+        }
+
+        html, body {
+            overflow: hidden;
+        }
+        :root {
+            --winframe-width: 100%;
+            --winframe-height: 100%;
+        }
+
+        * {
+            font-family: "Roboto", sans-serif;
+            font-weight: 400;
+            font-style: normal;
+            font-stretch: normal;
+            font-size: 16px;
+            padding: 0;
+            margin: 0;
+        }
+
+        *::-webkit-scrollbar {
+            /* width: 8px; */
+            /* height: 8px; */
+        }
+
+        winframe {
+            width: var(--winframe-width);
+            height: var(--winframe-height);
+
+            display: block;
+        }
+
+        /* styles from app */
+        winframe,
+        winframe * {
+            border: 8px solid #8c8c8c;
+            box-sizing: border-box; /* default behaviour */
+            overflow: hidden; /* default behaviour */
+        }
+
+        winframe:hover,
+        winframe *:hover {
+            border: 8px solid #fc3131;
+        }
+
+        #t2 {
+            width: 500px;
+        }
+
+
+    </style>
+</head>
+<body>
+<winframe>
+    <div class="wrapper" style="border-color:cyan">
+        <div class="c1">c1
+            <div class="c11" id='c11'>c11 Cfjg</div>
+            <div class="c12">c12</div>
+        </div>
+        <div class="text">
+            Hello world. Lorem ipsum dolor.
+            Hello world. Lorem ipsum dolor.
+            Hello world. Lorem ipsum dolor.s
+            Hello World
+        </div>
+
+        <div class='twrapper' style="border-color: pink">
+            <div class='twrapper' style="border-color: blue">
+                <div class="text" id='t2' style="border-color: black">
+                    Hello world. Lorem ipsum dolor.
+                    Hello world A. Lorem ipsum dolor.
+                    Hello world B. Lorem ipsum dolor.
+                </div>
+            </div>
+        </div>
+        <div class="c2">
+            <div class="s">s1</div>
+            <div class="s">s2</div>
+        </div>
+    </div>
+</winframe>
+
+</body>
+</html>

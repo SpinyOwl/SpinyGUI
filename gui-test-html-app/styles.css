@@ -1,0 +1,14 @@
+
+winframe,
+winframe * {
+  border: 8px solid #8c8c8c;
+  box-sizing: border-box; /* default behaviour */
+  overflow: hidden; /* default behaviour */
+}
+winframe:hover,
+winframe *:hover {
+  border: 8px solid #fc3131;
+}
+#t2 {
+  width: 500px;
+}
