@@ -53,10 +53,10 @@ class TextPropertyProviderTest {
   void wordWrap_acceptsOverflowWrapValues() {
     Property property = property(WORD_WRAP);
 
-    assertTrue(property.getValidator().test(new TermIdent("normal")));
-    assertTrue(property.getValidator().test(new TermIdent("break-word")));
-    assertTrue(property.getValidator().test(new TermIdent("anywhere")));
-    assertFalse(property.getValidator().test(new TermIdent("break-all")));
+    assertTrue(property.validator().test(new TermIdent("normal")));
+    assertTrue(property.validator().test(new TermIdent("break-word")));
+    assertTrue(property.validator().test(new TermIdent("anywhere")));
+    assertFalse(property.validator().test(new TermIdent("break-all")));
   }
 
   @Test
@@ -64,13 +64,13 @@ class TextPropertyProviderTest {
     Property overflowWrap = property(OVERFLOW_WRAP);
     Property wordWrap = property(WORD_WRAP);
 
-    assertEquals(OVERFLOW_WRAP, overflowWrap.getName());
-    assertEquals(WORD_WRAP, wordWrap.getName());
+    assertEquals(OVERFLOW_WRAP, overflowWrap.name());
+    assertEquals(WORD_WRAP, wordWrap.name());
   }
 
   private Property property(String name) {
     return new TextPropertyProvider().getProperties().stream()
-        .filter(property -> name.equals(property.getName()))
+        .filter(property -> name.equals(property.name()))
         .findFirst()
         .orElseThrow();
   }

@@ -437,13 +437,13 @@ public class FlexLayout implements ElementLayout {
   public static void setLength(
       Length<?> l,
       long node,
-      ObjIntConsumer<Long> pixelConsumer,
+      BiConsumer<Long, Float> pixelConsumer,
       BiConsumer<Long, Float> percentConsumer) {
     if (l != null) {
       if (l instanceof PixelLength) {
-        pixelConsumer.accept(node, (Integer) l.value());
+        pixelConsumer.accept(node, l.value().floatValue());
       } else if (l instanceof PercentLength) {
-        percentConsumer.accept(node, (Float) l.value());
+        percentConsumer.accept(node, l.value().floatValue());
       }
     }
   }
@@ -452,21 +452,21 @@ public class FlexLayout implements ElementLayout {
       Length<?> l,
       long node,
       int side,
-      TriConsumer<Long, Integer, Integer> pixelConsumer,
+      TriConsumer<Long, Integer, Float> pixelConsumer,
       TriConsumer<Long, Integer, Float> percentConsumer) {
     if (l != null) {
       if (l instanceof PixelLength) {
-        pixelConsumer.accept(node, side, (Integer) l.value());
+        pixelConsumer.accept(node, side, l.value().floatValue());
       } else if (l instanceof PercentLength) {
-        percentConsumer.accept(node, side, (Float) l.value());
+        percentConsumer.accept(node, side, l.value().floatValue());
       }
     }
   }
 
   public static void setLength(
-      Length<?> l, long node, int side, TriConsumer<Long, Integer, Integer> pixelConsumer) {
+      Length<?> l, long node, int side, TriConsumer<Long, Integer, Float> pixelConsumer) {
     if (l instanceof PixelLength) {
-      pixelConsumer.accept(node, side, (Integer) l.value());
+      pixelConsumer.accept(node, side, l.value().floatValue());
     }
   }
 
@@ -474,7 +474,7 @@ public class FlexLayout implements ElementLayout {
       Unit unit,
       long node,
       int side,
-      TriConsumer<Long, Integer, Integer> pixelConsumer,
+      TriConsumer<Long, Integer, Float> pixelConsumer,
       TriConsumer<Long, Integer, Float> percentConsumer) {
     if (unit != null && !unit.isAuto()) {
       applyPixelOrPercentToSide(unit, node, side, pixelConsumer, percentConsumer);
@@ -485,7 +485,7 @@ public class FlexLayout implements ElementLayout {
       Unit unit,
       long node,
       LongConsumer autoConsumer,
-      ObjIntConsumer<Long> pixelConsumer,
+      BiConsumer<Long, Float> pixelConsumer,
       BiConsumer<Long, Float> percentConsumer) {
     if (unit != null) {
       if (unit.isAuto()) {
@@ -493,9 +493,9 @@ public class FlexLayout implements ElementLayout {
       } else {
         Length<?> l = unit.asLength();
         if (l instanceof PixelLength) {
-          pixelConsumer.accept(node, (Integer) l.value());
+          pixelConsumer.accept(node, l.value().floatValue());
         } else if (l instanceof PercentLength) {
-          percentConsumer.accept(node, (Float) l.value());
+          percentConsumer.accept(node, l.value().floatValue());
         }
       }
     }
@@ -505,13 +505,13 @@ public class FlexLayout implements ElementLayout {
       Unit unit,
       long node,
       int side,
-      TriConsumer<Long, Integer, Integer> pixelConsumer,
+      TriConsumer<Long, Integer, Float> pixelConsumer,
       TriConsumer<Long, Integer, Float> percentConsumer) {
     Length<?> l = unit.asLength();
     if (l instanceof PixelLength) {
-      pixelConsumer.accept(node, side, (Integer) l.value());
+      pixelConsumer.accept(node, side, l.value().floatValue());
     } else if (l instanceof PercentLength) {
-      percentConsumer.accept(node, side, (Float) l.value());
+      percentConsumer.accept(node, side, l.value().floatValue());
     }
   }
 
@@ -520,7 +520,7 @@ public class FlexLayout implements ElementLayout {
       long node,
       int side,
       ObjIntConsumer<Long> autoConsumer,
-      TriConsumer<Long, Integer, Integer> pixelConsumer,
+      TriConsumer<Long, Integer, Float> pixelConsumer,
       TriConsumer<Long, Integer, Float> percentConsumer) {
     if (unit != null) {
       if (unit.isAuto()) {

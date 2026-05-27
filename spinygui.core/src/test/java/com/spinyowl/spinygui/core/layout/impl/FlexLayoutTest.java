@@ -1,0 +1,203 @@
+package com.spinyowl.spinygui.core.layout.impl;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.mock;
+
+import com.spinyowl.spinygui.core.event.processor.EventProcessor;
+import com.spinyowl.spinygui.core.layout.LayoutContext;
+import com.spinyowl.spinygui.core.layout.LayoutService;
+import com.spinyowl.spinygui.core.node.Element;
+import com.spinyowl.spinygui.core.node.Frame;
+import com.spinyowl.spinygui.core.node.Node;
+import com.spinyowl.spinygui.core.node.NodeBuilder;
+import com.spinyowl.spinygui.core.style.ResolvedStyle;
+import com.spinyowl.spinygui.core.style.types.Display;
+import com.spinyowl.spinygui.core.style.types.Position;
+import com.spinyowl.spinygui.core.style.types.border.BorderStyle;
+import com.spinyowl.spinygui.core.style.types.flex.AlignItems;
+import com.spinyowl.spinygui.core.style.types.flex.AlignSelf;
+import com.spinyowl.spinygui.core.style.types.flex.FlexDirection;
+import com.spinyowl.spinygui.core.style.types.flex.FlexWrap;
+import com.spinyowl.spinygui.core.style.types.flex.JustifyContent;
+import com.spinyowl.spinygui.core.style.types.length.Length;
+import com.spinyowl.spinygui.core.style.types.length.Unit;
+import com.spinyowl.spinygui.core.system.event.processor.SystemEventProcessor;
+import com.spinyowl.spinygui.core.time.TimeService;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicReference;
+import lombok.NonNull;
+import org.junit.jupiter.api.Test;
+
+class FlexLayoutTest {
+
+  @Test
+  void setLength_whenPixelLengthHasIntegerLookingValue_passesFloatValue() {
+    AtomicReference<Float> value = new AtomicReference<>();
+
+    FlexLayout.setLength(
+        Length.pixel(620), 11L, (node, pixel) -> value.set(pixel), (node, percent) -> {});
+
+    assertEquals(620f, value.get());
+  }
+
+  @Test
+  void setLength_whenPixelLengthHasFractionalValue_passesFloatValue() {
+    AtomicReference<Float> value = new AtomicReference<>();
+
+    FlexLayout.setLength(
+        Length.pixel(12.5f), 11L, (node, pixel) -> value.set(pixel), (node, percent) -> {});
+
+    assertEquals(12.5f, value.get());
+  }
+
+  @Test
+  void setLengthWithSide_whenPixelLengthIsUsed_passesFloatValue() {
+    AtomicReference<Float> value = new AtomicReference<>();
+    AtomicReference<Integer> side = new AtomicReference<>();
+
+    FlexLayout.setLength(
+        Length.pixel(7),
+        11L,
+        3,
+        (node, edge, pixel) -> {
+          side.set(edge);
+          value.set(pixel);
+        },
+        (node, edge, percent) -> {});
+
+    assertEquals(3, side.get());
+    assertEquals(7f, value.get());
+  }
+
+  @Test
+  void setBorderLength_whenPixelLengthIsUsed_passesFloatValue() {
+    AtomicReference<Float> value = new AtomicReference<>();
+
+    FlexLayout.setLength(Length.pixel(2.25f), 11L, 3, (node, edge, pixel) -> value.set(pixel));
+
+    assertEquals(2.25f, value.get());
+  }
+
+  @Test
+  void setUnit_whenPixelLengthIsUsed_passesFloatValue() {
+    AtomicReference<Float> value = new AtomicReference<>();
+    AtomicBoolean autoCalled = new AtomicBoolean(false);
+
+    FlexLayout.setUnit(
+        Length.pixel(34),
+        11L,
+        node -> autoCalled.set(true),
+        (node, pixel) -> value.set(pixel),
+        (node, percent) -> {});
+
+    assertFalse(autoCalled.get());
+    assertEquals(34f, value.get());
+  }
+
+  @Test
+  void applyPixelOrPercentToSide_whenPixelLengthIsUsed_passesFloatValue() {
+    AtomicReference<Float> value = new AtomicReference<>();
+
+    FlexLayout.applyPixelOrPercentToSide(
+        Length.pixel(12.5f),
+        11L,
+        3,
+        (node, edge, pixel) -> value.set(pixel),
+        (node, edge, percent) -> {});
+
+    assertEquals(12.5f, value.get());
+  }
+
+  @Test
+  void layout_whenFlexNodeUsesPixelLengths_doesNotThrow() {
+    Frame parent = NodeBuilder.frame();
+    Element child = NodeBuilder.div();
+    parent.addChild(child);
+
+    style(parent);
+    style(child);
+    parent.box().contentSize(620, 34);
+    parent.resolvedStyle().display(Display.FLEX);
+    parent.resolvedStyle().width(Length.pixel(620));
+    parent.resolvedStyle().height(Length.pixel(34));
+    parent.resolvedStyle().paddingTop(Length.pixel(7));
+    parent.resolvedStyle().paddingRight(Length.pixel(7));
+    parent.resolvedStyle().paddingBottom(Length.pixel(7));
+    parent.resolvedStyle().paddingLeft(Length.pixel(7));
+    child.resolvedStyle().width(Length.pixel(26.5f));
+    child.resolvedStyle().height(Length.pixel(10));
+
+    LayoutService layoutService = new NoopLayoutService();
+    BlockLayout blockLayout = mock(BlockLayout.class);
+    doAnswer(invocation -> null)
+        .when(blockLayout)
+        .layout(eq(parent), eq(true), any(LayoutContext.class));
+    FlexLayout layout =
+        new FlexLayout(
+            mock(SystemEventProcessor.class),
+            mock(EventProcessor.class),
+            mock(TimeService.class),
+            blockLayout,
+            layoutService);
+
+    layout.layout(parent, new LayoutContext());
+
+    assertTrue(child.box().content().width() > 0);
+  }
+
+  private static void style(Element element) {
+    ResolvedStyle style = element.resolvedStyle();
+    style.display(Display.BLOCK);
+    style.position(Position.STATIC);
+    style.width(Unit.AUTO);
+    style.height(Unit.AUTO);
+    style.minWidth(null);
+    style.maxWidth(null);
+    style.minHeight(null);
+    style.maxHeight(null);
+    style.top(Unit.AUTO);
+    style.right(Unit.AUTO);
+    style.bottom(Unit.AUTO);
+    style.left(Unit.AUTO);
+    style.paddingTop(Length.ZERO);
+    style.paddingRight(Length.ZERO);
+    style.paddingBottom(Length.ZERO);
+    style.paddingLeft(Length.ZERO);
+    style.marginTop(Length.ZERO);
+    style.marginRight(Length.ZERO);
+    style.marginBottom(Length.ZERO);
+    style.marginLeft(Length.ZERO);
+    style.borderTopWidth(Length.pixel(0));
+    style.borderRightWidth(Length.pixel(0));
+    style.borderBottomWidth(Length.pixel(0));
+    style.borderLeftWidth(Length.pixel(0));
+    style.borderTopStyle(BorderStyle.NONE);
+    style.borderRightStyle(BorderStyle.NONE);
+    style.borderBottomStyle(BorderStyle.NONE);
+    style.borderLeftStyle(BorderStyle.NONE);
+    style.flexBasis(Unit.AUTO);
+    style.flexDirection(FlexDirection.ROW);
+    style.flexWrap(FlexWrap.NOWRAP);
+    style.flexGrow(0);
+    style.flexShrink(0);
+    style.justifyContent(JustifyContent.FLEX_START);
+    style.alignItems(AlignItems.FLEX_START);
+    style.alignSelf(AlignSelf.AUTO);
+  }
+
+  private static class NoopLayoutService implements LayoutService {
+    @Override
+    public void layout(@NonNull Frame frame) {}
+
+    @Override
+    public void layoutNode(@NonNull Node node, @NonNull LayoutContext context) {}
+
+    @Override
+    public void layoutChildNodes(@NonNull Element element, @NonNull LayoutContext context) {}
+  }
+}

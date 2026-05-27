@@ -413,7 +413,7 @@ class InlineFormattingContextTest {
   private void applyStyleProperty(Element element, String name, String value) {
     Property property =
         new TextPropertyProvider().getProperties().stream()
-            .filter(candidate -> name.equals(candidate.getName()))
+            .filter(candidate -> name.equals(candidate.name()))
             .findFirst()
             .orElseThrow();
     property.apply(element, new TermIdent(value));
