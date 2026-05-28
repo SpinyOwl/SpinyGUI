@@ -13,11 +13,11 @@ import com.spinyowl.spinygui.core.style.stylesheet.selector.Selector;
 import com.spinyowl.spinygui.core.style.stylesheet.selector.simple.AllSelector;
 import com.spinyowl.spinygui.core.style.stylesheet.selector.simple.ElementSelector;
 import java.util.ArrayList;
-import java.util.IdentityHashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.WeakHashMap;
 import lombok.Data;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -35,7 +35,7 @@ public class StyleManagerImpl implements StyleManager {
   @NonNull private final PropertyStore propertyStore;
   @NonNull private final StyleSheetParser styleSheetParser;
 
-  private final Map<Element, StyleData> elementStyleDataMap = new IdentityHashMap<>();
+  private final Map<Element, StyleData> elementStyleDataMap = new WeakHashMap<>();
   private final Map<String, InlineStyleParseResult> inlineStyleRulesetCache =
       new LinkedHashMap<>(INLINE_STYLE_RULESET_CACHE_SIZE, 0.75f, true) {
         @Override

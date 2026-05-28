@@ -52,6 +52,23 @@ class StyleManagerImplTest {
   }
 
   @Test
+  void recalculateKeepsPerElementStyleDataForLiveElements() {
+    CountingStyleSheetParser parser = new CountingStyleSheetParser();
+    StyleManager styleManager = new StyleManagerImpl(emptyPropertyStore(), parser);
+    Frame frame = new Frame();
+    Element child = new Element("div");
+    child.style("valid");
+    frame.addChild(child);
+
+    styleManager.recalculate(frame);
+    styleManager.recalculate(frame);
+
+    Declaration inlineDeclaration = lastRuleSet(child).declarations().getFirst();
+    assertEquals("valid", inlineDeclaration.term().value());
+    assertEquals(1, parser.parseCount("valid"));
+  }
+
+  @Test
   void recalculateSharesParsedRulesetForIdenticalInlineStylesAcrossElements() {
     CountingStyleSheetParser parser = new CountingStyleSheetParser();
     StyleManager styleManager = new StyleManagerImpl(emptyPropertyStore(), parser);
