@@ -9,10 +9,12 @@ import com.spinyowl.spinygui.core.style.stylesheet.Property;
 import com.spinyowl.spinygui.core.style.stylesheet.PropertyStore;
 import com.spinyowl.spinygui.core.style.stylesheet.Ruleset;
 import com.spinyowl.spinygui.core.style.stylesheet.StyleSheet;
+import com.spinyowl.spinygui.core.style.stylesheet.selector.Selector;
 import com.spinyowl.spinygui.core.style.stylesheet.selector.simple.AllSelector;
 import com.spinyowl.spinygui.core.style.stylesheet.selector.simple.ElementSelector;
 import java.util.ArrayList;
 import java.util.IdentityHashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -24,13 +26,23 @@ import org.apache.commons.lang3.StringUtils;
 @RequiredArgsConstructor
 public class StyleManagerImpl implements StyleManager {
 
+  private static final int INLINE_STYLE_RULESET_CACHE_SIZE = 1024;
+  private static final List<Selector> INLINE_STYLE_SELECTORS =
+      List.of(new ElementSelector("element"));
   private static final Ruleset EMPTY_RULE_SET =
-      new Ruleset(List.of(new ElementSelector("element")), List.of());
+      new Ruleset(INLINE_STYLE_SELECTORS, List.of());
 
   @NonNull private final PropertyStore propertyStore;
   @NonNull private final StyleSheetParser styleSheetParser;
 
   private final Map<Element, StyleData> elementStyleDataMap = new IdentityHashMap<>();
+  private final Map<String, InlineStyleParseResult> inlineStyleRulesetCache =
+      new LinkedHashMap<>(INLINE_STYLE_RULESET_CACHE_SIZE, 0.75f, true) {
+        @Override
+        protected boolean removeEldestEntry(Map.Entry<String, InlineStyleParseResult> eldest) {
+          return size() > INLINE_STYLE_RULESET_CACHE_SIZE;
+        }
+      };
 
   private List<Property> properties;
   private Ruleset defaultRuleset;
@@ -63,29 +75,41 @@ public class StyleManagerImpl implements StyleManager {
   }
 
   private Ruleset elementStyleRuleSet(Element element) {
+    String style = element.style();
+    if (StringUtils.isBlank(style)) {
+      elementStyleDataMap.remove(element);
+      return EMPTY_RULE_SET;
+    }
+
     StyleData styleData = elementStyleDataMap.computeIfAbsent(element, e -> new StyleData());
     Ruleset ruleSet;
-    if (!Objects.equals(styleData.style(), element.style()) || styleData.styleRuleset() == null) {
-      try {
-        String style = element.style();
-        List<Declaration> declarations;
-        if (StringUtils.isBlank(style)) {
-          declarations = List.of();
-        } else {
-          declarations = styleSheetParser.parseDeclarations(style);
-        }
-        ruleSet = new Ruleset(List.of(new ElementSelector("element")), declarations);
-
-      } catch (ParseException e) {
-        ruleSet = styleData.styleRuleset == null ? EMPTY_RULE_SET : styleData.styleRuleset;
-      }
-      styleData.style(element.style());
+    if (!Objects.equals(styleData.style(), style) || styleData.styleRuleset() == null) {
+      InlineStyleParseResult parseResult =
+          inlineStyleRulesetCache.computeIfAbsent(style, this::parseInlineStyleRuleSet);
+      ruleSet =
+          parseResult.successful()
+              ? parseResult.ruleset()
+              : previousOrEmptyInlineRuleSet(styleData);
+      styleData.style(style);
       styleData.styleRuleset(ruleSet);
     } else {
       ruleSet = styleData.styleRuleset;
     }
 
     return ruleSet;
+  }
+
+  private Ruleset previousOrEmptyInlineRuleSet(StyleData styleData) {
+    return styleData.styleRuleset == null ? EMPTY_RULE_SET : styleData.styleRuleset;
+  }
+
+  private InlineStyleParseResult parseInlineStyleRuleSet(String style) {
+    try {
+      List<Declaration> declarations = styleSheetParser.parseDeclarations(style);
+      return InlineStyleParseResult.success(new Ruleset(INLINE_STYLE_SELECTORS, declarations));
+    } catch (ParseException e) {
+      return InlineStyleParseResult.failure();
+    }
   }
 
   public Ruleset defaultRuleset() {
@@ -105,5 +129,16 @@ public class StyleManagerImpl implements StyleManager {
   private static class StyleData {
     private String style;
     private Ruleset styleRuleset;
+  }
+
+  private record InlineStyleParseResult(boolean successful, Ruleset ruleset) {
+
+    private static InlineStyleParseResult success(Ruleset ruleset) {
+      return new InlineStyleParseResult(true, ruleset);
+    }
+
+    private static InlineStyleParseResult failure() {
+      return new InlineStyleParseResult(false, null);
+    }
   }
 }
