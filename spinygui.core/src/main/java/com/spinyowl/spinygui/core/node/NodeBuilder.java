@@ -1,6 +1,9 @@
 package com.spinyowl.spinygui.core.node;
 
+import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Objects;
 
 public final class NodeBuilder {
 
@@ -40,6 +43,59 @@ public final class NodeBuilder {
 
   private NodeBuilder() {}
 
+  public record Attribute(String name, String value) {
+    public Attribute {
+      Objects.requireNonNull(name);
+      Objects.requireNonNull(value);
+    }
+  }
+
+  public record Attributes(Map<String, String> values) {
+    public Attributes {
+      Objects.requireNonNull(values);
+      values = Collections.unmodifiableMap(new LinkedHashMap<>(values));
+    }
+  }
+
+  public static Attribute attr(String name, String value) {
+    return new Attribute(name, value);
+  }
+
+  public static Attributes attrs(Attribute... attributes) {
+    Objects.requireNonNull(attributes);
+
+    Map<String, String> values = new LinkedHashMap<>();
+    for (Attribute attribute : attributes) {
+      Objects.requireNonNull(attribute);
+      values.put(attribute.name(), attribute.value());
+    }
+    return new Attributes(values);
+  }
+
+  public static Attribute id(String value) {
+    return attr("id", value);
+  }
+
+  public static Attribute cssClass(String value) {
+    return attr("class", value);
+  }
+
+  public static Attribute style(String value) {
+    return attr("style", value);
+  }
+
+  public static Attribute name(String value) {
+    return attr(ATTR_NAME, value);
+  }
+
+  public static Attribute type(String value) {
+    return attr(ATTR_TYPE, value);
+  }
+
+  public static Attribute value(String value) {
+    return attr(ATTR_VALUE, value);
+  }
+
   /**
    * Creates frame with provided child nodes.
    *
@@ -62,6 +118,17 @@ public final class NodeBuilder {
    * @return frame with specified attributes and child nodes.
    */
   public static Frame frame(Map<String, String> attributes, Node... nodes) {
+    return addAttributes(frame(nodes), attributes);
+  }
+
+  /**
+   * Creates frame with specified attributes and child nodes.
+   *
+   * @param attributes attributes to add.
+   * @param nodes child nodes to add.
+   * @return frame with specified attributes and child nodes.
+   */
+  public static Frame frame(Attributes attributes, Node... nodes) {
     return addAttributes(frame(nodes), attributes);
   }
 
@@ -93,6 +160,17 @@ public final class NodeBuilder {
   }
 
   /**
+   * Creates button with specified attributes and child nodes.
+   *
+   * @param attributes attributes to add.
+   * @param nodes child nodes to add.
+   * @return button with specified attributes and child nodes.
+   */
+  public static Element button(Attributes attributes, Node... nodes) {
+    return addAttributes(button(nodes), attributes);
+  }
+
+  /**
    * Creates text node with specified content.
    *
    * @param text text node.
@@ -118,6 +196,16 @@ public final class NodeBuilder {
    * @return input element with specified attributes.
    */
   public static EmptyElement input(Map<String, String> attributes) {
+    return addAttributes(new EmptyElement(NODE_INPUT), attributes);
+  }
+
+  /**
+   * Creates input element with specified attributes.
+   *
+   * @param attributes attributes to add.
+   * @return input element with specified attributes.
+   */
+  public static EmptyElement input(Attributes attributes) {
     return addAttributes(new EmptyElement(NODE_INPUT), attributes);
   }
 
@@ -193,6 +281,17 @@ public final class NodeBuilder {
   }
 
   /**
+   * Creates label with specified attributes and child nodes.
+   *
+   * @param attributes attributes to add.
+   * @param nodes child nodes to add.
+   * @return label with specified attributes and child nodes.
+   */
+  public static Element label(Attributes attributes, Node... nodes) {
+    return addAttributes(label(nodes), attributes);
+  }
+
+  /**
    * Creates div element with provided child nodes.
    *
    * @param text text content.
@@ -230,6 +329,17 @@ public final class NodeBuilder {
   }
 
   /**
+   * Creates div with specified attributes and child nodes.
+   *
+   * @param attributes attributes to add.
+   * @param nodes child nodes to add.
+   * @return div with specified attributes and child nodes.
+   */
+  public static Element div(Attributes attributes, Node... nodes) {
+    return addAttributes(div(nodes), attributes);
+  }
+
+  /**
    * Creates input with {@code type="radio-button"} and with specified name and value attributes.
    *
    * @param name name attribute value.
@@ -251,5 +361,17 @@ public final class NodeBuilder {
   public static <T extends Node> T addAttributes(T node, Map<String, String> attributes) {
     node.attributes().putAll(attributes);
     return node;
+  }
+
+  /**
+   * Used to add attributes to provided node. Allows to chain calls.
+   *
+   * @param node node to which attributes should be added.
+   * @param attributes attributes to add to node.
+   * @param <T> type of node.
+   * @return returns filled node.
+   */
+  public static <T extends Node> T addAttributes(T node, Attributes attributes) {
+    return addAttributes(node, attributes.values());
   }
 }
