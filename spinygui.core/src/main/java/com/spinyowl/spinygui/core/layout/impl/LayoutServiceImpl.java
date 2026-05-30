@@ -4,6 +4,7 @@ import static com.spinyowl.spinygui.core.layout.impl.LayoutUtils.hasPosition;
 import static com.spinyowl.spinygui.core.layout.impl.LayoutUtils.isPositioned;
 import static com.spinyowl.spinygui.core.style.types.Display.NONE;
 import static com.spinyowl.spinygui.core.util.NodeUtilities.visible;
+import static com.spinyowl.spinygui.core.util.OverflowUtils.clampScrollOffsets;
 
 import com.spinyowl.spinygui.core.layout.ElementLayout;
 import com.spinyowl.spinygui.core.layout.LayoutContext;
@@ -67,27 +68,7 @@ public class LayoutServiceImpl implements LayoutService {
     element.clientWidth(clientWidth);
     element.clientHeight(clientHeight);
 
-    if (clientWidth >= scrollWidth) {
-      element.scrollLeft(0);
-    } else {
-      float scrollLeft = element.scrollLeft();
-      if (scrollLeft < 0) {
-        element.scrollLeft(0);
-      } else if (scrollLeft > scrollWidth - clientWidth) {
-        element.scrollLeft(scrollWidth - clientWidth);
-      }
-    }
-
-    if (clientHeight >= scrollHeight) {
-      element.scrollTop(0);
-    } else {
-      float scrollTop = element.scrollTop();
-      if (scrollTop < 0) {
-        element.scrollTop(0);
-      } else if (scrollTop > scrollHeight - clientHeight) {
-        element.scrollTop(scrollHeight - clientHeight);
-      }
-    }
+    clampScrollOffsets(element);
 
     // update scroll and client size for all the children.
     element.childNodes().stream()

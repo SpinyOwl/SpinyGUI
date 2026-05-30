@@ -50,16 +50,16 @@ Support CSS `overflow`, `overflow-x`, and `overflow-y` for block and flex elemen
 **Purpose:** Avoid duplicating fragile checks across layout, input, rendering, and hit-testing.
 
 **Changes:**
-- [ ] Add a small utility in core, for example `OverflowUtils`, with methods for `clipsX`, `clipsY`, `clipsAny`, `acceptsWheelX`, `acceptsWheelY`, `maxScrollLeft`, `maxScrollTop`, and `clampScrollOffsets`.
-- [ ] Define `auto` and `scroll` as wheel-scrollable only when `scrollWidth > clientWidth` or `scrollHeight > clientHeight`.
-- [ ] Define `hidden` as clipped but not wheel-scrollable.
-- [ ] Define `visible` as neither clipped nor wheel-scrollable.
-- [ ] Replace ad hoc scroll clamping in `LayoutServiceImpl.updateScrollAndClientSize` with the utility while preserving current zero-reset behavior when content fits.
+- [x] Add a small utility in core, for example `OverflowUtils`, with methods for `clipsX`, `clipsY`, `clipsAny`, `acceptsWheelX`, `acceptsWheelY`, `maxScrollLeft`, `maxScrollTop`, and `clampScrollOffsets`.
+- [x] Define `auto` and `scroll` as wheel-scrollable only when `scrollWidth > clientWidth` or `scrollHeight > clientHeight`.
+- [x] Define `hidden` as clipped but not wheel-scrollable.
+- [x] Define `visible` as neither clipped nor wheel-scrollable.
+- [x] Replace ad hoc scroll clamping in `LayoutServiceImpl.updateScrollAndClientSize` with the utility while preserving current zero-reset behavior when content fits.
 
 **Acceptance Checks:**
-- [ ] Add unit tests for max scroll and clamping: negative offsets clamp to `0`, oversized offsets clamp to `scrollSize - clientSize`, and fitting content resets offsets to `0`.
-- [ ] Add tests proving `visible` does not consume wheel scroll, `hidden` clips without wheel consumption, and `auto`/`scroll` consume only when the axis overflows.
-- [ ] Run `.\gradlew.bat :spinygui.core:test`.
+- [x] Add unit tests for max scroll and clamping: negative offsets clamp to `0`, oversized offsets clamp to `scrollSize - clientSize`, and fitting content resets offsets to `0`.
+- [x] Add tests proving `visible` does not consume wheel scroll, `hidden` clips without wheel consumption, and `auto`/`scroll` consume only when the axis overflows.
+- [x] Run `.\gradlew.bat :spinygui.core:test`.
 
 **Dependencies:** Step 1.
 
