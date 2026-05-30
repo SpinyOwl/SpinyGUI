@@ -52,7 +52,10 @@ import static com.spinyowl.spinygui.core.style.stylesheet.Properties.MAX_WIDTH;
 import static com.spinyowl.spinygui.core.style.stylesheet.Properties.MIN_HEIGHT;
 import static com.spinyowl.spinygui.core.style.stylesheet.Properties.MIN_WIDTH;
 import static com.spinyowl.spinygui.core.style.stylesheet.Properties.OPACITY;
+import static com.spinyowl.spinygui.core.style.stylesheet.Properties.OVERFLOW;
+import static com.spinyowl.spinygui.core.style.stylesheet.Properties.OVERFLOW_X;
 import static com.spinyowl.spinygui.core.style.stylesheet.Properties.OVERFLOW_WRAP;
+import static com.spinyowl.spinygui.core.style.stylesheet.Properties.OVERFLOW_Y;
 import static com.spinyowl.spinygui.core.style.stylesheet.Properties.PADDING_BOTTOM;
 import static com.spinyowl.spinygui.core.style.stylesheet.Properties.PADDING_LEFT;
 import static com.spinyowl.spinygui.core.style.stylesheet.Properties.PADDING_RIGHT;
@@ -74,6 +77,7 @@ import com.spinyowl.spinygui.core.style.stylesheet.Ruleset;
 import com.spinyowl.spinygui.core.style.types.BoxShadow;
 import com.spinyowl.spinygui.core.style.types.Color;
 import com.spinyowl.spinygui.core.style.types.Display;
+import com.spinyowl.spinygui.core.style.types.Overflow;
 import com.spinyowl.spinygui.core.style.types.OverflowWrap;
 import com.spinyowl.spinygui.core.style.types.PointerEvents;
 import com.spinyowl.spinygui.core.style.types.Position;
@@ -695,6 +699,30 @@ public class ResolvedStyle {
 
   public void opacity(Float opacity) {
     set(OPACITY, opacity);
+  }
+
+  public Overflow overflow() {
+    return get(OVERFLOW);
+  }
+
+  public void overflow(Overflow overflow) {
+    set(OVERFLOW, overflow);
+  }
+
+  public Overflow overflowX() {
+    return get(OVERFLOW_X);
+  }
+
+  public void overflowX(Overflow overflow) {
+    set(OVERFLOW_X, overflow);
+  }
+
+  public Overflow overflowY() {
+    return get(OVERFLOW_Y);
+  }
+
+  public void overflowY(Overflow overflow) {
+    set(OVERFLOW_Y, overflow);
   }
 
   public Float lineHeight() {

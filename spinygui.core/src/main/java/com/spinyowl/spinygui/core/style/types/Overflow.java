@@ -17,6 +17,11 @@ public final class Overflow {
 
   private static final Map<String, Overflow> VALUES = new HashMap<>();
 
+  public static final Overflow VISIBLE = Overflow.create("visible");
+  public static final Overflow HIDDEN = Overflow.create("hidden");
+  public static final Overflow AUTO = Overflow.create("auto");
+  public static final Overflow SCROLL = Overflow.create("scroll");
+
   /** Name of Overflow */
   @NonNull private final String name;
 
