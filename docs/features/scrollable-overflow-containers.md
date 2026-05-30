@@ -110,16 +110,16 @@ Support CSS `overflow`, `overflow-x`, and `overflow-y` for block and flex elemen
 **Purpose:** Prevent events from reaching content clipped outside a scroll container and make scrolled child positions hit-test correctly.
 
 **Changes:**
-- [ ] Add a helper that checks whether a point is inside every clipping ancestor's content box before accepting an element as a target.
-- [ ] Update `NodeUtilities.getTargetElement`, `getTargetElementList`, and recursive helpers to apply the clipping-ancestor check before descending into children.
-- [ ] Preserve z-index ordering and `pointer-events` behavior.
-- [ ] Use `absolutePosition()` for child position checks so existing offset subtraction applies scroll offsets during hit-testing.
+- [x] Add a helper that checks whether a point is inside every clipping ancestor's content box before accepting an element as a target.
+- [x] Update `NodeUtilities.getTargetElement`, `getTargetElementList`, and recursive helpers to apply the clipping-ancestor check before descending into children.
+- [x] Preserve z-index ordering and `pointer-events` behavior.
+- [x] Use `absolutePosition()` for child position checks so existing offset subtraction applies scroll offsets during hit-testing.
 
 **Acceptance Checks:**
-- [ ] Add a hit-test test where a child visually outside an `overflow: hidden` container is not returned.
-- [ ] Add a hit-test test where a child scrolled into view by `scrollTop` is returned at its visible viewport position.
-- [ ] Add a nested scroll-container test where the inner clipped viewport limits its descendants independently from the outer container.
-- [ ] Run `.\gradlew.bat :spinygui.core:test`.
+- [x] Add a hit-test test where a child visually outside an `overflow: hidden` container is not returned.
+- [x] Add a hit-test test where a child scrolled into view by `scrollTop` is returned at its visible viewport position.
+- [x] Add a nested scroll-container test where the inner clipped viewport limits its descendants independently from the outer container.
+- [x] Run `.\gradlew.bat :spinygui.core:test`.
 
 **Dependencies:** Steps 1 through 3.
 

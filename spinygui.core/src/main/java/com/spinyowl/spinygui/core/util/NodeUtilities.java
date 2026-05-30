@@ -132,7 +132,7 @@ public final class NodeUtilities {
       final Element initialTarget,
       final boolean searchOnlyClickable) {
     Element retarget = initialTarget;
-    if (visible(element) && element.intersection().intersects(element, vector)) {
+    if (visibleAndIntersects(element, vector)) {
       if (!searchOnlyClickable || clickable(element)) {
         retarget = element;
       }
@@ -140,7 +140,7 @@ public final class NodeUtilities {
 
       childElements.sort(Comparator.comparing(comparator));
       for (Element child : childElements) {
-        retarget = getTargetElement(child, vector, retarget);
+        retarget = getTargetElement(child, vector, retarget, searchOnlyClickable);
       }
     }
     return retarget;
@@ -171,11 +171,38 @@ public final class NodeUtilities {
    */
   public static List<Element> fillTargetElementList(
       final Vector2fc vector, final Element element, final List<Element> targetList) {
-    if (visible(element) && element.intersection().intersects(element, vector)) {
+    if (visibleAndIntersects(element, vector)) {
       targetList.add(element);
       element.children().forEach(child -> fillTargetElementList(vector, child, targetList));
     }
     return targetList;
+  }
+
+  private static boolean visibleAndIntersects(final Element element, final Vector2fc vector) {
+    return visible(element)
+        && element.intersection().intersects(element, vector)
+        && insideClippingAncestors(element, vector);
+  }
+
+  private static boolean insideClippingAncestors(final Node node, final Vector2fc vector) {
+    for (Element parent = node.parent(); parent != null; parent = parent.parent()) {
+      if (OverflowUtils.clipsAny(parent) && !insideContentBox(parent, vector)) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  private static boolean insideContentBox(final Element element, final Vector2fc vector) {
+    var absolutePosition = element.absolutePosition();
+    var box = element.box();
+    var contentX = absolutePosition.x() + box.border().left() + box.padding().left();
+    var contentY = absolutePosition.y() + box.border().top() + box.padding().top();
+    var contentSize = box.contentSize();
+    return vector.x() >= contentX
+        && vector.x() < contentX + contentSize.x()
+        && vector.y() >= contentY
+        && vector.y() < contentY + contentSize.y();
   }
 
   public static boolean visible(Node node) {
