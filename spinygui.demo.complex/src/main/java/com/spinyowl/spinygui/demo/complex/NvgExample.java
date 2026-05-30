@@ -43,7 +43,7 @@ winframe,
 winframe * {
   border: 8px solid #8c8c8c;
   box-sizing: border-box; /* default behaviour */
-  overflow: hidden; /* default behaviour */
+  overflow: scroll; /* default behaviour */
 }
 winframe:hover,
 winframe *:hover {
@@ -81,7 +81,7 @@ winframe,
 winframe * {
   border: 8px solid #8c8c8c;
   box-sizing: border-box; /* default behaviour */
-  overflow: hidden; /* default behaviour */
+  overflow: scroll; /* default behaviour */
 }
 winframe:hover,
 winframe *:hover {
