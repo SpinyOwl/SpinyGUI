@@ -56,8 +56,8 @@ public class LayoutServiceImpl implements LayoutService {
     }
 
     Box box = element.box();
-    scrollWidth = scrollWidth - box.border().left() - box.padding().left();
-    scrollHeight = scrollHeight - box.border().top() - box.padding().top();
+    scrollWidth = Math.max(0, scrollWidth - box.border().left() - box.padding().left());
+    scrollHeight = Math.max(0, scrollHeight - box.border().top() - box.padding().top());
 
     float clientWidth = box.content().width();
     float clientHeight = box.content().height();

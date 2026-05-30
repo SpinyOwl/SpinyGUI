@@ -69,16 +69,16 @@ Support CSS `overflow`, `overflow-x`, and `overflow-y` for block and flex elemen
 **Purpose:** Ensure fixed or constrained containers keep their own content box while child overflow contributes to scroll ranges.
 
 **Changes:**
-- [ ] Audit `BlockLayout.childrenHeight` and `FlexLayout.layout` to verify explicit `height`, `max-height`, and flex-assigned heights preserve the container content size even when children exceed it.
-- [ ] Adjust scroll size calculation in `LayoutServiceImpl.updateScrollAndClientSize` so child margin boxes beyond the content box increase `scrollWidth`/`scrollHeight`, but parent `clientWidth`/`clientHeight` remain the laid-out content size.
-- [ ] Use layout children or actual child nodes consistently for scroll-size calculation; document and test the choice for positioned children. Initial recommendation: keep absolute-positioned descendants out of normal scroll-size expansion to match current `affectsScrollSize`.
-- [ ] Clamp offsets after every layout pass using the centralized utility.
+- [x] Audit `BlockLayout.childrenHeight` and `FlexLayout.layout` to verify explicit `height`, `max-height`, and flex-assigned heights preserve the container content size even when children exceed it.
+- [x] Adjust scroll size calculation in `LayoutServiceImpl.updateScrollAndClientSize` so child margin boxes beyond the content box increase `scrollWidth`/`scrollHeight`, but parent `clientWidth`/`clientHeight` remain the laid-out content size.
+- [x] Use layout children or actual child nodes consistently for scroll-size calculation; document and test the choice for positioned children. Initial recommendation: keep absolute-positioned descendants out of normal scroll-size expansion to match current `affectsScrollSize`.
+- [x] Clamp offsets after every layout pass using the centralized utility.
 
 **Acceptance Checks:**
-- [ ] Add a block layout test where a `height: 100px; overflow-y: auto` container has a 300px-tall child: container `clientHeight` remains `100`, `scrollHeight` becomes at least `300`, and `scrollTop` clamps to `scrollHeight - clientHeight`.
-- [ ] Add a flex layout test where a flex child overflows its allocated height: the flex item content box remains the Yoga-assigned size and scroll range reflects child overflow.
-- [ ] Add a test that `overflow: visible` preserves the same layout box and scroll metrics but is not wheel-scrollable.
-- [ ] Run `.\gradlew.bat :spinygui.core:test`.
+- [x] Add a block layout test where a `height: 100px; overflow-y: auto` container has a 300px-tall child: container `clientHeight` remains `100`, `scrollHeight` becomes at least `300`, and `scrollTop` clamps to `scrollHeight - clientHeight`.
+- [x] Add a flex layout test where a flex child overflows its allocated height: the flex item content box remains the Yoga-assigned size and scroll range reflects child overflow.
+- [x] Add a test that `overflow: visible` preserves the same layout box and scroll metrics but is not wheel-scrollable.
+- [x] Run `.\gradlew.bat :spinygui.core:test`.
 
 **Dependencies:** Steps 1 and 2.
 
