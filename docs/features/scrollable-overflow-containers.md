@@ -149,19 +149,21 @@ Support CSS `overflow`, `overflow-x`, and `overflow-y` for block and flex elemen
 **Purpose:** Verify scroll offsets affect all render paths, including block children, flex children, text, and inline fragments.
 
 **Changes:**
-- [ ] Audit `Node.absolutePosition()`, `NvgElementRenderer.inlineFormattingOffset`, and `NvgTextRenderer.inlineFormattingOffset` for double-subtraction or missing subtraction of ancestor scroll offsets.
-- [ ] Add tests around absolute position calculations for nested scroll parents, including `scrollTop` and `scrollLeft`.
-- [ ] Adjust inline rendering offset if inline text inside a scrolled block does not move with the block content.
-- [ ] Confirm positioned descendants follow the existing `offsetParent` model and document any limitation for absolute-positioned children inside scroll containers.
+- [x] Audit `Node.absolutePosition()`, `NvgElementRenderer.inlineFormattingOffset`, and `NvgTextRenderer.inlineFormattingOffset` for double-subtraction or missing subtraction of ancestor scroll offsets.
+- [x] Add tests around absolute position calculations for nested scroll parents, including `scrollTop` and `scrollLeft`.
+- [x] Adjust inline rendering offset if inline text inside a scrolled block does not move with the block content.
+- [x] Confirm positioned descendants follow the existing `offsetParent` model and document any limitation for absolute-positioned children inside scroll containers.
 
 **Acceptance Checks:**
-- [ ] Add a unit test where a child under a scrolled parent has `absolutePosition().y == unscrolledY - scrollTop`.
-- [ ] Add a test covering nested scroll offsets accumulating from multiple ancestors.
-- [ ] Run `.\gradlew.bat :spinygui.core:test`.
+- [x] Add a unit test where a child under a scrolled parent has `absolutePosition().y == unscrolledY - scrollTop`.
+- [x] Add a test covering nested scroll offsets accumulating from multiple ancestors.
+- [x] Run `.\gradlew.bat :spinygui.core:test`.
 
 **Dependencies:** Steps 3, 5, and 6.
 
 **Risks:** Absolute-positioned descendants may use a different offset parent than their DOM parent. Do not silently change that model in this feature unless tests prove it is necessary for scroll correctness.
+
+**Step 7 note:** Positioned descendants continue to follow the existing `offsetParent` chain. Scroll offsets accumulate along that chain, so descendants whose offset parent is not their DOM scroll container do not implicitly inherit that container's scroll offset.
 
 ### Step 8: Add Demo Coverage and Documentation
 **Purpose:** Make the feature easy to manually verify and keep support docs accurate.

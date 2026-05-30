@@ -51,15 +51,19 @@ public class NvgTextRenderer {
     resetScissor(nanovg);
   }
 
-  private Vector2f inlineFormattingOffset(Text text) {
+  Vector2f inlineFormattingOffset(Text text) {
     Element parent = text.parent();
     while (parent != null && Display.INLINE.equals(parent.resolvedStyle().display())) {
       parent = parent.parent();
     }
     if (parent != null) {
-      return parent.absolutePosition();
+      return parent.absolutePosition().sub(parent.scrollLeft(), parent.scrollTop());
     }
-    return text.offsetParent() == null ? new Vector2f() : text.offsetParent().absolutePosition();
+    return text.offsetParent() == null
+        ? new Vector2f()
+        : text.offsetParent()
+            .absolutePosition()
+            .sub(text.offsetParent().scrollLeft(), text.offsetParent().scrollTop());
   }
 
   private void renderFragment(InlineFragment fragment, long nanovg, Vector2f offset) {

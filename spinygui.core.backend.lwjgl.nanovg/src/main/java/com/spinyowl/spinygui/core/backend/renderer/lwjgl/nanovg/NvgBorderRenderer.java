@@ -47,11 +47,13 @@ public class NvgBorderRenderer {
     resetScissor(nanovg);
   }
 
-  private Vector2f inlineFormattingOffset(Element element) {
+  Vector2f inlineFormattingOffset(Element element) {
     Element parent = element.parent();
     while (parent != null && Display.INLINE.equals(parent.resolvedStyle().display())) {
       parent = parent.parent();
     }
-    return parent == null ? new Vector2f() : parent.absolutePosition();
+    return parent == null
+        ? new Vector2f()
+        : parent.absolutePosition().sub(parent.scrollLeft(), parent.scrollTop());
   }
 }
