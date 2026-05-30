@@ -129,17 +129,17 @@ Support CSS `overflow`, `overflow-x`, and `overflow-y` for block and flex elemen
 **Purpose:** Render scroll-container contents only inside their content box while allowing `overflow: visible` descendants to paint outside ancestors.
 
 **Changes:**
-- [ ] Split NanoVG clipping into an injectable or testable clip helper, for example `NvgClipStack`, so tests can assert scissor/intersect/reset calls without requiring a live OpenGL context.
-- [ ] Change `NvgRenderUtils.createScissor` or its replacement so it intersects only ancestors whose overflow clips on at least one axis.
-- [ ] Clip children of scroll containers to the element content box; do not clip the element's own background/border to its own content box.
-- [ ] Preserve clipping from multiple nested scroll containers by intersecting from root to leaf.
-- [ ] Ensure text and inline-fragment render paths use the same clipping helper as element rendering.
+- [x] Split NanoVG clipping into an injectable or testable clip helper, for example `NvgClipStack`, so tests can assert scissor/intersect/reset calls without requiring a live OpenGL context.
+- [x] Change `NvgRenderUtils.createScissor` or its replacement so it intersects only ancestors whose overflow clips on at least one axis.
+- [x] Clip children of scroll containers to the element content box; do not clip the element's own background/border to its own content box.
+- [x] Preserve clipping from multiple nested scroll containers by intersecting from root to leaf.
+- [x] Ensure text and inline-fragment render paths use the same clipping helper as element rendering.
 
 **Acceptance Checks:**
-- [ ] Add backend tests with a fake clip sink proving `overflow: visible` ancestors do not emit clip calls.
-- [ ] Add backend tests proving `overflow: hidden`, `auto`, and `scroll` ancestors clip to content-box coordinates.
-- [ ] Add a nested clipping test proving root-to-leaf intersection order.
-- [ ] Run `.\gradlew.bat :spinygui.core.backend.lwjgl.nanovg:test`.
+- [x] Add backend tests with a fake clip sink proving `overflow: visible` ancestors do not emit clip calls.
+- [x] Add backend tests proving `overflow: hidden`, `auto`, and `scroll` ancestors clip to content-box coordinates.
+- [x] Add a nested clipping test proving root-to-leaf intersection order.
+- [x] Run `.\gradlew.bat :spinygui.core.backend.lwjgl.nanovg:test`.
 
 **Dependencies:** Steps 1, 2, and 5.
 

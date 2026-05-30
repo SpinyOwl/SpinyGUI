@@ -19,12 +19,9 @@ import static org.lwjgl.nanovg.NanoVG.nvgBeginPath;
 import static org.lwjgl.nanovg.NanoVG.nvgBoxGradient;
 import static org.lwjgl.nanovg.NanoVG.nvgFill;
 import static org.lwjgl.nanovg.NanoVG.nvgFillPaint;
-import static org.lwjgl.nanovg.NanoVG.nvgIntersectScissor;
 import static org.lwjgl.nanovg.NanoVG.nvgPathWinding;
-import static org.lwjgl.nanovg.NanoVG.nvgResetScissor;
 import static org.lwjgl.nanovg.NanoVG.nvgRestore;
 import static org.lwjgl.nanovg.NanoVG.nvgRoundedRectVarying;
-import static org.lwjgl.nanovg.NanoVG.nvgScissor;
 import static org.lwjgl.nanovg.NanoVG.nvgTextAlign;
 import static org.lwjgl.nanovg.NanoVG.nvgTextBounds;
 import static org.lwjgl.system.MemoryUtil.memFree;
@@ -32,13 +29,10 @@ import static org.lwjgl.system.MemoryUtil.memUTF8;
 
 import com.spinyowl.spinygui.core.node.Element;
 import com.spinyowl.spinygui.core.node.Node;
-import com.spinyowl.spinygui.core.node.layout.Edges;
 import com.spinyowl.spinygui.core.style.ResolvedStyle;
 import com.spinyowl.spinygui.core.style.types.HorizontalAlign;
 import com.spinyowl.spinygui.core.style.types.VerticalAlign;
 import java.nio.ByteBuffer;
-import java.util.Iterator;
-import java.util.LinkedList;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import org.joml.Vector2f;
@@ -48,6 +42,8 @@ import org.lwjgl.nanovg.NVGPaint;
 
 @NoArgsConstructor(access = PRIVATE)
 public final class NvgRenderUtils {
+
+  private static final NvgClipStack CLIP_STACK = new NvgClipStack(new NvgClipStack.NanoVgClipSink());
 
   public static float[] calculateTextBoundsRect(
       long context,
@@ -183,7 +179,7 @@ public final class NvgRenderUtils {
    * @param node node.
    */
   public static void createScissor(long context, Node node) {
-    createScissorByParent(context, node.offsetParent());
+    CLIP_STACK.create(context, node);
   }
 
   /**
@@ -193,35 +189,7 @@ public final class NvgRenderUtils {
    * @param parent parent node.
    */
   public static void createScissorByParent(long context, Node parent) {
-    if (parent == null) return;
-
-    var parents = new LinkedList<Node>();
-    Node current = parent;
-
-    while (current != null) {
-      parents.add(current);
-      current = current.offsetParent();
-    }
-
-    if (!parents.isEmpty()) {
-      Iterator<Node> descendingIterator = parents.descendingIterator();
-
-      current = descendingIterator.next();
-      Edges border = current.asElement().box().border();
-
-      var pos = current.absolutePosition();
-      var size = current.asElement().box().paddingBoxSize();
-      nvgScissor(context, pos.x + border.left(), pos.y + border.top(), size.x, size.y);
-
-      while (descendingIterator.hasNext()) {
-        current = descendingIterator.next();
-        border = current.asElement().box().border();
-
-        pos = current.absolutePosition();
-        size = current.asElement().box().paddingBoxSize();
-        nvgIntersectScissor(context, pos.x + border.left(), pos.y + border.top(), size.x, size.y);
-      }
-    }
+    CLIP_STACK.createByParent(context, parent);
   }
 
   /**
@@ -230,7 +198,7 @@ public final class NvgRenderUtils {
    * @param context nanovg context pointer.
    */
   public static void resetScissor(long context) {
-    nvgResetScissor(context);
+    CLIP_STACK.reset(context);
   }
 
   /**
