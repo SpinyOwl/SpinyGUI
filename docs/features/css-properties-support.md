@@ -52,7 +52,7 @@ Approximate implementation estimates for unchecked entries:
 | `object-fit`, `object-position` | M | Replaced element/image sizing and drawing behavior. |
 | `order` | M | Flex item ordering plus layout invalidation and traversal implications. |
 | `outline`, `outline-color`, `outline-offset`, `outline-style`, `outline-width` | M | Outline property parsing and paint path outside border box. |
-| `overflow`, `overflow-x`, `overflow-y` | L | Clipping, scroll container behavior, hit-testing, and possibly scroll input. |
+| `overflow`, `overflow-x`, `overflow-y` | Supported | Supports `visible`, `hidden`, `auto`, and `scroll` for block/flex scroll containers, including scroll input, clipping, layout metrics, and hit-testing. |
 | `perspective`, `perspective-origin`, `transform`, `transform-origin`, `transform-style` | XL | Transform matrices, coordinate conversion, stacking contexts, renderer transforms, and hit-testing. |
 | `position: fixed` | L | Viewport-relative containing block, scroll behavior, stacking, and event coordinate handling. |
 | `resize` | L | User interaction, constraints, layout invalidation, and cursor behavior. |
@@ -244,9 +244,9 @@ Checklist of CSS properties:
 -  [ ] `outline-offset`
 -  [ ] `outline-style`
 -  [ ] `outline-width`
--  [ ] `overflow`
--  [ ] `overflow-x`
--  [ ] `overflow-y`
+-  [x] `overflow`
+-  [x] `overflow-x`
+-  [x] `overflow-y`
 -  [x] `overflow-wrap`
 -  [x] `padding`
 -  [x] `padding-bottom`

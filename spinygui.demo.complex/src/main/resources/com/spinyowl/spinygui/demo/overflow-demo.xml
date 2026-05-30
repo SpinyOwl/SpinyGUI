@@ -1,0 +1,24 @@
+<winframe>
+  <div class="panel vertical-scroll">
+    <div class="title">Vertical auto</div>
+    <div class="tall-content">Scroll down for more vertical content. A B C D E F G H I J.</div>
+  </div>
+
+  <div class="panel horizontal-scroll">
+    <div class="title">Horizontal auto</div>
+    <div class="wide-content">Scroll right to reveal the rest of this long horizontal line.</div>
+  </div>
+
+  <div class="panel nested-scroll">
+    <div class="title">Nested auto</div>
+    <div class="inner-scroll">
+      <div class="wide-content">Inner wide content for horizontal nested scrolling.</div>
+      <div class="tall-content">Inner tall content for vertical nested scrolling.</div>
+    </div>
+  </div>
+
+  <div class="panel visible-overflow">
+    <div class="title">Visible overflow</div>
+    <div class="oversized-card">This card should paint outside the green panel.</div>
+  </div>
+</winframe>

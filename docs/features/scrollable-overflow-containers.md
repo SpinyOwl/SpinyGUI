@@ -169,18 +169,20 @@ Support CSS `overflow`, `overflow-x`, and `overflow-y` for block and flex elemen
 **Purpose:** Make the feature easy to manually verify and keep support docs accurate.
 
 **Changes:**
-- [ ] Update `docs/features/css-properties-support.md` to mark `overflow`, `overflow-x`, and `overflow-y` as supported after tests pass.
-- [ ] Add or update a demo HTML/CSS resource with nested vertical and horizontal scroll containers.
-- [ ] Include one `overflow: visible` case in the demo to catch accidental clipping regressions.
+- [x] Update `docs/features/css-properties-support.md` to mark `overflow`, `overflow-x`, and `overflow-y` as supported after tests pass.
+- [x] Add or update a demo XML/CSS resource with nested vertical and horizontal scroll containers.
+- [x] Include one `overflow: visible` case in the demo to catch accidental clipping regressions.
 
 **Acceptance Checks:**
 - [ ] Run the relevant demo and manually verify: vertical scroll, horizontal scroll, nested scroll chaining, clipped content, and visible overflow.
-- [ ] Run `.\gradlew.bat test` for full validation.
-- [ ] Confirm no unrelated generated files or build artifacts are included in the change.
+- [x] Run `.\gradlew.bat test` for full validation.
+- [x] Confirm no unrelated generated files or build artifacts are included in the change.
 
 **Dependencies:** Steps 1 through 7.
 
 **Risks:** Manual demo verification depends on the local backend/OpenGL environment. If unavailable, record that limitation and rely on unit/backend tests for CI coverage.
+
+**Step 8 note:** Automated validation passed, but interactive NanoVG/OpenGL demo verification was not performed in this non-interactive run. `OverflowExample` loads separate XML and CSS resources for local manual verification because inline `<style>` content is not supported by the current parser.
 
 ## Verification Strategy
 - After style work: `.\gradlew.bat :spinygui.core:test --tests "*Style*"`

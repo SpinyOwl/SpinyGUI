@@ -525,19 +525,19 @@ public class ResolvedStyle {
     set(FLEX_DIRECTION, flexDirection);
   }
 
-  public Integer flexGrow() {
+  public Float flexGrow() {
     return get(FLEX_GROW);
   }
 
-  public void flexGrow(Integer flexGrow) {
+  public void flexGrow(float flexGrow) {
     set(FLEX_GROW, flexGrow);
   }
 
-  public Integer flexShrink() {
+  public Float flexShrink() {
     return get(FLEX_SHRINK);
   }
 
-  public void flexShrink(Integer flexShrink) {
+  public void flexShrink(float flexShrink) {
     set(FLEX_SHRINK, flexShrink);
   }
 

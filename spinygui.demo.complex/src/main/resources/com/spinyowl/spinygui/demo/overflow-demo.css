@@ -1,0 +1,77 @@
+winframe {
+  position: relative;
+  padding: 18px;
+  background-color: #f5f7fa;
+  font-size: 13px;
+  color: #1f2933;
+}
+
+.panel {
+  position: absolute;
+  width: 185px;
+  height: 120px;
+  padding: 6px;
+  border: 3px solid #3a6ea5;
+  background-color: #ffffff;
+}
+
+.title {
+  display: block;
+  height: 18px;
+  font-size: 15px;
+}
+
+.vertical-scroll {
+  left: 18px;
+  top: 18px;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.horizontal-scroll {
+  left: 245px;
+  top: 18px;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+.nested-scroll {
+  left: 18px;
+  top: 170px;
+  overflow: auto;
+  border-color: #8a4fbd;
+}
+
+.inner-scroll {
+  overflow: auto;
+  width: 130px;
+  height: 76px;
+  margin-top: 8px;
+  border: 3px solid #be5a38;
+  background-color: #fff4ed;
+}
+
+.visible-overflow {
+  left: 245px;
+  top: 170px;
+  overflow: visible;
+  border-color: #2f8f5b;
+}
+
+.wide-content {
+  width: 390px;
+  height: 42px;
+  background-color: #dbeafe;
+}
+
+.tall-content {
+  width: 120px;
+  height: 245px;
+  background-color: #e0f2fe;
+}
+
+.oversized-card {
+  width: 245px;
+  height: 135px;
+  background-color: #dcfce7;
+}
