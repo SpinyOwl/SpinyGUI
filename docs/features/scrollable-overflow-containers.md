@@ -88,19 +88,19 @@ Support CSS `overflow`, `overflow-x`, and `overflow-y` for block and flex elemen
 **Purpose:** Update only the nearest eligible scroll container, and bubble/chains scroll to ancestors only when the current container cannot consume more in that direction.
 
 **Changes:**
-- [ ] Refactor `SystemScrollEventListener` to build a target chain from hovered elements, deepest first.
-- [ ] Include `frame.getFocusedElement()` as a fallback chain only when no hovered candidate can consume the event.
-- [ ] For each axis, find the deepest candidate whose overflow mode allows wheel scrolling and whose offset can move in the requested direction.
-- [ ] Apply delta per axis and clamp through `OverflowUtils`; if one axis is consumed by a child, do not also scroll an ancestor on that axis.
-- [ ] Push `ScrollEvent` only for elements whose scroll offset actually changed.
-- [ ] Keep existing event offsets in the generated `ScrollEvent` so listeners can see the original wheel delta.
+- [x] Refactor `SystemScrollEventListener` to build a target chain from hovered elements, deepest first.
+- [x] Include `frame.getFocusedElement()` as a fallback chain only when no hovered candidate can consume the event.
+- [x] For each axis, find the deepest candidate whose overflow mode allows wheel scrolling and whose offset can move in the requested direction.
+- [x] Apply delta per axis and clamp through `OverflowUtils`; if one axis is consumed by a child, do not also scroll an ancestor on that axis.
+- [x] Push `ScrollEvent` only for elements whose scroll offset actually changed.
+- [x] Keep existing event offsets in the generated `ScrollEvent` so listeners can see the original wheel delta.
 
 **Acceptance Checks:**
-- [ ] Add listener tests where an inner scroll container consumes vertical scroll and the outer ancestor remains unchanged.
-- [ ] Add a test where an inner container at max scroll passes further scroll to the outer container.
-- [ ] Add a test where `overflow-y: hidden` does not consume wheel input and an eligible ancestor can scroll.
-- [ ] Add a horizontal scroll test using `offsetX`.
-- [ ] Run `.\gradlew.bat :spinygui.core:test`.
+- [x] Add listener tests where an inner scroll container consumes vertical scroll and the outer ancestor remains unchanged.
+- [x] Add a test where an inner container at max scroll passes further scroll to the outer container.
+- [x] Add a test where `overflow-y: hidden` does not consume wheel input and an eligible ancestor can scroll.
+- [x] Add a horizontal scroll test using `offsetX`.
+- [x] Run `.\gradlew.bat :spinygui.core:test`.
 
 **Dependencies:** Steps 1 through 3.
 
