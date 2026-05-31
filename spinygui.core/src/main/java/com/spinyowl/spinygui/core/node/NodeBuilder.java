@@ -185,8 +185,8 @@ public final class NodeBuilder {
    *
    * @return input element.
    */
-  public static EmptyElement input() {
-    return new EmptyElement(NODE_INPUT);
+  public static InputElement input() {
+    return new InputElement();
   }
 
   /**
@@ -195,8 +195,8 @@ public final class NodeBuilder {
    * @param attributes attributes to add.
    * @return input element with specified attributes.
    */
-  public static EmptyElement input(Map<String, String> attributes) {
-    return addAttributes(new EmptyElement(NODE_INPUT), attributes);
+  public static InputElement input(Map<String, String> attributes) {
+    return new InputElement(attributes);
   }
 
   /**
@@ -205,8 +205,8 @@ public final class NodeBuilder {
    * @param attributes attributes to add.
    * @return input element with specified attributes.
    */
-  public static EmptyElement input(Attributes attributes) {
-    return addAttributes(new EmptyElement(NODE_INPUT), attributes);
+  public static InputElement input(Attributes attributes) {
+    return input(attributes.values());
   }
 
   /**
@@ -215,8 +215,8 @@ public final class NodeBuilder {
    * @param type type attribute value.
    * @return input element with specified type attribute value.
    */
-  public static EmptyElement input(String type) {
-    return addAttributes(new EmptyElement(NODE_INPUT), Map.of(ATTR_TYPE, type));
+  public static InputElement input(String type) {
+    return input(Map.of(ATTR_TYPE, type));
   }
 
   /**
@@ -226,8 +226,8 @@ public final class NodeBuilder {
    * @param name name attribute value.
    * @return input with specified name and type attributes.
    */
-  public static EmptyElement input(String type, String name) {
-    return addAttributes(new EmptyElement(NODE_INPUT), Map.of(ATTR_TYPE, type, ATTR_NAME, name));
+  public static InputElement input(String type, String name) {
+    return input(Map.of(ATTR_TYPE, type, ATTR_NAME, name));
   }
 
   /**
@@ -238,9 +238,8 @@ public final class NodeBuilder {
    * @param value value attribute value.
    * @return input with specified name, type and value attributes.
    */
-  public static EmptyElement input(String type, String name, String value) {
-    return addAttributes(
-        new EmptyElement(NODE_INPUT), Map.of(ATTR_TYPE, type, ATTR_NAME, name, ATTR_VALUE, value));
+  public static InputElement input(String type, String name, String value) {
+    return input(Map.of(ATTR_TYPE, type, ATTR_NAME, name, ATTR_VALUE, value));
   }
 
   /**
@@ -346,7 +345,7 @@ public final class NodeBuilder {
    * @param value value attribute value.
    * @return input with {@code type="radio-button"} and with specified name and value attributes.
    */
-  public static EmptyElement radioButton(String name, String value) {
+  public static InputElement radioButton(String name, String value) {
     return input(TYPE_RADIO, name, value);
   }
 
@@ -360,6 +359,9 @@ public final class NodeBuilder {
    */
   public static <T extends Node> T addAttributes(T node, Map<String, String> attributes) {
     node.attributes().putAll(attributes);
+    if (node instanceof InputElement input) {
+      input.initializeFromAttributes();
+    }
     return node;
   }
 

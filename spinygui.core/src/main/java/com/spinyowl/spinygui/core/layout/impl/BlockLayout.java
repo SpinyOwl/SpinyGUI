@@ -7,32 +7,54 @@ import static com.spinyowl.spinygui.core.layout.impl.LayoutUtils.setPadding;
 import static com.spinyowl.spinygui.core.style.stylesheet.util.StyleUtils.getFloatLength;
 import static com.spinyowl.spinygui.core.style.stylesheet.util.StyleUtils.getFloatLengthOptional;
 
+import com.spinyowl.spinygui.core.font.Font;
 import com.spinyowl.spinygui.core.layout.ElementLayout;
 import com.spinyowl.spinygui.core.layout.LayoutContext;
 import com.spinyowl.spinygui.core.layout.LayoutService;
 import com.spinyowl.spinygui.core.node.Element;
 import com.spinyowl.spinygui.core.node.Frame;
+import com.spinyowl.spinygui.core.node.InputElement;
 import com.spinyowl.spinygui.core.node.Node;
 import com.spinyowl.spinygui.core.node.layout.Box;
 import com.spinyowl.spinygui.core.node.layout.Edges;
 import com.spinyowl.spinygui.core.style.ResolvedStyle;
+import com.spinyowl.spinygui.core.style.stylesheet.util.StyleUtils;
 import com.spinyowl.spinygui.core.style.types.Display;
 import com.spinyowl.spinygui.core.style.types.Position;
 import com.spinyowl.spinygui.core.style.types.border.BorderStyle;
 import com.spinyowl.spinygui.core.style.types.length.Length.PixelLength;
 import com.spinyowl.spinygui.core.style.types.length.Unit;
+import com.spinyowl.spinygui.core.system.font.TextMeasurer;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
 
-@RequiredArgsConstructor
 public class BlockLayout implements ElementLayout {
+  private static final float DEFAULT_TEXT_INPUT_WIDTH = 160f;
 
   @NonNull private final LayoutService layoutService;
   @NonNull private final InlineFormattingContext inlineFormattingContext;
+  private final TextMeasurer textMeasurer;
+
+  public BlockLayout(
+      @NonNull LayoutService layoutService,
+      @NonNull InlineFormattingContext inlineFormattingContext) {
+    this(layoutService, inlineFormattingContext, null);
+  }
+
+  public BlockLayout(
+      @NonNull LayoutService layoutService,
+      @NonNull InlineFormattingContext inlineFormattingContext,
+      TextMeasurer textMeasurer) {
+    this.layoutService = layoutService;
+    this.inlineFormattingContext = inlineFormattingContext;
+    this.textMeasurer = textMeasurer;
+  }
 
   @Override
   public void layout(Element element, LayoutContext context) {
@@ -96,6 +118,8 @@ public class BlockLayout implements ElementLayout {
     float contentWidth;
     if (e instanceof Frame frame) {
       contentWidth = frame.frameSize().x;
+    } else if (e instanceof InputElement input && input.textInput()) {
+      contentWidth = getTextInputWidth(style, parentBox.content().width());
     } else {
       contentWidth = getWidth(parentBox.content().width(), style);
     }
@@ -108,6 +132,9 @@ public class BlockLayout implements ElementLayout {
         layoutService.layoutChildNodes(e, ctx);
       }
       borderBoxHeight = frame.frameSize().y;
+    } else if (e instanceof InputElement input && input.textInput()) {
+      borderBoxHeight =
+          getTextInputHeight(e, style, parentBox.content().height(), verticalAdditions);
     } else {
       float childrenHeight = childrenHeight(e, style, skipChildren, ctx);
       borderBoxHeight =
@@ -335,6 +362,47 @@ public class BlockLayout implements ElementLayout {
     w = Math.max(w, minWidth.orElse(w));
     w = Math.min(w, maxWidth.orElse(w));
     return w;
+  }
+
+  private float getTextInputWidth(ResolvedStyle style, float parentWidth) {
+    float width = style.width().isAuto() ? DEFAULT_TEXT_INPUT_WIDTH : getWidth(parentWidth, style);
+    Optional<Float> minWidth = getFloatLengthOptional(style.minWidth(), parentWidth);
+    Optional<Float> maxWidth = getFloatLengthOptional(style.maxWidth(), parentWidth);
+    width = Math.max(width, minWidth.orElse(width));
+    width = Math.min(width, maxWidth.orElse(width));
+    return width;
+  }
+
+  private float getTextInputHeight(
+      Element element, ResolvedStyle style, float parentHeight, float verticalAdditions) {
+    if (!style.height().isAuto()) {
+      return getHeight(parentHeight, verticalAdditions, style);
+    }
+    float lineHeight = measureTextInputLineHeight(element, style);
+    float borderBoxHeight = lineHeight + verticalAdditions;
+    Optional<Float> minHeight = getFloatLengthOptional(style.minHeight(), parentHeight);
+    Optional<Float> maxHeight = getFloatLengthOptional(style.maxHeight(), parentHeight);
+    borderBoxHeight = Math.max(borderBoxHeight, minHeight.orElse(borderBoxHeight));
+    borderBoxHeight = Math.min(borderBoxHeight, maxHeight.orElse(borderBoxHeight));
+    return borderBoxHeight;
+  }
+
+  private float measureTextInputLineHeight(Element element, ResolvedStyle style) {
+    float fontSize = StyleUtils.getFontSize(element);
+    float lineHeight = style.lineHeight();
+    if (textMeasurer == null) {
+      return fontSize * lineHeight;
+    }
+    return textMeasurer.getTextLineMetrics("", findFont(style), fontSize, lineHeight).height();
+  }
+
+  private Font findFont(ResolvedStyle style) {
+    Set<Font> fonts =
+        style.fontFamilies().stream()
+            .map(f -> Font.find(f, style.fontStyle(), style.fontWeight()))
+            .flatMap(Collection::stream)
+            .collect(Collectors.toSet());
+    return fonts.stream().findFirst().orElse(Font.DEFAULT);
   }
 
   /**

@@ -7,6 +7,7 @@ import static javax.xml.transform.OutputKeys.OMIT_XML_DECLARATION;
 import com.spinyowl.spinygui.core.node.Element;
 import com.spinyowl.spinygui.core.node.EmptyElement;
 import com.spinyowl.spinygui.core.node.Frame;
+import com.spinyowl.spinygui.core.node.InputElement;
 import com.spinyowl.spinygui.core.node.Node;
 import com.spinyowl.spinygui.core.node.Text;
 import com.spinyowl.spinygui.core.parser.NodeParser;
@@ -73,7 +74,9 @@ public class DefaultNodeParser implements NodeParser {
       org.jsoup.nodes.Element element, NodeConverterContext context) {
     String tagName = element.tagName().toLowerCase();
     Node node;
-    if (EMPTY_ELEMENTS.contains(tagName)) {
+    if ("input".equals(tagName)) {
+      node = new InputElement();
+    } else if (EMPTY_ELEMENTS.contains(tagName)) {
       node = new EmptyElement(tagName);
     } else {
       if (FRAME_TAG_NAME.equals(tagName)) {
@@ -87,6 +90,9 @@ public class DefaultNodeParser implements NodeParser {
     for (var i = 0; i < attributes.size(); i++) {
       var attribute = attributes.get(i);
       node.attributes().put(attribute.getKey(), attribute.getValue());
+    }
+    if (node instanceof InputElement input) {
+      input.initializeFromAttributes();
     }
     context.hasRoot = true;
     return node;
@@ -183,6 +189,10 @@ public class DefaultNodeParser implements NodeParser {
 
     for (var entry : node.attributes().entrySet()) {
       element.setAttribute(entry.getKey(), entry.getValue());
+    }
+    if (node instanceof InputElement input) {
+      element.setAttribute("type", input.type());
+      element.setAttribute("value", input.value());
     }
 
     if (!EMPTY_ELEMENTS.contains(name)) {

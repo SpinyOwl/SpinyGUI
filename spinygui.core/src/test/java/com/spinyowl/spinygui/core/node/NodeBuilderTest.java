@@ -1,6 +1,7 @@
 package com.spinyowl.spinygui.core.node;
 
 import static com.spinyowl.spinygui.core.node.NodeBuilder.TYPE_PASSWORD;
+import static com.spinyowl.spinygui.core.node.NodeBuilder.TYPE_TEXT;
 import static com.spinyowl.spinygui.core.node.NodeBuilder.attr;
 import static com.spinyowl.spinygui.core.node.NodeBuilder.attrs;
 import static com.spinyowl.spinygui.core.node.NodeBuilder.cssClass;
@@ -55,10 +56,41 @@ class NodeBuilderTest {
 
   @Test
   void inputAcceptsAttributesHelper() {
-    EmptyElement element = input(attrs(type(TYPE_PASSWORD), name("password"), value("secret")));
+    InputElement element = input(attrs(type(TYPE_PASSWORD), name("password"), value("secret")));
 
     assertEquals(TYPE_PASSWORD, element.getAttribute("type"));
     assertEquals("password", element.getAttribute("name"));
     assertEquals("secret", element.getAttribute("value"));
+    assertEquals(TYPE_PASSWORD, element.type());
+    assertEquals("secret", element.value());
+  }
+
+  @Test
+  void inputDefaultsToTextTypeAndEmptyValue() {
+    InputElement element = input();
+
+    assertEquals(TYPE_TEXT, element.type());
+    assertEquals("", element.value());
+    assertEquals(0, element.caretIndex());
+  }
+
+  @Test
+  void inputWithTypeNameAndValueInitializesRuntimeState() {
+    InputElement element = input(TYPE_TEXT, "username", "alice");
+
+    assertEquals(TYPE_TEXT, element.type());
+    assertEquals("username", element.getAttribute("name"));
+    assertEquals("alice", element.value());
+    assertEquals("alice", element.getAttribute("value"));
+  }
+
+  @Test
+  void addAttributesRefreshesInputRuntimeState() {
+    InputElement element = input();
+
+    NodeBuilder.addAttributes(element, attrs(type(TYPE_PASSWORD), value("secret")));
+
+    assertEquals(TYPE_PASSWORD, element.type());
+    assertEquals("secret", element.value());
   }
 }

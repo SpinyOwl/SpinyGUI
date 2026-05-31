@@ -10,6 +10,7 @@ import com.spinyowl.spinygui.core.layout.LayoutContext;
 import com.spinyowl.spinygui.core.layout.LayoutService;
 import com.spinyowl.spinygui.core.node.Element;
 import com.spinyowl.spinygui.core.node.Frame;
+import com.spinyowl.spinygui.core.node.InputElement;
 import com.spinyowl.spinygui.core.node.Node;
 import com.spinyowl.spinygui.core.node.NodeBuilder;
 import com.spinyowl.spinygui.core.node.Text;
@@ -143,6 +144,79 @@ class BlockLayoutTest {
     assertEquals(20, inline.box().content().width());
   }
 
+  @Test
+  void layout_whenTextInputHasAutoSize_getsDefaultWidthAndMeasuredLineHeight() {
+    Frame frame = NodeBuilder.frame();
+    frame.frameSize(300, 200);
+    style(frame, 0);
+    InputElement input = NodeBuilder.input();
+    style(input, 2);
+    frame.addChild(input);
+
+    RecursiveLayoutService layoutService = new RecursiveLayoutService();
+    FixedTextMeasurer textMeasurer = new FixedTextMeasurer();
+    BlockLayout blockLayout =
+        new BlockLayout(layoutService, new InlineFormattingContext(textMeasurer), textMeasurer);
+    layoutService.blockLayout(blockLayout);
+
+    blockLayout.layout(frame, new LayoutContext());
+
+    assertEquals(156, input.box().content().width());
+    assertEquals(10, input.box().content().height());
+    assertEquals(160, input.box().borderBox().width());
+    assertEquals(14, input.box().borderBox().height());
+  }
+
+  @Test
+  void layout_whenTextInputHasStyledSize_usesStyledSize() {
+    Frame frame = NodeBuilder.frame();
+    frame.frameSize(300, 200);
+    style(frame, 0);
+    InputElement input = NodeBuilder.input();
+    style(input, 2);
+    input.resolvedStyle().width(Length.pixel(120));
+    input.resolvedStyle().height(Length.pixel(24));
+    frame.addChild(input);
+
+    RecursiveLayoutService layoutService = new RecursiveLayoutService();
+    FixedTextMeasurer textMeasurer = new FixedTextMeasurer();
+    BlockLayout blockLayout =
+        new BlockLayout(layoutService, new InlineFormattingContext(textMeasurer), textMeasurer);
+    layoutService.blockLayout(blockLayout);
+
+    blockLayout.layout(frame, new LayoutContext());
+
+    assertEquals(116, input.box().content().width());
+    assertEquals(20, input.box().content().height());
+    assertEquals(120, input.box().borderBox().width());
+    assertEquals(24, input.box().borderBox().height());
+  }
+
+  @Test
+  void layout_whenTextInputIsLaidOut_updatesScrollAndClientSize() {
+    Frame frame = NodeBuilder.frame();
+    frame.frameSize(300, 200);
+    style(frame, 0);
+    InputElement input = NodeBuilder.input();
+    style(input, 2);
+    frame.addChild(input);
+
+    RecursiveLayoutService layoutService = new RecursiveLayoutService();
+    FixedTextMeasurer textMeasurer = new FixedTextMeasurer();
+    BlockLayout blockLayout =
+        new BlockLayout(layoutService, new InlineFormattingContext(textMeasurer), textMeasurer);
+    layoutService.blockLayout(blockLayout);
+
+    layoutService.layout(frame);
+
+    assertEquals(160, frame.scrollWidth());
+    assertEquals(14, frame.scrollHeight());
+    assertEquals(300, frame.clientWidth());
+    assertEquals(200, frame.clientHeight());
+    assertEquals(156, input.clientWidth());
+    assertEquals(10, input.clientHeight());
+  }
+
   private void style(Element element, float borderWidth) {
     ResolvedStyle style = element.resolvedStyle();
     style.display(Display.BLOCK);
@@ -192,6 +266,7 @@ class BlockLayoutTest {
     @Override
     public void layout(@NonNull Frame frame) {
       layoutNode(frame, new LayoutContext());
+      updateScrollAndClientSize(frame);
     }
 
     @Override
@@ -205,6 +280,28 @@ class BlockLayoutTest {
     public void layoutChildNodes(@NonNull Element element, @NonNull LayoutContext context) {
       LayoutContext inner = new LayoutContext();
       element.childNodes().forEach(node -> layoutNode(node, inner));
+    }
+
+    private void updateScrollAndClientSize(Element element) {
+      float scrollWidth = 0;
+      float scrollHeight = 0;
+      for (Node node : element.childNodes()) {
+        scrollWidth =
+            Math.max(scrollWidth, node.box().marginBox().x() + node.box().marginBox().width());
+        scrollHeight =
+            Math.max(
+                scrollHeight, node.box().marginBox().y() + node.box().marginBox().height());
+      }
+      element.scrollWidth(scrollWidth);
+      element.scrollHeight(scrollHeight);
+      element.clientWidth(element.box().content().width());
+      element.clientHeight(element.box().content().height());
+      element
+          .childNodes()
+          .stream()
+          .filter(Element.class::isInstance)
+          .map(Element.class::cast)
+          .forEach(this::updateScrollAndClientSize);
     }
   }
 
