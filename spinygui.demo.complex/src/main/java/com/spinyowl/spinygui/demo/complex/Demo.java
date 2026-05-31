@@ -2,6 +2,7 @@ package com.spinyowl.spinygui.demo.complex;
 
 import static org.lwjgl.glfw.GLFW.GLFW_DOUBLEBUFFER;
 import static org.lwjgl.glfw.GLFW.GLFW_KEY_ESCAPE;
+import static org.lwjgl.glfw.GLFW.GLFW_KEY_F3;
 import static org.lwjgl.glfw.GLFW.GLFW_KEY_G;
 import static org.lwjgl.glfw.GLFW.GLFW_RELEASE;
 import static org.lwjgl.glfw.GLFW.GLFW_TRUE;
@@ -44,6 +45,7 @@ import com.spinyowl.cbchain.impl.ChainWindowSizeCallback;
 import com.spinyowl.spinygui.core.animation.Animator;
 import com.spinyowl.spinygui.core.animation.AnimatorImpl;
 import com.spinyowl.spinygui.core.backend.renderer.Renderer;
+import com.spinyowl.spinygui.core.backend.renderer.lwjgl.nanovg.NvgRenderer;
 import com.spinyowl.spinygui.core.event.processor.DefaultEventProcessor;
 import com.spinyowl.spinygui.core.event.processor.EventProcessor;
 import com.spinyowl.spinygui.core.input.impl.MouseServiceImpl;
@@ -175,6 +177,9 @@ public abstract class Demo {
 
       // After that we can render.
       glClear(GL_COLOR_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+      if (renderer instanceof NvgRenderer nvg) {
+        nvg.debugMousePosition(mouseService.getCursorPositions(frame).current());
+      }
       renderer.render(window, windowSize, framebufferSize, frame);
       glfwSwapBuffers(window);
 
@@ -333,6 +338,12 @@ public abstract class Demo {
     chainKeyCallback.add(
         (w1, key, code, action, mods) -> {
           if (key == GLFW_KEY_ESCAPE && action != GLFW_RELEASE) stop();
+        });
+    chainKeyCallback.add(
+        (w, key, code, action, mods) -> {
+          if (key == GLFW_KEY_F3 && action == GLFW_RELEASE && renderer instanceof NvgRenderer nvg) {
+            nvg.toggleDebugMode();
+          }
         });
     chainKeyCallback.add(
         (w, key, code, action, mods) -> {

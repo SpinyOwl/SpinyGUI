@@ -17,6 +17,7 @@ import com.spinyowl.spinygui.core.node.Node;
 import com.spinyowl.spinygui.core.node.Text;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
+import org.joml.Vector2f;
 import org.joml.Vector2fc;
 import org.joml.Vector2ic;
 import org.lwjgl.nanovg.NanoVGGL2;
@@ -30,15 +31,20 @@ public class NvgRenderer implements Renderer {
   private final NvgElementRenderer elementRenderer;
   private final NvgTextRenderer textRenderer;
   private final NvgBorderRenderer borderRenderer;
+  private final NvgDebugRenderer debugRenderer;
 
   private boolean isVersionNew;
+  private boolean debugMode;
+  private Vector2f debugMousePosition;
   private long nanovgContext;
 
   public NvgRenderer(boolean antialiasingEnabled) {
+    NvgFontRegistry fontRegistry = new NvgFontRegistry();
     this.antialiasingEnabled = antialiasingEnabled;
     this.elementRenderer = new NvgElementRenderer();
-    this.textRenderer = new NvgTextRenderer();
+    this.textRenderer = new NvgTextRenderer(fontRegistry);
     this.borderRenderer = new NvgBorderRenderer();
+    this.debugRenderer = new NvgDebugRenderer(fontRegistry);
   }
 
   public NvgRenderer() {
@@ -77,6 +83,9 @@ public class NvgRenderer implements Renderer {
     preRender(windowSize, pixelRatio);
 
     renderLayoutTree(frame);
+    if (debugMode) {
+      debugRenderer.render(frame, nanovgContext, debugMousePosition);
+    }
 
     postRender();
   }
@@ -134,5 +143,22 @@ public class NvgRenderer implements Renderer {
     //
     // RendererProvider.getInstance().getComponentRenderers().forEach(ComponentRenderer::destroy);
     //    imageReferenceManager.destroy();}
+  }
+
+  public boolean debugMode() {
+    return debugMode;
+  }
+
+  public void debugMode(boolean debugMode) {
+    this.debugMode = debugMode;
+  }
+
+  public void toggleDebugMode() {
+    debugMode(!debugMode);
+  }
+
+  public void debugMousePosition(Vector2fc debugMousePosition) {
+    this.debugMousePosition =
+        debugMousePosition == null ? null : new Vector2f(debugMousePosition);
   }
 }

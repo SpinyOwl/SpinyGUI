@@ -5,7 +5,6 @@ import static com.spinyowl.spinygui.core.backend.renderer.lwjgl.nanovg.util.NvgR
 import static com.spinyowl.spinygui.core.backend.renderer.lwjgl.nanovg.util.NvgRenderUtils.resetScissor;
 import static org.lwjgl.nanovg.NanoVG.NVG_ALIGN_BASELINE;
 import static org.lwjgl.nanovg.NanoVG.NVG_ALIGN_LEFT;
-import static org.lwjgl.nanovg.NanoVG.nvgCreateFontMem;
 import static org.lwjgl.nanovg.NanoVG.nvgFillColor;
 import static org.lwjgl.nanovg.NanoVG.nvgFontFace;
 import static org.lwjgl.nanovg.NanoVG.nvgFontSize;
@@ -16,23 +15,23 @@ import static org.lwjgl.nanovg.NanoVG.nvgTextAlign;
 import static org.lwjgl.system.MemoryUtil.memFree;
 import static org.lwjgl.system.MemoryUtil.memUTF8;
 
-import com.spinyowl.spinygui.core.font.Font;
 import com.spinyowl.spinygui.core.layout.InlineFragment;
 import com.spinyowl.spinygui.core.node.Element;
 import com.spinyowl.spinygui.core.node.Node;
 import com.spinyowl.spinygui.core.node.Text;
 import com.spinyowl.spinygui.core.style.types.Display;
-import com.spinyowl.spinygui.core.util.IOUtil;
 import java.nio.ByteBuffer;
-import java.util.HashMap;
-import java.util.Map;
 import org.joml.Vector2f;
 
 public class NvgTextRenderer {
   private final TextSink textSink;
 
   public NvgTextRenderer() {
-    this(new NanoVgTextSink());
+    this(new NvgFontRegistry());
+  }
+
+  NvgTextRenderer(NvgFontRegistry fontRegistry) {
+    this(new NanoVgTextSink(fontRegistry));
   }
 
   NvgTextRenderer(TextSink textSink) {
@@ -88,12 +87,15 @@ public class NvgTextRenderer {
   }
 
   private static final class NanoVgTextSink implements TextSink {
-    private final Map<String, String> loadedFontFaces = new HashMap<>();
-    private final Map<String, ByteBuffer> fontBuffers = new HashMap<>();
+    private final NvgFontRegistry fontRegistry;
+
+    private NanoVgTextSink(NvgFontRegistry fontRegistry) {
+      this.fontRegistry = fontRegistry;
+    }
 
     @Override
     public void drawText(long context, InlineFragment fragment, float x, float baseline) {
-      String fontFace = fontFace(fragment.font(), context);
+      String fontFace = fontRegistry.fontFace(fragment.font(), context);
       if (fontFace == null) {
         return;
       }
@@ -108,36 +110,6 @@ public class NvgTextRenderer {
           memFree(textBuffer);
         }
       }
-    }
-
-    private String fontFace(Font font, long nanovg) {
-      String key =
-          font.fontFamily()
-              + "|"
-              + font.style()
-              + "|"
-              + font.weight()
-              + "|"
-              + font.stretch()
-              + "|"
-              + font.path();
-      if (loadedFontFaces.containsKey(key)) {
-        return loadedFontFaces.get(key);
-      }
-
-      ByteBuffer fontBuffer = fontBuffers.computeIfAbsent(font.path(), IOUtil::resourceAsByteBuffer);
-      if (fontBuffer == null) {
-        return null;
-      }
-
-      String fontFace = font.fontFamily() + "-" + Integer.toUnsignedString(key.hashCode());
-      int id = nvgCreateFontMem(nanovg, fontFace, fontBuffer.duplicate(), false);
-      if (id == -1) {
-        return null;
-      }
-
-      loadedFontFaces.put(key, fontFace);
-      return fontFace;
     }
   }
 }
