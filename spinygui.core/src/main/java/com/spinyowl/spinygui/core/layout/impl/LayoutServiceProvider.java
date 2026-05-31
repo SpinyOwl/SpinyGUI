@@ -6,6 +6,7 @@ import com.spinyowl.spinygui.core.layout.LayoutService;
 import com.spinyowl.spinygui.core.style.types.Display;
 import com.spinyowl.spinygui.core.system.event.processor.SystemEventProcessor;
 import com.spinyowl.spinygui.core.system.font.FontService;
+import com.spinyowl.spinygui.core.system.font.TextMeasurer;
 import com.spinyowl.spinygui.core.time.TimeService;
 import java.util.HashMap;
 import lombok.AccessLevel;
@@ -20,8 +21,20 @@ public final class LayoutServiceProvider {
       @NonNull TimeService timeService,
       @NonNull FontService fontService) {
 
-    var textMeasurer = new FontServiceTextMeasurer(fontService);
-    var textLayout = new TextLayoutImpl(fontService);
+    if (!(fontService instanceof TextMeasurer textMeasurer)) {
+      throw new IllegalArgumentException("FontService must also implement TextMeasurer");
+    }
+    return create(systemEventProcessor, eventProcessor, timeService, fontService, textMeasurer);
+  }
+
+  public static LayoutService create(
+      @NonNull SystemEventProcessor systemEventProcessor,
+      @NonNull EventProcessor eventProcessor,
+      @NonNull TimeService timeService,
+      @NonNull FontService fontService,
+      @NonNull TextMeasurer textMeasurer) {
+
+    var textLayout = new TextLayoutImpl(fontService, textMeasurer);
     var inlineFormattingContext = new InlineFormattingContext(textMeasurer);
     var elementLayoutMap = new HashMap<Display, ElementLayout>();
     LayoutService layoutService = new LayoutServiceImpl(textLayout, elementLayoutMap);

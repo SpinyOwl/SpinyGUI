@@ -8,7 +8,6 @@ import com.spinyowl.spinygui.core.font.FontWeight;
 import com.spinyowl.spinygui.core.layout.ElementLayout;
 import com.spinyowl.spinygui.core.layout.LayoutContext;
 import com.spinyowl.spinygui.core.layout.LayoutService;
-import com.spinyowl.spinygui.core.layout.TextMeasurer;
 import com.spinyowl.spinygui.core.node.Element;
 import com.spinyowl.spinygui.core.node.Frame;
 import com.spinyowl.spinygui.core.node.Node;
@@ -209,9 +208,9 @@ class BlockLayoutTest {
     }
   }
 
-  private static class FixedTextMeasurer implements TextMeasurer {
+  private static class FixedTextMeasurer extends AbstractFixedTextMeasurer {
     @Override
-    public TextLineMetrics measure(
+    public TextLineMetrics getTextLineMetrics(
         @NonNull String text, @NonNull Font font, float fontSize, float lineHeight) {
       FontMetrics fontMetrics = new FontMetrics(8, 2, Math.max(0, fontSize * lineHeight - 10), 10, 8);
       return TextLineMetrics.builder()

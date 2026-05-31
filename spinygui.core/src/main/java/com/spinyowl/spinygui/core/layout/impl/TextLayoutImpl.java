@@ -14,17 +14,27 @@ import com.spinyowl.spinygui.core.style.ResolvedStyle;
 import com.spinyowl.spinygui.core.style.stylesheet.util.StyleUtils;
 import com.spinyowl.spinygui.core.system.font.FontService;
 import com.spinyowl.spinygui.core.system.font.TextLineMetrics;
+import com.spinyowl.spinygui.core.system.font.TextMeasurer;
 import com.spinyowl.spinygui.core.system.font.TextMetrics;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.Set;
 import java.util.stream.Collectors;
 import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
 
-@RequiredArgsConstructor
 public class TextLayoutImpl implements TextLayout {
   @NonNull private final FontService fontService;
+  @NonNull private final TextMeasurer textMeasurer;
+
+  public TextLayoutImpl(@NonNull FontService fontService) {
+    this(fontService, requireTextMeasurer(fontService));
+  }
+
+  public TextLayoutImpl(
+      @NonNull FontService fontService, @NonNull TextMeasurer textMeasurer) {
+    this.fontService = fontService;
+    this.textMeasurer = textMeasurer;
+  }
 
   public void layout(Text text, LayoutContext context) {
     if (text == null) return;
@@ -66,7 +76,7 @@ public class TextLayoutImpl implements TextLayout {
     }
 
     TextMetrics metrics =
-        fontService.measureText(
+        textMeasurer.measureText(
             text.content(), startX, fontToUse, fontSize, lineHeight, parentWidth, false);
 
     text.textStartX(startX);
@@ -109,5 +119,12 @@ public class TextLayoutImpl implements TextLayout {
             .flatMap(Collection::stream)
             .collect(Collectors.toSet());
     return fonts.stream().filter(fontService::isFontAvailable).findFirst().orElse(Font.DEFAULT);
+  }
+
+  private static TextMeasurer requireTextMeasurer(FontService fontService) {
+    if (fontService instanceof TextMeasurer textMeasurer) {
+      return textMeasurer;
+    }
+    throw new IllegalArgumentException("FontService must also implement TextMeasurer");
   }
 }

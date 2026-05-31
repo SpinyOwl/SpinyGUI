@@ -20,6 +20,7 @@ import com.spinyowl.spinygui.core.system.font.FontLoadingException;
 import com.spinyowl.spinygui.core.system.font.FontService;
 import com.spinyowl.spinygui.core.system.font.FontStorage;
 import com.spinyowl.spinygui.core.system.font.TextLineMetrics;
+import com.spinyowl.spinygui.core.system.font.TextMeasurer;
 import com.spinyowl.spinygui.core.system.font.TextMetrics;
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
@@ -37,7 +38,7 @@ import org.lwjgl.system.MemoryStack;
 import org.slf4j.Logger;
 
 @RequiredArgsConstructor
-public class FontServiceImpl implements FontService {
+public class FontServiceImpl implements FontService, TextMeasurer {
   private static final Logger LOG = getLogger(FontServiceImpl.class);
 
   private static final String SUBINDEX_SPLIT_REGEX = "\\s+";

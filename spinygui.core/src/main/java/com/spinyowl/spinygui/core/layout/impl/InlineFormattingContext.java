@@ -18,7 +18,6 @@ import com.spinyowl.spinygui.core.font.FontStyle;
 import com.spinyowl.spinygui.core.font.FontWeight;
 import com.spinyowl.spinygui.core.layout.InlineFragment;
 import com.spinyowl.spinygui.core.layout.LineBox;
-import com.spinyowl.spinygui.core.layout.TextMeasurer;
 import com.spinyowl.spinygui.core.node.Element;
 import com.spinyowl.spinygui.core.node.Node;
 import com.spinyowl.spinygui.core.node.Text;
@@ -28,6 +27,7 @@ import com.spinyowl.spinygui.core.style.types.OverflowWrap;
 import com.spinyowl.spinygui.core.style.types.WhiteSpace;
 import com.spinyowl.spinygui.core.style.types.WordBreak;
 import com.spinyowl.spinygui.core.system.font.TextLineMetrics;
+import com.spinyowl.spinygui.core.system.font.TextMeasurer;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
@@ -507,7 +507,7 @@ public class InlineFormattingContext {
 
     TextLineMetrics measurement(TextMeasurer measurer) {
       if (measurement == null) {
-        measurement = measurer.measure(text == null ? "" : text, font, fontSize, style.lineHeight());
+        measurement = measurer.getTextLineMetrics(text == null ? "" : text, font, fontSize, style.lineHeight());
       }
       return measurement;
     }

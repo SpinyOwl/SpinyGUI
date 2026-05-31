@@ -7,7 +7,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import com.spinyowl.spinygui.core.font.Font;
 import com.spinyowl.spinygui.core.font.FontStyle;
 import com.spinyowl.spinygui.core.font.FontWeight;
-import com.spinyowl.spinygui.core.layout.TextMeasurer;
 import com.spinyowl.spinygui.core.node.Element;
 import com.spinyowl.spinygui.core.node.NodeBuilder;
 import com.spinyowl.spinygui.core.node.Text;
@@ -473,11 +472,11 @@ class InlineFormattingContextTest {
     property.apply(element, new TermIdent(value));
   }
 
-  private static class FixedTextMeasurer implements TextMeasurer {
+  private static class FixedTextMeasurer extends AbstractFixedTextMeasurer {
     private int measurementCount;
 
     @Override
-    public TextLineMetrics measure(
+    public TextLineMetrics getTextLineMetrics(
         @NonNull String text, @NonNull Font font, float fontSize, float lineHeight) {
       measurementCount++;
       FontMetrics fontMetrics = new FontMetrics(8, 2, Math.max(0, fontSize * lineHeight - 10), 10, 8);
