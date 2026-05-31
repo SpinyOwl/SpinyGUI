@@ -40,11 +40,11 @@ public class DefaultNodeParser implements NodeParser {
 
     Elements frameElements = document.getElementsByTag(FRAME_TAG_NAME);
     if (frameElements.size() == 1) {
-      return createNodeFromElement(frameElements.get(0), new NodeConverterContext());
+      return createNodeFromElement(frameElements.getFirst(), new NodeConverterContext());
     }
     var bodyChildren = document.body().children();
     if (bodyChildren.size() == 1) {
-      return createNodeFromElement(bodyChildren.first(), new NodeConverterContext());
+      return createNodeFromElement(bodyChildren.getFirst(), new NodeConverterContext());
     }
     return createNodeFromElement(document.body(), new NodeConverterContext());
   }
@@ -53,8 +53,8 @@ public class DefaultNodeParser implements NodeParser {
     if (node instanceof org.jsoup.nodes.Element element) {
       return createNodeFromElement(element, context);
     } else if (node instanceof org.jsoup.nodes.TextNode text) {
-      String wholeText = text.getWholeText().trim();
-      if (wholeText.isEmpty()) {
+      String wholeText = text.getWholeText();
+      if (wholeText.isBlank()) {
         return null;
       }
       return new Text(wholeText);

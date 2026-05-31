@@ -8,10 +8,8 @@ import static com.spinyowl.spinygui.core.style.types.OverflowWrap.ANYWHERE;
 import static com.spinyowl.spinygui.core.style.types.OverflowWrap.BREAK_WORD;
 import static com.spinyowl.spinygui.core.style.types.TextAlign.CENTER;
 import static com.spinyowl.spinygui.core.style.types.TextAlign.RIGHT;
-import static com.spinyowl.spinygui.core.style.types.WhiteSpace.NORMAL;
 import static com.spinyowl.spinygui.core.style.types.WhiteSpace.NOWRAP;
 import static com.spinyowl.spinygui.core.style.types.WhiteSpace.PRE;
-import static com.spinyowl.spinygui.core.style.types.WhiteSpace.PRE_LINE;
 import static com.spinyowl.spinygui.core.style.types.WhiteSpace.PRE_WRAP;
 import static com.spinyowl.spinygui.core.style.types.WordBreak.BREAK_ALL;
 
@@ -177,7 +175,7 @@ public class InlineFormattingContext {
   }
 
   private List<InlineUnit> textUnits(Text text, ResolvedStyle style) {
-    String normalized = normalize(text.content() == null ? "" : text.content(), style);
+    String normalized = InlineWhitespace.normalize(text.content() == null ? "" : text.content(), style);
     var result = new ArrayList<InlineUnit>();
     WhiteSpace whiteSpace = style.whiteSpace();
     boolean preserveSpaces = PRE.equals(whiteSpace) || PRE_WRAP.equals(whiteSpace);
@@ -212,20 +210,6 @@ public class InlineFormattingContext {
     } else {
       units.add(new InlineUnit(text, style, value, false, false, false, 0, 0, false));
     }
-  }
-
-  private String normalize(String text, ResolvedStyle style) {
-    String normalized = text.replace("\r\n", "\n").replace('\r', '\n');
-    int tabSize = Math.max(1, style.tabSize() == null ? 4 : style.tabSize());
-    normalized = normalized.replace("\t", " ".repeat(tabSize));
-    WhiteSpace whiteSpace = style.whiteSpace();
-    if (NORMAL.equals(whiteSpace) || NOWRAP.equals(whiteSpace)) {
-      return normalized.replaceAll("\\s+", " ");
-    }
-    if (PRE_LINE.equals(whiteSpace)) {
-      return normalized.replaceAll("[ \\f\\t\\x0B]+", " ");
-    }
-    return normalized;
   }
 
   private List<LineBox> buildLines(

@@ -75,6 +75,25 @@ class InlineFormattingContextTest {
   }
 
   @Test
+  void layout_whenWrappingAtSpace_trimsTrailingSpaceButKeepsInterWordSpace() {
+    Text text = NodeBuilder.text("a b ccc");
+    parent.addChild(text);
+
+    float height = formattingContext.layout(parent, List.of(text), 0);
+
+    assertEquals(20, height);
+    assertEquals(4, text.inlineFragments().size());
+    assertEquals("a", text.inlineFragments().get(0).text());
+    assertEquals(" ", text.inlineFragments().get(1).text());
+    assertEquals(10, text.inlineFragments().get(1).x());
+    assertEquals("b", text.inlineFragments().get(2).text());
+    assertEquals(20, text.inlineFragments().get(2).x());
+    assertEquals("ccc", text.inlineFragments().get(3).text());
+    assertEquals(0, text.inlineFragments().get(3).x());
+    assertEquals(10, text.inlineFragments().get(3).y());
+  }
+
+  @Test
   void layout_whenOverflowWrapBreakWord_breaksLongWord() {
     parent.resolvedStyle().overflowWrap(OverflowWrap.BREAK_WORD);
     Text text = NodeBuilder.text("abcdef");
@@ -213,6 +232,41 @@ class InlineFormattingContextTest {
     assertEquals(50, second.inlineFragments().get(0).x());
     assertEquals("world", second.inlineFragments().get(1).text());
     assertEquals(60, second.inlineFragments().get(1).x());
+  }
+
+  @Test
+  void layout_whenLabelContainsSpace_advancesSecondWordBySpaceWidth() {
+    parent.box().content().width(200);
+    Text text = NodeBuilder.text("Horizontal auto");
+    parent.addChild(text);
+
+    formattingContext.layout(parent, List.of(text), 0);
+
+    assertEquals("Horizontal", text.inlineFragments().get(0).text());
+    assertEquals(" ", text.inlineFragments().get(1).text());
+    assertEquals("auto", text.inlineFragments().get(2).text());
+    assertEquals(110, text.inlineFragments().get(2).x());
+  }
+
+  @Test
+  void layout_whenParsedBoundarySpacesSurroundInlineElement_advancesAcrossElement() {
+    parent.box().content().width(300);
+    Text left = NodeBuilder.text("Hello ");
+    Element inline = new Element("span");
+    style(inline, Display.INLINE);
+    Text middle = NodeBuilder.text("wide");
+    Text right = NodeBuilder.text(" world");
+    inline.addChild(middle);
+    parent.addChildren(left, inline, right);
+
+    formattingContext.layout(parent, List.of(left, inline, right), 0);
+
+    assertEquals(" ", left.inlineFragments().get(1).text());
+    assertEquals(60, middle.inlineFragments().get(0).x());
+    assertEquals(" ", right.inlineFragments().get(0).text());
+    assertEquals(100, right.inlineFragments().get(0).x());
+    assertEquals("world", right.inlineFragments().get(1).text());
+    assertEquals(110, right.inlineFragments().get(1).x());
   }
 
   @Test

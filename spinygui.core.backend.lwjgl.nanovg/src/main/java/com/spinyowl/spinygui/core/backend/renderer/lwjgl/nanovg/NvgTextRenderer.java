@@ -29,8 +29,15 @@ import java.util.Map;
 import org.joml.Vector2f;
 
 public class NvgTextRenderer {
-  private final Map<String, String> loadedFontFaces = new HashMap<>();
-  private final Map<String, ByteBuffer> fontBuffers = new HashMap<>();
+  private final TextSink textSink;
+
+  public NvgTextRenderer() {
+    this(new NanoVgTextSink());
+  }
+
+  NvgTextRenderer(TextSink textSink) {
+    this.textSink = textSink;
+  }
 
   public void render(Node node, long nanovg) {
     Text text = node.asText();
@@ -42,10 +49,7 @@ public class NvgTextRenderer {
 
     nvgSave(nanovg);
     nvgTextAlign(nanovg, NVG_ALIGN_LEFT | NVG_ALIGN_BASELINE);
-    Vector2f offset = inlineFormattingOffset(text);
-    for (InlineFragment fragment : text.inlineFragments()) {
-      renderFragment(fragment, nanovg, offset);
-    }
+    renderFragments(text, nanovg, inlineFormattingOffset(text));
     nvgRestore(nanovg);
 
     resetScissor(nanovg);
@@ -66,54 +70,74 @@ public class NvgTextRenderer {
             .sub(text.offsetParent().scrollLeft(), text.offsetParent().scrollTop());
   }
 
+  void renderFragments(Text text, long nanovg, Vector2f offset) {
+    for (InlineFragment fragment : text.inlineFragments()) {
+      renderFragment(fragment, nanovg, offset);
+    }
+  }
+
   private void renderFragment(InlineFragment fragment, long nanovg, Vector2f offset) {
     if (!fragment.textFragment()) {
       return;
     }
-    String fontFace = fontFace(fragment.font(), nanovg);
-    if (fontFace == null) {
-      return;
-    }
-    nvgFontFace(nanovg, fontFace);
-    nvgFontSize(nanovg, fragment.fontSize());
-    try (var color = create(fragment.color())) {
-      nvgFillColor(nanovg, color);
-      ByteBuffer textBuffer = memUTF8(fragment.text(), false);
-      try {
-        nvgText(nanovg, offset.x + fragment.x(), offset.y + fragment.baseline(), textBuffer);
-      } finally {
-        memFree(textBuffer);
-      }
-    }
+    textSink.drawText(nanovg, fragment, offset.x + fragment.x(), offset.y + fragment.baseline());
   }
 
-  private String fontFace(Font font, long nanovg) {
-    String key =
-        font.fontFamily()
-            + "|"
-            + font.style()
-            + "|"
-            + font.weight()
-            + "|"
-            + font.stretch()
-            + "|"
-            + font.path();
-    if (loadedFontFaces.containsKey(key)) {
-      return loadedFontFaces.get(key);
+  interface TextSink {
+    void drawText(long context, InlineFragment fragment, float x, float baseline);
+  }
+
+  private static final class NanoVgTextSink implements TextSink {
+    private final Map<String, String> loadedFontFaces = new HashMap<>();
+    private final Map<String, ByteBuffer> fontBuffers = new HashMap<>();
+
+    @Override
+    public void drawText(long context, InlineFragment fragment, float x, float baseline) {
+      String fontFace = fontFace(fragment.font(), context);
+      if (fontFace == null) {
+        return;
+      }
+      nvgFontFace(context, fontFace);
+      nvgFontSize(context, fragment.fontSize());
+      try (var color = create(fragment.color())) {
+        nvgFillColor(context, color);
+        ByteBuffer textBuffer = memUTF8(fragment.text(), false);
+        try {
+          nvgText(context, x, baseline, textBuffer);
+        } finally {
+          memFree(textBuffer);
+        }
+      }
     }
 
-    ByteBuffer fontBuffer = fontBuffers.computeIfAbsent(font.path(), IOUtil::resourceAsByteBuffer);
-    if (fontBuffer == null) {
-      return null;
-    }
+    private String fontFace(Font font, long nanovg) {
+      String key =
+          font.fontFamily()
+              + "|"
+              + font.style()
+              + "|"
+              + font.weight()
+              + "|"
+              + font.stretch()
+              + "|"
+              + font.path();
+      if (loadedFontFaces.containsKey(key)) {
+        return loadedFontFaces.get(key);
+      }
 
-    String fontFace = font.fontFamily() + "-" + Integer.toUnsignedString(key.hashCode());
-    int id = nvgCreateFontMem(nanovg, fontFace, fontBuffer.duplicate(), false);
-    if (id == -1) {
-      return null;
-    }
+      ByteBuffer fontBuffer = fontBuffers.computeIfAbsent(font.path(), IOUtil::resourceAsByteBuffer);
+      if (fontBuffer == null) {
+        return null;
+      }
 
-    loadedFontFaces.put(key, fontFace);
-    return fontFace;
+      String fontFace = font.fontFamily() + "-" + Integer.toUnsignedString(key.hashCode());
+      int id = nvgCreateFontMem(nanovg, fontFace, fontBuffer.duplicate(), false);
+      if (id == -1) {
+        return null;
+      }
+
+      loadedFontFaces.put(key, fontFace);
+      return fontFace;
+    }
   }
 }
