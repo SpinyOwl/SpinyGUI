@@ -6,14 +6,18 @@ import com.spinyowl.spinygui.core.font.Font;
 import com.spinyowl.spinygui.core.layout.InlineFragment;
 import com.spinyowl.spinygui.core.node.Element;
 import com.spinyowl.spinygui.core.node.Frame;
+import com.spinyowl.spinygui.core.node.InputElement;
 import com.spinyowl.spinygui.core.node.Node;
 import com.spinyowl.spinygui.core.node.Text;
+import com.spinyowl.spinygui.core.style.types.length.Length;
 import com.spinyowl.spinygui.core.system.font.TextCaretMetrics;
+import com.spinyowl.spinygui.core.system.font.FontMetrics;
 import com.spinyowl.spinygui.core.system.font.TextLineMetrics;
 import com.spinyowl.spinygui.core.system.font.TextMeasurer;
 import com.spinyowl.spinygui.core.system.font.TextMetrics;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import org.joml.Vector2f;
 import org.junit.jupiter.api.Test;
 
@@ -119,6 +123,41 @@ class NvgDebugRendererTest {
     assertEquals(List.of(), caretSink.calls());
   }
 
+  @Test
+  void render_whenTextInputHovered_highlightsInputValueFragment() {
+    RecordingHighlightSink sink = new RecordingHighlightSink();
+    RecordingCaretSink caretSink = new RecordingCaretSink();
+    NvgDebugRenderer renderer = new NvgDebugRenderer(sink, caretSink, new NoOpStateSink());
+    renderer.textMeasurer(new FixedCaretTextMeasurer());
+    Frame frame = new Frame();
+    InputElement input = input("abcd");
+    input.hovered(true);
+    frame.addChild(input);
+    frame.layoutChildNodes(List.of(input));
+
+    renderer.render(frame, 3, null);
+
+    assertEquals(List.of("highlight(3,20.0,32.0,40.0,16.0)"), sink.calls());
+    assertEquals(List.of(), caretSink.calls());
+  }
+
+  @Test
+  void render_whenMouseInsideHoveredTextInputValue_drawsCaret() {
+    RecordingHighlightSink sink = new RecordingHighlightSink();
+    RecordingCaretSink caretSink = new RecordingCaretSink();
+    NvgDebugRenderer renderer = new NvgDebugRenderer(sink, caretSink, new NoOpStateSink());
+    renderer.textMeasurer(new FixedCaretTextMeasurer());
+    Frame frame = new Frame();
+    InputElement input = input("abcd");
+    input.hovered(true);
+    frame.addChild(input);
+    frame.layoutChildNodes(List.of(input));
+
+    renderer.render(frame, 3, new Vector2f(28, 35));
+
+    assertEquals(List.of("caret(3,24.0,32.0,16.0)"), caretSink.calls());
+  }
+
   private InlineFragment fragment(String text, float x, float y, float width, float height) {
     return InlineFragment.builder()
         .text(text)
@@ -129,6 +168,19 @@ class NvgDebugRendererTest {
         .font(Font.DEFAULT)
         .fontSize(16)
         .build();
+  }
+
+  private InputElement input(String value) {
+    InputElement input = new InputElement();
+    input.value(value);
+    input.box().contentPosition(20, 30);
+    input.box().contentSize(60, 20);
+    input.box().border().left(2);
+    input.box().border().top(2);
+    input.resolvedStyle().fontFamilies(Set.of(Font.DEFAULT.fontFamily()));
+    input.resolvedStyle().fontSize(Length.pixel(16));
+    input.resolvedStyle().lineHeight(1f);
+    return input;
   }
 
   private static final class RecordingCaretSink implements NvgDebugRenderer.CaretSink {
@@ -198,7 +250,13 @@ class NvgDebugRendererTest {
     @Override
     public TextLineMetrics getTextLineMetrics(
         String text, Font font, float fontSize, float lineHeight) {
-      throw new UnsupportedOperationException();
+      return TextLineMetrics.builder()
+          .characters(text)
+          .width(text.length() * 10f)
+          .height(16)
+          .baseline(12)
+          .fontMetrics(new FontMetrics(12, 4, 0, 16, 12))
+          .build();
     }
 
     @Override

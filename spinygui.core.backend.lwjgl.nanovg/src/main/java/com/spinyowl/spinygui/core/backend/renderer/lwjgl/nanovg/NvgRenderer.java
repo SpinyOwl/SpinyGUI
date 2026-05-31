@@ -13,6 +13,7 @@ import static org.lwjgl.opengl.GL11.glGetInteger;
 import com.spinyowl.spinygui.core.backend.renderer.Renderer;
 import com.spinyowl.spinygui.core.node.Element;
 import com.spinyowl.spinygui.core.node.Frame;
+import com.spinyowl.spinygui.core.node.InputElement;
 import com.spinyowl.spinygui.core.node.Node;
 import com.spinyowl.spinygui.core.node.Text;
 import com.spinyowl.spinygui.core.system.font.TextMeasurer;
@@ -32,6 +33,7 @@ public class NvgRenderer implements Renderer {
   private final NvgElementRenderer elementRenderer;
   private final NvgTextRenderer textRenderer;
   private final NvgBorderRenderer borderRenderer;
+  private final NvgInputRenderer inputRenderer;
   private final NvgDebugRenderer debugRenderer;
 
   private boolean isVersionNew;
@@ -45,6 +47,7 @@ public class NvgRenderer implements Renderer {
     this.elementRenderer = new NvgElementRenderer();
     this.textRenderer = new NvgTextRenderer(fontRegistry);
     this.borderRenderer = new NvgBorderRenderer();
+    this.inputRenderer = new NvgInputRenderer(fontRegistry);
     this.debugRenderer = new NvgDebugRenderer();
   }
 
@@ -98,6 +101,9 @@ public class NvgRenderer implements Renderer {
   private void renderElement(Node node, List<Node> children) {
     elementRenderer.render(node, nanovgContext);
     borderRenderer.render(node, nanovgContext);
+    if (node instanceof InputElement input) {
+      inputRenderer.render(input, nanovgContext);
+    }
 
     if (children != null) {
       children.forEach(this::renderLayoutNode);
@@ -164,6 +170,7 @@ public class NvgRenderer implements Renderer {
   }
 
   public void textMeasurer(TextMeasurer textMeasurer) {
+    inputRenderer.textMeasurer(textMeasurer);
     debugRenderer.textMeasurer(textMeasurer);
   }
 }

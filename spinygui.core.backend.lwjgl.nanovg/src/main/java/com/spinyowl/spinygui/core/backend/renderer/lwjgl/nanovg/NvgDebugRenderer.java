@@ -7,16 +7,25 @@ import static com.spinyowl.spinygui.core.backend.renderer.lwjgl.nanovg.util.NvgS
 import static org.lwjgl.nanovg.NanoVG.nvgRestore;
 import static org.lwjgl.nanovg.NanoVG.nvgSave;
 
+import com.spinyowl.spinygui.core.font.Font;
 import com.spinyowl.spinygui.core.layout.InlineFragment;
 import com.spinyowl.spinygui.core.node.Element;
 import com.spinyowl.spinygui.core.node.Frame;
+import com.spinyowl.spinygui.core.node.InputElement;
 import com.spinyowl.spinygui.core.node.Node;
 import com.spinyowl.spinygui.core.node.Text;
+import com.spinyowl.spinygui.core.style.ResolvedStyle;
+import com.spinyowl.spinygui.core.style.stylesheet.util.StyleUtils;
 import com.spinyowl.spinygui.core.style.types.Color;
 import com.spinyowl.spinygui.core.style.types.Display;
+import com.spinyowl.spinygui.core.style.types.length.Length;
 import com.spinyowl.spinygui.core.system.font.TextCaretMetrics;
+import com.spinyowl.spinygui.core.system.font.TextLineMetrics;
 import com.spinyowl.spinygui.core.system.font.TextMeasurer;
+import java.util.Collection;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 import org.joml.Vector2f;
 import org.joml.Vector2fc;
 
@@ -63,10 +72,25 @@ class NvgDebugRenderer {
   }
 
   private void renderElement(Element element, long nanovgContext, Vector2fc mousePosition) {
+    if (element instanceof InputElement input) {
+      renderInput(input, nanovgContext, mousePosition);
+    }
     if (element.hovered() && !element.inlineFragments().isEmpty()) {
       renderFragments(
-          nanovgContext, element, element.inlineFragments(), inlineFormattingOffset(element), mousePosition);
+          nanovgContext,
+          element,
+          element.inlineFragments(),
+          inlineFormattingOffset(element),
+          mousePosition);
     }
+  }
+
+  private void renderInput(InputElement input, long nanovgContext, Vector2fc mousePosition) {
+    if (!input.hovered() || !input.textInput() || textMeasurer == null) {
+      return;
+    }
+    var fragment = inputTextFragment(input);
+    renderFragments(nanovgContext, input, List.of(fragment), new Vector2f(), mousePosition);
   }
 
   private void renderText(Text text, long nanovgContext, Vector2fc mousePosition) {
@@ -101,12 +125,15 @@ class NvgDebugRenderer {
         y,
         fragment.width(),
         fragment.height());
-    if (mousePosition != null && fragment.textFragment() && contains(fragment, x, y, mousePosition)) {
+    if (mousePosition != null
+        && fragment.textFragment()
+        && contains(fragment, x, y, mousePosition)) {
       drawCaret(nanovgContext, fragment, x, y, mousePosition.x());
     }
   }
 
-  private void drawCaret(long nanovgContext, InlineFragment fragment, float x, float y, float mouseX) {
+  private void drawCaret(
+      long nanovgContext, InlineFragment fragment, float x, float y, float mouseX) {
     if (textMeasurer == null || fragment.font() == null) {
       return;
     }
@@ -114,6 +141,64 @@ class NvgDebugRenderer {
         textMeasurer.getTextCaretMetrics(
             fragment.text(), fragment.font(), fragment.fontSize(), mouseX - x);
     caretSink.drawCaret(nanovgContext, x + caret.x(), y, fragment.height());
+  }
+
+  private InlineFragment inputTextFragment(InputElement input) {
+    ResolvedStyle style = input.resolvedStyle();
+    Font font = findFont(style);
+    float fontSize = fontSize(input);
+    float lineHeight = lineHeight(style);
+    TextLineMetrics line =
+        textMeasurer.getTextLineMetrics(input.value(), font, fontSize, lineHeight);
+    Vector2f contentPosition = contentPosition(input);
+    Vector2f contentSize = input.box().contentSize();
+    float lineTop = contentPosition.y() + Math.max(0, (contentSize.y() - line.height()) / 2f);
+    float visibleWidth =
+        Math.max(0, Math.min(line.width() - input.textScrollLeft(), contentSize.x()));
+    return InlineFragment.builder()
+        .node(input)
+        .text(input.value())
+        .x(contentPosition.x() - input.textScrollLeft())
+        .y(lineTop)
+        .width(visibleWidth)
+        .height(line.height())
+        .baseline(lineTop + line.baseline())
+        .font(font)
+        .fontSize(fontSize)
+        .color(style.color())
+        .build();
+  }
+
+  private Vector2f contentPosition(InputElement input) {
+    Vector2f position = input.absolutePosition();
+    position.add(
+        input.box().border().left() + input.box().padding().left(),
+        input.box().border().top() + input.box().padding().top());
+    return position;
+  }
+
+  private Font findFont(ResolvedStyle style) {
+    Set<String> fontFamilies = style.fontFamilies();
+    if (fontFamilies == null) {
+      return Font.DEFAULT;
+    }
+    Set<Font> fonts =
+        fontFamilies.stream()
+            .filter(Font::hasFont)
+            .map(f -> Font.find(f, style.fontStyle(), style.fontWeight()))
+            .flatMap(Collection::stream)
+            .collect(Collectors.toSet());
+    return fonts.stream().findFirst().orElse(Font.DEFAULT);
+  }
+
+  private float fontSize(InputElement input) {
+    Length<?> fontSize = input.resolvedStyle().fontSize();
+    return fontSize == null ? 16f : StyleUtils.getFontSize(input);
+  }
+
+  private float lineHeight(ResolvedStyle style) {
+    Float lineHeight = style.lineHeight();
+    return lineHeight == null ? 1f : lineHeight;
   }
 
   private boolean contains(InlineFragment fragment, float x, float y, Vector2fc mousePosition) {
