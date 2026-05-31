@@ -62,4 +62,19 @@ class FontServiceImplTest {
 
     assertTrue(metrics.width() > 0);
   }
+
+  @Test
+  void measureText_roundsGlyphAdvancesLikeNanoVgFontStash() {
+    TextMetrics metrics = fontService.measureText("Horizontal auto", Font.DEFAULT, 16, 1.2f);
+
+    assertEquals(Math.round(metrics.width()), metrics.width());
+  }
+
+  @Test
+  void measureText_usesStbMappingEmScaleLikeNanoVgFontStash() {
+    TextMetrics metrics = fontService.measureText("abc", Font.DEFAULT, 16, 1.0f);
+
+    assertTrue(metrics.fontMetrics().ascent() + metrics.fontMetrics().descent() > 16);
+    assertEquals(metrics.fontMetrics().ascent(), metrics.fontMetrics().baseline());
+  }
 }

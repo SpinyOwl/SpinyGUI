@@ -3,8 +3,10 @@ package com.spinyowl.spinygui.core.system.font.impl;
 import static org.lwjgl.stb.STBTruetype.STBTT_MS_EID_UNICODE_BMP;
 import static org.lwjgl.stb.STBTruetype.STBTT_MS_LANG_ENGLISH;
 import static org.lwjgl.stb.STBTruetype.STBTT_PLATFORM_ID_MICROSOFT;
-import static org.lwjgl.stb.STBTruetype.stbtt_GetCodepointHMetrics;
+import static org.lwjgl.stb.STBTruetype.stbtt_FindGlyphIndex;
 import static org.lwjgl.stb.STBTruetype.stbtt_GetFontVMetrics;
+import static org.lwjgl.stb.STBTruetype.stbtt_GetGlyphHMetrics;
+import static org.lwjgl.stb.STBTruetype.stbtt_GetGlyphKernAdvance;
 import static org.lwjgl.stb.STBTruetype.stbtt_GetFontNameString;
 import static org.lwjgl.stb.STBTruetype.stbtt_ScaleForMappingEmToPixels;
 import static org.slf4j.LoggerFactory.getLogger;
@@ -138,8 +140,6 @@ public class FontServiceImpl implements FontService {
     try (MemoryStack stack = MemoryStack.stackPush()) {
       IntBuffer pCodePoint = stack.mallocInt(1);
       IntBuffer pAdvance = stack.mallocInt(1);
-      IntBuffer pLeftSideBearing = stack.mallocInt(1);
-
       float scaleFactor = stbtt_ScaleForMappingEmToPixels(fontInfo, fontSize);
       FontMetrics fontMetrics = measureFontMetrics(fontInfo, fontSize, lineHeight);
       int length = text.length();
@@ -151,6 +151,7 @@ public class FontServiceImpl implements FontService {
       int lastSpace = -1;
       int lastSpaceEnd = -1;
       float lastSpaceWidth = 0;
+      int previousGlyphIndex = -1;
       int i = 0;
       while (i < length) {
         int charStart = i;
@@ -167,12 +168,15 @@ public class FontServiceImpl implements FontService {
           lastSpace = -1;
           lastSpaceEnd = -1;
           lastSpaceWidth = 0;
+          previousGlyphIndex = -1;
           i = charEnd;
           continue;
         }
 
-        stbtt_GetCodepointHMetrics(fontInfo, codePoint, pAdvance, pLeftSideBearing);
-        float charWidth = pAdvance.get(0) * scaleFactor;
+        int glyphIndex = stbtt_FindGlyphIndex(fontInfo, codePoint);
+        float charWidth =
+            measureNanoVgGlyphAdvance(
+                fontInfo, glyphIndex, previousGlyphIndex, pAdvance, scaleFactor);
 
         if (currentWidth + charWidth > maxWidth && lineStart < charStart) {
           int lineEnd = charStart;
@@ -191,6 +195,7 @@ public class FontServiceImpl implements FontService {
           lastSpace = -1;
           lastSpaceEnd = -1;
           lastSpaceWidth = 0;
+          previousGlyphIndex = -1;
           i = nextLineStart;
           continue;
         }
@@ -201,6 +206,7 @@ public class FontServiceImpl implements FontService {
           lastSpaceWidth = currentWidth;
         }
         currentWidth += charWidth;
+        previousGlyphIndex = glyphIndex;
         i = charEnd;
       }
       maxLineWidth = addLine(lines, text, lineStart, length, currentWidth, fontMetrics, maxLineWidth);
@@ -295,6 +301,21 @@ public class FontServiceImpl implements FontService {
             .fontMetrics(fontMetrics)
             .build());
     return Math.max(currentMaxWidth, width);
+  }
+
+  private float measureNanoVgGlyphAdvance(
+      STBTTFontinfo fontInfo,
+      int glyphIndex,
+      int previousGlyphIndex,
+      IntBuffer pAdvance,
+      float scaleFactor) {
+    float width = 0;
+    if (previousGlyphIndex != -1) {
+      width += (int) (stbtt_GetGlyphKernAdvance(fontInfo, previousGlyphIndex, glyphIndex) * scaleFactor + 0.5f);
+    }
+    stbtt_GetGlyphHMetrics(fontInfo, glyphIndex, pAdvance, null);
+    short xAdvance = (short) (scaleFactor * pAdvance.get(0) * 10.0f);
+    return width + (int) (xAdvance / 10.0f + 0.5f);
   }
 
   // obtains font info from the map or if map has no entry, creates it and adds it to the map
