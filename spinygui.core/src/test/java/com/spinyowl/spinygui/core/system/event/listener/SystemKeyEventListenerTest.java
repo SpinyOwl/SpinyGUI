@@ -22,6 +22,7 @@ import com.spinyowl.spinygui.core.node.Frame;
 import com.spinyowl.spinygui.core.node.InputElement;
 import com.spinyowl.spinygui.core.system.event.SystemKeyEvent;
 import com.spinyowl.spinygui.core.system.input.SystemKeyAction;
+import com.spinyowl.spinygui.core.system.input.SystemKeyMod;
 import com.spinyowl.spinygui.core.time.TimeService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -135,6 +136,46 @@ class SystemKeyEventListenerTest {
     processInputKey(input, KeyCode.HOME, SystemKeyAction.PRESS);
     Assertions.assertEquals("abc", input.value());
     Assertions.assertEquals(0, input.caretIndex());
+  }
+
+  @Test
+  void process_whenShiftArrowPressedExtendsTextInputSelection() {
+    InputElement input = focusedInput("abc", 1);
+
+    processInputKey(
+        input, KeyCode.RIGHT, SystemKeyAction.PRESS, ImmutableSet.of(SystemKeyMod.SHIFT));
+
+    Assertions.assertEquals(1, input.selectionStart());
+    Assertions.assertEquals(2, input.selectionEnd());
+    Assertions.assertEquals(2, input.caretIndex());
+  }
+
+  @Test
+  void process_whenShiftHomeAndEndPressedExtendsTextInputSelection() {
+    InputElement input = focusedInput("abcd", 2);
+
+    processInputKey(
+        input, KeyCode.HOME, SystemKeyAction.PRESS, ImmutableSet.of(SystemKeyMod.SHIFT));
+    Assertions.assertEquals(0, input.selectionStart());
+    Assertions.assertEquals(2, input.selectionEnd());
+    Assertions.assertEquals(0, input.caretIndex());
+
+    processInputKey(input, KeyCode.END, SystemKeyAction.PRESS, ImmutableSet.of(SystemKeyMod.SHIFT));
+    Assertions.assertEquals(2, input.selectionStart());
+    Assertions.assertEquals(4, input.selectionEnd());
+    Assertions.assertEquals(4, input.caretIndex());
+  }
+
+  @Test
+  void process_whenBackspacePressedWithSelectionDeletesSelection() {
+    InputElement input = focusedInput("abcd", 3);
+    input.select(1, 3);
+
+    processInputKey(input, KeyCode.BACKSPACE, SystemKeyAction.PRESS);
+
+    Assertions.assertEquals("ad", input.value());
+    Assertions.assertEquals(1, input.caretIndex());
+    Assertions.assertFalse(input.hasSelection());
   }
 
   @Test
@@ -253,6 +294,14 @@ class SystemKeyEventListenerTest {
 
   private void processInputKey(
       InputElement input, KeyCode mappedKeyCode, SystemKeyAction systemAction) {
+    processInputKey(input, mappedKeyCode, systemAction, ImmutableSet.of());
+  }
+
+  private void processInputKey(
+      InputElement input,
+      KeyCode mappedKeyCode,
+      SystemKeyAction systemAction,
+      ImmutableSet<SystemKeyMod> mods) {
     // Arrange
     var frame = frame(input);
     double timestamp = 1D;
@@ -268,7 +317,7 @@ class SystemKeyEventListenerTest {
             .keyCode(keyCode)
             .scancode(scancode)
             .action(systemAction)
-            .mods(ImmutableSet.of())
+            .mods(mods)
             .frame(frame)
             .build();
 
@@ -280,7 +329,7 @@ class SystemKeyEventListenerTest {
             .target(input)
             .action(getAction(systemAction))
             .timestamp(timestamp)
-            .mods(ImmutableSet.of())
+            .mods(event.mappedMods())
             .key(new KeyboardKey(mappedKeyCode, keyCode, scancode))
             .build();
     doNothing().when(eventProcessor).push(expectedEvent);

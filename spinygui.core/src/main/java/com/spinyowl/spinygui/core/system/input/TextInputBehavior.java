@@ -14,14 +14,19 @@ public class TextInputBehavior {
     }
 
     String text = TextUtil.cpToStr(codepoint);
-    int caretIndex = input.caretIndex();
-    input.value(
-        input.value().substring(0, caretIndex) + text + input.value().substring(caretIndex));
-    input.caretIndex(caretIndex + text.length());
+    int start = input.selectionStart();
+    int end = input.selectionEnd();
+    input.value(input.value().substring(0, start) + text + input.value().substring(end));
+    input.caretIndex(start + text.length());
     return true;
   }
 
   public boolean handleKey(InputElement input, KeyCode keyCode, KeyAction action) {
+    return handleKey(input, keyCode, action, false);
+  }
+
+  public boolean handleKey(
+      InputElement input, KeyCode keyCode, KeyAction action, boolean extendSelection) {
     if (!input.textInput() || keyCode == null || action == KeyAction.RELEASE) {
       return false;
     }
@@ -29,15 +34,18 @@ public class TextInputBehavior {
     return switch (keyCode) {
       case BACKSPACE -> backspace(input);
       case DELETE -> delete(input);
-      case LEFT -> moveCaretLeft(input);
-      case RIGHT -> moveCaretRight(input);
-      case HOME -> moveCaret(input, 0);
-      case END -> moveCaret(input, input.value().length());
+      case LEFT -> moveCaretLeft(input, extendSelection);
+      case RIGHT -> moveCaretRight(input, extendSelection);
+      case HOME -> moveCaret(input, 0, extendSelection);
+      case END -> moveCaret(input, input.value().length(), extendSelection);
       default -> false;
     };
   }
 
   private boolean backspace(InputElement input) {
+    if (deleteSelection(input)) {
+      return true;
+    }
     int caretIndex = input.caretIndex();
     if (caretIndex == 0) {
       return false;
@@ -51,6 +59,9 @@ public class TextInputBehavior {
   }
 
   private boolean delete(InputElement input) {
+    if (deleteSelection(input)) {
+      return true;
+    }
     int caretIndex = input.caretIndex();
     String value = input.value();
     if (caretIndex == value.length()) {
@@ -63,26 +74,49 @@ public class TextInputBehavior {
     return true;
   }
 
-  private boolean moveCaretLeft(InputElement input) {
+  private boolean moveCaretLeft(InputElement input, boolean extendSelection) {
+    if (input.hasSelection() && !extendSelection) {
+      return moveCaret(input, input.selectionStart(), false);
+    }
     int caretIndex = input.caretIndex();
     if (caretIndex == 0) {
       return false;
     }
-    return moveCaret(input, input.value().offsetByCodePoints(caretIndex, -1));
+    return moveCaret(input, input.value().offsetByCodePoints(caretIndex, -1), extendSelection);
   }
 
-  private boolean moveCaretRight(InputElement input) {
+  private boolean moveCaretRight(InputElement input, boolean extendSelection) {
+    if (input.hasSelection() && !extendSelection) {
+      return moveCaret(input, input.selectionEnd(), false);
+    }
     int caretIndex = input.caretIndex();
     if (caretIndex == input.value().length()) {
       return false;
     }
-    return moveCaret(input, input.value().offsetByCodePoints(caretIndex, 1));
+    return moveCaret(input, input.value().offsetByCodePoints(caretIndex, 1), extendSelection);
   }
 
-  private boolean moveCaret(InputElement input, int caretIndex) {
+  private boolean moveCaret(InputElement input, int caretIndex, boolean extendSelection) {
     int previousCaretIndex = input.caretIndex();
-    input.caretIndex(caretIndex);
-    return previousCaretIndex != input.caretIndex();
+    int previousSelectionAnchor = input.selectionAnchor();
+    if (extendSelection) {
+      input.select(input.selectionAnchor(), caretIndex);
+    } else {
+      input.caretIndex(caretIndex);
+    }
+    return previousCaretIndex != input.caretIndex()
+        || previousSelectionAnchor != input.selectionAnchor();
+  }
+
+  private boolean deleteSelection(InputElement input) {
+    if (!input.hasSelection()) {
+      return false;
+    }
+    int start = input.selectionStart();
+    int end = input.selectionEnd();
+    input.value(input.value().substring(0, start) + input.value().substring(end));
+    input.caretIndex(start);
+    return true;
   }
 
   private boolean isPrintable(int codepoint) {

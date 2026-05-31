@@ -106,6 +106,23 @@ class SystemCharEventListenerTest {
   }
 
   @Test
+  void process_whenFocusedTextInputHasSelectionReplacesSelection() {
+    Frame frame = new Frame();
+    InputElement input = new InputElement();
+    input.value("abcd");
+    input.select(1, 3);
+    input.focused(true);
+    frame.addChild(input);
+    when(timeService.currentTime()).thenReturn(1D);
+
+    listener.process(SystemCharEvent.builder().frame(frame).codepoint('x').build(), frame);
+
+    Assertions.assertEquals("axd", input.value());
+    Assertions.assertEquals(2, input.caretIndex());
+    Assertions.assertFalse(input.hasSelection());
+  }
+
+  @Test
   void process_whenFocusedTextInputReceivesControlCodeKeepsValueAndGeneratesCharEvent() {
     // Arrange
     Frame frame = new Frame();

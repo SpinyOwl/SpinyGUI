@@ -30,6 +30,7 @@ import com.spinyowl.spinygui.core.system.font.TextLineMetrics;
 import com.spinyowl.spinygui.core.system.font.TextMeasurer;
 import com.spinyowl.spinygui.core.system.font.TextMetrics;
 import com.spinyowl.spinygui.core.system.input.SystemKeyAction;
+import com.spinyowl.spinygui.core.system.input.SystemKeyMod;
 import com.spinyowl.spinygui.core.system.input.SystemMouseButton;
 import com.spinyowl.spinygui.core.time.TimeService;
 import com.spinyowl.spinygui.core.style.types.length.Length;
@@ -396,6 +397,21 @@ class SystemMouseClickEventListenerTest {
   }
 
   @Test
+  void process_shiftPressTextInput_extendsSelectionFromAnchor() {
+    InputElement input = textInput();
+    input.caretIndex(1);
+    Frame frame = frame(input);
+    frame.box().contentSize(100, 100);
+    listener = listenerWithTextMeasurer();
+
+    processInputPress(frame, new Vector2f(55, 25), ImmutableSet.of(SystemKeyMod.SHIFT));
+
+    Assertions.assertEquals(1, input.selectionStart());
+    Assertions.assertEquals(4, input.selectionEnd());
+    Assertions.assertEquals(4, input.caretIndex());
+  }
+
+  @Test
   void process_pressNestedTextInput_placesCaretFromAbsoluteContentPosition() {
     Element panel = div();
     panel.box().contentPosition(100, 20);
@@ -459,10 +475,15 @@ class SystemMouseClickEventListenerTest {
   }
 
   private void processInputPress(Frame frame, Vector2f cursorPosition) {
+    processInputPress(frame, cursorPosition, ImmutableSet.of());
+  }
+
+  private void processInputPress(
+      Frame frame, Vector2f cursorPosition, ImmutableSet<SystemKeyMod> mods) {
     SystemMouseClickEvent event =
         SystemMouseClickEvent.builder()
             .action(SystemKeyAction.PRESS)
-            .mods(ImmutableSet.of())
+            .mods(mods)
             .frame(frame)
             .button(SystemMouseButton.LEFT)
             .build();

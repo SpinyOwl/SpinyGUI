@@ -24,6 +24,7 @@ public class InputElement extends EmptyElement {
   private String type = TYPE_TEXT;
   private String value = "";
   private int caretIndex;
+  private int selectionAnchor;
   private float textScrollLeft;
 
   public InputElement() {
@@ -48,10 +49,37 @@ public class InputElement extends EmptyElement {
   public void value(String value) {
     this.value = value == null ? "" : value;
     caretIndex = Math.min(caretIndex, this.value.length());
+    selectionAnchor = Math.min(selectionAnchor, this.value.length());
   }
 
   public void caretIndex(int caretIndex) {
     this.caretIndex = Math.max(0, Math.min(caretIndex, value.length()));
+    selectionAnchor = this.caretIndex;
+  }
+
+  public void select(int anchor, int focus) {
+    selectionAnchor = clampTextIndex(anchor);
+    caretIndex = clampTextIndex(focus);
+  }
+
+  public void selectionAnchor(int selectionAnchor) {
+    this.selectionAnchor = clampTextIndex(selectionAnchor);
+  }
+
+  public void clearSelection() {
+    selectionAnchor = caretIndex;
+  }
+
+  public boolean hasSelection() {
+    return selectionAnchor != caretIndex;
+  }
+
+  public int selectionStart() {
+    return Math.min(selectionAnchor, caretIndex);
+  }
+
+  public int selectionEnd() {
+    return Math.max(selectionAnchor, caretIndex);
   }
 
   public void textScrollLeft(float textScrollLeft) {
@@ -60,5 +88,9 @@ public class InputElement extends EmptyElement {
 
   public boolean textInput() {
     return TYPE_TEXT.equalsIgnoreCase(type);
+  }
+
+  private int clampTextIndex(int index) {
+    return Math.max(0, Math.min(index, value.length()));
   }
 }

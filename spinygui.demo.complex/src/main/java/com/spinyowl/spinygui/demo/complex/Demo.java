@@ -321,6 +321,7 @@ public abstract class Demo {
         SystemCharEventListener.builder()
             .eventProcessor(eventProcessor)
             .timeService(timeService)
+            .textMeasurer(textMeasurer)
             .build());
     systemEventListenerProvider.listener(
         SystemKeyEvent.class,
@@ -328,6 +329,7 @@ public abstract class Demo {
             .keyboard(new Keyboard(defaultKeyboardLayout(), new ShortcutRegistryImpl()))
             .eventProcessor(eventProcessor)
             .timeService(timeService)
+            .textMeasurer(textMeasurer)
             .build());
 
     systemEventProcessor =

@@ -15,6 +15,7 @@ import com.spinyowl.spinygui.core.node.Frame;
 import com.spinyowl.spinygui.core.node.InputElement;
 import com.spinyowl.spinygui.core.system.event.SystemMouseClickEvent;
 import com.spinyowl.spinygui.core.system.font.TextMeasurer;
+import com.spinyowl.spinygui.core.system.input.SystemKeyMod;
 import com.spinyowl.spinygui.core.system.input.TextInputMouseCaretBehavior;
 import com.spinyowl.spinygui.core.time.TimeService;
 import lombok.Builder;
@@ -104,7 +105,7 @@ public class SystemMouseClickEventListener
       Element target) {
     removeFocus(target, frame);
     target.pressed(true);
-    placeInputCaret(target, cursorPosition);
+    placeInputCaret(target, cursorPosition, event.mods().contains(SystemKeyMod.SHIFT));
 
     if (focusedElement != target) {
       target.focused(true);
@@ -117,9 +118,9 @@ public class SystemMouseClickEventListener
     }
   }
 
-  private void placeInputCaret(Element target, Vector2fc cursorPosition) {
+  private void placeInputCaret(Element target, Vector2fc cursorPosition, boolean extendSelection) {
     if (textInputMouseCaretBehavior != null && target instanceof InputElement input) {
-      textInputMouseCaretBehavior.placeCaret(input, cursorPosition);
+      textInputMouseCaretBehavior.placeCaret(input, cursorPosition, extendSelection);
     }
   }
 

@@ -34,10 +34,12 @@ import org.joml.Vector2f;
 class NvgInputRenderer {
 
   private static final Color DEFAULT_TEXT_COLOR = Color.BLACK;
+  private static final Color SELECTION_COLOR = new Color(59, 130, 246, 0.28f);
   private static final Color CARET_COLOR = new Color(33, 33, 33, 0.95f);
   private static final float CARET_WIDTH = 1.5f;
 
   private final InputStateSink stateSink;
+  private final InputSelectionSink selectionSink;
   private final InputTextSink textSink;
   private final InputCaretSink caretSink;
   private TextMeasurer textMeasurer;
@@ -49,12 +51,18 @@ class NvgInputRenderer {
   NvgInputRenderer(NvgFontRegistry fontRegistry) {
     this(
         new NanoVgInputStateSink(),
+        new NanoVgInputSelectionSink(),
         new NanoVgInputTextSink(fontRegistry),
         new NanoVgInputCaretSink());
   }
 
-  NvgInputRenderer(InputStateSink stateSink, InputTextSink textSink, InputCaretSink caretSink) {
+  NvgInputRenderer(
+      InputStateSink stateSink,
+      InputSelectionSink selectionSink,
+      InputTextSink textSink,
+      InputCaretSink caretSink) {
     this.stateSink = stateSink;
+    this.selectionSink = selectionSink;
     this.textSink = textSink;
     this.caretSink = caretSink;
   }
@@ -70,6 +78,9 @@ class NvgInputRenderer {
 
     TextGeometry geometry = textGeometry(input);
     stateSink.begin(nanovgContext, input, geometry.contentPosition(), geometry.contentSize());
+    if (input.hasSelection()) {
+      drawSelection(input, nanovgContext, geometry);
+    }
     textSink.drawText(
         nanovgContext,
         input.value(),
@@ -84,6 +95,20 @@ class NvgInputRenderer {
     stateSink.end(nanovgContext);
   }
 
+  private void drawSelection(InputElement input, long nanovgContext, TextGeometry geometry) {
+    float selectionStartX = textX(input, input.selectionStart(), geometry);
+    float selectionEndX = textX(input, input.selectionEnd(), geometry);
+    if (selectionEndX <= selectionStartX) {
+      return;
+    }
+    selectionSink.drawSelection(
+        nanovgContext,
+        geometry.textX() + selectionStartX,
+        geometry.lineTop(),
+        selectionEndX - selectionStartX,
+        geometry.lineHeight());
+  }
+
   private void drawCaret(InputElement input, long nanovgContext, TextGeometry geometry) {
     float caretX = caretX(input, geometry);
     caretSink.drawCaret(
@@ -94,10 +119,14 @@ class NvgInputRenderer {
   }
 
   private float caretX(InputElement input, TextGeometry geometry) {
-    int caretIndex = Math.max(0, Math.min(input.caretIndex(), input.value().length()));
+    return textX(input, input.caretIndex(), geometry);
+  }
+
+  private float textX(InputElement input, int textIndex, TextGeometry geometry) {
+    int safeTextIndex = Math.max(0, Math.min(textIndex, input.value().length()));
     TextLineMetrics line =
         textMeasurer.getTextLineMetrics(
-            input.value().substring(0, caretIndex),
+            input.value().substring(0, safeTextIndex),
             geometry.font(),
             geometry.fontSize(),
             geometry.requestedLineHeight());
@@ -167,6 +196,10 @@ class NvgInputRenderer {
     void begin(long context, InputElement input, Vector2f contentPosition, Vector2f contentSize);
 
     void end(long context);
+  }
+
+  interface InputSelectionSink {
+    void drawSelection(long context, float x, float y, float width, float height);
   }
 
   interface InputTextSink {
@@ -245,6 +278,13 @@ class NvgInputRenderer {
           memFree(textBuffer);
         }
       }
+    }
+  }
+
+  private static final class NanoVgInputSelectionSink implements InputSelectionSink {
+    @Override
+    public void drawSelection(long context, float x, float y, float width, float height) {
+      drawRect(context, new Vector2f(x, y), new Vector2f(width, height), SELECTION_COLOR);
     }
   }
 

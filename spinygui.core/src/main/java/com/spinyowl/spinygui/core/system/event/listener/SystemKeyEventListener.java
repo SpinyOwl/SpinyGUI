@@ -9,7 +9,10 @@ import com.spinyowl.spinygui.core.input.KeyboardKey;
 import com.spinyowl.spinygui.core.node.Frame;
 import com.spinyowl.spinygui.core.node.InputElement;
 import com.spinyowl.spinygui.core.system.event.SystemKeyEvent;
+import com.spinyowl.spinygui.core.system.font.TextMeasurer;
+import com.spinyowl.spinygui.core.system.input.SystemKeyMod;
 import com.spinyowl.spinygui.core.system.input.TextInputBehavior;
+import com.spinyowl.spinygui.core.system.input.TextInputViewportBehavior;
 import com.spinyowl.spinygui.core.time.TimeService;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
@@ -21,14 +24,17 @@ public class SystemKeyEventListener extends AbstractSystemEventListener<SystemKe
   private static final TextInputBehavior TEXT_INPUT_BEHAVIOR = new TextInputBehavior();
 
   @NonNull private final Keyboard keyboard;
+  @EqualsAndHashCode.Exclude private final TextInputViewportBehavior viewportBehavior;
 
   @Builder
   public SystemKeyEventListener(
       @NonNull EventProcessor eventProcessor,
       @NonNull TimeService timeService,
-      @NonNull Keyboard keyboard) {
+      @NonNull Keyboard keyboard,
+      TextMeasurer textMeasurer) {
     super(eventProcessor, timeService);
     this.keyboard = keyboard;
+    viewportBehavior = textMeasurer == null ? null : new TextInputViewportBehavior(textMeasurer);
   }
 
   /**
@@ -51,7 +57,12 @@ public class SystemKeyEventListener extends AbstractSystemEventListener<SystemKe
       var action = getAction(event);
 
       if (element instanceof InputElement input) {
-        TEXT_INPUT_BEHAVIOR.handleKey(input, keyCodeObject, action);
+        boolean changed =
+            TEXT_INPUT_BEHAVIOR.handleKey(
+                input, keyCodeObject, action, event.mods().contains(SystemKeyMod.SHIFT));
+        if (changed) {
+          ensureCaretVisible(input);
+        }
       }
 
       eventProcessor.push(
@@ -72,5 +83,11 @@ public class SystemKeyEventListener extends AbstractSystemEventListener<SystemKe
       case RELEASE -> KeyAction.RELEASE;
       case REPEAT -> KeyAction.REPEAT;
     };
+  }
+
+  private void ensureCaretVisible(InputElement input) {
+    if (viewportBehavior != null) {
+      viewportBehavior.ensureCaretVisible(input);
+    }
   }
 }

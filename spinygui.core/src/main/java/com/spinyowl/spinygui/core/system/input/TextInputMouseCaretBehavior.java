@@ -22,21 +22,29 @@ public class TextInputMouseCaretBehavior {
   }
 
   public boolean placeCaret(InputElement input, Vector2fc cursorPosition) {
+    return placeCaret(input, cursorPosition, false);
+  }
+
+  public boolean placeCaret(InputElement input, Vector2fc cursorPosition, boolean extendSelection) {
     if (!input.textInput()) {
       return false;
     }
 
     float offsetX = textOffset(input, cursorPosition);
     int previousCaretIndex = input.caretIndex();
-    input.caretIndex(
+    int previousSelectionAnchor = input.selectionAnchor();
+    int nextCaretIndex =
         textMeasurer
             .getTextCaretMetrics(
-                input.value(),
-                findFont(input.resolvedStyle()),
-                fontSize(input),
-                offsetX)
-            .charIndex());
-    return previousCaretIndex != input.caretIndex();
+                input.value(), findFont(input.resolvedStyle()), fontSize(input), offsetX)
+            .charIndex();
+    if (extendSelection) {
+      input.select(input.selectionAnchor(), nextCaretIndex);
+    } else {
+      input.caretIndex(nextCaretIndex);
+    }
+    return previousCaretIndex != input.caretIndex()
+        || previousSelectionAnchor != input.selectionAnchor();
   }
 
   private float textOffset(InputElement input, Vector2fc cursorPosition) {

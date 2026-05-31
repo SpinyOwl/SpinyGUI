@@ -22,9 +22,11 @@ class NvgInputRendererTest {
   @Test
   void render_whenTextInputIsFocused_drawsValueAndCaretClippedToContentBox() {
     RecordingStateSink stateSink = new RecordingStateSink();
+    RecordingSelectionSink selectionSink = new RecordingSelectionSink();
     RecordingTextSink textSink = new RecordingTextSink();
     RecordingCaretSink caretSink = new RecordingCaretSink();
-    NvgInputRenderer renderer = new NvgInputRenderer(stateSink, textSink, caretSink);
+    NvgInputRenderer renderer =
+        new NvgInputRenderer(stateSink, selectionSink, textSink, caretSink);
     renderer.textMeasurer(new FixedTextMeasurer());
 
     InputElement input = input("abcd");
@@ -34,6 +36,7 @@ class NvgInputRendererTest {
     renderer.render(input, 9);
 
     assertEquals(List.of("begin(9,20.0,30.0,60.0,20.0)", "end(9)"), stateSink.calls());
+    assertEquals(List.of(), selectionSink.calls());
     assertEquals(List.of("text(9,abcd,20.0,44.0,16.0)"), textSink.calls());
     assertEquals(List.of("caret(9,40.0,32.0,16.0)"), caretSink.calls());
   }
@@ -41,14 +44,17 @@ class NvgInputRendererTest {
   @Test
   void render_whenTextInputIsNotFocused_skipsCaret() {
     RecordingStateSink stateSink = new RecordingStateSink();
+    RecordingSelectionSink selectionSink = new RecordingSelectionSink();
     RecordingTextSink textSink = new RecordingTextSink();
     RecordingCaretSink caretSink = new RecordingCaretSink();
-    NvgInputRenderer renderer = new NvgInputRenderer(stateSink, textSink, caretSink);
+    NvgInputRenderer renderer =
+        new NvgInputRenderer(stateSink, selectionSink, textSink, caretSink);
     renderer.textMeasurer(new FixedTextMeasurer());
 
     renderer.render(input("abc"), 5);
 
     assertEquals(List.of("text(5,abc,20.0,44.0,16.0)"), textSink.calls());
+    assertEquals(List.of(), selectionSink.calls());
     assertEquals(List.of(), caretSink.calls());
   }
 
@@ -57,7 +63,8 @@ class NvgInputRendererTest {
     RecordingTextSink textSink = new RecordingTextSink();
     RecordingCaretSink caretSink = new RecordingCaretSink();
     NvgInputRenderer renderer =
-        new NvgInputRenderer(new RecordingStateSink(), textSink, caretSink);
+        new NvgInputRenderer(
+            new RecordingStateSink(), new RecordingSelectionSink(), textSink, caretSink);
     renderer.textMeasurer(new FixedTextMeasurer());
 
     InputElement input = input("");
@@ -74,7 +81,8 @@ class NvgInputRendererTest {
     RecordingTextSink textSink = new RecordingTextSink();
     RecordingCaretSink caretSink = new RecordingCaretSink();
     NvgInputRenderer renderer =
-        new NvgInputRenderer(new RecordingStateSink(), textSink, caretSink);
+        new NvgInputRenderer(
+            new RecordingStateSink(), new RecordingSelectionSink(), textSink, caretSink);
     renderer.textMeasurer(new FixedTextMeasurer());
     InputElement input = input("abcdef");
     input.focused(true);
@@ -88,10 +96,31 @@ class NvgInputRendererTest {
   }
 
   @Test
+  void render_whenInputHasSelection_drawsSelectionBeforeText() {
+    RecordingSelectionSink selectionSink = new RecordingSelectionSink();
+    RecordingTextSink textSink = new RecordingTextSink();
+    NvgInputRenderer renderer =
+        new NvgInputRenderer(
+            new RecordingStateSink(), selectionSink, textSink, new RecordingCaretSink());
+    renderer.textMeasurer(new FixedTextMeasurer());
+    InputElement input = input("abcdef");
+    input.select(1, 4);
+
+    renderer.render(input, 8);
+
+    assertEquals(List.of("selection(8,30.0,32.0,30.0,16.0)"), selectionSink.calls());
+    assertEquals(List.of("text(8,abcdef,20.0,44.0,16.0)"), textSink.calls());
+  }
+
+  @Test
   void render_whenTextMeasurerIsMissing_skipsInputText() {
     RecordingTextSink textSink = new RecordingTextSink();
     NvgInputRenderer renderer =
-        new NvgInputRenderer(new RecordingStateSink(), textSink, new RecordingCaretSink());
+        new NvgInputRenderer(
+            new RecordingStateSink(),
+            new RecordingSelectionSink(),
+            textSink,
+            new RecordingCaretSink());
 
     renderer.render(input("abc"), 1);
 
@@ -149,6 +178,20 @@ class NvgInputRendererTest {
         float x,
         float baseline) {
       calls.add("text(%d,%s,%.1f,%.1f,%.1f)".formatted(context, text, x, baseline, fontSize));
+    }
+
+    List<String> calls() {
+      return calls;
+    }
+  }
+
+  private static final class RecordingSelectionSink implements NvgInputRenderer.InputSelectionSink {
+    private final List<String> calls = new ArrayList<>();
+
+    @Override
+    public void drawSelection(long context, float x, float y, float width, float height) {
+      calls.add(
+          "selection(%d,%.1f,%.1f,%.1f,%.1f)".formatted(context, x, y, width, height));
     }
 
     List<String> calls() {
