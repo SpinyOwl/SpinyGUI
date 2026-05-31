@@ -13,6 +13,7 @@ import lombok.NonNull;
 
 /** Keeps the single-line text input caret inside the visible content box. */
 public class TextInputViewportBehavior {
+  private static final float CARET_VISIBILITY_PADDING = 2f;
 
   @NonNull private final TextMeasurer textMeasurer;
 
@@ -27,10 +28,10 @@ public class TextInputViewportBehavior {
     float caretX = caretX(input);
     float previousScrollLeft = input.textScrollLeft();
     float contentWidth = input.box().contentSize().x();
-    if (caretX < previousScrollLeft) {
-      input.textScrollLeft(caretX);
-    } else if (caretX > previousScrollLeft + contentWidth) {
-      input.textScrollLeft(caretX - contentWidth);
+    if (caretX < previousScrollLeft + CARET_VISIBILITY_PADDING) {
+      input.textScrollLeft(caretX - CARET_VISIBILITY_PADDING);
+    } else if (caretX > previousScrollLeft + contentWidth - CARET_VISIBILITY_PADDING) {
+      input.textScrollLeft(caretX - contentWidth + CARET_VISIBILITY_PADDING);
     }
     return previousScrollLeft != input.textScrollLeft();
   }

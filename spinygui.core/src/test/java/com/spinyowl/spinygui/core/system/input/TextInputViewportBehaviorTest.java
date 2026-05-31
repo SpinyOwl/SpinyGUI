@@ -22,7 +22,17 @@ class TextInputViewportBehaviorTest {
 
     new TextInputViewportBehavior(new FixedTextMeasurer()).ensureCaretVisible(input);
 
-    assertEquals(20, input.textScrollLeft());
+    assertEquals(22, input.textScrollLeft());
+  }
+
+  @Test
+  void ensureCaretVisible_whenCaretIsAtRightEdge_scrollsRightForCaretWidth() {
+    InputElement input = input("abc", 3);
+    input.box().contentSize(30, 20);
+
+    new TextInputViewportBehavior(new FixedTextMeasurer()).ensureCaretVisible(input);
+
+    assertEquals(2, input.textScrollLeft());
   }
 
   @Test
@@ -33,7 +43,7 @@ class TextInputViewportBehaviorTest {
 
     new TextInputViewportBehavior(new FixedTextMeasurer()).ensureCaretVisible(input);
 
-    assertEquals(10, input.textScrollLeft());
+    assertEquals(8, input.textScrollLeft());
   }
 
   private InputElement input(String value, int caretIndex) {
