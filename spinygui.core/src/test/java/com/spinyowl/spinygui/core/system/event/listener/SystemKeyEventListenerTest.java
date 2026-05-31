@@ -19,6 +19,7 @@ import com.spinyowl.spinygui.core.input.Keyboard;
 import com.spinyowl.spinygui.core.input.KeyboardKey;
 import com.spinyowl.spinygui.core.input.KeyboardLayout;
 import com.spinyowl.spinygui.core.node.Frame;
+import com.spinyowl.spinygui.core.node.InputElement;
 import com.spinyowl.spinygui.core.system.event.SystemKeyEvent;
 import com.spinyowl.spinygui.core.system.input.SystemKeyAction;
 import com.spinyowl.spinygui.core.time.TimeService;
@@ -85,6 +86,114 @@ class SystemKeyEventListenerTest {
     verifyNoInteractions(keyboard);
   }
 
+  @Test
+  void process_whenFocusedTextInputHandlesBackspaceAndGeneratesKeyboardEvent() {
+    InputElement input = focusedInput("abc", 2);
+
+    processInputKey(input, KeyCode.BACKSPACE, SystemKeyAction.PRESS);
+
+    Assertions.assertEquals("ac", input.value());
+    Assertions.assertEquals(1, input.caretIndex());
+  }
+
+  @Test
+  void process_whenFocusedTextInputHandlesDeleteAndGeneratesKeyboardEvent() {
+    InputElement input = focusedInput("abc", 1);
+
+    processInputKey(input, KeyCode.DELETE, SystemKeyAction.PRESS);
+
+    Assertions.assertEquals("ac", input.value());
+    Assertions.assertEquals(1, input.caretIndex());
+  }
+
+  @Test
+  void process_whenFocusedTextInputHandlesBackspaceAtCodePointBoundary() {
+    InputElement input = focusedInput("a\uD83D\uDE00b", 3);
+
+    processInputKey(input, KeyCode.BACKSPACE, SystemKeyAction.PRESS);
+
+    Assertions.assertEquals("ab", input.value());
+    Assertions.assertEquals(1, input.caretIndex());
+  }
+
+  @Test
+  void process_whenFocusedTextInputHandlesCaretNavigationWithoutChangingValue() {
+    InputElement input = focusedInput("abc", 1);
+
+    processInputKey(input, KeyCode.RIGHT, SystemKeyAction.PRESS);
+    Assertions.assertEquals("abc", input.value());
+    Assertions.assertEquals(2, input.caretIndex());
+
+    processInputKey(input, KeyCode.LEFT, SystemKeyAction.PRESS);
+    Assertions.assertEquals("abc", input.value());
+    Assertions.assertEquals(1, input.caretIndex());
+
+    processInputKey(input, KeyCode.END, SystemKeyAction.PRESS);
+    Assertions.assertEquals("abc", input.value());
+    Assertions.assertEquals(3, input.caretIndex());
+
+    processInputKey(input, KeyCode.HOME, SystemKeyAction.PRESS);
+    Assertions.assertEquals("abc", input.value());
+    Assertions.assertEquals(0, input.caretIndex());
+  }
+
+  @Test
+  void process_whenKeyIsReleasedDoesNotEditTextInputButGeneratesKeyboardEvent() {
+    InputElement input = focusedInput("abc", 2);
+
+    processInputKey(input, KeyCode.BACKSPACE, SystemKeyAction.RELEASE);
+
+    Assertions.assertEquals("abc", input.value());
+    Assertions.assertEquals(2, input.caretIndex());
+  }
+
+  @Test
+  void process_whenFocusedElementIsNotTextInputKeepsCurrentKeyboardEventFlow() {
+    test(SystemKeyAction.PRESS, PRESS);
+  }
+
+  @Test
+  void process_whenNativeKeyIsUnmappedGeneratesUnknownKeyboardEvent() {
+    // Arrange
+    var frame = frame();
+    var element = div();
+    frame.addChild(element);
+    element.focused(true);
+
+    double timestamp = 1D;
+    when(timeService.currentTime()).thenReturn(timestamp);
+    KeyboardLayout keyboardLayout = mock(KeyboardLayout.class);
+    when(keyboard.layout()).thenReturn(keyboardLayout);
+
+    int keyCode = 999;
+    int scancode = 7;
+    SystemKeyEvent event =
+        SystemKeyEvent.builder()
+            .keyCode(keyCode)
+            .scancode(scancode)
+            .action(SystemKeyAction.PRESS)
+            .mods(ImmutableSet.of())
+            .frame(frame)
+            .build();
+
+    KeyboardEvent expectedEvent =
+        KeyboardEvent.builder()
+            .source(frame)
+            .target(element)
+            .action(PRESS)
+            .timestamp(timestamp)
+            .mods(ImmutableSet.of())
+            .key(new KeyboardKey(KeyCode.UNKNOWN, keyCode, scancode))
+            .build();
+    doNothing().when(eventProcessor).push(expectedEvent);
+
+    // Act
+    listener.process(event, frame);
+
+    // Verify
+    verify(eventProcessor).push(expectedEvent);
+  }
+
   private void test(SystemKeyAction systemAction, KeyAction action) {
     // Arrange
 
@@ -132,6 +241,63 @@ class SystemKeyEventListenerTest {
     verify(keyboardLayout).keyCode(keyCode);
     verify(timeService).currentTime();
     verify(eventProcessor).push(expectedEvent);
+  }
+
+  private InputElement focusedInput(String value, int caretIndex) {
+    InputElement input = new InputElement();
+    input.value(value);
+    input.caretIndex(caretIndex);
+    input.focused(true);
+    return input;
+  }
+
+  private void processInputKey(
+      InputElement input, KeyCode mappedKeyCode, SystemKeyAction systemAction) {
+    // Arrange
+    var frame = frame(input);
+    double timestamp = 1D;
+    when(timeService.currentTime()).thenReturn(timestamp);
+    KeyboardLayout keyboardLayout = mock(KeyboardLayout.class);
+    when(keyboard.layout()).thenReturn(keyboardLayout);
+
+    int keyCode = 7;
+    int scancode = 7;
+
+    SystemKeyEvent event =
+        SystemKeyEvent.builder()
+            .keyCode(keyCode)
+            .scancode(scancode)
+            .action(systemAction)
+            .mods(ImmutableSet.of())
+            .frame(frame)
+            .build();
+
+    when(keyboardLayout.keyCode(keyCode)).thenReturn(mappedKeyCode);
+
+    KeyboardEvent expectedEvent =
+        KeyboardEvent.builder()
+            .source(frame)
+            .target(input)
+            .action(getAction(systemAction))
+            .timestamp(timestamp)
+            .mods(ImmutableSet.of())
+            .key(new KeyboardKey(mappedKeyCode, keyCode, scancode))
+            .build();
+    doNothing().when(eventProcessor).push(expectedEvent);
+
+    // Act
+    listener.process(event, frame);
+
+    // Verify
+    verify(eventProcessor).push(expectedEvent);
+  }
+
+  private KeyAction getAction(SystemKeyAction systemAction) {
+    return switch (systemAction) {
+      case PRESS -> PRESS;
+      case RELEASE -> RELEASE;
+      case REPEAT -> REPEAT;
+    };
   }
 
   @Test

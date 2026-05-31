@@ -12,7 +12,10 @@ import com.spinyowl.spinygui.core.input.KeyAction;
 import com.spinyowl.spinygui.core.input.MouseService;
 import com.spinyowl.spinygui.core.node.Element;
 import com.spinyowl.spinygui.core.node.Frame;
+import com.spinyowl.spinygui.core.node.InputElement;
 import com.spinyowl.spinygui.core.system.event.SystemMouseClickEvent;
+import com.spinyowl.spinygui.core.system.font.TextMeasurer;
+import com.spinyowl.spinygui.core.system.input.TextInputMouseCaretBehavior;
 import com.spinyowl.spinygui.core.time.TimeService;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
@@ -24,14 +27,19 @@ public class SystemMouseClickEventListener
     extends AbstractSystemEventListener<SystemMouseClickEvent> {
 
   @NonNull private final MouseService mouseService;
+  @EqualsAndHashCode.Exclude
+  private final TextInputMouseCaretBehavior textInputMouseCaretBehavior;
 
   @Builder
   public SystemMouseClickEventListener(
       @NonNull EventProcessor eventProcessor,
       @NonNull TimeService timeService,
-      @NonNull MouseService mouseService) {
+      @NonNull MouseService mouseService,
+      TextMeasurer textMeasurer) {
     super(eventProcessor, timeService);
     this.mouseService = mouseService;
+    textInputMouseCaretBehavior =
+        textMeasurer == null ? null : new TextInputMouseCaretBehavior(textMeasurer);
   }
 
   private static Vector2fc positionInElement(Vector2fc cursorPos, Element element) {
@@ -96,6 +104,7 @@ public class SystemMouseClickEventListener
       Element target) {
     removeFocus(target, frame);
     target.pressed(true);
+    placeInputCaret(target, cursorPosition);
 
     if (focusedElement != target) {
       target.focused(true);
@@ -105,6 +114,12 @@ public class SystemMouseClickEventListener
 
     if (focusedElement != target) {
       generateFocusGainedEvent(frame, target, focusedElement);
+    }
+  }
+
+  private void placeInputCaret(Element target, Vector2fc cursorPosition) {
+    if (textInputMouseCaretBehavior != null && target instanceof InputElement input) {
+      textInputMouseCaretBehavior.placeCaret(input, cursorPosition);
     }
   }
 

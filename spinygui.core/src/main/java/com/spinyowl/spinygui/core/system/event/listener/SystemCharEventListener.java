@@ -3,7 +3,9 @@ package com.spinyowl.spinygui.core.system.event.listener;
 import com.spinyowl.spinygui.core.event.CharEvent;
 import com.spinyowl.spinygui.core.event.processor.EventProcessor;
 import com.spinyowl.spinygui.core.node.Frame;
+import com.spinyowl.spinygui.core.node.InputElement;
 import com.spinyowl.spinygui.core.system.event.SystemCharEvent;
+import com.spinyowl.spinygui.core.system.input.TextInputBehavior;
 import com.spinyowl.spinygui.core.time.TimeService;
 import com.spinyowl.spinygui.core.util.TextUtil;
 import lombok.Builder;
@@ -12,6 +14,8 @@ import lombok.NonNull;
 
 @EqualsAndHashCode
 public class SystemCharEventListener extends AbstractSystemEventListener<SystemCharEvent> {
+
+  private static final TextInputBehavior TEXT_INPUT_BEHAVIOR = new TextInputBehavior();
 
   @Builder
   public SystemCharEventListener(
@@ -30,6 +34,10 @@ public class SystemCharEventListener extends AbstractSystemEventListener<SystemC
     var focusedElement = frame.getFocusedElement();
     if (focusedElement == null) {
       return;
+    }
+
+    if (focusedElement instanceof InputElement input) {
+      TEXT_INPUT_BEHAVIOR.insertPrintable(input, event.codepoint());
     }
 
     eventProcessor.push(

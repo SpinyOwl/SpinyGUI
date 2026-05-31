@@ -3,10 +3,13 @@ package com.spinyowl.spinygui.core.system.event.listener;
 import com.spinyowl.spinygui.core.event.KeyboardEvent;
 import com.spinyowl.spinygui.core.event.processor.EventProcessor;
 import com.spinyowl.spinygui.core.input.KeyAction;
+import com.spinyowl.spinygui.core.input.KeyCode;
 import com.spinyowl.spinygui.core.input.Keyboard;
 import com.spinyowl.spinygui.core.input.KeyboardKey;
 import com.spinyowl.spinygui.core.node.Frame;
+import com.spinyowl.spinygui.core.node.InputElement;
 import com.spinyowl.spinygui.core.system.event.SystemKeyEvent;
+import com.spinyowl.spinygui.core.system.input.TextInputBehavior;
 import com.spinyowl.spinygui.core.time.TimeService;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
@@ -14,6 +17,8 @@ import lombok.NonNull;
 
 @EqualsAndHashCode
 public class SystemKeyEventListener extends AbstractSystemEventListener<SystemKeyEvent> {
+
+  private static final TextInputBehavior TEXT_INPUT_BEHAVIOR = new TextInputBehavior();
 
   @NonNull private final Keyboard keyboard;
 
@@ -38,7 +43,16 @@ public class SystemKeyEventListener extends AbstractSystemEventListener<SystemKe
     if (element != null) {
 
       int keyCode = event.keyCode();
-      var key = new KeyboardKey(keyboard.layout().keyCode(keyCode), keyCode, event.scancode());
+      var keyCodeObject = keyboard.layout().keyCode(keyCode);
+      if (keyCodeObject == null) {
+        keyCodeObject = KeyCode.UNKNOWN;
+      }
+      var key = new KeyboardKey(keyCodeObject, keyCode, event.scancode());
+      var action = getAction(event);
+
+      if (element instanceof InputElement input) {
+        TEXT_INPUT_BEHAVIOR.handleKey(input, keyCodeObject, action);
+      }
 
       eventProcessor.push(
           KeyboardEvent.builder()
@@ -47,7 +61,7 @@ public class SystemKeyEventListener extends AbstractSystemEventListener<SystemKe
               .key(key)
               .timestamp(timeService.currentTime())
               .mods(event.mappedMods())
-              .action(getAction(event))
+              .action(action)
               .build());
     }
   }

@@ -10,6 +10,7 @@ import com.spinyowl.spinygui.core.event.CharEvent;
 import com.spinyowl.spinygui.core.event.processor.EventProcessor;
 import com.spinyowl.spinygui.core.node.Element;
 import com.spinyowl.spinygui.core.node.Frame;
+import com.spinyowl.spinygui.core.node.InputElement;
 import com.spinyowl.spinygui.core.system.event.SystemCharEvent;
 import com.spinyowl.spinygui.core.time.TimeService;
 import com.spinyowl.spinygui.core.util.TextUtil;
@@ -67,6 +68,74 @@ class SystemCharEventListenerTest {
 
     // Verify
     verify(timeService).currentTime();
+    verify(eventProcessor).push(expected);
+  }
+
+  @Test
+  void process_whenFocusedTextInputInsertsPrintableInputAndGeneratesCharEvent() {
+    // Arrange
+    Frame frame = new Frame();
+    InputElement input = new InputElement();
+    input.value("ac");
+    input.caretIndex(1);
+    input.focused(true);
+    frame.addChild(input);
+
+    double currentTime = 1;
+    when(timeService.currentTime()).thenReturn(currentTime);
+
+    SystemCharEvent source = SystemCharEvent.builder().frame(frame).codepoint('b').build();
+
+    CharEvent expected =
+        CharEvent.builder()
+            .source(frame)
+            .target(input)
+            .input("b")
+            .timestamp(currentTime)
+            .build();
+
+    doNothing().when(eventProcessor).push(expected);
+
+    // Act
+    listener.process(source, frame);
+
+    // Verify
+    Assertions.assertEquals("abc", input.value());
+    Assertions.assertEquals(2, input.caretIndex());
+    verify(eventProcessor).push(expected);
+  }
+
+  @Test
+  void process_whenFocusedTextInputReceivesControlCodeKeepsValueAndGeneratesCharEvent() {
+    // Arrange
+    Frame frame = new Frame();
+    InputElement input = new InputElement();
+    input.value("abc");
+    input.caretIndex(1);
+    input.focused(true);
+    frame.addChild(input);
+
+    double currentTime = 1;
+    when(timeService.currentTime()).thenReturn(currentTime);
+
+    SystemCharEvent source = SystemCharEvent.builder().frame(frame).codepoint('\n').build();
+
+    CharEvent expected =
+        CharEvent.builder()
+            .source(frame)
+            .target(input)
+            .input("\n")
+            .timestamp(currentTime)
+            .build();
+
+    doNothing().when(eventProcessor).push(expected);
+
+    // Act
+    listener.process(source, frame);
+
+    // Verify
+    Assertions.assertEquals("abc", input.value());
+    Assertions.assertEquals(1, input.caretIndex());
     verify(eventProcessor).push(expected);
   }
 

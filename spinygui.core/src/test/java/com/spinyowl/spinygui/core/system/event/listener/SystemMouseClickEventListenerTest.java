@@ -13,16 +13,27 @@ import com.spinyowl.spinygui.core.event.FocusInEvent;
 import com.spinyowl.spinygui.core.event.FocusOutEvent;
 import com.spinyowl.spinygui.core.event.MouseClickEvent;
 import com.spinyowl.spinygui.core.event.processor.EventProcessor;
+import com.spinyowl.spinygui.core.font.Font;
+import com.spinyowl.spinygui.core.font.FontStyle;
+import com.spinyowl.spinygui.core.font.FontWeight;
 import com.spinyowl.spinygui.core.input.KeyAction;
 import com.spinyowl.spinygui.core.input.MouseButton;
 import com.spinyowl.spinygui.core.input.MouseService;
 import com.spinyowl.spinygui.core.input.MouseService.CursorPositions;
 import com.spinyowl.spinygui.core.node.Element;
 import com.spinyowl.spinygui.core.node.Frame;
+import com.spinyowl.spinygui.core.node.InputElement;
 import com.spinyowl.spinygui.core.system.event.SystemMouseClickEvent;
+import com.spinyowl.spinygui.core.system.font.FontMetrics;
+import com.spinyowl.spinygui.core.system.font.TextCaretMetrics;
+import com.spinyowl.spinygui.core.system.font.TextLineMetrics;
+import com.spinyowl.spinygui.core.system.font.TextMeasurer;
+import com.spinyowl.spinygui.core.system.font.TextMetrics;
 import com.spinyowl.spinygui.core.system.input.SystemKeyAction;
 import com.spinyowl.spinygui.core.system.input.SystemMouseButton;
 import com.spinyowl.spinygui.core.time.TimeService;
+import com.spinyowl.spinygui.core.style.types.length.Length;
+import java.util.Set;
 import org.joml.Vector2f;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -320,6 +331,91 @@ class SystemMouseClickEventListenerTest {
   }
 
   @Test
+  void process_pressTextInputAtStart_setsCaretToStartAndKeepsMouseEvents() {
+    InputElement input = textInput();
+    Frame frame = frame(input);
+    frame.box().contentSize(100, 100);
+    listener = listenerWithTextMeasurer();
+
+    processInputPress(frame, new Vector2f(15, 25));
+
+    Assertions.assertEquals(0, input.caretIndex());
+    assertTrue(input.focused());
+    assertTrue(input.pressed());
+    verify(eventProcessor, times(2)).push(org.mockito.ArgumentMatchers.any());
+  }
+
+  @Test
+  void process_pressTextInputAtMiddle_setsCaretUnderPointer() {
+    InputElement input = textInput();
+    Frame frame = frame(input);
+    frame.box().contentSize(100, 100);
+    listener = listenerWithTextMeasurer();
+
+    processInputPress(frame, new Vector2f(35, 25));
+
+    Assertions.assertEquals(2, input.caretIndex());
+  }
+
+  @Test
+  void process_pressTextInputAtEnd_setsCaretToEnd() {
+    InputElement input = textInput();
+    Frame frame = frame(input);
+    frame.box().contentSize(100, 100);
+    listener = listenerWithTextMeasurer();
+
+    processInputPress(frame, new Vector2f(65, 25));
+
+    Assertions.assertEquals(4, input.caretIndex());
+  }
+
+  @Test
+  void process_pressTextInputInRightPadding_clampsCaretOffsetToContentEnd() {
+    InputElement input = textInput();
+    Frame frame = frame(input);
+    frame.box().contentSize(100, 100);
+    listener = listenerWithTextMeasurer();
+
+    processInputPress(frame, new Vector2f(66, 25));
+
+    Assertions.assertEquals(4, input.caretIndex());
+  }
+
+  @Test
+  void process_pressTextInputWithHorizontalScroll_placesCaretInScrolledText() {
+    InputElement input = textInput();
+    input.value("abcdef");
+    input.textScrollLeft(20);
+    Frame frame = frame(input);
+    frame.box().contentSize(100, 100);
+    listener = listenerWithTextMeasurer();
+
+    processInputPress(frame, new Vector2f(35, 25));
+
+    Assertions.assertEquals(4, input.caretIndex());
+  }
+
+  @Test
+  void process_pressNestedTextInput_placesCaretFromAbsoluteContentPosition() {
+    Element panel = div();
+    panel.box().contentPosition(100, 20);
+    panel.box().contentSize(200, 100);
+    InputElement input = textInput();
+    input.offsetParent(panel);
+    panel.addChild(input);
+    Frame frame = frame(panel);
+    frame.box().contentSize(400, 200);
+    frame.layoutChildNodes(java.util.List.of(panel));
+    panel.layoutChildNodes(java.util.List.of(input));
+    listener = listenerWithTextMeasurer();
+
+    processInputPress(frame, new Vector2f(135, 45));
+
+    Assertions.assertEquals(2, input.caretIndex());
+    assertTrue(input.focused());
+  }
+
+  @Test
   void process_throwsNPE_ifFrameIsNull() {
     SystemMouseClickEvent event =
         SystemMouseClickEvent.builder()
@@ -335,5 +431,97 @@ class SystemMouseClickEventListenerTest {
   void process_throwsNPE_ifEventIsNull() {
     Frame frame = frame();
     Assertions.assertThrows(NullPointerException.class, () -> listener.process(null, frame));
+  }
+
+  private SystemEventListener<SystemMouseClickEvent> listenerWithTextMeasurer() {
+    return SystemMouseClickEventListener.builder()
+        .eventProcessor(eventProcessor)
+        .timeService(timeService)
+        .mouseService(mouseService)
+        .textMeasurer(new FixedWidthTextMeasurer())
+        .build();
+  }
+
+  private InputElement textInput() {
+    InputElement input = new InputElement();
+    input.value("abcd");
+    input.box().contentPosition(20, 20);
+    input.box().contentSize(40, 20);
+    input.box().padding().left(5);
+    input.box().padding().right(5);
+    input.box().border().left(2);
+    input.box().border().right(2);
+    input.resolvedStyle().fontFamilies(Set.of(Font.DEFAULT.fontFamily()));
+    input.resolvedStyle().fontStyle(FontStyle.NORMAL);
+    input.resolvedStyle().fontWeight(FontWeight.REGULAR);
+    input.resolvedStyle().fontSize(Length.pixel(16));
+    return input;
+  }
+
+  private void processInputPress(Frame frame, Vector2f cursorPosition) {
+    SystemMouseClickEvent event =
+        SystemMouseClickEvent.builder()
+            .action(SystemKeyAction.PRESS)
+            .mods(ImmutableSet.of())
+            .frame(frame)
+            .button(SystemMouseButton.LEFT)
+            .build();
+
+    when(mouseService.getCursorPositions(frame))
+        .thenReturn(new CursorPositions(cursorPosition, cursorPosition));
+
+    listener.process(event, frame);
+  }
+
+  private static class FixedWidthTextMeasurer implements TextMeasurer {
+    private static final float CHAR_WIDTH = 10;
+
+    @Override
+    public TextMetrics measureText(String text, Font font, float fontSize, float lineHeight) {
+      throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public TextMetrics measureText(
+        String text,
+        float offsetX,
+        Font font,
+        float fontSize,
+        float lineHeight,
+        float maxWidth,
+        boolean wordWrap) {
+      throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public TextMetrics getTextMetrics(
+        String text,
+        float offsetX,
+        Font font,
+        float fontSize,
+        float lineHeight,
+        float maxWidth,
+        boolean wordWrap) {
+      throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public TextLineMetrics getTextLineMetrics(
+        String text, Font font, float fontSize, float lineHeight) {
+      return TextLineMetrics.builder()
+          .characters(text)
+          .width(text.length() * CHAR_WIDTH)
+          .height(16)
+          .fontMetrics(new FontMetrics(12, 4, 0, 16, 12))
+          .build();
+    }
+
+    @Override
+    public TextCaretMetrics getTextCaretMetrics(
+        String text, Font font, float fontSize, float offsetX) {
+      int caretIndex = Math.round(offsetX / CHAR_WIDTH);
+      caretIndex = Math.max(0, Math.min(caretIndex, text.length()));
+      return new TextCaretMetrics(caretIndex, caretIndex * CHAR_WIDTH);
+    }
   }
 }
