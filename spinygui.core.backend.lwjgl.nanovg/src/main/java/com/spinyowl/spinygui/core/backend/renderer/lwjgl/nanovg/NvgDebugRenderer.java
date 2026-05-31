@@ -4,14 +4,8 @@ import static com.spinyowl.spinygui.core.backend.renderer.lwjgl.nanovg.util.NvgR
 import static com.spinyowl.spinygui.core.backend.renderer.lwjgl.nanovg.util.NvgRenderUtils.resetScissor;
 import static com.spinyowl.spinygui.core.backend.renderer.lwjgl.nanovg.util.NvgShapes.drawRect;
 import static com.spinyowl.spinygui.core.backend.renderer.lwjgl.nanovg.util.NvgShapes.drawRectStroke;
-import static org.lwjgl.nanovg.NanoVG.NVG_ALIGN_BASELINE;
-import static org.lwjgl.nanovg.NanoVG.NVG_ALIGN_LEFT;
-import static org.lwjgl.nanovg.NanoVG.nvgFontFace;
-import static org.lwjgl.nanovg.NanoVG.nvgFontSize;
 import static org.lwjgl.nanovg.NanoVG.nvgRestore;
 import static org.lwjgl.nanovg.NanoVG.nvgSave;
-import static org.lwjgl.nanovg.NanoVG.nvgTextAlign;
-import static org.lwjgl.nanovg.NanoVG.nvgTextGlyphPositions;
 
 import com.spinyowl.spinygui.core.layout.InlineFragment;
 import com.spinyowl.spinygui.core.node.Element;
@@ -20,11 +14,11 @@ import com.spinyowl.spinygui.core.node.Node;
 import com.spinyowl.spinygui.core.node.Text;
 import com.spinyowl.spinygui.core.style.types.Color;
 import com.spinyowl.spinygui.core.style.types.Display;
+import com.spinyowl.spinygui.core.system.font.TextCaretMetrics;
+import com.spinyowl.spinygui.core.system.font.TextMeasurer;
 import java.util.List;
 import org.joml.Vector2f;
 import org.joml.Vector2fc;
-import org.lwjgl.nanovg.NVGGlyphPosition;
-import org.lwjgl.system.MemoryStack;
 
 class NvgDebugRenderer {
 
@@ -37,19 +31,20 @@ class NvgDebugRenderer {
   private final HighlightSink highlightSink;
   private final CaretSink caretSink;
   private final StateSink stateSink;
+  private TextMeasurer textMeasurer;
 
   NvgDebugRenderer() {
-    this(new NanoVgHighlightSink(), new NanoVgCaretSink(new NvgFontRegistry()), new NanoVgStateSink());
-  }
-
-  NvgDebugRenderer(NvgFontRegistry fontRegistry) {
-    this(new NanoVgHighlightSink(), new NanoVgCaretSink(fontRegistry), new NanoVgStateSink());
+    this(new NanoVgHighlightSink(), new NanoVgCaretDrawingSink(), new NanoVgStateSink());
   }
 
   NvgDebugRenderer(HighlightSink highlightSink, CaretSink caretSink, StateSink stateSink) {
     this.highlightSink = highlightSink;
     this.caretSink = caretSink;
     this.stateSink = stateSink;
+  }
+
+  void textMeasurer(TextMeasurer textMeasurer) {
+    this.textMeasurer = textMeasurer;
   }
 
   void render(Frame frame, long nanovgContext, Vector2fc mousePosition) {
@@ -107,8 +102,18 @@ class NvgDebugRenderer {
         fragment.width(),
         fragment.height());
     if (mousePosition != null && fragment.textFragment() && contains(fragment, x, y, mousePosition)) {
-      caretSink.drawCaret(nanovgContext, fragment, x, y, mousePosition.x(), mousePosition.y());
+      drawCaret(nanovgContext, fragment, x, y, mousePosition.x());
     }
+  }
+
+  private void drawCaret(long nanovgContext, InlineFragment fragment, float x, float y, float mouseX) {
+    if (textMeasurer == null || fragment.font() == null) {
+      return;
+    }
+    TextCaretMetrics caret =
+        textMeasurer.getTextCaretMetrics(
+            fragment.text(), fragment.font(), fragment.fontSize(), mouseX - x);
+    caretSink.drawCaret(nanovgContext, x + caret.x(), y, fragment.height());
   }
 
   private boolean contains(InlineFragment fragment, float x, float y, Vector2fc mousePosition) {
@@ -148,8 +153,7 @@ class NvgDebugRenderer {
   }
 
   interface CaretSink {
-    void drawCaret(
-        long context, InlineFragment fragment, float x, float y, float mouseX, float mouseY);
+    void drawCaret(long context, float x, float y, float height);
   }
 
   interface StateSink {
@@ -168,52 +172,10 @@ class NvgDebugRenderer {
     }
   }
 
-  private static final class NanoVgCaretSink implements CaretSink {
-    private final NvgFontRegistry fontRegistry;
-
-    private NanoVgCaretSink(NvgFontRegistry fontRegistry) {
-      this.fontRegistry = fontRegistry;
-    }
-
+  private static final class NanoVgCaretDrawingSink implements CaretSink {
     @Override
-    public void drawCaret(
-        long context, InlineFragment fragment, float x, float y, float mouseX, float mouseY) {
-      float caretX = caretX(context, fragment, x, mouseX);
-      drawRect(context, new Vector2f(caretX, y), new Vector2f(CARET_WIDTH, fragment.height()), CARET_COLOR);
-    }
-
-    private float caretX(long context, InlineFragment fragment, float x, float mouseX) {
-      String fontFace = fontRegistry.fontFace(fragment.font(), context);
-      if (fontFace == null) {
-        return approximateCaretX(fragment, x, mouseX);
-      }
-      nvgFontFace(context, fontFace);
-      nvgFontSize(context, fragment.fontSize());
-      nvgTextAlign(context, NVG_ALIGN_LEFT | NVG_ALIGN_BASELINE);
-
-      try (MemoryStack stack = MemoryStack.stackPush()) {
-        NVGGlyphPosition.Buffer positions = NVGGlyphPosition.malloc(fragment.text().length(), stack);
-        int count = nvgTextGlyphPositions(context, x, fragment.baseline(), fragment.text(), positions);
-        if (count <= 0) {
-          return approximateCaretX(fragment, x, mouseX);
-        }
-        for (int i = 0; i < count; i++) {
-          float currentX = positions.get(i).x();
-          float nextX = i + 1 < count ? positions.get(i + 1).x() : x + fragment.width();
-          if (mouseX < (currentX + nextX) / 2f) {
-            return currentX;
-          }
-        }
-      }
-      return x + fragment.width();
-    }
-
-    private float approximateCaretX(InlineFragment fragment, float x, float mouseX) {
-      int charCount = Math.max(1, fragment.text().length());
-      float charWidth = fragment.width() / charCount;
-      int caretIndex = Math.round((mouseX - x) / charWidth);
-      caretIndex = Math.max(0, Math.min(charCount, caretIndex));
-      return x + caretIndex * charWidth;
+    public void drawCaret(long context, float x, float y, float height) {
+      drawRect(context, new Vector2f(x, y), new Vector2f(CARET_WIDTH, height), CARET_COLOR);
     }
   }
 

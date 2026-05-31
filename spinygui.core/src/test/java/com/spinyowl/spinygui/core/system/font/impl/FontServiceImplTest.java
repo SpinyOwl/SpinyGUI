@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.spinyowl.spinygui.core.font.Font;
+import com.spinyowl.spinygui.core.system.font.TextCaretMetrics;
 import com.spinyowl.spinygui.core.system.font.TextLineMetrics;
 import com.spinyowl.spinygui.core.system.font.TextMetrics;
 import org.junit.jupiter.api.BeforeEach;
@@ -76,5 +77,34 @@ class FontServiceImplTest {
 
     assertTrue(metrics.fontMetrics().ascent() + metrics.fontMetrics().descent() > 16);
     assertEquals(metrics.fontMetrics().ascent(), metrics.fontMetrics().baseline());
+  }
+
+  @Test
+  void getTextCaretMetrics_whenOffsetBeforeLine_returnsStartCaret() {
+    TextCaretMetrics caret = fontService.getTextCaretMetrics("abc", Font.DEFAULT, 16, -1);
+
+    assertEquals(0, caret.charIndex());
+    assertEquals(0, caret.x());
+  }
+
+  @Test
+  void getTextCaretMetrics_whenOffsetPastLine_returnsEndCaretAtMeasuredWidth() {
+    TextMetrics metrics = fontService.measureText("abc", Font.DEFAULT, 16, 1.2f);
+
+    TextCaretMetrics caret = fontService.getTextCaretMetrics("abc", Font.DEFAULT, 16, 10_000);
+
+    assertEquals(3, caret.charIndex());
+    assertEquals(metrics.width(), caret.x());
+  }
+
+  @Test
+  void getTextCaretMetrics_whenOffsetPassesFirstGlyph_returnsNextCaretStop() {
+    TextMetrics firstGlyph = fontService.measureText("a", Font.DEFAULT, 16, 1.2f);
+
+    TextCaretMetrics caret =
+        fontService.getTextCaretMetrics("abc", Font.DEFAULT, 16, firstGlyph.width() + 1);
+
+    assertTrue(caret.charIndex() >= 1);
+    assertTrue(caret.x() >= firstGlyph.width());
   }
 }

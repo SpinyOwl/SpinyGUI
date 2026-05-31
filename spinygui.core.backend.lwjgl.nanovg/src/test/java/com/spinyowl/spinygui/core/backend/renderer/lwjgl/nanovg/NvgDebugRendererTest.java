@@ -2,11 +2,16 @@ package com.spinyowl.spinygui.core.backend.renderer.lwjgl.nanovg;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import com.spinyowl.spinygui.core.font.Font;
 import com.spinyowl.spinygui.core.layout.InlineFragment;
 import com.spinyowl.spinygui.core.node.Element;
 import com.spinyowl.spinygui.core.node.Frame;
 import com.spinyowl.spinygui.core.node.Node;
 import com.spinyowl.spinygui.core.node.Text;
+import com.spinyowl.spinygui.core.system.font.TextCaretMetrics;
+import com.spinyowl.spinygui.core.system.font.TextLineMetrics;
+import com.spinyowl.spinygui.core.system.font.TextMeasurer;
+import com.spinyowl.spinygui.core.system.font.TextMetrics;
 import java.util.ArrayList;
 import java.util.List;
 import org.joml.Vector2f;
@@ -78,6 +83,7 @@ class NvgDebugRendererTest {
     RecordingHighlightSink sink = new RecordingHighlightSink();
     RecordingCaretSink caretSink = new RecordingCaretSink();
     NvgDebugRenderer renderer = new NvgDebugRenderer(sink, caretSink, new NoOpStateSink());
+    renderer.textMeasurer(new FixedCaretTextMeasurer());
     Frame frame = new Frame();
     Element parent = new Element("div");
     parent.hovered(true);
@@ -90,7 +96,7 @@ class NvgDebugRendererTest {
 
     renderer.render(frame, 7, new Vector2f(9, 8));
 
-    assertEquals(List.of("caret(7,abc,3.0,5.0,9.0,8.0)"), caretSink.calls());
+    assertEquals(List.of("caret(7,7.0,5.0,10.0)"), caretSink.calls());
   }
 
   @Test
@@ -114,18 +120,23 @@ class NvgDebugRendererTest {
   }
 
   private InlineFragment fragment(String text, float x, float y, float width, float height) {
-    return InlineFragment.builder().text(text).x(x).y(y).width(width).height(height).build();
+    return InlineFragment.builder()
+        .text(text)
+        .x(x)
+        .y(y)
+        .width(width)
+        .height(height)
+        .font(Font.DEFAULT)
+        .fontSize(16)
+        .build();
   }
 
   private static final class RecordingCaretSink implements NvgDebugRenderer.CaretSink {
     private final List<String> calls = new ArrayList<>();
 
     @Override
-    public void drawCaret(
-        long context, InlineFragment fragment, float x, float y, float mouseX, float mouseY) {
-      calls.add(
-          "caret(%d,%s,%.1f,%.1f,%.1f,%.1f)"
-              .formatted(context, fragment.text(), x, y, mouseX, mouseY));
+    public void drawCaret(long context, float x, float y, float height) {
+      calls.add("caret(%d,%.1f,%.1f,%.1f)".formatted(context, x, y, height));
     }
 
     List<String> calls() {
@@ -152,5 +163,48 @@ class NvgDebugRendererTest {
 
     @Override
     public void end(long context) {}
+  }
+
+  private static final class FixedCaretTextMeasurer implements TextMeasurer {
+    @Override
+    public TextMetrics measureText(String text, Font font, float fontSize, float lineHeight) {
+      throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public TextMetrics measureText(
+        String text,
+        float offsetX,
+        Font font,
+        float fontSize,
+        float lineHeight,
+        float maxWidth,
+        boolean wordWrap) {
+      throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public TextMetrics getTextMetrics(
+        String text,
+        float offsetX,
+        Font font,
+        float fontSize,
+        float lineHeight,
+        float maxWidth,
+        boolean wordWrap) {
+      throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public TextLineMetrics getTextLineMetrics(
+        String text, Font font, float fontSize, float lineHeight) {
+      throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public TextCaretMetrics getTextCaretMetrics(
+        String text, Font font, float fontSize, float offsetX) {
+      return new TextCaretMetrics(1, 4);
+    }
   }
 }

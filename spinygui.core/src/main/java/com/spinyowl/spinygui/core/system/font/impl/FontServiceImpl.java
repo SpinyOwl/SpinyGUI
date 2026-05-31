@@ -19,6 +19,7 @@ import com.spinyowl.spinygui.core.system.font.FontMetrics;
 import com.spinyowl.spinygui.core.system.font.FontLoadingException;
 import com.spinyowl.spinygui.core.system.font.FontService;
 import com.spinyowl.spinygui.core.system.font.FontStorage;
+import com.spinyowl.spinygui.core.system.font.TextCaretMetrics;
 import com.spinyowl.spinygui.core.system.font.TextLineMetrics;
 import com.spinyowl.spinygui.core.system.font.TextMeasurer;
 import com.spinyowl.spinygui.core.system.font.TextMetrics;
@@ -244,6 +245,46 @@ public class FontServiceImpl implements FontService, TextMeasurer {
   public TextLineMetrics getTextLineMetrics(
       @NonNull String text, @NonNull Font font, float fontSize, float lineHeight) {
     return measureText(text, font, fontSize, lineHeight).lines().get(0);
+  }
+
+  @Override
+  public TextCaretMetrics getTextCaretMetrics(
+      @NonNull String text, @NonNull Font font, float fontSize, float offsetX) {
+    if (text.isEmpty() || offsetX <= 0) {
+      return new TextCaretMetrics(0, 0);
+    }
+
+    STBTTFontinfo fontInfo = getFontInfo(font.path());
+    try (MemoryStack stack = MemoryStack.stackPush()) {
+      IntBuffer pCodePoint = stack.mallocInt(1);
+      IntBuffer pAdvance = stack.mallocInt(1);
+      float scaleFactor = stbtt_ScaleForMappingEmToPixels(fontInfo, fontSize);
+      int length = text.length();
+      int previousGlyphIndex = -1;
+      int i = 0;
+      float currentX = 0;
+      while (i < length) {
+        int charStart = i;
+        int codePointSize = getCodePointSize(text, length, i, pCodePoint);
+        int codePoint = pCodePoint.get(0);
+        int charEnd = i + codePointSize;
+        if (codePoint == '\n') {
+          return new TextCaretMetrics(charStart, currentX);
+        }
+
+        int glyphIndex = stbtt_FindGlyphIndex(fontInfo, codePoint);
+        float glyphAdvance =
+            measureNanoVgGlyphAdvance(
+                fontInfo, glyphIndex, previousGlyphIndex, pAdvance, scaleFactor);
+        if (offsetX < currentX + glyphAdvance / 2f) {
+          return new TextCaretMetrics(charStart, currentX);
+        }
+        currentX += glyphAdvance;
+        previousGlyphIndex = glyphIndex;
+        i = charEnd;
+      }
+      return new TextCaretMetrics(length, currentX);
+    }
   }
 
   private TextMetrics emptyTextMetrics(Font font, float fontSize, float lineHeight) {

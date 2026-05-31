@@ -73,4 +73,16 @@ public interface TextMeasurer {
    */
   TextLineMetrics getTextLineMetrics(
       @NonNull String text, @NonNull Font font, float fontSize, float lineHeight);
+
+  /**
+   * Calculates caret placement inside a single text line.
+   *
+   * @param text text to calculate caret position for.
+   * @param font font to use.
+   * @param fontSize font size.
+   * @param offsetX horizontal offset from the start of the line.
+   * @return caret character index and x offset from the start of the line.
+   */
+  TextCaretMetrics getTextCaretMetrics(
+      @NonNull String text, @NonNull Font font, float fontSize, float offsetX);
 }

@@ -74,6 +74,7 @@ import com.spinyowl.spinygui.core.system.event.processor.SystemEventProcessorImp
 import com.spinyowl.spinygui.core.system.event.provider.SystemEventListenerProviderImpl;
 import com.spinyowl.spinygui.core.system.font.FontService;
 import com.spinyowl.spinygui.core.system.font.FontStorage;
+import com.spinyowl.spinygui.core.system.font.TextMeasurer;
 import com.spinyowl.spinygui.core.system.font.impl.FontServiceImpl;
 import com.spinyowl.spinygui.core.system.font.impl.FontStorageImpl;
 import com.spinyowl.spinygui.core.time.TimeService;
@@ -245,6 +246,9 @@ public abstract class Demo {
 
     FontStorage fontStorage = new FontStorageImpl();
     FontService fontService = new FontServiceImpl(fontStorage, true);
+    if (renderer instanceof NvgRenderer nvg && fontService instanceof TextMeasurer textMeasurer) {
+      nvg.textMeasurer(textMeasurer);
+    }
     layoutService =
         LayoutServiceProvider.create(
             systemEventProcessor, eventProcessor, timeService, fontService);

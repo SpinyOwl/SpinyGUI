@@ -15,6 +15,7 @@ import com.spinyowl.spinygui.core.node.Element;
 import com.spinyowl.spinygui.core.node.Frame;
 import com.spinyowl.spinygui.core.node.Node;
 import com.spinyowl.spinygui.core.node.Text;
+import com.spinyowl.spinygui.core.system.font.TextMeasurer;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import org.joml.Vector2f;
@@ -44,7 +45,7 @@ public class NvgRenderer implements Renderer {
     this.elementRenderer = new NvgElementRenderer();
     this.textRenderer = new NvgTextRenderer(fontRegistry);
     this.borderRenderer = new NvgBorderRenderer();
-    this.debugRenderer = new NvgDebugRenderer(fontRegistry);
+    this.debugRenderer = new NvgDebugRenderer();
   }
 
   public NvgRenderer() {
@@ -160,5 +161,9 @@ public class NvgRenderer implements Renderer {
   public void debugMousePosition(Vector2fc debugMousePosition) {
     this.debugMousePosition =
         debugMousePosition == null ? null : new Vector2f(debugMousePosition);
+  }
+
+  public void textMeasurer(TextMeasurer textMeasurer) {
+    debugRenderer.textMeasurer(textMeasurer);
   }
 }
