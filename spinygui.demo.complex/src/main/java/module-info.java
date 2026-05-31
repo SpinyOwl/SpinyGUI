@@ -9,6 +9,7 @@ open module com.spinyowl.spinygui.demo.complex {
   requires transitive com.spinyowl.spinygui.core.backend;
   requires transitive com.spinyowl.spinygui.core.backend.lwjgl.nanovg;
 
+  requires com.google.common;
   requires org.lwjgl;
   requires org.lwjgl.natives;
   requires org.lwjgl.glfw;

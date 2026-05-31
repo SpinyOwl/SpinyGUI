@@ -1,0 +1,53 @@
+winframe {
+  position: relative;
+  padding: 18px;
+  background-color: #f5f7fa;
+  color: #1f2933;
+  font-size: 15px;
+}
+
+.panel {
+  position: absolute;
+  left: 24px;
+  top: 24px;
+  width: 460px;
+  height: 190px;
+  padding: 14px;
+  border: 3px solid #3a6ea5;
+  background-color: #ffffff;
+}
+
+.title {
+  display: block;
+  height: 24px;
+  font-size: 16px;
+}
+
+input {
+  display: block;
+  width: 260px;
+  margin-top: 12px;
+  padding: 5px 7px;
+  border: 2px solid #2563eb;
+  background-color: #dbeafe;
+  color: #111827;
+  font-size: 16px;
+  line-height: 1.25;
+  overflow: hidden;
+}
+
+input:hover {
+  border-color: #1d4ed8;
+  background-color: #bfdbfe;
+}
+
+#wide {
+  width: 330px;
+  border-color: #7c3aed;
+  background-color: #ede9fe;
+}
+
+#auto {
+  border-color: #059669;
+  background-color: #d1fae5;
+}

@@ -1,0 +1,8 @@
+<winframe>
+  <div class="panel">
+    <div class="title">Text input verification</div>
+    <input id="plain" type="text" value="hello world" />
+    <input id="wide" type="text" value="long value that should stay inside the field" />
+    <input id="auto" value="auto type defaults to text" />
+  </div>
+</winframe>
