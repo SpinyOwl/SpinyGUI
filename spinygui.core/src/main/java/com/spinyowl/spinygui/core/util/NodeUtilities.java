@@ -132,8 +132,8 @@ public final class NodeUtilities {
       final Element initialTarget,
       final boolean searchOnlyClickable) {
     Element retarget = initialTarget;
-    if (visibleAndIntersects(element, vector)) {
-      if (!searchOnlyClickable || clickable(element)) {
+    if (canHitTest(element, vector)) {
+      if (intersects(element, vector) && (!searchOnlyClickable || clickable(element))) {
         retarget = element;
       }
       List<Element> childElements = element.children();
@@ -171,17 +171,27 @@ public final class NodeUtilities {
    */
   public static List<Element> fillTargetElementList(
       final Vector2fc vector, final Element element, final List<Element> targetList) {
-    if (visibleAndIntersects(element, vector)) {
-      targetList.add(element);
+    if (canHitTest(element, vector)) {
+      if (intersects(element, vector)) {
+        targetList.add(element);
+      }
       element.children().forEach(child -> fillTargetElementList(vector, child, targetList));
     }
     return targetList;
   }
 
-  private static boolean visibleAndIntersects(final Element element, final Vector2fc vector) {
+  private static boolean canHitTest(final Element element, final Vector2fc vector) {
     return visible(element)
-        && element.intersection().intersects(element, vector)
-        && insideClippingAncestors(element, vector);
+        && insideClippingAncestors(element, vector)
+        && mayContainHit(element, vector);
+  }
+
+  private static boolean mayContainHit(final Element element, final Vector2fc vector) {
+    return intersects(element, vector) || !OverflowUtils.clipsAny(element);
+  }
+
+  private static boolean intersects(final Element element, final Vector2fc vector) {
+    return element.intersection().intersects(element, vector);
   }
 
   private static boolean insideClippingAncestors(final Node node, final Vector2fc vector) {

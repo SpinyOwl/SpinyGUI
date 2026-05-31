@@ -47,6 +47,46 @@ class NodeUtilitiesOverflowHitTest {
   }
 
   @Test
+  void getTargetElement_returnsChildOutsideVisibleOverflowParentBox() {
+    Frame frame = frame(500, 500);
+    Element container = visibleOverflowElement(0, 0, 100, 100);
+    Element child = element(110, 10, 20, 20);
+    frame.addChild(container);
+    container.addChild(child);
+    child.offsetParent(container);
+
+    Vector2f pointInsideOverflowingChild = new Vector2f(115, 15);
+
+    assertEquals(child, NodeUtilities.getTargetElement(frame, pointInsideOverflowingChild));
+    assertTrue(
+        NodeUtilities.getTargetElementList(frame, pointInsideOverflowingChild).contains(child));
+    assertFalse(
+        NodeUtilities.getTargetElementList(frame, pointInsideOverflowingChild)
+            .contains(container));
+  }
+
+  @Test
+  void getTargetElement_excludesChildOutsideVisibleOverflowParentWhenClippedByAncestor() {
+    Frame frame = frame(500, 500);
+    Element outer = clippedElement(0, 0, 100, 100);
+    Element inner = visibleOverflowElement(0, 0, 100, 100);
+    Element child = element(110, 10, 20, 20);
+    frame.addChild(outer);
+    outer.addChild(inner);
+    inner.addChild(child);
+    inner.offsetParent(outer);
+    child.offsetParent(inner);
+
+    Vector2f pointInsideChildButOutsideClippingAncestor = new Vector2f(115, 15);
+
+    assertEquals(
+        frame, NodeUtilities.getTargetElement(frame, pointInsideChildButOutsideClippingAncestor));
+    assertFalse(
+        NodeUtilities.getTargetElementList(frame, pointInsideChildButOutsideClippingAncestor)
+            .contains(child));
+  }
+
+  @Test
   void getTargetElement_excludesChildOutsideInnerNestedScrollContentBox() {
     Frame frame = frame(500, 500);
     Element outer = clippedElement(0, 0, 200, 200);
@@ -77,6 +117,13 @@ class NodeUtilitiesOverflowHitTest {
     Element element = element(x, y, width, height);
     element.resolvedStyle().overflowX(Overflow.HIDDEN);
     element.resolvedStyle().overflowY(Overflow.HIDDEN);
+    return element;
+  }
+
+  private Element visibleOverflowElement(float x, float y, float width, float height) {
+    Element element = element(x, y, width, height);
+    element.resolvedStyle().overflowX(Overflow.VISIBLE);
+    element.resolvedStyle().overflowY(Overflow.VISIBLE);
     return element;
   }
 
