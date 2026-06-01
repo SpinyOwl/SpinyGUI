@@ -10,7 +10,7 @@ public class OverflowExample extends Demo {
   private static final String CSS_RESOURCE = "com/spinyowl/spinygui/demo/overflow-demo.css";
 
   public OverflowExample() {
-    super(520, 420, "Overflow Example", new NvgRenderer());
+    super(760, 520, "Overflow Example", new NvgRenderer());
   }
 
   public static void main(String[] args) {
