@@ -2,16 +2,21 @@ package com.spinyowl.spinygui.core.system.event.listener;
 
 import static com.spinyowl.spinygui.core.node.NodeBuilder.div;
 import static com.spinyowl.spinygui.core.node.NodeBuilder.frame;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import com.google.common.collect.ImmutableSet;
+import com.spinyowl.spinygui.core.event.Event;
 import com.spinyowl.spinygui.core.event.FocusInEvent;
 import com.spinyowl.spinygui.core.event.FocusOutEvent;
 import com.spinyowl.spinygui.core.event.MouseClickEvent;
+import com.spinyowl.spinygui.core.event.ScrollEvent;
 import com.spinyowl.spinygui.core.event.processor.EventProcessor;
 import com.spinyowl.spinygui.core.font.Font;
 import com.spinyowl.spinygui.core.font.FontStyle;
@@ -29,10 +34,12 @@ import com.spinyowl.spinygui.core.system.font.TextCaretMetrics;
 import com.spinyowl.spinygui.core.system.font.TextLineMetrics;
 import com.spinyowl.spinygui.core.system.font.TextMeasurer;
 import com.spinyowl.spinygui.core.system.font.TextMetrics;
+import com.spinyowl.spinygui.core.system.input.ScrollbarInteraction;
 import com.spinyowl.spinygui.core.system.input.SystemKeyAction;
 import com.spinyowl.spinygui.core.system.input.SystemKeyMod;
 import com.spinyowl.spinygui.core.system.input.SystemMouseButton;
 import com.spinyowl.spinygui.core.time.TimeService;
+import com.spinyowl.spinygui.core.style.types.Overflow;
 import com.spinyowl.spinygui.core.style.types.length.Length;
 import java.util.Set;
 import org.joml.Vector2f;
@@ -40,6 +47,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -432,6 +440,108 @@ class SystemMouseClickEventListenerTest {
   }
 
   @Test
+  void process_pressVerticalScrollbarTrack_scrollsByClientPageAndEmitsScrollEvent() {
+    Element element = scrollableElement(100, 100, 100, 300);
+    element.resolvedStyle().overflowX(Overflow.HIDDEN);
+    Frame frame = frame(element);
+    frame.box().contentSize(200, 200);
+    Vector2f current = new Vector2f(99, 80);
+
+    when(mouseService.getCursorPositions(frame)).thenReturn(new CursorPositions(current, current));
+    when(timeService.currentTime()).thenReturn(1D);
+
+    listener.process(mousePress(frame), frame);
+
+    assertEquals(100, element.scrollTop(), 0.0001f);
+
+    ArgumentCaptor<Event> eventCaptor = ArgumentCaptor.forClass(Event.class);
+    verify(eventProcessor).push(eventCaptor.capture());
+    ScrollEvent event = assertInstanceOf(ScrollEvent.class, eventCaptor.getValue());
+    assertEquals(element, event.target());
+    assertEquals(0, event.offsetX(), 0.0001f);
+    assertEquals(100, event.offsetY(), 0.0001f);
+  }
+
+  @Test
+  void process_pressHorizontalScrollbarTrack_scrollsByClientPageAndEmitsScrollEvent() {
+    Element element = scrollableElement(100, 100, 300, 100);
+    element.resolvedStyle().overflowY(Overflow.HIDDEN);
+    Frame frame = frame(element);
+    frame.box().contentSize(200, 200);
+    Vector2f current = new Vector2f(80, 99);
+
+    when(mouseService.getCursorPositions(frame)).thenReturn(new CursorPositions(current, current));
+    when(timeService.currentTime()).thenReturn(1D);
+
+    listener.process(mousePress(frame), frame);
+
+    assertEquals(100, element.scrollLeft(), 0.0001f);
+
+    ArgumentCaptor<Event> eventCaptor = ArgumentCaptor.forClass(Event.class);
+    verify(eventProcessor).push(eventCaptor.capture());
+    ScrollEvent event = assertInstanceOf(ScrollEvent.class, eventCaptor.getValue());
+    assertEquals(element, event.target());
+    assertEquals(100, event.offsetX(), 0.0001f);
+    assertEquals(0, event.offsetY(), 0.0001f);
+  }
+
+  @Test
+  void process_pressInsideScrollableContent_keepsNormalContentClickTargeting() {
+    Element element = scrollableElement(100, 100, 100, 300);
+    element.resolvedStyle().overflowX(Overflow.HIDDEN);
+    Frame frame = frame(element);
+    frame.box().contentSize(200, 200);
+    Vector2f current = new Vector2f(20, 20);
+
+    when(mouseService.getCursorPositions(frame)).thenReturn(new CursorPositions(current, current));
+    when(timeService.currentTime()).thenReturn(1D);
+
+    listener.process(mousePress(frame), frame);
+
+    assertTrue(element.focused());
+    assertTrue(element.pressed());
+
+    ArgumentCaptor<Event> eventCaptor = ArgumentCaptor.forClass(Event.class);
+    verify(eventProcessor, times(2)).push(eventCaptor.capture());
+    assertTrue(
+        eventCaptor.getAllValues().stream()
+            .filter(MouseClickEvent.class::isInstance)
+            .map(MouseClickEvent.class::cast)
+            .anyMatch(
+                event ->
+                    event.target() == element
+                        && KeyAction.PRESS.equals(event.action())
+                        && event.absolutePosition().equals(current)));
+  }
+
+  @Test
+  void process_releaseAfterScrollbarThumbPress_endsActiveDrag() {
+    ScrollbarInteraction scrollbarInteraction = new ScrollbarInteraction();
+    listener =
+        SystemMouseClickEventListener.builder()
+            .eventProcessor(eventProcessor)
+            .timeService(timeService)
+            .mouseService(mouseService)
+            .scrollbarInteraction(scrollbarInteraction)
+            .build();
+    Element element = scrollableElement(100, 100, 100, 300);
+    element.resolvedStyle().overflowX(Overflow.HIDDEN);
+    Frame frame = frame(element);
+    frame.box().contentSize(200, 200);
+    Vector2f current = new Vector2f(99, 10);
+
+    when(mouseService.getCursorPositions(frame)).thenReturn(new CursorPositions(current, current));
+
+    listener.process(mousePress(frame), frame);
+    assertTrue(scrollbarInteraction.dragging());
+
+    listener.process(mouseRelease(frame), frame);
+
+    assertFalse(scrollbarInteraction.dragging());
+    verify(eventProcessor, times(0)).push(any());
+  }
+
+  @Test
   void process_throwsNPE_ifFrameIsNull() {
     SystemMouseClickEvent event =
         SystemMouseClickEvent.builder()
@@ -492,6 +602,36 @@ class SystemMouseClickEventListenerTest {
         .thenReturn(new CursorPositions(cursorPosition, cursorPosition));
 
     listener.process(event, frame);
+  }
+
+  private SystemMouseClickEvent mousePress(Frame frame) {
+    return mouseEvent(frame, SystemKeyAction.PRESS);
+  }
+
+  private SystemMouseClickEvent mouseRelease(Frame frame) {
+    return mouseEvent(frame, SystemKeyAction.RELEASE);
+  }
+
+  private SystemMouseClickEvent mouseEvent(Frame frame, SystemKeyAction action) {
+    return SystemMouseClickEvent.builder()
+        .action(action)
+        .mods(ImmutableSet.of())
+        .frame(frame)
+        .button(SystemMouseButton.LEFT)
+        .build();
+  }
+
+  private Element scrollableElement(
+      float clientWidth, float clientHeight, float scrollWidth, float scrollHeight) {
+    Element element = div();
+    element.box().contentSize(clientWidth, clientHeight);
+    element.clientWidth(clientWidth);
+    element.clientHeight(clientHeight);
+    element.scrollWidth(scrollWidth);
+    element.scrollHeight(scrollHeight);
+    element.resolvedStyle().overflowX(Overflow.AUTO);
+    element.resolvedStyle().overflowY(Overflow.AUTO);
+    return element;
   }
 
   private static class FixedWidthTextMeasurer implements TextMeasurer {

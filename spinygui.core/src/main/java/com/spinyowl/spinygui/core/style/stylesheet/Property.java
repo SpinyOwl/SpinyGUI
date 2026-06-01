@@ -4,6 +4,7 @@ import static com.spinyowl.spinygui.core.style.stylesheet.term.TermIdent.INHERIT
 import static com.spinyowl.spinygui.core.style.stylesheet.term.TermIdent.INITIAL;
 
 import com.spinyowl.spinygui.core.node.Element;
+import com.spinyowl.spinygui.core.style.ResolvedStyle;
 import com.spinyowl.spinygui.core.style.stylesheet.term.TermIdent;
 import java.util.Map;
 import java.util.function.BiConsumer;
@@ -143,7 +144,11 @@ public class Property {
    * @param value string representation of css property value.
    */
   public void apply(@NonNull Element element, Term<?> value) {
-    @NonNull Map<String, Object> styles = element.resolvedStyle().styles();
+    apply(element, value, element.resolvedStyle());
+  }
+
+  public void apply(@NonNull Element element, Term<?> value, @NonNull ResolvedStyle targetStyle) {
+    @NonNull Map<String, Object> styles = targetStyle.styles();
     if (value == null) {
       computeAbsent(element, styles);
     } else if (INITIAL.equals(value)) {

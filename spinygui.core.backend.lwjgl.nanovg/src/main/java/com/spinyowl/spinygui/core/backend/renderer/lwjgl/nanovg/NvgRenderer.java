@@ -36,6 +36,7 @@ public class NvgRenderer implements Renderer {
   private final NvgBorderRenderer borderRenderer;
   private final NvgInputRenderer inputRenderer;
   private final NvgTextareaRenderer textareaRenderer;
+  private final NvgScrollbarRenderer scrollbarRenderer;
   private final NvgDebugRenderer debugRenderer;
 
   private boolean isVersionNew;
@@ -51,6 +52,7 @@ public class NvgRenderer implements Renderer {
     this.borderRenderer = new NvgBorderRenderer();
     this.inputRenderer = new NvgInputRenderer(fontRegistry);
     this.textareaRenderer = new NvgTextareaRenderer(fontRegistry);
+    this.scrollbarRenderer = new NvgScrollbarRenderer();
     this.debugRenderer = new NvgDebugRenderer();
   }
 
@@ -112,6 +114,9 @@ public class NvgRenderer implements Renderer {
 
     if (children != null) {
       children.forEach(this::renderLayoutNode);
+    }
+    if (node instanceof Element element) {
+      scrollbarRenderer.render(element, nanovgContext);
     }
   }
 

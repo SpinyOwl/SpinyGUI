@@ -21,4 +21,24 @@
     <div class="title">Visible overflow</div>
     <div class="oversized-card">This card should paint outside the green panel.</div>
   </div>
+
+  <div class="panel two-axis-scroll">
+    <div class="title">Two-axis styled</div>
+    <div class="two-axis-content">Drag either scrollbar. This content is both wide and tall.</div>
+  </div>
+
+  <div class="panel forced-scroll">
+    <div class="title">Forced scroll</div>
+    <div class="small-content">Content fits, but overflow scroll still reserves gutters.</div>
+  </div>
+
+  <div class="panel auto-fit">
+    <div class="title">Auto fits</div>
+    <div class="small-content">No scrollbar should appear here.</div>
+  </div>
+
+  <div class="panel auto-overflow">
+    <div class="title">Auto overflows</div>
+    <div class="tall-content">The same auto rule scrolls when content exceeds this fixed box.</div>
+  </div>
 </winframe>

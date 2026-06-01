@@ -15,6 +15,25 @@ winframe {
   background-color: #ffffff;
 }
 
+.panel::-webkit-scrollbar {
+  width: 13px;
+  height: 13px;
+}
+
+.panel::-webkit-scrollbar-track {
+  background-color: #e2e8f0;
+  border:none;
+}
+
+.panel::-webkit-scrollbar-thumb {
+  background-color: #2563eb;
+  border:none;
+}
+
+.panel::-webkit-scrollbar-corner {
+  background-color: #cbd5e1;
+}
+
 .title {
   display: block;
   height: 20px;
@@ -58,6 +77,56 @@ winframe {
   border-color: #2f8f5b;
 }
 
+.two-axis-scroll {
+  left: 472px;
+  top: 18px;
+  overflow: auto;
+  border-color: #9c5a18;
+}
+
+.two-axis-scroll::-webkit-scrollbar-track {
+  background-color: #fed7aa;
+}
+
+.two-axis-scroll::-webkit-scrollbar-thumb {
+  background-color: #c2410c;
+  border-color: #fff7ed;
+}
+
+.two-axis-scroll::-webkit-scrollbar-corner {
+  background-color: #fdba74;
+}
+
+.forced-scroll {
+  left: 472px;
+  top: 170px;
+  overflow: scroll;
+  border-color: #6b7280;
+}
+
+.forced-scroll::-webkit-scrollbar-track {
+  background-color: #f1f5f9;
+}
+
+.forced-scroll::-webkit-scrollbar-thumb {
+  background-color: #94a3b8;
+  border-color: #e5e7eb;
+}
+
+.auto-fit {
+  left: 18px;
+  top: 322px;
+  overflow: auto;
+  border-color: #0f766e;
+}
+
+.auto-overflow {
+  left: 245px;
+  top: 322px;
+  overflow: auto;
+  border-color: #7c3aed;
+}
+
 .wide-content {
   width: 390px;
   height: 42px;
@@ -74,4 +143,16 @@ winframe {
   width: 245px;
   height: 135px;
   background-color: #dcfce7;
+}
+
+.two-axis-content {
+  width: 360px;
+  height: 225px;
+  background-color: #ffedd5;
+}
+
+.small-content {
+  width: 115px;
+  height: 48px;
+  background-color: #f8fafc;
 }

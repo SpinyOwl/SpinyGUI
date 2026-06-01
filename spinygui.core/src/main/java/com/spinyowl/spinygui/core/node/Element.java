@@ -7,8 +7,10 @@ import com.spinyowl.spinygui.core.event.EventTarget;
 import com.spinyowl.spinygui.core.event.listener.EventListener;
 import com.spinyowl.spinygui.core.layout.InlineFragment;
 import com.spinyowl.spinygui.core.style.ResolvedStyle;
+import com.spinyowl.spinygui.core.style.types.ScrollbarPart;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -68,6 +70,9 @@ public class Element extends Node implements EventTarget {
    * attribute).
    */
   private final ResolvedStyle resolvedStyle = new ResolvedStyle();
+
+  private final Map<ScrollbarPart, ResolvedStyle> scrollbarStyles =
+      new EnumMap<>(ScrollbarPart.class);
 
   /** Node attributes. */
   @Setter(AccessLevel.NONE)
@@ -225,6 +230,22 @@ public class Element extends Node implements EventTarget {
 
   public void style(String style) {
     attributes().put("style", style);
+  }
+
+  public Map<ScrollbarPart, ResolvedStyle> scrollbarStyles() {
+    return Collections.unmodifiableMap(scrollbarStyles);
+  }
+
+  public ResolvedStyle scrollbarStyle(ScrollbarPart part) {
+    return scrollbarStyles.get(part);
+  }
+
+  public ResolvedStyle getOrCreateScrollbarStyle(ScrollbarPart part) {
+    return scrollbarStyles.computeIfAbsent(part, ignored -> new ResolvedStyle());
+  }
+
+  public void clearScrollbarStyles() {
+    scrollbarStyles.clear();
   }
 
   public String getClassAttribute() {

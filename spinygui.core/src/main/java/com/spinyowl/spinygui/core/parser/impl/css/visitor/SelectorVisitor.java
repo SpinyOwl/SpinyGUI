@@ -21,6 +21,7 @@ import com.spinyowl.spinygui.core.style.stylesheet.selector.simple.AllSelector;
 import com.spinyowl.spinygui.core.style.stylesheet.selector.simple.ClassAttributeSelector;
 import com.spinyowl.spinygui.core.style.stylesheet.selector.simple.ElementSelector;
 import com.spinyowl.spinygui.core.style.stylesheet.selector.simple.IdAttributeSelector;
+import com.spinyowl.spinygui.core.style.types.ScrollbarPart;
 import lombok.extern.slf4j.Slf4j;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.TerminalNode;
@@ -58,6 +59,8 @@ public class SelectorVisitor extends CSS3BaseVisitor<Selector> {
       Selector selector;
       if (child instanceof TerminalNode && child.getText().startsWith(NUMBER_SIGN)) { // id selector
         selector = new IdAttributeSelector(child.getText().substring(1));
+      } else if (child instanceof TerminalNode) {
+        continue;
       } else {
         selector = visit(child);
       }
@@ -94,8 +97,9 @@ public class SelectorVisitor extends CSS3BaseVisitor<Selector> {
       return new AfterSelector();
     }
 
-    if ("scrollbar".equals(selectorName)) {
-      return new ScrollbarSelector();
+    ScrollbarPart scrollbarPart = ScrollbarPart.fromSelectorName(selectorName);
+    if (scrollbarPart != null) {
+      return new ScrollbarSelector(scrollbarPart);
     }
 
     return null;

@@ -1,7 +1,10 @@
 package com.spinyowl.spinygui.core.system.event.listener;
 
 import static com.spinyowl.spinygui.core.input.MouseButton.LEFT;
+import static com.spinyowl.spinygui.core.node.NodeBuilder.div;
 import static com.spinyowl.spinygui.core.node.NodeBuilder.frame;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.times;
@@ -9,19 +12,25 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import com.spinyowl.spinygui.core.event.CursorEnterEvent;
 import com.spinyowl.spinygui.core.event.CursorExitEvent;
+import com.spinyowl.spinygui.core.event.Event;
 import com.spinyowl.spinygui.core.event.MouseDragEvent;
+import com.spinyowl.spinygui.core.event.ScrollEvent;
 import com.spinyowl.spinygui.core.event.processor.EventProcessor;
 import com.spinyowl.spinygui.core.input.MouseService;
 import com.spinyowl.spinygui.core.input.MouseService.CursorPositions;
 import com.spinyowl.spinygui.core.node.Element;
 import com.spinyowl.spinygui.core.node.Frame;
 import com.spinyowl.spinygui.core.system.event.SystemCursorPosEvent;
+import com.spinyowl.spinygui.core.system.input.ScrollbarInteraction;
 import com.spinyowl.spinygui.core.time.TimeService;
+import com.spinyowl.spinygui.core.style.types.Overflow;
+import java.util.List;
 import org.joml.Vector2f;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -187,6 +196,80 @@ class SystemCursorPosEventListenerTest {
   }
 
   @Test
+  void process_dragVerticalScrollbarThumb_updatesScrollTopAndClampsAtBothEnds() {
+    ScrollbarInteraction scrollbarInteraction = new ScrollbarInteraction();
+    listener =
+        SystemCursorPosEventListener.builder()
+            .eventProcessor(eventProcessor)
+            .mouseService(mouseService)
+            .timeService(timeService)
+            .scrollbarInteraction(scrollbarInteraction)
+            .build();
+    Element element = scrollableElement(100, 100, 100, 300);
+    element.resolvedStyle().overflowX(Overflow.HIDDEN);
+    Frame frame = frame(element);
+    frame.box().contentSize(200, 200);
+
+    beginDrag(scrollbarInteraction, element, new Vector2f(99, 10));
+    when(mouseService.getCursorPositions(frame))
+        .thenReturn(new CursorPositions(new Vector2f(99, 10), new Vector2f(99, 10)))
+        .thenReturn(new CursorPositions(new Vector2f(99, 90), new Vector2f(99, 10)));
+    when(mouseService.pressed(LEFT)).thenReturn(true);
+    when(timeService.currentTime()).thenReturn(1D, 2D);
+
+    listener.process(cursorEvent(frame, 99, 90), frame);
+
+    assertEquals(200, element.scrollTop(), 0.0001f);
+
+    scrollbarInteraction.endDrag();
+    beginDrag(scrollbarInteraction, element, new Vector2f(99, 90));
+
+    listener.process(cursorEvent(frame, 99, 0), frame);
+
+    assertEquals(0, element.scrollTop(), 0.0001f);
+
+    ArgumentCaptor<Event> eventCaptor = ArgumentCaptor.forClass(Event.class);
+    verify(eventProcessor, times(2)).push(eventCaptor.capture());
+    ScrollEvent first = assertInstanceOf(ScrollEvent.class, eventCaptor.getAllValues().get(0));
+    ScrollEvent second = assertInstanceOf(ScrollEvent.class, eventCaptor.getAllValues().get(1));
+    assertEquals(200, first.offsetY(), 0.0001f);
+    assertEquals(-200, second.offsetY(), 0.0001f);
+  }
+
+  @Test
+  void process_dragHorizontalScrollbarThumb_updatesScrollLeft() {
+    ScrollbarInteraction scrollbarInteraction = new ScrollbarInteraction();
+    listener =
+        SystemCursorPosEventListener.builder()
+            .eventProcessor(eventProcessor)
+            .mouseService(mouseService)
+            .timeService(timeService)
+            .scrollbarInteraction(scrollbarInteraction)
+            .build();
+    Element element = scrollableElement(100, 100, 300, 100);
+    element.resolvedStyle().overflowY(Overflow.HIDDEN);
+    Frame frame = frame(element);
+    frame.box().contentSize(200, 200);
+    beginDrag(scrollbarInteraction, element, new Vector2f(10, 99));
+
+    when(mouseService.getCursorPositions(frame))
+        .thenReturn(new CursorPositions(new Vector2f(10, 99), new Vector2f(10, 99)));
+    when(mouseService.pressed(LEFT)).thenReturn(true);
+    when(timeService.currentTime()).thenReturn(1D);
+
+    listener.process(cursorEvent(frame, 60, 99), frame);
+
+    assertEquals(150, element.scrollLeft(), 0.0001f);
+
+    ArgumentCaptor<Event> eventCaptor = ArgumentCaptor.forClass(Event.class);
+    verify(eventProcessor).push(eventCaptor.capture());
+    ScrollEvent event = assertInstanceOf(ScrollEvent.class, eventCaptor.getValue());
+    assertEquals(element, event.target());
+    assertEquals(150, event.offsetX(), 0.0001f);
+    assertEquals(0, event.offsetY(), 0.0001f);
+  }
+
+  @Test
   void process_throwsNPE_ifFrameIsNull() {
     SystemCursorPosEvent event =
         SystemCursorPosEvent.builder().posX(1).posY(1).frame(frame()).build();
@@ -197,5 +280,27 @@ class SystemCursorPosEventListenerTest {
   void process_throwsNPE_ifEventIsNull() {
     Frame frame = frame();
     Assertions.assertThrows(NullPointerException.class, () -> listener.process(null, frame));
+  }
+
+  private SystemCursorPosEvent cursorEvent(Frame frame, float x, float y) {
+    return SystemCursorPosEvent.builder().posX(x).posY(y).frame(frame).build();
+  }
+
+  private void beginDrag(
+      ScrollbarInteraction scrollbarInteraction, Element element, Vector2f point) {
+    scrollbarInteraction.beginDrag(scrollbarInteraction.hit(List.of(element), point), point);
+  }
+
+  private Element scrollableElement(
+      float clientWidth, float clientHeight, float scrollWidth, float scrollHeight) {
+    Element element = div();
+    element.box().contentSize(clientWidth, clientHeight);
+    element.clientWidth(clientWidth);
+    element.clientHeight(clientHeight);
+    element.scrollWidth(scrollWidth);
+    element.scrollHeight(scrollHeight);
+    element.resolvedStyle().overflowX(Overflow.AUTO);
+    element.resolvedStyle().overflowY(Overflow.AUTO);
+    return element;
   }
 }
