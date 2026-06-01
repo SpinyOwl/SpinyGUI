@@ -2,6 +2,7 @@ package com.spinyowl.spinygui.core.backend.renderer.lwjgl.nanovg;
 
 import static com.spinyowl.spinygui.core.backend.renderer.lwjgl.nanovg.util.NvgRenderUtils.createScissor;
 import static com.spinyowl.spinygui.core.backend.renderer.lwjgl.nanovg.util.NvgRenderUtils.resetScissor;
+import static com.spinyowl.spinygui.core.backend.renderer.lwjgl.nanovg.util.NvgShapes.MIN_ALPHA;
 import static com.spinyowl.spinygui.core.backend.renderer.lwjgl.nanovg.util.NvgShapes.drawRect;
 import static com.spinyowl.spinygui.core.backend.renderer.lwjgl.nanovg.util.NvgShapes.drawRectStroke;
 import static com.spinyowl.spinygui.core.style.stylesheet.util.StyleUtils.getFloatLengthNullSafe;
@@ -75,11 +76,14 @@ class NvgScrollbarRenderer {
     ResolvedStyle style = element.scrollbarStyle(part);
     Color background = color(backgroundColor(style, part), style);
     Vector4f radius = borderRadius(style, rect);
-    shapeSink.fill(context, rect, background, radius);
+    if (paints(background)) {
+      shapeSink.fill(context, rect, background, radius);
+    }
 
     float borderWidth = borderWidth(style);
-    if (drawsBorder(style) && borderWidth > 0) {
-      shapeSink.stroke(context, rect, color(borderColor(style), style), borderWidth, radius);
+    Color border = color(borderColor(style), style);
+    if (drawsBorder(style) && borderWidth > 0 && paints(border)) {
+      shapeSink.stroke(context, rect, border, borderWidth, radius);
     }
   }
 
@@ -105,8 +109,16 @@ class NvgScrollbarRenderer {
     if (color == null) {
       return TRANSPARENT;
     }
-    float opacity = style == null || style.opacity() == null ? 1f : style.opacity();
-    return color.withA(color.a() * Math.max(0, Math.min(1, opacity)));
+    if (style == null || style.opacity() == null) {
+      return color;
+    }
+    float opacity = Math.max(0, Math.min(1, style.opacity()));
+    float alpha = color.a() * opacity;
+    return alpha == color.a() ? color : color.withA(alpha);
+  }
+
+  private boolean paints(Color color) {
+    return color != null && color.a() > MIN_ALPHA;
   }
 
   private float borderWidth(ResolvedStyle style) {
