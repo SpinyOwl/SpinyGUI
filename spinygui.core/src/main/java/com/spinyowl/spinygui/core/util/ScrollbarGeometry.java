@@ -54,26 +54,29 @@ public final class ScrollbarGeometry {
       clientHeight = nextClientHeight;
     }
 
-    Rect content = element.box().content();
+    Rect scrollbarBox = element.box().paddingBox();
     Rect verticalTrack =
         vertical
             ? new Rect(
-                content.x() + clientWidth,
-                content.y(),
+                scrollbarBox.x() + scrollbarBox.width() - verticalThickness,
+                scrollbarBox.y(),
                 verticalThickness,
-                Math.max(0, clientHeight))
+                Math.max(0, scrollbarBox.height() - (horizontal ? horizontalThickness : 0)))
             : null;
     Rect horizontalTrack =
         horizontal
             ? new Rect(
-                content.x(),
-                content.y() + clientHeight,
-                Math.max(0, clientWidth),
+                scrollbarBox.x(),
+                scrollbarBox.y() + scrollbarBox.height() - horizontalThickness,
+                Math.max(0, scrollbarBox.width() - (vertical ? verticalThickness : 0)),
                 horizontalThickness)
             : null;
     Rect corner =
         vertical && horizontal
-            ? new Rect(content.x() + clientWidth, content.y() + clientHeight, verticalThickness,
+            ? new Rect(
+                scrollbarBox.x() + scrollbarBox.width() - verticalThickness,
+                scrollbarBox.y() + scrollbarBox.height() - horizontalThickness,
+                verticalThickness,
                 horizontalThickness)
             : null;
 
