@@ -86,8 +86,10 @@ public class ScrollbarInteraction {
   }
 
   private Hit hit(Element element, Vector2fc point) {
-    ScrollbarGeometry.Metrics metrics =
-        ScrollbarGeometry.compute(element, element.scrollWidth(), element.scrollHeight());
+    if (!ScrollbarGeometry.canShowScrollbars(element)) {
+      return null;
+    }
+    ScrollbarGeometry.Metrics metrics = scrollbarMetrics(element);
     if (contains(metrics.corner(), point)) {
       return new Hit(element, Axis.BOTH, HitPart.CORNER, metrics);
     }
@@ -104,6 +106,13 @@ public class ScrollbarInteraction {
       return new Hit(element, Axis.HORIZONTAL, HitPart.TRACK, metrics);
     }
     return null;
+  }
+
+  private ScrollbarGeometry.Metrics scrollbarMetrics(Element element) {
+    ScrollbarGeometry.Metrics metrics = element.scrollbarMetrics();
+    return metrics == null
+        ? ScrollbarGeometry.compute(element, element.scrollWidth(), element.scrollHeight())
+        : ScrollbarGeometry.withThumbs(element, metrics);
   }
 
   private ScrollDelta scrollTo(Element element, Axis axis, float value) {

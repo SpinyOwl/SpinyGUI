@@ -24,7 +24,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.WeakHashMap;
-import java.util.function.Predicate;
 import lombok.Data;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -42,6 +41,7 @@ public class StyleManagerImpl implements StyleManager {
   @NonNull private final StyleSheetParser styleSheetParser;
 
   private final Map<Element, StyleData> elementStyleDataMap = new WeakHashMap<>();
+  private final Map<StyleSheet, StyleSheetRules> styleSheetRulesCache = new WeakHashMap<>();
   private final Map<String, InlineStyleParseResult> inlineStyleRulesetCache =
       new LinkedHashMap<>(INLINE_STYLE_RULESET_CACHE_SIZE, 0.75f, true) {
         @Override
@@ -103,8 +103,11 @@ public class StyleManagerImpl implements StyleManager {
     rulesets.add(defaultRuleset());
     // find all rule sets applicable to element.
     for (StyleSheet styleSheet : styleSheets) {
-      rulesets.addAll(searchSpecificElementRules(styleSheet, element));
-      addScrollbarRules(scrollbarRulesets, searchSpecificScrollbarRules(styleSheet, element));
+      StyleSheetRules styleSheetRules = styleSheetRules(styleSheet);
+      rulesets.addAll(searchSpecificElementRules(styleSheetRules.elementRules(), element));
+      addScrollbarRules(
+          scrollbarRulesets,
+          searchSpecificScrollbarRules(styleSheetRules.scrollbarRules(), element));
     }
     // at the end we need to add styles specified in "style" attribute.
     rulesets.add(elementStyleRuleSet(element));
@@ -113,7 +116,6 @@ public class StyleManagerImpl implements StyleManager {
     scrollbarRulesets.forEach(
         (part, partRulesets) -> {
           List<Ruleset> pseudoRulesets = new ArrayList<>();
-          pseudoRulesets.add(defaultRuleset());
           pseudoRulesets.addAll(partRulesets);
           element.getOrCreateScrollbarStyle(part).rules(pseudoRulesets);
         });
@@ -121,38 +123,54 @@ public class StyleManagerImpl implements StyleManager {
     element.children().forEach(child -> updateStyles(child, styleSheets));
   }
 
-  private List<Ruleset> searchSpecificElementRules(StyleSheet styleSheet, Element element) {
-    return styleSheet.rulesets().stream()
-        .map(
-            ruleSet ->
-                matchingRuleSet(ruleSet, element, selector -> scrollbarPart(selector) == null))
+  private StyleSheetRules styleSheetRules(StyleSheet styleSheet) {
+    return styleSheetRulesCache.computeIfAbsent(styleSheet, this::partitionRules);
+  }
+
+  private StyleSheetRules partitionRules(StyleSheet styleSheet) {
+    List<Ruleset> elementRules = new ArrayList<>();
+    List<ScrollbarRuleset> scrollbarRules = new ArrayList<>();
+    for (Ruleset ruleSet : styleSheet.rulesets()) {
+      List<Selector> elementSelectors = new ArrayList<>();
+      for (Selector selector : ruleSet.selectors()) {
+        ScrollbarPart part = scrollbarPart(selector);
+        if (part == null) {
+          elementSelectors.add(selector);
+        } else {
+          scrollbarRules.add(
+              new ScrollbarRuleset(part, new Ruleset(List.of(selector), ruleSet.declarations())));
+        }
+      }
+      if (!elementSelectors.isEmpty()) {
+        elementRules.add(new Ruleset(elementSelectors, ruleSet.declarations()));
+      }
+    }
+    return new StyleSheetRules(List.copyOf(elementRules), List.copyOf(scrollbarRules));
+  }
+
+  private List<Ruleset> searchSpecificElementRules(List<Ruleset> rulesets, Element element) {
+    return rulesets.stream()
+        .map(ruleSet -> matchingRuleSet(ruleSet, element))
         .filter(Objects::nonNull)
         .sorted(Comparator.comparing(ruleSet -> ruleSet.specificity(element)))
         .toList();
   }
 
   private List<ScrollbarRuleset> searchSpecificScrollbarRules(
-      StyleSheet styleSheet, Element element) {
+      List<ScrollbarRuleset> scrollbarRules, Element element) {
     List<ScrollbarRuleset> rulesets = new ArrayList<>();
-    for (Ruleset ruleSet : styleSheet.rulesets()) {
-      for (Selector selector : ruleSet.selectors()) {
-        ScrollbarPart part = scrollbarPart(selector);
-        if (part != null && selector.test(element)) {
-          rulesets.add(
-              new ScrollbarRuleset(part, new Ruleset(List.of(selector), ruleSet.declarations())));
-        }
+    for (ScrollbarRuleset scrollbarRule : scrollbarRules) {
+      if (scrollbarRule.ruleset().test(element)) {
+        rulesets.add(scrollbarRule);
       }
     }
     rulesets.sort(Comparator.comparing(ruleSet -> ruleSet.ruleset().specificity(element)));
     return rulesets;
   }
 
-  private Ruleset matchingRuleSet(
-      Ruleset ruleSet, Element element, Predicate<Selector> selectorPredicate) {
+  private Ruleset matchingRuleSet(Ruleset ruleSet, Element element) {
     List<Selector> selectors =
-        ruleSet.selectors().stream()
-            .filter(selector -> selectorPredicate.test(selector) && selector.test(element))
-            .toList();
+        ruleSet.selectors().stream().filter(selector -> selector.test(element)).toList();
     return selectors.isEmpty() ? null : new Ruleset(selectors, ruleSet.declarations());
   }
 
@@ -243,6 +261,9 @@ public class StyleManagerImpl implements StyleManager {
       return new InlineStyleParseResult(false, null);
     }
   }
+
+  private record StyleSheetRules(
+      List<Ruleset> elementRules, List<ScrollbarRuleset> scrollbarRules) {}
 
   private record ScrollbarRuleset(ScrollbarPart part, Ruleset ruleset) {}
 }

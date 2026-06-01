@@ -35,12 +35,11 @@ class NvgScrollbarRenderer {
   }
 
   void render(Element element, long nanovgContext) {
-    if (!visible(element)) {
+    if (!visible(element) || !ScrollbarGeometry.canShowScrollbars(element)) {
       return;
     }
 
-    ScrollbarGeometry.Metrics metrics =
-        ScrollbarGeometry.compute(element, element.scrollWidth(), element.scrollHeight());
+    ScrollbarGeometry.Metrics metrics = scrollbarMetrics(element);
     if (!metrics.verticalVisible() && !metrics.horizontalVisible()) {
       return;
     }
@@ -58,6 +57,13 @@ class NvgScrollbarRenderer {
       drawPart(nanovgContext, element, ScrollbarPart.CORNER, metrics.corner());
     }
     shapeSink.end(nanovgContext);
+  }
+
+  private ScrollbarGeometry.Metrics scrollbarMetrics(Element element) {
+    ScrollbarGeometry.Metrics metrics = element.scrollbarMetrics();
+    return metrics == null
+        ? ScrollbarGeometry.compute(element, element.scrollWidth(), element.scrollHeight())
+        : metrics;
   }
 
   private void drawPart(

@@ -22,6 +22,11 @@ public final class ScrollbarGeometry {
   public static final Color DEFAULT_THUMB_COLOR = Color.GRAY;
   public static final Color DEFAULT_CORNER_COLOR = Color.LIGHTGRAY;
 
+  public static boolean canShowScrollbars(@NonNull Element element) {
+    return canShowScrollbar(element.resolvedStyle().overflowX())
+        || canShowScrollbar(element.resolvedStyle().overflowY());
+  }
+
   public static Metrics compute(@NonNull Element element, float scrollWidth, float scrollHeight) {
     float verticalThickness = verticalThickness(element);
     float horizontalThickness = horizontalThickness(element);
@@ -94,6 +99,23 @@ public final class ScrollbarGeometry {
         corner);
   }
 
+  public static Metrics withThumbs(@NonNull Element element, @NonNull Metrics metrics) {
+    return new Metrics(
+        metrics.verticalVisible(),
+        metrics.horizontalVisible(),
+        metrics.clientWidth(),
+        metrics.clientHeight(),
+        metrics.verticalThickness(),
+        metrics.horizontalThickness(),
+        metrics.verticalTrack(),
+        metrics.horizontalTrack(),
+        verticalThumb(
+            element, metrics.verticalTrack(), element.scrollHeight(), metrics.clientHeight()),
+        horizontalThumb(
+            element, metrics.horizontalTrack(), element.scrollWidth(), metrics.clientWidth()),
+        metrics.corner());
+  }
+
   private static Rect verticalThumb(
       Element element, Rect track, float scrollHeight, float clientHeight) {
     if (track == null) {
@@ -143,6 +165,10 @@ public final class ScrollbarGeometry {
     Overflow overflow = element.resolvedStyle().overflowX();
     return Overflow.SCROLL.equals(overflow)
         || Overflow.AUTO.equals(overflow) && scrollWidth > clientWidth;
+  }
+
+  private static boolean canShowScrollbar(Overflow overflow) {
+    return Overflow.SCROLL.equals(overflow) || Overflow.AUTO.equals(overflow);
   }
 
   private static float verticalThickness(Element element) {

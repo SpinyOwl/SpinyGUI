@@ -8,6 +8,7 @@ import com.spinyowl.spinygui.core.event.listener.EventListener;
 import com.spinyowl.spinygui.core.layout.InlineFragment;
 import com.spinyowl.spinygui.core.style.ResolvedStyle;
 import com.spinyowl.spinygui.core.style.types.ScrollbarPart;
+import com.spinyowl.spinygui.core.util.ScrollbarGeometry;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.EnumMap;
@@ -73,6 +74,9 @@ public class Element extends Node implements EventTarget {
 
   private final Map<ScrollbarPart, ResolvedStyle> scrollbarStyles =
       new EnumMap<>(ScrollbarPart.class);
+
+  /** Scrollbar metrics calculated during layout and reused by render/input paths. */
+  private ScrollbarGeometry.Metrics scrollbarMetrics;
 
   /** Node attributes. */
   @Setter(AccessLevel.NONE)
