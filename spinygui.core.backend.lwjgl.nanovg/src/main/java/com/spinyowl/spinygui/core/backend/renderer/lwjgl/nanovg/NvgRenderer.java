@@ -16,6 +16,7 @@ import com.spinyowl.spinygui.core.node.Frame;
 import com.spinyowl.spinygui.core.node.InputElement;
 import com.spinyowl.spinygui.core.node.Node;
 import com.spinyowl.spinygui.core.node.Text;
+import com.spinyowl.spinygui.core.node.TextareaElement;
 import com.spinyowl.spinygui.core.system.font.TextMeasurer;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -34,6 +35,7 @@ public class NvgRenderer implements Renderer {
   private final NvgTextRenderer textRenderer;
   private final NvgBorderRenderer borderRenderer;
   private final NvgInputRenderer inputRenderer;
+  private final NvgTextareaRenderer textareaRenderer;
   private final NvgDebugRenderer debugRenderer;
 
   private boolean isVersionNew;
@@ -48,6 +50,7 @@ public class NvgRenderer implements Renderer {
     this.textRenderer = new NvgTextRenderer(fontRegistry);
     this.borderRenderer = new NvgBorderRenderer();
     this.inputRenderer = new NvgInputRenderer(fontRegistry);
+    this.textareaRenderer = new NvgTextareaRenderer(fontRegistry);
     this.debugRenderer = new NvgDebugRenderer();
   }
 
@@ -103,6 +106,8 @@ public class NvgRenderer implements Renderer {
     borderRenderer.render(node, nanovgContext);
     if (node instanceof InputElement input) {
       inputRenderer.render(input, nanovgContext);
+    } else if (node instanceof TextareaElement textarea) {
+      textareaRenderer.render(textarea, nanovgContext);
     }
 
     if (children != null) {
@@ -171,6 +176,7 @@ public class NvgRenderer implements Renderer {
 
   public void textMeasurer(TextMeasurer textMeasurer) {
     inputRenderer.textMeasurer(textMeasurer);
+    textareaRenderer.textMeasurer(textMeasurer);
     debugRenderer.textMeasurer(textMeasurer);
   }
 }

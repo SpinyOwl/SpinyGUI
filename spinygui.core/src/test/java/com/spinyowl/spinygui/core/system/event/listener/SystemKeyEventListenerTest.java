@@ -20,6 +20,7 @@ import com.spinyowl.spinygui.core.input.KeyboardKey;
 import com.spinyowl.spinygui.core.input.KeyboardLayout;
 import com.spinyowl.spinygui.core.node.Frame;
 import com.spinyowl.spinygui.core.node.InputElement;
+import com.spinyowl.spinygui.core.node.TextareaElement;
 import com.spinyowl.spinygui.core.system.event.SystemKeyEvent;
 import com.spinyowl.spinygui.core.system.input.SystemKeyAction;
 import com.spinyowl.spinygui.core.system.input.SystemKeyMod;
@@ -189,6 +190,27 @@ class SystemKeyEventListenerTest {
   }
 
   @Test
+  void process_whenFocusedTextareaHandlesEnterAndGeneratesKeyboardEvent() {
+    TextareaElement textarea = focusedTextarea("ab", 1);
+
+    processTextareaKey(textarea, KeyCode.ENTER, SystemKeyAction.PRESS);
+
+    Assertions.assertEquals("a\nb", textarea.value());
+    Assertions.assertEquals(2, textarea.caretIndex());
+  }
+
+  @Test
+  void process_whenFocusedTextareaHandlesLineHomeAndEnd() {
+    TextareaElement textarea = focusedTextarea("ab\ncde", 5);
+
+    processTextareaKey(textarea, KeyCode.HOME, SystemKeyAction.PRESS);
+    Assertions.assertEquals(3, textarea.caretIndex());
+
+    processTextareaKey(textarea, KeyCode.END, SystemKeyAction.PRESS);
+    Assertions.assertEquals(6, textarea.caretIndex());
+  }
+
+  @Test
   void process_whenFocusedElementIsNotTextInputKeepsCurrentKeyboardEventFlow() {
     test(SystemKeyAction.PRESS, PRESS);
   }
@@ -292,6 +314,13 @@ class SystemKeyEventListenerTest {
     return input;
   }
 
+  private TextareaElement focusedTextarea(String value, int caretIndex) {
+    TextareaElement textarea = new TextareaElement(value);
+    textarea.caretIndex(caretIndex);
+    textarea.focused(true);
+    return textarea;
+  }
+
   private void processInputKey(
       InputElement input, KeyCode mappedKeyCode, SystemKeyAction systemAction) {
     processInputKey(input, mappedKeyCode, systemAction, ImmutableSet.of());
@@ -338,6 +367,44 @@ class SystemKeyEventListenerTest {
     listener.process(event, frame);
 
     // Verify
+    verify(eventProcessor).push(expectedEvent);
+  }
+
+  private void processTextareaKey(
+      TextareaElement textarea, KeyCode mappedKeyCode, SystemKeyAction systemAction) {
+    var frame = frame(textarea);
+    double timestamp = 1D;
+    when(timeService.currentTime()).thenReturn(timestamp);
+    KeyboardLayout keyboardLayout = mock(KeyboardLayout.class);
+    when(keyboard.layout()).thenReturn(keyboardLayout);
+
+    int keyCode = 7;
+    int scancode = 7;
+
+    SystemKeyEvent event =
+        SystemKeyEvent.builder()
+            .keyCode(keyCode)
+            .scancode(scancode)
+            .action(systemAction)
+            .mods(ImmutableSet.of())
+            .frame(frame)
+            .build();
+
+    when(keyboardLayout.keyCode(keyCode)).thenReturn(mappedKeyCode);
+
+    KeyboardEvent expectedEvent =
+        KeyboardEvent.builder()
+            .source(frame)
+            .target(textarea)
+            .action(getAction(systemAction))
+            .timestamp(timestamp)
+            .mods(event.mappedMods())
+            .key(new KeyboardKey(mappedKeyCode, keyCode, scancode))
+            .build();
+    doNothing().when(eventProcessor).push(expectedEvent);
+
+    listener.process(event, frame);
+
     verify(eventProcessor).push(expectedEvent);
   }
 

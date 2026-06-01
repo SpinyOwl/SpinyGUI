@@ -10,6 +10,7 @@ import static com.spinyowl.spinygui.core.node.NodeBuilder.id;
 import static com.spinyowl.spinygui.core.node.NodeBuilder.input;
 import static com.spinyowl.spinygui.core.node.NodeBuilder.name;
 import static com.spinyowl.spinygui.core.node.NodeBuilder.style;
+import static com.spinyowl.spinygui.core.node.NodeBuilder.textarea;
 import static com.spinyowl.spinygui.core.node.NodeBuilder.type;
 import static com.spinyowl.spinygui.core.node.NodeBuilder.value;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -92,5 +93,32 @@ class NodeBuilderTest {
 
     assertEquals(TYPE_PASSWORD, element.type());
     assertEquals("secret", element.value());
+  }
+
+  @Test
+  void textareaDefaultsToEmptyValue() {
+    TextareaElement element = textarea();
+
+    assertEquals("textarea", element.nodeName());
+    assertEquals("", element.value());
+    assertEquals(0, element.caretIndex());
+  }
+
+  @Test
+  void textareaInitializesMultilineValue() {
+    TextareaElement element = textarea("a\nb");
+
+    assertEquals("a\nb", element.value());
+  }
+
+  @Test
+  void textareaValueClampsCaretAndSelection() {
+    TextareaElement element = textarea("abcdef");
+    element.select(5, 6);
+
+    element.value("abc");
+
+    assertEquals(3, element.selectionAnchor());
+    assertEquals(3, element.caretIndex());
   }
 }

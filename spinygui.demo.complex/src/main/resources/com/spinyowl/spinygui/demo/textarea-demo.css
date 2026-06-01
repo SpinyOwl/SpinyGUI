@@ -1,0 +1,41 @@
+winframe {
+  position: relative;
+  padding: 18px;
+  background-color: #f4f6f8;
+  color: #1f2933;
+  font-size: 15px;
+}
+
+.panel {
+  position: absolute;
+  left: 24px;
+  top: 24px;
+  width: 492px;
+  height: 258px;
+  padding: 14px;
+  border: 3px solid #3a6ea5;
+  background-color: #ffffff;
+}
+
+.title {
+  display: block;
+  height: 24px;
+  font-size: 16px;
+}
+
+textarea {
+  display: block;
+  margin-top: 12px;
+  padding: 7px 8px;
+  border: 2px solid #0f766e;
+  background-color: #ccfbf1;
+  color: #111827;
+  font-size: 16px;
+  line-height: 1.25;
+  overflow: hidden;
+}
+
+textarea:hover {
+  border-color: #0d9488;
+  background-color: #99f6e4;
+}

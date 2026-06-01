@@ -307,6 +307,7 @@ public abstract class Demo {
             .mouseService(mouseService)
             .eventProcessor(eventProcessor)
             .timeService(timeService)
+            .textMeasurer(textMeasurer)
             .build());
     systemEventListenerProvider.listener(
         SystemMouseClickEvent.class,
@@ -448,6 +449,8 @@ public abstract class Demo {
             Map.entry(KeyCode.DELETE, GLFW.GLFW_KEY_DELETE),
             Map.entry(KeyCode.LEFT, GLFW.GLFW_KEY_LEFT),
             Map.entry(KeyCode.RIGHT, GLFW.GLFW_KEY_RIGHT),
+            Map.entry(KeyCode.ENTER, GLFW.GLFW_KEY_ENTER),
+            Map.entry(KeyCode.NUMPAD_ENTER, GLFW.GLFW_KEY_KP_ENTER),
             Map.entry(KeyCode.HOME, GLFW.GLFW_KEY_HOME),
             Map.entry(KeyCode.END, GLFW.GLFW_KEY_END),
             Map.entry(KeyCode.KEY_F3, GLFW.GLFW_KEY_F3),

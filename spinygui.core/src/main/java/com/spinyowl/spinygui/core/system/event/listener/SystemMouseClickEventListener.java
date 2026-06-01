@@ -13,10 +13,13 @@ import com.spinyowl.spinygui.core.input.MouseService;
 import com.spinyowl.spinygui.core.node.Element;
 import com.spinyowl.spinygui.core.node.Frame;
 import com.spinyowl.spinygui.core.node.InputElement;
+import com.spinyowl.spinygui.core.node.TextareaElement;
 import com.spinyowl.spinygui.core.system.event.SystemMouseClickEvent;
 import com.spinyowl.spinygui.core.system.font.TextMeasurer;
+import com.spinyowl.spinygui.core.system.input.MultilineTextControlMetrics;
 import com.spinyowl.spinygui.core.system.input.SystemKeyMod;
 import com.spinyowl.spinygui.core.system.input.TextInputMouseCaretBehavior;
+import com.spinyowl.spinygui.core.system.input.TextareaMouseCaretBehavior;
 import com.spinyowl.spinygui.core.time.TimeService;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
@@ -30,6 +33,8 @@ public class SystemMouseClickEventListener
   @NonNull private final MouseService mouseService;
   @EqualsAndHashCode.Exclude
   private final TextInputMouseCaretBehavior textInputMouseCaretBehavior;
+  @EqualsAndHashCode.Exclude
+  private final TextareaMouseCaretBehavior textareaMouseCaretBehavior;
 
   @Builder
   public SystemMouseClickEventListener(
@@ -41,6 +46,10 @@ public class SystemMouseClickEventListener
     this.mouseService = mouseService;
     textInputMouseCaretBehavior =
         textMeasurer == null ? null : new TextInputMouseCaretBehavior(textMeasurer);
+    textareaMouseCaretBehavior =
+        textMeasurer == null
+            ? null
+            : new TextareaMouseCaretBehavior(new MultilineTextControlMetrics(textMeasurer));
   }
 
   private static Vector2fc positionInElement(Vector2fc cursorPos, Element element) {
@@ -121,6 +130,8 @@ public class SystemMouseClickEventListener
   private void placeInputCaret(Element target, Vector2fc cursorPosition, boolean extendSelection) {
     if (textInputMouseCaretBehavior != null && target instanceof InputElement input) {
       textInputMouseCaretBehavior.placeCaret(input, cursorPosition, extendSelection);
+    } else if (textareaMouseCaretBehavior != null && target instanceof TextareaElement textarea) {
+      textareaMouseCaretBehavior.placeCaret(textarea, cursorPosition, extendSelection);
     }
   }
 

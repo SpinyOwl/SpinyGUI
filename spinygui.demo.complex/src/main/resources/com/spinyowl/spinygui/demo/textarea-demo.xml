@@ -1,0 +1,8 @@
+<winframe>
+    <div class="panel">
+        <div class="title">Textarea verification</div>
+        <textarea id="notes" name="notes" rows="5" cols="36">First line
+Second line wraps when it reaches the visible edge.
+Third line</textarea>
+    </div>
+</winframe>

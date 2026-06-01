@@ -8,11 +8,15 @@ import com.spinyowl.spinygui.core.input.Keyboard;
 import com.spinyowl.spinygui.core.input.KeyboardKey;
 import com.spinyowl.spinygui.core.node.Frame;
 import com.spinyowl.spinygui.core.node.InputElement;
+import com.spinyowl.spinygui.core.node.TextareaElement;
 import com.spinyowl.spinygui.core.system.event.SystemKeyEvent;
 import com.spinyowl.spinygui.core.system.font.TextMeasurer;
+import com.spinyowl.spinygui.core.system.input.MultilineTextControlMetrics;
 import com.spinyowl.spinygui.core.system.input.SystemKeyMod;
 import com.spinyowl.spinygui.core.system.input.TextInputBehavior;
 import com.spinyowl.spinygui.core.system.input.TextInputViewportBehavior;
+import com.spinyowl.spinygui.core.system.input.TextareaBehavior;
+import com.spinyowl.spinygui.core.system.input.TextareaViewportBehavior;
 import com.spinyowl.spinygui.core.time.TimeService;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
@@ -22,9 +26,11 @@ import lombok.NonNull;
 public class SystemKeyEventListener extends AbstractSystemEventListener<SystemKeyEvent> {
 
   private static final TextInputBehavior TEXT_INPUT_BEHAVIOR = new TextInputBehavior();
+  @EqualsAndHashCode.Exclude private final TextareaBehavior textareaBehavior;
 
   @NonNull private final Keyboard keyboard;
   @EqualsAndHashCode.Exclude private final TextInputViewportBehavior viewportBehavior;
+  @EqualsAndHashCode.Exclude private final TextareaViewportBehavior textareaViewportBehavior;
 
   @Builder
   public SystemKeyEventListener(
@@ -35,6 +41,11 @@ public class SystemKeyEventListener extends AbstractSystemEventListener<SystemKe
     super(eventProcessor, timeService);
     this.keyboard = keyboard;
     viewportBehavior = textMeasurer == null ? null : new TextInputViewportBehavior(textMeasurer);
+    MultilineTextControlMetrics textareaMetrics =
+        textMeasurer == null ? null : new MultilineTextControlMetrics(textMeasurer);
+    textareaBehavior = new TextareaBehavior(textareaMetrics);
+    textareaViewportBehavior =
+        textareaMetrics == null ? null : new TextareaViewportBehavior(textareaMetrics);
   }
 
   /**
@@ -63,6 +74,13 @@ public class SystemKeyEventListener extends AbstractSystemEventListener<SystemKe
         if (changed) {
           ensureCaretVisible(input);
         }
+      } else if (element instanceof TextareaElement textarea) {
+        boolean changed =
+            textareaBehavior.handleKey(
+                textarea, keyCodeObject, action, event.mods().contains(SystemKeyMod.SHIFT));
+        if (changed) {
+          ensureCaretVisible(textarea);
+        }
       }
 
       eventProcessor.push(
@@ -88,6 +106,12 @@ public class SystemKeyEventListener extends AbstractSystemEventListener<SystemKe
   private void ensureCaretVisible(InputElement input) {
     if (viewportBehavior != null) {
       viewportBehavior.ensureCaretVisible(input);
+    }
+  }
+
+  private void ensureCaretVisible(TextareaElement textarea) {
+    if (textareaViewportBehavior != null) {
+      textareaViewportBehavior.ensureCaretVisible(textarea);
     }
   }
 }

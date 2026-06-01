@@ -8,6 +8,7 @@ import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.spinyowl.spinygui.core.node.InputElement;
+import com.spinyowl.spinygui.core.node.TextareaElement;
 import org.junit.jupiter.api.Test;
 
 class DefaultNodeParserTest {
@@ -52,5 +53,30 @@ class DefaultNodeParserTest {
 
     assertTrue(html.contains("type=\"text\""));
     assertTrue(html.contains("value=\"new\""));
+  }
+
+  @Test
+  void fromHtml_whenTextareaHasText_parsesTextareaValueWithoutChildren() {
+    TextareaElement textarea =
+        assertInstanceOf(TextareaElement.class, parser.fromHtml("<textarea>abc</textarea>"));
+
+    assertEquals("abc", textarea.value());
+    assertFalse(textarea.hasChildNodes());
+  }
+
+  @Test
+  void toHtml_whenTextareaValueChanged_serializesRuntimeValueAsTextContent() {
+    TextareaElement textarea =
+        assertInstanceOf(
+            TextareaElement.class,
+            parser.fromHtml("<textarea id=\"notes\" name=\"body\">old</textarea>"));
+    textarea.value("new & value");
+
+    String html = parser.toHtml(textarea, false);
+
+    assertTrue(html.contains("id=\"notes\""));
+    assertTrue(html.contains("name=\"body\""));
+    assertTrue(html.contains(">new &amp; value</textarea>"));
+    assertFalse(html.contains("value="));
   }
 }

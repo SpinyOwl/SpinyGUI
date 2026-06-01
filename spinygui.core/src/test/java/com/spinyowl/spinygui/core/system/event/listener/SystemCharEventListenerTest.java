@@ -11,6 +11,7 @@ import com.spinyowl.spinygui.core.event.processor.EventProcessor;
 import com.spinyowl.spinygui.core.node.Element;
 import com.spinyowl.spinygui.core.node.Frame;
 import com.spinyowl.spinygui.core.node.InputElement;
+import com.spinyowl.spinygui.core.node.TextareaElement;
 import com.spinyowl.spinygui.core.system.event.SystemCharEvent;
 import com.spinyowl.spinygui.core.time.TimeService;
 import com.spinyowl.spinygui.core.util.TextUtil;
@@ -120,6 +121,22 @@ class SystemCharEventListenerTest {
     Assertions.assertEquals("axd", input.value());
     Assertions.assertEquals(2, input.caretIndex());
     Assertions.assertFalse(input.hasSelection());
+  }
+
+  @Test
+  void process_whenFocusedTextareaInsertsPrintableInputAndGeneratesCharEvent() {
+    Frame frame = new Frame();
+    TextareaElement textarea = new TextareaElement("ac");
+    textarea.caretIndex(1);
+    textarea.focused(true);
+    frame.addChild(textarea);
+    when(timeService.currentTime()).thenReturn(1D);
+
+    listener.process(SystemCharEvent.builder().frame(frame).codepoint('b').build(), frame);
+
+    Assertions.assertEquals("abc", textarea.value());
+    Assertions.assertEquals(2, textarea.caretIndex());
+    verify(eventProcessor).push(any(CharEvent.class));
   }
 
   @Test

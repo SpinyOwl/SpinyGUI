@@ -10,12 +10,19 @@ import static org.mockito.Mockito.when;
 
 import com.spinyowl.spinygui.core.event.ScrollEvent;
 import com.spinyowl.spinygui.core.event.processor.EventProcessor;
+import com.spinyowl.spinygui.core.font.Font;
 import com.spinyowl.spinygui.core.input.MouseService;
 import com.spinyowl.spinygui.core.input.MouseService.CursorPositions;
 import com.spinyowl.spinygui.core.node.Element;
 import com.spinyowl.spinygui.core.node.Frame;
 import com.spinyowl.spinygui.core.node.NodeBuilder;
+import com.spinyowl.spinygui.core.node.TextareaElement;
 import com.spinyowl.spinygui.core.system.event.SystemScrollEvent;
+import com.spinyowl.spinygui.core.system.font.FontMetrics;
+import com.spinyowl.spinygui.core.system.font.TextCaretMetrics;
+import com.spinyowl.spinygui.core.system.font.TextLineMetrics;
+import com.spinyowl.spinygui.core.system.font.TextMeasurer;
+import com.spinyowl.spinygui.core.system.font.TextMetrics;
 import com.spinyowl.spinygui.core.time.TimeService;
 import com.spinyowl.spinygui.core.style.types.Overflow;
 import org.joml.Vector2f;
@@ -246,6 +253,84 @@ class SystemScrollEventListenerTest {
   }
 
   @Test
+  void process_whenHoveredTextareaContentOverflows_scrollsTextareaTextViewport() {
+    listener =
+        SystemScrollEventListener.builder()
+            .eventProcessor(eventProcessor)
+            .timeService(timeService)
+            .mouseService(mouseService)
+            .textMeasurer(new FixedTextMeasurer())
+            .build();
+    Frame frame = frame();
+    TextareaElement textarea = textarea(0, 0, 100, 20, "one\ntwo\nthree\nfour");
+    frame.addChild(textarea);
+    frame.box().contentSize(200, 200);
+
+    double timestamp = 1D;
+    cursorAt(frame, 10, 10);
+    when(timeService.currentTime()).thenReturn(timestamp);
+
+    SystemScrollEvent event = createEvent(frame);
+
+    ScrollEvent expectedEvent =
+        ScrollEvent.builder()
+            .source(frame)
+            .target(textarea)
+            .timestamp(timestamp)
+            .offsetX(OFFSET_X)
+            .offsetY(OFFSET_Y)
+            .build();
+    doNothing().when(eventProcessor).push(expectedEvent);
+
+    listener.process(event, frame);
+
+    assertEquals(20, textarea.textScrollTop());
+    verify(eventProcessor).push(expectedEvent);
+    verifyNoMoreInteractions(eventProcessor);
+  }
+
+  @Test
+  void process_whenHoveredTextareaAtScrollLimit_chainsVerticalScrollToAncestor() {
+    listener =
+        SystemScrollEventListener.builder()
+            .eventProcessor(eventProcessor)
+            .timeService(timeService)
+            .mouseService(mouseService)
+            .textMeasurer(new FixedTextMeasurer())
+            .build();
+    Frame frame = frame();
+    Element outer = scrollContainer(0, 0, 200, 200, 200, 500);
+    TextareaElement textarea = textarea(0, 0, 100, 20, "one\ntwo\nthree\nfour");
+    textarea.textScrollTop(20);
+    frame.addChild(outer);
+    outer.addChild(textarea);
+    frame.box().contentSize(500, 500);
+
+    double timestamp = 1D;
+    cursorAt(frame, 10, 10);
+    when(timeService.currentTime()).thenReturn(timestamp);
+
+    SystemScrollEvent event = createEvent(frame);
+
+    ScrollEvent expectedEvent =
+        ScrollEvent.builder()
+            .source(frame)
+            .target(outer)
+            .timestamp(timestamp)
+            .offsetX(OFFSET_X)
+            .offsetY(OFFSET_Y)
+            .build();
+    doNothing().when(eventProcessor).push(expectedEvent);
+
+    listener.process(event, frame);
+
+    assertEquals(20, textarea.textScrollTop());
+    assertEquals(50, outer.scrollTop());
+    verify(eventProcessor).push(expectedEvent);
+    verifyNoMoreInteractions(eventProcessor);
+  }
+
+  @Test
   void process_whenCursorOutsideFrame_doNotGenerateScrollEvent() {
     Frame frame = frame();
     frame.box().contentSize(100, 100);
@@ -327,5 +412,73 @@ class SystemScrollEventListenerTest {
     element.box().contentPosition(x, y);
     element.box().contentSize(width, height);
     return element;
+  }
+
+  private TextareaElement textarea(float x, float y, float width, float height, String value) {
+    TextareaElement textarea = NodeBuilder.textarea(value);
+    textarea.box().contentPosition(x, y);
+    textarea.box().contentSize(width, height);
+    return textarea;
+  }
+
+  private static class FixedTextMeasurer implements TextMeasurer {
+    @Override
+    public TextMetrics measureText(String text, Font font, float fontSize, float lineHeight) {
+      TextLineMetrics line = getTextLineMetrics(text, font, fontSize, lineHeight);
+      return TextMetrics.builder()
+          .line(line)
+          .width(line.width())
+          .height(line.height())
+          .lineHeight(line.height())
+          .fontMetrics(line.fontMetrics())
+          .build();
+    }
+
+    @Override
+    public TextMetrics measureText(
+        String text,
+        float offsetX,
+        Font font,
+        float fontSize,
+        float lineHeight,
+        float maxWidth,
+        boolean wordWrap) {
+      return measureText(text, font, fontSize, lineHeight);
+    }
+
+    @Override
+    public TextMetrics getTextMetrics(
+        String text,
+        float offsetX,
+        Font font,
+        float fontSize,
+        float lineHeight,
+        float maxWidth,
+        boolean wordWrap) {
+      return measureText(text, offsetX, font, fontSize, lineHeight, maxWidth, wordWrap);
+    }
+
+    @Override
+    public TextLineMetrics getTextLineMetrics(
+        String text, Font font, float fontSize, float lineHeight) {
+      FontMetrics fontMetrics = new FontMetrics(8, 2, 0, 10, 8);
+      return TextLineMetrics.builder()
+          .characters(text)
+          .startIndex(0)
+          .endIndex(text.length())
+          .charCount(text.length())
+          .width(text.length() * 10f)
+          .height(10)
+          .baseline(8)
+          .fontMetrics(fontMetrics)
+          .build();
+    }
+
+    @Override
+    public TextCaretMetrics getTextCaretMetrics(
+        String text, Font font, float fontSize, float offsetX) {
+      int index = Math.max(0, Math.min(text.length(), Math.round(offsetX / 10f)));
+      return new TextCaretMetrics(index, index * 10f);
+    }
   }
 }

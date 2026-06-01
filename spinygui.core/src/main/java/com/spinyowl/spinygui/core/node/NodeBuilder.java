@@ -11,6 +11,8 @@ public final class NodeBuilder {
   public static final String ATTR_TYPE = "type";
   public static final String ATTR_NAME = "name";
   public static final String ATTR_VALUE = "value";
+  public static final String ATTR_ROWS = "rows";
+  public static final String ATTR_COLS = "cols";
 
   public static final String TYPE_BUTTON = "button";
   public static final String TYPE_CHECKBOX = "checkbox";
@@ -37,6 +39,7 @@ public final class NodeBuilder {
 
   public static final String NODE_BUTTON = "button";
   public static final String NODE_INPUT = "input";
+  public static final String NODE_TEXTAREA = "textarea";
   public static final String NODE_DIV = "div";
   public static final String NODE_LABEL = "label";
   // @formatter:on
@@ -94,6 +97,14 @@ public final class NodeBuilder {
 
   public static Attribute value(String value) {
     return attr(ATTR_VALUE, value);
+  }
+
+  public static Attribute rows(String value) {
+    return attr(ATTR_ROWS, value);
+  }
+
+  public static Attribute cols(String value) {
+    return attr(ATTR_COLS, value);
   }
 
   /**
@@ -240,6 +251,47 @@ public final class NodeBuilder {
    */
   public static InputElement input(String type, String name, String value) {
     return input(Map.of(ATTR_TYPE, type, ATTR_NAME, name, ATTR_VALUE, value));
+  }
+
+  /**
+   * Creates textarea element with empty runtime value.
+   *
+   * @return textarea element.
+   */
+  public static TextareaElement textarea() {
+    return new TextareaElement();
+  }
+
+  /**
+   * Creates textarea element with specified runtime value.
+   *
+   * @param value textarea runtime value.
+   * @return textarea element.
+   */
+  public static TextareaElement textarea(String value) {
+    return new TextareaElement(value);
+  }
+
+  /**
+   * Creates textarea element with specified attributes and runtime value.
+   *
+   * @param attributes attributes to add.
+   * @param value textarea runtime value.
+   * @return textarea element with specified attributes and value.
+   */
+  public static TextareaElement textarea(Map<String, String> attributes, String value) {
+    return new TextareaElement(attributes, value);
+  }
+
+  /**
+   * Creates textarea element with specified attributes and runtime value.
+   *
+   * @param attributes attributes to add.
+   * @param value textarea runtime value.
+   * @return textarea element with specified attributes and value.
+   */
+  public static TextareaElement textarea(Attributes attributes, String value) {
+    return textarea(attributes.values(), value);
   }
 
   /**

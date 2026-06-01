@@ -14,6 +14,7 @@ import com.spinyowl.spinygui.core.node.InputElement;
 import com.spinyowl.spinygui.core.node.Node;
 import com.spinyowl.spinygui.core.node.NodeBuilder;
 import com.spinyowl.spinygui.core.node.Text;
+import com.spinyowl.spinygui.core.node.TextareaElement;
 import com.spinyowl.spinygui.core.style.ResolvedStyle;
 import com.spinyowl.spinygui.core.style.types.Color;
 import com.spinyowl.spinygui.core.style.types.Display;
@@ -215,6 +216,78 @@ class BlockLayoutTest {
     assertEquals(200, frame.clientHeight());
     assertEquals(156, input.clientWidth());
     assertEquals(10, input.clientHeight());
+  }
+
+  @Test
+  void layout_whenTextareaHasAutoSize_usesDefaultRowsAndColumns() {
+    Frame frame = NodeBuilder.frame();
+    frame.frameSize(300, 200);
+    style(frame, 0);
+    TextareaElement textarea = NodeBuilder.textarea();
+    style(textarea, 2);
+    frame.addChild(textarea);
+
+    RecursiveLayoutService layoutService = new RecursiveLayoutService();
+    FixedTextMeasurer textMeasurer = new FixedTextMeasurer();
+    BlockLayout blockLayout =
+        new BlockLayout(layoutService, new InlineFormattingContext(textMeasurer), textMeasurer);
+    layoutService.blockLayout(blockLayout);
+
+    blockLayout.layout(frame, new LayoutContext());
+
+    assertEquals(200, textarea.box().content().width());
+    assertEquals(20, textarea.box().content().height());
+    assertEquals(204, textarea.box().borderBox().width());
+    assertEquals(24, textarea.box().borderBox().height());
+  }
+
+  @Test
+  void layout_whenTextareaHasRowsAndCols_usesAttributeDerivedAutoSize() {
+    Frame frame = NodeBuilder.frame();
+    frame.frameSize(300, 200);
+    style(frame, 0);
+    TextareaElement textarea =
+        NodeBuilder.textarea(NodeBuilder.attrs(NodeBuilder.rows("3"), NodeBuilder.cols("5")), "");
+    style(textarea, 2);
+    frame.addChild(textarea);
+
+    RecursiveLayoutService layoutService = new RecursiveLayoutService();
+    FixedTextMeasurer textMeasurer = new FixedTextMeasurer();
+    BlockLayout blockLayout =
+        new BlockLayout(layoutService, new InlineFormattingContext(textMeasurer), textMeasurer);
+    layoutService.blockLayout(blockLayout);
+
+    blockLayout.layout(frame, new LayoutContext());
+
+    assertEquals(50, textarea.box().content().width());
+    assertEquals(30, textarea.box().content().height());
+    assertEquals(54, textarea.box().borderBox().width());
+    assertEquals(34, textarea.box().borderBox().height());
+  }
+
+  @Test
+  void layout_whenTextareaHasStyledSize_usesStyledSize() {
+    Frame frame = NodeBuilder.frame();
+    frame.frameSize(300, 200);
+    style(frame, 0);
+    TextareaElement textarea = NodeBuilder.textarea();
+    style(textarea, 2);
+    textarea.resolvedStyle().width(Length.pixel(120));
+    textarea.resolvedStyle().height(Length.pixel(44));
+    frame.addChild(textarea);
+
+    RecursiveLayoutService layoutService = new RecursiveLayoutService();
+    FixedTextMeasurer textMeasurer = new FixedTextMeasurer();
+    BlockLayout blockLayout =
+        new BlockLayout(layoutService, new InlineFormattingContext(textMeasurer), textMeasurer);
+    layoutService.blockLayout(blockLayout);
+
+    blockLayout.layout(frame, new LayoutContext());
+
+    assertEquals(116, textarea.box().content().width());
+    assertEquals(40, textarea.box().content().height());
+    assertEquals(120, textarea.box().borderBox().width());
+    assertEquals(44, textarea.box().borderBox().height());
   }
 
   private void style(Element element, float borderWidth) {

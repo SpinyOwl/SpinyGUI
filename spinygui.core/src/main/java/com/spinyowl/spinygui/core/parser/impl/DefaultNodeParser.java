@@ -10,6 +10,7 @@ import com.spinyowl.spinygui.core.node.Frame;
 import com.spinyowl.spinygui.core.node.InputElement;
 import com.spinyowl.spinygui.core.node.Node;
 import com.spinyowl.spinygui.core.node.Text;
+import com.spinyowl.spinygui.core.node.TextareaElement;
 import com.spinyowl.spinygui.core.parser.NodeParser;
 import java.io.StringWriter;
 import java.util.List;
@@ -76,6 +77,8 @@ public class DefaultNodeParser implements NodeParser {
     Node node;
     if ("input".equals(tagName)) {
       node = new InputElement();
+    } else if ("textarea".equals(tagName)) {
+      node = new TextareaElement(element.wholeText());
     } else if (EMPTY_ELEMENTS.contains(tagName)) {
       node = new EmptyElement(tagName);
     } else {
@@ -193,9 +196,11 @@ public class DefaultNodeParser implements NodeParser {
     if (node instanceof InputElement input) {
       element.setAttribute("type", input.type());
       element.setAttribute("value", input.value());
+    } else if (node instanceof TextareaElement textarea) {
+      element.appendChild(document.createTextNode(textarea.value()));
     }
 
-    if (!EMPTY_ELEMENTS.contains(name)) {
+    if (!EMPTY_ELEMENTS.contains(name) && !(node instanceof TextareaElement)) {
       for (Node childNode : node.childNodes()) {
         var content = createContent(document, childNode);
         if (content != null) {

@@ -5,7 +5,10 @@ import com.spinyowl.spinygui.core.event.processor.EventProcessor;
 import com.spinyowl.spinygui.core.input.MouseService;
 import com.spinyowl.spinygui.core.node.Element;
 import com.spinyowl.spinygui.core.node.Frame;
+import com.spinyowl.spinygui.core.node.TextareaElement;
 import com.spinyowl.spinygui.core.system.event.SystemScrollEvent;
+import com.spinyowl.spinygui.core.system.font.TextMeasurer;
+import com.spinyowl.spinygui.core.system.input.MultilineTextControlMetrics;
 import com.spinyowl.spinygui.core.time.TimeService;
 import com.spinyowl.spinygui.core.util.NodeUtilities;
 import com.spinyowl.spinygui.core.util.OverflowUtils;
@@ -22,14 +25,17 @@ import org.joml.Vector2fc;
 public class SystemScrollEventListener extends AbstractSystemEventListener<SystemScrollEvent> {
 
   @NonNull private final MouseService mouseService;
+  @EqualsAndHashCode.Exclude private final MultilineTextControlMetrics textareaMetrics;
 
   @Builder
   public SystemScrollEventListener(
       @NonNull EventProcessor eventProcessor,
       @NonNull TimeService timeService,
-      @NonNull MouseService mouseService) {
+      @NonNull MouseService mouseService,
+      TextMeasurer textMeasurer) {
     super(eventProcessor, timeService);
     this.mouseService = mouseService;
+    textareaMetrics = textMeasurer == null ? null : new MultilineTextControlMetrics(textMeasurer);
   }
 
   /**
@@ -81,6 +87,9 @@ public class SystemScrollEventListener extends AbstractSystemEventListener<Syste
       return true;
     }
     for (Element target : candidates) {
+      if (consumeTextareaHorizontal(target, delta, changedElements)) {
+        return true;
+      }
       if (canConsumeHorizontal(target, delta)) {
         float previous = target.scrollLeft();
         target.scrollLeft(previous + delta);
@@ -100,6 +109,9 @@ public class SystemScrollEventListener extends AbstractSystemEventListener<Syste
       return true;
     }
     for (Element target : candidates) {
+      if (consumeTextareaVertical(target, delta, changedElements)) {
+        return true;
+      }
       if (canConsumeVertical(target, delta)) {
         float previous = target.scrollTop();
         target.scrollTop(previous + delta);
@@ -111,6 +123,67 @@ public class SystemScrollEventListener extends AbstractSystemEventListener<Syste
       }
     }
     return false;
+  }
+
+  private boolean consumeTextareaHorizontal(
+      Element target, float delta, Set<Element> changedElements) {
+    if (!(target instanceof TextareaElement textarea) || textareaMetrics == null) {
+      return false;
+    }
+    float maxScrollLeft = textareaMaxScrollLeft(textarea);
+    if (delta < 0 && textarea.textScrollLeft() <= 0
+        || delta > 0 && textarea.textScrollLeft() >= maxScrollLeft) {
+      return false;
+    }
+    float previous = textarea.textScrollLeft();
+    textarea.textScrollLeft(clamp(previous + delta, 0, maxScrollLeft));
+    if (textarea.textScrollLeft() != previous) {
+      changedElements.add(textarea);
+      return true;
+    }
+    return false;
+  }
+
+  private boolean consumeTextareaVertical(
+      Element target, float delta, Set<Element> changedElements) {
+    if (!(target instanceof TextareaElement textarea) || textareaMetrics == null) {
+      return false;
+    }
+    float maxScrollTop = textareaMaxScrollTop(textarea);
+    if (delta < 0 && textarea.textScrollTop() <= 0
+        || delta > 0 && textarea.textScrollTop() >= maxScrollTop) {
+      return false;
+    }
+    float previous = textarea.textScrollTop();
+    textarea.textScrollTop(clamp(previous + delta, 0, maxScrollTop));
+    if (textarea.textScrollTop() != previous) {
+      changedElements.add(textarea);
+      return true;
+    }
+    return false;
+  }
+
+  private float textareaMaxScrollLeft(TextareaElement textarea) {
+    return Math.max(
+        0,
+        textareaMetrics.lines(textarea).stream()
+                .map(MultilineTextControlMetrics.Line::width)
+                .max(Float::compare)
+                .orElse(0f)
+            - textarea.box().contentSize().x());
+  }
+
+  private float textareaMaxScrollTop(TextareaElement textarea) {
+    List<MultilineTextControlMetrics.Line> lines = textareaMetrics.lines(textarea);
+    if (lines.isEmpty()) {
+      return 0;
+    }
+    MultilineTextControlMetrics.Line last = lines.get(lines.size() - 1);
+    return Math.max(0, last.y() + last.height() - textarea.box().contentSize().y());
+  }
+
+  private float clamp(float value, float min, float max) {
+    return Math.max(min, Math.min(value, max));
   }
 
   private boolean canConsumeHorizontal(Element target, float delta) {

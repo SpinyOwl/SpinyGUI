@@ -15,6 +15,7 @@ import com.spinyowl.spinygui.core.node.Element;
 import com.spinyowl.spinygui.core.node.Frame;
 import com.spinyowl.spinygui.core.node.InputElement;
 import com.spinyowl.spinygui.core.node.Node;
+import com.spinyowl.spinygui.core.node.TextareaElement;
 import com.spinyowl.spinygui.core.node.layout.Box;
 import com.spinyowl.spinygui.core.node.layout.Edges;
 import com.spinyowl.spinygui.core.style.ResolvedStyle;
@@ -36,6 +37,10 @@ import lombok.NonNull;
 
 public class BlockLayout implements ElementLayout {
   private static final float DEFAULT_TEXT_INPUT_WIDTH = 160f;
+  private static final int DEFAULT_TEXTAREA_COLS = 20;
+  private static final int DEFAULT_TEXTAREA_ROWS = 2;
+  private static final String TEXTAREA_COLUMN_WIDTH_SAMPLE =
+      "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 
   @NonNull private final LayoutService layoutService;
   @NonNull private final InlineFormattingContext inlineFormattingContext;
@@ -120,6 +125,8 @@ public class BlockLayout implements ElementLayout {
       contentWidth = frame.frameSize().x;
     } else if (e instanceof InputElement input && input.textInput()) {
       contentWidth = getTextInputWidth(style, parentBox.content().width());
+    } else if (e instanceof TextareaElement textarea) {
+      contentWidth = getTextareaWidth(textarea, style, parentBox.content().width(), horizontalAdditions);
     } else {
       contentWidth = getWidth(parentBox.content().width(), style);
     }
@@ -135,6 +142,9 @@ public class BlockLayout implements ElementLayout {
     } else if (e instanceof InputElement input && input.textInput()) {
       borderBoxHeight =
           getTextInputHeight(e, style, parentBox.content().height(), verticalAdditions);
+    } else if (e instanceof TextareaElement textarea) {
+      borderBoxHeight =
+          getTextareaHeight(textarea, style, parentBox.content().height(), verticalAdditions);
     } else {
       float childrenHeight = childrenHeight(e, style, skipChildren, ctx);
       borderBoxHeight =
@@ -385,6 +395,57 @@ public class BlockLayout implements ElementLayout {
     borderBoxHeight = Math.max(borderBoxHeight, minHeight.orElse(borderBoxHeight));
     borderBoxHeight = Math.min(borderBoxHeight, maxHeight.orElse(borderBoxHeight));
     return borderBoxHeight;
+  }
+
+  private float getTextareaWidth(
+      TextareaElement textarea, ResolvedStyle style, float parentWidth, float horizontalAdditions) {
+    float width =
+        style.width().isAuto()
+            ? measureTextareaColumnWidth(textarea, style)
+                    * intAttribute(textarea, "cols", DEFAULT_TEXTAREA_COLS)
+                + horizontalAdditions
+            : getWidth(parentWidth, style);
+    Optional<Float> minWidth = getFloatLengthOptional(style.minWidth(), parentWidth);
+    Optional<Float> maxWidth = getFloatLengthOptional(style.maxWidth(), parentWidth);
+    width = Math.max(width, minWidth.orElse(width));
+    width = Math.min(width, maxWidth.orElse(width));
+    return width;
+  }
+
+  private float getTextareaHeight(
+      TextareaElement textarea, ResolvedStyle style, float parentHeight, float verticalAdditions) {
+    if (!style.height().isAuto()) {
+      return getHeight(parentHeight, verticalAdditions, style);
+    }
+    float lineHeight = measureTextInputLineHeight(textarea, style);
+    float borderBoxHeight =
+        lineHeight * intAttribute(textarea, "rows", DEFAULT_TEXTAREA_ROWS) + verticalAdditions;
+    Optional<Float> minHeight = getFloatLengthOptional(style.minHeight(), parentHeight);
+    Optional<Float> maxHeight = getFloatLengthOptional(style.maxHeight(), parentHeight);
+    borderBoxHeight = Math.max(borderBoxHeight, minHeight.orElse(borderBoxHeight));
+    borderBoxHeight = Math.min(borderBoxHeight, maxHeight.orElse(borderBoxHeight));
+    return borderBoxHeight;
+  }
+
+  private float measureTextareaColumnWidth(TextareaElement textarea, ResolvedStyle style) {
+    float fontSize = StyleUtils.getFontSize(textarea);
+    float lineHeight = style.lineHeight();
+    if (textMeasurer == null) {
+      return fontSize * 0.8f;
+    }
+    return textMeasurer
+            .getTextLineMetrics(
+                TEXTAREA_COLUMN_WIDTH_SAMPLE, findFont(style), fontSize, lineHeight)
+            .width()
+        / TEXTAREA_COLUMN_WIDTH_SAMPLE.length();
+  }
+
+  private int intAttribute(Element element, String name, int fallback) {
+    try {
+      return Math.max(1, Integer.parseInt(element.getAttribute(name)));
+    } catch (RuntimeException ignored) {
+      return fallback;
+    }
   }
 
   private float measureTextInputLineHeight(Element element, ResolvedStyle style) {
