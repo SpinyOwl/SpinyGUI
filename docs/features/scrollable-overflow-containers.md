@@ -199,8 +199,10 @@ Support CSS `overflow`, `overflow-x`, and `overflow-y` for block and flex elemen
 - Step 8 should be documentation/demo-only after behavior is tested.
 
 ## Deferred Work
-- Scrollbar rendering and `::-webkit-scrollbar`/`::scrollbar` styling.
+- Scrollbar rendering and `::-webkit-scrollbar`/`::scrollbar` styling is implemented by
+  `docs/features/scrollbar-support.md`; remaining limitations are documented there.
 - Keyboard scrolling, page scrolling, and touch/drag scrolling.
 - `scroll-behavior`, smooth scrolling, scroll snapping, and scroll anchoring.
-- Scrollbar gutter effects on layout metrics.
+- Additional scrollbar parity beyond the implemented WebKit subset, including buttons,
+  track-piece rendering, resizers, overlay scrollbars, and scrollbar state pseudo-classes.
 - Support for `overflow: clip` and `overflow-clip-margin`.

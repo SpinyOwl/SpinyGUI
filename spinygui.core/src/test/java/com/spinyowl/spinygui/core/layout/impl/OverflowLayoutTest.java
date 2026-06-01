@@ -7,12 +7,14 @@ import static org.mockito.Mockito.mock;
 import com.spinyowl.spinygui.core.event.processor.EventProcessor;
 import com.spinyowl.spinygui.core.layout.ElementLayout;
 import com.spinyowl.spinygui.core.layout.LayoutService;
-import com.spinyowl.spinygui.core.system.font.TextMeasurer;
 import com.spinyowl.spinygui.core.layout.TextLayout;
 import com.spinyowl.spinygui.core.node.Element;
 import com.spinyowl.spinygui.core.node.Frame;
 import com.spinyowl.spinygui.core.node.NodeBuilder;
+import com.spinyowl.spinygui.core.parser.impl.StyleSheetParserFactory;
 import com.spinyowl.spinygui.core.style.ResolvedStyle;
+import com.spinyowl.spinygui.core.style.manager.StyleManagerImpl;
+import com.spinyowl.spinygui.core.style.stylesheet.impl.DefaultPropertyStoreProvider;
 import com.spinyowl.spinygui.core.style.types.Display;
 import com.spinyowl.spinygui.core.style.types.Overflow;
 import com.spinyowl.spinygui.core.style.types.Position;
@@ -25,6 +27,7 @@ import com.spinyowl.spinygui.core.style.types.flex.JustifyContent;
 import com.spinyowl.spinygui.core.style.types.length.Length;
 import com.spinyowl.spinygui.core.style.types.length.Unit;
 import com.spinyowl.spinygui.core.system.event.processor.SystemEventProcessor;
+import com.spinyowl.spinygui.core.system.font.TextMeasurer;
 import com.spinyowl.spinygui.core.time.TimeService;
 import com.spinyowl.spinygui.core.util.OverflowUtils;
 import java.util.HashMap;
@@ -141,6 +144,91 @@ class OverflowLayoutTest {
     assertEquals(50, container.scrollHeight());
     assertEquals(0, container.scrollTop());
     assertFalse(OverflowUtils.acceptsWheelY(container));
+  }
+
+  @Test
+  void layout_whenOverflowYIsScroll_reservesVerticalScrollbarGutterEvenWhenContentFits() {
+    Frame frame = NodeBuilder.frame();
+    frame.frameSize(500, 500);
+    style(frame, Display.BLOCK, 500, 500);
+    Element container = NodeBuilder.div();
+    style(container, Display.BLOCK, 100, 100);
+    container.resolvedStyle().overflowY(Overflow.SCROLL);
+    Element child = NodeBuilder.div();
+    style(child, Display.BLOCK, 50, 50);
+    container.addChild(child);
+    frame.addChild(container);
+
+    layoutService().layout(frame);
+
+    assertEquals(88, container.clientWidth());
+    assertEquals(100, container.clientHeight());
+  }
+
+  @Test
+  void layout_whenOverflowAutoContentFits_doesNotReserveScrollbarGutter() {
+    Frame frame = NodeBuilder.frame();
+    frame.frameSize(500, 500);
+    style(frame, Display.BLOCK, 500, 500);
+    Element container = NodeBuilder.div();
+    style(container, Display.BLOCK, 100, 100);
+    container.resolvedStyle().overflowX(Overflow.AUTO);
+    container.resolvedStyle().overflowY(Overflow.AUTO);
+    Element child = NodeBuilder.div();
+    style(child, Display.BLOCK, 50, 50);
+    container.addChild(child);
+    frame.addChild(container);
+
+    layoutService().layout(frame);
+
+    assertEquals(100, container.clientWidth());
+    assertEquals(100, container.clientHeight());
+  }
+
+  @Test
+  void layout_whenAutoVerticalScrollbarReducesWidth_canCreateHorizontalScrollbar() {
+    Frame frame = NodeBuilder.frame();
+    frame.frameSize(500, 500);
+    style(frame, Display.BLOCK, 500, 500);
+    Element container = NodeBuilder.div();
+    style(container, Display.BLOCK, 100, 100);
+    container.resolvedStyle().overflowX(Overflow.AUTO);
+    container.resolvedStyle().overflowY(Overflow.AUTO);
+    Element child = NodeBuilder.div();
+    style(child, Display.BLOCK, 95, 300);
+    container.addChild(child);
+    frame.addChild(container);
+
+    layoutService().layout(frame);
+
+    assertEquals(88, container.clientWidth());
+    assertEquals(88, container.clientHeight());
+  }
+
+  @Test
+  void layout_usesWebkitScrollbarWidthAndHeightForGutters() {
+    Frame frame = NodeBuilder.frame();
+    frame.frameSize(500, 500);
+    style(frame, Display.BLOCK, 500, 500);
+    Element container = NodeBuilder.div();
+    container.setAttribute("class", "panel");
+    frame.addChild(container);
+    applyStyleSheet(frame, ".panel::-webkit-scrollbar { width: 12px; height: 10px; }");
+    style(container, Display.BLOCK, 100, 100);
+    container.resolvedStyle().overflowX(Overflow.SCROLL);
+    container.resolvedStyle().overflowY(Overflow.SCROLL);
+
+    layoutService().layout(frame);
+
+    assertEquals(88, container.clientWidth());
+    assertEquals(90, container.clientHeight());
+  }
+
+  private static void applyStyleSheet(Frame frame, String css) {
+    var propertyStore = new DefaultPropertyStoreProvider().createPropertyStore();
+    var parser = StyleSheetParserFactory.createParser(propertyStore);
+    frame.styleSheets().add(parser.parse(css));
+    new StyleManagerImpl(propertyStore, parser).recalculate(frame);
   }
 
   private static LayoutService layoutService() {

@@ -1,5 +1,6 @@
 package com.spinyowl.spinygui.core.system.event.listener;
 
+import static com.spinyowl.spinygui.core.input.MouseButton.LEFT;
 import static com.spinyowl.spinygui.core.system.input.SystemKeyAction.PRESS;
 import static com.spinyowl.spinygui.core.system.input.SystemKeyAction.RELEASE;
 import static com.spinyowl.spinygui.core.util.NodeUtilities.getTargetElement;
@@ -7,6 +8,7 @@ import static com.spinyowl.spinygui.core.util.NodeUtilities.visible;
 import com.spinyowl.spinygui.core.event.FocusInEvent;
 import com.spinyowl.spinygui.core.event.FocusOutEvent;
 import com.spinyowl.spinygui.core.event.MouseClickEvent;
+import com.spinyowl.spinygui.core.event.ScrollEvent;
 import com.spinyowl.spinygui.core.event.processor.EventProcessor;
 import com.spinyowl.spinygui.core.input.KeyAction;
 import com.spinyowl.spinygui.core.input.MouseService;
@@ -17,10 +19,14 @@ import com.spinyowl.spinygui.core.node.TextareaElement;
 import com.spinyowl.spinygui.core.system.event.SystemMouseClickEvent;
 import com.spinyowl.spinygui.core.system.font.TextMeasurer;
 import com.spinyowl.spinygui.core.system.input.MultilineTextControlMetrics;
+import com.spinyowl.spinygui.core.system.input.ScrollbarInteraction;
+import com.spinyowl.spinygui.core.system.input.ScrollbarInteraction.HitPart;
+import com.spinyowl.spinygui.core.system.input.ScrollbarInteraction.ScrollDelta;
 import com.spinyowl.spinygui.core.system.input.SystemKeyMod;
 import com.spinyowl.spinygui.core.system.input.TextInputMouseCaretBehavior;
 import com.spinyowl.spinygui.core.system.input.TextareaMouseCaretBehavior;
 import com.spinyowl.spinygui.core.time.TimeService;
+import com.spinyowl.spinygui.core.util.NodeUtilities;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.NonNull;
@@ -35,15 +41,19 @@ public class SystemMouseClickEventListener
   private final TextInputMouseCaretBehavior textInputMouseCaretBehavior;
   @EqualsAndHashCode.Exclude
   private final TextareaMouseCaretBehavior textareaMouseCaretBehavior;
+  @EqualsAndHashCode.Exclude private final ScrollbarInteraction scrollbarInteraction;
 
   @Builder
   public SystemMouseClickEventListener(
       @NonNull EventProcessor eventProcessor,
       @NonNull TimeService timeService,
       @NonNull MouseService mouseService,
-      TextMeasurer textMeasurer) {
+      TextMeasurer textMeasurer,
+      ScrollbarInteraction scrollbarInteraction) {
     super(eventProcessor, timeService);
     this.mouseService = mouseService;
+    this.scrollbarInteraction =
+        scrollbarInteraction == null ? new ScrollbarInteraction() : scrollbarInteraction;
     textInputMouseCaretBehavior =
         textMeasurer == null ? null : new TextInputMouseCaretBehavior(textMeasurer);
     textareaMouseCaretBehavior =
@@ -70,11 +80,57 @@ public class SystemMouseClickEventListener
     var currentCursorPosition = cursorPositions.current();
     var target = getTargetElement(frame, currentCursorPosition);
 
+    if (processScrollbarInteraction(event, frame, currentCursorPosition)) {
+      return;
+    }
+
     if (target == null) {
       processWithNoTarget(event, frame, focusedElement, currentCursorPosition);
     } else {
       processWithExistingTarget(event, frame, focusedElement, currentCursorPosition, target);
     }
+  }
+
+  private boolean processScrollbarInteraction(
+      SystemMouseClickEvent event, Frame frame, Vector2fc cursorPosition) {
+    if (event.button().mouseButton() != LEFT) {
+      return false;
+    }
+    if (event.action() == RELEASE && scrollbarInteraction.dragging()) {
+      scrollbarInteraction.endDrag();
+      return true;
+    }
+    if (event.action() != PRESS) {
+      return false;
+    }
+
+    var hit =
+        scrollbarInteraction.hit(
+            NodeUtilities.getTargetElementList(frame, cursorPosition), cursorPosition);
+    if (hit == null || HitPart.CORNER.equals(hit.part())) {
+      return false;
+    }
+    if (HitPart.THUMB.equals(hit.part())) {
+      scrollbarInteraction.beginDrag(hit, cursorPosition);
+      return true;
+    }
+    ScrollDelta delta = scrollbarInteraction.clickTrack(hit, cursorPosition);
+    pushScrollEvent(frame, delta);
+    return true;
+  }
+
+  private void pushScrollEvent(Frame frame, ScrollDelta delta) {
+    if (!delta.changed()) {
+      return;
+    }
+    eventProcessor.push(
+        ScrollEvent.builder()
+            .source(frame)
+            .target(delta.element())
+            .timestamp(timeService.currentTime())
+            .offsetX(delta.x())
+            .offsetY(delta.y())
+            .build());
   }
 
   private void processWithNoTarget(

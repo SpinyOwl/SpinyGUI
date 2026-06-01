@@ -95,6 +95,7 @@ import com.spinyowl.spinygui.core.system.font.FontStorage;
 import com.spinyowl.spinygui.core.system.font.TextMeasurer;
 import com.spinyowl.spinygui.core.system.font.impl.FontServiceImpl;
 import com.spinyowl.spinygui.core.system.font.impl.FontStorageImpl;
+import com.spinyowl.spinygui.core.system.input.ScrollbarInteraction;
 import com.spinyowl.spinygui.core.system.input.SystemKeyAction;
 import com.spinyowl.spinygui.core.system.input.SystemKeyMod;
 import com.spinyowl.spinygui.core.system.input.SystemMouseButton;
@@ -281,12 +282,14 @@ public abstract class Demo {
   private void initializeSystemEventListener(TextMeasurer textMeasurer) {
     SystemEventListenerProviderImpl systemEventListenerProvider =
         new SystemEventListenerProviderImpl();
+    ScrollbarInteraction scrollbarInteraction = new ScrollbarInteraction();
     systemEventListenerProvider.listener(
         SystemCursorPosEvent.class,
         SystemCursorPosEventListener.builder()
             .eventProcessor(eventProcessor)
             .timeService(timeService)
             .mouseService(mouseService)
+            .scrollbarInteraction(scrollbarInteraction)
             .build());
     systemEventListenerProvider.listener(
         SystemCursorEnterEvent.class,
@@ -316,6 +319,7 @@ public abstract class Demo {
             .eventProcessor(eventProcessor)
             .timeService(timeService)
             .textMeasurer(textMeasurer)
+            .scrollbarInteraction(scrollbarInteraction)
             .build());
     systemEventListenerProvider.listener(
         SystemCharEvent.class,

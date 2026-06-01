@@ -6,12 +6,15 @@ import static com.spinyowl.spinygui.core.input.MouseButton.RIGHT;
 import com.spinyowl.spinygui.core.event.CursorEnterEvent;
 import com.spinyowl.spinygui.core.event.CursorExitEvent;
 import com.spinyowl.spinygui.core.event.MouseDragEvent;
+import com.spinyowl.spinygui.core.event.ScrollEvent;
 import com.spinyowl.spinygui.core.event.processor.EventProcessor;
 import com.spinyowl.spinygui.core.input.MouseService;
 import com.spinyowl.spinygui.core.input.MouseService.CursorPositions;
 import com.spinyowl.spinygui.core.node.Element;
 import com.spinyowl.spinygui.core.node.Frame;
 import com.spinyowl.spinygui.core.system.event.SystemCursorPosEvent;
+import com.spinyowl.spinygui.core.system.input.ScrollbarInteraction;
+import com.spinyowl.spinygui.core.system.input.ScrollbarInteraction.ScrollDelta;
 import com.spinyowl.spinygui.core.time.TimeService;
 import com.spinyowl.spinygui.core.util.NodeUtilities;
 import java.util.List;
@@ -26,14 +29,18 @@ public class SystemCursorPosEventListener
     extends AbstractSystemEventListener<SystemCursorPosEvent> {
 
   @NonNull private final MouseService mouseService;
+  @EqualsAndHashCode.Exclude private final ScrollbarInteraction scrollbarInteraction;
 
   @Builder
   public SystemCursorPosEventListener(
       @NonNull EventProcessor eventProcessor,
       @NonNull TimeService timeService,
-      @NonNull MouseService mouseService) {
+      @NonNull MouseService mouseService,
+      ScrollbarInteraction scrollbarInteraction) {
     super(eventProcessor, timeService);
     this.mouseService = mouseService;
+    this.scrollbarInteraction =
+        scrollbarInteraction == null ? new ScrollbarInteraction() : scrollbarInteraction;
   }
 
   /**
@@ -53,12 +60,31 @@ public class SystemCursorPosEventListener
     // Generate enter / exit events.
     generateEnterAndExitEvents(frame, current, previous);
 
+    if (scrollbarInteraction.dragging() && mouseService.pressed(LEFT)) {
+      pushScrollEvent(frame, scrollbarInteraction.dragTo(current));
+      return;
+    }
+
     // Generate drag events.
     if (focusedElement != null && (mouseService.pressed(LEFT) || mouseService.pressed(RIGHT))) {
       Vector2f delta = current.sub(previous, new Vector2f());
       eventProcessor.push(
           MouseDragEvent.builder().source(frame).target(focusedElement).delta(delta).build());
     }
+  }
+
+  private void pushScrollEvent(Frame frame, ScrollDelta delta) {
+    if (!delta.changed()) {
+      return;
+    }
+    eventProcessor.push(
+        ScrollEvent.builder()
+            .source(frame)
+            .target(delta.element())
+            .timestamp(timeService.currentTime())
+            .offsetX(delta.x())
+            .offsetY(delta.y())
+            .build());
   }
 
   private void generateEnterAndExitEvents(Frame frame, Vector2fc current, Vector2fc previous) {

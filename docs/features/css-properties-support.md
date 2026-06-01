@@ -69,6 +69,16 @@ Approximate implementation estimates for unchecked entries:
 | `vertical-align` | M | Inline formatting baseline/alignment behavior; type classes partly exist. |
 | `visibility` | M | Paint suppression while preserving layout, plus event/hit-test decisions. |
 
+Scrollbar pseudo-elements:
+
+- Supported selector names: `::-webkit-scrollbar`, `::-webkit-scrollbar-thumb`, `::-webkit-scrollbar-track`, `::-webkit-scrollbar-track-piece`, `::-webkit-scrollbar-button`, `::-webkit-scrollbar-corner`, and `::-webkit-scrollbar-resizer`.
+- Legacy alias: `::scrollbar` is accepted as an alias for `::-webkit-scrollbar`.
+- Painted parts: `::-webkit-scrollbar-track`, `::-webkit-scrollbar-thumb`, and `::-webkit-scrollbar-corner`.
+- Sizing part: `::-webkit-scrollbar` supports `width` and `height` for non-overlay gutter thickness.
+- Parsed and stored, but not currently painted: `::-webkit-scrollbar-track-piece`, `::-webkit-scrollbar-button`, and `::-webkit-scrollbar-resizer`.
+- Supported painted-part properties: `background-color`, `border-color`, `border-width`, `border-radius`, and `opacity`.
+- Unsupported scrollbar states/selectors: pseudo-classes such as `:hover`, `:active`, `:horizontal`, and `:vertical`.
+
 At-rules with dedicated parser support:
 -  [x] `@font-face`
    - [x] `font-family`

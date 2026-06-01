@@ -18,6 +18,7 @@ import com.spinyowl.spinygui.core.node.layout.Box;
 import com.spinyowl.spinygui.core.node.layout.Rect;
 import com.spinyowl.spinygui.core.style.types.Display;
 import com.spinyowl.spinygui.core.style.types.Position;
+import com.spinyowl.spinygui.core.util.ScrollbarGeometry;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -59,14 +60,21 @@ public class LayoutServiceImpl implements LayoutService {
     scrollWidth = Math.max(0, scrollWidth - box.border().left() - box.padding().left());
     scrollHeight = Math.max(0, scrollHeight - box.border().top() - box.padding().top());
 
+    ScrollbarGeometry.Metrics scrollbarMetrics = null;
     float clientWidth = box.content().width();
     float clientHeight = box.content().height();
+    if (ScrollbarGeometry.canShowScrollbars(element)) {
+      scrollbarMetrics = ScrollbarGeometry.compute(element, scrollWidth, scrollHeight);
+      clientWidth = scrollbarMetrics.clientWidth();
+      clientHeight = scrollbarMetrics.clientHeight();
+    }
 
     element.scrollWidth(scrollWidth);
     element.scrollHeight(scrollHeight);
 
     element.clientWidth(clientWidth);
     element.clientHeight(clientHeight);
+    element.scrollbarMetrics(scrollbarMetrics);
 
     clampScrollOffsets(element);
 
