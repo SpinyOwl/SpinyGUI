@@ -3,6 +3,7 @@ package com.spinyowl.spinygui.core.node;
 import static com.spinyowl.spinygui.core.node.NodeBuilder.ATTR_TYPE;
 import static com.spinyowl.spinygui.core.node.NodeBuilder.ATTR_VALUE;
 import static com.spinyowl.spinygui.core.node.NodeBuilder.NODE_INPUT;
+import static com.spinyowl.spinygui.core.node.NodeBuilder.TYPE_BUTTON;
 import static com.spinyowl.spinygui.core.node.NodeBuilder.TYPE_TEXT;
 
 import java.util.Map;
@@ -88,6 +89,10 @@ public class InputElement extends EmptyElement {
 
   public boolean textInput() {
     return TYPE_TEXT.equalsIgnoreCase(type);
+  }
+
+  public boolean buttonInput() {
+    return TYPE_BUTTON.equalsIgnoreCase(type);
   }
 
   private int clampTextIndex(int index) {

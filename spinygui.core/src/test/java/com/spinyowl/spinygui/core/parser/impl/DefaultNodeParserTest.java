@@ -106,7 +106,23 @@ class DefaultNodeParserTest {
 
     assertEquals(TYPE_BUTTON, input.type());
     assertEquals("Save", input.value());
+    assertFalse(input.textInput());
+    assertTrue(input.buttonInput());
     assertFalse(input.hasChildNodes());
+  }
+
+  @Test
+  void toHtml_whenInputTypeIsButton_roundTripsTypeAndRuntimeValue() {
+    InputElement input =
+        assertInstanceOf(
+            InputElement.class, parser.fromHtml("<input type=\"button\" value=\"Save\">"));
+    input.value("Saved");
+
+    String html = parser.toHtml(input, false);
+
+    assertTrue(html.contains("type=\"button\""));
+    assertTrue(html.contains("value=\"Saved\""));
+    assertFalse(html.contains("</button>"));
   }
 
   @Test

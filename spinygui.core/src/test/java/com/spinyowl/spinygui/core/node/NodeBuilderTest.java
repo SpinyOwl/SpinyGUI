@@ -17,6 +17,7 @@ import static com.spinyowl.spinygui.core.node.NodeBuilder.textarea;
 import static com.spinyowl.spinygui.core.node.NodeBuilder.type;
 import static com.spinyowl.spinygui.core.node.NodeBuilder.value;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -123,6 +124,18 @@ class NodeBuilderTest {
     assertEquals("username", element.getAttribute("name"));
     assertEquals("alice", element.value());
     assertEquals("alice", element.getAttribute("value"));
+  }
+
+  @Test
+  void inputWithButtonTypeInitializesValueBasedButtonState() {
+    InputElement element = input(TYPE_BUTTON, "action", "Save");
+
+    assertEquals(TYPE_BUTTON, element.type());
+    assertEquals("action", element.getAttribute("name"));
+    assertEquals("Save", element.value());
+    assertEquals("Save", element.getAttribute("value"));
+    assertFalse(element.textInput());
+    assertTrue(element.buttonInput());
   }
 
   @Test
