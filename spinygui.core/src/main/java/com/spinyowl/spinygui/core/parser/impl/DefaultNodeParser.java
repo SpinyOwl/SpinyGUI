@@ -4,6 +4,7 @@ import static com.spinyowl.spinygui.core.node.Frame.FRAME_TAG_NAME;
 import static javax.xml.transform.OutputKeys.INDENT;
 import static javax.xml.transform.OutputKeys.OMIT_XML_DECLARATION;
 
+import com.spinyowl.spinygui.core.node.ButtonElement;
 import com.spinyowl.spinygui.core.node.Element;
 import com.spinyowl.spinygui.core.node.EmptyElement;
 import com.spinyowl.spinygui.core.node.Frame;
@@ -77,6 +78,9 @@ public class DefaultNodeParser implements NodeParser {
     Node node;
     if ("input".equals(tagName)) {
       node = new InputElement();
+    } else if ("button".equals(tagName)) {
+      node = new ButtonElement();
+      createChildNodes(element, context, node);
     } else if ("textarea".equals(tagName)) {
       node = new TextareaElement(element.wholeText());
     } else if (EMPTY_ELEMENTS.contains(tagName)) {
@@ -96,6 +100,8 @@ public class DefaultNodeParser implements NodeParser {
     }
     if (node instanceof InputElement input) {
       input.initializeFromAttributes();
+    } else if (node instanceof ButtonElement button) {
+      button.initializeFromAttributes();
     }
     context.hasRoot = true;
     return node;
@@ -196,6 +202,8 @@ public class DefaultNodeParser implements NodeParser {
     if (node instanceof InputElement input) {
       element.setAttribute("type", input.type());
       element.setAttribute("value", input.value());
+    } else if (node instanceof ButtonElement button) {
+      element.setAttribute("type", button.type());
     } else if (node instanceof TextareaElement textarea) {
       element.appendChild(document.createTextNode(textarea.value()));
     }

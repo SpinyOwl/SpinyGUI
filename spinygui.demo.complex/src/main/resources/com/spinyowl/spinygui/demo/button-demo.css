@@ -1,0 +1,73 @@
+winframe {
+  position: relative;
+  padding: 18px;
+  background-color: #f6f7f9;
+  color: #111827;
+  font-size: 15px;
+}
+
+.panel {
+  position: absolute;
+  left: 24px;
+  top: 24px;
+  width: 460px;
+  height: 210px;
+  padding: 14px;
+  border: 3px solid #334155;
+  background-color: #ffffff;
+}
+
+.title {
+  display: block;
+  height: 24px;
+  font-size: 16px;
+}
+
+button,
+input {
+  display: block;
+  margin-top: 12px;
+  padding: 6px 10px;
+  border: 2px solid #2563eb;
+  background-color: #dbeafe;
+  color: #111827;
+  font-size: 16px;
+  line-height: 1.25;
+  overflow: hidden;
+}
+
+button:hover,
+input:hover {
+  border-color: #1d4ed8;
+  background-color: #bfdbfe;
+}
+
+button:focus {
+  border-color: #059669;
+  background-color: #d1fae5;
+}
+
+button:active {
+  border-color: #b45309;
+  background-color: #fde68a;
+}
+
+.accent {
+  color: #be123c;
+}
+
+#input-button {
+  border-color: #64748b;
+  background-color: #e2e8f0;
+}
+
+.status {
+  display: block;
+  margin-top: 14px;
+  padding: 7px 8px;
+  border: 2px solid #059669;
+  background-color: #ecfdf5;
+  color: #064e3b;
+  font-size: 15px;
+  line-height: 1.25;
+}

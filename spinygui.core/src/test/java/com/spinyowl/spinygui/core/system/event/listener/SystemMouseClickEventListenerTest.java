@@ -12,6 +12,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import com.google.common.collect.ImmutableSet;
+import com.spinyowl.spinygui.core.event.ActionEvent;
 import com.spinyowl.spinygui.core.event.Event;
 import com.spinyowl.spinygui.core.event.FocusInEvent;
 import com.spinyowl.spinygui.core.event.FocusOutEvent;
@@ -25,6 +26,7 @@ import com.spinyowl.spinygui.core.input.KeyAction;
 import com.spinyowl.spinygui.core.input.MouseButton;
 import com.spinyowl.spinygui.core.input.MouseService;
 import com.spinyowl.spinygui.core.input.MouseService.CursorPositions;
+import com.spinyowl.spinygui.core.node.ButtonElement;
 import com.spinyowl.spinygui.core.node.Element;
 import com.spinyowl.spinygui.core.node.Frame;
 import com.spinyowl.spinygui.core.node.InputElement;
@@ -337,6 +339,88 @@ class SystemMouseClickEventListenerTest {
 
     assertTrue(focusedElement.focused());
     assertFalse(focusedElement.pressed());
+  }
+
+  @Test
+  void process_releaseFocusedButtonInCurrentFrame_generatesActionEventWithClickAndRelease() {
+    ButtonElement button = new ButtonElement();
+    button.focused(true);
+    button.pressed(true);
+    button.box().contentSize(20, 20);
+    button.box().contentPosition(50, 20);
+    Frame frame = frame(button);
+    frame.box().contentSize(100, 100);
+
+    SystemMouseClickEvent event = mouseRelease(frame);
+    Vector2f current = new Vector2f(55, 25);
+    when(mouseService.getCursorPositions(frame))
+        .thenReturn(new CursorPositions(current, current));
+    double timestamp = 1;
+    when(timeService.currentTime()).thenReturn(timestamp);
+
+    MouseClickEvent expectedClickEvent =
+        MouseClickEvent.builder()
+            .source(frame)
+            .target(button)
+            .action(KeyAction.CLICK)
+            .timestamp(timestamp)
+            .mouseButton(MouseButton.LEFT)
+            .position(new Vector2f(button.box().contentPosition()).sub(current).negate())
+            .absolutePosition(current)
+            .mods(event.mappedMods())
+            .build();
+    ActionEvent expectedActionEvent =
+        ActionEvent.builder().source(frame).target(button).timestamp(timestamp).build();
+    MouseClickEvent expectedReleaseEvent =
+        MouseClickEvent.builder()
+            .source(frame)
+            .target(button)
+            .action(KeyAction.RELEASE)
+            .timestamp(timestamp)
+            .mouseButton(MouseButton.LEFT)
+            .position(new Vector2f(button.box().contentPosition()).sub(current).negate())
+            .absolutePosition(current)
+            .mods(event.mappedMods())
+            .build();
+
+    listener.process(event, frame);
+
+    verify(eventProcessor).push(expectedClickEvent);
+    verify(eventProcessor).push(expectedActionEvent);
+    verify(eventProcessor).push(expectedReleaseEvent);
+    assertTrue(button.focused());
+    assertFalse(button.pressed());
+  }
+
+  @Test
+  void process_clickButtonNestedElement_generatesActionEventForButton() {
+    ButtonElement button = new ButtonElement();
+    button.box().contentPosition(50, 20);
+    button.box().contentSize(80, 40);
+    Element nested = div();
+    nested.offsetParent(button);
+    nested.box().contentPosition(5, 5);
+    nested.box().contentSize(50, 20);
+    button.addChild(nested);
+    Frame frame = frame(button);
+    frame.box().contentSize(160, 100);
+
+    Vector2f current = new Vector2f(60, 30);
+    when(mouseService.getCursorPositions(frame))
+        .thenReturn(new CursorPositions(current, current));
+    double timestamp = 1;
+    when(timeService.currentTime()).thenReturn(timestamp);
+
+    listener.process(mousePress(frame), frame);
+    listener.process(mouseRelease(frame), frame);
+
+    ActionEvent expectedActionEvent =
+        ActionEvent.builder().source(frame).target(button).timestamp(timestamp).build();
+    verify(eventProcessor).push(expectedActionEvent);
+    assertTrue(button.focused());
+    assertFalse(button.pressed());
+    assertFalse(nested.focused());
+    assertFalse(nested.pressed());
   }
 
   @Test

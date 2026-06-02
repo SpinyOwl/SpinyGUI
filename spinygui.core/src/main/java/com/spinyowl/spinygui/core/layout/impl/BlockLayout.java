@@ -11,10 +11,12 @@ import com.spinyowl.spinygui.core.font.Font;
 import com.spinyowl.spinygui.core.layout.ElementLayout;
 import com.spinyowl.spinygui.core.layout.LayoutContext;
 import com.spinyowl.spinygui.core.layout.LayoutService;
+import com.spinyowl.spinygui.core.node.ButtonElement;
 import com.spinyowl.spinygui.core.node.Element;
 import com.spinyowl.spinygui.core.node.Frame;
 import com.spinyowl.spinygui.core.node.InputElement;
 import com.spinyowl.spinygui.core.node.Node;
+import com.spinyowl.spinygui.core.node.Text;
 import com.spinyowl.spinygui.core.node.TextareaElement;
 import com.spinyowl.spinygui.core.node.layout.Box;
 import com.spinyowl.spinygui.core.node.layout.Edges;
@@ -125,6 +127,9 @@ public class BlockLayout implements ElementLayout {
       contentWidth = frame.frameSize().x;
     } else if (e instanceof InputElement input && input.textInput()) {
       contentWidth = getTextInputWidth(style, parentBox.content().width());
+    } else if (e instanceof ButtonElement button) {
+      contentWidth =
+          getButtonWidth(button, style, parentBox.content().width(), horizontalAdditions);
     } else if (e instanceof TextareaElement textarea) {
       contentWidth = getTextareaWidth(textarea, style, parentBox.content().width(), horizontalAdditions);
     } else {
@@ -142,6 +147,15 @@ public class BlockLayout implements ElementLayout {
     } else if (e instanceof InputElement input && input.textInput()) {
       borderBoxHeight =
           getTextInputHeight(e, style, parentBox.content().height(), verticalAdditions);
+    } else if (e instanceof ButtonElement button) {
+      float childrenHeight = childrenHeight(button, style, skipChildren, ctx);
+      borderBoxHeight =
+          getButtonHeight(
+              button,
+              style,
+              parentBox.content().height(),
+              childrenHeight,
+              verticalAdditions);
     } else if (e instanceof TextareaElement textarea) {
       borderBoxHeight =
           getTextareaHeight(textarea, style, parentBox.content().height(), verticalAdditions);
@@ -397,6 +411,48 @@ public class BlockLayout implements ElementLayout {
     return borderBoxHeight;
   }
 
+  private float getButtonWidth(
+      ButtonElement button, ResolvedStyle style, float parentWidth, float horizontalAdditions) {
+    float width =
+        style.width().isAuto()
+            ? measureButtonContentWidth(button, style) + horizontalAdditions
+            : getWidth(parentWidth, style);
+    Optional<Float> minWidth = getFloatLengthOptional(style.minWidth(), parentWidth);
+    Optional<Float> maxWidth = getFloatLengthOptional(style.maxWidth(), parentWidth);
+    width = Math.max(width, minWidth.orElse(width));
+    width = Math.min(width, maxWidth.orElse(width));
+    return width;
+  }
+
+  private float getButtonHeight(
+      ButtonElement button,
+      ResolvedStyle style,
+      float parentHeight,
+      float childrenHeight,
+      float verticalAdditions) {
+    if (!style.height().isAuto()) {
+      return getHeight(parentHeight, verticalAdditions, style);
+    }
+    float contentHeight = Math.max(childrenHeight, measureTextInputLineHeight(button, style));
+    float borderBoxHeight = contentHeight + verticalAdditions;
+    Optional<Float> minHeight = getFloatLengthOptional(style.minHeight(), parentHeight);
+    Optional<Float> maxHeight = getFloatLengthOptional(style.maxHeight(), parentHeight);
+    borderBoxHeight = Math.max(borderBoxHeight, minHeight.orElse(borderBoxHeight));
+    borderBoxHeight = Math.min(borderBoxHeight, maxHeight.orElse(borderBoxHeight));
+    return borderBoxHeight;
+  }
+
+  private float measureButtonContentWidth(ButtonElement button, ResolvedStyle style) {
+    String text = buttonTextContent(button);
+    if (textMeasurer == null) {
+      return text.length() * StyleUtils.getFontSize(button) * 0.8f;
+    }
+    return textMeasurer
+        .getTextLineMetrics(
+            text, findFont(style), StyleUtils.getFontSize(button), style.lineHeight())
+        .width();
+  }
+
   private float getTextareaWidth(
       TextareaElement textarea, ResolvedStyle style, float parentWidth, float horizontalAdditions) {
     float width =
@@ -455,6 +511,18 @@ public class BlockLayout implements ElementLayout {
       return fontSize * lineHeight;
     }
     return textMeasurer.getTextLineMetrics("", findFont(style), fontSize, lineHeight).height();
+  }
+
+  private String buttonTextContent(Node node) {
+    if (node instanceof Text text) {
+      return text.content();
+    }
+    if (node instanceof Element element) {
+      return element.childNodes().stream()
+          .map(this::buttonTextContent)
+          .collect(Collectors.joining());
+    }
+    return "";
   }
 
   private Font findFont(ResolvedStyle style) {

@@ -5,6 +5,7 @@ import static org.lwjgl.glfw.GLFW.GLFW_PRESS;
 import static org.lwjgl.glfw.GLFW.GLFW_KEY_ESCAPE;
 import static org.lwjgl.glfw.GLFW.GLFW_KEY_F3;
 import static org.lwjgl.glfw.GLFW.GLFW_KEY_G;
+import static org.lwjgl.glfw.GLFW.GLFW_KEY_SPACE;
 import static org.lwjgl.glfw.GLFW.GLFW_RELEASE;
 import static org.lwjgl.glfw.GLFW.GLFW_REPEAT;
 import static org.lwjgl.glfw.GLFW.GLFW_TRUE;
@@ -453,6 +454,7 @@ public abstract class Demo {
             Map.entry(KeyCode.DELETE, GLFW.GLFW_KEY_DELETE),
             Map.entry(KeyCode.LEFT, GLFW.GLFW_KEY_LEFT),
             Map.entry(KeyCode.RIGHT, GLFW.GLFW_KEY_RIGHT),
+            Map.entry(KeyCode.SPACE, GLFW_KEY_SPACE),
             Map.entry(KeyCode.ENTER, GLFW.GLFW_KEY_ENTER),
             Map.entry(KeyCode.NUMPAD_ENTER, GLFW.GLFW_KEY_KP_ENTER),
             Map.entry(KeyCode.HOME, GLFW.GLFW_KEY_HOME),

@@ -8,6 +8,7 @@ import com.spinyowl.spinygui.core.font.FontWeight;
 import com.spinyowl.spinygui.core.layout.ElementLayout;
 import com.spinyowl.spinygui.core.layout.LayoutContext;
 import com.spinyowl.spinygui.core.layout.LayoutService;
+import com.spinyowl.spinygui.core.node.ButtonElement;
 import com.spinyowl.spinygui.core.node.Element;
 import com.spinyowl.spinygui.core.node.Frame;
 import com.spinyowl.spinygui.core.node.InputElement;
@@ -288,6 +289,80 @@ class BlockLayoutTest {
     assertEquals(40, textarea.box().content().height());
     assertEquals(120, textarea.box().borderBox().width());
     assertEquals(44, textarea.box().borderBox().height());
+  }
+
+  @Test
+  void layout_whenButtonHasTextContent_usesContentDerivedAutoSize() {
+    Frame frame = NodeBuilder.frame();
+    frame.frameSize(300, 200);
+    style(frame, 0);
+    ButtonElement button = NodeBuilder.button(NodeBuilder.text("Save"));
+    style(button, 2);
+    frame.addChild(button);
+
+    RecursiveLayoutService layoutService = new RecursiveLayoutService();
+    FixedTextMeasurer textMeasurer = new FixedTextMeasurer();
+    BlockLayout blockLayout =
+        new BlockLayout(layoutService, new InlineFormattingContext(textMeasurer), textMeasurer);
+    layoutService.blockLayout(blockLayout);
+
+    blockLayout.layout(frame, new LayoutContext());
+
+    assertEquals(40, button.box().content().width());
+    assertEquals(10, button.box().content().height());
+    assertEquals(44, button.box().borderBox().width());
+    assertEquals(14, button.box().borderBox().height());
+  }
+
+  @Test
+  void layout_whenButtonHasNestedInlineContent_usesNestedTextForAutoWidth() {
+    Frame frame = NodeBuilder.frame();
+    frame.frameSize(300, 200);
+    style(frame, 0);
+    Element span = new Element("span");
+    style(span, 0);
+    span.resolvedStyle().display(Display.INLINE);
+    span.addChild(NodeBuilder.text("Go"));
+    ButtonElement button = NodeBuilder.button(span);
+    style(button, 2);
+    frame.addChild(button);
+
+    RecursiveLayoutService layoutService = new RecursiveLayoutService();
+    FixedTextMeasurer textMeasurer = new FixedTextMeasurer();
+    BlockLayout blockLayout =
+        new BlockLayout(layoutService, new InlineFormattingContext(textMeasurer), textMeasurer);
+    layoutService.blockLayout(blockLayout);
+
+    blockLayout.layout(frame, new LayoutContext());
+
+    assertEquals(20, button.box().content().width());
+    assertEquals(10, button.box().content().height());
+    assertEquals(24, button.box().borderBox().width());
+  }
+
+  @Test
+  void layout_whenButtonHasStyledSize_usesStyledSize() {
+    Frame frame = NodeBuilder.frame();
+    frame.frameSize(300, 200);
+    style(frame, 0);
+    ButtonElement button = NodeBuilder.button(NodeBuilder.text("Save"));
+    style(button, 2);
+    button.resolvedStyle().width(Length.pixel(120));
+    button.resolvedStyle().height(Length.pixel(24));
+    frame.addChild(button);
+
+    RecursiveLayoutService layoutService = new RecursiveLayoutService();
+    FixedTextMeasurer textMeasurer = new FixedTextMeasurer();
+    BlockLayout blockLayout =
+        new BlockLayout(layoutService, new InlineFormattingContext(textMeasurer), textMeasurer);
+    layoutService.blockLayout(blockLayout);
+
+    blockLayout.layout(frame, new LayoutContext());
+
+    assertEquals(116, button.box().content().width());
+    assertEquals(20, button.box().content().height());
+    assertEquals(120, button.box().borderBox().width());
+    assertEquals(24, button.box().borderBox().height());
   }
 
   private void style(Element element, float borderWidth) {

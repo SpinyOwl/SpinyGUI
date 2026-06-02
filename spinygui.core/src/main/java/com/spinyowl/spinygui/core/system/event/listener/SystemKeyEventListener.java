@@ -1,16 +1,19 @@
 package com.spinyowl.spinygui.core.system.event.listener;
 
+import com.spinyowl.spinygui.core.event.ActionEvent;
 import com.spinyowl.spinygui.core.event.KeyboardEvent;
 import com.spinyowl.spinygui.core.event.processor.EventProcessor;
 import com.spinyowl.spinygui.core.input.KeyAction;
 import com.spinyowl.spinygui.core.input.KeyCode;
 import com.spinyowl.spinygui.core.input.Keyboard;
 import com.spinyowl.spinygui.core.input.KeyboardKey;
+import com.spinyowl.spinygui.core.node.ButtonElement;
 import com.spinyowl.spinygui.core.node.Frame;
 import com.spinyowl.spinygui.core.node.InputElement;
 import com.spinyowl.spinygui.core.node.TextareaElement;
 import com.spinyowl.spinygui.core.system.event.SystemKeyEvent;
 import com.spinyowl.spinygui.core.system.font.TextMeasurer;
+import com.spinyowl.spinygui.core.system.input.ButtonBehavior;
 import com.spinyowl.spinygui.core.system.input.MultilineTextControlMetrics;
 import com.spinyowl.spinygui.core.system.input.SystemKeyMod;
 import com.spinyowl.spinygui.core.system.input.TextInputBehavior;
@@ -26,6 +29,7 @@ import lombok.NonNull;
 public class SystemKeyEventListener extends AbstractSystemEventListener<SystemKeyEvent> {
 
   private static final TextInputBehavior TEXT_INPUT_BEHAVIOR = new TextInputBehavior();
+  private static final ButtonBehavior BUTTON_BEHAVIOR = new ButtonBehavior();
   @EqualsAndHashCode.Exclude private final TextareaBehavior textareaBehavior;
 
   @NonNull private final Keyboard keyboard;
@@ -74,6 +78,10 @@ public class SystemKeyEventListener extends AbstractSystemEventListener<SystemKe
         if (changed) {
           ensureCaretVisible(input);
         }
+      } else if (element instanceof ButtonElement button) {
+        if (BUTTON_BEHAVIOR.handleKey(button, keyCodeObject, action)) {
+          generateActionEvent(frame, button);
+        }
       } else if (element instanceof TextareaElement textarea) {
         boolean changed =
             textareaBehavior.handleKey(
@@ -113,5 +121,14 @@ public class SystemKeyEventListener extends AbstractSystemEventListener<SystemKe
     if (textareaViewportBehavior != null) {
       textareaViewportBehavior.ensureCaretVisible(textarea);
     }
+  }
+
+  private void generateActionEvent(Frame frame, ButtonElement button) {
+    eventProcessor.push(
+        ActionEvent.builder()
+            .source(frame)
+            .target(button)
+            .timestamp(timeService.currentTime())
+            .build());
   }
 }

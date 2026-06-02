@@ -5,6 +5,7 @@ import static com.spinyowl.spinygui.core.system.input.SystemKeyAction.PRESS;
 import static com.spinyowl.spinygui.core.system.input.SystemKeyAction.RELEASE;
 import static com.spinyowl.spinygui.core.util.NodeUtilities.getTargetElement;
 import static com.spinyowl.spinygui.core.util.NodeUtilities.visible;
+import com.spinyowl.spinygui.core.event.ActionEvent;
 import com.spinyowl.spinygui.core.event.FocusInEvent;
 import com.spinyowl.spinygui.core.event.FocusOutEvent;
 import com.spinyowl.spinygui.core.event.MouseClickEvent;
@@ -12,6 +13,7 @@ import com.spinyowl.spinygui.core.event.ScrollEvent;
 import com.spinyowl.spinygui.core.event.processor.EventProcessor;
 import com.spinyowl.spinygui.core.input.KeyAction;
 import com.spinyowl.spinygui.core.input.MouseService;
+import com.spinyowl.spinygui.core.node.ButtonElement;
 import com.spinyowl.spinygui.core.node.Element;
 import com.spinyowl.spinygui.core.node.Frame;
 import com.spinyowl.spinygui.core.node.InputElement;
@@ -87,6 +89,7 @@ public class SystemMouseClickEventListener
     if (target == null) {
       processWithNoTarget(event, frame, focusedElement, currentCursorPosition);
     } else {
+      target = buttonOwner(target);
       processWithExistingTarget(event, frame, focusedElement, currentCursorPosition, target);
     }
   }
@@ -156,6 +159,7 @@ public class SystemMouseClickEventListener
         focusedElement.pressed(false);
         if (focusedElement == target) {
           generateClickEvent(event, frame, cursorPosition, target);
+          generateActionEvent(frame, target);
         }
         generateReleaseEvent(event, frame, focusedElement, cursorPosition);
       }
@@ -271,5 +275,26 @@ public class SystemMouseClickEventListener
             .absolutePosition(cursorPosition)
             .mods(event.mappedMods())
             .build());
+  }
+
+  private void generateActionEvent(Frame frame, Element target) {
+    if (!(target instanceof ButtonElement button) || !button.activatable()) {
+      return;
+    }
+    eventProcessor.push(
+        ActionEvent.builder()
+            .source(frame)
+            .target(button)
+            .timestamp(timeService.currentTime())
+            .build());
+  }
+
+  private Element buttonOwner(Element target) {
+    for (Element current = target; current != null; current = current.parent()) {
+      if (current instanceof ButtonElement) {
+        return current;
+      }
+    }
+    return target;
   }
 }

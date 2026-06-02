@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import com.spinyowl.spinygui.core.font.Font;
 import com.spinyowl.spinygui.core.layout.InlineFragment;
+import com.spinyowl.spinygui.core.node.ButtonElement;
 import com.spinyowl.spinygui.core.node.Text;
 import com.spinyowl.spinygui.core.style.types.Color;
 import java.util.ArrayList;
@@ -52,6 +53,22 @@ class NvgTextRendererTest {
     assertEquals(
         List.of("draw(3,a,2.0,12.0)", "draw(3, ,12.0,12.0)", "draw(3,b,22.0,12.0)"),
         sink.calls());
+  }
+
+  @Test
+  void renderFragments_drawsButtonTextContentThroughGenericTextPath() {
+    RecordingTextSink sink = new RecordingTextSink();
+    NvgTextRenderer renderer = new NvgTextRenderer(sink);
+    ButtonElement button = new ButtonElement();
+    button.box().contentPosition(20, 30);
+    button.box().contentSize(90, 28);
+    Text text = new Text("Save");
+    button.addChild(text);
+    text.inlineFragments(List.of(fragment("Save", 8, 14)));
+
+    renderer.renderFragments(text, 4, renderer.inlineFormattingOffset(text));
+
+    assertEquals(List.of("draw(4,Save,28.0,44.0)"), sink.calls());
   }
 
   private InlineFragment fragment(String text, float x, float baseline) {

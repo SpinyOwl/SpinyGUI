@@ -13,6 +13,8 @@ import com.spinyowl.spinygui.core.style.stylesheet.selector.combinator.AndSelect
 import com.spinyowl.spinygui.core.style.stylesheet.selector.combinator.ChildSelector;
 import com.spinyowl.spinygui.core.style.stylesheet.selector.combinator.DescendantSelector;
 import com.spinyowl.spinygui.core.style.stylesheet.selector.combinator.GeneralSiblingSelector;
+import com.spinyowl.spinygui.core.style.stylesheet.selector.pseudoclass.ActiveSelector;
+import com.spinyowl.spinygui.core.style.stylesheet.selector.pseudoclass.FocusSelector;
 import com.spinyowl.spinygui.core.style.stylesheet.selector.pseudoclass.HoverSelector;
 import com.spinyowl.spinygui.core.style.stylesheet.selector.pseudoelement.AfterSelector;
 import com.spinyowl.spinygui.core.style.stylesheet.selector.pseudoelement.BeforeSelector;
@@ -87,6 +89,14 @@ public class SelectorVisitor extends CSS3BaseVisitor<Selector> {
     String selectorName = ctx.ident().getText();
     if ("hover".equals(selectorName)) {
       return new HoverSelector();
+    }
+
+    if ("focus".equals(selectorName)) {
+      return new FocusSelector();
+    }
+
+    if ("active".equals(selectorName)) {
+      return new ActiveSelector();
     }
 
     if ("before".equals(selectorName)) {

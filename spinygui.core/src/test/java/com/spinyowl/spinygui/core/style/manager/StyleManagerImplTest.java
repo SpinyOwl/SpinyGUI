@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import com.spinyowl.spinygui.core.node.Element;
 import com.spinyowl.spinygui.core.node.Frame;
+import com.spinyowl.spinygui.core.node.NodeBuilder;
 import com.spinyowl.spinygui.core.parser.StyleSheetParser;
 import com.spinyowl.spinygui.core.parser.impl.ParseException;
 import com.spinyowl.spinygui.core.parser.impl.StyleSheetParserFactory;
@@ -215,6 +216,51 @@ class StyleManagerImplTest {
 
     assertEquals(Color.RED, first.resolvedStyle().color());
     assertEquals(Color.RED, second.resolvedStyle().color());
+  }
+
+  @Test
+  void recalculateAppliesButtonPseudoStateStyles() {
+    PropertyStore propertyStore = new DefaultPropertyStoreProvider().createPropertyStore();
+    StyleSheetParser parser = StyleSheetParserFactory.createParser(propertyStore);
+    StyleManager styleManager = new StyleManagerImpl(propertyStore, parser);
+    Frame frame = new Frame();
+    Element button = NodeBuilder.button(NodeBuilder.text("Save"));
+    frame.addChild(button);
+    frame
+        .styleSheets()
+        .add(
+            parser.parse(
+                """
+button {
+  background-color: red;
+}
+button:hover {
+  background-color: blue;
+}
+button:focus {
+  background-color: green;
+}
+button:active {
+  background-color: yellow;
+}
+"""));
+
+    styleManager.recalculate(frame);
+    assertEquals(Color.RED, button.resolvedStyle().backgroundColor());
+
+    button.hovered(true);
+    styleManager.recalculate(frame);
+    assertEquals(Color.BLUE, button.resolvedStyle().backgroundColor());
+
+    button.hovered(false);
+    button.focused(true);
+    styleManager.recalculate(frame);
+    assertEquals(Color.GREEN, button.resolvedStyle().backgroundColor());
+
+    button.focused(false);
+    button.pressed(true);
+    styleManager.recalculate(frame);
+    assertEquals(Color.YELLOW, button.resolvedStyle().backgroundColor());
   }
 
   private static PropertyStore emptyPropertyStore() {

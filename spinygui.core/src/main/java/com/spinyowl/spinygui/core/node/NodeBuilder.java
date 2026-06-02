@@ -149,8 +149,8 @@ public final class NodeBuilder {
    * @param nodes child nodes to add.
    * @return button with specified child nodes.
    */
-  public static Element button(Node... nodes) {
-    var button = new Element(NODE_BUTTON);
+  public static ButtonElement button(Node... nodes) {
+    var button = new ButtonElement();
     if (nodes != null) {
       for (Node node : nodes) {
         button.addChild(node);
@@ -166,7 +166,7 @@ public final class NodeBuilder {
    * @param nodes child nodes to add.
    * @return button with specified attributes and child nodes.
    */
-  public static Element button(Map<String, String> attributes, Node... nodes) {
+  public static ButtonElement button(Map<String, String> attributes, Node... nodes) {
     return addAttributes(button(nodes), attributes);
   }
 
@@ -177,7 +177,7 @@ public final class NodeBuilder {
    * @param nodes child nodes to add.
    * @return button with specified attributes and child nodes.
    */
-  public static Element button(Attributes attributes, Node... nodes) {
+  public static ButtonElement button(Attributes attributes, Node... nodes) {
     return addAttributes(button(nodes), attributes);
   }
 
@@ -413,6 +413,8 @@ public final class NodeBuilder {
     node.attributes().putAll(attributes);
     if (node instanceof InputElement input) {
       input.initializeFromAttributes();
+    } else if (node instanceof ButtonElement button) {
+      button.initializeFromAttributes();
     }
     return node;
   }

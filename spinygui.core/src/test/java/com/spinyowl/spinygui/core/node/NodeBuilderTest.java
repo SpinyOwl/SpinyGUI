@@ -1,9 +1,12 @@
 package com.spinyowl.spinygui.core.node;
 
+import static com.spinyowl.spinygui.core.node.NodeBuilder.TYPE_BUTTON;
 import static com.spinyowl.spinygui.core.node.NodeBuilder.TYPE_PASSWORD;
+import static com.spinyowl.spinygui.core.node.NodeBuilder.TYPE_SUBMIT;
 import static com.spinyowl.spinygui.core.node.NodeBuilder.TYPE_TEXT;
 import static com.spinyowl.spinygui.core.node.NodeBuilder.attr;
 import static com.spinyowl.spinygui.core.node.NodeBuilder.attrs;
+import static com.spinyowl.spinygui.core.node.NodeBuilder.button;
 import static com.spinyowl.spinygui.core.node.NodeBuilder.cssClass;
 import static com.spinyowl.spinygui.core.node.NodeBuilder.div;
 import static com.spinyowl.spinygui.core.node.NodeBuilder.id;
@@ -15,6 +18,7 @@ import static com.spinyowl.spinygui.core.node.NodeBuilder.type;
 import static com.spinyowl.spinygui.core.node.NodeBuilder.value;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Map;
 import org.junit.jupiter.api.Test;
@@ -43,6 +47,42 @@ class NodeBuilderTest {
     Element element = div(attrs(attr("id", "first"), attr("id", "second")));
 
     assertEquals("second", element.getAttribute("id"));
+  }
+
+  @Test
+  void buttonCreatesButtonElementWithChildContent() {
+    ButtonElement element = button(NodeBuilder.text("Save"));
+
+    assertEquals("button", element.nodeName());
+    assertEquals(1, element.childNodes().size());
+    assertEquals("Save", ((Text) element.childNodes().getFirst()).content());
+  }
+
+  @Test
+  void buttonDefaultsToSubmitType() {
+    ButtonElement element = button();
+
+    assertEquals(TYPE_SUBMIT, element.type());
+    assertTrue(element.submitButton());
+    assertTrue(element.activatable());
+  }
+
+  @Test
+  void buttonAcceptsExplicitButtonType() {
+    ButtonElement element = button(attrs(type(TYPE_BUTTON)));
+
+    assertEquals(TYPE_BUTTON, element.getAttribute("type"));
+    assertEquals(TYPE_BUTTON, element.type());
+    assertTrue(element.plainButton());
+  }
+
+  @Test
+  void addAttributesRefreshesButtonRuntimeState() {
+    ButtonElement element = button();
+
+    NodeBuilder.addAttributes(element, attrs(type(TYPE_BUTTON)));
+
+    assertEquals(TYPE_BUTTON, element.type());
   }
 
   @Test
