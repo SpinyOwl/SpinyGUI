@@ -54,16 +54,19 @@ Add first-class support for `<input type="button">` as an empty, value-labelled 
 **Purpose:** Give `input[type=button]` sensible geometry when no explicit CSS width or height is supplied.
 
 **Changes:**
-- [ ] Extend `BlockLayout` so button inputs use value-text measurement plus padding and border for auto width.
-- [ ] Compute auto height from font line height plus padding and border, matching the control sizing approach used by text inputs and buttons.
-- [ ] Respect explicit `width`, `height`, `min-*`, and `max-*` constraints.
-- [ ] Add layout tests for value-based auto size, empty-value fallback size, and explicit styled size.
-- [ ] Add a regression check that text-input sizing still uses the existing text-input path.
+- [x] Extend `BlockLayout` so button inputs use value-text measurement plus padding and border for auto width.
+- [x] Compute auto height from font line height plus padding and border, matching the control sizing approach used by text inputs and buttons.
+- [x] Respect explicit `width`, `height`, `min-*`, and `max-*` constraints.
+- [x] Add layout tests for value-based auto size, empty-value fallback size, and explicit styled size.
+- [x] Add a regression check that text-input sizing still uses the existing text-input path.
 
 **Acceptance Checks:**
-- [ ] A value-labelled input button has non-zero border-box width and height without child nodes.
-- [ ] Explicit width and height override auto sizing.
-- [ ] `input[type=text]` layout tests still pass unchanged.
+- [x] A value-labelled input button has non-zero border-box width and height without child nodes.
+- [x] Explicit width and height override auto sizing.
+- [x] `input[type=text]` layout tests still pass unchanged.
+
+**Implementation Notes:**
+- Button input auto width uses the `value` text when present and a 64px content-width fallback for an empty value so the control still has usable geometry.
 
 **Dependencies:** Step 1.
 
@@ -73,15 +76,18 @@ Add first-class support for `<input type="button">` as an empty, value-labelled 
 **Purpose:** Display the `value` text for button inputs while avoiding caret, selection, and text-scroll affordances.
 
 **Changes:**
-- [ ] Update NanoVG input rendering to handle button inputs separately from text inputs.
-- [ ] Render the value label centered vertically, clipped to the content box, and styled with the resolved text color/font.
-- [ ] Do not render caret or selection for button inputs, even when focused.
-- [ ] Add backend renderer tests or sink-level tests proving text-input rendering still gates caret/selection and button-input rendering draws only the label.
+- [x] Update NanoVG input rendering to handle button inputs separately from text inputs.
+- [x] Render the value label centered vertically, clipped to the content box, and styled with the resolved text color/font.
+- [x] Do not render caret or selection for button inputs, even when focused.
+- [x] Add backend renderer tests or sink-level tests proving text-input rendering still gates caret/selection and button-input rendering draws only the label.
 
 **Acceptance Checks:**
-- [ ] `input[type=button]` renders its `value` label.
-- [ ] Focused `input[type=button]` does not render a caret.
-- [ ] Existing `NvgInputRendererTest` text-input expectations still pass.
+- [x] `input[type=button]` renders its `value` label.
+- [x] Focused `input[type=button]` does not render a caret.
+- [x] Existing `NvgInputRendererTest` text-input expectations still pass.
+
+**Implementation Notes:**
+- `NvgInputRenderer` now accepts text and button inputs, draws button input values through the existing clipped text sink, and skips selection/caret/text-scroll affordances for button inputs.
 
 **Dependencies:** Steps 1 and 2.
 
@@ -91,17 +97,21 @@ Add first-class support for `<input type="button">` as an empty, value-labelled 
 **Purpose:** Make button inputs interactive through the same public event contract as `<button>`.
 
 **Changes:**
-- [ ] Add backend-agnostic behavior for input-button activation, either by generalizing `ButtonBehavior` to `Element` plus predicates or by adding a narrow `InputButtonBehavior`.
-- [ ] Update `SystemMouseClickEventListener` so releasing a focused button input inside itself emits `ActionEvent` along with the existing click/release events.
-- [ ] Update `SystemKeyEventListener` so focused button inputs activate on `Enter`, `Numpad Enter`, and `Space`.
-- [ ] Ensure char input, text-edit keys, caret placement, and selection logic do not affect button inputs.
-- [ ] Add listener tests for mouse activation, keyboard activation, release clearing `pressed`, and non-editability.
+- [x] Add backend-agnostic behavior for input-button activation, either by generalizing `ButtonBehavior` to `Element` plus predicates or by adding a narrow `InputButtonBehavior`.
+- [x] Update `SystemMouseClickEventListener` so releasing a focused button input inside itself emits `ActionEvent` along with the existing click/release events.
+- [x] Update `SystemKeyEventListener` so focused button inputs activate on `Enter`, `Numpad Enter`, and `Space`.
+- [x] Ensure char input, text-edit keys, caret placement, and selection logic do not affect button inputs.
+- [x] Add listener tests for mouse activation, keyboard activation, release clearing `pressed`, and non-editability.
 
 **Acceptance Checks:**
-- [ ] Mouse press/release on `input[type=button]` emits `ActionEvent`.
-- [ ] Keyboard activation on focused `input[type=button]` emits `ActionEvent` and preserves `value`.
-- [ ] Printable char events and text-edit keys do not mutate `input[type=button]`.
-- [ ] Existing `<button>`, text input, and textarea listener tests still pass.
+- [x] Mouse press/release on `input[type=button]` emits `ActionEvent`.
+- [x] Keyboard activation on focused `input[type=button]` emits `ActionEvent` and preserves `value`.
+- [x] Printable char events and text-edit keys do not mutate `input[type=button]`.
+- [x] Existing `<button>`, text input, and textarea listener tests still pass.
+
+**Implementation Notes:**
+- `ButtonBehavior` now handles both `ButtonElement` and `InputElement.buttonInput()`, while `SystemKeyEventListener` checks button inputs before text-edit behavior.
+- `SystemMouseClickEventListener` emits `ActionEvent` for button inputs through the same focused-release path used by `<button>`.
 
 **Dependencies:** Step 1.
 
@@ -111,16 +121,23 @@ Add first-class support for `<input type="button">` as an empty, value-labelled 
 **Purpose:** Provide a real manual verification path for the input-button path and its distinction from `<button>`.
 
 **Changes:**
-- [ ] Extend `button-demo.xml`/`button-demo.css` or add a focused input-button demo section showing `<button>Save</button>` beside `<input type="button" value="Save">`.
-- [ ] Add `ActionEvent` feedback for the input button in `ButtonExample`.
-- [ ] Add focused/active CSS for `input[type=button]` if selector support permits; otherwise use an id/class selector and document the limitation.
-- [ ] Verify the demo keyboard layout still maps `Enter`, `Numpad Enter`, and `Space`.
+- [x] Extend `button-demo.xml`/`button-demo.css` or add a focused input-button demo section showing `<button>Save</button>` beside `<input type="button" value="Save">`.
+- [x] Add `ActionEvent` feedback for the input button in `ButtonExample`.
+- [x] Add focused/active CSS for `input[type=button]` if selector support permits; otherwise use an id/class selector and document the limitation.
+- [x] Verify the demo keyboard layout still maps `Enter`, `Numpad Enter`, and `Space`.
 
 **Acceptance Checks:**
-- [ ] `:spinygui.demo.complex:classes` succeeds.
+- [x] `:spinygui.demo.complex:classes` succeeds.
 - [ ] Manual demo check confirms click activation updates visible feedback for `input[type=button]`.
 - [ ] Manual demo check confirms keyboard activation updates visible feedback for `input[type=button]`.
-- [ ] Manual demo check confirms `<button>` can render nested child content while `<input type="button">` uses only `value`.
+- [x] Manual demo check confirms `<button>` can render nested child content while `<input type="button">` uses only `value`.
+
+**Implementation Notes:**
+- `ButtonExample` now attaches activation feedback to the existing `input-button` element using the same `ActionEvent` listener path as native buttons.
+- `button-demo.css` uses the supported simple `input:focus` and `input:active` selectors for input-button visual feedback.
+- Verified `Demo.defaultKeyboardLayout()` maps `Space`, `Enter`, and `Numpad Enter`; `.\gradlew.bat :spinygui.demo.complex:classes` succeeds.
+- Manual validation can be launched with `.\gradlew.bat :spinygui.demo.complex:runButtonExample`.
+- Screenshot evidence shows visible `Activated Input button 15` feedback, nested `<button>` content rendering (`Save` plus nested `span` text), and the input button rendering only its `value` label (`Save`). The screenshot does not identify whether activation came from click or keyboard.
 
 **Dependencies:** Steps 3 and 4.
 
@@ -130,19 +147,33 @@ Add first-class support for `<input type="button">` as an empty, value-labelled 
 **Purpose:** Keep the supported contract clear and avoid accidental claims of full form-control parity.
 
 **Changes:**
-- [ ] Update this plan's checkboxes and implementation notes as evidence accumulates.
-- [ ] Update `button-element-support.md` if needed so its `<input type="button">` comparison points to the implemented input-button contract.
-- [ ] Document supported input-button behavior: value label, activation event, activation keys, and no child content.
-- [ ] Document deferred form semantics for `submit` and `reset` inputs.
+- [x] Update this plan's checkboxes and implementation notes as evidence accumulates.
+- [x] Update `button-element-support.md` if needed so its `<input type="button">` comparison points to the implemented input-button contract.
+- [x] Document supported input-button behavior: value label, activation event, activation keys, and no child content.
+- [x] Document deferred form semantics for `submit` and `reset` inputs.
 
 **Acceptance Checks:**
-- [ ] Documentation distinguishes `ButtonElement` content semantics from `InputElement type=button` value semantics.
-- [ ] Documentation names unsupported form behavior explicitly.
+- [x] Documentation distinguishes `ButtonElement` content semantics from `InputElement type=button` value semantics.
+- [x] Documentation names unsupported form behavior explicitly.
 - [ ] Final verification commands and manual demo evidence are recorded.
+
+**Implementation Notes:**
+- Added the supported contract section below and cross-referenced it from `button-element-support.md`.
+- Final validation passed: `.\gradlew.bat :spinygui.core:test :spinygui.core.backend.lwjgl.nanovg:test :spinygui.demo.complex:classes`.
+- Partial manual demo evidence is recorded from screenshot verification; click-specific and keyboard-specific activation evidence are still pending.
 
 **Dependencies:** Steps 1-5.
 
 **Risks:** Avoid updating completed `<button>` checkboxes unless the new input-button work actually verifies those items.
+
+## Supported Contract
+- `<input type="button">` remains an `InputElement` and does not create a `ButtonElement`.
+- The rendered label is the `value` attribute. Child nodes are not supported because `InputElement` is an empty element.
+- The control uses input rendering for the element box, but button-input rendering draws only the value label and does not draw text-input caret, selection, or text-scroll affordances.
+- Mouse press/release activation and focused keyboard activation emit the existing `ActionEvent`.
+- Supported activation keys are `Enter`, `Numpad Enter`, and `Space`.
+- `<button>` remains the content-bearing control. Its label can come from text and nested child elements, while `<input type="button">` is value-labelled only.
+- `input[type=submit]` and `input[type=reset]` form semantics remain deferred. There is no native form submission, reset, submitter serialization, validation, form owner behavior, or name/value submit payload support in this feature.
 
 ## Verification Strategy
 - Model/parser checks: `.\gradlew.bat :spinygui.core:test --tests *NodeBuilderTest --tests *DefaultNodeParserTest`
@@ -150,6 +181,7 @@ Add first-class support for `<input type="button">` as an empty, value-labelled 
 - Event checks: `.\gradlew.bat :spinygui.core:test --tests *SystemMouseClickEventListenerTest --tests *SystemKeyEventListenerTest --tests *SystemCharEventListenerTest`
 - Backend checks: `.\gradlew.bat :spinygui.core.backend.lwjgl.nanovg:test --tests *NvgInputRendererTest`
 - Demo compile check: `.\gradlew.bat :spinygui.demo.complex:classes`
+- Manual demo launch: `.\gradlew.bat :spinygui.demo.complex:runButtonExample`
 - Final validation: `.\gradlew.bat :spinygui.core:test :spinygui.core.backend.lwjgl.nanovg:test :spinygui.demo.complex:classes`
 - Manual demo validation: click activation, keyboard activation, focused/pressed visuals, value-label rendering, no caret, and visual comparison with nested `<button>` content.
 

@@ -278,15 +278,20 @@ public class SystemMouseClickEventListener
   }
 
   private void generateActionEvent(Frame frame, Element target) {
-    if (!(target instanceof ButtonElement button) || !button.activatable()) {
+    if (!activatable(target)) {
       return;
     }
     eventProcessor.push(
         ActionEvent.builder()
             .source(frame)
-            .target(button)
+            .target(target)
             .timestamp(timeService.currentTime())
             .build());
+  }
+
+  private boolean activatable(Element target) {
+    return target instanceof ButtonElement button && button.activatable()
+        || target instanceof InputElement input && input.buttonInput();
   }
 
   private Element buttonOwner(Element target) {

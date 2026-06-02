@@ -13,7 +13,7 @@ Add first-class support for the HTML-like `<button>` element: parse and build it
 ## Context
 - `NodeBuilder` already defines `NODE_BUTTON` and `button(...)` helpers, but they currently return a generic `Element`.
 - `DefaultNodeParser` already parses unknown non-empty tags, including `<button>`, as generic `Element` with child nodes.
-- `InputElement` is an `EmptyElement`; its label comes from the `value` attribute. `<button>` should remain content-based and may contain text and nested inline elements.
+- `InputElement` is an `EmptyElement`; its `type="button"` label comes from the `value` attribute. `<button>` remains content-based and may contain text and nested inline elements. The implemented input-button contract is tracked in `input-button-support.md`.
 - `BlockLayout` has explicit control sizing for `InputElement` and `TextareaElement`; a button should not reuse text-input editing behavior.
 - `NvgRenderer` already renders generic element backgrounds, borders, and child text. A button may only need a specialized renderer if pressed/default-state visuals cannot be handled through style/state.
 - Mouse and keyboard system listeners already manage focus, pressed state, and GUI events; activation should fit that pipeline instead of bypassing it.
@@ -25,6 +25,7 @@ Add first-class support for the HTML-like `<button>` element: parse and build it
 - Assumption: the runtime model should be a dedicated `ButtonElement extends Element`, not another `InputElement` type, because button label/content semantics are child-node based.
 - Assumption: activation means emitting existing mouse/key/click events consistently; adding a new high-level `ActionEvent` or `ButtonClickEvent` is optional only if current events cannot represent activation clearly.
 - Assumption: v1 button layout can be block-level, consistent with current control layout, unless existing CSS/default style already makes buttons inline.
+- Cross-feature scope: `<button>` and `<input type="button">` now share the `ActionEvent` activation contract, but they do not share content semantics. `<button>` is represented by `ButtonElement` and renders child content; `<input type="button">` is represented by `InputElement` and renders only its `value`.
 
 ## Step-by-Step Plan
 

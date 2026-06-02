@@ -1,5 +1,6 @@
 package com.spinyowl.spinygui.core.system.event.listener;
 
+import static com.spinyowl.spinygui.core.node.NodeBuilder.TYPE_BUTTON;
 import static com.spinyowl.spinygui.core.node.NodeBuilder.frame;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
@@ -170,6 +171,37 @@ class SystemCharEventListenerTest {
     // Verify
     Assertions.assertEquals("abc", input.value());
     Assertions.assertEquals(1, input.caretIndex());
+    verify(eventProcessor).push(expected);
+  }
+
+  @Test
+  void process_whenFocusedButtonInputReceivesPrintableInput_keepsValueAndGeneratesCharEvent() {
+    Frame frame = new Frame();
+    InputElement input = new InputElement();
+    input.type(TYPE_BUTTON);
+    input.value("Save");
+    input.focused(true);
+    frame.addChild(input);
+
+    double currentTime = 1;
+    when(timeService.currentTime()).thenReturn(currentTime);
+
+    SystemCharEvent source = SystemCharEvent.builder().frame(frame).codepoint('x').build();
+
+    CharEvent expected =
+        CharEvent.builder()
+            .source(frame)
+            .target(input)
+            .input("x")
+            .timestamp(currentTime)
+            .build();
+
+    doNothing().when(eventProcessor).push(expected);
+
+    listener.process(source, frame);
+
+    Assertions.assertEquals("Save", input.value());
+    Assertions.assertEquals(0, input.caretIndex());
     verify(eventProcessor).push(expected);
   }
 

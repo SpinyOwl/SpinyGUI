@@ -8,6 +8,7 @@ import com.spinyowl.spinygui.core.input.KeyCode;
 import com.spinyowl.spinygui.core.input.Keyboard;
 import com.spinyowl.spinygui.core.input.KeyboardKey;
 import com.spinyowl.spinygui.core.node.ButtonElement;
+import com.spinyowl.spinygui.core.node.Element;
 import com.spinyowl.spinygui.core.node.Frame;
 import com.spinyowl.spinygui.core.node.InputElement;
 import com.spinyowl.spinygui.core.node.TextareaElement;
@@ -72,11 +73,17 @@ public class SystemKeyEventListener extends AbstractSystemEventListener<SystemKe
       var action = getAction(event);
 
       if (element instanceof InputElement input) {
-        boolean changed =
-            TEXT_INPUT_BEHAVIOR.handleKey(
-                input, keyCodeObject, action, event.mods().contains(SystemKeyMod.SHIFT));
-        if (changed) {
-          ensureCaretVisible(input);
+        if (input.buttonInput()) {
+          if (BUTTON_BEHAVIOR.handleKey(input, keyCodeObject, action)) {
+            generateActionEvent(frame, input);
+          }
+        } else {
+          boolean changed =
+              TEXT_INPUT_BEHAVIOR.handleKey(
+                  input, keyCodeObject, action, event.mods().contains(SystemKeyMod.SHIFT));
+          if (changed) {
+            ensureCaretVisible(input);
+          }
         }
       } else if (element instanceof ButtonElement button) {
         if (BUTTON_BEHAVIOR.handleKey(button, keyCodeObject, action)) {
@@ -124,10 +131,18 @@ public class SystemKeyEventListener extends AbstractSystemEventListener<SystemKe
   }
 
   private void generateActionEvent(Frame frame, ButtonElement button) {
+    generateActionEvent(frame, (Element) button);
+  }
+
+  private void generateActionEvent(Frame frame, InputElement input) {
+    generateActionEvent(frame, (Element) input);
+  }
+
+  private void generateActionEvent(Frame frame, Element element) {
     eventProcessor.push(
         ActionEvent.builder()
             .source(frame)
-            .target(button)
+            .target(element)
             .timestamp(timeService.currentTime())
             .build());
   }

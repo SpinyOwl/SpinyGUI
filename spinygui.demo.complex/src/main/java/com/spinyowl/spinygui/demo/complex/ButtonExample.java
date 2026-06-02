@@ -5,6 +5,7 @@ import com.spinyowl.spinygui.core.event.ActionEvent;
 import com.spinyowl.spinygui.core.node.ButtonElement;
 import com.spinyowl.spinygui.core.node.Element;
 import com.spinyowl.spinygui.core.node.Frame;
+import com.spinyowl.spinygui.core.node.InputElement;
 import com.spinyowl.spinygui.core.node.Text;
 import com.spinyowl.spinygui.core.util.IOUtil;
 import org.slf4j.Logger;
@@ -37,17 +38,18 @@ public class ButtonExample extends Demo {
     Text statusText = firstText(frame.getElementById("status"));
     addActivationFeedback(frame, "save", "Save", statusText);
     addActivationFeedback(frame, "nested", "Nested", statusText);
+    addActivationFeedback(frame, "input-button", "Input button", statusText);
 
     return frame;
   }
 
   private void addActivationFeedback(Frame frame, String id, String label, Text statusText) {
     Element element = frame.getElementById(id);
-    if (!(element instanceof ButtonElement button)) {
-      throw new IllegalStateException("Button demo element is not a button: " + id);
+    if (!isActionButton(element)) {
+      throw new IllegalStateException("Button demo element is not actionable: " + id);
     }
 
-    button.addListener(
+    element.addListener(
         ActionEvent.class,
         event -> {
           activationCount++;
@@ -55,6 +57,11 @@ public class ButtonExample extends Demo {
           statusText.content(message);
           LOG.info(message);
         });
+  }
+
+  private boolean isActionButton(Element element) {
+    return element instanceof ButtonElement
+        || element instanceof InputElement inputElement && inputElement.buttonInput();
   }
 
   private Text firstText(Element element) {

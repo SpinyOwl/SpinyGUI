@@ -72,15 +72,29 @@ class NvgInputRenderer {
   }
 
   void render(InputElement input, long nanovgContext) {
-    if (!input.textInput() || textMeasurer == null) {
+    if ((!input.textInput() && !input.buttonInput()) || textMeasurer == null) {
       return;
     }
 
     TextGeometry geometry = textGeometry(input);
     stateSink.begin(nanovgContext, input, geometry.contentPosition(), geometry.contentSize());
+    if (input.buttonInput()) {
+      drawValue(input, nanovgContext, geometry);
+      stateSink.end(nanovgContext);
+      return;
+    }
+
     if (input.hasSelection()) {
       drawSelection(input, nanovgContext, geometry);
     }
+    drawValue(input, nanovgContext, geometry);
+    if (input.focused()) {
+      drawCaret(input, nanovgContext, geometry);
+    }
+    stateSink.end(nanovgContext);
+  }
+
+  private void drawValue(InputElement input, long nanovgContext, TextGeometry geometry) {
     textSink.drawText(
         nanovgContext,
         input.value(),
@@ -89,10 +103,6 @@ class NvgInputRenderer {
         geometry.color(),
         geometry.textX(),
         geometry.baseline());
-    if (input.focused()) {
-      drawCaret(input, nanovgContext, geometry);
-    }
-    stateSink.end(nanovgContext);
   }
 
   private void drawSelection(InputElement input, long nanovgContext, TextGeometry geometry) {
@@ -149,11 +159,15 @@ class NvgInputRenderer {
         color(style),
         contentPosition,
         contentSize,
-        contentPosition.x() - input.textScrollLeft(),
+        contentPosition.x() - textScrollLeft(input),
         lineTop,
         lineTop + line.baseline(),
         line.height(),
         lineHeight);
+  }
+
+  private float textScrollLeft(InputElement input) {
+    return input.textInput() ? input.textScrollLeft() : 0;
   }
 
   private Vector2f contentPosition(InputElement input) {

@@ -3,6 +3,7 @@ package com.spinyowl.spinygui.core.system.event.listener;
 import static com.spinyowl.spinygui.core.input.KeyAction.PRESS;
 import static com.spinyowl.spinygui.core.input.KeyAction.RELEASE;
 import static com.spinyowl.spinygui.core.input.KeyAction.REPEAT;
+import static com.spinyowl.spinygui.core.node.NodeBuilder.TYPE_BUTTON;
 import static com.spinyowl.spinygui.core.node.NodeBuilder.div;
 import static com.spinyowl.spinygui.core.node.NodeBuilder.frame;
 import static org.mockito.Mockito.doNothing;
@@ -241,6 +242,58 @@ class SystemKeyEventListenerTest {
   }
 
   @Test
+  void process_whenFocusedButtonInputHandlesEnterPress_emitsActionAndKeyboardEvents() {
+    InputElement input = focusedButtonInput("Save");
+
+    processButtonInputKey(input, KeyCode.ENTER, SystemKeyAction.PRESS);
+
+    Assertions.assertTrue(input.pressed());
+    Assertions.assertEquals("Save", input.value());
+  }
+
+  @Test
+  void process_whenFocusedButtonInputHandlesNumpadEnterPress_emitsActionAndKeyboardEvents() {
+    InputElement input = focusedButtonInput("Save");
+
+    processButtonInputKey(input, KeyCode.NUMPAD_ENTER, SystemKeyAction.PRESS);
+
+    Assertions.assertTrue(input.pressed());
+    Assertions.assertEquals("Save", input.value());
+  }
+
+  @Test
+  void process_whenFocusedButtonInputHandlesSpacePress_emitsActionAndKeyboardEvents() {
+    InputElement input = focusedButtonInput("Save");
+
+    processButtonInputKey(input, KeyCode.SPACE, SystemKeyAction.PRESS);
+
+    Assertions.assertTrue(input.pressed());
+    Assertions.assertEquals("Save", input.value());
+  }
+
+  @Test
+  void process_whenFocusedButtonInputHandlesActivationRelease_clearsPressedWithoutActionEvent() {
+    InputElement input = focusedButtonInput("Save");
+    input.pressed(true);
+
+    processButtonInputRelease(input, KeyCode.SPACE);
+
+    Assertions.assertFalse(input.pressed());
+    Assertions.assertEquals("Save", input.value());
+  }
+
+  @Test
+  void process_whenFocusedButtonInputReceivesTextEditKey_preservesValue() {
+    InputElement input = focusedButtonInput("Save");
+    input.caretIndex(2);
+
+    processInputKey(input, KeyCode.BACKSPACE, SystemKeyAction.PRESS);
+
+    Assertions.assertEquals("Save", input.value());
+    Assertions.assertEquals(2, input.caretIndex());
+  }
+
+  @Test
   void process_whenFocusedElementIsNotTextInputKeepsCurrentKeyboardEventFlow() {
     test(SystemKeyAction.PRESS, PRESS);
   }
@@ -355,6 +408,12 @@ class SystemKeyEventListenerTest {
     ButtonElement button = new ButtonElement();
     button.focused(true);
     return button;
+  }
+
+  private InputElement focusedButtonInput(String value) {
+    InputElement input = focusedInput(value, 0);
+    input.type(TYPE_BUTTON);
+    return input;
   }
 
   private void processInputKey(
@@ -505,6 +564,78 @@ class SystemKeyEventListenerTest {
         KeyboardEvent.builder()
             .source(frame)
             .target(button)
+            .action(RELEASE)
+            .timestamp(timestamp)
+            .mods(event.mappedMods())
+            .key(new KeyboardKey(mappedKeyCode, keyCode, scancode))
+            .build();
+
+    listener.process(event, frame);
+
+    verify(eventProcessor).push(expectedKeyboardEvent);
+  }
+
+  private void processButtonInputKey(
+      InputElement input, KeyCode mappedKeyCode, SystemKeyAction systemAction) {
+    var frame = frame(input);
+    double timestamp = 1D;
+    when(timeService.currentTime()).thenReturn(timestamp);
+    KeyboardLayout keyboardLayout = mock(KeyboardLayout.class);
+    when(keyboard.layout()).thenReturn(keyboardLayout);
+
+    int keyCode = 7;
+    int scancode = 7;
+    SystemKeyEvent event =
+        SystemKeyEvent.builder()
+            .keyCode(keyCode)
+            .scancode(scancode)
+            .action(systemAction)
+            .mods(ImmutableSet.of())
+            .frame(frame)
+            .build();
+    when(keyboardLayout.keyCode(keyCode)).thenReturn(mappedKeyCode);
+
+    ActionEvent expectedActionEvent =
+        ActionEvent.builder().source(frame).target(input).timestamp(timestamp).build();
+    KeyboardEvent expectedKeyboardEvent =
+        KeyboardEvent.builder()
+            .source(frame)
+            .target(input)
+            .action(getAction(systemAction))
+            .timestamp(timestamp)
+            .mods(event.mappedMods())
+            .key(new KeyboardKey(mappedKeyCode, keyCode, scancode))
+            .build();
+
+    listener.process(event, frame);
+
+    verify(eventProcessor).push(expectedActionEvent);
+    verify(eventProcessor).push(expectedKeyboardEvent);
+  }
+
+  private void processButtonInputRelease(InputElement input, KeyCode mappedKeyCode) {
+    var frame = frame(input);
+    double timestamp = 1D;
+    when(timeService.currentTime()).thenReturn(timestamp);
+    KeyboardLayout keyboardLayout = mock(KeyboardLayout.class);
+    when(keyboard.layout()).thenReturn(keyboardLayout);
+
+    int keyCode = 7;
+    int scancode = 7;
+    SystemKeyEvent event =
+        SystemKeyEvent.builder()
+            .keyCode(keyCode)
+            .scancode(scancode)
+            .action(SystemKeyAction.RELEASE)
+            .mods(ImmutableSet.of())
+            .frame(frame)
+            .build();
+    when(keyboardLayout.keyCode(keyCode)).thenReturn(mappedKeyCode);
+
+    KeyboardEvent expectedKeyboardEvent =
+        KeyboardEvent.builder()
+            .source(frame)
+            .target(input)
             .action(RELEASE)
             .timestamp(timestamp)
             .mods(event.mappedMods())

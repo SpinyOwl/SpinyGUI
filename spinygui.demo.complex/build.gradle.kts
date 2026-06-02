@@ -41,3 +41,11 @@ tasks.named<JavaExec>("run") {
         "--add-reads", "org.lwjgl=com.spinyowl.cbchain"
     )
 }
+
+tasks.register<JavaExec>("runButtonExample") {
+    group = "application"
+    description = "Runs the complex demo button verification example."
+    classpath = sourceSets.main.get().runtimeClasspath
+    mainClass.set("com.spinyowl.spinygui.demo.complex.ButtonExample")
+    jvmArgs = application.applicationDefaultJvmArgs.toList()
+}

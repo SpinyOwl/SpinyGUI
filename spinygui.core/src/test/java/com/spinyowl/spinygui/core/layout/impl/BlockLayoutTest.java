@@ -195,6 +195,124 @@ class BlockLayoutTest {
   }
 
   @Test
+  void layout_whenButtonInputHasAutoSize_usesValueDerivedWidthAndMeasuredLineHeight() {
+    Frame frame = NodeBuilder.frame();
+    frame.frameSize(300, 200);
+    style(frame, 0);
+    InputElement input = NodeBuilder.input(NodeBuilder.TYPE_BUTTON, "action", "Save");
+    style(input, 2);
+    frame.addChild(input);
+
+    RecursiveLayoutService layoutService = new RecursiveLayoutService();
+    FixedTextMeasurer textMeasurer = new FixedTextMeasurer();
+    BlockLayout blockLayout =
+        new BlockLayout(layoutService, new InlineFormattingContext(textMeasurer), textMeasurer);
+    layoutService.blockLayout(blockLayout);
+
+    blockLayout.layout(frame, new LayoutContext());
+
+    assertEquals(40, input.box().content().width());
+    assertEquals(10, input.box().content().height());
+    assertEquals(44, input.box().borderBox().width());
+    assertEquals(14, input.box().borderBox().height());
+  }
+
+  @Test
+  void layout_whenButtonInputHasEmptyValue_usesFallbackWidth() {
+    Frame frame = NodeBuilder.frame();
+    frame.frameSize(300, 200);
+    style(frame, 0);
+    InputElement input = NodeBuilder.input(NodeBuilder.TYPE_BUTTON, "action", "");
+    style(input, 2);
+    frame.addChild(input);
+
+    RecursiveLayoutService layoutService = new RecursiveLayoutService();
+    FixedTextMeasurer textMeasurer = new FixedTextMeasurer();
+    BlockLayout blockLayout =
+        new BlockLayout(layoutService, new InlineFormattingContext(textMeasurer), textMeasurer);
+    layoutService.blockLayout(blockLayout);
+
+    blockLayout.layout(frame, new LayoutContext());
+
+    assertEquals(64, input.box().content().width());
+    assertEquals(68, input.box().borderBox().width());
+    assertEquals(14, input.box().borderBox().height());
+  }
+
+  @Test
+  void layout_whenButtonInputHasStyledSize_usesStyledSize() {
+    Frame frame = NodeBuilder.frame();
+    frame.frameSize(300, 200);
+    style(frame, 0);
+    InputElement input = NodeBuilder.input(NodeBuilder.TYPE_BUTTON, "action", "Save");
+    style(input, 2);
+    input.resolvedStyle().width(Length.pixel(120));
+    input.resolvedStyle().height(Length.pixel(24));
+    frame.addChild(input);
+
+    RecursiveLayoutService layoutService = new RecursiveLayoutService();
+    FixedTextMeasurer textMeasurer = new FixedTextMeasurer();
+    BlockLayout blockLayout =
+        new BlockLayout(layoutService, new InlineFormattingContext(textMeasurer), textMeasurer);
+    layoutService.blockLayout(blockLayout);
+
+    blockLayout.layout(frame, new LayoutContext());
+
+    assertEquals(116, input.box().content().width());
+    assertEquals(20, input.box().content().height());
+    assertEquals(120, input.box().borderBox().width());
+    assertEquals(24, input.box().borderBox().height());
+  }
+
+  @Test
+  void layout_whenButtonInputHasAutoSize_respectsMinAndMaxConstraints() {
+    Frame frame = NodeBuilder.frame();
+    frame.frameSize(300, 200);
+    style(frame, 0);
+    InputElement input = NodeBuilder.input(NodeBuilder.TYPE_BUTTON, "action", "LongLabel");
+    style(input, 2);
+    input.resolvedStyle().minWidth(Length.pixel(40));
+    input.resolvedStyle().maxWidth(Length.pixel(80));
+    input.resolvedStyle().minHeight(Length.pixel(8));
+    input.resolvedStyle().maxHeight(Length.pixel(12));
+    frame.addChild(input);
+
+    RecursiveLayoutService layoutService = new RecursiveLayoutService();
+    FixedTextMeasurer textMeasurer = new FixedTextMeasurer();
+    BlockLayout blockLayout =
+        new BlockLayout(layoutService, new InlineFormattingContext(textMeasurer), textMeasurer);
+    layoutService.blockLayout(blockLayout);
+
+    blockLayout.layout(frame, new LayoutContext());
+
+    assertEquals(76, input.box().content().width());
+    assertEquals(8, input.box().content().height());
+    assertEquals(80, input.box().borderBox().width());
+    assertEquals(12, input.box().borderBox().height());
+  }
+
+  @Test
+  void layout_whenTextInputValueLooksLikeButtonLabel_stillUsesTextInputDefaultWidth() {
+    Frame frame = NodeBuilder.frame();
+    frame.frameSize(300, 200);
+    style(frame, 0);
+    InputElement input = NodeBuilder.input(NodeBuilder.TYPE_TEXT, "action", "Save");
+    style(input, 2);
+    frame.addChild(input);
+
+    RecursiveLayoutService layoutService = new RecursiveLayoutService();
+    FixedTextMeasurer textMeasurer = new FixedTextMeasurer();
+    BlockLayout blockLayout =
+        new BlockLayout(layoutService, new InlineFormattingContext(textMeasurer), textMeasurer);
+    layoutService.blockLayout(blockLayout);
+
+    blockLayout.layout(frame, new LayoutContext());
+
+    assertEquals(156, input.box().content().width());
+    assertEquals(160, input.box().borderBox().width());
+  }
+
+  @Test
   void layout_whenTextInputIsLaidOut_updatesScrollAndClientSize() {
     Frame frame = NodeBuilder.frame();
     frame.frameSize(300, 200);

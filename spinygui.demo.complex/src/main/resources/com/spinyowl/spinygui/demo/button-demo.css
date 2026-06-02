@@ -61,6 +61,16 @@ button:active {
   background-color: #e2e8f0;
 }
 
+input:focus {
+  border-color: #059669;
+  background-color: #d1fae5;
+}
+
+input:active {
+  border-color: #b45309;
+  background-color: #fde68a;
+}
+
 .status {
   display: block;
   margin-top: 14px;

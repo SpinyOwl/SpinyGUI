@@ -1,5 +1,6 @@
 package com.spinyowl.spinygui.core.backend.renderer.lwjgl.nanovg;
 
+import static com.spinyowl.spinygui.core.node.NodeBuilder.TYPE_BUTTON;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import com.spinyowl.spinygui.core.font.Font;
@@ -113,6 +114,47 @@ class NvgInputRendererTest {
   }
 
   @Test
+  void render_whenButtonInput_drawsValueClippedToContentBox() {
+    RecordingStateSink stateSink = new RecordingStateSink();
+    RecordingSelectionSink selectionSink = new RecordingSelectionSink();
+    RecordingTextSink textSink = new RecordingTextSink();
+    RecordingCaretSink caretSink = new RecordingCaretSink();
+    NvgInputRenderer renderer =
+        new NvgInputRenderer(stateSink, selectionSink, textSink, caretSink);
+    renderer.textMeasurer(new FixedTextMeasurer());
+
+    InputElement input = buttonInput("Save");
+
+    renderer.render(input, 7);
+
+    assertEquals(List.of("begin(7,20.0,30.0,60.0,20.0)", "end(7)"), stateSink.calls());
+    assertEquals(List.of("text(7,Save,20.0,44.0,16.0)"), textSink.calls());
+    assertEquals(List.of(), selectionSink.calls());
+    assertEquals(List.of(), caretSink.calls());
+  }
+
+  @Test
+  void render_whenFocusedButtonInputWithSelection_drawsNoSelectionOrCaret() {
+    RecordingSelectionSink selectionSink = new RecordingSelectionSink();
+    RecordingTextSink textSink = new RecordingTextSink();
+    RecordingCaretSink caretSink = new RecordingCaretSink();
+    NvgInputRenderer renderer =
+        new NvgInputRenderer(new RecordingStateSink(), selectionSink, textSink, caretSink);
+    renderer.textMeasurer(new FixedTextMeasurer());
+
+    InputElement input = buttonInput("Save");
+    input.focused(true);
+    input.select(0, 4);
+    input.textScrollLeft(15);
+
+    renderer.render(input, 4);
+
+    assertEquals(List.of("text(4,Save,20.0,44.0,16.0)"), textSink.calls());
+    assertEquals(List.of(), selectionSink.calls());
+    assertEquals(List.of(), caretSink.calls());
+  }
+
+  @Test
   void render_whenTextMeasurerIsMissing_skipsInputText() {
     RecordingTextSink textSink = new RecordingTextSink();
     NvgInputRenderer renderer =
@@ -127,6 +169,21 @@ class NvgInputRendererTest {
     assertEquals(List.of(), textSink.calls());
   }
 
+  @Test
+  void render_whenButtonInputTextMeasurerIsMissing_skipsValueText() {
+    RecordingTextSink textSink = new RecordingTextSink();
+    NvgInputRenderer renderer =
+        new NvgInputRenderer(
+            new RecordingStateSink(),
+            new RecordingSelectionSink(),
+            textSink,
+            new RecordingCaretSink());
+
+    renderer.render(buttonInput("Save"), 1);
+
+    assertEquals(List.of(), textSink.calls());
+  }
+
   private InputElement input(String value) {
     InputElement input = new InputElement();
     input.value(value);
@@ -136,6 +193,12 @@ class NvgInputRendererTest {
     input.resolvedStyle().fontSize(Length.pixel(16));
     input.resolvedStyle().lineHeight(1f);
     input.resolvedStyle().color(Color.BLACK);
+    return input;
+  }
+
+  private InputElement buttonInput(String value) {
+    InputElement input = input(value);
+    input.type(TYPE_BUTTON);
     return input;
   }
 

@@ -39,6 +39,7 @@ import lombok.NonNull;
 
 public class BlockLayout implements ElementLayout {
   private static final float DEFAULT_TEXT_INPUT_WIDTH = 160f;
+  private static final float DEFAULT_BUTTON_INPUT_WIDTH = 64f;
   private static final int DEFAULT_TEXTAREA_COLS = 20;
   private static final int DEFAULT_TEXTAREA_ROWS = 2;
   private static final String TEXTAREA_COLUMN_WIDTH_SAMPLE =
@@ -127,6 +128,9 @@ public class BlockLayout implements ElementLayout {
       contentWidth = frame.frameSize().x;
     } else if (e instanceof InputElement input && input.textInput()) {
       contentWidth = getTextInputWidth(style, parentBox.content().width());
+    } else if (e instanceof InputElement input && input.buttonInput()) {
+      contentWidth =
+          getButtonInputWidth(input, style, parentBox.content().width(), horizontalAdditions);
     } else if (e instanceof ButtonElement button) {
       contentWidth =
           getButtonWidth(button, style, parentBox.content().width(), horizontalAdditions);
@@ -147,6 +151,9 @@ public class BlockLayout implements ElementLayout {
     } else if (e instanceof InputElement input && input.textInput()) {
       borderBoxHeight =
           getTextInputHeight(e, style, parentBox.content().height(), verticalAdditions);
+    } else if (e instanceof InputElement input && input.buttonInput()) {
+      borderBoxHeight =
+          getButtonInputHeight(input, style, parentBox.content().height(), verticalAdditions);
     } else if (e instanceof ButtonElement button) {
       float childrenHeight = childrenHeight(button, style, skipChildren, ctx);
       borderBoxHeight =
@@ -440,6 +447,46 @@ public class BlockLayout implements ElementLayout {
     borderBoxHeight = Math.max(borderBoxHeight, minHeight.orElse(borderBoxHeight));
     borderBoxHeight = Math.min(borderBoxHeight, maxHeight.orElse(borderBoxHeight));
     return borderBoxHeight;
+  }
+
+  private float getButtonInputWidth(
+      InputElement input, ResolvedStyle style, float parentWidth, float horizontalAdditions) {
+    float width =
+        style.width().isAuto()
+            ? measureButtonInputValueWidth(input, style) + horizontalAdditions
+            : getWidth(parentWidth, style);
+    Optional<Float> minWidth = getFloatLengthOptional(style.minWidth(), parentWidth);
+    Optional<Float> maxWidth = getFloatLengthOptional(style.maxWidth(), parentWidth);
+    width = Math.max(width, minWidth.orElse(width));
+    width = Math.min(width, maxWidth.orElse(width));
+    return width;
+  }
+
+  private float getButtonInputHeight(
+      InputElement input, ResolvedStyle style, float parentHeight, float verticalAdditions) {
+    if (!style.height().isAuto()) {
+      return getHeight(parentHeight, verticalAdditions, style);
+    }
+    float borderBoxHeight = measureTextInputLineHeight(input, style) + verticalAdditions;
+    Optional<Float> minHeight = getFloatLengthOptional(style.minHeight(), parentHeight);
+    Optional<Float> maxHeight = getFloatLengthOptional(style.maxHeight(), parentHeight);
+    borderBoxHeight = Math.max(borderBoxHeight, minHeight.orElse(borderBoxHeight));
+    borderBoxHeight = Math.min(borderBoxHeight, maxHeight.orElse(borderBoxHeight));
+    return borderBoxHeight;
+  }
+
+  private float measureButtonInputValueWidth(InputElement input, ResolvedStyle style) {
+    String text = input.value();
+    if (text.isEmpty()) {
+      return DEFAULT_BUTTON_INPUT_WIDTH;
+    }
+    if (textMeasurer == null) {
+      return text.length() * StyleUtils.getFontSize(input) * 0.8f;
+    }
+    return textMeasurer
+        .getTextLineMetrics(
+            text, findFont(style), StyleUtils.getFontSize(input), style.lineHeight())
+        .width();
   }
 
   private float measureButtonContentWidth(ButtonElement button, ResolvedStyle style) {

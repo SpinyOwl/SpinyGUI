@@ -1,5 +1,6 @@
 package com.spinyowl.spinygui.core.system.event.listener;
 
+import static com.spinyowl.spinygui.core.node.NodeBuilder.TYPE_BUTTON;
 import static com.spinyowl.spinygui.core.node.NodeBuilder.div;
 import static com.spinyowl.spinygui.core.node.NodeBuilder.frame;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -390,6 +391,115 @@ class SystemMouseClickEventListenerTest {
     verify(eventProcessor).push(expectedReleaseEvent);
     assertTrue(button.focused());
     assertFalse(button.pressed());
+  }
+
+  @Test
+  void process_releaseFocusedButtonInputInCurrentFrame_generatesActionEventWithClickAndRelease() {
+    InputElement input = new InputElement();
+    input.type(TYPE_BUTTON);
+    input.value("Save");
+    input.focused(true);
+    input.pressed(true);
+    input.box().contentSize(20, 20);
+    input.box().contentPosition(50, 20);
+    Frame frame = frame(input);
+    frame.box().contentSize(100, 100);
+
+    SystemMouseClickEvent event = mouseRelease(frame);
+    Vector2f current = new Vector2f(55, 25);
+    when(mouseService.getCursorPositions(frame))
+        .thenReturn(new CursorPositions(current, current));
+    double timestamp = 1;
+    when(timeService.currentTime()).thenReturn(timestamp);
+
+    MouseClickEvent expectedClickEvent =
+        MouseClickEvent.builder()
+            .source(frame)
+            .target(input)
+            .action(KeyAction.CLICK)
+            .timestamp(timestamp)
+            .mouseButton(MouseButton.LEFT)
+            .position(new Vector2f(input.box().contentPosition()).sub(current).negate())
+            .absolutePosition(current)
+            .mods(event.mappedMods())
+            .build();
+    ActionEvent expectedActionEvent =
+        ActionEvent.builder().source(frame).target(input).timestamp(timestamp).build();
+    MouseClickEvent expectedReleaseEvent =
+        MouseClickEvent.builder()
+            .source(frame)
+            .target(input)
+            .action(KeyAction.RELEASE)
+            .timestamp(timestamp)
+            .mouseButton(MouseButton.LEFT)
+            .position(new Vector2f(input.box().contentPosition()).sub(current).negate())
+            .absolutePosition(current)
+            .mods(event.mappedMods())
+            .build();
+
+    listener.process(event, frame);
+
+    verify(eventProcessor).push(expectedClickEvent);
+    verify(eventProcessor).push(expectedActionEvent);
+    verify(eventProcessor).push(expectedReleaseEvent);
+    assertTrue(input.focused());
+    assertFalse(input.pressed());
+    assertEquals("Save", input.value());
+  }
+
+  @Test
+  void process_pressAndReleaseButtonInputInCurrentFrame_generatesActionEvent() {
+    InputElement input = new InputElement();
+    input.type(TYPE_BUTTON);
+    input.value("Save");
+    input.box().contentSize(20, 20);
+    input.box().contentPosition(50, 20);
+    Frame frame = frame(input);
+    frame.box().contentSize(100, 100);
+
+    Vector2f current = new Vector2f(55, 25);
+    when(mouseService.getCursorPositions(frame))
+        .thenReturn(new CursorPositions(current, current));
+    double timestamp = 1;
+    when(timeService.currentTime()).thenReturn(timestamp);
+
+    listener.process(mousePress(frame), frame);
+    listener.process(mouseRelease(frame), frame);
+
+    ActionEvent expectedActionEvent =
+        ActionEvent.builder().source(frame).target(input).timestamp(timestamp).build();
+    verify(eventProcessor).push(expectedActionEvent);
+    assertTrue(input.focused());
+    assertFalse(input.pressed());
+    assertEquals("Save", input.value());
+  }
+
+  @Test
+  void process_pressButtonInputWithTextMeasurer_doesNotPlaceCaretOrExtendSelection() {
+    InputElement input = new InputElement();
+    input.type(TYPE_BUTTON);
+    input.value("Save");
+    input.caretIndex(2);
+    input.box().contentPosition(20, 20);
+    input.box().contentSize(40, 20);
+    input.box().padding().left(5);
+    input.box().padding().right(5);
+    input.box().border().left(2);
+    input.box().border().right(2);
+    input.resolvedStyle().fontFamilies(Set.of(Font.DEFAULT.fontFamily()));
+    input.resolvedStyle().fontStyle(FontStyle.NORMAL);
+    input.resolvedStyle().fontWeight(FontWeight.REGULAR);
+    input.resolvedStyle().fontSize(Length.pixel(16));
+    Frame frame = frame(input);
+    frame.box().contentSize(100, 100);
+    listener = listenerWithTextMeasurer();
+
+    processInputPress(frame, new Vector2f(55, 25), ImmutableSet.of(SystemKeyMod.SHIFT));
+
+    Assertions.assertEquals(2, input.caretIndex());
+    Assertions.assertEquals(2, input.selectionAnchor());
+    assertTrue(input.focused());
+    assertTrue(input.pressed());
   }
 
   @Test
