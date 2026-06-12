@@ -292,6 +292,7 @@ public abstract class Demo {
             .timeService(timeService)
             .mouseService(mouseService)
             .scrollbarInteraction(scrollbarInteraction)
+            .textMeasurer(textMeasurer)
             .build());
     systemEventListenerProvider.listener(
         SystemCursorEnterEvent.class,

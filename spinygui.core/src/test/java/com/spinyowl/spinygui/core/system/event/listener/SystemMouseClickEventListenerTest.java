@@ -31,6 +31,7 @@ import com.spinyowl.spinygui.core.node.ButtonElement;
 import com.spinyowl.spinygui.core.node.Element;
 import com.spinyowl.spinygui.core.node.Frame;
 import com.spinyowl.spinygui.core.node.InputElement;
+import com.spinyowl.spinygui.core.node.TextareaElement;
 import com.spinyowl.spinygui.core.system.event.SystemMouseClickEvent;
 import com.spinyowl.spinygui.core.system.font.FontMetrics;
 import com.spinyowl.spinygui.core.system.font.TextCaretMetrics;
@@ -614,6 +615,21 @@ class SystemMouseClickEventListenerTest {
   }
 
   @Test
+  void process_shiftPressTextarea_extendsSelectionFromAnchor() {
+    TextareaElement textarea = textarea();
+    textarea.caretIndex(1);
+    Frame frame = frame(textarea);
+    frame.box().contentSize(100, 100);
+    listener = listenerWithTextMeasurer();
+
+    processInputPress(frame, new Vector2f(55, 45), ImmutableSet.of(SystemKeyMod.SHIFT));
+
+    Assertions.assertEquals(1, textarea.selectionStart());
+    Assertions.assertEquals(5, textarea.selectionEnd());
+    Assertions.assertEquals(5, textarea.caretIndex());
+  }
+
+  @Test
   void process_pressNestedTextInput_placesCaretFromAbsoluteContentPosition() {
     Element panel = div();
     panel.box().contentPosition(100, 20);
@@ -765,17 +781,30 @@ class SystemMouseClickEventListenerTest {
   private InputElement textInput() {
     InputElement input = new InputElement();
     input.value("abcd");
-    input.box().contentPosition(20, 20);
-    input.box().contentSize(40, 20);
-    input.box().padding().left(5);
-    input.box().padding().right(5);
-    input.box().border().left(2);
-    input.box().border().right(2);
-    input.resolvedStyle().fontFamilies(Set.of(Font.DEFAULT.fontFamily()));
-    input.resolvedStyle().fontStyle(FontStyle.NORMAL);
-    input.resolvedStyle().fontWeight(FontWeight.REGULAR);
-    input.resolvedStyle().fontSize(Length.pixel(16));
+    applyTextControlGeometry(input);
     return input;
+  }
+
+  private TextareaElement textarea() {
+    TextareaElement textarea = new TextareaElement("ab\ncd");
+    applyTextControlGeometry(textarea);
+    textarea.resolvedStyle().lineHeight(1f);
+    return textarea;
+  }
+
+  private void applyTextControlGeometry(Element element) {
+    element.box().contentPosition(20, 20);
+    element.box().contentSize(40, 40);
+    element.box().padding().left(5);
+    element.box().padding().right(5);
+    element.box().padding().top(5);
+    element.box().border().left(2);
+    element.box().border().right(2);
+    element.box().border().top(2);
+    element.resolvedStyle().fontFamilies(Set.of(Font.DEFAULT.fontFamily()));
+    element.resolvedStyle().fontStyle(FontStyle.NORMAL);
+    element.resolvedStyle().fontWeight(FontWeight.REGULAR);
+    element.resolvedStyle().fontSize(Length.pixel(16));
   }
 
   private void processInputPress(Frame frame, Vector2f cursorPosition) {
@@ -830,10 +859,18 @@ class SystemMouseClickEventListenerTest {
 
   private static class FixedWidthTextMeasurer implements TextMeasurer {
     private static final float CHAR_WIDTH = 10;
+    private static final FontMetrics FONT_METRICS = new FontMetrics(12, 4, 0, 16, 12);
 
     @Override
     public TextMetrics measureText(String text, Font font, float fontSize, float lineHeight) {
-      throw new UnsupportedOperationException();
+      TextLineMetrics line = lineMetrics(text);
+      return TextMetrics.builder()
+          .line(line)
+          .width(line.width())
+          .height(line.height())
+          .lineHeight(line.height())
+          .fontMetrics(FONT_METRICS)
+          .build();
     }
 
     @Override
@@ -845,7 +882,7 @@ class SystemMouseClickEventListenerTest {
         float lineHeight,
         float maxWidth,
         boolean wordWrap) {
-      throw new UnsupportedOperationException();
+      return measureText(text, font, fontSize, lineHeight);
     }
 
     @Override
@@ -857,18 +894,13 @@ class SystemMouseClickEventListenerTest {
         float lineHeight,
         float maxWidth,
         boolean wordWrap) {
-      throw new UnsupportedOperationException();
+      return measureText(text, font, fontSize, lineHeight);
     }
 
     @Override
     public TextLineMetrics getTextLineMetrics(
         String text, Font font, float fontSize, float lineHeight) {
-      return TextLineMetrics.builder()
-          .characters(text)
-          .width(text.length() * CHAR_WIDTH)
-          .height(16)
-          .fontMetrics(new FontMetrics(12, 4, 0, 16, 12))
-          .build();
+      return lineMetrics(text);
     }
 
     @Override
@@ -877,6 +909,19 @@ class SystemMouseClickEventListenerTest {
       int caretIndex = Math.round(offsetX / CHAR_WIDTH);
       caretIndex = Math.max(0, Math.min(caretIndex, text.length()));
       return new TextCaretMetrics(caretIndex, caretIndex * CHAR_WIDTH);
+    }
+
+    private static TextLineMetrics lineMetrics(String text) {
+      return TextLineMetrics.builder()
+          .characters(text)
+          .startIndex(0)
+          .endIndex(text.length())
+          .charCount(text.length())
+          .width(text.length() * CHAR_WIDTH)
+          .height(16)
+          .baseline(12)
+          .fontMetrics(FONT_METRICS)
+          .build();
     }
   }
 }

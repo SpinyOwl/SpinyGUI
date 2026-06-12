@@ -16,15 +16,27 @@ import com.spinyowl.spinygui.core.event.Event;
 import com.spinyowl.spinygui.core.event.MouseDragEvent;
 import com.spinyowl.spinygui.core.event.ScrollEvent;
 import com.spinyowl.spinygui.core.event.processor.EventProcessor;
+import com.spinyowl.spinygui.core.font.Font;
+import com.spinyowl.spinygui.core.font.FontStyle;
+import com.spinyowl.spinygui.core.font.FontWeight;
 import com.spinyowl.spinygui.core.input.MouseService;
 import com.spinyowl.spinygui.core.input.MouseService.CursorPositions;
 import com.spinyowl.spinygui.core.node.Element;
 import com.spinyowl.spinygui.core.node.Frame;
+import com.spinyowl.spinygui.core.node.InputElement;
+import com.spinyowl.spinygui.core.node.TextareaElement;
 import com.spinyowl.spinygui.core.system.event.SystemCursorPosEvent;
+import com.spinyowl.spinygui.core.system.font.FontMetrics;
+import com.spinyowl.spinygui.core.system.font.TextCaretMetrics;
+import com.spinyowl.spinygui.core.system.font.TextLineMetrics;
+import com.spinyowl.spinygui.core.system.font.TextMeasurer;
+import com.spinyowl.spinygui.core.system.font.TextMetrics;
 import com.spinyowl.spinygui.core.system.input.ScrollbarInteraction;
-import com.spinyowl.spinygui.core.time.TimeService;
 import com.spinyowl.spinygui.core.style.types.Overflow;
+import com.spinyowl.spinygui.core.style.types.length.Length;
+import com.spinyowl.spinygui.core.time.TimeService;
 import java.util.List;
+import java.util.Set;
 import org.joml.Vector2f;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -196,6 +208,48 @@ class SystemCursorPosEventListenerTest {
   }
 
   @Test
+  void process_leftDragFocusedPressedTextInput_extendsSelectionToCursorCaret() {
+    listener = listenerWithTextMeasurer();
+    InputElement input = textInput();
+    input.focused(true);
+    input.pressed(true);
+    input.caretIndex(1);
+    Frame frame = frame(input);
+    frame.box().contentSize(100, 100);
+    Vector2f previous = new Vector2f(35, 25);
+    Vector2f current = new Vector2f(55, 25);
+    when(mouseService.getCursorPositions(frame)).thenReturn(new CursorPositions(previous, previous));
+    when(mouseService.pressed(LEFT)).thenReturn(true);
+
+    listener.process(cursorEvent(frame, current.x(), current.y()), frame);
+
+    assertEquals(1, input.selectionStart());
+    assertEquals(4, input.selectionEnd());
+    assertEquals(4, input.caretIndex());
+  }
+
+  @Test
+  void process_leftDragFocusedPressedTextarea_extendsSelectionToCursorCaret() {
+    listener = listenerWithTextMeasurer();
+    TextareaElement textarea = textarea();
+    textarea.focused(true);
+    textarea.pressed(true);
+    textarea.caretIndex(1);
+    Frame frame = frame(textarea);
+    frame.box().contentSize(100, 100);
+    Vector2f previous = new Vector2f(35, 25);
+    Vector2f current = new Vector2f(55, 45);
+    when(mouseService.getCursorPositions(frame)).thenReturn(new CursorPositions(previous, previous));
+    when(mouseService.pressed(LEFT)).thenReturn(true);
+
+    listener.process(cursorEvent(frame, current.x(), current.y()), frame);
+
+    assertEquals(1, textarea.selectionStart());
+    assertEquals(5, textarea.selectionEnd());
+    assertEquals(5, textarea.caretIndex());
+  }
+
+  @Test
   void process_dragVerticalScrollbarThumb_updatesScrollTopAndClampsAtBothEnds() {
     ScrollbarInteraction scrollbarInteraction = new ScrollbarInteraction();
     listener =
@@ -286,6 +340,42 @@ class SystemCursorPosEventListenerTest {
     return SystemCursorPosEvent.builder().posX(x).posY(y).frame(frame).build();
   }
 
+  private SystemEventListener<SystemCursorPosEvent> listenerWithTextMeasurer() {
+    return SystemCursorPosEventListener.builder()
+        .eventProcessor(eventProcessor)
+        .mouseService(mouseService)
+        .timeService(timeService)
+        .textMeasurer(new FixedWidthTextMeasurer())
+        .build();
+  }
+
+  private InputElement textInput() {
+    InputElement input = new InputElement();
+    input.value("abcd");
+    applyTextControlGeometry(input);
+    return input;
+  }
+
+  private TextareaElement textarea() {
+    TextareaElement textarea = new TextareaElement("ab\ncd");
+    applyTextControlGeometry(textarea);
+    textarea.resolvedStyle().lineHeight(1f);
+    return textarea;
+  }
+
+  private void applyTextControlGeometry(Element element) {
+    element.box().contentPosition(20, 20);
+    element.box().contentSize(40, 40);
+    element.box().padding().left(5);
+    element.box().padding().top(5);
+    element.box().border().left(2);
+    element.box().border().top(2);
+    element.resolvedStyle().fontFamilies(Set.of(Font.DEFAULT.fontFamily()));
+    element.resolvedStyle().fontStyle(FontStyle.NORMAL);
+    element.resolvedStyle().fontWeight(FontWeight.REGULAR);
+    element.resolvedStyle().fontSize(Length.pixel(16));
+  }
+
   private void beginDrag(
       ScrollbarInteraction scrollbarInteraction, Element element, Vector2f point) {
     scrollbarInteraction.beginDrag(scrollbarInteraction.hit(List.of(element), point), point);
@@ -302,5 +392,73 @@ class SystemCursorPosEventListenerTest {
     element.resolvedStyle().overflowX(Overflow.AUTO);
     element.resolvedStyle().overflowY(Overflow.AUTO);
     return element;
+  }
+
+  private static class FixedWidthTextMeasurer implements TextMeasurer {
+    private static final float CHAR_WIDTH = 10;
+    private static final FontMetrics FONT_METRICS = new FontMetrics(12, 4, 0, 16, 12);
+
+    @Override
+    public TextMetrics measureText(String text, Font font, float fontSize, float lineHeight) {
+      TextLineMetrics line = lineMetrics(text);
+      return TextMetrics.builder()
+          .line(line)
+          .width(line.width())
+          .height(line.height())
+          .lineHeight(line.height())
+          .fontMetrics(FONT_METRICS)
+          .build();
+    }
+
+    @Override
+    public TextMetrics measureText(
+        String text,
+        float offsetX,
+        Font font,
+        float fontSize,
+        float lineHeight,
+        float maxWidth,
+        boolean wordWrap) {
+      return measureText(text, font, fontSize, lineHeight);
+    }
+
+    @Override
+    public TextMetrics getTextMetrics(
+        String text,
+        float offsetX,
+        Font font,
+        float fontSize,
+        float lineHeight,
+        float maxWidth,
+        boolean wordWrap) {
+      return measureText(text, font, fontSize, lineHeight);
+    }
+
+    @Override
+    public TextLineMetrics getTextLineMetrics(
+        String text, Font font, float fontSize, float lineHeight) {
+      return lineMetrics(text);
+    }
+
+    @Override
+    public TextCaretMetrics getTextCaretMetrics(
+        String text, Font font, float fontSize, float offsetX) {
+      int caretIndex = Math.round(offsetX / CHAR_WIDTH);
+      caretIndex = Math.max(0, Math.min(caretIndex, text.length()));
+      return new TextCaretMetrics(caretIndex, caretIndex * CHAR_WIDTH);
+    }
+
+    private static TextLineMetrics lineMetrics(String text) {
+      return TextLineMetrics.builder()
+          .characters(text)
+          .startIndex(0)
+          .endIndex(text.length())
+          .charCount(text.length())
+          .width(text.length() * CHAR_WIDTH)
+          .height(16)
+          .baseline(12)
+          .fontMetrics(FONT_METRICS)
+          .build();
+    }
   }
 }
