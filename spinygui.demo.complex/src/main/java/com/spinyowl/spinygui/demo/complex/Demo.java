@@ -54,6 +54,7 @@ import com.spinyowl.spinygui.core.animation.Animator;
 import com.spinyowl.spinygui.core.animation.AnimatorImpl;
 import com.spinyowl.spinygui.core.backend.renderer.Renderer;
 import com.spinyowl.spinygui.core.backend.renderer.lwjgl.nanovg.NvgRenderer;
+import com.spinyowl.spinygui.core.clipboard.Clipboard;
 import com.spinyowl.spinygui.core.event.processor.DefaultEventProcessor;
 import com.spinyowl.spinygui.core.event.processor.EventProcessor;
 import com.spinyowl.spinygui.core.input.KeyCode;
@@ -333,6 +334,7 @@ public abstract class Demo {
         SystemKeyEvent.class,
         SystemKeyEventListener.builder()
             .keyboard(new Keyboard(defaultKeyboardLayout(), new ShortcutRegistryImpl()))
+            .clipboard(glfwClipboard())
             .eventProcessor(eventProcessor)
             .timeService(timeService)
             .textMeasurer(textMeasurer)
@@ -459,9 +461,27 @@ public abstract class Demo {
             Map.entry(KeyCode.NUMPAD_ENTER, GLFW.GLFW_KEY_KP_ENTER),
             Map.entry(KeyCode.HOME, GLFW.GLFW_KEY_HOME),
             Map.entry(KeyCode.END, GLFW.GLFW_KEY_END),
+            Map.entry(KeyCode.KEY_A, GLFW.GLFW_KEY_A),
+            Map.entry(KeyCode.KEY_C, GLFW.GLFW_KEY_C),
+            Map.entry(KeyCode.KEY_V, GLFW.GLFW_KEY_V),
+            Map.entry(KeyCode.KEY_X, GLFW.GLFW_KEY_X),
             Map.entry(KeyCode.KEY_F3, GLFW.GLFW_KEY_F3),
             Map.entry(KeyCode.KEY_G, GLFW.GLFW_KEY_G),
             Map.entry(KeyCode.ESCAPE, GLFW.GLFW_KEY_ESCAPE)));
+  }
+
+  private Clipboard glfwClipboard() {
+    return new Clipboard() {
+      @Override
+      public String getClipboardString() {
+        return GLFW.glfwGetClipboardString(NULL);
+      }
+
+      @Override
+      public void setClipboardString(String string) {
+        GLFW.glfwSetClipboardString(NULL, string == null ? "" : string);
+      }
+    };
   }
 
   private SystemKeyAction mapAction(int action) {

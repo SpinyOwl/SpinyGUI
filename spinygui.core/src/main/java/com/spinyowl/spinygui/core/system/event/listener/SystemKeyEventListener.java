@@ -1,5 +1,6 @@
 package com.spinyowl.spinygui.core.system.event.listener;
 
+import com.spinyowl.spinygui.core.clipboard.Clipboard;
 import com.spinyowl.spinygui.core.event.ActionEvent;
 import com.spinyowl.spinygui.core.event.KeyboardEvent;
 import com.spinyowl.spinygui.core.event.processor.EventProcessor;
@@ -34,6 +35,7 @@ public class SystemKeyEventListener extends AbstractSystemEventListener<SystemKe
   @EqualsAndHashCode.Exclude private final TextareaBehavior textareaBehavior;
 
   @NonNull private final Keyboard keyboard;
+  @EqualsAndHashCode.Exclude private final Clipboard clipboard;
   @EqualsAndHashCode.Exclude private final TextInputViewportBehavior viewportBehavior;
   @EqualsAndHashCode.Exclude private final TextareaViewportBehavior textareaViewportBehavior;
 
@@ -42,9 +44,11 @@ public class SystemKeyEventListener extends AbstractSystemEventListener<SystemKe
       @NonNull EventProcessor eventProcessor,
       @NonNull TimeService timeService,
       @NonNull Keyboard keyboard,
+      Clipboard clipboard,
       TextMeasurer textMeasurer) {
     super(eventProcessor, timeService);
     this.keyboard = keyboard;
+    this.clipboard = clipboard;
     viewportBehavior = textMeasurer == null ? null : new TextInputViewportBehavior(textMeasurer);
     MultilineTextControlMetrics textareaMetrics =
         textMeasurer == null ? null : new MultilineTextControlMetrics(textMeasurer);
@@ -78,9 +82,13 @@ public class SystemKeyEventListener extends AbstractSystemEventListener<SystemKe
             generateActionEvent(frame, input);
           }
         } else {
+          boolean control = event.mods().contains(SystemKeyMod.CONTROL);
+          boolean shift = event.mods().contains(SystemKeyMod.SHIFT);
           boolean changed =
-              TEXT_INPUT_BEHAVIOR.handleKey(
-                  input, keyCodeObject, action, event.mods().contains(SystemKeyMod.SHIFT));
+              control && isTextInputShortcut(keyCodeObject)
+                  ? TEXT_INPUT_BEHAVIOR.handleShortcut(
+                      input, keyCodeObject, action, clipboardAdapter())
+                  : TEXT_INPUT_BEHAVIOR.handleKey(input, keyCodeObject, action, shift, control);
           if (changed) {
             ensureCaretVisible(input);
           }
@@ -128,6 +136,30 @@ public class SystemKeyEventListener extends AbstractSystemEventListener<SystemKe
     if (textareaViewportBehavior != null) {
       textareaViewportBehavior.ensureCaretVisible(textarea);
     }
+  }
+
+  private boolean isTextInputShortcut(KeyCode keyCode) {
+    return switch (keyCode) {
+      case KEY_A, KEY_C, KEY_V, KEY_X -> true;
+      default -> false;
+    };
+  }
+
+  private TextInputBehavior.TextClipboard clipboardAdapter() {
+    if (clipboard == null) {
+      return null;
+    }
+    return new TextInputBehavior.TextClipboard() {
+      @Override
+      public String getText() {
+        return clipboard.getClipboardString();
+      }
+
+      @Override
+      public void setText(String text) {
+        clipboard.setClipboardString(text);
+      }
+    };
   }
 
   private void generateActionEvent(Frame frame, ButtonElement button) {

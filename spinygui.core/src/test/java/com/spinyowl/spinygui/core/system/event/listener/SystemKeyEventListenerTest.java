@@ -12,6 +12,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 import com.google.common.collect.ImmutableSet;
+import com.spinyowl.spinygui.core.clipboard.Clipboard;
 import com.spinyowl.spinygui.core.event.ActionEvent;
 import com.spinyowl.spinygui.core.event.KeyboardEvent;
 import com.spinyowl.spinygui.core.event.processor.EventProcessor;
@@ -43,14 +44,17 @@ class SystemKeyEventListenerTest {
   @Mock private Keyboard keyboard;
 
   private SystemEventListener<SystemKeyEvent> listener;
+  private FakeClipboard clipboard;
 
   @BeforeEach
   void setUp() {
+    clipboard = new FakeClipboard();
     listener =
         SystemKeyEventListener.builder()
             .eventProcessor(eventProcessor)
             .timeService(timeService)
             .keyboard(keyboard)
+            .clipboard(clipboard)
             .build();
   }
 
@@ -211,6 +215,92 @@ class SystemKeyEventListenerTest {
 
     processTextareaKey(textarea, KeyCode.END, SystemKeyAction.PRESS);
     Assertions.assertEquals(6, textarea.caretIndex());
+  }
+
+  @Test
+  void process_whenControlAPressedSelectsTextInputValue() {
+    InputElement input = focusedInput("abcd", 2);
+
+    processInputKey(
+        input, KeyCode.KEY_A, SystemKeyAction.PRESS, ImmutableSet.of(SystemKeyMod.CONTROL));
+
+    Assertions.assertEquals(0, input.selectionStart());
+    Assertions.assertEquals(4, input.selectionEnd());
+    Assertions.assertEquals(4, input.caretIndex());
+  }
+
+  @Test
+  void process_whenControlCPressedCopiesTextInputSelection() {
+    InputElement input = focusedInput("abcd", 3);
+    input.select(1, 3);
+
+    processInputKey(
+        input, KeyCode.KEY_C, SystemKeyAction.PRESS, ImmutableSet.of(SystemKeyMod.CONTROL));
+
+    Assertions.assertEquals("bc", clipboard.text);
+    Assertions.assertEquals("abcd", input.value());
+    Assertions.assertEquals(1, input.selectionStart());
+    Assertions.assertEquals(3, input.selectionEnd());
+  }
+
+  @Test
+  void process_whenControlXPressedCutsTextInputSelection() {
+    InputElement input = focusedInput("abcd", 3);
+    input.select(1, 3);
+
+    processInputKey(
+        input, KeyCode.KEY_X, SystemKeyAction.PRESS, ImmutableSet.of(SystemKeyMod.CONTROL));
+
+    Assertions.assertEquals("bc", clipboard.text);
+    Assertions.assertEquals("ad", input.value());
+    Assertions.assertEquals(1, input.caretIndex());
+    Assertions.assertFalse(input.hasSelection());
+  }
+
+  @Test
+  void process_whenControlVPressedPastesClipboardText() {
+    InputElement input = focusedInput("abcd", 3);
+    input.select(1, 3);
+    clipboard.text = "XY\nZ";
+
+    processInputKey(
+        input, KeyCode.KEY_V, SystemKeyAction.PRESS, ImmutableSet.of(SystemKeyMod.CONTROL));
+
+    Assertions.assertEquals("aXYZd", input.value());
+    Assertions.assertEquals(4, input.caretIndex());
+    Assertions.assertFalse(input.hasSelection());
+  }
+
+  @Test
+  void process_whenControlArrowPressedMovesTextInputCaretByWord() {
+    InputElement input = focusedInput("alpha beta,gamma", 0);
+
+    processInputKey(
+        input, KeyCode.RIGHT, SystemKeyAction.PRESS, ImmutableSet.of(SystemKeyMod.CONTROL));
+    Assertions.assertEquals(6, input.caretIndex());
+
+    processInputKey(
+        input, KeyCode.RIGHT, SystemKeyAction.PRESS, ImmutableSet.of(SystemKeyMod.CONTROL));
+    Assertions.assertEquals(10, input.caretIndex());
+
+    processInputKey(
+        input, KeyCode.LEFT, SystemKeyAction.PRESS, ImmutableSet.of(SystemKeyMod.CONTROL));
+    Assertions.assertEquals(6, input.caretIndex());
+  }
+
+  @Test
+  void process_whenControlShiftArrowPressedExtendsTextInputSelectionByWord() {
+    InputElement input = focusedInput("alpha beta gamma", 6);
+
+    processInputKey(
+        input,
+        KeyCode.RIGHT,
+        SystemKeyAction.PRESS,
+        ImmutableSet.of(SystemKeyMod.CONTROL, SystemKeyMod.SHIFT));
+
+    Assertions.assertEquals(6, input.selectionStart());
+    Assertions.assertEquals(11, input.selectionEnd());
+    Assertions.assertEquals(11, input.caretIndex());
   }
 
   @Test
@@ -653,6 +743,21 @@ class SystemKeyEventListenerTest {
       case RELEASE -> RELEASE;
       case REPEAT -> REPEAT;
     };
+  }
+
+  private static class FakeClipboard implements Clipboard {
+
+    private String text = "";
+
+    @Override
+    public String getClipboardString() {
+      return text;
+    }
+
+    @Override
+    public void setClipboardString(String string) {
+      text = string;
+    }
   }
 
   @Test
