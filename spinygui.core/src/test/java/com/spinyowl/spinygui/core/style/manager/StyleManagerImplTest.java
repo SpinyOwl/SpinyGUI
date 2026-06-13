@@ -17,6 +17,7 @@ import com.spinyowl.spinygui.core.style.stylesheet.impl.DefaultPropertyStore;
 import com.spinyowl.spinygui.core.style.stylesheet.impl.DefaultPropertyStoreProvider;
 import com.spinyowl.spinygui.core.style.stylesheet.term.TermIdent;
 import com.spinyowl.spinygui.core.style.types.Color;
+import com.spinyowl.spinygui.core.style.types.Display;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -216,6 +217,54 @@ class StyleManagerImplTest {
 
     assertEquals(Color.RED, first.resolvedStyle().color());
     assertEquals(Color.RED, second.resolvedStyle().color());
+  }
+
+  @Test
+  void recalculateAppliesInlineBlockDisplayParsedByRealParser() {
+    PropertyStore propertyStore = new DefaultPropertyStoreProvider().createPropertyStore();
+    StyleSheetParser parser = StyleSheetParserFactory.createParser(propertyStore);
+    StyleManager styleManager = new StyleManagerImpl(propertyStore, parser);
+    Frame frame = new Frame();
+    Element child = new Element("div");
+    child.style("display: inline-block");
+    frame.addChild(child);
+
+    styleManager.recalculate(frame);
+
+    assertEquals(Display.INLINE_BLOCK, child.resolvedStyle().display());
+  }
+
+  @Test
+  void recalculateAppliesUserAgentInlineBlockDisplayToControls() {
+    PropertyStore propertyStore = new DefaultPropertyStoreProvider().createPropertyStore();
+    StyleSheetParser parser = StyleSheetParserFactory.createParser(propertyStore);
+    StyleManager styleManager = new StyleManagerImpl(propertyStore, parser);
+    Frame frame = new Frame();
+    Element input = NodeBuilder.input();
+    Element button = NodeBuilder.button(NodeBuilder.text("Save"));
+    Element textarea = NodeBuilder.textarea();
+    frame.addChildren(input, button, textarea);
+
+    styleManager.recalculate(frame);
+
+    assertEquals(Display.INLINE_BLOCK, input.resolvedStyle().display());
+    assertEquals(Display.INLINE_BLOCK, button.resolvedStyle().display());
+    assertEquals(Display.INLINE_BLOCK, textarea.resolvedStyle().display());
+  }
+
+  @Test
+  void recalculateAuthorStylesOverrideUserAgentInlineBlockDisplay() {
+    PropertyStore propertyStore = new DefaultPropertyStoreProvider().createPropertyStore();
+    StyleSheetParser parser = StyleSheetParserFactory.createParser(propertyStore);
+    StyleManager styleManager = new StyleManagerImpl(propertyStore, parser);
+    Frame frame = new Frame();
+    Element input = NodeBuilder.input();
+    frame.addChild(input);
+    frame.styleSheets().add(parser.parse("input { display: block; }"));
+
+    styleManager.recalculate(frame);
+
+    assertEquals(Display.BLOCK, input.resolvedStyle().display());
   }
 
   @Test

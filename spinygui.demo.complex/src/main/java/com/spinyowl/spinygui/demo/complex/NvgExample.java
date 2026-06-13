@@ -77,11 +77,14 @@ winframe {
   private String getFlexCss() {
     // language=css
     return """
-winframe,
+winframe {
+    overflow: scroll;
+    box-sizing: border-box; /* default behaviour */
+}
 winframe * {
-  border: 8px solid #8c8c8c;
-  box-sizing: border-box; /* default behaviour */
-  overflow: scroll; /* default behaviour */
+    border: 8px solid #8c8c8c;
+    box-sizing: border-box; /* default behaviour */
+    overflow: hidden; /* default behaviour */
 }
 winframe:hover,
 winframe *:hover {
@@ -102,6 +105,20 @@ winframe *:hover {
 .word-break-demo {
   word-break: break-all;
   border-color: #AA45FF;
+}
+.inline-block-demo {
+  display: block;
+  width: 320px;
+  font-size: 16px;
+  border-color: #2dd4bf;
+}
+.inline-chip {
+  display: inline-block;
+  width: auto;
+  padding: 4px 8px;
+  border: 3px solid #0f766e;
+  background-color: #ccfbf1;
+  overflow: hidden;
 }
 """;
   }
@@ -126,6 +143,9 @@ winframe *:hover {
   </div>
   <div class="wrap-demo word-break-demo">
     word-break: Supercalifragilisticexpialidocious
+  </div>
+  <div class="inline-block-demo">
+    before <span class="inline-chip">inline block</span> after
   </div>
 
   <div class='twrapper' style="border-color: pink">

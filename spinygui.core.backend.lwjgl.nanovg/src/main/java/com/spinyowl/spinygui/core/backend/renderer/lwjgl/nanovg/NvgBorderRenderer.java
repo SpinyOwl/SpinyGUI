@@ -20,7 +20,8 @@ public class NvgBorderRenderer {
     if (BorderStyle.NONE.equals(style.borderTopStyle())) return;
 
     float borderThickness = element.box().border().top();
-    if (Display.INLINE.equals(style.display()) && !element.inlineFragments().isEmpty()) {
+    if ((Display.INLINE.equals(style.display()) || Display.INLINE_BLOCK.equals(style.display()))
+        && !element.inlineFragments().isEmpty()) {
       Vector2f offset = inlineFormattingOffset(element);
       element
           .inlineFragments()

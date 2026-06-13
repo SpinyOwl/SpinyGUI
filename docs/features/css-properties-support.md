@@ -181,6 +181,7 @@ Checklist of CSS properties:
    - [x] `none`
    - [x] `block`
    - [x] `inline`
+   - [x] `inline-block`
 -  [ ] `empty-cells`
 -  [ ] `filter`
 -  [ ] `flex`

@@ -47,6 +47,30 @@ class NvgInlineFormattingOffsetTest {
     assertEquals(35, offset.y());
   }
 
+  @Test
+  void elementInlineBlockFormattingOffset_subtractsContainingBlockScroll() {
+    Element block = scrolledBlock();
+    Element inlineBlock = inlineBlockElement();
+    block.addChild(inlineBlock);
+
+    Vector2f offset = new NvgElementRenderer().inlineFormattingOffset(inlineBlock);
+
+    assertEquals(80, offset.x());
+    assertEquals(35, offset.y());
+  }
+
+  @Test
+  void borderInlineBlockFormattingOffset_subtractsContainingBlockScroll() {
+    Element block = scrolledBlock();
+    Element inlineBlock = inlineBlockElement();
+    block.addChild(inlineBlock);
+
+    Vector2f offset = new NvgBorderRenderer().inlineFormattingOffset(inlineBlock);
+
+    assertEquals(80, offset.x());
+    assertEquals(35, offset.y());
+  }
+
   private Element scrolledBlock() {
     Element block = NodeBuilder.div();
     block.box().contentPosition(100, 60);
@@ -60,5 +84,11 @@ class NvgInlineFormattingOffsetTest {
     Element inline = NodeBuilder.div();
     inline.resolvedStyle().display(Display.INLINE);
     return inline;
+  }
+
+  private Element inlineBlockElement() {
+    Element inlineBlock = NodeBuilder.div();
+    inlineBlock.resolvedStyle().display(Display.INLINE_BLOCK);
+    return inlineBlock;
   }
 }

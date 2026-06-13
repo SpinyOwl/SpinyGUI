@@ -195,6 +195,76 @@ class BlockLayoutTest {
   }
 
   @Test
+  void layout_whenInlineBlockHasAutoWidth_shrinkWrapsAndStaysInInlineFlow() {
+    Frame frame = NodeBuilder.frame();
+    frame.frameSize(200, 200);
+    style(frame, 0);
+    Element wrapper = NodeBuilder.div();
+    style(wrapper, 0);
+    Text left = NodeBuilder.text("a");
+    Element inlineBlock = NodeBuilder.div(NodeBuilder.text("bb"));
+    style(inlineBlock, 0);
+    inlineBlock.resolvedStyle().display(Display.INLINE_BLOCK);
+    Text right = NodeBuilder.text("c");
+    wrapper.addChildren(left, inlineBlock, right);
+    frame.addChild(wrapper);
+
+    RecursiveLayoutService layoutService = new RecursiveLayoutService();
+    FixedTextMeasurer textMeasurer = new FixedTextMeasurer();
+    InlineFormattingContext inlineFormattingContext = new InlineFormattingContext(textMeasurer);
+    BlockLayout blockLayout =
+        new BlockLayout(layoutService, inlineFormattingContext, textMeasurer);
+    inlineFormattingContext.inlineBlockLayout(blockLayout::layoutInlineBlock);
+    layoutService.blockLayout(blockLayout);
+
+    blockLayout.layout(frame, new LayoutContext());
+
+    assertEquals(10, inlineBlock.inlineFragments().get(0).x());
+    assertEquals(20, inlineBlock.inlineFragments().get(0).width());
+    assertEquals(20, inlineBlock.box().content().width());
+    assertEquals(30, right.inlineFragments().get(0).x());
+    assertEquals(10, wrapper.box().content().height());
+  }
+
+  @Test
+  void layout_whenInlineBlockBaselineMovesText_usesFullInlineRowHeightForFollowingBlock() {
+    Frame frame = NodeBuilder.frame();
+    frame.frameSize(200, 200);
+    style(frame, 0);
+    Element wrapper = NodeBuilder.div();
+    style(wrapper, 0);
+    Text left = NodeBuilder.text("a");
+    Element inlineBlock = NodeBuilder.div(NodeBuilder.text("bb"));
+    style(inlineBlock, 3);
+    inlineBlock.resolvedStyle().display(Display.INLINE_BLOCK);
+    inlineBlock.resolvedStyle().paddingTop(Length.pixel(4));
+    inlineBlock.resolvedStyle().paddingRight(Length.pixel(8));
+    inlineBlock.resolvedStyle().paddingBottom(Length.pixel(4));
+    inlineBlock.resolvedStyle().paddingLeft(Length.pixel(8));
+    Text right = NodeBuilder.text("c");
+    Element followingBlock = NodeBuilder.div();
+    style(followingBlock, 5);
+    wrapper.addChildren(left, inlineBlock, right, followingBlock);
+    frame.addChild(wrapper);
+
+    RecursiveLayoutService layoutService = new RecursiveLayoutService();
+    FixedTextMeasurer textMeasurer = new FixedTextMeasurer();
+    InlineFormattingContext inlineFormattingContext = new InlineFormattingContext(textMeasurer);
+    BlockLayout blockLayout =
+        new BlockLayout(layoutService, inlineFormattingContext, textMeasurer);
+    inlineFormattingContext.inlineBlockLayout(blockLayout::layoutInlineBlock);
+    layoutService.blockLayout(blockLayout);
+
+    blockLayout.layout(frame, new LayoutContext());
+
+    assertEquals(0, inlineBlock.inlineFragments().get(0).y());
+    assertEquals(14, left.inlineFragments().get(0).y());
+    assertEquals(14, right.inlineFragments().get(0).y());
+    assertEquals(24, followingBlock.box().borderBox().y());
+    assertEquals(34, wrapper.box().content().height());
+  }
+
+  @Test
   void layout_whenButtonInputHasAutoSize_usesValueDerivedWidthAndMeasuredLineHeight() {
     Frame frame = NodeBuilder.frame();
     frame.frameSize(300, 200);

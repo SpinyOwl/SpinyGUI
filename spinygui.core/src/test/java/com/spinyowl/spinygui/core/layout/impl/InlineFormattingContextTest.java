@@ -7,6 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import com.spinyowl.spinygui.core.font.Font;
 import com.spinyowl.spinygui.core.font.FontStyle;
 import com.spinyowl.spinygui.core.font.FontWeight;
+import com.spinyowl.spinygui.core.layout.InlineFragment;
 import com.spinyowl.spinygui.core.node.Element;
 import com.spinyowl.spinygui.core.node.NodeBuilder;
 import com.spinyowl.spinygui.core.node.Text;
@@ -286,6 +287,75 @@ class InlineFormattingContextTest {
     assertEquals(10, inline.box().content().width());
     assertEquals(1, inline.inlineFragments().size());
     assertEquals(10, inline.inlineFragments().get(0).x());
+  }
+
+  @Test
+  void layout_whenInlineBlockElementBetweenText_participatesAsAtomicBox() {
+    parent.box().content().width(200);
+    Text left = NodeBuilder.text("a");
+    Element inlineBlock = new Element("span");
+    style(inlineBlock, Display.INLINE_BLOCK);
+    Text childText = NodeBuilder.text("ignored-by-parent-flow");
+    inlineBlock.addChild(childText);
+    Text right = NodeBuilder.text("b");
+    parent.addChildren(left, inlineBlock, right);
+    formattingContext.inlineBlockLayout(
+        (element, formattingParent) -> element.box().contentSize(20, 10));
+
+    formattingContext.layout(parent, List.of(left, inlineBlock, right), 0);
+
+    assertEquals(10, inlineBlock.inlineFragments().get(0).x());
+    assertEquals(20, inlineBlock.inlineFragments().get(0).width());
+    assertEquals(30, right.inlineFragments().get(0).x());
+    assertEquals(0, childText.inlineFragments().size());
+  }
+
+  @Test
+  void layout_whenInlineBlockHasInternalTextBaseline_alignsSurroundingTextToThatBaseline() {
+    parent.box().content().width(200);
+    Text left = NodeBuilder.text("before");
+    Element inlineBlock = new Element("span");
+    style(inlineBlock, Display.INLINE_BLOCK);
+    inlineBlock.resolvedStyle().paddingTop(Length.pixel(4));
+    inlineBlock.resolvedStyle().paddingRight(Length.pixel(8));
+    inlineBlock.resolvedStyle().paddingBottom(Length.pixel(4));
+    inlineBlock.resolvedStyle().paddingLeft(Length.pixel(8));
+    inlineBlock.resolvedStyle().borderTopWidth(Length.pixel(3));
+    inlineBlock.resolvedStyle().borderRightWidth(Length.pixel(3));
+    inlineBlock.resolvedStyle().borderBottomWidth(Length.pixel(3));
+    inlineBlock.resolvedStyle().borderLeftWidth(Length.pixel(3));
+    inlineBlock.resolvedStyle().borderTopStyle(BorderStyle.SOLID);
+    inlineBlock.resolvedStyle().borderRightStyle(BorderStyle.SOLID);
+    inlineBlock.resolvedStyle().borderBottomStyle(BorderStyle.SOLID);
+    inlineBlock.resolvedStyle().borderLeftStyle(BorderStyle.SOLID);
+    Text inner = NodeBuilder.text("chip");
+    inlineBlock.addChild(inner);
+    Text right = NodeBuilder.text("after");
+    parent.addChildren(left, inlineBlock, right);
+    formattingContext.inlineBlockLayout(
+        (element, formattingParent) -> {
+          inner.inlineFragments(
+              List.of(
+                  InlineFragment.builder()
+                      .node(inner)
+                      .text("chip")
+                      .x(0)
+                      .y(0)
+                      .width(40)
+                      .height(10)
+                      .baseline(8)
+                      .font(Font.DEFAULT)
+                      .fontSize(10)
+                      .color(Color.BLACK)
+                      .build()));
+          element.box().contentSize(40, 10);
+        });
+
+    formattingContext.layout(parent, List.of(left, inlineBlock, right), 0);
+
+    assertEquals(0, inlineBlock.inlineFragments().get(0).y());
+    assertEquals(7, left.inlineFragments().get(0).y());
+    assertEquals(7, right.inlineFragments().get(0).y());
   }
 
   @Test

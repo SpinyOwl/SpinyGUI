@@ -37,6 +37,12 @@ public final class Display {
    */
   public static final Display INLINE = Display.create("inline");
 
+  /**
+   * The element generates an inline-level box, but its contents are laid out as a block formatting
+   * context.
+   */
+  public static final Display INLINE_BLOCK = Display.create("inline-block");
+
   /** Name of display type (should be same as in css specification) */
   @NonNull private final String name;
 

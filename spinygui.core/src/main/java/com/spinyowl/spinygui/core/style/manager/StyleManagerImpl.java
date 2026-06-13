@@ -6,6 +6,7 @@ import com.spinyowl.spinygui.core.parser.StyleSheetParser;
 import com.spinyowl.spinygui.core.parser.impl.ParseException;
 import com.spinyowl.spinygui.core.style.ResolvedStyle;
 import com.spinyowl.spinygui.core.style.stylesheet.Declaration;
+import com.spinyowl.spinygui.core.style.stylesheet.Properties;
 import com.spinyowl.spinygui.core.style.stylesheet.Property;
 import com.spinyowl.spinygui.core.style.stylesheet.PropertyStore;
 import com.spinyowl.spinygui.core.style.stylesheet.Ruleset;
@@ -15,6 +16,8 @@ import com.spinyowl.spinygui.core.style.stylesheet.selector.Selector;
 import com.spinyowl.spinygui.core.style.stylesheet.selector.pseudoelement.ScrollbarSelector;
 import com.spinyowl.spinygui.core.style.stylesheet.selector.simple.AllSelector;
 import com.spinyowl.spinygui.core.style.stylesheet.selector.simple.ElementSelector;
+import com.spinyowl.spinygui.core.style.stylesheet.term.TermIdent;
+import com.spinyowl.spinygui.core.style.types.Display;
 import com.spinyowl.spinygui.core.style.types.ScrollbarPart;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -52,6 +55,7 @@ public class StyleManagerImpl implements StyleManager {
 
   private List<Property> properties;
   private Ruleset defaultRuleset;
+  private List<Ruleset> userAgentRulesets;
 
   public void recalculate(Frame frame) {
     updateStyles(frame, frame.styleSheets());
@@ -101,6 +105,7 @@ public class StyleManagerImpl implements StyleManager {
     element.clearScrollbarStyles();
     // Initializing with default rule sets.
     rulesets.add(defaultRuleset());
+    rulesets.addAll(searchSpecificElementRules(userAgentRulesets(), element));
     // find all rule sets applicable to element.
     for (StyleSheet styleSheet : styleSheets) {
       StyleSheetRules styleSheetRules = styleSheetRules(styleSheet);
@@ -241,8 +246,31 @@ public class StyleManagerImpl implements StyleManager {
         collect.add(new Declaration(p, p.defaultValue()));
       }
       defaultRuleset = new Ruleset(List.of(new AllSelector()), collect);
+      userAgentRulesets = null;
     }
     return defaultRuleset;
+  }
+
+  private List<Ruleset> userAgentRulesets() {
+    if (userAgentRulesets == null) {
+      Property displayProperty =
+          properties.stream()
+              .filter(property -> Properties.DISPLAY.equals(property.name()))
+              .findFirst()
+              .orElse(null);
+      if (displayProperty == null) {
+        userAgentRulesets = List.of();
+      } else {
+        Declaration inlineBlock =
+            new Declaration(displayProperty, new TermIdent(Display.INLINE_BLOCK.name()));
+        userAgentRulesets =
+            List.of(
+                new Ruleset(List.of(new ElementSelector("input")), List.of(inlineBlock)),
+                new Ruleset(List.of(new ElementSelector("button")), List.of(inlineBlock)),
+                new Ruleset(List.of(new ElementSelector("textarea")), List.of(inlineBlock)));
+      }
+    }
+    return userAgentRulesets;
   }
 
   @Data

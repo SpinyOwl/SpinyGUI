@@ -96,6 +96,11 @@ public class BlockLayout implements ElementLayout {
     }
   }
 
+  void layoutInlineBlock(Element element, Element formattingParent) {
+    layout(element, false, new LayoutContext());
+    shrinkWrapInlineBlock(element);
+  }
+
   private void layoutStaticBlock(
       Element e, Box parentBox, ResolvedStyle style, boolean skipChildren, LayoutContext ctx) {
 
@@ -378,10 +383,33 @@ public class BlockLayout implements ElementLayout {
     if (!skipChildren) {
       layoutFlowChildren(element);
     }
-    if (style.display().equals(Display.BLOCK) && height.isAuto() && !skipChildren) {
+    if ((style.display().equals(Display.BLOCK) || style.display().equals(Display.INLINE_BLOCK))
+        && height.isAuto()
+        && !skipChildren) {
       childrenHeight = getChildNodesHeight(element);
     }
     return childrenHeight;
+  }
+
+  private void shrinkWrapInlineBlock(Element element) {
+    ResolvedStyle style = element.resolvedStyle();
+    if (!style.width().isAuto()
+        || element instanceof InputElement
+        || element instanceof ButtonElement
+        || element instanceof TextareaElement) {
+      return;
+    }
+
+    float contentWidth = 0;
+    for (Node child : element.childNodes()) {
+      if (child instanceof Element childElement
+          && Display.NONE.equals(childElement.resolvedStyle().display())) {
+        continue;
+      }
+      contentWidth =
+          Math.max(contentWidth, child.box().marginBox().x() + child.box().marginBox().width());
+    }
+    element.box().content().width(contentWidth);
   }
 
   private float getWidth(float parentWidth, ResolvedStyle style) {

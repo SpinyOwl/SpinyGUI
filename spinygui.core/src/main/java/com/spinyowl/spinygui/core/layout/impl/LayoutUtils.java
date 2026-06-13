@@ -59,12 +59,21 @@ public final class LayoutUtils {
   public static float getChildNodesHeight(Element element) {
     List<Node> heightNodes =
         element.childNodes().stream().filter(LayoutUtils::affectsHeight).toList();
-    return !heightNodes.isEmpty()
-        ? heightNodes.stream()
-                .map(node -> node.box().borderBox().y() + node.box().borderBox().height())
-                .reduce(0F, Float::max)
-            - heightNodes.get(0).box().borderBox().y()
-        : 0;
+    if (heightNodes.isEmpty()) {
+      return 0;
+    }
+
+    float minY =
+        heightNodes.stream()
+            .map(node -> node.box().borderBox().y())
+            .min(Float::compare)
+            .orElse(0f);
+    float maxY =
+        heightNodes.stream()
+            .map(node -> node.box().borderBox().y() + node.box().borderBox().height())
+            .max(Float::compare)
+            .orElse(minY);
+    return maxY - minY;
   }
 
   private static boolean affectsHeight(Node obj) {

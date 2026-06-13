@@ -19,7 +19,8 @@ public class NvgElementRenderer {
     Element element = node.asElement();
     if (visible(element) /*&& visibleInParents(element)*/) {
       var style = element.resolvedStyle();
-      if (Display.INLINE.equals(style.display()) && !element.inlineFragments().isEmpty()) {
+      if ((Display.INLINE.equals(style.display()) || Display.INLINE_BLOCK.equals(style.display()))
+          && !element.inlineFragments().isEmpty()) {
         createScissor(nanovg, node);
         nvgSave(nanovg);
         Vector2f offset = inlineFormattingOffset(element);

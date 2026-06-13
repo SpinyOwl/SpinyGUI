@@ -4,6 +4,7 @@ import static com.spinyowl.spinygui.core.layout.impl.LayoutUtils.setBorders;
 import static com.spinyowl.spinygui.core.layout.impl.LayoutUtils.setPadding;
 import static com.spinyowl.spinygui.core.style.stylesheet.util.StyleUtils.getFloatLengthOptional;
 import static com.spinyowl.spinygui.core.style.types.Display.INLINE;
+import static com.spinyowl.spinygui.core.style.types.Display.INLINE_BLOCK;
 import static com.spinyowl.spinygui.core.style.types.OverflowWrap.ANYWHERE;
 import static com.spinyowl.spinygui.core.style.types.OverflowWrap.BREAK_WORD;
 import static com.spinyowl.spinygui.core.style.types.TextAlign.CENTER;
@@ -42,6 +43,11 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class InlineFormattingContext {
   @NonNull private final TextMeasurer textMeasurer;
+  private InlineBlockLayout inlineBlockLayout;
+
+  void inlineBlockLayout(InlineBlockLayout inlineBlockLayout) {
+    this.inlineBlockLayout = inlineBlockLayout;
+  }
 
   public float layout(@NonNull Element parent, @NonNull List<Node> nodes, float startY) {
     if (nodes.isEmpty()) {
@@ -96,7 +102,7 @@ public class InlineFormattingContext {
     if (node instanceof Text) {
       return true;
     }
-    return node instanceof Element element && INLINE.equals(element.resolvedStyle().display());
+    return node instanceof Element element && inlineDisplay(element);
   }
 
   private void collectUnits(
@@ -119,6 +125,10 @@ public class InlineFormattingContext {
 
     ResolvedStyle style = element.resolvedStyle();
     element.inlineFragments(List.of());
+    if (INLINE_BLOCK.equals(style.display())) {
+      collectInlineBlockUnit(element, units, inheritedParent);
+      return;
+    }
     setBorders(style, element.box().border());
     setPadding(
         inheritedParent.box().content().width(),
@@ -149,6 +159,27 @@ public class InlineFormattingContext {
         element.box().padding().right() + element.box().border().right(),
         true);
     addSpacer(units, element, style, element.box().margin().right(), false);
+  }
+
+  private void collectInlineBlockUnit(
+      Element element, List<InlineUnit> units, Element inheritedParent) {
+    ResolvedStyle style = element.resolvedStyle();
+    setBorders(style, element.box().border());
+    setPadding(
+        inheritedParent.box().content().width(),
+        inheritedParent.box().content().height(),
+        style,
+        element.box().padding());
+    if (inlineBlockLayout != null) {
+      inlineBlockLayout.layout(element, inheritedParent);
+    }
+    setMargins(element, inheritedParent.box().content().width());
+    units.add(inlineBlockUnit(element, style, inlineBlockMetrics(element)));
+  }
+
+  private InlineUnit inlineBlockUnit(
+      Element element, ResolvedStyle style, InlineBlockMetrics metrics) {
+    return new InlineUnit(element, style, null, false, false, false, metrics, 0, 0, true);
   }
 
   private void addSpacer(
@@ -286,10 +317,10 @@ public class InlineFormattingContext {
         InlineFragment.builder()
             .node(unit.fragmentNode())
             .text(unit.text)
-            .x(cursorX)
+            .x(unit.fragmentX(cursorX))
             .y(line.y())
-            .width(width)
-            .height(height)
+            .width(unit.fragmentWidth(width))
+            .height(unit.fragmentHeight(height))
             .baseline(baseline)
             .font(unit.font)
             .fontSize(unit.fontSize)
@@ -375,6 +406,11 @@ public class InlineFormattingContext {
       Element element,
       Map<Text, List<InlineFragment>> textFragments,
       Map<Element, List<InlineFragment>> elementFragments) {
+    if (INLINE_BLOCK.equals(element.resolvedStyle().display())) {
+      element.inlineFragments(elementFragments.getOrDefault(element, List.of()));
+      applyInlineBlockFragmentBox(element);
+      return;
+    }
     List<InlineFragment> fragments = new ArrayList<>();
     collectDescendantTextFragments(element, textFragments, fragments);
     fragments.addAll(elementFragments.getOrDefault(element, List.of()));
@@ -383,6 +419,19 @@ public class InlineFormattingContext {
     element.children().stream()
         .filter(child -> INLINE.equals(child.resolvedStyle().display()))
         .forEach(child -> applyInlineElementFragments(child, textFragments, elementFragments));
+  }
+
+  private void applyInlineBlockFragmentBox(Element element) {
+    List<InlineFragment> fragments = element.inlineFragments();
+    if (fragments.isEmpty()) {
+      return;
+    }
+    InlineFragment fragment = fragments.get(0);
+    element
+        .box()
+        .contentPosition(
+            fragment.x() + element.box().border().left() + element.box().padding().left(),
+            fragment.y() + element.box().border().top() + element.box().padding().top());
   }
 
   private void collectDescendantTextFragments(
@@ -420,7 +469,7 @@ public class InlineFormattingContext {
   private void collectTextAncestors(
       Text text, InlineFragment fragment, Map<Element, FragmentBounds> bounds) {
     Element current = text.parent();
-    while (current != null && INLINE.equals(current.resolvedStyle().display())) {
+    while (current != null && inlineDisplay(current)) {
       addElementBounds(current, fragment, bounds);
       current = current.parent();
     }
@@ -428,6 +477,10 @@ public class InlineFormattingContext {
 
   private void addElementBounds(
       Element element, InlineFragment fragment, Map<Element, FragmentBounds> bounds) {
+    if (INLINE_BLOCK.equals(element.resolvedStyle().display())) {
+      bounds.computeIfAbsent(element, ignored -> new FragmentBounds()).includeInlineBlock(fragment);
+      return;
+    }
     FragmentBounds fragmentBounds =
         bounds.computeIfAbsent(element, ignored -> new FragmentBounds());
     fragmentBounds.include(fragment, verticalExpansion(element));
@@ -438,6 +491,49 @@ public class InlineFormattingContext {
         + element.box().padding().top()
         + element.box().padding().bottom()
         + element.box().border().bottom();
+  }
+
+  private InlineBlockMetrics inlineBlockMetrics(Element element) {
+    float borderWidth = element.box().borderBox().width();
+    float borderHeight = element.box().borderBox().height();
+    return new InlineBlockMetrics(
+        element.box().marginBox().width(),
+        element.box().marginBox().height(),
+        borderWidth,
+        borderHeight,
+        element.box().margin().left(),
+        element.box().margin().top(),
+        inlineBlockBaseline(element, borderHeight));
+  }
+
+  private float inlineBlockBaseline(Element element, float fallback) {
+    float contentOffset = element.box().border().top() + element.box().padding().top();
+    return element
+        .childNodes()
+        .stream()
+        .flatMap(child -> descendantTextFragments(child).stream())
+        .map(fragment -> contentOffset + fragment.baseline())
+        .max(Float::compare)
+        .orElse(fallback);
+  }
+
+  private List<InlineFragment> descendantTextFragments(Node node) {
+    if (node instanceof Text text) {
+      return text.inlineFragments();
+    }
+    if (node instanceof Element element) {
+      return element
+          .childNodes()
+          .stream()
+          .flatMap(child -> descendantTextFragments(child).stream())
+          .toList();
+    }
+    return List.of();
+  }
+
+  private boolean inlineDisplay(Element element) {
+    return INLINE.equals(element.resolvedStyle().display())
+        || INLINE_BLOCK.equals(element.resolvedStyle().display());
   }
 
   private Font findFont(ResolvedStyle style) {
@@ -467,6 +563,7 @@ public class InlineFormattingContext {
     private final boolean space;
     private final boolean newline;
     private final boolean spacer;
+    private final InlineBlockMetrics inlineBlockMetrics;
     private final float spacerWidth;
     private final float extraHeight;
     private final boolean elementBox;
@@ -484,12 +581,27 @@ public class InlineFormattingContext {
         float spacerWidth,
         float extraHeight,
         boolean elementBox) {
+      this(node, style, text, space, newline, spacer, null, spacerWidth, extraHeight, elementBox);
+    }
+
+    private InlineUnit(
+        Node node,
+        ResolvedStyle style,
+        String text,
+        boolean space,
+        boolean newline,
+        boolean spacer,
+        InlineBlockMetrics inlineBlockMetrics,
+        float spacerWidth,
+        float extraHeight,
+        boolean elementBox) {
       this.node = node;
       this.style = style;
       this.text = text;
       this.space = space;
       this.newline = newline;
       this.spacer = spacer;
+      this.inlineBlockMetrics = inlineBlockMetrics;
       this.spacerWidth = spacerWidth;
       this.extraHeight = extraHeight;
       this.elementBox = elementBox;
@@ -499,6 +611,9 @@ public class InlineFormattingContext {
     }
 
     float width(TextMeasurer measurer) {
+      if (inlineBlockMetrics != null) {
+        return inlineBlockMetrics.marginWidth();
+      }
       if (spacer) {
         return spacerWidth;
       }
@@ -513,10 +628,16 @@ public class InlineFormattingContext {
     }
 
     float lineHeight(TextMeasurer measurer) {
+      if (inlineBlockMetrics != null) {
+        return inlineBlockMetrics.marginHeight();
+      }
       return measurement(measurer).height() + extraHeight;
     }
 
     float baseline(TextMeasurer measurer) {
+      if (inlineBlockMetrics != null) {
+        return inlineBlockMetrics.baseline() + inlineBlockMetrics.marginTop();
+      }
       return measurement(measurer).baseline() + extraHeight / 2;
     }
 
@@ -559,6 +680,18 @@ public class InlineFormattingContext {
     Node fragmentNode() {
       return spacer && !elementBox ? null : node;
     }
+
+    float fragmentX(float cursorX) {
+      return inlineBlockMetrics == null ? cursorX : cursorX + inlineBlockMetrics.marginLeft();
+    }
+
+    float fragmentWidth(float width) {
+      return inlineBlockMetrics == null ? width : inlineBlockMetrics.borderWidth();
+    }
+
+    float fragmentHeight(float height) {
+      return inlineBlockMetrics == null ? height : inlineBlockMetrics.borderHeight();
+    }
   }
 
   private static class FragmentBounds {
@@ -575,6 +708,13 @@ public class InlineFormattingContext {
       maxY = Math.max(maxY, fragment.y() + fragment.height() + yExpansion);
     }
 
+    void includeInlineBlock(InlineFragment fragment) {
+      minX = Math.min(minX, fragment.x());
+      minY = Math.min(minY, fragment.y());
+      maxX = Math.max(maxX, fragment.x() + fragment.width());
+      maxY = Math.max(maxY, fragment.y() + fragment.height());
+    }
+
     InlineFragment toFragment(Element element) {
       return InlineFragment.builder()
           .node(element)
@@ -585,5 +725,18 @@ public class InlineFormattingContext {
           .color(element.resolvedStyle().color())
           .build();
     }
+  }
+
+  private record InlineBlockMetrics(
+      float marginWidth,
+      float marginHeight,
+      float borderWidth,
+      float borderHeight,
+      float marginLeft,
+      float marginTop,
+      float baseline) {}
+
+  interface InlineBlockLayout {
+    void layout(Element element, Element formattingParent);
   }
 }
