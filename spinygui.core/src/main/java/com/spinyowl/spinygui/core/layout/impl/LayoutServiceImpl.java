@@ -2,7 +2,6 @@ package com.spinyowl.spinygui.core.layout.impl;
 
 import static com.spinyowl.spinygui.core.layout.impl.LayoutUtils.hasPosition;
 import static com.spinyowl.spinygui.core.layout.impl.LayoutUtils.isPositioned;
-import static com.spinyowl.spinygui.core.style.types.Display.NONE;
 import static com.spinyowl.spinygui.core.util.NodeUtilities.visible;
 import static com.spinyowl.spinygui.core.util.OverflowUtils.clampScrollOffsets;
 
@@ -15,6 +14,7 @@ import com.spinyowl.spinygui.core.node.Frame;
 import com.spinyowl.spinygui.core.node.Node;
 import com.spinyowl.spinygui.core.node.Text;
 import com.spinyowl.spinygui.core.node.layout.Box;
+import com.spinyowl.spinygui.core.node.layout.Edges;
 import com.spinyowl.spinygui.core.node.layout.Rect;
 import com.spinyowl.spinygui.core.style.types.Display;
 import com.spinyowl.spinygui.core.style.types.Position;
@@ -87,19 +87,21 @@ public class LayoutServiceImpl implements LayoutService {
 
   private boolean affectsScrollSize(Node node) {
     if (node instanceof Element element) {
-      return !hasPosition(element, Position.ABSOLUTE);
+      return visible(element) && !hasPosition(element, Position.ABSOLUTE);
     }
     return true;
   }
 
   public void layoutNode(@NonNull Node node, @NonNull LayoutContext context) {
     if (node instanceof Element element) {
-      if (visible(element)) {
-        Display display = element.resolvedStyle().display();
-        ElementLayout layout = layoutMap.get(display);
-        if (layout != null) {
-          layout.layout(element, context);
-        }
+      if (!visible(element)) {
+        clearHiddenSubtree(element);
+        return;
+      }
+      Display display = element.resolvedStyle().display();
+      ElementLayout layout = layoutMap.get(display);
+      if (layout != null) {
+        layout.layout(element, context);
       }
     } else if (node instanceof Text text) {
       textLayout.layout(text, context);
@@ -109,6 +111,53 @@ public class LayoutServiceImpl implements LayoutService {
       context.lastTextEndX(text.textEndX());
       context.lastTextEndY(text.textEndY());
     }
+  }
+
+  private void clearHiddenSubtree(Element element) {
+    clearLayoutState(element);
+    for (Node child : element.childNodes()) {
+      if (child instanceof Element childElement) {
+        clearHiddenSubtree(childElement);
+      } else {
+        clearLayoutState(child);
+        if (child instanceof Text text) {
+          text.inlineFragments(List.of());
+          text.textStartX(0);
+          text.textStartY(0);
+          text.textEndX(0);
+          text.textEndY(0);
+        }
+      }
+    }
+  }
+
+  private void clearLayoutState(Node node) {
+    node.layoutChildNodes(List.of());
+    node.offsetParent(null);
+    clearBox(node.box());
+    if (node instanceof Element element) {
+      element.inlineFragments(List.of());
+      element.scrollWidth(0);
+      element.scrollHeight(0);
+      element.clientWidth(0);
+      element.clientHeight(0);
+      element.scrollbarMetrics(null);
+    }
+  }
+
+  private void clearBox(Box box) {
+    box.contentPosition(0, 0);
+    box.contentSize(0, 0);
+    clearEdges(box.padding());
+    clearEdges(box.border());
+    clearEdges(box.margin());
+  }
+
+  private void clearEdges(Edges edges) {
+    edges.top(0);
+    edges.right(0);
+    edges.bottom(0);
+    edges.left(0);
   }
 
   @Override
@@ -175,8 +224,11 @@ public class LayoutServiceImpl implements LayoutService {
     for (Node childNode : nodeWrapper.node.childNodes()) {
       if (childNode instanceof Text) {
         normalFlowChildren.add(childNode);
-      } else if (childNode instanceof Element childElement
-          && !NONE.equals(childElement.resolvedStyle().display())) {
+      } else if (childNode instanceof Element childElement) {
+        if (!visible(childElement)) {
+          clearHiddenSubtree(childElement);
+          continue;
+        }
         if (isPositioned(childElement)) {
           positionedChildren.add(childElement);
         } else {

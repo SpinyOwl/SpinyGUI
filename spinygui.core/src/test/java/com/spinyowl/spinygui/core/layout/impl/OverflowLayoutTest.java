@@ -2,6 +2,8 @@ package com.spinyowl.spinygui.core.layout.impl;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 
 import com.spinyowl.spinygui.core.event.processor.EventProcessor;
@@ -144,6 +146,97 @@ class OverflowLayoutTest {
     assertEquals(50, container.scrollHeight());
     assertEquals(0, container.scrollTop());
     assertFalse(OverflowUtils.acceptsWheelY(container));
+  }
+
+  @Test
+  void layout_whenVisibleChildBecomesDisplayNone_removesStaleScrollFootprintAndLayoutState() {
+    Frame frame = NodeBuilder.frame();
+    frame.frameSize(500, 500);
+    style(frame, Display.BLOCK, 500, 500);
+    Element container = NodeBuilder.div();
+    style(container, Display.BLOCK, 100, 100);
+    container.resolvedStyle().overflowY(Overflow.AUTO);
+    Element child = NodeBuilder.div();
+    style(child, Display.BLOCK, 100, 300);
+    Element grandchild = NodeBuilder.div();
+    style(grandchild, Display.BLOCK, 100, 50);
+    child.addChild(grandchild);
+    container.addChild(child);
+    frame.addChild(container);
+
+    LayoutService layoutService = layoutService();
+    layoutService.layout(frame);
+
+    assertEquals(300, container.scrollHeight());
+    assertTrue(container.layoutChildNodes().contains(child));
+    assertTrue(child.layoutChildNodes().contains(grandchild));
+
+    child.resolvedStyle().display(Display.NONE);
+    layoutService.layout(frame);
+
+    assertEquals(0, container.scrollHeight());
+    assertEquals(0, container.scrollWidth());
+    assertFalse(container.layoutChildNodes().contains(child));
+    assertTrue(child.layoutChildNodes().isEmpty());
+    assertNull(child.offsetParent());
+    assertEquals(0, child.scrollWidth());
+    assertEquals(0, child.scrollHeight());
+    assertEquals(0, child.clientWidth());
+    assertEquals(0, child.clientHeight());
+    assertNull(child.scrollbarMetrics());
+    assertEquals(0, child.box().content().width());
+    assertEquals(0, child.box().content().height());
+    assertTrue(grandchild.layoutChildNodes().isEmpty());
+    assertNull(grandchild.offsetParent());
+    assertEquals(0, grandchild.scrollWidth());
+    assertEquals(0, grandchild.scrollHeight());
+    assertEquals(0, grandchild.clientWidth());
+    assertEquals(0, grandchild.clientHeight());
+    assertNull(grandchild.scrollbarMetrics());
+  }
+
+  @Test
+  void layout_whenHiddenAbsoluteChildExists_excludesItFromLayoutTreeAndScrollMetrics() {
+    Frame frame = NodeBuilder.frame();
+    frame.frameSize(500, 500);
+    style(frame, Display.BLOCK, 500, 500);
+    Element container = NodeBuilder.div();
+    style(container, Display.BLOCK, 100, 100);
+    container.resolvedStyle().overflowY(Overflow.AUTO);
+    Element child = NodeBuilder.div();
+    style(child, Display.NONE, 100, 300);
+    child.resolvedStyle().position(Position.ABSOLUTE);
+    container.addChild(child);
+    frame.addChild(container);
+
+    layoutService().layout(frame);
+
+    assertEquals(0, container.scrollHeight());
+    assertEquals(0, container.scrollWidth());
+    assertFalse(container.layoutChildNodes().contains(child));
+    assertNull(child.offsetParent());
+  }
+
+  @Test
+  void layout_whenBlockChildIsDisplayNone_doesNotReserveFlowSpace() {
+    Frame frame = NodeBuilder.frame();
+    frame.frameSize(500, 500);
+    style(frame, Display.BLOCK, 500, 500);
+    Element first = NodeBuilder.div();
+    style(first, Display.BLOCK, 100, 20);
+    Element hidden = NodeBuilder.div();
+    style(hidden, Display.NONE, 100, 50);
+    Element second = NodeBuilder.div();
+    style(second, Display.BLOCK, 100, 20);
+    frame.addChildren(first, hidden, second);
+
+    layoutService().layout(frame);
+
+    assertEquals(0, first.box().borderBox().y());
+    assertEquals(20, second.box().borderBox().y());
+    assertTrue(frame.layoutChildNodes().contains(first));
+    assertFalse(frame.layoutChildNodes().contains(hidden));
+    assertTrue(frame.layoutChildNodes().contains(second));
   }
 
   @Test

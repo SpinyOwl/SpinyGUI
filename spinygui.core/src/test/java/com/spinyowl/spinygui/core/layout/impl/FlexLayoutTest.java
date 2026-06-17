@@ -261,6 +261,39 @@ class FlexLayoutTest {
     assertFalse(labelText.inlineFragments().isEmpty());
   }
 
+  @Test
+  void layout_whenFlexChildIsDisplayNone_doesNotAllocateSpace() {
+    Frame frame = NodeBuilder.frame();
+    Element first = NodeBuilder.div();
+    Element hidden = NodeBuilder.div();
+    Element second = NodeBuilder.div();
+    frame.addChildren(first, hidden, second);
+
+    style(frame);
+    style(first);
+    style(hidden);
+    style(second);
+    frame.frameSize(300, 100);
+    frame.resolvedStyle().display(Display.FLEX);
+    frame.resolvedStyle().width(Length.pixel(300));
+    frame.resolvedStyle().height(Length.pixel(100));
+    frame.resolvedStyle().alignItems(AlignItems.FLEX_START);
+    first.resolvedStyle().width(Length.pixel(50));
+    first.resolvedStyle().height(Length.pixel(20));
+    hidden.resolvedStyle().display(Display.NONE);
+    hidden.resolvedStyle().width(Length.pixel(100));
+    hidden.resolvedStyle().height(Length.pixel(20));
+    second.resolvedStyle().width(Length.pixel(50));
+    second.resolvedStyle().height(Length.pixel(20));
+
+    layoutService(new FixedTextMeasurer()).layout(frame);
+
+    assertEquals(0, first.box().borderBox().x());
+    assertEquals(50, second.box().borderBox().x());
+    assertFalse(frame.layoutChildNodes().contains(hidden));
+    assertTrue(hidden.layoutChildNodes().isEmpty());
+  }
+
   private static LayoutService layoutService(TextMeasurer textMeasurer) {
     var layoutMap = new HashMap<Display, ElementLayout>();
     LayoutService layoutService = new LayoutServiceImpl(mock(TextLayout.class), layoutMap);
