@@ -18,6 +18,7 @@ import com.spinyowl.spinygui.core.style.stylesheet.impl.DefaultPropertyStoreProv
 import com.spinyowl.spinygui.core.style.stylesheet.term.TermIdent;
 import com.spinyowl.spinygui.core.style.types.Color;
 import com.spinyowl.spinygui.core.style.types.Display;
+import com.spinyowl.spinygui.core.style.types.length.Length;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -265,6 +266,22 @@ class StyleManagerImplTest {
     styleManager.recalculate(frame);
 
     assertEquals(Display.BLOCK, input.resolvedStyle().display());
+  }
+
+  @Test
+  void recalculateAppliesPercentageLengthDeclarations() {
+    PropertyStore propertyStore = new DefaultPropertyStoreProvider().createPropertyStore();
+    StyleSheetParser parser = StyleSheetParserFactory.createParser(propertyStore);
+    StyleManager styleManager = new StyleManagerImpl(propertyStore, parser);
+    Frame frame = new Frame();
+    Element child = new Element("div");
+    child.setAttribute("class", "fill");
+    frame.addChild(child);
+    frame.styleSheets().add(parser.parse(".fill { width: 100%; }"));
+
+    styleManager.recalculate(frame);
+
+    assertEquals(Length.percent(1F), child.resolvedStyle().width());
   }
 
   @Test

@@ -54,6 +54,27 @@ class MainMenuExampleTest {
     assertTrue(center.absolutePosition().y() > 0);
   }
 
+  @Test
+  void mainMenuResourceLayoutExpandsActionButtonsToPanelWidth() {
+    Frame frame = styledMainMenuFrame();
+    frame.frameSize(720, 640);
+
+    var layoutService =
+        LayoutServiceProvider.create(
+            SystemEventProcessorImpl.builder()
+                .eventListenerProvider(new SystemEventListenerProviderImpl())
+                .build(),
+            new DefaultEventProcessor(),
+            () -> 0,
+            new FontServiceImpl(new FontStorageImpl(), true));
+
+    layoutService.layout(frame);
+
+    var actions = frame.getElementById("main-menu-actions");
+    var startGame = frame.getElementById("main-menu-action-start-game");
+    assertEquals(actions.box().content().width(), startGame.box().borderBox().width(), 0.5f);
+  }
+
   private static Frame styledMainMenuFrame() {
     Frame frame =
         new DefaultNodeParser()

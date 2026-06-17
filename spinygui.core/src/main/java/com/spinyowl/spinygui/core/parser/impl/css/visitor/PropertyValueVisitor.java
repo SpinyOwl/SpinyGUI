@@ -99,13 +99,13 @@ public class PropertyValueVisitor extends CSS3BaseVisitor<Term<?>> {
 
   @Override
   public Term<?> visitPercentage(PercentageContext ctx) {
-    log.debug("visitPercentage");
+    String percentageText = ctx.Percentage().getText();
+    String numericText = percentageText.substring(0, percentageText.length() - 1);
+    float percentage = Float.parseFloat(numericText) / 100F;
     if (ctx.Minus() != null) {
-      log.debug("-" + ctx.Percentage().getText());
-    } else {
-      log.debug(ctx.Percentage().getText());
+      percentage = -percentage;
     }
-    return super.visitPercentage(ctx);
+    return new TermLength(Length.percent(percentage));
   }
 
   @Override
