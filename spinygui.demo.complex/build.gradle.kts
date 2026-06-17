@@ -49,3 +49,11 @@ tasks.register<JavaExec>("runButtonExample") {
     mainClass.set("com.spinyowl.spinygui.demo.complex.ButtonExample")
     jvmArgs = application.applicationDefaultJvmArgs.toList()
 }
+
+tasks.register<JavaExec>("runMainMenuExample") {
+    group = "application"
+    description = "Runs the complex demo main menu example."
+    classpath = sourceSets.main.get().runtimeClasspath
+    mainClass.set("com.spinyowl.spinygui.demo.complex.MainMenuExample")
+    jvmArgs = application.applicationDefaultJvmArgs.toList()
+}

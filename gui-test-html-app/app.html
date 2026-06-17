@@ -13,6 +13,8 @@
 
         html, body {
             overflow: hidden;
+            width: 100%;
+            height: 100%;
         }
         :root {
             --winframe-width: 100%;
@@ -42,89 +44,239 @@
         }
 
         /* styles from app */
-        winframe {
-            overflow: scroll;
-            box-sizing: border-box; /* default behaviour */
+
+
+        .main-menu {
+            background-color: transparent;
+            box-sizing: border-box;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
         }
-        winframe * {
-            border: 8px solid #8c8c8c;
-            box-sizing: border-box; /* default behaviour */
-            overflow: hidden; /* default behaviour */
+
+        .main-menu-center {
+            width: 420px;
+            padding: 22px;
+            box-sizing: border-box;
+            background-color: rgba(8, 12, 16, 0.92);
+            border: 1px solid rgba(220, 230, 235, 0.22);
         }
-        winframe:hover,
-        winframe *:hover {
-            border: 8px solid #fc3131;
-        }
-        #t2 {
-            width: 500px;
-        }
-        .wrap-demo {
+
+        .main-menu-title {
             display: block;
-            width: 120px;
-            font-size: 16px;
-            border-color: #45AAFF;
+            margin-bottom: 12px;
         }
-        .word-wrap-demo {
-            word-wrap: break-word;
-        }
-        .word-break-demo {
-            word-break: break-all;
-            border-color: #AA45FF;
-        }
-        .inline-block-demo {
+
+        .main-menu-title-text {
             display: block;
-            width: 320px;
-            font-size: 16px;
-            border-color: #2dd4bf;
-        }
-        .inline-chip {
-            display: inline-block;
-            width: auto;
-            padding: 4px 8px;
-            border: 3px solid #0f766e;
-            background-color: #ccfbf1;
+            font-size: 30px;
+            font-weight: 800;
+            color: #eef3f5;
+            white-space: nowrap;
             overflow: hidden;
         }
+
+        .main-menu-title-subtext {
+            display: block;
+            font-size: 14px;
+            color: #8fd4ff;
+            white-space: nowrap;
+            overflow: hidden;
+        }
+
+        .main-menu-status {
+            display: block;
+            min-height: 16px;
+            padding: 0 2px;
+            font-size: 13px;
+            color: #f5df5f;
+            white-space: nowrap;
+            overflow: hidden;
+        }
+
+        .main-menu-player {
+            display: block;
+            margin: 4px 0 10px;
+            padding: 8px;
+            background-color: rgba(18, 24, 28, 0.94);
+            border: 1px solid rgba(220, 230, 235, 0.16);
+        }
+
+        .main-menu-player-label {
+            display: block;
+            font-size: 13px;
+            font-weight: 700;
+            color: #8fd4ff;
+            white-space: nowrap;
+            overflow: hidden;
+        }
+
+        .main-menu-player-input {
+            display: block;
+            width: 100%;
+            height: 28px;
+            box-sizing: border-box;
+            padding: 4px 6px;
+            margin-top: 6px;
+            margin-bottom: 6px;
+            font-size: 13px;
+            color: #eef3f5;
+            background-color: rgba(7, 11, 14, 0.96);
+            border: 1px solid rgba(220, 230, 235, 0.22);
+        }
+
+        .main-menu-player-validation {
+            display: block;
+            font-size: 12px;
+            color: #c0c8cc;
+            min-height: 16px;
+            white-space: nowrap;
+            overflow: hidden;
+        }
+
+        .main-menu-action-panel {
+            width: 100%;
+            padding: 0;
+        }
+
+        .main-menu-action {
+            display: block;
+            box-sizing: border-box;
+            width: 100%;
+            min-height: 54px;
+            padding: 8px;
+            margin-bottom: 6px;
+            text-align: left;
+            font-family: inherit;
+            color: #eef3f5;
+            cursor: pointer;
+            overflow: hidden;
+            border: 1px solid rgba(220, 230, 235, 0.16);
+        }
+
+        .main-menu-action.disabled {
+            background-color: rgba(28, 34, 40, 0.9);
+            color: #c8d2d8;
+            cursor: default;
+        }
+
+        .main-menu-action.selected {
+            border: 1px solid #8fd4ff;
+        }
+
+        button.main-menu-action {
+            background-color: rgba(28, 34, 40, 0.9);
+        }
+
+        button.main-menu-action:hover {
+            border-color: #b8e5ff;
+            background-color: rgba(44, 68, 78, 0.98);
+        }
+
+        button.main-menu-action:active {
+            border-color: #f5df5f;
+            background-color: rgba(64, 76, 46, 0.98);
+        }
+
+        button.main-menu-action.selected {
+            background-color: rgba(36, 52, 62, 0.94);
+        }
+
+        .main-menu-action-label {
+            display: block;
+            font-size: 16px;
+            font-weight: 700;
+            color: #eef3f5;
+            white-space: nowrap;
+            overflow: hidden;
+        }
+
+        .main-menu-action-status {
+            display: block;
+            font-size: 13px;
+            color: #8fd4ff;
+            white-space: nowrap;
+            overflow: hidden;
+        }
+
+        .main-menu-action-reason {
+            display: block;
+            font-size: 12px;
+            color: #c0c8cc;
+            white-space: nowrap;
+            overflow: hidden;
+        }
+
+        .main-menu-endpoint-wrap {
+            display: block;
+            margin-top: 8px;
+            width: 100%;
+        }
+
+        .main-menu-endpoint-input {
+            display: block;
+            width: 300px;
+            height: 28px;
+            box-sizing: border-box;
+            padding: 4px 6px;
+            margin-bottom: 6px;
+            font-size: 13px;
+            color: #eef3f5;
+            background-color: rgba(7, 11, 14, 0.96);
+            border: 1px solid rgba(220, 230, 235, 0.22);
+        }
+
+        .main-menu-endpoint-connect {
+            display: block;
+            width: 86px;
+            height: 28px;
+            box-sizing: border-box;
+            padding: 4px 8px;
+            font-size: 13px;
+            font-weight: 700;
+            color: #eef3f5;
+            background-color: rgba(36, 52, 62, 0.94);
+            border: 1px solid rgba(143, 212, 255, 0.75);
+        }
+
 
 
 
     </style>
 </head>
 <body>
-<winframe>
-    <div class="wrapper" style="border-color:cyan">
-        <div class="c1">c1
-            <div class="c11" id='c11'>c11 Cfjg</div>
-            <div class="c12">c12</div>
+<winframe id="main-menu" class="main-menu">
+    <div id="main-menu-center" class="main-menu-center">
+        <div id="main-menu-title" class="main-menu-title">
+            <div class="main-menu-title-text">Rogue Crawler</div>
+            <div class="main-menu-title-subtext">Main Menu</div>
         </div>
-        <div class="text">
-            Hello world. Lorem ipsum dolor.
-            Hello world. Lorem ipsum dolor.
-            Hello world. Lorem ipsum dolor.s
-            Hello World
+        <div id="main-menu-status" class="main-menu-status">{{connectionStatus}}</div>
+        <div id="main-menu-player" class="main-menu-player">
+            <div class="main-menu-player-label">Player Name</div>
+            <input id="main-menu-player-name-input" class="main-menu-player-input" type="text" name="playerName" value="{{playerName}}" />
+            <div id="main-menu-player-name-validation" class="main-menu-player-validation">{{playerNameValidation}}</div>
         </div>
-        <div class="wrap-demo word-wrap-demo">
-            word-wrap: Supercalifragilisticexpialidocious
-        </div>
-        <div class="wrap-demo word-break-demo">
-            word-break: Supercalifragilisticexpialidocious
-        </div>
-        <div class="inline-block-demo">
-            before <span class="inline-chip">inline block</span> after
-        </div>
-
-        <div class='twrapper' style="border-color: pink">
-            <div class='twrapper' style="border-color: blue">
-                <div class="text" id='t2' style="border-color: black">
-                    Hello world. Lorem ipsum dolor.
-                    Hello world A. Lorem ipsum dolor.
-                    Hello world B. Lorem ipsum dolor.
-                </div>
-            </div>
-        </div>
-        <div class="c2">
-            <div class="s">s1</div>
-            <div class="s">s2</div>
+        <div id="main-menu-actions" class="main-menu-action-panel">
+            <button id="main-menu-action-start-game" class="main-menu-action" type="button">
+                <div class="main-menu-action-label">Start Game</div>
+                <div class="main-menu-action-status">enabled</div>
+            </button>
+            <button id="main-menu-action-open-find-game" class="main-menu-action" type="button">
+                <div class="main-menu-action-label">Find Game</div>
+                <div class="main-menu-action-status">enabled</div>
+            </button>
+            <button id="main-menu-action-open-settings" class="main-menu-action" type="button">
+                <div class="main-menu-action-label">Settings</div>
+                <div class="main-menu-action-status">enabled</div>
+            </button>
+            <button id="main-menu-action-exit" class="main-menu-action" type="button">
+                <div class="main-menu-action-label">Exit</div>
+                <div class="main-menu-action-status">enabled</div>
+            </button>
         </div>
     </div>
 </winframe>

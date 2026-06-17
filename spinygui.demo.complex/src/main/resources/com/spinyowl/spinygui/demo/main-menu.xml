@@ -1,0 +1,32 @@
+<winframe id="main-menu" class="main-menu">
+  <div id="main-menu-center" class="main-menu-center">
+    <div id="main-menu-title" class="main-menu-title">
+      <div class="main-menu-title-text">Rogue Crawler</div>
+      <div class="main-menu-title-subtext">Main Menu</div>
+    </div>
+    <div id="main-menu-status" class="main-menu-status">{{connectionStatus}}</div>
+    <div id="main-menu-player" class="main-menu-player">
+      <div class="main-menu-player-label">Player Name</div>
+      <input id="main-menu-player-name-input" class="main-menu-player-input" type="text" name="playerName" value="{{playerName}}" />
+      <div id="main-menu-player-name-validation" class="main-menu-player-validation">{{playerNameValidation}}</div>
+    </div>
+    <div id="main-menu-actions" class="main-menu-action-panel">
+      <button id="main-menu-action-start-game" class="main-menu-action" type="button">
+        <div class="main-menu-action-label">Start Game</div>
+        <div class="main-menu-action-status">enabled</div>
+      </button>
+      <button id="main-menu-action-open-find-game" class="main-menu-action" type="button">
+        <div class="main-menu-action-label">Find Game</div>
+        <div class="main-menu-action-status">enabled</div>
+      </button>
+      <button id="main-menu-action-open-settings" class="main-menu-action" type="button">
+        <div class="main-menu-action-label">Settings</div>
+        <div class="main-menu-action-status">enabled</div>
+      </button>
+      <button id="main-menu-action-exit" class="main-menu-action" type="button">
+        <div class="main-menu-action-label">Exit</div>
+        <div class="main-menu-action-status">enabled</div>
+      </button>
+    </div>
+  </div>
+</winframe>

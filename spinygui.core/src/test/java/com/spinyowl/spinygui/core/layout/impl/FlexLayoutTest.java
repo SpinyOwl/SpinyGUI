@@ -9,8 +9,10 @@ import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
 
 import com.spinyowl.spinygui.core.event.processor.EventProcessor;
+import com.spinyowl.spinygui.core.layout.ElementLayout;
 import com.spinyowl.spinygui.core.layout.LayoutContext;
 import com.spinyowl.spinygui.core.layout.LayoutService;
+import com.spinyowl.spinygui.core.layout.TextLayout;
 import com.spinyowl.spinygui.core.node.Element;
 import com.spinyowl.spinygui.core.node.Frame;
 import com.spinyowl.spinygui.core.node.Node;
@@ -27,6 +29,7 @@ import com.spinyowl.spinygui.core.style.types.flex.JustifyContent;
 import com.spinyowl.spinygui.core.style.types.length.Length;
 import com.spinyowl.spinygui.core.style.types.length.Unit;
 import com.spinyowl.spinygui.core.system.event.processor.SystemEventProcessor;
+import com.spinyowl.spinygui.core.system.font.TextMeasurer;
 import com.spinyowl.spinygui.core.time.TimeService;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
@@ -148,6 +151,43 @@ class FlexLayoutTest {
     layout.layout(parent, new LayoutContext());
 
     assertTrue(child.box().content().width() > 0);
+  }
+
+  @Test
+  void layout_whenFrameCentersSingleFlexChild_positionsChildInFrameCenter() {
+    Frame frame = NodeBuilder.frame();
+    Element child = NodeBuilder.div();
+    frame.addChild(child);
+
+    style(frame);
+    style(child);
+    frame.frameSize(720, 640);
+    frame.resolvedStyle().display(Display.FLEX);
+    frame.resolvedStyle().flexDirection(FlexDirection.COLUMN);
+    frame.resolvedStyle().alignItems(AlignItems.CENTER);
+    frame.resolvedStyle().justifyContent(JustifyContent.CENTER);
+    child.resolvedStyle().width(Length.pixel(420));
+    child.resolvedStyle().height(Length.pixel(320));
+
+    var layoutMap = new java.util.HashMap<Display, ElementLayout>();
+    LayoutService layoutService = new LayoutServiceImpl(mock(TextLayout.class), layoutMap);
+    var blockLayout =
+        new BlockLayout(layoutService, new InlineFormattingContext(mock(TextMeasurer.class)));
+    layoutMap.put(Display.NONE, new NoneLayout());
+    layoutMap.put(Display.BLOCK, blockLayout);
+    layoutMap.put(
+        Display.FLEX,
+        new FlexLayout(
+            mock(SystemEventProcessor.class),
+            mock(EventProcessor.class),
+            mock(TimeService.class),
+            blockLayout,
+            layoutService));
+
+    layoutService.layout(frame);
+
+    assertEquals(150, child.box().content().x());
+    assertEquals(160, child.box().content().y());
   }
 
   private static void style(Element element) {

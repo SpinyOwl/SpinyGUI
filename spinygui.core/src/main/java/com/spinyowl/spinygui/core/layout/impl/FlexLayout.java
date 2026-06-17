@@ -123,11 +123,14 @@ public class FlexLayout implements ElementLayout {
     for (var child : children) {
       var childNode = YGNodeNew();
       prepareNode(child, childNode);
+      applyAutoMainAxisSize(child, childNode, parent.resolvedStyle().flexDirection());
       YGNodeInsertChild(rootNode, childNode, childNodes.size());
       childNodes.add(childNode);
     }
 
     Rect parentBorderBox = parent.box().borderBox();
+    Yoga.YGNodeStyleSetWidth(rootNode, parentBorderBox.width());
+    Yoga.YGNodeStyleSetHeight(rootNode, parentBorderBox.height());
     // calculate
     YGNodeCalculateLayout(
         rootNode, parentBorderBox.width(), parentBorderBox.height(), YGDirectionLTR);
@@ -184,6 +187,18 @@ public class FlexLayout implements ElementLayout {
     }
 
     YGNodeFree(rootNode);
+  }
+
+  private void applyAutoMainAxisSize(Element child, long childNode, FlexDirection flexDirection) {
+    Rect borderBox = child.box().borderBox();
+    if (FlexDirection.COLUMN.equals(flexDirection)
+        || FlexDirection.COLUMN_REVERSE.equals(flexDirection)) {
+      if (child.resolvedStyle().height().isAuto()) {
+        Yoga.YGNodeStyleSetHeight(childNode, borderBox.height());
+      }
+    } else if (child.resolvedStyle().width().isAuto()) {
+      Yoga.YGNodeStyleSetWidth(childNode, borderBox.width());
+    }
   }
 
   private boolean shouldPersist(Element node, Element positionedParent) {
@@ -281,72 +296,72 @@ public class FlexLayout implements ElementLayout {
   }
 
   private static void setJustifyContent(long node, JustifyContent justifyContent) {
-    if (justifyContent == null || justifyContent == JustifyContent.FLEX_START) {
+    if (justifyContent == null || JustifyContent.FLEX_START.equals(justifyContent)) {
       YGNodeStyleSetJustifyContent(node, YGJustifyFlexStart);
-    } else if (justifyContent == JustifyContent.CENTER) {
+    } else if (JustifyContent.CENTER.equals(justifyContent)) {
       YGNodeStyleSetJustifyContent(node, YGJustifyCenter);
-    } else if (justifyContent == JustifyContent.FLEX_END) {
+    } else if (JustifyContent.FLEX_END.equals(justifyContent)) {
       YGNodeStyleSetJustifyContent(node, YGJustifyFlexEnd);
-    } else if (justifyContent == JustifyContent.SPACE_AROUND) {
+    } else if (JustifyContent.SPACE_AROUND.equals(justifyContent)) {
       YGNodeStyleSetJustifyContent(node, YGJustifySpaceAround);
-    } else if (justifyContent == JustifyContent.SPACE_BETWEEN) {
+    } else if (JustifyContent.SPACE_BETWEEN.equals(justifyContent)) {
       YGNodeStyleSetJustifyContent(node, YGJustifySpaceBetween);
-    } else if (justifyContent == JustifyContent.SPACE_EVENLY) {
+    } else if (JustifyContent.SPACE_EVENLY.equals(justifyContent)) {
       YGNodeStyleSetJustifyContent(node, YGJustifySpaceEvenly);
     }
   }
 
   private static void setFlexDirection(long rootNode, FlexDirection flexDirection) {
-    if (flexDirection == FlexDirection.ROW) {
+    if (FlexDirection.ROW.equals(flexDirection)) {
       YGNodeStyleSetFlexDirection(rootNode, YGFlexDirectionRow);
-    } else if (flexDirection == FlexDirection.COLUMN) {
+    } else if (FlexDirection.COLUMN.equals(flexDirection)) {
       YGNodeStyleSetFlexDirection(rootNode, YGFlexDirectionColumn);
-    } else if (flexDirection == FlexDirection.ROW_REVERSE) {
+    } else if (FlexDirection.ROW_REVERSE.equals(flexDirection)) {
       YGNodeStyleSetFlexDirection(rootNode, YGFlexDirectionRowReverse);
-    } else if (flexDirection == FlexDirection.COLUMN_REVERSE) {
+    } else if (FlexDirection.COLUMN_REVERSE.equals(flexDirection)) {
       YGNodeStyleSetFlexDirection(rootNode, YGFlexDirectionColumnReverse);
     }
   }
 
   private static void setFlexWrap(long node, FlexWrap flexWrap) {
-    if (flexWrap == null || flexWrap == FlexWrap.NOWRAP) {
+    if (flexWrap == null || FlexWrap.NOWRAP.equals(flexWrap)) {
       YGNodeStyleSetFlexWrap(node, YGWrapNoWrap);
-    } else if (flexWrap == FlexWrap.WRAP) {
+    } else if (FlexWrap.WRAP.equals(flexWrap)) {
       YGNodeStyleSetFlexWrap(node, YGWrapWrap);
-    } else if (flexWrap == FlexWrap.WRAP_REVERSE) {
+    } else if (FlexWrap.WRAP_REVERSE.equals(flexWrap)) {
       YGNodeStyleSetFlexWrap(node, YGWrapReverse);
     }
   }
 
   private static void setAlignItems(long node, AlignItems alignItems) {
 
-    if (alignItems == AlignItems.FLEX_END) {
+    if (AlignItems.FLEX_END.equals(alignItems)) {
       YGNodeStyleSetAlignItems(node, YGAlignFlexEnd);
-    } else if (alignItems == AlignItems.CENTER) {
+    } else if (AlignItems.CENTER.equals(alignItems)) {
       YGNodeStyleSetAlignItems(node, YGAlignCenter);
-    } else if (alignItems == AlignItems.FLEX_START) {
+    } else if (AlignItems.FLEX_START.equals(alignItems)) {
       YGNodeStyleSetAlignItems(node, YGAlignFlexStart);
-    } else if (alignItems == AlignItems.STRETCH) {
+    } else if (AlignItems.STRETCH.equals(alignItems)) {
       YGNodeStyleSetAlignItems(node, YGAlignStretch);
-    } else if (alignItems == AlignItems.BASELINE) {
+    } else if (AlignItems.BASELINE.equals(alignItems)) {
       YGNodeStyleSetAlignItems(node, YGAlignBaseline);
-    } else if (alignItems == AlignItems.AUTO) {
+    } else if (AlignItems.AUTO.equals(alignItems)) {
       YGNodeStyleSetAlignItems(node, YGAlignAuto);
     }
   }
 
   private static void setAlignSelf(long node, AlignSelf alignItems) {
-    if (alignItems == AlignSelf.FLEX_END) {
+    if (AlignSelf.FLEX_END.equals(alignItems)) {
       YGNodeStyleSetAlignSelf(node, YGAlignFlexEnd);
-    } else if (alignItems == AlignSelf.CENTER) {
+    } else if (AlignSelf.CENTER.equals(alignItems)) {
       YGNodeStyleSetAlignSelf(node, YGAlignCenter);
-    } else if (alignItems == AlignSelf.FLEX_START) {
+    } else if (AlignSelf.FLEX_START.equals(alignItems)) {
       YGNodeStyleSetAlignSelf(node, YGAlignFlexStart);
-    } else if (alignItems == AlignSelf.STRETCH) {
+    } else if (AlignSelf.STRETCH.equals(alignItems)) {
       YGNodeStyleSetAlignSelf(node, YGAlignStretch);
-    } else if (alignItems == AlignSelf.BASELINE) {
+    } else if (AlignSelf.BASELINE.equals(alignItems)) {
       YGNodeStyleSetAlignSelf(node, YGAlignBaseline);
-    } else if (alignItems == AlignSelf.AUTO) {
+    } else if (AlignSelf.AUTO.equals(alignItems)) {
       YGNodeStyleSetAlignSelf(node, YGAlignAuto);
     }
   }
