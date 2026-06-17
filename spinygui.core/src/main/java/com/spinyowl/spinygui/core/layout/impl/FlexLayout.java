@@ -123,7 +123,7 @@ public class FlexLayout implements ElementLayout {
     for (var child : children) {
       var childNode = YGNodeNew();
       prepareNode(child, childNode);
-      applyAutoMainAxisSize(child, childNode, parent.resolvedStyle().flexDirection());
+      applyAutoAxisSizes(child, childNode, parent.resolvedStyle());
       YGNodeInsertChild(rootNode, childNode, childNodes.size());
       childNodes.add(childNode);
     }
@@ -189,16 +189,34 @@ public class FlexLayout implements ElementLayout {
     YGNodeFree(rootNode);
   }
 
-  private void applyAutoMainAxisSize(Element child, long childNode, FlexDirection flexDirection) {
+  private void applyAutoAxisSizes(Element child, long childNode, ResolvedStyle parentStyle) {
     Rect borderBox = child.box().borderBox();
+    FlexDirection flexDirection = parentStyle.flexDirection();
     if (FlexDirection.COLUMN.equals(flexDirection)
         || FlexDirection.COLUMN_REVERSE.equals(flexDirection)) {
       if (child.resolvedStyle().height().isAuto()) {
         Yoga.YGNodeStyleSetHeight(childNode, borderBox.height());
       }
-    } else if (child.resolvedStyle().width().isAuto()) {
-      Yoga.YGNodeStyleSetWidth(childNode, borderBox.width());
+      if (child.resolvedStyle().width().isAuto() && !stretchesCrossAxis(parentStyle, child)) {
+        Yoga.YGNodeStyleSetWidth(childNode, borderBox.width());
+      }
+    } else {
+      if (child.resolvedStyle().width().isAuto()) {
+        Yoga.YGNodeStyleSetWidth(childNode, borderBox.width());
+      }
+      if (child.resolvedStyle().height().isAuto() && !stretchesCrossAxis(parentStyle, child)) {
+        Yoga.YGNodeStyleSetHeight(childNode, borderBox.height());
+      }
     }
+  }
+
+  private boolean stretchesCrossAxis(ResolvedStyle parentStyle, Element child) {
+    AlignSelf alignSelf = child.resolvedStyle().alignSelf();
+    if (AlignSelf.STRETCH.equals(alignSelf)) {
+      return true;
+    }
+    return (alignSelf == null || AlignSelf.AUTO.equals(alignSelf))
+        && (parentStyle.alignItems() == null || AlignItems.STRETCH.equals(parentStyle.alignItems()));
   }
 
   private boolean shouldPersist(Element node, Element positionedParent) {

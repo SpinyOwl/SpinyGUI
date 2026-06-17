@@ -9,6 +9,9 @@ import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
 
 import com.spinyowl.spinygui.core.event.processor.EventProcessor;
+import com.spinyowl.spinygui.core.font.Font;
+import com.spinyowl.spinygui.core.font.FontStyle;
+import com.spinyowl.spinygui.core.font.FontWeight;
 import com.spinyowl.spinygui.core.layout.ElementLayout;
 import com.spinyowl.spinygui.core.layout.LayoutContext;
 import com.spinyowl.spinygui.core.layout.LayoutService;
@@ -17,9 +20,14 @@ import com.spinyowl.spinygui.core.node.Element;
 import com.spinyowl.spinygui.core.node.Frame;
 import com.spinyowl.spinygui.core.node.Node;
 import com.spinyowl.spinygui.core.node.NodeBuilder;
+import com.spinyowl.spinygui.core.node.Text;
 import com.spinyowl.spinygui.core.style.ResolvedStyle;
+import com.spinyowl.spinygui.core.style.types.Color;
 import com.spinyowl.spinygui.core.style.types.Display;
+import com.spinyowl.spinygui.core.style.types.OverflowWrap;
 import com.spinyowl.spinygui.core.style.types.Position;
+import com.spinyowl.spinygui.core.style.types.TextAlign;
+import com.spinyowl.spinygui.core.style.types.WhiteSpace;
 import com.spinyowl.spinygui.core.style.types.border.BorderStyle;
 import com.spinyowl.spinygui.core.style.types.flex.AlignItems;
 import com.spinyowl.spinygui.core.style.types.flex.AlignSelf;
@@ -29,8 +37,12 @@ import com.spinyowl.spinygui.core.style.types.flex.JustifyContent;
 import com.spinyowl.spinygui.core.style.types.length.Length;
 import com.spinyowl.spinygui.core.style.types.length.Unit;
 import com.spinyowl.spinygui.core.system.event.processor.SystemEventProcessor;
+import com.spinyowl.spinygui.core.system.font.FontMetrics;
+import com.spinyowl.spinygui.core.system.font.TextLineMetrics;
 import com.spinyowl.spinygui.core.system.font.TextMeasurer;
 import com.spinyowl.spinygui.core.time.TimeService;
+import java.util.HashMap;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 import lombok.NonNull;
@@ -190,6 +202,83 @@ class FlexLayoutTest {
     assertEquals(160, child.box().content().y());
   }
 
+  @Test
+  void layout_whenColumnFlexStartHasAutoWidthTextChildren_preservesChildTextWidth() {
+    Frame frame = NodeBuilder.frame();
+    Element button = NodeBuilder.button();
+    Element label = NodeBuilder.div();
+    Text labelText = NodeBuilder.text("Start Game");
+    Element status = NodeBuilder.div();
+    Text statusText = NodeBuilder.text("enabled");
+    label.addChild(labelText);
+    status.addChild(statusText);
+    button.addChildren(label, status);
+    frame.addChild(button);
+
+    style(frame);
+    style(button);
+    style(label);
+    style(status);
+    frame.frameSize(240, 120);
+    button.resolvedStyle().display(Display.FLEX);
+    button.resolvedStyle().flexDirection(FlexDirection.COLUMN);
+    button.resolvedStyle().alignItems(AlignItems.FLEX_START);
+    button.resolvedStyle().width(Length.pixel(180));
+    button.resolvedStyle().height(Length.pixel(54));
+
+    layoutService(new FixedTextMeasurer()).layout(frame);
+
+    assertTrue(label.box().content().width() > 0);
+    assertTrue(status.box().content().width() > 0);
+    assertFalse(labelText.inlineFragments().isEmpty());
+    assertFalse(statusText.inlineFragments().isEmpty());
+  }
+
+  @Test
+  void layout_whenRowFlexStartHasAutoHeightTextChild_preservesChildTextHeight() {
+    Frame frame = NodeBuilder.frame();
+    Element row = NodeBuilder.div();
+    Element label = NodeBuilder.div();
+    Text labelText = NodeBuilder.text("Start");
+    label.addChild(labelText);
+    row.addChild(label);
+    frame.addChild(row);
+
+    style(frame);
+    style(row);
+    style(label);
+    frame.frameSize(240, 120);
+    row.resolvedStyle().display(Display.FLEX);
+    row.resolvedStyle().flexDirection(FlexDirection.ROW);
+    row.resolvedStyle().alignItems(AlignItems.FLEX_START);
+    row.resolvedStyle().width(Length.pixel(180));
+    row.resolvedStyle().height(Length.pixel(54));
+    label.resolvedStyle().width(Length.pixel(80));
+
+    layoutService(new FixedTextMeasurer()).layout(frame);
+
+    assertTrue(label.box().content().height() > 0);
+    assertFalse(labelText.inlineFragments().isEmpty());
+  }
+
+  private static LayoutService layoutService(TextMeasurer textMeasurer) {
+    var layoutMap = new HashMap<Display, ElementLayout>();
+    LayoutService layoutService = new LayoutServiceImpl(mock(TextLayout.class), layoutMap);
+    var blockLayout =
+        new BlockLayout(layoutService, new InlineFormattingContext(textMeasurer), textMeasurer);
+    layoutMap.put(Display.NONE, new NoneLayout());
+    layoutMap.put(Display.BLOCK, blockLayout);
+    layoutMap.put(
+        Display.FLEX,
+        new FlexLayout(
+            mock(SystemEventProcessor.class),
+            mock(EventProcessor.class),
+            mock(TimeService.class),
+            blockLayout,
+            layoutService));
+    return layoutService;
+  }
+
   private static void style(Element element) {
     ResolvedStyle style = element.resolvedStyle();
     style.display(Display.BLOCK);
@@ -228,6 +317,16 @@ class FlexLayoutTest {
     style.justifyContent(JustifyContent.FLEX_START);
     style.alignItems(AlignItems.FLEX_START);
     style.alignSelf(AlignSelf.AUTO);
+    style.fontFamilies(Set.of("Roboto"));
+    style.fontStyle(FontStyle.NORMAL);
+    style.fontWeight(FontWeight.NORMAL);
+    style.fontSize(Length.pixel(10));
+    style.lineHeight(1f);
+    style.color(Color.BLACK);
+    style.whiteSpace(WhiteSpace.NORMAL);
+    style.textAlign(TextAlign.LEFT);
+    style.overflowWrap(OverflowWrap.NORMAL);
+    style.tabSize(4);
   }
 
   private static class NoopLayoutService implements LayoutService {
@@ -239,5 +338,24 @@ class FlexLayoutTest {
 
     @Override
     public void layoutChildNodes(@NonNull Element element, @NonNull LayoutContext context) {}
+  }
+
+  private static class FixedTextMeasurer extends AbstractFixedTextMeasurer {
+    @Override
+    public TextLineMetrics getTextLineMetrics(
+        @NonNull String text, @NonNull Font font, float fontSize, float lineHeight) {
+      FontMetrics fontMetrics =
+          new FontMetrics(8, 2, Math.max(0, fontSize * lineHeight - 10), 10, 8);
+      return TextLineMetrics.builder()
+          .characters(text)
+          .startIndex(0)
+          .endIndex(text.length())
+          .charCount(text.length())
+          .width(text.length() * 10f)
+          .height(fontMetrics.lineHeight())
+          .baseline(fontMetrics.baseline())
+          .fontMetrics(fontMetrics)
+          .build();
+    }
   }
 }
