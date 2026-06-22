@@ -21,6 +21,9 @@ public final class Display {
   /** Displays an element as a block-level flex container. */
   public static final Display FLEX = Display.create("flex");
 
+  /** Displays an element as a block-level grid container. */
+  public static final Display GRID = Display.create("grid");
+
   /** The element is completely removed. */
   public static final Display NONE = Display.create("none");
 

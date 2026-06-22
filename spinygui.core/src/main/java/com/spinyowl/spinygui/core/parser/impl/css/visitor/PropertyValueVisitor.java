@@ -16,12 +16,14 @@ import com.spinyowl.spinygui.core.style.stylesheet.Term;
 import com.spinyowl.spinygui.core.style.stylesheet.term.TermColor;
 import com.spinyowl.spinygui.core.style.stylesheet.term.TermFloat;
 import com.spinyowl.spinygui.core.style.stylesheet.term.TermFunction;
+import com.spinyowl.spinygui.core.style.stylesheet.term.TermGridFraction;
 import com.spinyowl.spinygui.core.style.stylesheet.term.TermIdent;
 import com.spinyowl.spinygui.core.style.stylesheet.term.TermInteger;
 import com.spinyowl.spinygui.core.style.stylesheet.term.TermLength;
 import com.spinyowl.spinygui.core.style.stylesheet.term.TermList;
 import com.spinyowl.spinygui.core.style.stylesheet.term.TermList.Operator;
 import com.spinyowl.spinygui.core.style.types.Color;
+import com.spinyowl.spinygui.core.style.types.grid.GridFraction;
 import com.spinyowl.spinygui.core.style.types.length.Length;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -39,6 +41,7 @@ public class PropertyValueVisitor extends CSS3BaseVisitor<Term<?>> {
   private static final String HSLA = "hsla(";
 
   public static final String PIXEL_REGEX = "-?\\d+(\\.\\d+)?[pP][xX]";
+  public static final String FRACTION_REGEX = "-?\\d+(\\.\\d+)?[fF][rR]";
 
   private static Operator getOperator(Operator_Context op) {
     String operatorText = op != null ? op.getText() : " ";
@@ -53,15 +56,23 @@ public class PropertyValueVisitor extends CSS3BaseVisitor<Term<?>> {
     return operator;
   }
 
+  private static Operator getOperator(List<Operator_Context> operators) {
+    if (operators.stream().anyMatch(op -> op != null && op.getText().contains("/"))) {
+      return Operator.SLASH;
+    }
+    if (operators.stream().anyMatch(op -> op != null && op.getText().contains(","))) {
+      return Operator.COMMA;
+    }
+    return Operator.SPACE;
+  }
+
   @Override
   @SuppressWarnings("squid:S6204")
   public Term<?> visitExpr(ExprContext ctx) {
     log.debug("visitExpr. " + ctx.getText());
     if (ctx.term().size() == 1) return super.visit(ctx.term(0));
     List<Term<?>> terms = ctx.term().stream().map(super::visit).collect(Collectors.toList());
-    Operator operator = getOperator(ctx.operator_(0));
-
-    return new TermList(operator, terms);
+    return new TermList(getOperator(ctx.operator_()), terms);
   }
 
   @Override
@@ -73,7 +84,9 @@ public class PropertyValueVisitor extends CSS3BaseVisitor<Term<?>> {
   @Override
   public Term<?> visitTerminal(TerminalNode node) {
     log.debug("visitTerminal");
-    return new TermIdent(node.getText().replace("\"", ""));
+    String text = node.getText().replace("\"", "");
+    Term<?> dimension = dimension(text);
+    return dimension != null ? dimension : new TermIdent(text);
   }
 
   @Override
@@ -84,12 +97,28 @@ public class PropertyValueVisitor extends CSS3BaseVisitor<Term<?>> {
   @Override
   public Term<?> visitDimension(DimensionContext ctx) {
     String dimensionText = ctx.getText();
+    Term<?> dimension = dimension(dimensionText);
+    if (dimension != null) {
+      return dimension;
+    }
+
+    throw new NotImplementedException(
+        "The only dimensions supported are pixel, percentage, and grid fraction. Value specified: "
+            + dimensionText);
+  }
+
+  private Term<?> dimension(String dimensionText) {
     if (dimensionText.matches(PIXEL_REGEX)) {
       return new TermLength(
           Length.pixel(Float.parseFloat(dimensionText.substring(0, dimensionText.length() - 2))));
     }
+    if (dimensionText.matches(FRACTION_REGEX)) {
+      return new TermGridFraction(
+          GridFraction.fr(
+              Float.parseFloat(dimensionText.substring(0, dimensionText.length() - 2))));
+    }
 
-    throw new NotImplementedException("The only dimension supported is pixel and percentage. Value specified: " + dimensionText);
+    return null;
   }
 
   @Override

@@ -83,6 +83,32 @@ public final class Properties {
   public static final String FLEX_WRAP = "flex-wrap";
   public static final String JUSTIFY_CONTENT = "justify-content";
 
+  public static final String GRID = "grid";
+  public static final String GRID_AREA = "grid-area";
+  public static final String GRID_AUTO_COLUMNS = "grid-auto-columns";
+  public static final String GRID_AUTO_FLOW = "grid-auto-flow";
+  public static final String GRID_AUTO_ROWS = "grid-auto-rows";
+  public static final String GRID_COLUMN = "grid-column";
+  public static final String GRID_COLUMN_END = "grid-column-end";
+  public static final String GRID_COLUMN_GAP = "grid-column-gap";
+  public static final String GRID_COLUMN_START = "grid-column-start";
+  public static final String GRID_GAP = "grid-gap";
+  public static final String GRID_ROW = "grid-row";
+  public static final String GRID_ROW_END = "grid-row-end";
+  public static final String GRID_ROW_GAP = "grid-row-gap";
+  public static final String GRID_ROW_START = "grid-row-start";
+  public static final String GRID_TEMPLATE = "grid-template";
+  public static final String GRID_TEMPLATE_AREAS = "grid-template-areas";
+  public static final String GRID_TEMPLATE_COLUMNS = "grid-template-columns";
+  public static final String GRID_TEMPLATE_ROWS = "grid-template-rows";
+  public static final String COLUMN_GAP = "column-gap";
+  public static final String ROW_GAP = "row-gap";
+  public static final String JUSTIFY_ITEMS = "justify-items";
+  public static final String JUSTIFY_SELF = "justify-self";
+  public static final String PLACE_CONTENT = "place-content";
+  public static final String PLACE_ITEMS = "place-items";
+  public static final String PLACE_SELF = "place-self";
+
   public static final String WIDTH = "width";
   public static final String HEIGHT = "height";
 

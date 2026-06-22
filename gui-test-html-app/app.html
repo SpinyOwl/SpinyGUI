@@ -1,285 +1,36 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta http-equiv=”refresh” content=”2″>
-    <style>
-        /* @import url("https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400&display=swap"); */
-        @font-face {
-            font-family: 'Roboto';
-            font-style: normal;
-            font-weight: 400;
-            src: url(file:///D:/Roboto-Regular.ttf)
-        }
-
-        html, body {
-            overflow: hidden;
-            width: 100%;
-            height: 100%;
-        }
-        :root {
-            --winframe-width: 100%;
-            --winframe-height: 100%;
-        }
-
-        * {
-            font-family: "Roboto", sans-serif;
-            font-weight: 400;
-            font-style: normal;
-            font-stretch: normal;
-            font-size: 16px;
-            padding: 0;
-            margin: 0;
-        }
-
-        *::-webkit-scrollbar {
-            /* width: 8px; */
-            /* height: 8px; */
-        }
-
-        winframe {
-            width: var(--winframe-width);
-            height: var(--winframe-height);
-
-            display: block;
-        }
-
-        /* styles from app */
-
-
-        .main-menu {
-            background-color: transparent;
-            box-sizing: border-box;
-            width: 100%;
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .main-menu-center {
-            width: 420px;
-            padding: 22px;
-            box-sizing: border-box;
-            background-color: rgba(8, 12, 16, 0.92);
-            border: 1px solid rgba(220, 230, 235, 0.22);
-        }
-
-        .main-menu-title {
-            display: block;
-            margin-bottom: 12px;
-        }
-
-        .main-menu-title-text {
-            display: block;
-            font-size: 30px;
-            font-weight: 800;
-            color: #eef3f5;
-            white-space: nowrap;
-            overflow: hidden;
-        }
-
-        .main-menu-title-subtext {
-            display: block;
-            font-size: 14px;
-            color: #8fd4ff;
-            white-space: nowrap;
-            overflow: hidden;
-        }
-
-        .main-menu-status {
-            display: block;
-            min-height: 16px;
-            padding: 0 2px;
-            font-size: 13px;
-            color: #f5df5f;
-            white-space: nowrap;
-            overflow: hidden;
-        }
-
-        .main-menu-player {
-            display: block;
-            margin: 4px 0 10px;
-            padding: 8px;
-            background-color: rgba(18, 24, 28, 0.94);
-            border: 1px solid rgba(220, 230, 235, 0.16);
-        }
-
-        .main-menu-player-label {
-            display: block;
-            font-size: 13px;
-            font-weight: 700;
-            color: #8fd4ff;
-            white-space: nowrap;
-            overflow: hidden;
-        }
-
-        .main-menu-player-input {
-            display: block;
-            width: 100%;
-            height: 28px;
-            box-sizing: border-box;
-            padding: 4px 6px;
-            margin-top: 6px;
-            margin-bottom: 6px;
-            font-size: 13px;
-            color: #eef3f5;
-            background-color: rgba(7, 11, 14, 0.96);
-            border: 1px solid rgba(220, 230, 235, 0.22);
-        }
-
-        .main-menu-player-validation {
-            display: block;
-            font-size: 12px;
-            color: #c0c8cc;
-            min-height: 16px;
-            white-space: nowrap;
-            overflow: hidden;
-        }
-
-        .main-menu-action-panel {
-            width: 100%;
-            padding: 0;
-        }
-
-        .main-menu-action {
-            display: block;
-            box-sizing: border-box;
-            width: 100%;
-            min-height: 54px;
-            padding: 8px;
-            margin-bottom: 6px;
-            text-align: left;
-            font-family: inherit;
-            color: #eef3f5;
-            cursor: pointer;
-            overflow: hidden;
-            border: 1px solid rgba(220, 230, 235, 0.16);
-        }
-
-        .main-menu-action.disabled {
-            background-color: rgba(28, 34, 40, 0.9);
-            color: #c8d2d8;
-            cursor: default;
-        }
-
-        .main-menu-action.selected {
-            border: 1px solid #8fd4ff;
-        }
-
-        button.main-menu-action {
-            background-color: rgba(28, 34, 40, 0.9);
-        }
-
-        button.main-menu-action:hover {
-            border-color: #b8e5ff;
-            background-color: rgba(44, 68, 78, 0.98);
-        }
-
-        button.main-menu-action:active {
-            border-color: #f5df5f;
-            background-color: rgba(64, 76, 46, 0.98);
-        }
-
-        button.main-menu-action.selected {
-            background-color: rgba(36, 52, 62, 0.94);
-        }
-
-        .main-menu-action-label {
-            display: block;
-            font-size: 16px;
-            font-weight: 700;
-            color: #eef3f5;
-            white-space: nowrap;
-            overflow: hidden;
-        }
-
-        .main-menu-action-status {
-            display: block;
-            font-size: 13px;
-            color: #8fd4ff;
-            white-space: nowrap;
-            overflow: hidden;
-        }
-
-        .main-menu-action-reason {
-            display: block;
-            font-size: 12px;
-            color: #c0c8cc;
-            white-space: nowrap;
-            overflow: hidden;
-        }
-
-        .main-menu-endpoint-wrap {
-            display: block;
-            margin-top: 8px;
-            width: 100%;
-        }
-
-        .main-menu-endpoint-input {
-            display: block;
-            width: 300px;
-            height: 28px;
-            box-sizing: border-box;
-            padding: 4px 6px;
-            margin-bottom: 6px;
-            font-size: 13px;
-            color: #eef3f5;
-            background-color: rgba(7, 11, 14, 0.96);
-            border: 1px solid rgba(220, 230, 235, 0.22);
-        }
-
-        .main-menu-endpoint-connect {
-            display: block;
-            width: 86px;
-            height: 28px;
-            box-sizing: border-box;
-            padding: 4px 8px;
-            font-size: 13px;
-            font-weight: 700;
-            color: #eef3f5;
-            background-color: rgba(36, 52, 62, 0.94);
-            border: 1px solid rgba(143, 212, 255, 0.75);
-        }
-
-
-
-
-    </style>
+  <meta charset="utf-8">
+  <title>Grid Style Demo</title>
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-<winframe id="main-menu" class="main-menu">
-    <div id="main-menu-center" class="main-menu-center">
-        <div id="main-menu-title" class="main-menu-title">
-            <div class="main-menu-title-text">Rogue Crawler</div>
-            <div class="main-menu-title-subtext">Main Menu</div>
-        </div>
-        <div id="main-menu-status" class="main-menu-status">{{connectionStatus}}</div>
-        <div id="main-menu-player" class="main-menu-player">
-            <div class="main-menu-player-label">Player Name</div>
-            <input id="main-menu-player-name-input" class="main-menu-player-input" type="text" name="playerName" value="{{playerName}}" />
-            <div id="main-menu-player-name-validation" class="main-menu-player-validation">{{playerNameValidation}}</div>
-        </div>
-        <div id="main-menu-actions" class="main-menu-action-panel">
-            <button id="main-menu-action-start-game" class="main-menu-action" type="button">
-                <div class="main-menu-action-label">Start Game</div>
-                <div class="main-menu-action-status">enabled</div>
-            </button>
-            <button id="main-menu-action-open-find-game" class="main-menu-action" type="button">
-                <div class="main-menu-action-label">Find Game</div>
-                <div class="main-menu-action-status">enabled</div>
-            </button>
-            <button id="main-menu-action-open-settings" class="main-menu-action" type="button">
-                <div class="main-menu-action-label">Settings</div>
-                <div class="main-menu-action-status">enabled</div>
-            </button>
-            <button id="main-menu-action-exit" class="main-menu-action" type="button">
-                <div class="main-menu-action-label">Exit</div>
-                <div class="main-menu-action-status">enabled</div>
-            </button>
-        </div>
-    </div>
-</winframe>
+<winframe>
+  <div class="title">Grid Style Demo</div>
+  <div class="subtitle">Visual preview uses current block positioning while the hidden probe resolves CSS Grid declarations.</div>
 
+  <div class="visual-stage"></div>
+  <div class="grid-line vertical v1"></div>
+  <div class="grid-line vertical v2"></div>
+  <div class="grid-line horizontal h1"></div>
+  <div class="visual-card featured-card">Featured spans two rows</div>
+  <div class="visual-card summary-card">Summary area</div>
+  <div class="visual-card actions-card">Actions column</div>
+
+  <div class="contract-panel"></div>
+  <div class="contract-title">Resolved declarations</div>
+  <div class="contract-row row-display">display: grid</div>
+  <div class="contract-row row-columns">columns: 160px 1fr minmax(120px, 2fr)</div>
+  <div class="contract-row row-rows">rows: 80px auto</div>
+  <div class="contract-row row-areas">areas: featured / summary / actions</div>
+  <div class="contract-row row-gap">gap: 12px 18px</div>
+
+  <div id="grid-probe" class="grid-probe">
+    <div class="probe-card featured">Featured</div>
+    <div class="probe-card summary">Summary</div>
+    <div class="probe-card actions">Actions</div>
+  </div>
+</winframe>
 </body>
 </html>
