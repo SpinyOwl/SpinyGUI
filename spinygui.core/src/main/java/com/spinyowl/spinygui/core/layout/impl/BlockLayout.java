@@ -383,7 +383,9 @@ public class BlockLayout implements ElementLayout {
     if (!skipChildren) {
       layoutFlowChildren(element);
     }
-    if ((style.display().equals(Display.BLOCK) || style.display().equals(Display.INLINE_BLOCK))
+    if ((style.display().equals(Display.BLOCK)
+            || style.display().equals(Display.INLINE_BLOCK)
+            || style.display().equals(Display.GRID))
         && height.isAuto()
         && !skipChildren) {
       childrenHeight = getChildNodesHeight(element);

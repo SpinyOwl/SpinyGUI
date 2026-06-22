@@ -47,6 +47,28 @@ class LayoutServiceProviderGridTest {
     assertEquals(20, child.box().content().height());
   }
 
+  @Test
+  void layout_whenGridFallbackHasAutoHeight_sizesToFlowChildren() {
+    Frame frame = NodeBuilder.frame();
+    frame.frameSize(300, 300);
+    style(frame, Display.BLOCK, 300, 300);
+    Element grid = NodeBuilder.div();
+    style(grid, Display.GRID, 100, Float.NaN);
+    grid.resolvedStyle().height(Unit.AUTO);
+    Element first = NodeBuilder.div();
+    style(first, Display.BLOCK, 80, 20);
+    Element second = NodeBuilder.div();
+    style(second, Display.BLOCK, 80, 30);
+    grid.addChildren(first, second);
+    frame.addChild(grid);
+
+    layoutService().layout(frame);
+
+    assertEquals(50, grid.box().content().height());
+    assertEquals(0, first.box().content().y());
+    assertEquals(20, second.box().content().y());
+  }
+
   private static LayoutService layoutService() {
     FontService fontService =
         mock(FontService.class, withSettings().extraInterfaces(TextMeasurer.class));
