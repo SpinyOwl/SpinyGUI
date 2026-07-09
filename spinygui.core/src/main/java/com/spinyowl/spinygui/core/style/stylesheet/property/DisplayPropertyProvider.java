@@ -19,7 +19,6 @@ public class DisplayPropertyProvider implements PropertyProvider {
         Property.builder()
             .name(DISPLAY)
             .defaultValue(new TermIdent(BLOCK.name()))
-            .inheritable(true)
             .animatable(true)
             .updater(put(DISPLAY, TermIdent.class, Display::find))
             .validator(checkValue(TermIdent.class, Display::contains))

@@ -182,9 +182,10 @@ public class Property {
   }
 
   public void inheritedValue(Element element, @NonNull Map<String, Object> styles) {
-    var parentStyle = element.parent().resolvedStyle();
     if (!shorthand) {
-      if (parentStyle != null) {
+      var parent = element.parent();
+      var parentStyle = parent == null ? null : parent.resolvedStyle();
+      if (parentStyle != null && parentStyle.styles().containsKey(this.name)) {
         styles.put(this.name, parentStyle.getSafe(this.name));
       } else {
         defaultComputedValue(styles);

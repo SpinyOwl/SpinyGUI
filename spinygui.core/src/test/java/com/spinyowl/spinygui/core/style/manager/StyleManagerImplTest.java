@@ -2,6 +2,7 @@ package com.spinyowl.spinygui.core.style.manager;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import com.spinyowl.spinygui.core.font.FontWeight;
 import com.spinyowl.spinygui.core.node.Element;
 import com.spinyowl.spinygui.core.node.Frame;
 import com.spinyowl.spinygui.core.node.NodeBuilder;
@@ -18,6 +19,7 @@ import com.spinyowl.spinygui.core.style.stylesheet.impl.DefaultPropertyStoreProv
 import com.spinyowl.spinygui.core.style.stylesheet.term.TermIdent;
 import com.spinyowl.spinygui.core.style.types.Color;
 import com.spinyowl.spinygui.core.style.types.Display;
+import com.spinyowl.spinygui.core.style.types.Position;
 import com.spinyowl.spinygui.core.style.types.length.Length;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -327,6 +329,136 @@ button:active {
     button.pressed(true);
     styleManager.recalculate(frame);
     assertEquals(Color.YELLOW, button.resolvedStyle().backgroundColor());
+  }
+
+  @Test
+  void recalculateInheritsParentColorWhenChildDoesNotSpecifyColor() {
+    PropertyStore propertyStore = new DefaultPropertyStoreProvider().createPropertyStore();
+    StyleSheetParser parser = StyleSheetParserFactory.createParser(propertyStore);
+    StyleManager styleManager = new StyleManagerImpl(propertyStore, parser);
+    Frame frame = new Frame();
+    Element parent = new Element("div");
+    Element child = new Element("span");
+    parent.addChild(child);
+    frame.addChild(parent);
+    frame.styleSheets().add(parser.parse("div { color: red; }"));
+
+    styleManager.recalculate(frame);
+
+    assertEquals(Color.RED, parent.resolvedStyle().color());
+    assertEquals(Color.RED, child.resolvedStyle().color());
+  }
+
+  @Test
+  void recalculateInheritsParentFontWeightWhenChildDoesNotSpecifyFontWeight() {
+    PropertyStore propertyStore = new DefaultPropertyStoreProvider().createPropertyStore();
+    StyleSheetParser parser = StyleSheetParserFactory.createParser(propertyStore);
+    StyleManager styleManager = new StyleManagerImpl(propertyStore, parser);
+    Frame frame = new Frame();
+    Element parent = new Element("div");
+    Element child = new Element("span");
+    parent.addChild(child);
+    frame.addChild(parent);
+    frame.styleSheets().add(parser.parse("div { font-weight: bold; }"));
+
+    styleManager.recalculate(frame);
+
+    assertEquals(FontWeight.BOLD, parent.resolvedStyle().fontWeight());
+    assertEquals(FontWeight.BOLD, child.resolvedStyle().fontWeight());
+  }
+
+  @Test
+  void recalculateAppliesExplicitInheritToNonInheritedProperty() {
+    PropertyStore propertyStore = new DefaultPropertyStoreProvider().createPropertyStore();
+    StyleSheetParser parser = StyleSheetParserFactory.createParser(propertyStore);
+    StyleManager styleManager = new StyleManagerImpl(propertyStore, parser);
+    Frame frame = new Frame();
+    Element parent = new Element("div");
+    Element child = new Element("span");
+    child.style("background-color: inherit");
+    parent.addChild(child);
+    frame.addChild(parent);
+    frame.styleSheets().add(parser.parse("div { background-color: blue; }"));
+
+    styleManager.recalculate(frame);
+
+    assertEquals(Color.BLUE, parent.resolvedStyle().backgroundColor());
+    assertEquals(Color.BLUE, child.resolvedStyle().backgroundColor());
+  }
+
+  @Test
+  void recalculateAppliesInitialInsteadOfInheritedColor() {
+    PropertyStore propertyStore = new DefaultPropertyStoreProvider().createPropertyStore();
+    StyleSheetParser parser = StyleSheetParserFactory.createParser(propertyStore);
+    StyleManager styleManager = new StyleManagerImpl(propertyStore, parser);
+    Frame frame = new Frame();
+    Element parent = new Element("div");
+    Element child = new Element("span");
+    child.style("color: initial");
+    parent.addChild(child);
+    frame.addChild(parent);
+    frame.styleSheets().add(parser.parse("div { color: red; }"));
+
+    styleManager.recalculate(frame);
+
+    assertEquals(Color.RED, parent.resolvedStyle().color());
+    assertEquals(Color.BLACK, child.resolvedStyle().color());
+  }
+
+  @Test
+  void recalculateClearsComputedValuesWhenInlineStyleIsRemoved() {
+    PropertyStore propertyStore = new DefaultPropertyStoreProvider().createPropertyStore();
+    StyleSheetParser parser = StyleSheetParserFactory.createParser(propertyStore);
+    StyleManager styleManager = new StyleManagerImpl(propertyStore, parser);
+    Frame frame = new Frame();
+    Element child = new Element("div");
+    frame.addChild(child);
+
+    child.style("color: red");
+    styleManager.recalculate(frame);
+    child.style(null);
+    styleManager.recalculate(frame);
+
+    assertEquals(Color.BLACK, child.resolvedStyle().color());
+  }
+
+  @Test
+  void recalculateDoesNotInheritParentDisplayOrPositionByDefault() {
+    PropertyStore propertyStore = new DefaultPropertyStoreProvider().createPropertyStore();
+    StyleSheetParser parser = StyleSheetParserFactory.createParser(propertyStore);
+    StyleManager styleManager = new StyleManagerImpl(propertyStore, parser);
+    Frame frame = new Frame();
+    Element parent = new Element("div");
+    Element child = new Element("span");
+    parent.addChild(child);
+    frame.addChild(parent);
+    frame.styleSheets().add(parser.parse("div { display: flex; position: absolute; }"));
+
+    styleManager.recalculate(frame);
+
+    assertEquals(Display.FLEX, parent.resolvedStyle().display());
+    assertEquals(Position.ABSOLUTE, parent.resolvedStyle().position());
+    assertEquals(Display.BLOCK, child.resolvedStyle().display());
+    assertEquals(Position.STATIC, child.resolvedStyle().position());
+  }
+
+  @Test
+  void recalculateAppliesExplicitInheritToDisplayAndPosition() {
+    PropertyStore propertyStore = new DefaultPropertyStoreProvider().createPropertyStore();
+    StyleSheetParser parser = StyleSheetParserFactory.createParser(propertyStore);
+    StyleManager styleManager = new StyleManagerImpl(propertyStore, parser);
+    Frame frame = new Frame();
+    Element parent = new Element("div");
+    Element child = new Element("span");
+    child.style("display: inherit; position: inherit");
+    parent.addChild(child);
+    frame.addChild(parent);
+    frame.styleSheets().add(parser.parse("div { display: flex; position: absolute; }"));
+
+    styleManager.recalculate(frame);
+
+    assertEquals(Display.FLEX, child.resolvedStyle().display());
+    assertEquals(Position.ABSOLUTE, child.resolvedStyle().position());
   }
 
   private static PropertyStore emptyPropertyStore() {

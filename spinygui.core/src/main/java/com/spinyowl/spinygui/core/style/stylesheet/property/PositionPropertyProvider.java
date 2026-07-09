@@ -18,7 +18,6 @@ public class PositionPropertyProvider implements PropertyProvider {
         Property.builder()
             .name(POSITION)
             .defaultValue(new TermIdent(Position.STATIC.name()))
-            .inheritable(true)
             .animatable(true)
             .updater(put(POSITION, TermIdent.class, Position::find))
             .validator(checkValue(TermIdent.class, Position::contains))

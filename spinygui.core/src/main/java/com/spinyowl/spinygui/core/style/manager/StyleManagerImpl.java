@@ -30,8 +30,10 @@ import java.util.WeakHashMap;
 import lombok.Data;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 
+@Slf4j
 @RequiredArgsConstructor
 public class StyleManagerImpl implements StyleManager {
 
@@ -69,19 +71,24 @@ public class StyleManagerImpl implements StyleManager {
   }
 
   private void applyElementStyle(Element element) {
+    element.resolvedStyle().styles().clear();
     element
         .resolvedStyle()
         .rules()
         .forEach(
-            ruleSet ->
-                ruleSet.declarations().forEach(declaration -> declaration.apply(element)));
+            ruleSet -> ruleSet.declarations().forEach(declaration -> declaration.apply(element)));
+    applyAbsentProperties(element);
+  }
+
+  private void applyAbsentProperties(Element element) {
+    Map<String, Object> styles = element.resolvedStyle().styles();
+    properties().stream()
+        .filter(property -> !styles.containsKey(property.name()))
+        .forEach(property -> property.computeAbsent(element, styles));
   }
 
   private void applyScrollbarStyles(Element element) {
-    element
-        .scrollbarStyles()
-        .values()
-        .forEach(style -> applyScrollbarStyle(element, style));
+    element.scrollbarStyles().values().forEach(style -> applyScrollbarStyle(element, style));
   }
 
   private void applyScrollbarStyle(Element element, ResolvedStyle style) {
@@ -91,7 +98,8 @@ public class StyleManagerImpl implements StyleManager {
             ruleSet ->
                 ruleSet
                     .declarations()
-                    .forEach(declaration -> applyScrollbarDeclaration(element, style, declaration)));
+                    .forEach(
+                        declaration -> applyScrollbarDeclaration(element, style, declaration)));
   }
 
   private void applyScrollbarDeclaration(
@@ -233,22 +241,27 @@ public class StyleManagerImpl implements StyleManager {
       List<Declaration> declarations = styleSheetParser.parseDeclarations(style);
       return InlineStyleParseResult.success(new Ruleset(INLINE_STYLE_SELECTORS, declarations));
     } catch (ParseException e) {
+      log.debug("Failed to parse inline style: {}", style, e);
       return InlineStyleParseResult.failure();
     }
   }
 
   public Ruleset defaultRuleset() {
-    List<Property> propertyStoreProperties = propertyStore.getProperties();
-    if (properties == null || !properties.equals(propertyStoreProperties)) {
-      properties = List.copyOf(propertyStoreProperties);
-      List<Declaration> collect = new ArrayList<>();
-      for (Property p : properties) {
-        collect.add(new Declaration(p, p.defaultValue()));
-      }
-      defaultRuleset = new Ruleset(List.of(new AllSelector()), collect);
+    if (defaultRuleset == null || propertiesChanged()) {
+      properties = List.copyOf(propertyStore.getProperties());
+      defaultRuleset = new Ruleset(List.of(new AllSelector()), List.of());
       userAgentRulesets = null;
     }
     return defaultRuleset;
+  }
+
+  private List<Property> properties() {
+    defaultRuleset();
+    return properties;
+  }
+
+  private boolean propertiesChanged() {
+    return properties == null || !properties.equals(propertyStore.getProperties());
   }
 
   private List<Ruleset> userAgentRulesets() {
