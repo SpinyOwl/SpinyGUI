@@ -90,6 +90,35 @@ class FlexLayoutTest {
   }
 
   @Test
+  void setLength_whenPercentLengthIsUsed_passesYogaPercentValue() {
+    AtomicReference<Float> value = new AtomicReference<>();
+
+    FlexLayout.setLength(
+        Length.percent(1), 11L, (node, pixel) -> {}, (node, percent) -> value.set(percent));
+
+    assertEquals(100f, value.get());
+  }
+
+  @Test
+  void setLengthWithSide_whenPercentLengthIsUsed_passesYogaPercentValue() {
+    AtomicReference<Float> value = new AtomicReference<>();
+    AtomicReference<Integer> side = new AtomicReference<>();
+
+    FlexLayout.setLength(
+        Length.percent(1),
+        11L,
+        3,
+        (node, edge, pixel) -> {},
+        (node, edge, percent) -> {
+          side.set(edge);
+          value.set(percent);
+        });
+
+    assertEquals(3, side.get());
+    assertEquals(100f, value.get());
+  }
+
+  @Test
   void setBorderLength_whenPixelLengthIsUsed_passesFloatValue() {
     AtomicReference<Float> value = new AtomicReference<>();
 
@@ -115,6 +144,22 @@ class FlexLayoutTest {
   }
 
   @Test
+  void setUnit_whenPercentLengthIsUsed_passesYogaPercentValue() {
+    AtomicReference<Float> value = new AtomicReference<>();
+    AtomicBoolean autoCalled = new AtomicBoolean(false);
+
+    FlexLayout.setUnit(
+        Length.percent(1),
+        11L,
+        node -> autoCalled.set(true),
+        (node, pixel) -> {},
+        (node, percent) -> value.set(percent));
+
+    assertFalse(autoCalled.get());
+    assertEquals(100f, value.get());
+  }
+
+  @Test
   void applyPixelOrPercentToSide_whenPixelLengthIsUsed_passesFloatValue() {
     AtomicReference<Float> value = new AtomicReference<>();
 
@@ -126,6 +171,20 @@ class FlexLayoutTest {
         (node, edge, percent) -> {});
 
     assertEquals(12.5f, value.get());
+  }
+
+  @Test
+  void applyPixelOrPercentToSide_whenPercentLengthIsUsed_passesYogaPercentValue() {
+    AtomicReference<Float> value = new AtomicReference<>();
+
+    FlexLayout.applyPixelOrPercentToSide(
+        Length.percent(1),
+        11L,
+        3,
+        (node, edge, pixel) -> {},
+        (node, edge, percent) -> value.set(percent));
+
+    assertEquals(100f, value.get());
   }
 
   @Test
@@ -292,6 +351,26 @@ class FlexLayoutTest {
     assertEquals(50, second.box().borderBox().x());
     assertFalse(frame.layoutChildNodes().contains(hidden));
     assertTrue(hidden.layoutChildNodes().isEmpty());
+  }
+
+  @Test
+  void layout_whenRowFlexChildUsesPercentHeight_resolvesAgainstParentHeight() {
+    Frame frame = NodeBuilder.frame();
+    Element panel = NodeBuilder.div();
+    frame.addChild(panel);
+
+    style(frame);
+    style(panel);
+    frame.frameSize(300, 120);
+    frame.resolvedStyle().display(Display.FLEX);
+    frame.resolvedStyle().width(Length.pixel(300));
+    frame.resolvedStyle().height(Length.pixel(120));
+    panel.resolvedStyle().width(Length.pixel(80));
+    panel.resolvedStyle().height(Length.percent(1));
+
+    layoutService(new FixedTextMeasurer()).layout(frame);
+
+    assertEquals(120, panel.box().content().height());
   }
 
   private static LayoutService layoutService(TextMeasurer textMeasurer) {

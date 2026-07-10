@@ -476,7 +476,7 @@ public class FlexLayout implements ElementLayout {
       if (l instanceof PixelLength) {
         pixelConsumer.accept(node, l.value().floatValue());
       } else if (l instanceof PercentLength) {
-        percentConsumer.accept(node, l.value().floatValue());
+        percentConsumer.accept(node, yogaPercent(l));
       }
     }
   }
@@ -491,7 +491,7 @@ public class FlexLayout implements ElementLayout {
       if (l instanceof PixelLength) {
         pixelConsumer.accept(node, side, l.value().floatValue());
       } else if (l instanceof PercentLength) {
-        percentConsumer.accept(node, side, l.value().floatValue());
+        percentConsumer.accept(node, side, yogaPercent(l));
       }
     }
   }
@@ -528,7 +528,7 @@ public class FlexLayout implements ElementLayout {
         if (l instanceof PixelLength) {
           pixelConsumer.accept(node, l.value().floatValue());
         } else if (l instanceof PercentLength) {
-          percentConsumer.accept(node, l.value().floatValue());
+          percentConsumer.accept(node, yogaPercent(l));
         }
       }
     }
@@ -544,8 +544,12 @@ public class FlexLayout implements ElementLayout {
     if (l instanceof PixelLength) {
       pixelConsumer.accept(node, side, l.value().floatValue());
     } else if (l instanceof PercentLength) {
-      percentConsumer.accept(node, side, l.value().floatValue());
+      percentConsumer.accept(node, side, yogaPercent(l));
     }
+  }
+
+  private static float yogaPercent(Length<?> length) {
+    return length.value().floatValue() * 100F;
   }
 
   public static void setUnit(
