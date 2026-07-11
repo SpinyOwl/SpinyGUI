@@ -1,0 +1,69 @@
+.transform-demo-frame {
+  display: block;
+  width: 100%;
+  height: 100%;
+  padding: 32px;
+  box-sizing: border-box;
+  background-color: #17212b;
+  color: #edf5ff;
+  font-family: sans-serif;
+}
+
+.transform-demo-stage {
+  display: block;
+  width: 580px;
+  padding: 26px;
+  box-sizing: border-box;
+  background-color: #243447;
+}
+
+.transform-card {
+  display: block;
+  width: 220px;
+  min-height: 44px;
+  margin-bottom: 20px;
+  padding: 12px;
+  box-sizing: border-box;
+  background-color: #3d6f94;
+  color: #ffffff;
+  font-size: 16px;
+}
+
+.transform-card-translate {
+  transform: translate(48px, 12px);
+}
+
+.transform-card-scale {
+  transform: scale(1.25, 1.25);
+  transform-origin: left top;
+}
+
+.transform-card-rotate {
+  transform: translate(1px, 1px) rotate(10deg);
+  transform-origin: center;
+}
+
+.transform-action {
+  display: block;
+  width: 200px;
+  height: 38px;
+  border: 1px solid #a8d8ff;
+  background-color: #28668f;
+  color: #ffffff;
+  font-size: 15px;
+  transform: translate(34px, 8px) rotate(4deg);
+  transform-origin: center;
+}
+
+.transform-card:hover, .transform-action:hover {
+  border: 1px solid red;
+}
+.transform-action:focus {
+  border: 1px solid #FA7777;
+  background-color: #28668f;
+}
+
+.transform-action:active {
+  border: 1px solid #77F777;
+  background-color: #28668f;
+}

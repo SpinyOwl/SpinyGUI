@@ -65,3 +65,11 @@ tasks.register<JavaExec>("runGridStyleExample") {
     mainClass.set("com.spinyowl.spinygui.demo.complex.GridStyleExample")
     jvmArgs = application.applicationDefaultJvmArgs.toList()
 }
+
+tasks.register<JavaExec>("runTransformExample") {
+    group = "application"
+    description = "Runs the static CSS transform verification example."
+    classpath = sourceSets.main.get().runtimeClasspath
+    mainClass.set("com.spinyowl.spinygui.demo.complex.TransformExample")
+    jvmArgs = application.applicationDefaultJvmArgs.toList()
+}

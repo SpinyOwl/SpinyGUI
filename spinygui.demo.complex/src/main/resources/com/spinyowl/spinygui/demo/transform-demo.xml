@@ -1,0 +1,8 @@
+<winframe class="transform-demo-frame">
+  <div class="transform-demo-stage">
+    <div id="transform-translate" class="transform-card transform-card-translate">translate(48px, 12px)</div>
+    <div id="transform-scale" class="transform-card transform-card-scale">scale(1.25)</div>
+    <div id="transform-rotate" class="transform-card transform-card-rotate">rotate(-10deg)</div>
+    <button id="transform-action" type="button" class="transform-action">Transformed button</button>
+  </div>
+</winframe>
