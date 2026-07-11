@@ -17,6 +17,7 @@ import com.spinyowl.spinygui.core.node.InputElement;
 import com.spinyowl.spinygui.core.node.Node;
 import com.spinyowl.spinygui.core.node.Text;
 import com.spinyowl.spinygui.core.node.TextareaElement;
+import com.spinyowl.spinygui.core.style.types.AffineTransform;
 import com.spinyowl.spinygui.core.system.font.TextMeasurer;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -37,12 +38,15 @@ public class NvgRenderer implements Renderer {
   private final NvgInputRenderer inputRenderer;
   private final NvgTextareaRenderer textareaRenderer;
   private final NvgScrollbarRenderer scrollbarRenderer;
-  private final NvgDebugRenderer debugRenderer;
+  private DebugRenderer debugRenderer;
 
   private boolean isVersionNew;
   private boolean debugMode;
   private Vector2f debugMousePosition;
   private long nanovgContext;
+  private NvgTransformState.Factory transformStateFactory = NvgTransformState.FACTORY;
+  private SubtreeContentState.Factory subtreeContentStateFactory = NvgSubtreeContentState.FACTORY;
+  private SubtreeContentRenderer subtreeContentRenderer = this::renderSubtreeContent;
 
   public NvgRenderer(boolean antialiasingEnabled) {
     NvgFontRegistry fontRegistry = new NvgFontRegistry();
@@ -93,31 +97,91 @@ public class NvgRenderer implements Renderer {
 
     renderLayoutTree(frame);
     if (debugMode) {
-      debugRenderer.render(frame, nanovgContext, debugMousePosition);
+      renderDebug(frame);
     }
 
     postRender();
   }
 
-  private void renderLayoutTree(Frame layoutTree) {
+  void renderLayoutTree(Frame layoutTree) {
     renderElement(layoutTree, layoutTree.layoutChildNodes());
   }
 
-  private void renderElement(Node node, List<Node> children) {
-    elementRenderer.render(node, nanovgContext);
-    borderRenderer.render(node, nanovgContext);
-    if (node instanceof InputElement input) {
-      inputRenderer.render(input, nanovgContext);
-    } else if (node instanceof TextareaElement textarea) {
-      textareaRenderer.render(textarea, nanovgContext);
+  void renderDebug(Frame frame) {
+    if (debugMode) {
+      debugRenderer.render(frame, nanovgContext, debugMousePosition);
     }
+  }
 
-    if (children != null) {
-      children.forEach(this::renderLayoutNode);
-    }
-    if (node instanceof Element element) {
+  private void renderElement(Node node, List<Node> children) {
+    Element element = node.asElement();
+    try (var ignored =
+        transformStateFactory.apply(
+            nanovgContext, transformAroundBorderBox(element))) {
+      subtreeContentRenderer.render(node, nanovgContext);
+
+      if (children != null) {
+        try (var contentState = subtreeContentStateFactory.apply(nanovgContext, element)) {
+          children.forEach(this::renderLayoutNode);
+        }
+      }
       scrollbarRenderer.render(element, nanovgContext);
     }
+  }
+
+  private AffineTransform transformAroundBorderBox(Element element) {
+    Vector2f position = element.layoutAbsolutePosition();
+    return AffineTransform.translation(position.x, position.y)
+        .multiply(element.presentationState().transform())
+        .multiply(AffineTransform.translation(-position.x, -position.y));
+  }
+
+  void transformStateFactory(NvgTransformState.Factory transformStateFactory) {
+    this.transformStateFactory = transformStateFactory;
+  }
+
+  void subtreeContentRenderer(SubtreeContentRenderer subtreeContentRenderer) {
+    this.subtreeContentRenderer = subtreeContentRenderer;
+  }
+
+  void subtreeContentStateFactory(SubtreeContentState.Factory subtreeContentStateFactory) {
+    this.subtreeContentStateFactory = subtreeContentStateFactory;
+  }
+
+  void debugRenderer(DebugRenderer debugRenderer) {
+    this.debugRenderer = debugRenderer;
+  }
+
+  private void renderSubtreeContent(Node node, long context) {
+    elementRenderer.render(node, context);
+    borderRenderer.render(node, context);
+    if (node instanceof InputElement input) {
+      inputRenderer.render(input, context);
+    } else if (node instanceof TextareaElement textarea) {
+      textareaRenderer.render(textarea, context);
+    }
+  }
+
+  @FunctionalInterface
+  interface SubtreeContentRenderer {
+    void render(Node node, long context);
+  }
+
+  @FunctionalInterface
+  interface SubtreeContentState extends AutoCloseable {
+    @Override
+    void close();
+
+    interface Factory {
+      SubtreeContentState apply(long context, Element element);
+    }
+  }
+
+  @FunctionalInterface
+  interface DebugRenderer {
+    void render(Frame frame, long context, Vector2fc mousePosition);
+
+    default void textMeasurer(TextMeasurer textMeasurer) {}
   }
 
   private void renderLayoutNode(Node node) {

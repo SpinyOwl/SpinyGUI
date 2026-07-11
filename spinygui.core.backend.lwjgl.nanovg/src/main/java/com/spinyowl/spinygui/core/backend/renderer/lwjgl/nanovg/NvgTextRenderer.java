@@ -60,12 +60,13 @@ public class NvgTextRenderer {
       parent = parent.parent();
     }
     if (parent != null) {
-      return parent.absolutePosition().sub(parent.scrollLeft(), parent.scrollTop());
+      return parent.layoutAbsolutePosition().sub(parent.scrollLeft(), parent.scrollTop());
     }
     return text.offsetParent() == null
         ? new Vector2f()
-        : text.offsetParent()
-            .absolutePosition()
+        : text
+            .offsetParent()
+            .layoutAbsolutePosition()
             .sub(text.offsetParent().scrollLeft(), text.offsetParent().scrollTop());
   }
 

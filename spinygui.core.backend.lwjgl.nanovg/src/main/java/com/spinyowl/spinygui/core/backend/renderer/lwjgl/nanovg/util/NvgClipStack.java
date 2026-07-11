@@ -55,7 +55,7 @@ public class NvgClipStack {
   }
 
   private void clip(long context, Element element, boolean first) {
-    var absolutePosition = element.absolutePosition();
+    var absolutePosition = element.layoutAbsolutePosition();
     var box = element.box();
     float x = absolutePosition.x() + box.border().left() + box.padding().left();
     float y = absolutePosition.y() + box.border().top() + box.padding().top();

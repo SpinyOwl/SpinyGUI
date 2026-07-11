@@ -41,7 +41,8 @@ public class NvgBorderRenderer {
       return;
     }
 
-    Vector2f position = element.absolutePosition().add(borderThickness / 2, borderThickness / 2);
+    Vector2f position =
+        element.layoutAbsolutePosition().add(borderThickness / 2, borderThickness / 2);
     Vector2f size = element.size().sub(borderThickness, borderThickness);
 
     drawRectStroke(nanovg, position, size, style.borderTopColor(), borderThickness);
@@ -55,6 +56,6 @@ public class NvgBorderRenderer {
     }
     return parent == null
         ? new Vector2f()
-        : parent.absolutePosition().sub(parent.scrollLeft(), parent.scrollTop());
+        : parent.layoutAbsolutePosition().sub(parent.scrollLeft(), parent.scrollTop());
   }
 }

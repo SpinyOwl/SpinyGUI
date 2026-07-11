@@ -29,7 +29,7 @@ import java.util.stream.Collectors;
 import org.joml.Vector2f;
 import org.joml.Vector2fc;
 
-class NvgDebugRenderer {
+class NvgDebugRenderer implements NvgRenderer.DebugRenderer {
 
   private static final Color INLINE_FRAGMENT_FILL = new Color(255, 193, 7, 0.22f);
   private static final Color INLINE_FRAGMENT_STROKE = new Color(245, 124, 0, 0.95f);
@@ -52,11 +52,13 @@ class NvgDebugRenderer {
     this.stateSink = stateSink;
   }
 
-  void textMeasurer(TextMeasurer textMeasurer) {
+  @Override
+  public void textMeasurer(TextMeasurer textMeasurer) {
     this.textMeasurer = textMeasurer;
   }
 
-  void render(Frame frame, long nanovgContext, Vector2fc mousePosition) {
+  @Override
+  public void render(Frame frame, long nanovgContext, Vector2fc mousePosition) {
     renderNode(frame, nanovgContext, mousePosition);
   }
 

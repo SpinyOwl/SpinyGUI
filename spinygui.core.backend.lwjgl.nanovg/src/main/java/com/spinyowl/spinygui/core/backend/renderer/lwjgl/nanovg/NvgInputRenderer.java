@@ -171,7 +171,7 @@ class NvgInputRenderer {
   }
 
   private Vector2f contentPosition(InputElement input) {
-    Vector2f position = input.absolutePosition();
+    Vector2f position = input.layoutAbsolutePosition();
     position.add(
         input.box().border().left() + input.box().padding().left(),
         input.box().border().top() + input.box().padding().top());

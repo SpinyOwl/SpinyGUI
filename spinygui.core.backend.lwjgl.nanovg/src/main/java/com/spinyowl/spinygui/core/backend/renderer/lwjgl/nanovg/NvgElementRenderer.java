@@ -40,7 +40,7 @@ public class NvgElementRenderer {
       var backgroundColor = style.backgroundColor();
       var borderRadius = getBorderRadius(element, style);
 
-      var position = element.absolutePosition();
+      var position = element.layoutAbsolutePosition();
       var size = element.size();
 
       // render self
@@ -59,6 +59,6 @@ public class NvgElementRenderer {
     }
     return parent == null
         ? new Vector2f()
-        : parent.absolutePosition().sub(parent.scrollLeft(), parent.scrollTop());
+        : parent.layoutAbsolutePosition().sub(parent.scrollLeft(), parent.scrollTop());
   }
 }
