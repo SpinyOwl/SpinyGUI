@@ -66,6 +66,8 @@ import static com.spinyowl.spinygui.core.style.stylesheet.Properties.RIGHT;
 import static com.spinyowl.spinygui.core.style.stylesheet.Properties.TAB_SIZE;
 import static com.spinyowl.spinygui.core.style.stylesheet.Properties.TEXT_ALIGN;
 import static com.spinyowl.spinygui.core.style.stylesheet.Properties.TOP;
+import static com.spinyowl.spinygui.core.style.stylesheet.Properties.TRANSFORM;
+import static com.spinyowl.spinygui.core.style.stylesheet.Properties.TRANSFORM_ORIGIN;
 import static com.spinyowl.spinygui.core.style.stylesheet.Properties.WHITE_SPACE;
 import static com.spinyowl.spinygui.core.style.stylesheet.Properties.WIDTH;
 import static com.spinyowl.spinygui.core.style.stylesheet.Properties.WORD_BREAK;
@@ -82,6 +84,8 @@ import com.spinyowl.spinygui.core.style.types.OverflowWrap;
 import com.spinyowl.spinygui.core.style.types.PointerEvents;
 import com.spinyowl.spinygui.core.style.types.Position;
 import com.spinyowl.spinygui.core.style.types.TextAlign;
+import com.spinyowl.spinygui.core.style.types.Transform;
+import com.spinyowl.spinygui.core.style.types.TransformOrigin;
 import com.spinyowl.spinygui.core.style.types.WhiteSpace;
 import com.spinyowl.spinygui.core.style.types.WordBreak;
 import com.spinyowl.spinygui.core.style.types.background.BackgroundOrigin;
@@ -699,6 +703,22 @@ public class ResolvedStyle {
 
   public void opacity(Float opacity) {
     set(OPACITY, opacity);
+  }
+
+  public Transform transform() {
+    return get(TRANSFORM);
+  }
+
+  public void transform(Transform transform) {
+    set(TRANSFORM, transform);
+  }
+
+  public TransformOrigin transformOrigin() {
+    return get(TRANSFORM_ORIGIN);
+  }
+
+  public void transformOrigin(TransformOrigin transformOrigin) {
+    set(TRANSFORM_ORIGIN, transformOrigin);
   }
 
   public Overflow overflow() {

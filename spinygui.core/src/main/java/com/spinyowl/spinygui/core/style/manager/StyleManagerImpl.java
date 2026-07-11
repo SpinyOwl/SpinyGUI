@@ -78,6 +78,7 @@ public class StyleManagerImpl implements StyleManager {
         .forEach(
             ruleSet -> ruleSet.declarations().forEach(declaration -> declaration.apply(element)));
     applyAbsentProperties(element);
+    element.presentationState().reset();
   }
 
   private void applyAbsentProperties(Element element) {

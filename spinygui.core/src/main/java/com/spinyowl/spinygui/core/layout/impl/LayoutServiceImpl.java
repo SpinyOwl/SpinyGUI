@@ -18,6 +18,9 @@ import com.spinyowl.spinygui.core.node.layout.Edges;
 import com.spinyowl.spinygui.core.node.layout.Rect;
 import com.spinyowl.spinygui.core.style.types.Display;
 import com.spinyowl.spinygui.core.style.types.Position;
+import com.spinyowl.spinygui.core.style.types.TransformComposition;
+import com.spinyowl.spinygui.core.style.types.Transform;
+import com.spinyowl.spinygui.core.style.types.TransformOrigin;
 import com.spinyowl.spinygui.core.util.ScrollbarGeometry;
 import java.util.LinkedList;
 import java.util.List;
@@ -42,6 +45,22 @@ public class LayoutServiceImpl implements LayoutService {
     updateLayoutNodes(frame);
     // update client size and scroll size for all the nodes in the frame.
     updateScrollAndClientSize(frame);
+    resolvePresentationTransforms(frame);
+  }
+
+  private void resolvePresentationTransforms(Element element) {
+    var size = element.box().borderBoxSize();
+    var transform = element.resolvedStyle().transform();
+    var origin = element.resolvedStyle().transformOrigin();
+    element
+        .presentationState()
+        .transform(
+            TransformComposition.compose(
+                List.of(transform == null ? Transform.NONE : transform),
+                origin == null ? TransformOrigin.CENTER : origin,
+                size.x,
+                size.y));
+    element.children().forEach(this::resolvePresentationTransforms);
   }
 
   private void updateScrollAndClientSize(Element element) {
@@ -114,6 +133,7 @@ public class LayoutServiceImpl implements LayoutService {
   }
 
   private void clearHiddenSubtree(Element element) {
+    element.presentationState().reset();
     clearLayoutState(element);
     for (Node child : element.childNodes()) {
       if (child instanceof Element childElement) {

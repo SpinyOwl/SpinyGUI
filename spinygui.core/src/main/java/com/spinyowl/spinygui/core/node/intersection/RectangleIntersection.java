@@ -1,6 +1,7 @@
 package com.spinyowl.spinygui.core.node.intersection;
 
 import com.spinyowl.spinygui.core.node.Node;
+import com.spinyowl.spinygui.core.util.PresentationCoordinates;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import org.joml.Vector2fc;
@@ -11,11 +12,6 @@ public class RectangleIntersection implements Intersection {
 
   @Override
   public boolean intersects(Node node, Vector2fc point) {
-    Vector2fc pos = node.absolutePosition();
-    Vector2fc size = node.size();
-    return point.x() >= pos.x()
-        && point.x() < pos.x() + size.x()
-        && point.y() >= pos.y()
-        && point.y() < pos.y() + size.y();
+    return PresentationCoordinates.containsBorderBox(node, point);
   }
 }

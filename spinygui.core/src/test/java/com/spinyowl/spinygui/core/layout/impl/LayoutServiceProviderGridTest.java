@@ -19,6 +19,8 @@ import com.spinyowl.spinygui.core.style.types.flex.FlexDirection;
 import com.spinyowl.spinygui.core.style.types.flex.FlexWrap;
 import com.spinyowl.spinygui.core.style.types.length.Length;
 import com.spinyowl.spinygui.core.style.types.length.Unit;
+import com.spinyowl.spinygui.core.style.types.Transform;
+import com.spinyowl.spinygui.core.style.types.TransformOrigin;
 import com.spinyowl.spinygui.core.system.event.processor.SystemEventProcessor;
 import com.spinyowl.spinygui.core.system.font.FontService;
 import com.spinyowl.spinygui.core.system.font.TextMeasurer;
@@ -26,6 +28,26 @@ import com.spinyowl.spinygui.core.time.TimeService;
 import org.junit.jupiter.api.Test;
 
 class LayoutServiceProviderGridTest {
+
+  @Test
+  void layout_resolvesPercentageTransformWithoutChangingGeometry() {
+    Frame frame = NodeBuilder.frame();
+    frame.frameSize(300, 300);
+    style(frame, Display.BLOCK, 300, 300);
+    Element child = NodeBuilder.div();
+    style(child, Display.BLOCK, 100, 40);
+    child.resolvedStyle().transform(
+        new Transform.Operations(java.util.List.of(new Transform.Translate(Length.percent(.5f), Length.percent(.5f)))));
+    child.resolvedStyle().transformOrigin(TransformOrigin.CENTER);
+    frame.addChild(child);
+
+    layoutService().layout(frame);
+
+    assertEquals(100, child.box().borderBoxSize().x);
+    assertEquals(40, child.box().borderBoxSize().y);
+    assertEquals(50, child.presentationState().transform().tx());
+    assertEquals(20, child.presentationState().transform().ty());
+  }
 
   @Test
   void layout_whenGridLayoutIsNotImplementedYet_usesBlockLayoutFallback() {

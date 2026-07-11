@@ -225,6 +225,18 @@ public abstract class Node {
     return borderBox;
   }
 
+  /**
+   * Returns the border-box position in the layout coordinate space, before ancestor scroll
+   * translations are applied. Render traversal uses this value while it owns scroll translation.
+   */
+  public Vector2f layoutAbsolutePosition() {
+    var borderBox = this.box().borderBoxPosition();
+    if (this.offsetParent != null) {
+      borderBox.add(offsetParent.layoutAbsolutePosition());
+    }
+    return borderBox;
+  }
+
   /** Returns size of node (border-box) on virtual window surface. */
   public Vector2f size() {
     return box.borderBoxSize();

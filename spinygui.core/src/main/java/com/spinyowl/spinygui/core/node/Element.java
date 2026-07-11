@@ -72,6 +72,9 @@ public class Element extends Node implements EventTarget {
    */
   private final ResolvedStyle resolvedStyle = new ResolvedStyle();
 
+  /** Values used for rendering and input in the current frame, separate from computed CSS state. */
+  private final PresentationState presentationState = new PresentationState();
+
   private final Map<ScrollbarPart, ResolvedStyle> scrollbarStyles =
       new EnumMap<>(ScrollbarPart.class);
 
@@ -148,7 +151,15 @@ public class Element extends Node implements EventTarget {
   public void removeChild(@NonNull Node node) {
     unlinkSiblings(node);
     if (childNodes.remove(node)) {
+      resetPresentationState(node);
       node.parent(null);
+    }
+  }
+
+  private void resetPresentationState(Node node) {
+    if (node instanceof Element element) {
+      element.presentationState().reset();
+      element.children().forEach(this::resetPresentationState);
     }
   }
 

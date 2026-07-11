@@ -14,6 +14,7 @@ import com.spinyowl.spinygui.core.parser.impl.css.antlr.CSS3Parser.PercentageCon
 import com.spinyowl.spinygui.core.parser.impl.css.antlr.CSS3Parser.Var_Context;
 import com.spinyowl.spinygui.core.style.stylesheet.Term;
 import com.spinyowl.spinygui.core.style.stylesheet.term.TermColor;
+import com.spinyowl.spinygui.core.style.stylesheet.term.TermAngle;
 import com.spinyowl.spinygui.core.style.stylesheet.term.TermFloat;
 import com.spinyowl.spinygui.core.style.stylesheet.term.TermFunction;
 import com.spinyowl.spinygui.core.style.stylesheet.term.TermGridFraction;
@@ -42,6 +43,7 @@ public class PropertyValueVisitor extends CSS3BaseVisitor<Term<?>> {
 
   public static final String PIXEL_REGEX = "-?\\d+(\\.\\d+)?[pP][xX]";
   public static final String FRACTION_REGEX = "-?\\d+(\\.\\d+)?[fF][rR]";
+  public static final String DEGREE_REGEX = "-?\\d+(\\.\\d+)?[dD][eE][gG]";
 
   private static Operator getOperator(Operator_Context op) {
     String operatorText = op != null ? op.getText() : " ";
@@ -116,6 +118,10 @@ public class PropertyValueVisitor extends CSS3BaseVisitor<Term<?>> {
       return new TermGridFraction(
           GridFraction.fr(
               Float.parseFloat(dimensionText.substring(0, dimensionText.length() - 2))));
+    }
+    if (dimensionText.matches(DEGREE_REGEX)) {
+      return new TermAngle(
+          Float.parseFloat(dimensionText.substring(0, dimensionText.length() - 3)));
     }
 
     return null;

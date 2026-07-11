@@ -204,15 +204,7 @@ public final class NodeUtilities {
   }
 
   private static boolean insideContentBox(final Element element, final Vector2fc vector) {
-    var absolutePosition = element.absolutePosition();
-    var box = element.box();
-    var contentX = absolutePosition.x() + box.border().left() + box.padding().left();
-    var contentY = absolutePosition.y() + box.border().top() + box.padding().top();
-    var contentSize = box.contentSize();
-    return vector.x() >= contentX
-        && vector.x() < contentX + contentSize.x()
-        && vector.y() >= contentY
-        && vector.y() < contentY + contentSize.y();
+    return PresentationCoordinates.containsContentBox(element, vector);
   }
 
   public static boolean visible(Node node) {

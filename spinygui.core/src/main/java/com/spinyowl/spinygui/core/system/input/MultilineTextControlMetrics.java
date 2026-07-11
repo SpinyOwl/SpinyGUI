@@ -126,7 +126,7 @@ public class MultilineTextControlMetrics {
   }
 
   public Vector2f contentPosition(TextareaElement textarea) {
-    Vector2f position = textarea.absolutePosition();
+    Vector2f position = textarea.layoutAbsolutePosition();
     position.add(
         textarea.box().border().left() + textarea.box().padding().left(),
         textarea.box().border().top() + textarea.box().padding().top());
