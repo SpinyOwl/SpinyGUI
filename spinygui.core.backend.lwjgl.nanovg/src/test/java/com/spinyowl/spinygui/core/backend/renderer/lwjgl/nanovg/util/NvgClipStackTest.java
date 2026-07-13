@@ -1,11 +1,15 @@
 package com.spinyowl.spinygui.core.backend.renderer.lwjgl.nanovg.util;
 
+import static com.spinyowl.spinygui.core.style.stylesheet.Properties.BACKGROUND_COLOR;
+import static com.spinyowl.spinygui.core.style.stylesheet.Properties.COLOR;
+import static com.spinyowl.spinygui.core.style.stylesheet.Properties.OPACITY;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.spinyowl.spinygui.core.backend.renderer.lwjgl.nanovg.util.NvgClipStack.ClipSink;
 import com.spinyowl.spinygui.core.node.Element;
 import com.spinyowl.spinygui.core.node.NodeBuilder;
+import com.spinyowl.spinygui.core.style.types.Color;
 import com.spinyowl.spinygui.core.style.types.Overflow;
 import java.util.ArrayList;
 import java.util.List;
@@ -41,6 +45,9 @@ class NvgClipStackTest {
     auto.box().padding().top(4);
     Element scroll = element(50, 60, 40, 30, Overflow.SCROLL);
     Element child = element(0, 0, 10, 10, Overflow.VISIBLE);
+    hidden.presentationState().setValue(OPACITY, 0.5f);
+    auto.presentationState().setValue(BACKGROUND_COLOR, Color.BLUE);
+    child.presentationState().setValue(COLOR, Color.RED);
     hidden.addChild(auto);
     auto.addChild(scroll);
     scroll.addChild(child);
@@ -48,6 +55,19 @@ class NvgClipStackTest {
     scroll.offsetParent(auto);
     child.offsetParent(scroll);
 
+    clipStack.create(1, child);
+
+    assertEquals(
+        List.of(
+            "scissor(1,10.0,20.0,100.0,80.0)",
+            "intersect(1,35.0,53.0,70.0,60.0)",
+            "intersect(1,82.0,109.0,40.0,30.0)"),
+        sink.calls());
+
+    sink.clear();
+    hidden.presentationState().clearValues();
+    auto.presentationState().clearValues();
+    child.presentationState().clearValues();
     clipStack.create(1, child);
 
     assertEquals(
@@ -98,6 +118,10 @@ class NvgClipStackTest {
 
     List<String> calls() {
       return calls;
+    }
+
+    void clear() {
+      calls.clear();
     }
   }
 }

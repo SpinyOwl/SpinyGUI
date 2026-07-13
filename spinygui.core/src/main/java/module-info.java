@@ -54,6 +54,7 @@ open module com.spinyowl.spinygui.core {
   exports com.spinyowl.spinygui.core.style.types.flex;
   exports com.spinyowl.spinygui.core.style.types.grid;
   exports com.spinyowl.spinygui.core.style.types.length;
+  exports com.spinyowl.spinygui.core.style.types.transition;
   exports com.spinyowl.spinygui.core.system.event;
   exports com.spinyowl.spinygui.core.system.event.listener;
   exports com.spinyowl.spinygui.core.system.event.processor;

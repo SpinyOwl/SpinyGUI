@@ -3,6 +3,7 @@ package com.spinyowl.spinygui.core.backend.renderer.lwjgl.nanovg;
 import static com.spinyowl.spinygui.core.backend.renderer.lwjgl.nanovg.util.NvgColorUtil.create;
 import static com.spinyowl.spinygui.core.backend.renderer.lwjgl.nanovg.util.NvgRenderUtils.createScissor;
 import static com.spinyowl.spinygui.core.backend.renderer.lwjgl.nanovg.util.NvgRenderUtils.resetScissor;
+import static com.spinyowl.spinygui.core.backend.renderer.lwjgl.nanovg.util.NvgRenderUtils.withPresentedOpacity;
 import static com.spinyowl.spinygui.core.backend.renderer.lwjgl.nanovg.util.NvgShapes.drawRect;
 import static org.lwjgl.nanovg.NanoVG.NVG_ALIGN_BASELINE;
 import static org.lwjgl.nanovg.NanoVG.NVG_ALIGN_LEFT;
@@ -156,7 +157,7 @@ class NvgInputRenderer {
     return new TextGeometry(
         font,
         fontSize,
-        color(style),
+        color(input),
         contentPosition,
         contentSize,
         contentPosition.x() - textScrollLeft(input),
@@ -202,8 +203,9 @@ class NvgInputRenderer {
     return lineHeight == null ? 1f : lineHeight;
   }
 
-  private Color color(ResolvedStyle style) {
-    return style.color() == null ? DEFAULT_TEXT_COLOR : style.color();
+  private Color color(InputElement input) {
+    Color color = input.presentedStyle().color();
+    return withPresentedOpacity(color == null ? DEFAULT_TEXT_COLOR : color, input);
   }
 
   interface InputStateSink {

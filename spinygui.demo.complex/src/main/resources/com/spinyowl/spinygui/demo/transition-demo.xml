@@ -1,0 +1,16 @@
+<winframe class="transition-demo-frame">
+  <div class="transition-flyout">
+    <button type="button" class="transition-flyout-trigger">Hover for actions</button>
+    <div class="transition-flyout-panel">
+      <button type="button" class="transition-flyout-action">Save</button>
+      <button type="button" class="transition-flyout-action">Share</button>
+      <button type="button" class="transition-flyout-action">Archive</button>
+    </div>
+  </div>
+  <div class="transition-demo-stage">
+    <div class="transition-demo-title">Hover the card</div>
+    <button id="transition-card" type="button" class="transition-card">
+      Opacity, color, background, and transform transition together.
+    </button>
+  </div>
+</winframe>

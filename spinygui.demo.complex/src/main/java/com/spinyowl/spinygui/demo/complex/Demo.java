@@ -12,7 +12,6 @@ import static org.lwjgl.glfw.GLFW.GLFW_TRUE;
 import static org.lwjgl.glfw.GLFW.glfwCreateWindow;
 import static org.lwjgl.glfw.GLFW.glfwDestroyWindow;
 import static org.lwjgl.glfw.GLFW.glfwGetFramebufferSize;
-import static org.lwjgl.glfw.GLFW.glfwGetWindowPos;
 import static org.lwjgl.glfw.GLFW.glfwGetWindowSize;
 import static org.lwjgl.glfw.GLFW.glfwMakeContextCurrent;
 import static org.lwjgl.glfw.GLFW.glfwPollEvents;
@@ -24,7 +23,6 @@ import static org.lwjgl.glfw.GLFW.glfwSetKeyCallback;
 import static org.lwjgl.glfw.GLFW.glfwSetMouseButtonCallback;
 import static org.lwjgl.glfw.GLFW.glfwSetScrollCallback;
 import static org.lwjgl.glfw.GLFW.glfwSetWindowCloseCallback;
-import static org.lwjgl.glfw.GLFW.glfwSetWindowPos;
 import static org.lwjgl.glfw.GLFW.glfwSetWindowSizeCallback;
 import static org.lwjgl.glfw.GLFW.glfwShowWindow;
 import static org.lwjgl.glfw.GLFW.glfwSwapBuffers;
@@ -50,8 +48,7 @@ import com.spinyowl.cbchain.impl.ChainMouseButtonCallback;
 import com.spinyowl.cbchain.impl.ChainScrollCallback;
 import com.spinyowl.cbchain.impl.ChainWindowCloseCallback;
 import com.spinyowl.cbchain.impl.ChainWindowSizeCallback;
-import com.spinyowl.spinygui.core.animation.Animator;
-import com.spinyowl.spinygui.core.animation.AnimatorImpl;
+import com.spinyowl.spinygui.core.animation.TransitionCoordinator;
 import com.spinyowl.spinygui.core.backend.renderer.Renderer;
 import com.spinyowl.spinygui.core.backend.renderer.lwjgl.nanovg.NvgRenderer;
 import com.spinyowl.spinygui.core.clipboard.Clipboard;
@@ -120,7 +117,7 @@ public abstract class Demo {
   protected NodeParser nodeParser;
   private boolean running = false;
   // Need to initialize
-  private Animator animator;
+  private TransitionCoordinator transitionCoordinator;
   private TimeService timeService;
   private EventProcessor eventProcessor;
   private SystemEventProcessor systemEventProcessor;
@@ -182,21 +179,21 @@ public abstract class Demo {
       int[] wh = {0};
       int[] bw = {0};
       int[] bh = {0};
-      int[] wpx = {0};
-      int[] wpy = {0};
       glfwGetWindowSize(window, ww, wh);
       var windowSize = new Vector2f(ww[0], wh[0]);
 
       glfwGetFramebufferSize(window, bw, bh);
       var framebufferSize = new Vector2i(bw[0], bh[0]);
 
-      glfwGetWindowPos(window, wpx, wpy);
       glViewport(0, 0, framebufferSize.x, framebufferSize.y);
 
       // frame size should be directly specified as it is not updated by layout service.
       updateFrameDimensions(windowSize);
       // We need to recalculate styles first.
       styleManager.recalculate(frame);
+
+      // Hosts advance transitions after styles have produced new targets and before layout/render.
+      transitionCoordinator.tick();
 
       // We need to relayout components after styles changed.
       layoutService.layout(frame);
@@ -212,8 +209,6 @@ public abstract class Demo {
       // update system. could be moved for example to game loop.
       update();
 
-      // also we need to run animations
-      animator.runAnimations();
     } catch (Exception e) {
       e.printStackTrace();
     }
@@ -242,8 +237,6 @@ public abstract class Demo {
 
     window = glfwCreateWindow(width, height, title, NULL, NULL);
     glfwWindowHint(GLFW_DOUBLEBUFFER, GLFW_TRUE);
-    glfwSetWindowPos(window, 50, 50);
-
     initializeCallbacks(window);
     glfwShowWindow(window);
 
@@ -257,13 +250,13 @@ public abstract class Demo {
           return now.getEpochSecond() + (now.getNano() / 1_000_000_000D);
         };
 
-    animator = new AnimatorImpl(timeService);
+    transitionCoordinator = new TransitionCoordinator(timeService);
 
     PropertyStoreProvider provider = new DefaultPropertyStoreProvider();
     PropertyStore propertyStore = provider.createPropertyStore();
     styleSheetParser = StyleSheetParserFactory.createParser(propertyStore);
     nodeParser = new DefaultNodeParser();
-    styleManager = new StyleManagerImpl(propertyStore, styleSheetParser);
+    styleManager = new StyleManagerImpl(propertyStore, styleSheetParser, transitionCoordinator);
     mouseService = new MouseServiceImpl();
     eventProcessor = new DefaultEventProcessor();
 

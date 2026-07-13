@@ -30,6 +30,11 @@ Deliver bounded CSS motion support in this order: static 2D transforms, paint-on
 **Enables:** M5, M6.
 **Parallelizable with:** None.
 
+**Delivered boundary:** Paint-only transitions for opacity, text/background/border colors, and
+compatible 2D transform lists. Layout, discrete, incompatible, box-shadow, and scrollbar
+pseudo-part changes remain immediate or deferred. Focused automated verification is pending a
+configured JDK.
+
 ### M5: Keyframe animations
 **Depends on:** M3, M4.
 **Enables:** M6.
@@ -58,4 +63,3 @@ flowchart TD
   M4 --> M6
   M5 --> M6
 ```
-

@@ -136,6 +136,12 @@ public final class Properties {
   public static final String TAB_SIZE = "tab-size";
   public static final String OPACITY = "opacity";
 
+  public static final String TRANSITION = "transition";
+  public static final String TRANSITION_PROPERTY = "transition-property";
+  public static final String TRANSITION_DURATION = "transition-duration";
+  public static final String TRANSITION_DELAY = "transition-delay";
+  public static final String TRANSITION_TIMING_FUNCTION = "transition-timing-function";
+
   public static final String TRANSFORM = "transform";
   public static final String TRANSFORM_ORIGIN = "transform-origin";
 

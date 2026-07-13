@@ -1,5 +1,8 @@
 package com.spinyowl.spinygui.core.layout.impl;
 
+import static com.spinyowl.spinygui.core.style.stylesheet.Properties.BACKGROUND_COLOR;
+import static com.spinyowl.spinygui.core.style.stylesheet.Properties.OPACITY;
+import static com.spinyowl.spinygui.core.style.stylesheet.Properties.TRANSFORM;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
@@ -12,6 +15,7 @@ import com.spinyowl.spinygui.core.node.Frame;
 import com.spinyowl.spinygui.core.node.NodeBuilder;
 import com.spinyowl.spinygui.core.style.ResolvedStyle;
 import com.spinyowl.spinygui.core.style.types.Display;
+import com.spinyowl.spinygui.core.style.types.Color;
 import com.spinyowl.spinygui.core.style.types.Overflow;
 import com.spinyowl.spinygui.core.style.types.Position;
 import com.spinyowl.spinygui.core.style.types.border.BorderStyle;
@@ -47,6 +51,60 @@ class LayoutServiceProviderGridTest {
     assertEquals(40, child.box().borderBoxSize().y);
     assertEquals(50, child.presentationState().transform().tx());
     assertEquals(20, child.presentationState().transform().ty());
+  }
+
+  @Test
+  void layout_composesPresentedTransformAfterSizingWithoutChangingGeometry() {
+    Frame frame = NodeBuilder.frame();
+    frame.frameSize(300, 300);
+    style(frame, Display.BLOCK, 300, 300);
+    Element child = NodeBuilder.div();
+    style(child, Display.BLOCK, 100, 40);
+    child.resolvedStyle().transform(Transform.NONE);
+    child.resolvedStyle().transformOrigin(TransformOrigin.CENTER);
+    child.presentationState().setValue(
+        TRANSFORM, new Transform.Translate(Length.percent(.5f), Length.percent(.5f)));
+    frame.addChild(child);
+
+    layoutService().layout(frame);
+
+    assertEquals(100, child.box().borderBoxSize().x);
+    assertEquals(40, child.box().borderBoxSize().y);
+    assertEquals(50, child.presentationState().transform().tx());
+    assertEquals(20, child.presentationState().transform().ty());
+  }
+
+  @Test
+  void layout_keepsScrollAndClientMetricsStableWhilePaintValuesChange() {
+    Frame frame = NodeBuilder.frame();
+    frame.frameSize(300, 300);
+    style(frame, Display.BLOCK, 300, 300);
+    Element scrollContainer = NodeBuilder.div();
+    style(scrollContainer, Display.BLOCK, 100, 40);
+    scrollContainer.resolvedStyle().overflowX(Overflow.AUTO);
+    scrollContainer.resolvedStyle().overflowY(Overflow.AUTO);
+    Element child = NodeBuilder.div();
+    style(child, Display.BLOCK, 160, 80);
+    scrollContainer.addChild(child);
+    frame.addChild(scrollContainer);
+
+    LayoutService layoutService = layoutService();
+    layoutService.layout(frame);
+    float scrollWidth = scrollContainer.scrollWidth();
+    float scrollHeight = scrollContainer.scrollHeight();
+    float clientWidth = scrollContainer.clientWidth();
+    float clientHeight = scrollContainer.clientHeight();
+    scrollContainer.presentationState().setValue(BACKGROUND_COLOR, Color.BLUE);
+    scrollContainer.presentationState().setValue(OPACITY, 0.5f);
+    scrollContainer.presentationState().setValue(
+        TRANSFORM, new Transform.Translate(Length.percent(.5f), Length.ZERO));
+
+    layoutService.layout(frame);
+
+    assertEquals(scrollWidth, scrollContainer.scrollWidth());
+    assertEquals(scrollHeight, scrollContainer.scrollHeight());
+    assertEquals(clientWidth, scrollContainer.clientWidth());
+    assertEquals(clientHeight, scrollContainer.clientHeight());
   }
 
   @Test

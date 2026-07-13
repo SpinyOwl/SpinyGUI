@@ -3,6 +3,7 @@ package com.spinyowl.spinygui.core.backend.renderer.lwjgl.nanovg;
 import static com.spinyowl.spinygui.core.backend.renderer.lwjgl.nanovg.util.NvgColorUtil.create;
 import static com.spinyowl.spinygui.core.backend.renderer.lwjgl.nanovg.util.NvgRenderUtils.createScissor;
 import static com.spinyowl.spinygui.core.backend.renderer.lwjgl.nanovg.util.NvgRenderUtils.resetScissor;
+import static com.spinyowl.spinygui.core.backend.renderer.lwjgl.nanovg.util.NvgRenderUtils.withPresentedOpacity;
 import static com.spinyowl.spinygui.core.backend.renderer.lwjgl.nanovg.util.NvgShapes.drawRect;
 import static org.lwjgl.nanovg.NanoVG.NVG_ALIGN_BASELINE;
 import static org.lwjgl.nanovg.NanoVG.NVG_ALIGN_LEFT;
@@ -85,7 +86,7 @@ class NvgTextareaRenderer {
     nvgFontFace(nanovgContext, fontFace);
     nvgFontSize(nanovgContext, textStyle.fontSize());
     nvgTextAlign(nanovgContext, NVG_ALIGN_LEFT | NVG_ALIGN_BASELINE);
-    try (var nvgColor = create(color(textarea.resolvedStyle()))) {
+    try (var nvgColor = create(color(textarea))) {
       nvgFillColor(nanovgContext, nvgColor);
       for (MultilineTextControlMetrics.Line line : metrics.lines(textarea)) {
         float baseline =
@@ -144,7 +145,8 @@ class NvgTextareaRenderer {
     }
   }
 
-  private Color color(ResolvedStyle style) {
-    return style.color() == null ? DEFAULT_TEXT_COLOR : style.color();
+  private Color color(TextareaElement textarea) {
+    Color color = textarea.presentedStyle().color();
+    return withPresentedOpacity(color == null ? DEFAULT_TEXT_COLOR : color, textarea);
   }
 }

@@ -29,181 +29,104 @@ winframe {
   font-size: 14px;
 }
 
-.title {
-  position: absolute;
-  left: 32px;
-  top: 26px;
+
+
+
+.transition-demo-frame {
+  display: block;
+  width: 100%;
+  height: 100%;
+  position: relative;
+  padding: 48px;
+  box-sizing: border-box;
+  background-color: #17212b;
+  color: #eaf3ff;
+  font-family: sans-serif;
+}
+
+.transition-demo-stage {
+  display: block;
+  width: 440px;
+  padding: 30px;
+  box-sizing: border-box;
+  background-color: #243447;
+}
+
+.transition-demo-title {
+  display: block;
+  margin-bottom: 18px;
+  color: #d9e8f7;
+  font-size: 18px;
+}
+
+.transition-card {
+  display: block;
   width: 360px;
-  height: 32px;
-  font-size: 24px;
-  color: #111827;
-}
-
-.subtitle {
-  position: absolute;
-  left: 32px;
-  top: 64px;
-  width: 620px;
-  height: 24px;
-  color: #4b5563;
-}
-
-.visual-stage {
-  position: absolute;
-  left: 32px;
-  top: 112px;
-  width: 430px;
-  height: 256px;
-  border: 3px solid #1f2937;
-  background-color: #ffffff;
-}
-
-.grid-line {
-  position: absolute;
-  background-color: #d1d5db;
-}
-
-.vertical {
-  width: 2px;
-  height: 256px;
-}
-
-.horizontal {
-  width: 430px;
-  height: 2px;
-}
-
-.v1 {
-  left: 192px;
-  top: 112px;
-}
-
-.v2 {
-  left: 318px;
-  top: 112px;
-}
-
-.h1 {
-  left: 32px;
-  top: 204px;
-}
-
-.visual-card {
-  position: absolute;
-  padding: 10px;
-  border: 3px solid #ffffff;
-  color: #111827;
-  font-size: 16px;
+  min-height: 116px;
+  padding: 20px;
+  box-sizing: border-box;
   overflow: hidden;
-}
-
-.featured-card {
-  left: 50px;
-  top: 130px;
-  width: 238px;
-  height: 174px;
-  background-color: #bfdbfe;
-  border-color: #2563eb;
-}
-
-.summary-card {
-  left: 50px;
-  top: 322px;
-  width: 238px;
-  height: 24px;
-  background-color: #d1fae5;
-  border-color: #059669;
-}
-
-.actions-card {
-  left: 340px;
-  top: 130px;
-  width: 82px;
-  height: 216px;
-  background-color: #fed7aa;
-  border-color: #ea580c;
-}
-
-.contract-panel {
-  position: absolute;
-  left: 494px;
-  top: 112px;
-  width: 170px;
-  height: 256px;
-  padding: 12px;
-  border: 3px solid #475569;
-  background-color: #f8fafc;
-}
-
-.contract-title {
-  position: absolute;
-  left: 508px;
-  top: 126px;
-  width: 130px;
-  height: 44px;
+  background-color: #2563eb;
+  color: #ffffff;
   font-size: 17px;
-  color: #0f172a;
+  opacity: 1;
+  transform: none;
+  transform-origin: center;
+  transition: opacity 700ms ease-in-out, color 700ms ease-in-out, background-color 700ms ease-in-out, transform 700ms ease-in-out;
 }
 
-.contract-row {
+.transition-card:hover {
+  background-color: #f97316;
+  color: #1f2937;
+  opacity: 0.62;
+  transform: translate(24px, -8px) rotate(4deg) scale(1.06, 1.06);
+}
+
+.transition-flyout {
   position: absolute;
-  left: 508px;
-  width: 132px;
-  height: 34px;
-  color: #334155;
-  overflow: hidden;
+  top: 0px;
+  left: 0px;
+  width: 360px;
+  z-index: 1;
 }
 
-.row-display {
-  top: 174px;
+.transition-flyout-trigger {
+  display: block;
+  position: relative;
+  z-index: 1;
+  width: 360px;
+  height: 28px;
+  padding: 4px 20px;
+  background-color: #0f766e;
+  color: #ecfeff;
+  font-size: 16px;
 }
 
-.row-columns {
-  top: 214px;
-}
-
-.row-rows {
-  top: 260px;
-}
-
-.row-areas {
-  top: 300px;
-}
-
-.row-gap {
-  top: 340px;
-}
-
-.grid-probe {
-  display: grid;
+.transition-flyout-panel {
+  display: block;
   position: absolute;
-  left: -1000px;
-  top: -1000px;
-  width: 1px;
-  height: 1px;
-  grid-template-columns: 160px 1fr minmax(120px, 2fr);
-  grid-template-rows: 80px auto;
-  grid-template-areas: "featured featured actions" "summary summary actions";
-  grid-auto-flow: row dense;
-  grid-gap: 12px 18px;
+  z-index: 0;
+  width: 360px;
+  padding: 12px;
+  background-color: #134e4a;
+  opacity: 0;
+  pointer-events: none;
+  /* Start directly behind the top strip, then ease down into its normal position. */
+  transform: translate(0px, -300px);
+  transition: opacity 900ms ease-in-out, transform 900ms ease-in-out;
+}
+.transition-flyout:hover .transition-flyout-panel {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translate(0px, 20px);
 }
 
-.probe-card {
-  width: 120px;
-  height: 48px;
-  background-color: #e5e7eb;
-}
-
-.featured {
-  grid-area: featured;
-  grid-row: 1 / span 2;
-  grid-column: 1 / 3;
-}
-
-.summary {
-  grid-area: summary;
-}
-
-.actions {
-  grid-area: actions;
+.transition-flyout-action {
+  display: block;
+  width: 100%;
+  margin-top: 6px;
+  padding: 10px 14px;
+  background-color: #115e59;
+  color: #f0fdfa;
+  font-size: 15px;
 }

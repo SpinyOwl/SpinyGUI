@@ -88,6 +88,7 @@ import com.spinyowl.spinygui.core.style.types.Transform;
 import com.spinyowl.spinygui.core.style.types.TransformOrigin;
 import com.spinyowl.spinygui.core.style.types.WhiteSpace;
 import com.spinyowl.spinygui.core.style.types.WordBreak;
+import com.spinyowl.spinygui.core.style.types.transition.TransitionConfiguration;
 import com.spinyowl.spinygui.core.style.types.background.BackgroundOrigin;
 import com.spinyowl.spinygui.core.style.types.background.BackgroundRepeat;
 import com.spinyowl.spinygui.core.style.types.background.BackgroundSize;
@@ -180,6 +181,15 @@ public class ResolvedStyle {
    */
   public Object getSafe(String property) {
     return styles().get(property);
+  }
+
+  @SuppressWarnings("unchecked")
+  public TransitionConfiguration transitionConfiguration() {
+    return new TransitionConfiguration(
+        get(com.spinyowl.spinygui.core.style.stylesheet.Properties.TRANSITION_PROPERTY, TransitionConfiguration.INITIAL.properties()),
+        get(com.spinyowl.spinygui.core.style.stylesheet.Properties.TRANSITION_DURATION, TransitionConfiguration.INITIAL.durations()),
+        get(com.spinyowl.spinygui.core.style.stylesheet.Properties.TRANSITION_TIMING_FUNCTION, TransitionConfiguration.INITIAL.timingFunctions()),
+        get(com.spinyowl.spinygui.core.style.stylesheet.Properties.TRANSITION_DELAY, TransitionConfiguration.INITIAL.delays()));
   }
 
   public Color color() {

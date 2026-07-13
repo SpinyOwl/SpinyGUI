@@ -75,6 +75,9 @@ public class Element extends Node implements EventTarget {
   /** Values used for rendering and input in the current frame, separate from computed CSS state. */
   private final PresentationState presentationState = new PresentationState();
 
+  /** Typed paint-facing view of the current presentation values. */
+  private final PresentedStyle presentedStyle = new PresentedStyle(resolvedStyle, presentationState);
+
   private final Map<ScrollbarPart, ResolvedStyle> scrollbarStyles =
       new EnumMap<>(ScrollbarPart.class);
 
