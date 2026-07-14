@@ -79,34 +79,38 @@ public class PropertyValueVisitor extends CSS3BaseVisitor<Term<?>> {
     if (ctx.term().size() == 1) return super.visit(ctx.term(0));
     List<Term<?>> terms = ctx.term().stream().map(super::visit).collect(Collectors.toList());
     if (ctx.operator_().stream().anyMatch(operator -> operator.getText().contains(","))) {
-      return commaSeparated(ctx, terms);
+      return separated(ctx, terms, ",", Operator.COMMA);
+    }
+    if (ctx.operator_().stream().anyMatch(operator -> operator.getText().contains("/"))) {
+      return separated(ctx, terms, "/", Operator.SLASH);
     }
     return new TermList(getOperator(ctx.operator_()), terms);
   }
 
-  /** Preserves space-separated entries nested inside a comma-separated CSS value list. */
-  private static TermList commaSeparated(ExprContext ctx, List<Term<?>> terms) {
-    List<Integer> commaOffsets =
+  /** Preserves space-separated entries nested inside separated CSS value lists. */
+  private static TermList separated(
+      ExprContext ctx, List<Term<?>> terms, String separator, Operator operator) {
+    List<Integer> separatorOffsets =
         ctx.operator_().stream()
-            .filter(operator -> operator.getText().contains(","))
-            .map(operator -> operator.getStart().getStartIndex())
+            .filter(op -> op.getText().contains(separator))
+            .map(op -> op.getStart().getStartIndex())
             .toList();
     List<Term<?>> entries = new ArrayList<>();
     List<Term<?>> entry = new ArrayList<>();
-    int commaIndex = 0;
+    int separatorIndex = 0;
     for (int index = 0; index < terms.size(); index++) {
       if (index > 0
-          && commaIndex < commaOffsets.size()
-          && ctx.term(index - 1).getStop().getStopIndex() < commaOffsets.get(commaIndex)
-          && commaOffsets.get(commaIndex) < ctx.term(index).getStart().getStartIndex()) {
+          && separatorIndex < separatorOffsets.size()
+          && ctx.term(index - 1).getStop().getStopIndex() < separatorOffsets.get(separatorIndex)
+          && separatorOffsets.get(separatorIndex) < ctx.term(index).getStart().getStartIndex()) {
         entries.add(entry.size() == 1 ? entry.getFirst() : new TermList(Operator.SPACE, entry));
         entry = new ArrayList<>();
-        commaIndex++;
+        separatorIndex++;
       }
       entry.add(terms.get(index));
     }
     entries.add(entry.size() == 1 ? entry.getFirst() : new TermList(Operator.SPACE, entry));
-    return new TermList(Operator.COMMA, entries);
+    return new TermList(operator, entries);
   }
 
   @Override

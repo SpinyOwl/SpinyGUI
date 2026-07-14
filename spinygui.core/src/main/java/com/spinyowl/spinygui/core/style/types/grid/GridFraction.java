@@ -4,13 +4,18 @@ import com.spinyowl.spinygui.core.style.types.length.Unit;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
 
 @Getter
 @EqualsAndHashCode
-@RequiredArgsConstructor
 public class GridFraction implements Unit {
   @NonNull private final Float value;
+
+  public GridFraction(@NonNull Float value) {
+    if (!Float.isFinite(value) || value < 0f) {
+      throw new IllegalArgumentException("Grid fraction must be a finite non-negative value");
+    }
+    this.value = value;
+  }
 
   public static GridFraction fr(float value) {
     return new GridFraction(value);
