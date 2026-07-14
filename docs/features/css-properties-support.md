@@ -62,7 +62,7 @@ Approximate implementation estimates for unchecked entries:
 | `font` | M | CSS font shorthand parser with optional style/variant/weight/stretch/size/line-height/family handling. |
 | `font-feature-settings`, `font-kerning`, `font-variant`, `font-variant-caps` | L | Font shaping/OpenType feature support through font service and NanoVG/text backend. |
 | `font-size-adjust` | M | Font metrics integration and adjusted used font-size calculations. |
-| `grid`, `grid-area`, `grid-auto-columns`, `grid-auto-flow`, `grid-auto-rows`, `grid-column`, `grid-column-end`, `grid-column-gap`, `grid-column-start`, `grid-gap`, `grid-row`, `grid-row-end`, `grid-row-gap`, `grid-row-start`, `grid-template`, `grid-template-areas`, `grid-template-columns`, `grid-template-rows` | XL | Full grid formatting context, track sizing, placement, gaps, and tests. |
+| `grid`, `grid-area`, `grid-auto-columns`, `grid-auto-flow`, `grid-auto-rows`, `grid-column`, `grid-column-end`, `grid-column-gap`, `grid-column-start`, `grid-gap`, `grid-row`, `grid-row-end`, `grid-row-gap`, `grid-row-start`, `grid-template`, `grid-template-areas`, `grid-template-columns`, `grid-template-rows` | Supported subset | Grid Level 1 formatting context with typed values, fixed/percentage/auto/fr/minmax/fit-content/repeat tracks, gaps, template areas, explicit placement, row/column auto-flow, dense packing, stretch/start/center/end item alignment, scroll metrics, and demo coverage. Deferred: subgrid, masonry, baseline alignment, negative line indexes, and advanced browser shorthand forms beyond the supported `rows / columns` grid-template/grid form. |
 | `hanging-punctuation` | L | Text layout punctuation positioning support. |
 | `hyphens` | L | Language-aware hyphenation and line breaking. |
 | `@import` | M | Stylesheet loading, URL/resource resolution, cycle/error handling, and cascade ordering. |
@@ -185,7 +185,7 @@ Checklist of CSS properties:
 -  [x] `color`
 -  [ ] `column-count`
 -  [ ] `column-fill`
--  [ ] `column-gap`
+-  [x] `column-gap`
 -  [ ] `column-rule`
 -  [ ] `column-rule-color`
 -  [ ] `column-rule-style`
@@ -225,30 +225,32 @@ Checklist of CSS properties:
 -  [ ] `font-variant`
 -  [ ] `font-variant-caps`
 -  [x] `font-weight`
--  [ ] `grid`
--  [ ] `grid-area`
--  [ ] `grid-auto-columns`
--  [ ] `grid-auto-flow`
--  [ ] `grid-auto-rows`
--  [ ] `grid-column`
--  [ ] `grid-column-end`
--  [ ] `grid-column-gap`
--  [ ] `grid-column-start`
--  [ ] `grid-gap`
--  [ ] `grid-row`
--  [ ] `grid-row-end`
--  [ ] `grid-row-gap`
--  [ ] `grid-row-start`
--  [ ] `grid-template`
--  [ ] `grid-template-areas`
--  [ ] `grid-template-columns`
--  [ ] `grid-template-rows`
+-  [x] `grid`
+-  [x] `grid-area`
+-  [x] `grid-auto-columns`
+-  [x] `grid-auto-flow`
+-  [x] `grid-auto-rows`
+-  [x] `grid-column`
+-  [x] `grid-column-end`
+-  [x] `grid-column-gap`
+-  [x] `grid-column-start`
+-  [x] `grid-gap`
+-  [x] `grid-row`
+-  [x] `grid-row-end`
+-  [x] `grid-row-gap`
+-  [x] `grid-row-start`
+-  [x] `grid-template`
+-  [x] `grid-template-areas`
+-  [x] `grid-template-columns`
+-  [x] `grid-template-rows`
 -  [ ] `hanging-punctuation`
 -  [x] `height`
 -  [ ] `hyphens`
 -  [ ] `@import`
 -  [ ] `isolation`
 -  [x] `justify-content`
+-  [x] `justify-items`
+-  [x] `justify-self`
 -  [ ] `@keyframes`
 -  [x] `left`
 -  [ ] `letter-spacing`
@@ -280,6 +282,9 @@ Checklist of CSS properties:
 -  [x] `overflow`
 -  [x] `overflow-x`
 -  [x] `overflow-y`
+-  [x] `place-content`
+-  [x] `place-items`
+-  [x] `place-self`
 -  [x] `overflow-wrap`
 -  [x] `padding`
 -  [x] `padding-bottom`
@@ -300,6 +305,7 @@ Checklist of CSS properties:
 -  [ ] `quotes`
 -  [ ] `resize`
 -  [x] `right`
+-  [x] `row-gap`
 -  [ ] `scroll-behavior`
 -  [x] `tab-size`
 -  [ ] `table-layout`

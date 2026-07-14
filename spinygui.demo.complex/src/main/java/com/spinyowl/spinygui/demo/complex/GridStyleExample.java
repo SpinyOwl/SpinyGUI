@@ -54,7 +54,7 @@ public class GridStyleExample extends Demo {
     frame.styleSheets().add(parser.parse(styles));
     styleManager.recalculate(frame);
 
-    Element grid = requireElement(frame, "grid-probe");
+    Element grid = requireElement(frame, "visual-stage");
     Element featured = requireElement(frame, "featured-card");
 
     require(
