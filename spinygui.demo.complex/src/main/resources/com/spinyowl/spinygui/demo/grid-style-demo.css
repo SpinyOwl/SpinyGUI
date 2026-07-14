@@ -79,40 +79,12 @@ winframe {
 }
 
 .contract-title {
-  position: absolute;
-  left: 508px;
-  top: 126px;
-  width: 130px;
-  height: 44px;
   font-size: 17px;
   color: #0f172a;
 }
 
 .contract-row {
-  position: absolute;
-  left: 508px;
-  width: 132px;
   height: 34px;
   color: #334155;
   overflow: hidden;
-}
-
-.row-display {
-  top: 174px;
-}
-
-.row-columns {
-  top: 214px;
-}
-
-.row-rows {
-  top: 260px;
-}
-
-.row-areas {
-  top: 300px;
-}
-
-.row-gap {
-  top: 340px;
 }
