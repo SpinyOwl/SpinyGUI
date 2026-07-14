@@ -9,6 +9,8 @@ import com.spinyowl.spinygui.core.node.Element;
 import com.spinyowl.spinygui.core.node.Frame;
 import com.spinyowl.spinygui.core.parser.impl.StyleSheetParserFactory;
 import com.spinyowl.spinygui.core.style.stylesheet.impl.DefaultPropertyStoreProvider;
+import com.spinyowl.spinygui.core.style.stylesheet.term.TermFunction;
+import com.spinyowl.spinygui.core.style.stylesheet.term.TermInteger;
 import com.spinyowl.spinygui.core.style.types.Transform;
 import com.spinyowl.spinygui.core.style.types.TransformOrigin;
 import org.junit.jupiter.api.Test;
@@ -104,5 +106,31 @@ class TransformStyleManagerTest {
     manager.recalculate(frame);
 
     assertEquals(4, ((Transform.Operations) element.resolvedStyle().transform()).values().size());
+  }
+
+  @Test
+  void parsedCssSupportsSingleArgumentScaleFunction() {
+    var propertyStore = new DefaultPropertyStoreProvider().createPropertyStore();
+    var parser = StyleSheetParserFactory.createParser(propertyStore);
+    var manager = new StyleManagerImpl(propertyStore, parser);
+    var frame = new Frame();
+    var element = new Element("div");
+    element.style("transform: scale(2)");
+    frame.addChild(element);
+
+    var term = (TermFunction) parser.parseDeclarations("transform: scale(2)").getFirst().term();
+    assertEquals("scale", term.name());
+    assertEquals(java.util.List.of(new TermInteger(2)), term.terms());
+    parser.parseDeclarations("transform: scale(2)").getFirst().apply(element);
+    assertEquals(
+        new Transform.Operations(java.util.List.of(new Transform.Scale(2f, 2f))),
+        element.resolvedStyle().transform());
+    element.resolvedStyle().styles().clear();
+
+    manager.recalculate(frame);
+
+    assertEquals(
+        new Transform.Operations(java.util.List.of(new Transform.Scale(2f, 2f))),
+        element.resolvedStyle().transform());
   }
 }

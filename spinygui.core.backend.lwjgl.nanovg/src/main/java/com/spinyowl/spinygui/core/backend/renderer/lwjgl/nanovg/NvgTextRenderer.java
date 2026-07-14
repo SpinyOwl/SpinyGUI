@@ -74,15 +74,15 @@ public class NvgTextRenderer {
 
   void renderFragments(Text text, long nanovg, Vector2f offset) {
     for (InlineFragment fragment : text.inlineFragments()) {
-      renderFragment(fragment, nanovg, offset);
+      renderFragment(text, fragment, nanovg, offset);
     }
   }
 
-  private void renderFragment(InlineFragment fragment, long nanovg, Vector2f offset) {
+  private void renderFragment(Text text, InlineFragment fragment, long nanovg, Vector2f offset) {
     if (!fragment.textFragment()) {
       return;
     }
-    Element element = fragment.node() == null ? null : fragment.node().parent();
+    Element element = fragment.node() == null ? text.parent() : fragment.node().parent();
     Color color = element == null ? fragment.color() : element.presentedStyle().color();
     textSink.drawText(
         nanovg,

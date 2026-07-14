@@ -85,7 +85,7 @@ public class StyleManagerImpl implements StyleManager {
   }
 
   private void applyElementStyle(Element element) {
-    Map<String, Object> previous = Map.copyOf(element.resolvedStyle().styles());
+    Map<String, Object> previous = new LinkedHashMap<>(element.resolvedStyle().styles());
     element.resolvedStyle().styles().clear();
     element
         .resolvedStyle()
