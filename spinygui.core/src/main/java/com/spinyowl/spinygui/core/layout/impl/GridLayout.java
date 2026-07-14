@@ -47,7 +47,7 @@ public class GridLayout implements ElementLayout {
     }
 
     ResolvedStyle style = parent.resolvedStyle();
-    Rect content = parent.box().content();
+    Rect content = localContentArea(parent);
     float columnGap = resolveLength(style.gridColumnGap(), content.width());
     float rowGap = resolveLength(style.gridRowGap(), content.height());
     PlacementResult placement = placeItems(items, style);
@@ -74,6 +74,17 @@ public class GridLayout implements ElementLayout {
       float height = sum(rows) + rowGap * Math.max(0, rows.size() - 1);
       parent.box().content().height(height);
     }
+  }
+
+  private Rect localContentArea(Element element) {
+    Edges border = element.box().border();
+    Edges padding = element.box().padding();
+    Rect content = element.box().content();
+    return new Rect(
+        border.left() + padding.left(),
+        border.top() + padding.top(),
+        content.width(),
+        content.height());
   }
 
   private List<Element> gridItems(Element parent) {

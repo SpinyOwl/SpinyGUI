@@ -277,6 +277,86 @@ class LayoutServiceProviderGridTest {
   }
 
   @Test
+  void layout_placesGridItemsRelativeToPositionedPaddedGridContainer() {
+    Frame frame = NodeBuilder.frame();
+    frame.frameSize(720, 460);
+    style(frame, Display.BLOCK, 720, 460);
+    Element grid = NodeBuilder.div();
+    style(grid, Display.GRID, 430, 256);
+    grid.resolvedStyle().position(Position.ABSOLUTE);
+    grid.resolvedStyle().left(Length.pixel(32));
+    grid.resolvedStyle().top(Length.pixel(112));
+    grid.resolvedStyle().paddingTop(Length.pixel(16));
+    grid.resolvedStyle().paddingRight(Length.pixel(16));
+    grid.resolvedStyle().paddingBottom(Length.pixel(16));
+    grid.resolvedStyle().paddingLeft(Length.pixel(16));
+    grid.resolvedStyle().borderTopWidth(Length.pixel(3));
+    grid.resolvedStyle().borderRightWidth(Length.pixel(3));
+    grid.resolvedStyle().borderBottomWidth(Length.pixel(3));
+    grid.resolvedStyle().borderLeftWidth(Length.pixel(3));
+    grid.resolvedStyle().borderTopStyle(BorderStyle.SOLID);
+    grid.resolvedStyle().borderRightStyle(BorderStyle.SOLID);
+    grid.resolvedStyle().borderBottomStyle(BorderStyle.SOLID);
+    grid.resolvedStyle().borderLeftStyle(BorderStyle.SOLID);
+    grid.resolvedStyle()
+        .gridTemplateColumns(
+            GridTrackList.of(
+                java.util.List.of(
+                    GridTrack.of(
+                        GridTrackSize.flexible(
+                            com.spinyowl.spinygui.core.style.types.grid.GridFraction.fr(2))),
+                    GridTrack.of(
+                        GridTrackSize.minmax(
+                            GridTrackSize.fixed(Length.pixel(112)),
+                            GridTrackSize.flexible(
+                                com.spinyowl.spinygui.core.style.types.grid.GridFraction.fr(1)))))));
+    grid.resolvedStyle()
+        .gridTemplateRows(
+            GridTrackList.of(
+                java.util.List.of(
+                    GridTrack.of(
+                        GridTrackSize.flexible(
+                            com.spinyowl.spinygui.core.style.types.grid.GridFraction.fr(1))),
+                    GridTrack.of(GridTrackSize.fixed(Length.pixel(58))))));
+    grid.resolvedStyle()
+        .gridTemplateAreas(
+            GridTemplateAreas.of(
+                java.util.List.of(
+                    java.util.List.of("featured", "actions"),
+                    java.util.List.of("summary", "actions"))));
+    grid.resolvedStyle().gridRowGap(Length.pixel(12));
+    grid.resolvedStyle().gridColumnGap(Length.pixel(18));
+    Element featured = demoGridCard("featured");
+    Element summary = demoGridCard("summary");
+    Element actions = demoGridCard("actions");
+    grid.addChildren(featured, summary, actions);
+    frame.addChild(grid);
+
+    layoutService().layout(frame);
+
+    assertEquals(51, grid.box().content().x(), 0.001);
+    assertEquals(131, grid.box().content().y(), 0.001);
+    assertEquals(392, grid.box().content().width(), 0.001);
+    assertEquals(218, grid.box().content().height(), 0.001);
+    assertEquals(19, featured.box().borderBox().x(), 0.001);
+    assertEquals(19, featured.box().borderBox().y(), 0.001);
+    assertEquals(174.667, featured.box().borderBox().width(), 0.001);
+    assertEquals(148, featured.box().borderBox().height(), 0.001);
+    assertEquals(51, featured.absolutePosition().x(), 0.001);
+    assertEquals(131, featured.absolutePosition().y(), 0.001);
+    assertEquals(19, summary.box().borderBox().x(), 0.001);
+    assertEquals(179, summary.box().borderBox().y(), 0.001);
+    assertEquals(211.667, actions.box().borderBox().x(), 0.001);
+    assertEquals(19, actions.box().borderBox().y(), 0.001);
+    assertEquals(199.333, actions.box().borderBox().width(), 0.001);
+    assertEquals(218, actions.box().borderBox().height(), 0.001);
+    assertEquals(243.667, actions.absolutePosition().x(), 0.001);
+    assertEquals(131, actions.absolutePosition().y(), 0.001);
+    assertEquals(224.667, actions.box().content().x(), 0.001);
+    assertEquals(32, actions.box().content().y(), 0.001);
+  }
+
+  @Test
   void layout_resolvesPercentageAndFlexibleTracksAfterGaps() {
     Frame frame = NodeBuilder.frame();
     frame.frameSize(300, 300);
@@ -434,6 +514,24 @@ class LayoutServiceProviderGridTest {
     style(item, Display.BLOCK, Float.NaN, Float.NaN);
     item.resolvedStyle().width(Unit.AUTO);
     item.resolvedStyle().height(Unit.AUTO);
+    return item;
+  }
+
+  private static Element demoGridCard(String areaName) {
+    Element item = gridItem();
+    item.resolvedStyle().paddingTop(Length.pixel(10));
+    item.resolvedStyle().paddingRight(Length.pixel(10));
+    item.resolvedStyle().paddingBottom(Length.pixel(10));
+    item.resolvedStyle().paddingLeft(Length.pixel(10));
+    item.resolvedStyle().borderTopWidth(Length.pixel(3));
+    item.resolvedStyle().borderRightWidth(Length.pixel(3));
+    item.resolvedStyle().borderBottomWidth(Length.pixel(3));
+    item.resolvedStyle().borderLeftWidth(Length.pixel(3));
+    item.resolvedStyle().borderTopStyle(BorderStyle.SOLID);
+    item.resolvedStyle().borderRightStyle(BorderStyle.SOLID);
+    item.resolvedStyle().borderBottomStyle(BorderStyle.SOLID);
+    item.resolvedStyle().borderLeftStyle(BorderStyle.SOLID);
+    item.resolvedStyle().gridRowStart(GridPlacement.line(areaName));
     return item;
   }
 }
