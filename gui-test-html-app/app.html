@@ -3,28 +3,112 @@
 <head>
   <meta charset="utf-8">
   <title>Grid Style Demo</title>
-  <link rel="stylesheet" href="styles.css">
+  <style>
+    html,
+    body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      margin: 0;
+      padding: 0;
+      background-color: #f7f9fc;
+    }
+
+    * {
+      box-sizing: border-box;
+      font-family: "Roboto", Arial, sans-serif;
+      font-weight: 400;
+      font-style: normal;
+      font-stretch: normal;
+      font-size: 14px;
+      margin: 0;
+      padding: 0;
+    }
+
+    #app {
+      width: 720px;
+      height: 460px;
+    }
+
+    winframe {
+      display: block;
+      width: 720px;
+      height: 460px;
+    }
+
+    .load-error {
+      width: 720px;
+      padding: 24px;
+      color: #7f1d1d;
+      font-family: Arial, sans-serif;
+      white-space: pre-wrap;
+    }
+  </style>
 </head>
 <body>
+<main id="app"></main>
 
+<script>
+  const demoName = "grid-style-demo";
+  const demoResourceRoot =
+      "../spinygui.demo.complex/src/main/resources/com/spinyowl/spinygui/demo";
+  const demoFiles = {
+    xml: `${demoResourceRoot}/${demoName}.xml`,
+    css: `${demoResourceRoot}/${demoName}.css`,
+  };
 
-<winframe class="transition-demo-frame">
-  <div class="transition-flyout">
-    <button type="button" class="transition-flyout-trigger">Hover for actions</button>
-    <div class="transition-flyout-panel">
-      <button type="button" class="transition-flyout-action">Save</button>
-      <button type="button" class="transition-flyout-action">Share</button>
-      <button type="button" class="transition-flyout-action">Archive</button>
-    </div>
-  </div>
-  <div class="transition-demo-stage">
-    <div class="transition-demo-title">Hover the card</div>
-    <button id="transition-card" type="button" class="transition-card">
-      Opacity, color, background, and transform transition together.
-    </button>
-  </div>
-</winframe>
+  async function loadText(path) {
+    const url = new URL(path, window.location.href);
+    try {
+      const response = await fetch(url);
+      if (response.ok || response.status === 0) {
+        return response.text();
+      }
+      throw new Error(`${response.status} ${response.statusText}`);
+    } catch (error) {
+      return loadTextWithXhr(url, path, error);
+    }
+  }
 
+  function loadTextWithXhr(url, path, originalError) {
+    return new Promise((resolve, reject) => {
+      const request = new XMLHttpRequest();
+      request.open("GET", url.href);
+      request.onload = () => {
+        if (request.status === 200 || request.status === 0) {
+          resolve(request.responseText);
+          return;
+        }
+        reject(new Error(`Failed to load ${path}: ${request.status} ${request.statusText}`));
+      };
+      request.onerror = () => {
+        reject(new Error(`Failed to load ${path}: ${originalError.message}`));
+      };
+      request.send();
+    });
+  }
 
+  async function loadDemo() {
+    const [xml, css] = await Promise.all([
+      loadText(demoFiles.xml),
+      loadText(demoFiles.css),
+    ]);
+
+    const style = document.createElement("style");
+    style.id = "demo-styles";
+    style.textContent = css;
+    document.head.appendChild(style);
+
+    document.getElementById("app").innerHTML = xml;
+  }
+
+  loadDemo().catch((error) => {
+    const errorNode = document.createElement("div");
+    errorNode.className = "load-error";
+    errorNode.textContent = error.message;
+    document.getElementById("app").replaceChildren(errorNode);
+    console.error(error);
+  });
+</script>
 </body>
 </html>
