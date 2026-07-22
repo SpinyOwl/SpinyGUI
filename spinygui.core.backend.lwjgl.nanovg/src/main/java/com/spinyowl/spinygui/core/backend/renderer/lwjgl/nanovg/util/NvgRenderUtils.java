@@ -30,6 +30,7 @@ import static org.lwjgl.system.MemoryUtil.memUTF8;
 import com.spinyowl.spinygui.core.node.Element;
 import com.spinyowl.spinygui.core.node.Node;
 import com.spinyowl.spinygui.core.style.ResolvedStyle;
+import com.spinyowl.spinygui.core.style.types.Color;
 import com.spinyowl.spinygui.core.style.types.HorizontalAlign;
 import com.spinyowl.spinygui.core.style.types.VerticalAlign;
 import java.nio.ByteBuffer;
@@ -44,6 +45,19 @@ import org.lwjgl.nanovg.NVGPaint;
 public final class NvgRenderUtils {
 
   private static final NvgClipStack CLIP_STACK = new NvgClipStack(new NvgClipStack.NanoVgClipSink());
+
+  /** Applies the cumulative presented opacity for an element and its paint ancestors. */
+  public static Color withPresentedOpacity(Color color, Element element) {
+    if (color == null) {
+      return null;
+    }
+    float opacity = 1f;
+    for (Element current = element; current != null; current = current.parent()) {
+      Float currentOpacity = current.presentedStyle().opacity();
+      opacity *= currentOpacity == null ? 1f : currentOpacity;
+    }
+    return color.withA(color.a() * opacity);
+  }
 
   public static float[] calculateTextBoundsRect(
       long context,

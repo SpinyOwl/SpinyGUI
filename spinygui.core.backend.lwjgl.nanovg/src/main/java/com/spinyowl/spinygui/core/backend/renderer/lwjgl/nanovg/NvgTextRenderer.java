@@ -1,6 +1,7 @@
 package com.spinyowl.spinygui.core.backend.renderer.lwjgl.nanovg;
 
 import static com.spinyowl.spinygui.core.backend.renderer.lwjgl.nanovg.util.NvgColorUtil.create;
+import static com.spinyowl.spinygui.core.backend.renderer.lwjgl.nanovg.util.NvgRenderUtils.withPresentedOpacity;
 import static org.lwjgl.nanovg.NanoVG.NVG_ALIGN_BASELINE;
 import static org.lwjgl.nanovg.NanoVG.NVG_ALIGN_LEFT;
 import static org.lwjgl.nanovg.NanoVG.nvgFillColor;
@@ -18,6 +19,7 @@ import com.spinyowl.spinygui.core.node.Element;
 import com.spinyowl.spinygui.core.node.Node;
 import com.spinyowl.spinygui.core.node.Text;
 import com.spinyowl.spinygui.core.style.types.Display;
+import com.spinyowl.spinygui.core.style.types.Color;
 import java.nio.ByteBuffer;
 import org.joml.Vector2f;
 
@@ -46,7 +48,6 @@ public class NvgTextRenderer {
     nvgTextAlign(nanovg, NVG_ALIGN_LEFT | NVG_ALIGN_BASELINE);
     renderFragments(text, nanovg, inlineFormattingOffset(text));
     nvgRestore(nanovg);
-
   }
 
   Vector2f inlineFormattingOffset(Text text) {
@@ -66,15 +67,38 @@ public class NvgTextRenderer {
 
   void renderFragments(Text text, long nanovg, Vector2f offset) {
     for (InlineFragment fragment : text.inlineFragments()) {
-      renderFragment(fragment, nanovg, offset);
+      renderFragment(text, fragment, nanovg, offset);
     }
   }
 
-  private void renderFragment(InlineFragment fragment, long nanovg, Vector2f offset) {
+  private void renderFragment(Text text, InlineFragment fragment, long nanovg, Vector2f offset) {
     if (!fragment.textFragment()) {
       return;
     }
-    textSink.drawText(nanovg, fragment, offset.x + fragment.x(), offset.y + fragment.baseline());
+    Element element = fragment.node() == null ? text.parent() : fragment.node().parent();
+    Color color = element == null ? fragment.color() : element.presentedStyle().color();
+    textSink.drawText(
+        nanovg,
+        withColor(fragment, color, element),
+        offset.x + fragment.x(),
+        offset.y + fragment.baseline());
+  }
+
+  private InlineFragment withColor(InlineFragment fragment, Color color, Element element) {
+    Color fallback = color == null ? fragment.color() : color;
+    Color presented = element == null ? fallback : withPresentedOpacity(fallback, element);
+    return InlineFragment.builder()
+        .node(fragment.node())
+        .text(fragment.text())
+        .x(fragment.x())
+        .y(fragment.y())
+        .width(fragment.width())
+        .height(fragment.height())
+        .baseline(fragment.baseline())
+        .font(fragment.font())
+        .fontSize(fragment.fontSize())
+        .color(presented)
+        .build();
   }
 
   interface TextSink {

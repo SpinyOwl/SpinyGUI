@@ -4,6 +4,13 @@ plugins {
     id("antlr")
 }
 
+val lwjglNatives = when {
+    providers.systemProperty("os.name").get().startsWith("Windows", ignoreCase = true) -> "natives-windows"
+    providers.systemProperty("os.name").get().startsWith("Mac", ignoreCase = true) -> "natives-macos"
+    providers.systemProperty("os.name").get().startsWith("Linux", ignoreCase = true) -> "natives-linux"
+    else -> error("Unsupported operating system: ${providers.systemProperty("os.name").get()}")
+}
+
 dependencies {
     antlr(libs.antlr)
 
@@ -18,19 +25,13 @@ dependencies {
     api(libs.classgraph)
 
     api(libs.lwjgl)
-    api(variantOf(libs.lwjgl) { classifier("natives-windows") })
-    api(variantOf(libs.lwjgl) { classifier("natives-linux") })
-    api(variantOf(libs.lwjgl) { classifier("natives-macos") })
+    api(variantOf(libs.lwjgl) { classifier(lwjglNatives) })
 
     api(libs.lwjglStb)
-    api(variantOf(libs.lwjglStb) { classifier("natives-windows") })
-    api(variantOf(libs.lwjglStb) { classifier("natives-linux") })
-    api(variantOf(libs.lwjglStb) { classifier("natives-macos") })
+    api(variantOf(libs.lwjglStb) { classifier(lwjglNatives) })
 
     api(libs.lwjglYoga)
-    api(variantOf(libs.lwjglYoga) { classifier("natives-windows") })
-    api(variantOf(libs.lwjglYoga) { classifier("natives-linux") })
-    api(variantOf(libs.lwjglYoga) { classifier("natives-macos") })
+    api(variantOf(libs.lwjglYoga) { classifier(lwjglNatives) })
 
     implementation(libs.gson)
     implementation(libs.snakeYaml)

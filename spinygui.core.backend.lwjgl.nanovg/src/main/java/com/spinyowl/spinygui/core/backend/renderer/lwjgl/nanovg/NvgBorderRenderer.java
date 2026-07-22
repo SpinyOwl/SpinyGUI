@@ -1,5 +1,6 @@
 package com.spinyowl.spinygui.core.backend.renderer.lwjgl.nanovg;
 
+import static com.spinyowl.spinygui.core.backend.renderer.lwjgl.nanovg.util.NvgRenderUtils.withPresentedOpacity;
 import static com.spinyowl.spinygui.core.backend.renderer.lwjgl.nanovg.util.NvgShapes.drawRectStroke;
 
 import com.spinyowl.spinygui.core.node.Element;
@@ -32,7 +33,7 @@ public class NvgBorderRenderer {
                       new Vector2f(
                           Math.max(0, fragment.width() - borderThickness),
                           Math.max(0, fragment.height() - borderThickness)),
-                      style.borderTopColor(),
+                      withPresentedOpacity(element.presentedStyle().borderTopColor(), element),
                       borderThickness));
       return;
     }
@@ -41,7 +42,12 @@ public class NvgBorderRenderer {
         element.layoutAbsolutePosition().add(borderThickness / 2, borderThickness / 2);
     Vector2f size = element.size().sub(borderThickness, borderThickness);
 
-    drawRectStroke(nanovg, position, size, style.borderTopColor(), borderThickness);
+    drawRectStroke(
+        nanovg,
+        position,
+        size,
+        withPresentedOpacity(element.presentedStyle().borderTopColor(), element),
+        borderThickness);
   }
 
   Vector2f inlineFormattingOffset(Element element) {

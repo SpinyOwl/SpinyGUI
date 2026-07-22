@@ -1,10 +1,14 @@
 package com.spinyowl.spinygui.core.backend.renderer.lwjgl.nanovg;
 
+import static com.spinyowl.spinygui.core.style.stylesheet.Properties.BACKGROUND_COLOR;
+import static com.spinyowl.spinygui.core.style.stylesheet.Properties.COLOR;
+import static com.spinyowl.spinygui.core.style.stylesheet.Properties.OPACITY;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import com.spinyowl.spinygui.core.node.Element;
 import com.spinyowl.spinygui.core.node.Frame;
+import com.spinyowl.spinygui.core.style.types.Color;
 import com.spinyowl.spinygui.core.style.types.AffineTransform;
 import java.util.ArrayList;
 import java.util.List;
@@ -180,6 +184,43 @@ class NvgRendererTransformStateTest {
   }
 
   @Test
+  void renderLayoutTree_keepsNestedTransformAndScrollScopesWhenPaintValuesComplete() {
+    NvgRenderer renderer = new NvgRenderer();
+    RecordingTransformStates states = new RecordingTransformStates();
+    renderer.transformStateFactory(states);
+    renderer.subtreeContentStateFactory(
+        (context, element) -> {
+          states.record("content(" + element.nodeName() + ")");
+          return () -> states.record("content-restore(" + element.nodeName() + ")");
+        });
+    renderer.subtreeContentRenderer((node, context) -> states.record("paint(" + node.nodeName() + ")"));
+
+    Frame frame = new Frame();
+    Element parent = element("parent", 10);
+    parent.scrollLeft(12);
+    parent.scrollTop(8);
+    parent.presentationState().setValue(OPACITY, 0.5f);
+    parent.presentationState().setValue(BACKGROUND_COLOR, Color.BLUE);
+    Element child = element("child", 20);
+    child.presentationState().setValue(OPACITY, 0.25f);
+    child.presentationState().setValue(COLOR, Color.RED);
+    frame.addChild(parent);
+    parent.addChild(child);
+    frame.layoutChildNodes(List.of(parent));
+    parent.layoutChildNodes(List.of(child));
+
+    renderer.renderLayoutTree(frame);
+    List<String> intermediateCalls = states.calls();
+    states.clear();
+    parent.presentationState().clearValues();
+    child.presentationState().clearValues();
+
+    renderer.renderLayoutTree(frame);
+
+    assertEquals(intermediateCalls, states.calls());
+  }
+
+  @Test
   void renderDebug_runsOnlyAfterAllTransformedSubtreeStatesAreRestored() {
     NvgRenderer renderer = new NvgRenderer();
     RecordingTransformStates states = new RecordingTransformStates();
@@ -240,7 +281,11 @@ class NvgRendererTransformStateTest {
     }
 
     List<String> calls() {
-      return calls;
+      return List.copyOf(calls);
+    }
+
+    void clear() {
+      calls.clear();
     }
   }
 }

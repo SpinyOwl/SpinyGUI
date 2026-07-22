@@ -3,34 +3,112 @@
 <head>
   <meta charset="utf-8">
   <title>Grid Style Demo</title>
-  <link rel="stylesheet" href="styles.css">
+  <style>
+    html,
+    body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      margin: 0;
+      padding: 0;
+      background-color: #f7f9fc;
+    }
+
+    * {
+      box-sizing: border-box;
+      font-family: "Roboto", Arial, sans-serif;
+      font-weight: 400;
+      font-style: normal;
+      font-stretch: normal;
+      font-size: 14px;
+      margin: 0;
+      padding: 0;
+    }
+
+    #app {
+      width: 720px;
+      height: 460px;
+    }
+
+    winframe {
+      display: block;
+      width: 720px;
+      height: 460px;
+    }
+
+    .load-error {
+      width: 720px;
+      padding: 24px;
+      color: #7f1d1d;
+      font-family: Arial, sans-serif;
+      white-space: pre-wrap;
+    }
+  </style>
 </head>
 <body>
-<winframe>
-  <div class="title">Grid Style Demo</div>
-  <div class="subtitle">Visual preview uses current block positioning while the hidden probe resolves CSS Grid declarations.</div>
+<main id="app"></main>
 
-  <div class="visual-stage"></div>
-  <div class="grid-line vertical v1"></div>
-  <div class="grid-line vertical v2"></div>
-  <div class="grid-line horizontal h1"></div>
-  <div class="visual-card featured-card">Featured spans two rows</div>
-  <div class="visual-card summary-card">Summary area</div>
-  <div class="visual-card actions-card">Actions column</div>
+<script>
+  const demoName = "grid-style-demo";
+  const demoResourceRoot =
+      "../spinygui.demo.complex/src/main/resources/com/spinyowl/spinygui/demo";
+  const demoFiles = {
+    xml: `${demoResourceRoot}/${demoName}.xml`,
+    css: `${demoResourceRoot}/${demoName}.css`,
+  };
 
-  <div class="contract-panel"></div>
-  <div class="contract-title">Resolved declarations</div>
-  <div class="contract-row row-display">display: grid</div>
-  <div class="contract-row row-columns">columns: 160px 1fr minmax(120px, 2fr)</div>
-  <div class="contract-row row-rows">rows: 80px auto</div>
-  <div class="contract-row row-areas">areas: featured / summary / actions</div>
-  <div class="contract-row row-gap">gap: 12px 18px</div>
+  async function loadText(path) {
+    const url = new URL(path, window.location.href);
+    try {
+      const response = await fetch(url);
+      if (response.ok || response.status === 0) {
+        return response.text();
+      }
+      throw new Error(`${response.status} ${response.statusText}`);
+    } catch (error) {
+      return loadTextWithXhr(url, path, error);
+    }
+  }
 
-  <div id="grid-probe" class="grid-probe">
-    <div class="probe-card featured">Featured</div>
-    <div class="probe-card summary">Summary</div>
-    <div class="probe-card actions">Actions</div>
-  </div>
-</winframe>
+  function loadTextWithXhr(url, path, originalError) {
+    return new Promise((resolve, reject) => {
+      const request = new XMLHttpRequest();
+      request.open("GET", url.href);
+      request.onload = () => {
+        if (request.status === 200 || request.status === 0) {
+          resolve(request.responseText);
+          return;
+        }
+        reject(new Error(`Failed to load ${path}: ${request.status} ${request.statusText}`));
+      };
+      request.onerror = () => {
+        reject(new Error(`Failed to load ${path}: ${originalError.message}`));
+      };
+      request.send();
+    });
+  }
+
+  async function loadDemo() {
+    const [xml, css] = await Promise.all([
+      loadText(demoFiles.xml),
+      loadText(demoFiles.css),
+    ]);
+
+    const style = document.createElement("style");
+    style.id = "demo-styles";
+    style.textContent = css;
+    document.head.appendChild(style);
+
+    document.getElementById("app").innerHTML = xml;
+  }
+
+  loadDemo().catch((error) => {
+    const errorNode = document.createElement("div");
+    errorNode.className = "load-error";
+    errorNode.textContent = error.message;
+    document.getElementById("app").replaceChildren(errorNode);
+    console.error(error);
+  });
+</script>
 </body>
 </html>

@@ -1,6 +1,8 @@
 package com.spinyowl.spinygui.core.backend.renderer.lwjgl.nanovg;
 
 import static com.spinyowl.spinygui.core.node.NodeBuilder.TYPE_BUTTON;
+import static com.spinyowl.spinygui.core.style.stylesheet.Properties.COLOR;
+import static com.spinyowl.spinygui.core.style.stylesheet.Properties.OPACITY;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import com.spinyowl.spinygui.core.font.Font;
@@ -170,6 +172,26 @@ class NvgInputRendererTest {
   }
 
   @Test
+  void render_usesThePresentedTextColorAndOpacityWithoutChangingTextGeometry() {
+    RecordingTextSink textSink = new RecordingTextSink();
+    NvgInputRenderer renderer =
+        new NvgInputRenderer(
+            new RecordingStateSink(),
+            new RecordingSelectionSink(),
+            textSink,
+            new RecordingCaretSink());
+    renderer.textMeasurer(new FixedTextMeasurer());
+    InputElement input = input("abc");
+    input.presentationState().setValue(COLOR, Color.BLUE);
+    input.presentationState().setValue(OPACITY, 0.5f);
+
+    renderer.render(input, 4);
+
+    assertEquals(List.of("text(4,abc,20.0,44.0,16.0)"), textSink.calls());
+    assertEquals(Color.BLUE.withA(0.5f), textSink.color());
+  }
+
+  @Test
   void render_whenButtonInputTextMeasurerIsMissing_skipsValueText() {
     RecordingTextSink textSink = new RecordingTextSink();
     NvgInputRenderer renderer =
@@ -230,6 +252,7 @@ class NvgInputRendererTest {
 
   private static final class RecordingTextSink implements NvgInputRenderer.InputTextSink {
     private final List<String> calls = new ArrayList<>();
+    private Color color;
 
     @Override
     public void drawText(
@@ -240,11 +263,16 @@ class NvgInputRendererTest {
         Color color,
         float x,
         float baseline) {
+      this.color = color;
       calls.add("text(%d,%s,%.1f,%.1f,%.1f)".formatted(context, text, x, baseline, fontSize));
     }
 
     List<String> calls() {
       return calls;
+    }
+
+    Color color() {
+      return color;
     }
   }
 

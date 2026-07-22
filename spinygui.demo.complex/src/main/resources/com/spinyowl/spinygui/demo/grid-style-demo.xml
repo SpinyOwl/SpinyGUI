@@ -1,26 +1,19 @@
 <winframe>
-  <div class="title">Grid Style Demo</div>
-  <div class="subtitle">Visual preview uses current block positioning while the hidden probe resolves CSS Grid declarations.</div>
+    <div class="title">Grid Style Demo</div>
+    <div class="subtitle">Visible cards below are laid out by the grid formatting context.</div>
 
-  <div class="visual-stage"></div>
-  <div class="grid-line vertical v1"></div>
-  <div class="grid-line vertical v2"></div>
-  <div class="grid-line horizontal h1"></div>
-  <div id="featured-card" class="visual-card featured-card">Featured spans two rows</div>
-  <div id="summary-card" class="visual-card summary-card">Summary area</div>
-  <div id="actions-card" class="visual-card actions-card">Actions column</div>
+    <div id="visual-stage" class="visual-stage">
+        <div id="featured-card" class="visual-card featured-card">Featured spans the wide area</div>
+        <div id="summary-card" class="visual-card summary-card">Summary area</div>
+        <div id="actions-card" class="visual-card actions-card">Actions column</div>
+    </div>
 
-  <div class="contract-panel"></div>
-  <div class="contract-title">Resolved declarations</div>
-  <div class="contract-row row-display">display: grid</div>
-  <div class="contract-row row-columns">columns: 160px 1fr minmax(120px, 2fr)</div>
-  <div class="contract-row row-rows">rows: 80px auto</div>
-  <div class="contract-row row-areas">areas: featured / summary / actions</div>
-  <div class="contract-row row-gap">gap: 12px 18px</div>
-
-  <div id="grid-probe" class="grid-probe">
-    <div class="probe-card featured">Featured</div>
-    <div class="probe-card summary">Summary</div>
-    <div class="probe-card actions">Actions</div>
-  </div>
+    <div class="contract-panel">
+        <div class="contract-title">Resolved declarations</div>
+        <div class="contract-row row-display">display: grid</div>
+        <div class="contract-row row-columns">columns: 160px 1fr minmax(120px, 2fr)</div>
+        <div class="contract-row row-rows">rows: 80px auto</div>
+        <div class="contract-row row-areas">areas: featured / summary / actions</div>
+        <div class="contract-row row-gap">gap: 12px 18px</div>
+    </div>
 </winframe>

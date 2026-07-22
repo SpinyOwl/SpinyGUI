@@ -1,6 +1,27 @@
 Supported means the property is registered by a `PropertyProvider` in
 `core.style.stylesheet.property` and can be parsed/applied through the stylesheet property store.
 
+## Bounded 2D transform and transition support
+
+`transform` and `transform-origin` support the delivered 2D subset: ordered `translate`,
+`translateX`, `translateY`, `scale`, `scaleX`, `scaleY`, and `rotate` operations with pixel or
+percentage translations. Layout geometry remains computed-style based; transforms affect visual
+presentation and the existing affine coordinate path.
+
+`transition`, `transition-property`, `transition-duration`, `transition-delay`, and
+`transition-timing-function` support the shorthand and longhands for the paint-only target subset:
+`opacity`, `color`, `background-color`, the four border-color longhands, and compatible 2D
+`transform` operation lists. Supported timing functions are `linear`, `ease`, `ease-in`,
+`ease-out`, `ease-in-out`, and `cubic-bezier(x1, y1, x2, y2)`. Compatible transform lists have
+the same operation count and operation kinds; translation units must match. Unsupported or
+incompatible pairs apply immediately.
+
+Transitions do not animate layout-affecting or discrete properties. `box-shadow` and scrollbar
+pseudo-part values remain static; scrollbar pseudo-part transitions are deferred. Keyframes are
+also deferred. The focused core and NanoVG recording tests are present, but automated Gradle
+verification is still pending because the current environment has no configured JDK (`java` and
+`JAVA_HOME` are unavailable).
+
 Estimate scale for unchecked entries:
 - `XS`: property provider/type/accessor only; no new layout or renderer path.
 - `S`: small parser/style addition plus a localized existing layout or renderer hook.
@@ -41,7 +62,7 @@ Approximate implementation estimates for unchecked entries:
 | `font` | M | CSS font shorthand parser with optional style/variant/weight/stretch/size/line-height/family handling. |
 | `font-feature-settings`, `font-kerning`, `font-variant`, `font-variant-caps` | L | Font shaping/OpenType feature support through font service and NanoVG/text backend. |
 | `font-size-adjust` | M | Font metrics integration and adjusted used font-size calculations. |
-| `grid`, `grid-area`, `grid-auto-columns`, `grid-auto-flow`, `grid-auto-rows`, `grid-column`, `grid-column-end`, `grid-column-gap`, `grid-column-start`, `grid-gap`, `grid-row`, `grid-row-end`, `grid-row-gap`, `grid-row-start`, `grid-template`, `grid-template-areas`, `grid-template-columns`, `grid-template-rows` | XL | Full grid formatting context, track sizing, placement, gaps, and tests. |
+| `grid`, `grid-area`, `grid-auto-columns`, `grid-auto-flow`, `grid-auto-rows`, `grid-column`, `grid-column-end`, `grid-column-gap`, `grid-column-start`, `grid-gap`, `grid-row`, `grid-row-end`, `grid-row-gap`, `grid-row-start`, `grid-template`, `grid-template-areas`, `grid-template-columns`, `grid-template-rows` | Supported subset | Grid Level 1 formatting context with typed values, fixed/percentage/auto/fr/minmax/fit-content/repeat tracks, gaps, template areas, explicit placement, row/column auto-flow, dense packing, stretch/start/center/end item alignment, scroll metrics, and demo coverage. Deferred: subgrid, masonry, baseline alignment, negative line indexes, and advanced browser shorthand forms beyond the supported `rows / columns` grid-template/grid form. |
 | `hanging-punctuation` | L | Text layout punctuation positioning support. |
 | `hyphens` | L | Language-aware hyphenation and line breaking. |
 | `@import` | M | Stylesheet loading, URL/resource resolution, cycle/error handling, and cascade ordering. |
@@ -53,7 +74,8 @@ Approximate implementation estimates for unchecked entries:
 | `order` | M | Flex item ordering plus layout invalidation and traversal implications. |
 | `outline`, `outline-color`, `outline-offset`, `outline-style`, `outline-width` | M | Outline property parsing and paint path outside border box. |
 | `overflow`, `overflow-x`, `overflow-y` | Supported | Supports `visible`, `hidden`, `auto`, and `scroll` for block/flex scroll containers, including scroll input, clipping, layout metrics, and hit-testing. |
-| `perspective`, `perspective-origin`, `transform`, `transform-origin`, `transform-style` | XL | Transform matrices, coordinate conversion, stacking contexts, renderer transforms, and hit-testing. |
+| `perspective`, `perspective-origin`, `transform-style` | XL | 3D transform matrices, stacking contexts, renderer transforms, and hit-testing. |
+| `transform`, `transform-origin` | Supported subset | Static 2D translate/scale/rotate operations and visual composition; 3D and `transform-style` are unsupported. |
 | `position: fixed` | L | Viewport-relative containing block, scroll behavior, stacking, and event coordinate handling. |
 | `resize` | L | User interaction, constraints, layout invalidation, and cursor behavior. |
 | `scroll-behavior` | M | Scroll containers first, then animated scroll behavior. |
@@ -64,7 +86,7 @@ Approximate implementation estimates for unchecked entries:
 | `text-overflow` | M | Overflow clipping plus ellipsis measurement/rendering. |
 | `text-shadow` | S | Similar to `box-shadow`, localized to text renderer. |
 | `text-transform` | S | Text preprocessing before measurement/rendering; locale-sensitive cases may raise this to M. |
-| `transition`, `transition-delay`, `transition-duration`, `transition-property`, `transition-timing-function` | XL | Style change tracking, animation timeline, interpolation, invalidation. |
+| `transition`, `transition-delay`, `transition-duration`, `transition-property`, `transition-timing-function` | Supported subset | Paint-only targets, bounded timing functions, deterministic transition tracks, and presentation overlays; layout/discrete/incompatible values remain immediate. |
 | `user-select` | M | Selection model and input behavior integration. |
 | `vertical-align` | M | Inline formatting baseline/alignment behavior; type classes partly exist. |
 | `visibility` | M | Paint suppression while preserving layout, plus event/hit-test decisions. |
@@ -163,7 +185,7 @@ Checklist of CSS properties:
 -  [x] `color`
 -  [ ] `column-count`
 -  [ ] `column-fill`
--  [ ] `column-gap`
+-  [x] `column-gap`
 -  [ ] `column-rule`
 -  [ ] `column-rule-color`
 -  [ ] `column-rule-style`
@@ -203,30 +225,32 @@ Checklist of CSS properties:
 -  [ ] `font-variant`
 -  [ ] `font-variant-caps`
 -  [x] `font-weight`
--  [ ] `grid`
--  [ ] `grid-area`
--  [ ] `grid-auto-columns`
--  [ ] `grid-auto-flow`
--  [ ] `grid-auto-rows`
--  [ ] `grid-column`
--  [ ] `grid-column-end`
--  [ ] `grid-column-gap`
--  [ ] `grid-column-start`
--  [ ] `grid-gap`
--  [ ] `grid-row`
--  [ ] `grid-row-end`
--  [ ] `grid-row-gap`
--  [ ] `grid-row-start`
--  [ ] `grid-template`
--  [ ] `grid-template-areas`
--  [ ] `grid-template-columns`
--  [ ] `grid-template-rows`
+-  [x] `grid`
+-  [x] `grid-area`
+-  [x] `grid-auto-columns`
+-  [x] `grid-auto-flow`
+-  [x] `grid-auto-rows`
+-  [x] `grid-column`
+-  [x] `grid-column-end`
+-  [x] `grid-column-gap`
+-  [x] `grid-column-start`
+-  [x] `grid-gap`
+-  [x] `grid-row`
+-  [x] `grid-row-end`
+-  [x] `grid-row-gap`
+-  [x] `grid-row-start`
+-  [x] `grid-template`
+-  [x] `grid-template-areas`
+-  [x] `grid-template-columns`
+-  [x] `grid-template-rows`
 -  [ ] `hanging-punctuation`
 -  [x] `height`
 -  [ ] `hyphens`
 -  [ ] `@import`
 -  [ ] `isolation`
 -  [x] `justify-content`
+-  [x] `justify-items`
+-  [x] `justify-self`
 -  [ ] `@keyframes`
 -  [x] `left`
 -  [ ] `letter-spacing`
@@ -258,6 +282,9 @@ Checklist of CSS properties:
 -  [x] `overflow`
 -  [x] `overflow-x`
 -  [x] `overflow-y`
+-  [x] `place-content`
+-  [x] `place-items`
+-  [x] `place-self`
 -  [x] `overflow-wrap`
 -  [x] `padding`
 -  [x] `padding-bottom`
@@ -278,6 +305,7 @@ Checklist of CSS properties:
 -  [ ] `quotes`
 -  [ ] `resize`
 -  [x] `right`
+-  [x] `row-gap`
 -  [ ] `scroll-behavior`
 -  [x] `tab-size`
 -  [ ] `table-layout`
@@ -293,14 +321,14 @@ Checklist of CSS properties:
 -  [ ] `text-shadow`
 -  [ ] `text-transform`
 -  [x] `top`
--  [ ] `transform`
--  [ ] `transform-origin`
+-  [x] `transform`
+-  [x] `transform-origin`
 -  [ ] `transform-style`
--  [ ] `transition`
--  [ ] `transition-delay`
--  [ ] `transition-duration`
--  [ ] `transition-property`
--  [ ] `transition-timing-function`
+-  [x] `transition`
+-  [x] `transition-delay`
+-  [x] `transition-duration`
+-  [x] `transition-property`
+-  [x] `transition-timing-function`
 -  [ ] `unicode-bidi`
 -  [ ] `user-select`
 -  [ ] `vertical-align`

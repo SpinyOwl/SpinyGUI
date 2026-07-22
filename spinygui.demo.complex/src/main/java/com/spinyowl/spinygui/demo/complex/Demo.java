@@ -1,36 +1,6 @@
 package com.spinyowl.spinygui.demo.complex;
 
-import static org.lwjgl.glfw.GLFW.GLFW_DOUBLEBUFFER;
-import static org.lwjgl.glfw.GLFW.GLFW_PRESS;
-import static org.lwjgl.glfw.GLFW.GLFW_KEY_ESCAPE;
-import static org.lwjgl.glfw.GLFW.GLFW_KEY_F3;
-import static org.lwjgl.glfw.GLFW.GLFW_KEY_G;
-import static org.lwjgl.glfw.GLFW.GLFW_KEY_SPACE;
-import static org.lwjgl.glfw.GLFW.GLFW_RELEASE;
-import static org.lwjgl.glfw.GLFW.GLFW_REPEAT;
-import static org.lwjgl.glfw.GLFW.GLFW_TRUE;
-import static org.lwjgl.glfw.GLFW.glfwCreateWindow;
-import static org.lwjgl.glfw.GLFW.glfwDestroyWindow;
-import static org.lwjgl.glfw.GLFW.glfwGetFramebufferSize;
-import static org.lwjgl.glfw.GLFW.glfwGetWindowPos;
-import static org.lwjgl.glfw.GLFW.glfwGetWindowSize;
-import static org.lwjgl.glfw.GLFW.glfwMakeContextCurrent;
-import static org.lwjgl.glfw.GLFW.glfwPollEvents;
-import static org.lwjgl.glfw.GLFW.glfwSetCharCallback;
-import static org.lwjgl.glfw.GLFW.glfwSetCursorEnterCallback;
-import static org.lwjgl.glfw.GLFW.glfwSetCursorPosCallback;
-import static org.lwjgl.glfw.GLFW.glfwSetErrorCallback;
-import static org.lwjgl.glfw.GLFW.glfwSetKeyCallback;
-import static org.lwjgl.glfw.GLFW.glfwSetMouseButtonCallback;
-import static org.lwjgl.glfw.GLFW.glfwSetScrollCallback;
-import static org.lwjgl.glfw.GLFW.glfwSetWindowCloseCallback;
-import static org.lwjgl.glfw.GLFW.glfwSetWindowPos;
-import static org.lwjgl.glfw.GLFW.glfwSetWindowSizeCallback;
-import static org.lwjgl.glfw.GLFW.glfwShowWindow;
-import static org.lwjgl.glfw.GLFW.glfwSwapBuffers;
-import static org.lwjgl.glfw.GLFW.glfwSwapInterval;
-import static org.lwjgl.glfw.GLFW.glfwTerminate;
-import static org.lwjgl.glfw.GLFW.glfwWindowHint;
+import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL.createCapabilities;
 import static org.lwjgl.opengl.GL.setCapabilities;
 import static org.lwjgl.opengl.GL11.GL_COLOR_BUFFER_BIT;
@@ -50,8 +20,7 @@ import com.spinyowl.cbchain.impl.ChainMouseButtonCallback;
 import com.spinyowl.cbchain.impl.ChainScrollCallback;
 import com.spinyowl.cbchain.impl.ChainWindowCloseCallback;
 import com.spinyowl.cbchain.impl.ChainWindowSizeCallback;
-import com.spinyowl.spinygui.core.animation.Animator;
-import com.spinyowl.spinygui.core.animation.AnimatorImpl;
+import com.spinyowl.spinygui.core.animation.TransitionCoordinator;
 import com.spinyowl.spinygui.core.backend.renderer.Renderer;
 import com.spinyowl.spinygui.core.backend.renderer.lwjgl.nanovg.NvgRenderer;
 import com.spinyowl.spinygui.core.clipboard.Clipboard;
@@ -120,7 +89,7 @@ public abstract class Demo {
   protected NodeParser nodeParser;
   private boolean running = false;
   // Need to initialize
-  private Animator animator;
+  private TransitionCoordinator transitionCoordinator;
   private TimeService timeService;
   private EventProcessor eventProcessor;
   private SystemEventProcessor systemEventProcessor;
@@ -182,21 +151,21 @@ public abstract class Demo {
       int[] wh = {0};
       int[] bw = {0};
       int[] bh = {0};
-      int[] wpx = {0};
-      int[] wpy = {0};
       glfwGetWindowSize(window, ww, wh);
       var windowSize = new Vector2f(ww[0], wh[0]);
 
       glfwGetFramebufferSize(window, bw, bh);
       var framebufferSize = new Vector2i(bw[0], bh[0]);
 
-      glfwGetWindowPos(window, wpx, wpy);
       glViewport(0, 0, framebufferSize.x, framebufferSize.y);
 
       // frame size should be directly specified as it is not updated by layout service.
       updateFrameDimensions(windowSize);
       // We need to recalculate styles first.
       styleManager.recalculate(frame);
+
+      // Hosts advance transitions after styles have produced new targets and before layout/render.
+      transitionCoordinator.tick();
 
       // We need to relayout components after styles changed.
       layoutService.layout(frame);
@@ -212,8 +181,6 @@ public abstract class Demo {
       // update system. could be moved for example to game loop.
       update();
 
-      // also we need to run animations
-      animator.runAnimations();
     } catch (Exception e) {
       e.printStackTrace();
     }
@@ -232,6 +199,12 @@ public abstract class Demo {
 
   @SuppressWarnings("squid:S112")
   private void initialize() {
+    // if linux
+    System.out.println(System.getProperty("os.name"));
+    if (System.getProperty("os.name").toLowerCase().contains("linux")) {
+      glfwInitHint(GLFW_PLATFORM, GLFW_PLATFORM_X11);
+    }
+
     if (!GLFW.glfwInit()) {
       throw new RuntimeException("Can't initialize GLFW");
     }
@@ -240,10 +213,14 @@ public abstract class Demo {
 
     frame = createGuiElements(width, height);
 
+
+    glfwDefaultWindowHints();
+    glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
+    glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
+    glfwWindowHint(GLFW_DECORATED, GLFW_TRUE);
+
     window = glfwCreateWindow(width, height, title, NULL, NULL);
     glfwWindowHint(GLFW_DOUBLEBUFFER, GLFW_TRUE);
-    glfwSetWindowPos(window, 50, 50);
-
     initializeCallbacks(window);
     glfwShowWindow(window);
 
@@ -257,13 +234,13 @@ public abstract class Demo {
           return now.getEpochSecond() + (now.getNano() / 1_000_000_000D);
         };
 
-    animator = new AnimatorImpl(timeService);
+    transitionCoordinator = new TransitionCoordinator(timeService);
 
     PropertyStoreProvider provider = new DefaultPropertyStoreProvider();
     PropertyStore propertyStore = provider.createPropertyStore();
     styleSheetParser = StyleSheetParserFactory.createParser(propertyStore);
     nodeParser = new DefaultNodeParser();
-    styleManager = new StyleManagerImpl(propertyStore, styleSheetParser);
+    styleManager = new StyleManagerImpl(propertyStore, styleSheetParser, transitionCoordinator);
     mouseService = new MouseServiceImpl();
     eventProcessor = new DefaultEventProcessor();
 

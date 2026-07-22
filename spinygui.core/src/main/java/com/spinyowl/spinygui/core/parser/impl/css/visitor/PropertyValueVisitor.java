@@ -22,10 +22,12 @@ import com.spinyowl.spinygui.core.style.stylesheet.term.TermIdent;
 import com.spinyowl.spinygui.core.style.stylesheet.term.TermInteger;
 import com.spinyowl.spinygui.core.style.stylesheet.term.TermLength;
 import com.spinyowl.spinygui.core.style.stylesheet.term.TermList;
+import com.spinyowl.spinygui.core.style.stylesheet.term.TermTime;
 import com.spinyowl.spinygui.core.style.stylesheet.term.TermList.Operator;
 import com.spinyowl.spinygui.core.style.types.Color;
 import com.spinyowl.spinygui.core.style.types.grid.GridFraction;
 import com.spinyowl.spinygui.core.style.types.length.Length;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
@@ -44,6 +46,8 @@ public class PropertyValueVisitor extends CSS3BaseVisitor<Term<?>> {
   public static final String PIXEL_REGEX = "-?\\d+(\\.\\d+)?[pP][xX]";
   public static final String FRACTION_REGEX = "-?\\d+(\\.\\d+)?[fF][rR]";
   public static final String DEGREE_REGEX = "-?\\d+(\\.\\d+)?[dD][eE][gG]";
+  public static final String SECOND_REGEX = "-?\\d+(\\.\\d+)?[sS]";
+  public static final String MILLISECOND_REGEX = "-?\\d+(\\.\\d+)?[mM][sS]";
 
   private static Operator getOperator(Operator_Context op) {
     String operatorText = op != null ? op.getText() : " ";
@@ -74,7 +78,39 @@ public class PropertyValueVisitor extends CSS3BaseVisitor<Term<?>> {
     log.debug("visitExpr. " + ctx.getText());
     if (ctx.term().size() == 1) return super.visit(ctx.term(0));
     List<Term<?>> terms = ctx.term().stream().map(super::visit).collect(Collectors.toList());
+    if (ctx.operator_().stream().anyMatch(operator -> operator.getText().contains(","))) {
+      return separated(ctx, terms, ",", Operator.COMMA);
+    }
+    if (ctx.operator_().stream().anyMatch(operator -> operator.getText().contains("/"))) {
+      return separated(ctx, terms, "/", Operator.SLASH);
+    }
     return new TermList(getOperator(ctx.operator_()), terms);
+  }
+
+  /** Preserves space-separated entries nested inside separated CSS value lists. */
+  private static TermList separated(
+      ExprContext ctx, List<Term<?>> terms, String separator, Operator operator) {
+    List<Integer> separatorOffsets =
+        ctx.operator_().stream()
+            .filter(op -> op.getText().contains(separator))
+            .map(op -> op.getStart().getStartIndex())
+            .toList();
+    List<Term<?>> entries = new ArrayList<>();
+    List<Term<?>> entry = new ArrayList<>();
+    int separatorIndex = 0;
+    for (int index = 0; index < terms.size(); index++) {
+      if (index > 0
+          && separatorIndex < separatorOffsets.size()
+          && ctx.term(index - 1).getStop().getStopIndex() < separatorOffsets.get(separatorIndex)
+          && separatorOffsets.get(separatorIndex) < ctx.term(index).getStart().getStartIndex()) {
+        entries.add(entry.size() == 1 ? entry.getFirst() : new TermList(Operator.SPACE, entry));
+        entry = new ArrayList<>();
+        separatorIndex++;
+      }
+      entry.add(terms.get(index));
+    }
+    entries.add(entry.size() == 1 ? entry.getFirst() : new TermList(Operator.SPACE, entry));
+    return new TermList(operator, entries);
   }
 
   @Override
@@ -122,6 +158,12 @@ public class PropertyValueVisitor extends CSS3BaseVisitor<Term<?>> {
     if (dimensionText.matches(DEGREE_REGEX)) {
       return new TermAngle(
           Float.parseFloat(dimensionText.substring(0, dimensionText.length() - 3)));
+    }
+    if (dimensionText.matches(MILLISECOND_REGEX)) {
+      return new TermTime(Double.parseDouble(dimensionText.substring(0, dimensionText.length() - 2)) / 1000d);
+    }
+    if (dimensionText.matches(SECOND_REGEX)) {
+      return new TermTime(Double.parseDouble(dimensionText.substring(0, dimensionText.length() - 1)));
     }
 
     return null;

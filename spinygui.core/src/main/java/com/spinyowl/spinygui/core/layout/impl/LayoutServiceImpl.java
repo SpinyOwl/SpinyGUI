@@ -50,7 +50,7 @@ public class LayoutServiceImpl implements LayoutService {
 
   private void resolvePresentationTransforms(Element element) {
     var size = element.box().borderBoxSize();
-    var transform = element.resolvedStyle().transform();
+    var transform = element.presentedStyle().transform();
     var origin = element.resolvedStyle().transformOrigin();
     element
         .presentationState()

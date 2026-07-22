@@ -61,6 +61,7 @@ public class TransformPropertyProvider implements PropertyProvider {
   }
 
   private static List<Term<?>> values(Term<?> term) {
+    if (term instanceof TermFunction) return List.of(term);
     if (term instanceof TermList terms && Operator.SPACE.equals(terms.operator())) return terms.terms();
     return List.of(term);
   }
@@ -84,8 +85,11 @@ public class TransformPropertyProvider implements PropertyProvider {
   }
 
   private static Transform parse(TermFunction function) {
-    List<Term<?>> arguments = function.terms();
     String name = function.name().toLowerCase();
+    List<Term<?>> arguments =
+        function.terms().stream()
+            .filter(term -> !(term instanceof TermIdent ident && name.equalsIgnoreCase(ident.value())))
+            .toList();
     return switch (name) {
       case "translate" -> lengths(arguments, 1, 2) ? new Transform.Translate(length(arguments, 0), arguments.size() == 1 ? Length.ZERO : length(arguments, 1)) : null;
       case "translatex" -> lengths(arguments, 1, 1) ? new Transform.Translate(length(arguments, 0), Length.ZERO) : null;
@@ -99,7 +103,24 @@ public class TransformPropertyProvider implements PropertyProvider {
   }
 
   private static boolean lengths(List<Term<?>> values, int min, int max) { return values.size() >= min && values.size() <= max && values.stream().allMatch(TermLength.class::isInstance); }
-  private static boolean numbers(List<Term<?>> values, int min, int max) { return values.size() >= min && values.size() <= max && values.stream().allMatch(value -> value.value() instanceof Number); }
+  private static boolean numbers(List<Term<?>> values, int min, int max) { return values.size() >= min && values.size() <= max && values.stream().allMatch(value -> value.value() instanceof Number || numericIdent(value)); }
   private static Length<?> length(List<Term<?>> values, int index) { return ((TermLength) values.get(index)).value(); }
-  private static float number(List<Term<?>> values, int index) { return ((Number) values.get(index).value()).floatValue(); }
+  private static float number(List<Term<?>> values, int index) {
+    Term<?> value = values.get(index);
+    return value.value() instanceof Number number
+        ? number.floatValue()
+        : Float.parseFloat(((TermIdent) value).value());
+  }
+
+  private static boolean numericIdent(Term<?> value) {
+    if (!(value instanceof TermIdent ident)) {
+      return false;
+    }
+    try {
+      Float.parseFloat(ident.value());
+      return true;
+    } catch (NumberFormatException ignored) {
+      return false;
+    }
+  }
 }

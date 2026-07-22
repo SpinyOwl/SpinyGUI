@@ -9,9 +9,9 @@ import static com.spinyowl.spinygui.core.style.stylesheet.Properties.GRID_ROW_EN
 import static com.spinyowl.spinygui.core.style.stylesheet.Properties.GRID_ROW_GAP;
 import static com.spinyowl.spinygui.core.style.stylesheet.Properties.GRID_ROW_START;
 import static com.spinyowl.spinygui.core.style.stylesheet.Properties.GRID_TEMPLATE_COLUMNS;
+import static com.spinyowl.spinygui.core.style.stylesheet.Properties.GRID_TEMPLATE_ROWS;
 import static com.spinyowl.spinygui.core.style.stylesheet.Properties.ROW_GAP;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 
 import com.spinyowl.spinygui.core.node.Element;
 import com.spinyowl.spinygui.core.node.Frame;
@@ -19,12 +19,12 @@ import com.spinyowl.spinygui.core.parser.StyleSheetParser;
 import com.spinyowl.spinygui.core.parser.impl.StyleSheetParserFactory;
 import com.spinyowl.spinygui.core.style.stylesheet.PropertyStore;
 import com.spinyowl.spinygui.core.style.stylesheet.impl.DefaultPropertyStoreProvider;
-import com.spinyowl.spinygui.core.style.stylesheet.term.TermIdent;
-import com.spinyowl.spinygui.core.style.stylesheet.term.TermInteger;
-import com.spinyowl.spinygui.core.style.stylesheet.term.TermLength;
-import com.spinyowl.spinygui.core.style.stylesheet.term.TermList;
 import com.spinyowl.spinygui.core.style.types.Display;
-import com.spinyowl.spinygui.core.style.types.grid.GridFraction;
+import com.spinyowl.spinygui.core.style.types.grid.GridAutoFlow;
+import com.spinyowl.spinygui.core.style.types.grid.GridPlacement;
+import com.spinyowl.spinygui.core.style.types.grid.GridTemplateAreas;
+import com.spinyowl.spinygui.core.style.types.grid.GridTrackList;
+import com.spinyowl.spinygui.core.style.types.grid.GridTrackSize;
 import com.spinyowl.spinygui.core.style.types.length.Length;
 import org.junit.jupiter.api.Test;
 
@@ -38,14 +38,18 @@ class GridStyleManagerTest {
   }
 
   @Test
-  void recalculateStoresGridTrackTermsParsedByRealParser() {
+  void recalculateStoresTypedGridTracksParsedByRealParser() {
     Element element = styledElement("grid-template-columns: 120px 1fr minmax(20px, 2fr);");
 
-    TermList columns =
-        assertInstanceOf(TermList.class, element.resolvedStyle().getSafe(GRID_TEMPLATE_COLUMNS));
-    assertInstanceOf(TermLength.class, columns.get(0));
-    assertEquals(GridFraction.fr(1), columns.get(1).value());
-    assertEquals("minmax(20.0px, 2.0fr)", columns.get(2).toString());
+    GridTrackList columns = element.resolvedStyle().gridTemplateColumns();
+    assertEquals(3, columns.tracks().size());
+    assertEquals(GridTrackSize.fixed(Length.pixel(120)), columns.tracks().get(0).size());
+    assertEquals(GridTrackSize.flexible(com.spinyowl.spinygui.core.style.types.grid.GridFraction.fr(1)), columns.tracks().get(1).size());
+    assertEquals(
+        GridTrackSize.minmax(
+            GridTrackSize.fixed(Length.pixel(20)),
+            GridTrackSize.flexible(com.spinyowl.spinygui.core.style.types.grid.GridFraction.fr(2))),
+        columns.tracks().get(2).size());
   }
 
   @Test
@@ -53,7 +57,7 @@ class GridStyleManagerTest {
     Element element =
         styledElement("grid-auto-flow: row dense; grid-row-gap: 4px; grid-column-gap: 8px;");
 
-    assertEquals("row dense", element.resolvedStyle().getSafe(GRID_AUTO_FLOW).toString());
+    assertEquals(GridAutoFlow.ROW_DENSE, element.resolvedStyle().getSafe(GRID_AUTO_FLOW));
     assertEquals(Length.pixel(4), element.resolvedStyle().getSafe(GRID_ROW_GAP));
     assertEquals(Length.pixel(8), element.resolvedStyle().getSafe(GRID_COLUMN_GAP));
   }
@@ -72,25 +76,62 @@ class GridStyleManagerTest {
   void recalculateExpandsGridRowAndColumnShorthands() {
     Element element = styledElement("grid-row: 2 / span 3; grid-column: main / 4;");
 
-    assertEquals(new TermInteger(2), element.resolvedStyle().getSafe(GRID_ROW_START));
-    assertEquals("span 3", element.resolvedStyle().getSafe(GRID_ROW_END).toString());
-    assertEquals(new TermIdent("main"), element.resolvedStyle().getSafe(GRID_COLUMN_START));
-    assertEquals(new TermInteger(4), element.resolvedStyle().getSafe(GRID_COLUMN_END));
+    assertEquals(GridPlacement.line(2), element.resolvedStyle().getSafe(GRID_ROW_START));
+    assertEquals(GridPlacement.span(3), element.resolvedStyle().getSafe(GRID_ROW_END));
+    assertEquals(GridPlacement.line("main"), element.resolvedStyle().getSafe(GRID_COLUMN_START));
+    assertEquals(GridPlacement.line(4), element.resolvedStyle().getSafe(GRID_COLUMN_END));
   }
 
   @Test
   void recalculateExpandsGridPlacementWhenSpanAppearsBeforeSlash() {
     Element element = styledElement("grid-row: span 2 / 4;");
 
-    assertEquals("span 2", element.resolvedStyle().getSafe(GRID_ROW_START).toString());
-    assertEquals(new TermInteger(4), element.resolvedStyle().getSafe(GRID_ROW_END));
+    assertEquals(GridPlacement.span(2), element.resolvedStyle().getSafe(GRID_ROW_START));
+    assertEquals(GridPlacement.line(4), element.resolvedStyle().getSafe(GRID_ROW_END));
   }
 
   @Test
   void recalculateRejectsUnsupportedGridAutoFlowValue() {
     Element element = styledElement("grid-auto-flow: sideways;");
 
-    assertEquals(new TermIdent("row"), element.resolvedStyle().getSafe(GRID_AUTO_FLOW));
+    assertEquals(GridAutoFlow.ROW, element.resolvedStyle().getSafe(GRID_AUTO_FLOW));
+  }
+
+  @Test
+  void recalculateProvidesTypedGridDefaults() {
+    Element element = styledElement("display: grid;");
+
+    assertEquals(GridTrackList.NONE, element.resolvedStyle().getSafe(GRID_TEMPLATE_COLUMNS));
+    assertEquals(GridTrackList.NONE, element.resolvedStyle().getSafe(GRID_TEMPLATE_ROWS));
+    assertEquals(GridAutoFlow.ROW, element.resolvedStyle().gridAutoFlow());
+    assertEquals(GridPlacement.AUTO, element.resolvedStyle().gridRowStart());
+    assertEquals(GridPlacement.AUTO, element.resolvedStyle().gridColumnStart());
+  }
+
+  @Test
+  void recalculateStoresTypedTemplateAreasAndNamedGridArea() {
+    Element element =
+        styledElement(
+            "grid-template-areas: \"header header\" \"sidebar main\";"
+                + "grid-area: main;");
+
+    GridTemplateAreas areas = element.resolvedStyle().gridTemplateAreas();
+    assertEquals(new GridTemplateAreas.AreaRange(0, 1, 0, 2), areas.areas().get("header"));
+    assertEquals(new GridTemplateAreas.AreaRange(1, 2, 0, 1), areas.areas().get("sidebar"));
+    assertEquals(new GridTemplateAreas.AreaRange(1, 2, 1, 2), areas.areas().get("main"));
+    assertEquals(GridPlacement.line("main"), element.resolvedStyle().gridRowStart());
+    assertEquals(GridPlacement.AUTO, element.resolvedStyle().gridColumnStart());
+  }
+
+  @Test
+  void recalculateExpandsSupportedGridTemplateAndGridShorthands() {
+    Element template = styledElement("grid-template: 20px 1fr / 40px 2fr;");
+    Element grid = styledElement("grid: 20px 1fr / 40px 2fr;");
+
+    assertEquals(2, template.resolvedStyle().gridTemplateRows().tracks().size());
+    assertEquals(2, template.resolvedStyle().gridTemplateColumns().tracks().size());
+    assertEquals(template.resolvedStyle().gridTemplateRows(), grid.resolvedStyle().gridTemplateRows());
+    assertEquals(template.resolvedStyle().gridTemplateColumns(), grid.resolvedStyle().gridTemplateColumns());
   }
 
   private Element styledElement(String style) {

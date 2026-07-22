@@ -39,8 +39,22 @@ import static com.spinyowl.spinygui.core.style.stylesheet.Properties.FONT_FAMILY
 import static com.spinyowl.spinygui.core.style.stylesheet.Properties.FONT_SIZE;
 import static com.spinyowl.spinygui.core.style.stylesheet.Properties.FONT_STYLE;
 import static com.spinyowl.spinygui.core.style.stylesheet.Properties.FONT_WEIGHT;
+import static com.spinyowl.spinygui.core.style.stylesheet.Properties.GRID_AUTO_COLUMNS;
+import static com.spinyowl.spinygui.core.style.stylesheet.Properties.GRID_AUTO_FLOW;
+import static com.spinyowl.spinygui.core.style.stylesheet.Properties.GRID_AUTO_ROWS;
+import static com.spinyowl.spinygui.core.style.stylesheet.Properties.GRID_COLUMN_END;
+import static com.spinyowl.spinygui.core.style.stylesheet.Properties.GRID_COLUMN_GAP;
+import static com.spinyowl.spinygui.core.style.stylesheet.Properties.GRID_COLUMN_START;
+import static com.spinyowl.spinygui.core.style.stylesheet.Properties.GRID_ROW_END;
+import static com.spinyowl.spinygui.core.style.stylesheet.Properties.GRID_ROW_GAP;
+import static com.spinyowl.spinygui.core.style.stylesheet.Properties.GRID_ROW_START;
+import static com.spinyowl.spinygui.core.style.stylesheet.Properties.GRID_TEMPLATE_AREAS;
+import static com.spinyowl.spinygui.core.style.stylesheet.Properties.GRID_TEMPLATE_COLUMNS;
+import static com.spinyowl.spinygui.core.style.stylesheet.Properties.GRID_TEMPLATE_ROWS;
 import static com.spinyowl.spinygui.core.style.stylesheet.Properties.HEIGHT;
 import static com.spinyowl.spinygui.core.style.stylesheet.Properties.JUSTIFY_CONTENT;
+import static com.spinyowl.spinygui.core.style.stylesheet.Properties.JUSTIFY_ITEMS;
+import static com.spinyowl.spinygui.core.style.stylesheet.Properties.JUSTIFY_SELF;
 import static com.spinyowl.spinygui.core.style.stylesheet.Properties.LEFT;
 import static com.spinyowl.spinygui.core.style.stylesheet.Properties.LINE_HEIGHT;
 import static com.spinyowl.spinygui.core.style.stylesheet.Properties.MARGIN_BOTTOM;
@@ -88,6 +102,7 @@ import com.spinyowl.spinygui.core.style.types.Transform;
 import com.spinyowl.spinygui.core.style.types.TransformOrigin;
 import com.spinyowl.spinygui.core.style.types.WhiteSpace;
 import com.spinyowl.spinygui.core.style.types.WordBreak;
+import com.spinyowl.spinygui.core.style.types.transition.TransitionConfiguration;
 import com.spinyowl.spinygui.core.style.types.background.BackgroundOrigin;
 import com.spinyowl.spinygui.core.style.types.background.BackgroundRepeat;
 import com.spinyowl.spinygui.core.style.types.background.BackgroundSize;
@@ -98,6 +113,12 @@ import com.spinyowl.spinygui.core.style.types.flex.AlignSelf;
 import com.spinyowl.spinygui.core.style.types.flex.FlexDirection;
 import com.spinyowl.spinygui.core.style.types.flex.FlexWrap;
 import com.spinyowl.spinygui.core.style.types.flex.JustifyContent;
+import com.spinyowl.spinygui.core.style.types.grid.GridAutoFlow;
+import com.spinyowl.spinygui.core.style.types.grid.GridPlacement;
+import com.spinyowl.spinygui.core.style.types.grid.GridTemplateAreas;
+import com.spinyowl.spinygui.core.style.types.grid.GridTrack;
+import com.spinyowl.spinygui.core.style.types.grid.GridTrackList;
+import com.spinyowl.spinygui.core.style.types.grid.GridTrackSize;
 import com.spinyowl.spinygui.core.style.types.length.Length;
 import com.spinyowl.spinygui.core.style.types.length.Length.PixelLength;
 import com.spinyowl.spinygui.core.style.types.length.Unit;
@@ -112,6 +133,8 @@ import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 public class ResolvedStyle {
+  private static final GridTrackList DEFAULT_GRID_AUTO_TRACKS =
+      GridTrackList.of(List.of(GridTrack.of(GridTrackSize.AUTO)));
 
   /** List of rules that applicable to element, sorted by specificity. */
   private List<Ruleset> rules = List.of();
@@ -180,6 +203,15 @@ public class ResolvedStyle {
    */
   public Object getSafe(String property) {
     return styles().get(property);
+  }
+
+  @SuppressWarnings("unchecked")
+  public TransitionConfiguration transitionConfiguration() {
+    return new TransitionConfiguration(
+        get(com.spinyowl.spinygui.core.style.stylesheet.Properties.TRANSITION_PROPERTY, TransitionConfiguration.INITIAL.properties()),
+        get(com.spinyowl.spinygui.core.style.stylesheet.Properties.TRANSITION_DURATION, TransitionConfiguration.INITIAL.durations()),
+        get(com.spinyowl.spinygui.core.style.stylesheet.Properties.TRANSITION_TIMING_FUNCTION, TransitionConfiguration.INITIAL.timingFunctions()),
+        get(com.spinyowl.spinygui.core.style.stylesheet.Properties.TRANSITION_DELAY, TransitionConfiguration.INITIAL.delays()));
   }
 
   public Color color() {
@@ -559,6 +591,118 @@ public class ResolvedStyle {
 
   public void justifyContent(JustifyContent justifyContent) {
     set(JUSTIFY_CONTENT, justifyContent);
+  }
+
+  public AlignItems justifyItems() {
+    return get(JUSTIFY_ITEMS, AlignItems.STRETCH);
+  }
+
+  public void justifyItems(AlignItems justifyItems) {
+    set(JUSTIFY_ITEMS, justifyItems);
+  }
+
+  public AlignSelf justifySelf() {
+    return get(JUSTIFY_SELF, AlignSelf.AUTO);
+  }
+
+  public void justifySelf(AlignSelf justifySelf) {
+    set(JUSTIFY_SELF, justifySelf);
+  }
+
+  public GridTrackList gridTemplateColumns() {
+    return get(GRID_TEMPLATE_COLUMNS, GridTrackList.NONE);
+  }
+
+  public void gridTemplateColumns(GridTrackList gridTemplateColumns) {
+    set(GRID_TEMPLATE_COLUMNS, gridTemplateColumns);
+  }
+
+  public GridTrackList gridTemplateRows() {
+    return get(GRID_TEMPLATE_ROWS, GridTrackList.NONE);
+  }
+
+  public void gridTemplateRows(GridTrackList gridTemplateRows) {
+    set(GRID_TEMPLATE_ROWS, gridTemplateRows);
+  }
+
+  public GridTemplateAreas gridTemplateAreas() {
+    return get(GRID_TEMPLATE_AREAS, GridTemplateAreas.NONE);
+  }
+
+  public void gridTemplateAreas(GridTemplateAreas gridTemplateAreas) {
+    set(GRID_TEMPLATE_AREAS, gridTemplateAreas);
+  }
+
+  public GridTrackList gridAutoColumns() {
+    return get(GRID_AUTO_COLUMNS, DEFAULT_GRID_AUTO_TRACKS);
+  }
+
+  public void gridAutoColumns(GridTrackList gridAutoColumns) {
+    set(GRID_AUTO_COLUMNS, gridAutoColumns);
+  }
+
+  public GridTrackList gridAutoRows() {
+    return get(GRID_AUTO_ROWS, DEFAULT_GRID_AUTO_TRACKS);
+  }
+
+  public void gridAutoRows(GridTrackList gridAutoRows) {
+    set(GRID_AUTO_ROWS, gridAutoRows);
+  }
+
+  public GridAutoFlow gridAutoFlow() {
+    return get(GRID_AUTO_FLOW, GridAutoFlow.ROW);
+  }
+
+  public void gridAutoFlow(GridAutoFlow gridAutoFlow) {
+    set(GRID_AUTO_FLOW, gridAutoFlow);
+  }
+
+  public GridPlacement gridColumnStart() {
+    return get(GRID_COLUMN_START, GridPlacement.AUTO);
+  }
+
+  public void gridColumnStart(GridPlacement gridColumnStart) {
+    set(GRID_COLUMN_START, gridColumnStart);
+  }
+
+  public GridPlacement gridColumnEnd() {
+    return get(GRID_COLUMN_END, GridPlacement.AUTO);
+  }
+
+  public void gridColumnEnd(GridPlacement gridColumnEnd) {
+    set(GRID_COLUMN_END, gridColumnEnd);
+  }
+
+  public GridPlacement gridRowStart() {
+    return get(GRID_ROW_START, GridPlacement.AUTO);
+  }
+
+  public void gridRowStart(GridPlacement gridRowStart) {
+    set(GRID_ROW_START, gridRowStart);
+  }
+
+  public GridPlacement gridRowEnd() {
+    return get(GRID_ROW_END, GridPlacement.AUTO);
+  }
+
+  public void gridRowEnd(GridPlacement gridRowEnd) {
+    set(GRID_ROW_END, gridRowEnd);
+  }
+
+  public Length<?> gridColumnGap() {
+    return get(GRID_COLUMN_GAP, Length.ZERO);
+  }
+
+  public void gridColumnGap(Length<?> gridColumnGap) {
+    set(GRID_COLUMN_GAP, gridColumnGap);
+  }
+
+  public Length<?> gridRowGap() {
+    return get(GRID_ROW_GAP, Length.ZERO);
+  }
+
+  public void gridRowGap(Length<?> gridRowGap) {
+    set(GRID_ROW_GAP, gridRowGap);
   }
 
   public Unit width() {

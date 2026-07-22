@@ -44,7 +44,7 @@ public final class LayoutServiceProvider {
     var blockLayout = new BlockLayout(layoutService, inlineFormattingContext, textMeasurer);
     inlineFormattingContext.inlineBlockLayout(blockLayout::layoutInlineBlock);
     elementLayoutMap.put(Display.BLOCK, blockLayout);
-    elementLayoutMap.put(Display.GRID, blockLayout);
+    elementLayoutMap.put(Display.GRID, new GridLayout(blockLayout, layoutService));
 
     var flexLayout =
         new FlexLayout(

@@ -9,6 +9,11 @@ import static com.spinyowl.spinygui.core.style.stylesheet.Properties.FLEX_GROW;
 import static com.spinyowl.spinygui.core.style.stylesheet.Properties.FLEX_SHRINK;
 import static com.spinyowl.spinygui.core.style.stylesheet.Properties.FLEX_WRAP;
 import static com.spinyowl.spinygui.core.style.stylesheet.Properties.JUSTIFY_CONTENT;
+import static com.spinyowl.spinygui.core.style.stylesheet.Properties.JUSTIFY_ITEMS;
+import static com.spinyowl.spinygui.core.style.stylesheet.Properties.JUSTIFY_SELF;
+import static com.spinyowl.spinygui.core.style.stylesheet.Properties.PLACE_CONTENT;
+import static com.spinyowl.spinygui.core.style.stylesheet.Properties.PLACE_ITEMS;
+import static com.spinyowl.spinygui.core.style.stylesheet.Properties.PLACE_SELF;
 import static com.spinyowl.spinygui.core.style.stylesheet.Property.checkValue;
 import static com.spinyowl.spinygui.core.style.stylesheet.Property.put;
 
@@ -17,6 +22,8 @@ import com.spinyowl.spinygui.core.style.stylesheet.PropertyProvider;
 import com.spinyowl.spinygui.core.style.stylesheet.term.TermFloat;
 import com.spinyowl.spinygui.core.style.stylesheet.term.TermIdent;
 import com.spinyowl.spinygui.core.style.stylesheet.term.TermLength;
+import com.spinyowl.spinygui.core.style.stylesheet.term.TermList;
+import com.spinyowl.spinygui.core.style.stylesheet.term.TermList.Operator;
 import com.spinyowl.spinygui.core.style.types.flex.AlignContent;
 import com.spinyowl.spinygui.core.style.types.flex.AlignItems;
 import com.spinyowl.spinygui.core.style.types.flex.AlignSelf;
@@ -91,6 +98,81 @@ public class FlexPropertyProvider implements PropertyProvider {
             .defaultValue(new TermIdent(JustifyContent.FLEX_START.name()))
             .updater(put(JUSTIFY_CONTENT, TermIdent.class, JustifyContent::find))
             .validator(checkValue(TermIdent.class, JustifyContent::contains))
+            .build(),
+        Property.builder()
+            .name(JUSTIFY_ITEMS)
+            .defaultValue(new TermIdent(AlignItems.STRETCH.name()))
+            .updater(put(JUSTIFY_ITEMS, TermIdent.class, AlignItems::find))
+            .validator(checkValue(TermIdent.class, AlignItems::contains))
+            .build(),
+        Property.builder()
+            .name(JUSTIFY_SELF)
+            .defaultValue(new TermIdent(AlignSelf.AUTO.name()))
+            .updater(put(JUSTIFY_SELF, TermIdent.class, AlignSelf::find))
+            .validator(checkValue(TermIdent.class, AlignSelf::contains))
+            .build(),
+        Property.builder()
+            .name(PLACE_CONTENT)
+            .defaultValue(new TermIdent(AlignContent.STRETCH.name()))
+            .updater(
+                (term, styles) -> {
+                  List<TermIdent> values = alignmentValues(term);
+                  styles.put(ALIGN_CONTENT, AlignContent.find(values.get(0).value()));
+                  styles.put(JUSTIFY_CONTENT, JustifyContent.find(values.size() > 1 ? values.get(1).value() : values.get(0).value()));
+                })
+            .validator(FlexPropertyProvider::validPlaceContent)
+            .shorthand(true)
+            .build(),
+        Property.builder()
+            .name(PLACE_ITEMS)
+            .defaultValue(new TermIdent(AlignItems.STRETCH.name()))
+            .updater(
+                (term, styles) -> {
+                  List<TermIdent> values = alignmentValues(term);
+                  styles.put(ALIGN_ITEMS, AlignItems.find(values.get(0).value()));
+                  styles.put(JUSTIFY_ITEMS, AlignItems.find(values.size() > 1 ? values.get(1).value() : values.get(0).value()));
+                })
+            .validator(FlexPropertyProvider::validPlaceItems)
+            .shorthand(true)
+            .build(),
+        Property.builder()
+            .name(PLACE_SELF)
+            .defaultValue(new TermIdent(AlignSelf.AUTO.name()))
+            .updater(
+                (term, styles) -> {
+                  List<TermIdent> values = alignmentValues(term);
+                  styles.put(ALIGN_SELF, AlignSelf.find(values.get(0).value()));
+                  styles.put(JUSTIFY_SELF, AlignSelf.find(values.size() > 1 ? values.get(1).value() : values.get(0).value()));
+                })
+            .validator(FlexPropertyProvider::validPlaceSelf)
+            .shorthand(true)
             .build());
+  }
+
+  private static boolean validPlaceContent(com.spinyowl.spinygui.core.style.stylesheet.Term<?> term) {
+    List<TermIdent> values = alignmentValues(term);
+    return !values.isEmpty()
+        && values.stream().allMatch(value -> AlignContent.contains(value.value()))
+        && (values.size() == 1 || JustifyContent.contains(values.get(1).value()));
+  }
+
+  private static boolean validPlaceItems(com.spinyowl.spinygui.core.style.stylesheet.Term<?> term) {
+    List<TermIdent> values = alignmentValues(term);
+    return !values.isEmpty() && values.stream().allMatch(value -> AlignItems.contains(value.value()));
+  }
+
+  private static boolean validPlaceSelf(com.spinyowl.spinygui.core.style.stylesheet.Term<?> term) {
+    List<TermIdent> values = alignmentValues(term);
+    return !values.isEmpty() && values.stream().allMatch(value -> AlignSelf.contains(value.value()));
+  }
+
+  private static List<TermIdent> alignmentValues(com.spinyowl.spinygui.core.style.stylesheet.Term<?> term) {
+    if (term instanceof TermIdent ident) {
+      return List.of(ident);
+    }
+    if (term instanceof TermList list && Operator.SPACE.equals(list.operator()) && list.size() == 2) {
+      return list.terms().stream().filter(TermIdent.class::isInstance).map(TermIdent.class::cast).toList();
+    }
+    return List.of();
   }
 }

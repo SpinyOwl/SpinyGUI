@@ -19,7 +19,7 @@ echo Chrome executable was not found. Set CHROME to chrome.exe path and run agai
 exit /b 1
 
 :chrome_found
-set CHROME_OPTS=--chrome-frame --window-position=250,50 --window-size="720,460"
+set CHROME_OPTS=--chrome-frame --allow-file-access-from-files --window-position=250,50 --window-size="720,460"
 set "WD=%cd%"
 set APP=--app="%WD%\app.html"
 

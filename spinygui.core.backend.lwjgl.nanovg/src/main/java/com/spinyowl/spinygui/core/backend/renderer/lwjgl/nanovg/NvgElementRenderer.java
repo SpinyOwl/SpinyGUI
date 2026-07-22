@@ -1,6 +1,7 @@
 package com.spinyowl.spinygui.core.backend.renderer.lwjgl.nanovg;
 
 import static com.spinyowl.spinygui.core.backend.renderer.lwjgl.nanovg.util.NvgRenderUtils.getBorderRadius;
+import static com.spinyowl.spinygui.core.backend.renderer.lwjgl.nanovg.util.NvgRenderUtils.withPresentedOpacity;
 import static com.spinyowl.spinygui.core.backend.renderer.lwjgl.nanovg.util.NvgShapes.drawRect;
 import static com.spinyowl.spinygui.core.util.NodeUtilities.visible;
 import static org.lwjgl.nanovg.NanoVG.nvgRestore;
@@ -17,6 +18,7 @@ public class NvgElementRenderer {
     Element element = node.asElement();
     if (visible(element) /*&& visibleInParents(element)*/) {
       var style = element.resolvedStyle();
+      var presentedStyle = element.presentedStyle();
       if ((Display.INLINE.equals(style.display()) || Display.INLINE_BLOCK.equals(style.display()))
           && !element.inlineFragments().isEmpty()) {
         nvgSave(nanovg);
@@ -29,11 +31,11 @@ public class NvgElementRenderer {
                         nanovg,
                         new Vector2f(offset.x + fragment.x(), offset.y + fragment.y()),
                         new Vector2f(fragment.width(), fragment.height()),
-                        style.backgroundColor()));
+                        withPresentedOpacity(presentedStyle.backgroundColor(), element)));
         nvgRestore(nanovg);
         return;
       }
-      var backgroundColor = style.backgroundColor();
+      var backgroundColor = withPresentedOpacity(presentedStyle.backgroundColor(), element);
       var borderRadius = getBorderRadius(element, style);
 
       var position = element.layoutAbsolutePosition();

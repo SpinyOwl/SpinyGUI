@@ -3,34 +3,28 @@ plugins {
     id("jacoco")
 }
 
+val lwjglNatives = when {
+    providers.systemProperty("os.name").get().startsWith("Windows", ignoreCase = true) -> "natives-windows"
+    providers.systemProperty("os.name").get().startsWith("Mac", ignoreCase = true) -> "natives-macos"
+    providers.systemProperty("os.name").get().startsWith("Linux", ignoreCase = true) -> "natives-linux"
+    else -> error("Unsupported operating system: ${providers.systemProperty("os.name").get()}")
+}
+
 dependencies {
     api(project(":spinygui.core"))
     api(project(":spinygui.core.backend"))
 
     api(libs.lwjgl)
-    api(variantOf(libs.lwjgl) { classifier("natives-windows") })
-    api(variantOf(libs.lwjgl) { classifier("natives-linux") })
-    api(variantOf(libs.lwjgl) { classifier("natives-macos") })
+    api(variantOf(libs.lwjgl) { classifier(lwjglNatives) })
 
     api(libs.lwjglGlfw)
-    api(variantOf(libs.lwjglGlfw) { classifier("natives-windows") })
-    api(variantOf(libs.lwjglGlfw) { classifier("natives-linux") })
-    api(variantOf(libs.lwjglGlfw) { classifier("natives-macos") })
+    api(variantOf(libs.lwjglGlfw) { classifier(lwjglNatives) })
 
     api(libs.lwjglOpengl)
-    api(variantOf(libs.lwjglOpengl) { classifier("natives-windows") })
-    api(variantOf(libs.lwjglOpengl) { classifier("natives-linux") })
-    api(variantOf(libs.lwjglOpengl) { classifier("natives-macos") })
+    api(variantOf(libs.lwjglOpengl) { classifier(lwjglNatives) })
 
     api(libs.lwjglNanovg)
-    api(variantOf(libs.lwjglNanovg) { classifier("natives-windows") })
-    api(variantOf(libs.lwjglNanovg) { classifier("natives-linux") })
-    api(variantOf(libs.lwjglNanovg) { classifier("natives-macos") })
-
-    api(libs.lwjglStb)
-    api(variantOf(libs.lwjglStb) { classifier("natives-windows") })
-    api(variantOf(libs.lwjglStb) { classifier("natives-linux") })
-    api(variantOf(libs.lwjglStb) { classifier("natives-macos") })
+    api(variantOf(libs.lwjglNanovg) { classifier(lwjglNatives) })
 }
 
 tasks.test {

@@ -1,5 +1,6 @@
 package com.spinyowl.spinygui.core.style.manager;
 
+import com.spinyowl.spinygui.core.animation.StyleChangeListener;
 import com.spinyowl.spinygui.core.node.Element;
 import com.spinyowl.spinygui.core.node.Frame;
 import com.spinyowl.spinygui.core.parser.StyleSheetParser;
@@ -29,12 +30,10 @@ import java.util.Objects;
 import java.util.WeakHashMap;
 import lombok.Data;
 import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 
 @Slf4j
-@RequiredArgsConstructor
 public class StyleManagerImpl implements StyleManager {
 
   private static final int INLINE_STYLE_RULESET_CACHE_SIZE = 1024;
@@ -44,6 +43,21 @@ public class StyleManagerImpl implements StyleManager {
 
   @NonNull private final PropertyStore propertyStore;
   @NonNull private final StyleSheetParser styleSheetParser;
+  private final StyleChangeListener styleChangeListener;
+
+  public StyleManagerImpl(
+      @NonNull PropertyStore propertyStore, @NonNull StyleSheetParser styleSheetParser) {
+    this(propertyStore, styleSheetParser, null);
+  }
+
+  public StyleManagerImpl(
+      @NonNull PropertyStore propertyStore,
+      @NonNull StyleSheetParser styleSheetParser,
+      StyleChangeListener styleChangeListener) {
+    this.propertyStore = propertyStore;
+    this.styleSheetParser = styleSheetParser;
+    this.styleChangeListener = styleChangeListener;
+  }
 
   private final Map<Element, StyleData> elementStyleDataMap = new WeakHashMap<>();
   private final Map<StyleSheet, StyleSheetRules> styleSheetRulesCache = new WeakHashMap<>();
@@ -71,6 +85,7 @@ public class StyleManagerImpl implements StyleManager {
   }
 
   private void applyElementStyle(Element element) {
+    Map<String, Object> previous = new LinkedHashMap<>(element.resolvedStyle().styles());
     element.resolvedStyle().styles().clear();
     element
         .resolvedStyle()
@@ -78,7 +93,10 @@ public class StyleManagerImpl implements StyleManager {
         .forEach(
             ruleSet -> ruleSet.declarations().forEach(declaration -> declaration.apply(element)));
     applyAbsentProperties(element);
-    element.presentationState().reset();
+    if (styleChangeListener == null) element.presentationState().reset();
+    else
+      styleChangeListener.stylesResolved(
+          element, previous, Map.copyOf(element.resolvedStyle().styles()));
   }
 
   private void applyAbsentProperties(Element element) {
