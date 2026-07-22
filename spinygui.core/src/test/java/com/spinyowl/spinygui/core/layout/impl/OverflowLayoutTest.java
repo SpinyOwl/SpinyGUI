@@ -63,6 +63,46 @@ class OverflowLayoutTest {
   }
 
   @Test
+  void layout_nestedScrollableRows_keepsEveryRowAndRefreshesOverflowAfterMutation() {
+    Frame frame = NodeBuilder.frame();
+    frame.frameSize(500, 500);
+    style(frame, Display.BLOCK, 500, 500);
+    Element container = NodeBuilder.div();
+    style(container, Display.BLOCK, 200, 200);
+    container.resolvedStyle().overflowX(Overflow.HIDDEN);
+    container.resolvedStyle().overflowY(Overflow.SCROLL);
+    Element lines = NodeBuilder.div();
+    style(lines, Display.BLOCK, 188, 800);
+    for (int i = 0; i < 40; i++) {
+      Element row = NodeBuilder.div();
+      style(row, Display.BLOCK, 188, 20);
+      lines.addChild(row);
+    }
+    container.addChild(lines);
+    frame.addChild(container);
+
+    LayoutService layoutService = layoutService();
+    layoutService.layout(frame);
+
+    assertEquals(800, container.scrollHeight());
+    assertEquals(40, lines.layoutChildNodes().size());
+    container.scrollTop(300);
+    layoutService.layout(frame);
+    assertEquals(300, container.scrollTop());
+    assertTrue(lines.layoutChildNodes().contains(lines.childNodes().get(25)));
+
+    for (int i = 0; i < 30; i++) {
+      lines.removeChild(lines.childNodes().get(lines.childNodes().size() - 1));
+    }
+    lines.resolvedStyle().height(Unit.AUTO);
+    layoutService.layout(frame);
+
+    assertEquals(200, container.scrollHeight());
+    assertEquals(0, container.scrollTop());
+    assertEquals(10, lines.layoutChildNodes().size());
+  }
+
+  @Test
   void layout_whenFlexItemChildExceedsAllocatedHeight_preservesItemSizeAndMeasuresOverflow() {
     Frame frame = NodeBuilder.frame();
     frame.frameSize(500, 500);

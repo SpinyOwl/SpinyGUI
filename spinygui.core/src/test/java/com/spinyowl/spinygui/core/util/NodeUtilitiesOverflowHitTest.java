@@ -47,6 +47,24 @@ class NodeUtilitiesOverflowHitTest {
   }
 
   @Test
+  void getTargetElement_returnsNestedRowScrolledIntoViewport() {
+    Frame frame = frame(500, 500);
+    Element container = clippedElement(0, 0, 200, 200);
+    container.scrollTop(600);
+    Element lines = element(0, 0, 200, 800);
+    Element lastRow = element(0, 780, 200, 20);
+    frame.addChild(container);
+    container.addChild(lines);
+    lines.addChild(lastRow);
+    lines.offsetParent(container);
+    lastRow.offsetParent(lines);
+
+    assertEquals(lastRow, NodeUtilities.getTargetElement(frame, new Vector2f(10, 190)));
+    assertFalse(
+        NodeUtilities.getTargetElementList(frame, new Vector2f(10, 10)).contains(lastRow));
+  }
+
+  @Test
   void getTargetElement_returnsChildOutsideVisibleOverflowParentBox() {
     Frame frame = frame(500, 500);
     Element container = visibleOverflowElement(0, 0, 100, 100);

@@ -12,63 +12,63 @@ import org.junit.jupiter.api.Test;
 class NvgInlineFormattingOffsetTest {
 
   @Test
-  void elementInlineFormattingOffset_subtractsContainingBlockScroll() {
+  void elementInlineFormattingOffset_usesUnscrolledContainingBlockPosition() {
     Element block = scrolledBlock();
     Element inline = inlineElement();
     block.addChild(inline);
 
     Vector2f offset = new NvgElementRenderer().inlineFormattingOffset(inline);
 
-    assertEquals(80, offset.x());
-    assertEquals(35, offset.y());
+    assertEquals(100, offset.x());
+    assertEquals(60, offset.y());
   }
 
   @Test
-  void textInlineFormattingOffset_subtractsContainingBlockScroll() {
+  void textInlineFormattingOffset_usesUnscrolledContainingBlockPosition() {
     Element block = scrolledBlock();
     Text text = new Text("content");
     block.addChild(text);
 
     Vector2f offset = new NvgTextRenderer().inlineFormattingOffset(text);
 
-    assertEquals(80, offset.x());
-    assertEquals(35, offset.y());
+    assertEquals(100, offset.x());
+    assertEquals(60, offset.y());
   }
 
   @Test
-  void borderInlineFormattingOffset_subtractsContainingBlockScroll() {
+  void borderInlineFormattingOffset_usesUnscrolledContainingBlockPosition() {
     Element block = scrolledBlock();
     Element inline = inlineElement();
     block.addChild(inline);
 
     Vector2f offset = new NvgBorderRenderer().inlineFormattingOffset(inline);
 
-    assertEquals(80, offset.x());
-    assertEquals(35, offset.y());
+    assertEquals(100, offset.x());
+    assertEquals(60, offset.y());
   }
 
   @Test
-  void elementInlineBlockFormattingOffset_subtractsContainingBlockScroll() {
+  void elementInlineBlockFormattingOffset_usesUnscrolledContainingBlockPosition() {
     Element block = scrolledBlock();
     Element inlineBlock = inlineBlockElement();
     block.addChild(inlineBlock);
 
     Vector2f offset = new NvgElementRenderer().inlineFormattingOffset(inlineBlock);
 
-    assertEquals(80, offset.x());
-    assertEquals(35, offset.y());
+    assertEquals(100, offset.x());
+    assertEquals(60, offset.y());
   }
 
   @Test
-  void borderInlineBlockFormattingOffset_subtractsContainingBlockScroll() {
+  void borderInlineBlockFormattingOffset_usesUnscrolledContainingBlockPosition() {
     Element block = scrolledBlock();
     Element inlineBlock = inlineBlockElement();
     block.addChild(inlineBlock);
 
     Vector2f offset = new NvgBorderRenderer().inlineFormattingOffset(inlineBlock);
 
-    assertEquals(80, offset.x());
-    assertEquals(35, offset.y());
+    assertEquals(100, offset.x());
+    assertEquals(60, offset.y());
   }
 
   private Element scrolledBlock() {
