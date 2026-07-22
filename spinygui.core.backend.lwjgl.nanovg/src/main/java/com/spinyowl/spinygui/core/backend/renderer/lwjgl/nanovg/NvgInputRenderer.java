@@ -285,7 +285,7 @@ class NvgInputRenderer {
       nvgTextAlign(context, NVG_ALIGN_LEFT | NVG_ALIGN_BASELINE);
       try (var nvgColor = create(color)) {
         nvgFillColor(context, nvgColor);
-        ByteBuffer textBuffer = memUTF8(text, false);
+        ByteBuffer textBuffer = memUTF8(fontRegistry.displayText(font, text), false);
         try {
           nvgText(context, x, baseline, textBuffer);
         } finally {

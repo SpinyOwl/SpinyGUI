@@ -26,6 +26,11 @@ dependencies {
     api(variantOf(libs.lwjglNanovg) { classifier("natives-windows") })
     api(variantOf(libs.lwjglNanovg) { classifier("natives-linux") })
     api(variantOf(libs.lwjglNanovg) { classifier("natives-macos") })
+
+    api(libs.lwjglStb)
+    api(variantOf(libs.lwjglStb) { classifier("natives-windows") })
+    api(variantOf(libs.lwjglStb) { classifier("natives-linux") })
+    api(variantOf(libs.lwjglStb) { classifier("natives-macos") })
 }
 
 tasks.test {

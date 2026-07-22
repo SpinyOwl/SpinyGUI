@@ -90,7 +90,7 @@ class NvgTextareaRenderer {
       for (MultilineTextControlMetrics.Line line : metrics.lines(textarea)) {
         float baseline =
             contentPosition.y() - textarea.textScrollTop() + line.y() + line.baseline();
-        ByteBuffer textBuffer = memUTF8(line.text(), false);
+        ByteBuffer textBuffer = memUTF8(fontRegistry.displayText(textStyle.font(), line.text()), false);
         try {
           nvgText(
               nanovgContext,

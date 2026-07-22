@@ -107,4 +107,16 @@ class FontServiceImplTest {
     assertTrue(caret.charIndex() >= 1);
     assertTrue(caret.x() >= firstGlyph.width());
   }
+
+  @Test
+  void measureText_usesBundledCjkFallbackForMissingRobotoGlyphs() {
+    String text = "R\u00f8gue \u96ea Seed";
+
+    TextMetrics metrics = fontService.measureText(text, Font.DEFAULT, 16, 1.2f);
+    TextCaretMetrics caret = fontService.getTextCaretMetrics(text, Font.DEFAULT, 16, Float.MAX_VALUE);
+
+    assertTrue(fontService.measureText("\u96ea", Font.DEFAULT, 16, 1.2f).width() > 0);
+    assertEquals(metrics.width(), caret.x());
+    assertEquals(text.length(), caret.charIndex());
+  }
 }

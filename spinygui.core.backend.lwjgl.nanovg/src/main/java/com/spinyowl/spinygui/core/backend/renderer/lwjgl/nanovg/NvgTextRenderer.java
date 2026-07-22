@@ -104,7 +104,7 @@ public class NvgTextRenderer {
       nvgFontSize(context, fragment.fontSize());
       try (var color = create(fragment.color())) {
         nvgFillColor(context, color);
-        ByteBuffer textBuffer = memUTF8(fragment.text(), false);
+        ByteBuffer textBuffer = memUTF8(fontRegistry.displayText(fragment.font(), fragment.text()), false);
         try {
           nvgText(context, x, baseline, textBuffer);
         } finally {

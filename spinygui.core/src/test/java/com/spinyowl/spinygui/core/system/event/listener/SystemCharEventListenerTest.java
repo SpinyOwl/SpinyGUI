@@ -175,6 +175,30 @@ class SystemCharEventListenerTest {
   }
 
   @Test
+  void process_whenFocusedTextInputReceivesCjkCodePoint_retainsItExactly() {
+    Frame frame = new Frame();
+    InputElement input = new InputElement();
+    input.value("R\u00f8gue  Seed");
+    input.caretIndex("R\u00f8gue ".length());
+    input.focused(true);
+    frame.addChild(input);
+    when(timeService.currentTime()).thenReturn(1D);
+
+    listener.process(SystemCharEvent.builder().frame(frame).codepoint(0x96EA).build(), frame);
+
+    Assertions.assertEquals("R\u00f8gue \u96ea Seed", input.value());
+    Assertions.assertEquals("R\u00f8gue \u96ea".length(), input.caretIndex());
+    verify(eventProcessor)
+        .push(
+            CharEvent.builder()
+                .source(frame)
+                .target(input)
+                .input("\u96ea")
+                .timestamp(1D)
+                .build());
+  }
+
+  @Test
   void process_whenFocusedButtonInputReceivesPrintableInput_keepsValueAndGeneratesCharEvent() {
     Frame frame = new Frame();
     InputElement input = new InputElement();
