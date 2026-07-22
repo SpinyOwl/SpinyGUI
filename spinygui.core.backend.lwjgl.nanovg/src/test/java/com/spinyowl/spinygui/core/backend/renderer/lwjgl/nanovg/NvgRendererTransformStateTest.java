@@ -130,6 +130,56 @@ class NvgRendererTransformStateTest {
   }
 
   @Test
+  void renderLayoutTree_keepsAncestorContentStateActiveWhileNestedContentIsTranslated() {
+    NvgRenderer renderer = new NvgRenderer();
+    RecordingTransformStates states = new RecordingTransformStates();
+    renderer.transformStateFactory(states);
+    renderer.subtreeContentStateFactory(
+        (context, element) -> {
+          states.record("clip-and-scroll(" + element.nodeName() + ")");
+          return () -> states.record("clip-restore(" + element.nodeName() + ")");
+        });
+    renderer.subtreeContentRenderer((node, context) -> states.record("paint(" + node.nodeName() + ")"));
+
+    Frame frame = new Frame();
+    Element outer = element("outer", 10);
+    outer.scrollTop(30);
+    Element inner = element("inner", 20);
+    inner.scrollTop(10);
+    Element row = element("row", 30);
+    frame.addChild(outer);
+    outer.addChild(inner);
+    inner.addChild(row);
+    frame.layoutChildNodes(List.of(outer));
+    outer.layoutChildNodes(List.of(inner));
+    inner.layoutChildNodes(List.of(row));
+
+    renderer.renderLayoutTree(frame);
+
+    assertEquals(
+        List.of(
+            "apply(winframe,0.0)",
+            "paint(winframe)",
+            "clip-and-scroll(winframe)",
+            "apply(parent,10.0)",
+            "paint(outer)",
+            "clip-and-scroll(outer)",
+            "apply(child,20.0)",
+            "paint(inner)",
+            "clip-and-scroll(inner)",
+            "apply(sibling,30.0)",
+            "paint(row)",
+            "restore(sibling)",
+            "clip-restore(inner)",
+            "restore(child)",
+            "clip-restore(outer)",
+            "restore(parent)",
+            "clip-restore(winframe)",
+            "restore(winframe)"),
+        states.calls());
+  }
+
+  @Test
   void renderDebug_runsOnlyAfterAllTransformedSubtreeStatesAreRestored() {
     NvgRenderer renderer = new NvgRenderer();
     RecordingTransformStates states = new RecordingTransformStates();

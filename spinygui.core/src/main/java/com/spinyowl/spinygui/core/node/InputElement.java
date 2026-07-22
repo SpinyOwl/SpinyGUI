@@ -14,8 +14,8 @@ import lombok.ToString;
 /**
  * Runtime model for an {@code input} element.
  *
- * <p>Input type-specific behavior should be composed outside this node and selected by {@link
- * #type()}, instead of adding subclasses for each input type.
+ * <p>Input type-specific behavior should be composed outside this node and selected by
+ * {@code type()}, instead of adding subclasses for each input type.
  */
 @Getter
 @ToString(callSuper = true)

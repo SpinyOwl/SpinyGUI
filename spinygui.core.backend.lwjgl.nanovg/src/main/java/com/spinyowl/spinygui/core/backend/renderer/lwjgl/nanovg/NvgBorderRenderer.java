@@ -1,7 +1,5 @@
 package com.spinyowl.spinygui.core.backend.renderer.lwjgl.nanovg;
 
-import static com.spinyowl.spinygui.core.backend.renderer.lwjgl.nanovg.util.NvgRenderUtils.createScissor;
-import static com.spinyowl.spinygui.core.backend.renderer.lwjgl.nanovg.util.NvgRenderUtils.resetScissor;
 import static com.spinyowl.spinygui.core.backend.renderer.lwjgl.nanovg.util.NvgShapes.drawRectStroke;
 
 import com.spinyowl.spinygui.core.node.Element;
@@ -15,7 +13,6 @@ public class NvgBorderRenderer {
   public void render(Node node, long nanovg) {
     Element element = node.asElement();
 
-    createScissor(nanovg, node);
     var style = element.resolvedStyle();
     if (BorderStyle.NONE.equals(style.borderTopStyle())) return;
 
@@ -37,7 +34,6 @@ public class NvgBorderRenderer {
                           Math.max(0, fragment.height() - borderThickness)),
                       style.borderTopColor(),
                       borderThickness));
-      resetScissor(nanovg);
       return;
     }
 
@@ -46,7 +42,6 @@ public class NvgBorderRenderer {
     Vector2f size = element.size().sub(borderThickness, borderThickness);
 
     drawRectStroke(nanovg, position, size, style.borderTopColor(), borderThickness);
-    resetScissor(nanovg);
   }
 
   Vector2f inlineFormattingOffset(Element element) {
@@ -56,6 +51,6 @@ public class NvgBorderRenderer {
     }
     return parent == null
         ? new Vector2f()
-        : parent.layoutAbsolutePosition().sub(parent.scrollLeft(), parent.scrollTop());
+        : parent.layoutAbsolutePosition();
   }
 }

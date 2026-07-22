@@ -1,8 +1,6 @@
 package com.spinyowl.spinygui.core.backend.renderer.lwjgl.nanovg;
 
 import static com.spinyowl.spinygui.core.backend.renderer.lwjgl.nanovg.util.NvgColorUtil.create;
-import static com.spinyowl.spinygui.core.backend.renderer.lwjgl.nanovg.util.NvgRenderUtils.createScissor;
-import static com.spinyowl.spinygui.core.backend.renderer.lwjgl.nanovg.util.NvgRenderUtils.resetScissor;
 import static org.lwjgl.nanovg.NanoVG.NVG_ALIGN_BASELINE;
 import static org.lwjgl.nanovg.NanoVG.NVG_ALIGN_LEFT;
 import static org.lwjgl.nanovg.NanoVG.nvgFillColor;
@@ -44,14 +42,11 @@ public class NvgTextRenderer {
       return;
     }
 
-    createScissor(nanovg, node);
-
     nvgSave(nanovg);
     nvgTextAlign(nanovg, NVG_ALIGN_LEFT | NVG_ALIGN_BASELINE);
     renderFragments(text, nanovg, inlineFormattingOffset(text));
     nvgRestore(nanovg);
 
-    resetScissor(nanovg);
   }
 
   Vector2f inlineFormattingOffset(Text text) {
@@ -60,14 +55,13 @@ public class NvgTextRenderer {
       parent = parent.parent();
     }
     if (parent != null) {
-      return parent.layoutAbsolutePosition().sub(parent.scrollLeft(), parent.scrollTop());
+      return parent.layoutAbsolutePosition();
     }
     return text.offsetParent() == null
         ? new Vector2f()
         : text
             .offsetParent()
-            .layoutAbsolutePosition()
-            .sub(text.offsetParent().scrollLeft(), text.offsetParent().scrollTop());
+            .layoutAbsolutePosition();
   }
 
   void renderFragments(Text text, long nanovg, Vector2f offset) {
