@@ -45,7 +45,8 @@ class NvgScrollbarRenderer {
       return;
     }
 
-    shapeSink.begin(nanovgContext, element);
+    shapeSink.begin(
+        nanovgContext, element, ScrollbarGeometry.toFrame(element, element.box().borderBox()));
     if (metrics.verticalVisible()) {
       drawPart(nanovgContext, element, ScrollbarPart.TRACK, metrics.verticalTrack());
       drawPart(nanovgContext, element, ScrollbarPart.THUMB, metrics.verticalThumb());
@@ -73,17 +74,18 @@ class NvgScrollbarRenderer {
       return;
     }
 
+    Rect frameRect = ScrollbarGeometry.toFrame(element, rect);
     ResolvedStyle style = element.scrollbarStyle(part);
     Color background = color(backgroundColor(style, part), style);
-    Vector4f radius = borderRadius(style, rect);
+    Vector4f radius = borderRadius(style, frameRect);
     if (paints(background)) {
-      shapeSink.fill(context, rect, background, radius);
+      shapeSink.fill(context, frameRect, background, radius);
     }
 
     float borderWidth = borderWidth(style);
     Color border = color(borderColor(style), style);
     if (drawsBorder(style) && borderWidth > 0 && paints(border)) {
-      shapeSink.stroke(context, rect, border, borderWidth, radius);
+      shapeSink.stroke(context, frameRect, border, borderWidth, radius);
     }
   }
 
@@ -147,7 +149,7 @@ class NvgScrollbarRenderer {
   }
 
   interface ScrollbarShapeSink {
-    void begin(long context, Element element);
+    void begin(long context, Element element, Rect borderBox);
 
     void fill(long context, Rect rect, Color color, Vector4f radius);
 
@@ -159,12 +161,11 @@ class NvgScrollbarRenderer {
   private static final class NanoVgScrollbarShapeSink implements ScrollbarShapeSink {
 
     @Override
-    public void begin(long context, Element element) {
+    public void begin(long context, Element element, Rect borderBox) {
       createScissor(context, element);
       nvgSave(context);
-      Vector2f position = element.box().borderBoxPosition();
-      Vector2f size = element.box().borderBoxSize();
-      nvgIntersectScissor(context, position.x(), position.y(), size.x(), size.y());
+      nvgIntersectScissor(
+          context, borderBox.x(), borderBox.y(), borderBox.width(), borderBox.height());
     }
 
     @Override

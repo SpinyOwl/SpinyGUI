@@ -7,6 +7,7 @@ import com.spinyowl.spinygui.core.util.ScrollbarGeometry;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.Getter;
+import org.joml.Vector2f;
 import org.joml.Vector2fc;
 
 public class ScrollbarInteraction {
@@ -30,6 +31,11 @@ public class ScrollbarInteraction {
       activeDrag = null;
       return;
     }
+    Vector2f localPoint = ScrollbarGeometry.toLocal(hit.element(), point);
+    if (localPoint == null) {
+      activeDrag = null;
+      return;
+    }
     float trackSize = trackSize(hit);
     float thumbSize = thumbSize(hit);
     float maxScroll = maxScroll(hit);
@@ -37,7 +43,7 @@ public class ScrollbarInteraction {
         new Drag(
             hit.element(),
             hit.axis(),
-            Axis.VERTICAL.equals(hit.axis()) ? point.y() : point.x(),
+            Axis.VERTICAL.equals(hit.axis()) ? localPoint.y() : localPoint.x(),
             Axis.VERTICAL.equals(hit.axis())
                 ? hit.element().scrollTop()
                 : hit.element().scrollLeft(),
@@ -49,7 +55,11 @@ public class ScrollbarInteraction {
     if (activeDrag == null) {
       return ScrollDelta.NONE;
     }
-    float pointer = Axis.VERTICAL.equals(activeDrag.axis()) ? point.y() : point.x();
+    Vector2f localPoint = ScrollbarGeometry.toLocal(activeDrag.element(), point);
+    if (localPoint == null) {
+      return ScrollDelta.NONE;
+    }
+    float pointer = Axis.VERTICAL.equals(activeDrag.axis()) ? localPoint.y() : localPoint.x();
     float pointerDelta = pointer - activeDrag.pointerStart();
     float scrollDelta =
         activeDrag.thumbTravel() == 0
@@ -63,15 +73,19 @@ public class ScrollbarInteraction {
       return ScrollDelta.NONE;
     }
     Element element = hit.element();
+    Vector2f localPoint = ScrollbarGeometry.toLocal(element, point);
+    if (localPoint == null) {
+      return ScrollDelta.NONE;
+    }
     if (Axis.VERTICAL.equals(hit.axis())) {
       float pageDelta =
-          point.y() < hit.metrics().verticalThumb().y()
+          localPoint.y() < hit.metrics().verticalThumb().y()
               ? -element.clientHeight()
               : element.clientHeight();
       return scrollTo(element, Axis.VERTICAL, element.scrollTop() + pageDelta);
     }
     float pageDelta =
-        point.x() < hit.metrics().horizontalThumb().x()
+        localPoint.x() < hit.metrics().horizontalThumb().x()
             ? -element.clientWidth()
             : element.clientWidth();
     return scrollTo(element, Axis.HORIZONTAL, element.scrollLeft() + pageDelta);
@@ -89,20 +103,24 @@ public class ScrollbarInteraction {
     if (!ScrollbarGeometry.canShowScrollbars(element)) {
       return null;
     }
+    Vector2f localPoint = ScrollbarGeometry.toLocal(element, point);
+    if (localPoint == null) {
+      return null;
+    }
     ScrollbarGeometry.Metrics metrics = scrollbarMetrics(element);
-    if (contains(metrics.corner(), point)) {
+    if (contains(metrics.corner(), localPoint)) {
       return new Hit(element, Axis.BOTH, HitPart.CORNER, metrics);
     }
-    if (contains(metrics.verticalThumb(), point)) {
+    if (contains(metrics.verticalThumb(), localPoint)) {
       return new Hit(element, Axis.VERTICAL, HitPart.THUMB, metrics);
     }
-    if (contains(metrics.horizontalThumb(), point)) {
+    if (contains(metrics.horizontalThumb(), localPoint)) {
       return new Hit(element, Axis.HORIZONTAL, HitPart.THUMB, metrics);
     }
-    if (contains(metrics.verticalTrack(), point)) {
+    if (contains(metrics.verticalTrack(), localPoint)) {
       return new Hit(element, Axis.VERTICAL, HitPart.TRACK, metrics);
     }
-    if (contains(metrics.horizontalTrack(), point)) {
+    if (contains(metrics.horizontalTrack(), localPoint)) {
       return new Hit(element, Axis.HORIZONTAL, HitPart.TRACK, metrics);
     }
     return null;

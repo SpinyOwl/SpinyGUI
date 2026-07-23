@@ -71,6 +71,33 @@ class NvgScrollbarRendererTest {
   }
 
   @Test
+  void render_nestedScrollbarsUsesFrameCoordinatesAndKeepsMaximumThumbsAtTrackEnds() {
+    RecordingShapeSink sink = new RecordingShapeSink();
+    NvgScrollbarRenderer renderer = new NvgScrollbarRenderer(sink);
+    Element parent = NodeBuilder.div();
+    parent.box().contentPosition(12, 12);
+    Element element = element(Overflow.SCROLL, Overflow.SCROLL, 300, 300);
+    element.box().contentPosition(1, 1);
+    element.scrollTop(212);
+    element.scrollLeft(212);
+    parent.addChild(element);
+    element.offsetParent(parent);
+
+    renderer.render(element, 10);
+
+    assertEquals(
+        List.of(
+            "begin(10,13.0,13.0,100.0,100.0)",
+            "fill(10,101.0,13.0,12.0,88.0,rgba(0.827451, 0.827451, 0.827451, 1.0),0.0)",
+            "fill(10,101.0,75.2,12.0,25.8,rgba(0.5019608, 0.5019608, 0.5019608, 1.0),0.0)",
+            "fill(10,13.0,101.0,88.0,12.0,rgba(0.827451, 0.827451, 0.827451, 1.0),0.0)",
+            "fill(10,75.2,101.0,25.8,12.0,rgba(0.5019608, 0.5019608, 0.5019608, 1.0),0.0)",
+            "fill(10,101.0,101.0,12.0,12.0,rgba(0.827451, 0.827451, 0.827451, 1.0),0.0)",
+            "end(10)"),
+        sink.calls());
+  }
+
+  @Test
   void render_usesPseudoStyleColorsRadiusBorderAndOpacity() {
     RecordingShapeSink sink = new RecordingShapeSink();
     NvgScrollbarRenderer renderer = new NvgScrollbarRenderer(sink);
@@ -205,12 +232,15 @@ class NvgScrollbarRendererTest {
     private final List<Color> fillColors = new ArrayList<>();
 
     @Override
-    public void begin(long context, Element element) {
-      Vector2f position = element.box().borderBoxPosition();
-      Vector2f size = element.box().borderBoxSize();
+    public void begin(long context, Element element, Rect borderBox) {
       calls.add(
           "begin(%d,%.1f,%.1f,%.1f,%.1f)"
-              .formatted(context, position.x(), position.y(), size.x(), size.y()));
+              .formatted(
+                  context,
+                  borderBox.x(),
+                  borderBox.y(),
+                  borderBox.width(),
+                  borderBox.height()));
     }
 
     @Override

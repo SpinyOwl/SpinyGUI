@@ -12,6 +12,8 @@ import com.spinyowl.spinygui.core.style.types.length.Length;
 import com.spinyowl.spinygui.core.style.types.length.Unit;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
+import org.joml.Vector2f;
+import org.joml.Vector2fc;
 
 @NoArgsConstructor(access = PRIVATE)
 public final class ScrollbarGeometry {
@@ -97,6 +99,38 @@ public final class ScrollbarGeometry {
         verticalThumb(element, verticalTrack, scrollHeight, clientHeight),
         horizontalThumb(element, horizontalTrack, scrollWidth, clientWidth),
         corner);
+  }
+
+  /**
+   * Converts an element-local scrollbar rectangle to the renderer's layout-frame coordinates.
+   *
+   * <p>Presentation transforms are applied by the renderer around this result.
+   */
+  public static Rect toFrame(@NonNull Element element, @NonNull Rect localRect) {
+    Rect borderBox = element.box().borderBox();
+    Vector2f position = element.layoutAbsolutePosition();
+    return new Rect(
+        position.x + localRect.x() - borderBox.x(),
+        position.y + localRect.y() - borderBox.y(),
+        localRect.width(),
+        localRect.height());
+  }
+
+  /**
+   * Converts a viewport point to the local box coordinate space used by {@link Metrics}.
+   *
+   * <p>The conversion follows the same presentation transforms as normal element hit testing.
+   * An uninvertible transform returns {@code null} because its scrollbar cannot be targeted.
+   */
+  public static Vector2f toLocal(@NonNull Element element, @NonNull Vector2fc viewportPoint) {
+    return PresentationCoordinates.toLayout(element, viewportPoint)
+        .map(
+            point -> {
+              Vector2f position = element.layoutAbsolutePosition();
+              Rect borderBox = element.box().borderBox();
+              return point.sub(position).add(borderBox.x(), borderBox.y());
+            })
+        .orElse(null);
   }
 
   public static Metrics withThumbs(@NonNull Element element, @NonNull Metrics metrics) {
@@ -189,6 +223,11 @@ public final class ScrollbarGeometry {
     return DEFAULT_THICKNESS;
   }
 
+  /**
+   * Scrollbar dimensions and rectangles in the scroll element's local box coordinate space.
+   * Consumers must use {@link ScrollbarGeometry#toFrame(Element, Rect)} or
+   * {@link ScrollbarGeometry#toLocal(Element, Vector2fc)} at coordinate-space boundaries.
+   */
   public record Metrics(
       boolean verticalVisible,
       boolean horizontalVisible,
