@@ -48,6 +48,28 @@ class TextareaBehaviorTest {
   }
 
   @Test
+  void handleKey_whenBackspaceAfterSupplementaryCodePoint_removesWholeCodePoint() {
+    TextareaElement textarea = new TextareaElement("a\uD83D\uDE00b");
+    textarea.caretIndex(3);
+
+    assertTrue(behavior.handleKey(textarea, KeyCode.BACKSPACE, KeyAction.PRESS));
+
+    assertEquals("ab", textarea.value());
+    assertEquals(1, textarea.caretIndex());
+  }
+
+  @Test
+  void handleKey_whenDeleteBeforeCjkCodePoint_removesWholeCodePoint() {
+    TextareaElement textarea = new TextareaElement("a\u96EAb");
+    textarea.caretIndex(1);
+
+    assertTrue(behavior.handleKey(textarea, KeyCode.DELETE, KeyAction.PRESS));
+
+    assertEquals("ab", textarea.value());
+    assertEquals(1, textarea.caretIndex());
+  }
+
+  @Test
   void handleKey_whenHomeAndEndPressed_movesWithinCurrentLine() {
     TextareaElement textarea = new TextareaElement("ab\ncde");
     textarea.caretIndex(5);

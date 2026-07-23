@@ -23,8 +23,6 @@ import com.spinyowl.spinygui.core.style.stylesheet.term.TermLength;
 import com.spinyowl.spinygui.core.style.stylesheet.term.TermList;
 import com.spinyowl.spinygui.core.style.types.length.Length;
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 public class FontPropertyProvider implements PropertyProvider {
   public static final String NORMAL = "normal";
@@ -34,10 +32,14 @@ public class FontPropertyProvider implements PropertyProvider {
     return List.of(
         Property.builder()
             .name(FONT_FAMILY)
-            .defaultValue(new TermIdent("Roboto"))
+            .defaultValue(
+                new TermList(
+                    TermList.Operator.COMMA,
+                    new TermIdent("Roboto"),
+                    new TermIdent("\"Noto Sans CJK SC\"")))
             .inheritable(true)
             .updater(
-                put(FONT_FAMILY, TermIdent.class, value -> Set.of(trimAndUnwrap(value)))
+                put(FONT_FAMILY, TermIdent.class, value -> List.of(trimAndUnwrap(value)))
                     .or(
                         put(
                             FONT_FAMILY,
@@ -46,7 +48,7 @@ public class FontPropertyProvider implements PropertyProvider {
                                 list.stream()
                                     .filter(TermIdent.class::isInstance)
                                     .map(termIdent -> trimAndUnwrap(termIdent.value().toString()))
-                                    .collect(Collectors.toSet()))))
+                                    .toList())))
             .validator(
                 checkValue(TermIdent.class, Font::hasFont)
                     .or(

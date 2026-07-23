@@ -1,6 +1,5 @@
 package com.spinyowl.spinygui.core.backend.renderer.lwjgl.nanovg;
 
-import static org.lwjgl.nanovg.NanoVG.nvgAddFallbackFontId;
 import static org.lwjgl.nanovg.NanoVG.nvgCreateFontMem;
 import static org.lwjgl.stb.STBTruetype.stbtt_FindGlyphIndex;
 import static org.lwjgl.stb.STBTruetype.stbtt_InitFont;
@@ -18,7 +17,6 @@ class NvgFontRegistry {
   private final Map<String, FontFace> loadedFontFaces = new HashMap<>();
   private final Map<String, ByteBuffer> fontBuffers = new HashMap<>();
   private final Map<String, STBTTFontinfo> fontInfos = new HashMap<>();
-  private final Map<String, Boolean> registeredFallbacks = new HashMap<>();
 
   String fontFace(Font font, long nanovg) {
     String key = fontKey(font);
@@ -38,7 +36,6 @@ class NvgFontRegistry {
       face = new FontFace(fontFace, id);
       loadedFontFaces.put(key, face);
     }
-    registerFallbacks(font, face, nanovg);
     return face.name();
   }
 
@@ -56,27 +53,8 @@ class NvgFontRegistry {
     return displayText.toString();
   }
 
-  private void registerFallbacks(Font primaryFont, FontFace primaryFace, long nanovg) {
-    for (Font fallbackFont : Font.fallbackFonts(primaryFont)) {
-      String fallbackKey = fontKey(fallbackFont);
-      FontFace fallbackFace = loadedFontFaces.get(fallbackKey);
-      if (fallbackFace == null) {
-        fontFace(fallbackFont, nanovg);
-        fallbackFace = loadedFontFaces.get(fallbackKey);
-      }
-      if (fallbackFace != null
-          && registeredFallbacks.putIfAbsent(fontKey(primaryFont) + ">" + fallbackKey, true) == null) {
-        nvgAddFallbackFontId(nanovg, primaryFace.id(), fallbackFace.id());
-      }
-    }
-  }
-
   private boolean hasGlyph(Font primaryFont, int codePoint) {
-    if (glyphIndex(primaryFont, codePoint) != 0) {
-      return true;
-    }
-    return Font.fallbackFonts(primaryFont).stream()
-        .anyMatch(fallbackFont -> glyphIndex(fallbackFont, codePoint) != 0);
+    return glyphIndex(primaryFont, codePoint) != 0;
   }
 
   private int glyphIndex(Font font, int codePoint) {

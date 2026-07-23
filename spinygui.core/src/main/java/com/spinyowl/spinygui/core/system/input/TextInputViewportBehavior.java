@@ -1,15 +1,15 @@
 package com.spinyowl.spinygui.core.system.input;
 
-import com.spinyowl.spinygui.core.font.Font;
+import com.spinyowl.spinygui.core.font.FontStretch;
 import com.spinyowl.spinygui.core.node.InputElement;
 import com.spinyowl.spinygui.core.style.ResolvedStyle;
 import com.spinyowl.spinygui.core.style.stylesheet.util.StyleUtils;
 import com.spinyowl.spinygui.core.style.types.length.Length;
 import com.spinyowl.spinygui.core.system.font.TextMeasurer;
-import java.util.Collection;
-import java.util.Set;
-import java.util.stream.Collectors;
+import com.spinyowl.spinygui.core.system.font.FontChainResolver;
 import lombok.NonNull;
+import java.util.List;
+import com.spinyowl.spinygui.core.font.Font;
 
 /** Keeps the single-line text input caret inside the visible content box. */
 public class TextInputViewportBehavior {
@@ -42,23 +42,19 @@ public class TextInputViewportBehavior {
     return textMeasurer
         .getTextLineMetrics(
             input.value().substring(0, caretIndex),
-            findFont(style),
+             findFonts(style),
             fontSize(input),
             lineHeight(style))
         .width();
   }
 
-  private Font findFont(ResolvedStyle style) {
-    Set<String> fontFamilies = style.fontFamilies();
-    if (fontFamilies == null) {
-      return Font.DEFAULT;
+  private List<Font> findFonts(ResolvedStyle style) {
+    if (style.fontFamilies() == null) {
+      return List.of(Font.DEFAULT);
     }
-    Set<Font> fonts =
-        fontFamilies.stream()
-            .map(f -> Font.find(f, style.fontStyle(), style.fontWeight()))
-            .flatMap(Collection::stream)
-            .collect(Collectors.toSet());
-    return fonts.stream().findFirst().orElse(Font.DEFAULT);
+    return FontChainResolver.DEFAULT
+        .resolve(
+            style.fontFamilies(), style.fontStyle(), style.fontWeight(), FontStretch.NORMAL);
   }
 
   private float fontSize(InputElement input) {

@@ -1,6 +1,7 @@
 package com.spinyowl.spinygui.core.system.input;
 
 import com.spinyowl.spinygui.core.font.Font;
+import com.spinyowl.spinygui.core.font.FontStretch;
 import com.spinyowl.spinygui.core.node.TextareaElement;
 import com.spinyowl.spinygui.core.style.ResolvedStyle;
 import com.spinyowl.spinygui.core.style.stylesheet.util.StyleUtils;
@@ -8,12 +9,11 @@ import com.spinyowl.spinygui.core.style.types.length.Length;
 import com.spinyowl.spinygui.core.system.font.TextCaretMetrics;
 import com.spinyowl.spinygui.core.system.font.TextLineMetrics;
 import com.spinyowl.spinygui.core.system.font.TextMeasurer;
+import com.spinyowl.spinygui.core.system.font.FontChainResolver;
 import com.spinyowl.spinygui.core.system.font.TextMetrics;
+import com.spinyowl.spinygui.core.system.font.ResolvedTextRun;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 import lombok.NonNull;
 import org.joml.Vector2f;
 import org.joml.Vector2fc;
@@ -49,6 +49,7 @@ public class MultilineTextControlMetrics {
                 measuredLine.width(),
                 measuredLine.height(),
                 measuredLine.baseline(),
+                measuredLine.runs(),
                 y));
         y += measuredLine.height();
       }
@@ -70,7 +71,7 @@ public class MultilineTextControlMetrics {
         textMeasurer
             .getTextLineMetrics(
                 line.text().substring(0, lineOffset),
-                textStyle.font(),
+                 textStyle.fonts(),
                 textStyle.fontSize(),
                 textStyle.lineHeight())
             .width();
@@ -89,7 +90,7 @@ public class MultilineTextControlMetrics {
     TextStyle textStyle = textStyle(textarea);
     TextCaretMetrics caretMetrics =
         textMeasurer.getTextCaretMetrics(
-            line.text(), textStyle.font(), textStyle.fontSize(), Math.max(0, localX));
+             line.text(), textStyle.fonts(), textStyle.fontSize(), Math.max(0, localX));
     return Math.max(
         0, Math.min(line.startIndex() + caretMetrics.charIndex(), textarea.value().length()));
   }
@@ -120,7 +121,7 @@ public class MultilineTextControlMetrics {
     TextStyle textStyle = textStyle(textarea);
     TextCaretMetrics nextCaret =
         textMeasurer.getTextCaretMetrics(
-            nextLine.text(), textStyle.font(), textStyle.fontSize(), currentCaret.x());
+            nextLine.text(), textStyle.fonts(), textStyle.fontSize(), currentCaret.x());
     return Math.max(
         0, Math.min(nextLine.startIndex() + nextCaret.charIndex(), textarea.value().length()));
   }
@@ -135,7 +136,7 @@ public class MultilineTextControlMetrics {
 
   public TextStyle textStyle(TextareaElement textarea) {
     ResolvedStyle style = textarea.resolvedStyle();
-    return new TextStyle(findFont(style), fontSize(textarea), lineHeight(style));
+    return new TextStyle(findFonts(style), fontSize(textarea), lineHeight(style));
   }
 
   private List<TextLineMetrics> measureParagraph(
@@ -143,13 +144,13 @@ public class MultilineTextControlMetrics {
     if (paragraph.isEmpty()) {
       return List.of(
           textMeasurer.getTextLineMetrics(
-              "", textStyle.font(), textStyle.fontSize(), textStyle.lineHeight()));
+               "", textStyle.fonts(), textStyle.fontSize(), textStyle.lineHeight()));
     }
     TextMetrics metrics =
         textMeasurer.measureText(
             paragraph,
             0,
-            textStyle.font(),
+            textStyle.fonts(),
             textStyle.fontSize(),
             textStyle.lineHeight(),
             maxWidth,
@@ -159,7 +160,7 @@ public class MultilineTextControlMetrics {
     }
     return List.of(
         textMeasurer.getTextLineMetrics(
-            paragraph, textStyle.font(), textStyle.fontSize(), textStyle.lineHeight()));
+            paragraph, textStyle.fonts(), textStyle.fontSize(), textStyle.lineHeight()));
   }
 
   private Line lineForIndex(List<Line> lines, int index) {
@@ -185,17 +186,13 @@ public class MultilineTextControlMetrics {
     return y <= 0 ? lines.get(0) : lines.get(lines.size() - 1);
   }
 
-  private Font findFont(ResolvedStyle style) {
-    Set<String> fontFamilies = style.fontFamilies();
-    if (fontFamilies == null) {
-      return Font.DEFAULT;
+  private List<Font> findFonts(ResolvedStyle style) {
+    if (style.fontFamilies() == null) {
+      return List.of(Font.DEFAULT);
     }
-    Set<Font> fonts =
-        fontFamilies.stream()
-            .map(f -> Font.find(f, style.fontStyle(), style.fontWeight()))
-            .flatMap(Collection::stream)
-            .collect(Collectors.toSet());
-    return fonts.stream().findFirst().orElse(Font.DEFAULT);
+    return FontChainResolver.DEFAULT
+        .resolve(
+            style.fontFamilies(), style.fontStyle(), style.fontWeight(), FontStretch.NORMAL);
   }
 
   private float fontSize(TextareaElement textarea) {
@@ -219,9 +216,10 @@ public class MultilineTextControlMetrics {
       float width,
       float height,
       float baseline,
+      List<ResolvedTextRun> runs,
       float y) {}
 
   public record Caret(int index, float x, float y, float height) {}
 
-  public record TextStyle(Font font, float fontSize, float lineHeight) {}
+  public record TextStyle(List<Font> fonts, float fontSize, float lineHeight) {}
 }

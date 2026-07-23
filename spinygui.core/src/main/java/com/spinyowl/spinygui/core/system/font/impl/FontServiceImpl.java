@@ -16,6 +16,7 @@ import com.spinyowl.spinygui.core.font.FontStretch;
 import com.spinyowl.spinygui.core.font.FontStyle;
 import com.spinyowl.spinygui.core.font.FontWeight;
 import com.spinyowl.spinygui.core.system.font.FontMetrics;
+import com.spinyowl.spinygui.core.system.font.FontChainResolver;
 import com.spinyowl.spinygui.core.system.font.FontLoadingException;
 import com.spinyowl.spinygui.core.system.font.FontService;
 import com.spinyowl.spinygui.core.system.font.FontStorage;
@@ -23,6 +24,8 @@ import com.spinyowl.spinygui.core.system.font.TextCaretMetrics;
 import com.spinyowl.spinygui.core.system.font.TextLineMetrics;
 import com.spinyowl.spinygui.core.system.font.TextMeasurer;
 import com.spinyowl.spinygui.core.system.font.TextMetrics;
+import com.spinyowl.spinygui.core.system.font.ResolvedGlyph;
+import com.spinyowl.spinygui.core.system.font.ResolvedTextRun;
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 import java.nio.charset.StandardCharsets;
@@ -32,13 +35,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
 import org.lwjgl.stb.STBTTFontinfo;
 import org.lwjgl.stb.STBTruetype;
 import org.lwjgl.system.MemoryStack;
 import org.slf4j.Logger;
 
-@RequiredArgsConstructor
 public class FontServiceImpl implements FontService, TextMeasurer {
   private static final Logger LOG = getLogger(FontServiceImpl.class);
 
@@ -52,7 +53,21 @@ public class FontServiceImpl implements FontService, TextMeasurer {
 
   @NonNull private final FontStorage fontStorage;
   private final boolean roundToPixel;
+  @NonNull private final FontChainResolver fontChainResolver;
   private final Map<String, STBTTFontinfo> fontInfoMap = new ConcurrentHashMap<>();
+
+  public FontServiceImpl(@NonNull FontStorage fontStorage, boolean roundToPixel) {
+    this(fontStorage, roundToPixel, FontChainResolver.DEFAULT);
+  }
+
+  public FontServiceImpl(
+      @NonNull FontStorage fontStorage,
+      boolean roundToPixel,
+      @NonNull FontChainResolver fontChainResolver) {
+    this.fontStorage = fontStorage;
+    this.roundToPixel = roundToPixel;
+    this.fontChainResolver = fontChainResolver;
+  }
 
   /** {@inheritDoc} */
   @Override
@@ -123,7 +138,7 @@ public class FontServiceImpl implements FontService, TextMeasurer {
   @Override
   public TextMetrics measureText(
       @NonNull String text, @NonNull Font font, float fontSize, float lineHeight) {
-    return measureText(text, 0, font, fontSize, lineHeight, Float.MAX_VALUE, false);
+    return measureText(text, 0, List.of(font), fontSize, lineHeight, Float.MAX_VALUE, false);
   }
 
   @Override
@@ -135,15 +150,27 @@ public class FontServiceImpl implements FontService, TextMeasurer {
       float lineHeight,
       float maxWidth,
       boolean wordWrap) {
+    return measureText(text, offsetX, List.of(font), fontSize, lineHeight, maxWidth, wordWrap);
+  }
+
+  @Override
+  public TextMetrics measureText(
+      @NonNull String text,
+      float offsetX,
+      @NonNull List<Font> fonts,
+      float fontSize,
+      float lineHeight,
+      float maxWidth,
+      boolean wordWrap) {
+    Font primaryFont = fonts.isEmpty() ? Font.DEFAULT : fonts.get(0);
     if (maxWidth < 0.1) {
-      return emptyTextMetrics(font, fontSize, lineHeight);
+      return emptyTextMetrics(primaryFont, fontSize, lineHeight);
     }
 
-    STBTTFontinfo fontInfo = getFontInfo(font.path());
     try (MemoryStack stack = MemoryStack.stackPush()) {
       IntBuffer pCodePoint = stack.mallocInt(1);
       IntBuffer pAdvance = stack.mallocInt(1);
-      FontMetrics fontMetrics = measureFontMetrics(fontInfo, fontSize, lineHeight);
+      FontMetrics fontMetrics = measureFontMetrics(getFontInfo(primaryFont.path()), fontSize, lineHeight);
       int length = text.length();
       List<TextLineMetrics> lines = new ArrayList<>();
       float currentWidth = offsetX;
@@ -153,7 +180,7 @@ public class FontServiceImpl implements FontService, TextMeasurer {
       int lastSpace = -1;
       int lastSpaceEnd = -1;
       float lastSpaceWidth = 0;
-      ResolvedGlyph previousGlyph = null;
+      GlyphMeasurement previousGlyph = null;
       int i = 0;
       while (i < length) {
         int charStart = i;
@@ -163,7 +190,7 @@ public class FontServiceImpl implements FontService, TextMeasurer {
 
         if (codePoint == '\n') {
           maxLineWidth =
-              addLine(lines, text, lineStart, charStart, currentWidth, fontMetrics, maxLineWidth);
+              addLine(lines, text, lineStart, charStart, currentWidth, fontMetrics, maxLineWidth, fonts, fontSize);
           lineCount++;
           lineStart = charEnd;
           currentWidth = 0;
@@ -175,7 +202,7 @@ public class FontServiceImpl implements FontService, TextMeasurer {
           continue;
         }
 
-        ResolvedGlyph glyph = resolveGlyph(font, codePoint);
+        GlyphMeasurement glyph = resolveGlyph(fonts, codePoint);
         float charWidth =
             measureNanoVgGlyphAdvance(glyph, previousGlyph, pAdvance, fontSize);
 
@@ -189,7 +216,7 @@ public class FontServiceImpl implements FontService, TextMeasurer {
             measuredWidth = lastSpaceWidth;
           }
           maxLineWidth =
-              addLine(lines, text, lineStart, lineEnd, measuredWidth, fontMetrics, maxLineWidth);
+               addLine(lines, text, lineStart, lineEnd, measuredWidth, fontMetrics, maxLineWidth, fonts, fontSize);
           lineCount++;
           lineStart = nextLineStart;
           currentWidth = 0;
@@ -210,7 +237,7 @@ public class FontServiceImpl implements FontService, TextMeasurer {
         previousGlyph = glyph;
         i = charEnd;
       }
-      maxLineWidth = addLine(lines, text, lineStart, length, currentWidth, fontMetrics, maxLineWidth);
+      maxLineWidth = addLine(lines, text, lineStart, length, currentWidth, fontMetrics, maxLineWidth, fonts, fontSize);
       lineCount++;
 
       return TextMetrics.builder()
@@ -249,16 +276,21 @@ public class FontServiceImpl implements FontService, TextMeasurer {
   @Override
   public TextCaretMetrics getTextCaretMetrics(
       @NonNull String text, @NonNull Font font, float fontSize, float offsetX) {
+    return getTextCaretMetrics(text, List.of(font), fontSize, offsetX);
+  }
+
+  @Override
+  public TextCaretMetrics getTextCaretMetrics(
+      @NonNull String text, @NonNull List<Font> fonts, float fontSize, float offsetX) {
     if (text.isEmpty() || offsetX <= 0) {
       return new TextCaretMetrics(0, 0);
     }
 
-    STBTTFontinfo fontInfo = getFontInfo(font.path());
     try (MemoryStack stack = MemoryStack.stackPush()) {
       IntBuffer pCodePoint = stack.mallocInt(1);
       IntBuffer pAdvance = stack.mallocInt(1);
       int length = text.length();
-      ResolvedGlyph previousGlyph = null;
+      GlyphMeasurement previousGlyph = null;
       int i = 0;
       float currentX = 0;
       while (i < length) {
@@ -270,7 +302,7 @@ public class FontServiceImpl implements FontService, TextMeasurer {
           return new TextCaretMetrics(charStart, currentX);
         }
 
-        ResolvedGlyph glyph = resolveGlyph(font, codePoint);
+        GlyphMeasurement glyph = resolveGlyph(fonts, codePoint);
         float glyphAdvance =
             measureNanoVgGlyphAdvance(glyph, previousGlyph, pAdvance, fontSize);
         if (offsetX < currentX + glyphAdvance / 2f) {
@@ -325,7 +357,9 @@ public class FontServiceImpl implements FontService, TextMeasurer {
       int endIndex,
       float width,
       FontMetrics fontMetrics,
-      float currentMaxWidth) {
+      float currentMaxWidth,
+      List<Font> fonts,
+      float fontSize) {
     int safeStart = Math.max(0, Math.min(startIndex, text.length()));
     int safeEnd = Math.max(safeStart, Math.min(endIndex, text.length()));
     lines.add(
@@ -338,39 +372,34 @@ public class FontServiceImpl implements FontService, TextMeasurer {
             .height(fontMetrics.lineHeight())
             .baseline(fontMetrics.baseline())
             .fontMetrics(fontMetrics)
+            .runs(resolveRuns(text, safeStart, safeEnd, fonts, fontSize))
             .build());
     return Math.max(currentMaxWidth, width);
   }
 
-  private ResolvedGlyph resolveGlyph(Font primaryFont, int codePoint) {
-    for (Font candidate : fallbackSequence(primaryFont)) {
+  private GlyphMeasurement resolveGlyph(List<Font> fonts, int codePoint) {
+    for (Font candidate : fonts) {
       STBTTFontinfo fontInfo = getFontInfo(candidate.path());
       int glyphIndex = stbtt_FindGlyphIndex(fontInfo, codePoint);
       if (glyphIndex != 0) {
-        return new ResolvedGlyph(fontInfo, glyphIndex);
+        return new GlyphMeasurement(candidate, fontInfo, glyphIndex);
       }
     }
 
     // The replacement character is visible in the bundled fallback instead of becoming blank.
-    for (Font candidate : fallbackSequence(primaryFont)) {
+    for (Font candidate : fonts) {
       STBTTFontinfo fontInfo = getFontInfo(candidate.path());
       int glyphIndex = stbtt_FindGlyphIndex(fontInfo, REPLACEMENT_CODE_POINT);
       if (glyphIndex != 0) {
-        return new ResolvedGlyph(fontInfo, glyphIndex);
+        return new GlyphMeasurement(candidate, fontInfo, glyphIndex);
       }
     }
-    return new ResolvedGlyph(getFontInfo(primaryFont.path()), 0);
-  }
-
-  private List<Font> fallbackSequence(Font primaryFont) {
-    List<Font> fonts = new ArrayList<>(1 + Font.fallbackFonts(primaryFont).size());
-    fonts.add(primaryFont);
-    fonts.addAll(Font.fallbackFonts(primaryFont));
-    return fonts;
+    Font fallback = fonts.isEmpty() ? Font.DEFAULT : fonts.get(0);
+    return new GlyphMeasurement(fallback, getFontInfo(fallback.path()), 0);
   }
 
   private float measureNanoVgGlyphAdvance(
-      ResolvedGlyph glyph, ResolvedGlyph previousGlyph, IntBuffer pAdvance, float fontSize) {
+      GlyphMeasurement glyph, GlyphMeasurement previousGlyph, IntBuffer pAdvance, float fontSize) {
     STBTTFontinfo fontInfo = glyph.fontInfo();
     float scaleFactor = stbtt_ScaleForMappingEmToPixels(fontInfo, fontSize);
     float width = 0;
@@ -447,5 +476,46 @@ public class FontServiceImpl implements FontService, TextMeasurer {
     return 1;
   }
 
-  private record ResolvedGlyph(STBTTFontinfo fontInfo, int glyphIndex) {}
+  private List<ResolvedTextRun> resolveRuns(
+      String text, int start, int end, List<Font> fonts, float fontSize) {
+    if (start >= end || fonts.isEmpty()) return List.of();
+    List<ResolvedTextRun> runs = new ArrayList<>();
+    GlyphMeasurement previous = null;
+    for (int i = start; i < end; ) {
+      int codePoint = text.codePointAt(i);
+      int next = Math.min(end, i + Character.charCount(codePoint));
+      Font selected = fonts.stream().filter(font -> hasGlyph(font, codePoint)).findFirst().orElse(fonts.get(0));
+      boolean replacement = !hasGlyph(selected, codePoint);
+      ResolvedGlyph glyph = new ResolvedGlyph(i, next, codePoint, replacement ? REPLACEMENT_CODE_POINT : codePoint, selected, replacement);
+      GlyphMeasurement measurement = resolveGlyph(List.of(selected), replacement ? REPLACEMENT_CODE_POINT : codePoint);
+      float advance = measureRunGlyphAdvance(measurement, previous, fontSize);
+      if (previous == null || !previous.font().equals(selected)) {
+        advance = measureRunGlyphAdvance(measurement, null, fontSize);
+      }
+      if (!runs.isEmpty() && runs.get(runs.size() - 1).font().equals(selected)) {
+        ResolvedTextRun previousRun = runs.remove(runs.size() - 1);
+        List<ResolvedGlyph> glyphs = new ArrayList<>(previousRun.glyphs());
+        glyphs.add(glyph);
+        runs.add(new ResolvedTextRun(previousRun.sourceStart(), next, selected, glyphs, previousRun.advance() + advance));
+      } else {
+        runs.add(new ResolvedTextRun(i, next, selected, List.of(glyph), advance));
+      }
+      previous = measurement;
+      i = next;
+    }
+    return runs;
+  }
+
+  private boolean hasGlyph(Font font, int codePoint) {
+    return stbtt_FindGlyphIndex(getFontInfo(font.path()), codePoint) != 0;
+  }
+
+  private float measureRunGlyphAdvance(
+      GlyphMeasurement glyph, GlyphMeasurement previousGlyph, float fontSize) {
+    try (MemoryStack stack = MemoryStack.stackPush()) {
+      return measureNanoVgGlyphAdvance(glyph, previousGlyph, stack.mallocInt(1), fontSize);
+    }
+  }
+
+  private record GlyphMeasurement(Font font, STBTTFontinfo fontInfo, int glyphIndex) {}
 }

@@ -45,7 +45,7 @@ import com.spinyowl.spinygui.core.system.input.SystemMouseButton;
 import com.spinyowl.spinygui.core.time.TimeService;
 import com.spinyowl.spinygui.core.style.types.Overflow;
 import com.spinyowl.spinygui.core.style.types.length.Length;
-import java.util.Set;
+import java.util.List;
 import org.joml.Vector2f;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -487,7 +487,7 @@ class SystemMouseClickEventListenerTest {
     input.box().padding().right(5);
     input.box().border().left(2);
     input.box().border().right(2);
-    input.resolvedStyle().fontFamilies(Set.of(Font.DEFAULT.fontFamily()));
+    input.resolvedStyle().fontFamilies(List.of(Font.DEFAULT.fontFamily()));
     input.resolvedStyle().fontStyle(FontStyle.NORMAL);
     input.resolvedStyle().fontWeight(FontWeight.REGULAR);
     input.resolvedStyle().fontSize(Length.pixel(16));
@@ -801,7 +801,7 @@ class SystemMouseClickEventListenerTest {
     element.box().border().left(2);
     element.box().border().right(2);
     element.box().border().top(2);
-    element.resolvedStyle().fontFamilies(Set.of(Font.DEFAULT.fontFamily()));
+    element.resolvedStyle().fontFamilies(List.of(Font.DEFAULT.fontFamily()));
     element.resolvedStyle().fontStyle(FontStyle.NORMAL);
     element.resolvedStyle().fontWeight(FontWeight.REGULAR);
     element.resolvedStyle().fontSize(Length.pixel(16));

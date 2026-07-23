@@ -125,7 +125,6 @@ import com.spinyowl.spinygui.core.style.types.length.Unit;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.TreeMap;
 import lombok.Getter;
 import lombok.NonNull;
@@ -324,12 +323,12 @@ public class ResolvedStyle {
     set(BOX_SHADOW, boxShadow);
   }
 
-  public Set<String> fontFamilies() {
+  public List<String> fontFamilies() {
     return get(FONT_FAMILY);
   }
 
-  public void fontFamilies(Set<String> fontFamilies) {
-    set(FONT_FAMILY, fontFamilies);
+  public void fontFamilies(List<String> fontFamilies) {
+    set(FONT_FAMILY, List.copyOf(fontFamilies));
   }
 
   @SuppressWarnings("rawtypes")

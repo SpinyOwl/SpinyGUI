@@ -36,7 +36,6 @@ import com.spinyowl.spinygui.core.style.types.Overflow;
 import com.spinyowl.spinygui.core.style.types.length.Length;
 import com.spinyowl.spinygui.core.time.TimeService;
 import java.util.List;
-import java.util.Set;
 import org.joml.Vector2f;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -370,7 +369,7 @@ class SystemCursorPosEventListenerTest {
     element.box().padding().top(5);
     element.box().border().left(2);
     element.box().border().top(2);
-    element.resolvedStyle().fontFamilies(Set.of(Font.DEFAULT.fontFamily()));
+    element.resolvedStyle().fontFamilies(List.of(Font.DEFAULT.fontFamily()));
     element.resolvedStyle().fontStyle(FontStyle.NORMAL);
     element.resolvedStyle().fontWeight(FontWeight.REGULAR);
     element.resolvedStyle().fontSize(Length.pixel(16));

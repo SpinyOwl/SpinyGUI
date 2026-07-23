@@ -25,6 +25,7 @@ import com.spinyowl.spinygui.core.style.types.Color;
 import com.spinyowl.spinygui.core.system.font.TextMeasurer;
 import com.spinyowl.spinygui.core.system.input.MultilineTextControlMetrics;
 import java.nio.ByteBuffer;
+import com.spinyowl.spinygui.core.system.font.ResolvedTextRun;
 import org.joml.Vector2f;
 
 class NvgTextareaRenderer {
@@ -79,11 +80,6 @@ class NvgTextareaRenderer {
       MultilineTextControlMetrics metrics,
       MultilineTextControlMetrics.TextStyle textStyle,
       Vector2f contentPosition) {
-    String fontFace = fontRegistry.fontFace(textStyle.font(), nanovgContext);
-    if (fontFace == null) {
-      return;
-    }
-    nvgFontFace(nanovgContext, fontFace);
     nvgFontSize(nanovgContext, textStyle.fontSize());
     nvgTextAlign(nanovgContext, NVG_ALIGN_LEFT | NVG_ALIGN_BASELINE);
     try (var nvgColor = create(color(textarea))) {
@@ -91,15 +87,30 @@ class NvgTextareaRenderer {
       for (MultilineTextControlMetrics.Line line : metrics.lines(textarea)) {
         float baseline =
             contentPosition.y() - textarea.textScrollTop() + line.y() + line.baseline();
-        ByteBuffer textBuffer = memUTF8(fontRegistry.displayText(textStyle.font(), line.text()), false);
-        try {
-          nvgText(
-              nanovgContext,
-              contentPosition.x() - textarea.textScrollLeft(),
-              baseline,
-              textBuffer);
-        } finally {
-          memFree(textBuffer);
+        float runX = contentPosition.x() - textarea.textScrollLeft();
+        if (line.runs().isEmpty()) {
+          String fontFace = fontRegistry.fontFace(textStyle.fonts().get(0), nanovgContext);
+          if (fontFace == null) continue;
+          nvgFontFace(nanovgContext, fontFace);
+          ByteBuffer textBuffer = memUTF8(fontRegistry.displayText(textStyle.fonts().get(0), line.text()), false);
+          try {
+            nvgText(nanovgContext, runX, baseline, textBuffer);
+          } finally {
+            memFree(textBuffer);
+          }
+          continue;
+        }
+        for (ResolvedTextRun run : line.runs()) {
+          String fontFace = fontRegistry.fontFace(run.font(), nanovgContext);
+          if (fontFace == null) continue;
+          nvgFontFace(nanovgContext, fontFace);
+          ByteBuffer textBuffer = memUTF8(run.renderedText(), false);
+          try {
+            nvgText(nanovgContext, runX, baseline, textBuffer);
+          } finally {
+            memFree(textBuffer);
+          }
+          runX += run.advance();
         }
       }
     }

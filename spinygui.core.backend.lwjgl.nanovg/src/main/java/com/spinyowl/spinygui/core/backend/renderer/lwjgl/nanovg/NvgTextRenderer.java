@@ -20,6 +20,7 @@ import com.spinyowl.spinygui.core.node.Node;
 import com.spinyowl.spinygui.core.node.Text;
 import com.spinyowl.spinygui.core.style.types.Display;
 import com.spinyowl.spinygui.core.style.types.Color;
+import com.spinyowl.spinygui.core.system.font.ResolvedTextRun;
 import java.nio.ByteBuffer;
 import org.joml.Vector2f;
 
@@ -98,6 +99,7 @@ public class NvgTextRenderer {
         .font(fragment.font())
         .fontSize(fragment.fontSize())
         .color(presented)
+        .runs(fragment.runs())
         .build();
   }
 
@@ -113,7 +115,38 @@ public class NvgTextRenderer {
     }
 
     @Override
-    public void drawText(long context, InlineFragment fragment, float x, float baseline) {
+  public void drawText(long context, InlineFragment fragment, float x, float baseline) {
+      if (!fragment.runs().isEmpty()) {
+        float runX = x;
+        for (ResolvedTextRun run : fragment.runs()) {
+          drawResolvedRun(context, fragment, run, runX, baseline);
+          runX += run.advance();
+        }
+        return;
+      }
+      drawLegacyText(context, fragment, x, baseline);
+    }
+
+    private void drawResolvedRun(
+        long context, InlineFragment fragment, ResolvedTextRun run, float x, float baseline) {
+      String fontFace = fontRegistry.fontFace(run.font(), context);
+      if (fontFace == null) {
+        return;
+      }
+      nvgFontFace(context, fontFace);
+      nvgFontSize(context, fragment.fontSize());
+      try (var color = create(fragment.color())) {
+        nvgFillColor(context, color);
+        ByteBuffer textBuffer = memUTF8(run.renderedText(), false);
+        try {
+          nvgText(context, x, baseline, textBuffer);
+        } finally {
+          memFree(textBuffer);
+        }
+      }
+    }
+
+    private void drawLegacyText(long context, InlineFragment fragment, float x, float baseline) {
       String fontFace = fontRegistry.fontFace(fragment.font(), context);
       if (fontFace == null) {
         return;

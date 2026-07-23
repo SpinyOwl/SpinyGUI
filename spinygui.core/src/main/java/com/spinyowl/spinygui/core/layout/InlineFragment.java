@@ -2,10 +2,12 @@ package com.spinyowl.spinygui.core.layout;
 
 import com.spinyowl.spinygui.core.font.Font;
 import com.spinyowl.spinygui.core.node.Node;
+import com.spinyowl.spinygui.core.system.font.ResolvedTextRun;
 import com.spinyowl.spinygui.core.style.types.Color;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Value;
+import java.util.List;
 
 @Value
 @Builder
@@ -21,6 +23,7 @@ public class InlineFragment {
   Font font;
   float fontSize;
   Color color;
+  @Builder.Default List<ResolvedTextRun> runs = List.of();
 
   public boolean textFragment() {
     return text != null && !text.isEmpty();
@@ -38,6 +41,7 @@ public class InlineFragment {
         .font(font)
         .fontSize(fontSize)
         .color(color)
+        .runs(runs)
         .build();
   }
 }

@@ -15,8 +15,7 @@ import static com.spinyowl.spinygui.core.style.types.WhiteSpace.PRE_WRAP;
 import static com.spinyowl.spinygui.core.style.types.WordBreak.BREAK_ALL;
 
 import com.spinyowl.spinygui.core.font.Font;
-import com.spinyowl.spinygui.core.font.FontStyle;
-import com.spinyowl.spinygui.core.font.FontWeight;
+import com.spinyowl.spinygui.core.font.FontStretch;
 import com.spinyowl.spinygui.core.layout.InlineFragment;
 import com.spinyowl.spinygui.core.layout.LineBox;
 import com.spinyowl.spinygui.core.node.Element;
@@ -29,14 +28,12 @@ import com.spinyowl.spinygui.core.style.types.WhiteSpace;
 import com.spinyowl.spinygui.core.style.types.WordBreak;
 import com.spinyowl.spinygui.core.system.font.TextLineMetrics;
 import com.spinyowl.spinygui.core.system.font.TextMeasurer;
+import com.spinyowl.spinygui.core.system.font.FontChainResolver;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Comparator;
 import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 
@@ -322,9 +319,10 @@ public class InlineFormattingContext {
             .width(unit.fragmentWidth(width))
             .height(unit.fragmentHeight(height))
             .baseline(baseline)
-            .font(unit.font)
+            .font(unit.fonts.isEmpty() ? Font.DEFAULT : unit.fonts.get(0))
             .fontSize(unit.fontSize)
             .color(unit.style.color())
+            .runs(unit.measurement(textMeasurer).runs())
             .build());
     return cursorX + width;
   }
@@ -536,16 +534,11 @@ public class InlineFormattingContext {
         || INLINE_BLOCK.equals(element.resolvedStyle().display());
   }
 
-  private Font findFont(ResolvedStyle style) {
-    Set<String> fontFamilies = style.fontFamilies();
-    FontStyle fontStyle = style.fontStyle();
-    FontWeight fontWeight = style.fontWeight();
-    Set<Font> fonts =
-        fontFamilies.stream()
-            .map(f -> Font.find(f, fontStyle, fontWeight))
-            .flatMap(Collection::stream)
-            .collect(Collectors.toSet());
-    return fonts.stream().findFirst().orElse(Font.DEFAULT);
+  private List<Font> findFonts(ResolvedStyle style) {
+    return FontChainResolver.DEFAULT
+        .resolve(
+            style.fontFamilies(), style.fontStyle(), style.fontWeight(), FontStretch.NORMAL)
+        ;
   }
 
   private void setMargins(Element element, float parentWidth) {
@@ -567,7 +560,7 @@ public class InlineFormattingContext {
     private final float spacerWidth;
     private final float extraHeight;
     private final boolean elementBox;
-    private final Font font;
+    private final List<Font> fonts;
     private final float fontSize;
     private TextLineMetrics measurement;
 
@@ -605,7 +598,7 @@ public class InlineFormattingContext {
       this.spacerWidth = spacerWidth;
       this.extraHeight = extraHeight;
       this.elementBox = elementBox;
-      this.font = findFont(style);
+      this.fonts = findFonts(style);
       Float measuredFontSize = StyleUtils.getFontSize(node);
       this.fontSize = measuredFontSize == null ? 16f : measuredFontSize;
     }
@@ -622,7 +615,7 @@ public class InlineFormattingContext {
 
     TextLineMetrics measurement(TextMeasurer measurer) {
       if (measurement == null) {
-        measurement = measurer.getTextLineMetrics(text == null ? "" : text, font, fontSize, style.lineHeight());
+        measurement = measurer.getTextLineMetrics(text == null ? "" : text, fonts, fontSize, style.lineHeight());
       }
       return measurement;
     }

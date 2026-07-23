@@ -8,6 +8,7 @@ import static org.lwjgl.nanovg.NanoVG.nvgRestore;
 import static org.lwjgl.nanovg.NanoVG.nvgSave;
 
 import com.spinyowl.spinygui.core.font.Font;
+import com.spinyowl.spinygui.core.font.FontStretch;
 import com.spinyowl.spinygui.core.layout.InlineFragment;
 import com.spinyowl.spinygui.core.node.Element;
 import com.spinyowl.spinygui.core.node.Frame;
@@ -22,10 +23,9 @@ import com.spinyowl.spinygui.core.style.types.length.Length;
 import com.spinyowl.spinygui.core.system.font.TextCaretMetrics;
 import com.spinyowl.spinygui.core.system.font.TextLineMetrics;
 import com.spinyowl.spinygui.core.system.font.TextMeasurer;
-import java.util.Collection;
+import com.spinyowl.spinygui.core.system.font.FontChainResolver;
+import com.spinyowl.spinygui.core.system.font.ResolvedTextRun;
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 import org.joml.Vector2f;
 import org.joml.Vector2fc;
 
@@ -139,9 +139,14 @@ class NvgDebugRenderer implements NvgRenderer.DebugRenderer {
     if (textMeasurer == null || fragment.font() == null) {
       return;
     }
+    List<Font> fonts =
+        fragment.runs().stream().map(ResolvedTextRun::font).distinct().toList();
     TextCaretMetrics caret =
         textMeasurer.getTextCaretMetrics(
-            fragment.text(), fragment.font(), fragment.fontSize(), mouseX - x);
+            fragment.text(),
+            fonts.isEmpty() ? List.of(fragment.font()) : fonts,
+            fragment.fontSize(),
+            mouseX - x);
     caretSink.drawCaret(nanovgContext, x + caret.x(), y, fragment.height());
   }
 
@@ -168,6 +173,7 @@ class NvgDebugRenderer implements NvgRenderer.DebugRenderer {
         .font(font)
         .fontSize(fontSize)
         .color(style.color())
+        .runs(line.runs())
         .build();
   }
 
@@ -180,17 +186,15 @@ class NvgDebugRenderer implements NvgRenderer.DebugRenderer {
   }
 
   private Font findFont(ResolvedStyle style) {
-    Set<String> fontFamilies = style.fontFamilies();
-    if (fontFamilies == null) {
+    if (style.fontFamilies() == null) {
       return Font.DEFAULT;
     }
-    Set<Font> fonts =
-        fontFamilies.stream()
-            .filter(Font::hasFont)
-            .map(f -> Font.find(f, style.fontStyle(), style.fontWeight()))
-            .flatMap(Collection::stream)
-            .collect(Collectors.toSet());
-    return fonts.stream().findFirst().orElse(Font.DEFAULT);
+    return FontChainResolver.DEFAULT
+        .resolve(
+            style.fontFamilies(), style.fontStyle(), style.fontWeight(), FontStretch.NORMAL)
+        .stream()
+        .findFirst()
+        .orElse(Font.DEFAULT);
   }
 
   private float fontSize(InputElement input) {

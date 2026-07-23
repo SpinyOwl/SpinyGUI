@@ -10,7 +10,7 @@ import com.spinyowl.spinygui.core.system.font.TextCaretMetrics;
 import com.spinyowl.spinygui.core.system.font.TextLineMetrics;
 import com.spinyowl.spinygui.core.system.font.TextMeasurer;
 import com.spinyowl.spinygui.core.system.font.TextMetrics;
-import java.util.Set;
+import java.util.List;
 import org.junit.jupiter.api.Test;
 
 class TextInputViewportBehaviorTest {
@@ -50,7 +50,7 @@ class TextInputViewportBehaviorTest {
     InputElement input = new InputElement();
     input.value(value);
     input.caretIndex(caretIndex);
-    input.resolvedStyle().fontFamilies(Set.of(Font.DEFAULT.fontFamily()));
+    input.resolvedStyle().fontFamilies(List.of(Font.DEFAULT.fontFamily()));
     input.resolvedStyle().fontSize(Length.pixel(16));
     input.resolvedStyle().lineHeight(1f);
     return input;
@@ -97,6 +97,12 @@ class TextInputViewportBehaviorTest {
           .height(16)
           .fontMetrics(new FontMetrics(12, 4, 0, 16, 12))
           .build();
+    }
+
+    @Override
+    public TextLineMetrics getTextLineMetrics(
+        String text, List<Font> fonts, float fontSize, float lineHeight) {
+      return getTextLineMetrics(text, fonts.get(0), fontSize, lineHeight);
     }
 
     @Override

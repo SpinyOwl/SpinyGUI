@@ -27,7 +27,6 @@ import com.spinyowl.spinygui.core.style.types.length.Length;
 import com.spinyowl.spinygui.core.system.font.FontMetrics;
 import com.spinyowl.spinygui.core.system.font.TextLineMetrics;
 import java.util.List;
-import java.util.Set;
 import lombok.NonNull;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -520,7 +519,7 @@ class InlineFormattingContextTest {
     ResolvedStyle style = element.resolvedStyle();
     style.display(display);
     style.position(Position.STATIC);
-    style.fontFamilies(Set.of("Roboto"));
+    style.fontFamilies(List.of("Roboto"));
     style.fontStyle(FontStyle.NORMAL);
     style.fontWeight(FontWeight.NORMAL);
     style.fontSize(Length.pixel(10));

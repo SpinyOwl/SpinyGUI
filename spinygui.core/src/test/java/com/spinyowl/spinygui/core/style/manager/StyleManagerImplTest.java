@@ -368,6 +368,27 @@ button:active {
   }
 
   @Test
+  void recalculatePreservesAndInheritsOrderedFontFamilies() {
+    PropertyStore propertyStore = new DefaultPropertyStoreProvider().createPropertyStore();
+    StyleSheetParser parser = StyleSheetParserFactory.createParser(propertyStore);
+    StyleManager styleManager = new StyleManagerImpl(propertyStore, parser);
+    Frame frame = new Frame();
+    Element parent = new Element("div");
+    Element child = new Element("span");
+    parent.addChild(child);
+    frame.addChild(parent);
+    frame
+        .styleSheets()
+        .add(parser.parse("div { font-family: \"Unavailable Font\", \"Noto Sans CJK SC\", Roboto; }"));
+
+    styleManager.recalculate(frame);
+
+    List<String> expected = List.of("Unavailable Font", "Noto Sans CJK SC", "Roboto");
+    assertEquals(expected, parent.resolvedStyle().fontFamilies());
+    assertEquals(expected, child.resolvedStyle().fontFamilies());
+  }
+
+  @Test
   void recalculateAppliesExplicitInheritToNonInheritedProperty() {
     PropertyStore propertyStore = new DefaultPropertyStoreProvider().createPropertyStore();
     StyleSheetParser parser = StyleSheetParserFactory.createParser(propertyStore);

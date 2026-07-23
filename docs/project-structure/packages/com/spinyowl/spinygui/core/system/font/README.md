@@ -2,6 +2,11 @@
 
 Platform font loading, text metrics, and font storage abstractions.
 
+Font selection follows the ordered CSS family chain documented in
+[`docs/features/font-family-resolution.md`](../../../../../../../../features/font-family-resolution.md).
+The bundled default is Roboto followed by Noto Sans CJK SC; unavailable names
+are skipped and missing glyphs use a visible U+FFFD marker.
+
 - Modules: core
 - Source sets: main
 - Direct classes: 7

@@ -50,8 +50,6 @@ public class Font {
               "fonts/NotoSansCJKsc-Regular.otf"));
   public static final Font DEFAULT = ROBOTO_REGULAR;
 
-  private static final List<Font> FALLBACK_FONTS = List.of(NOTO_SANS_CJK_SC_REGULAR);
-
   @NonNull private final String fontFamily;
   @NonNull private final FontStyle style;
   @NonNull private final FontStretch stretch;
@@ -88,10 +86,6 @@ public class Font {
     return fontFamilies.values().stream().flatMap(List::stream).toList();
   }
 
-  /** Returns the deterministic fallback sequence used when the primary face lacks a glyph. */
-  public static List<Font> fallbackFonts(@NonNull Font primaryFont) {
-    return primaryFont.equals(NOTO_SANS_CJK_SC_REGULAR) ? List.of() : FALLBACK_FONTS;
-  }
   /**
    * Search for fonts with specified font family name.
    *

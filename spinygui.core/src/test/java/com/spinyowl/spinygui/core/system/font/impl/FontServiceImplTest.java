@@ -5,9 +5,11 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.spinyowl.spinygui.core.font.Font;
+import com.spinyowl.spinygui.core.system.font.ResolvedTextRun;
 import com.spinyowl.spinygui.core.system.font.TextCaretMetrics;
 import com.spinyowl.spinygui.core.system.font.TextLineMetrics;
 import com.spinyowl.spinygui.core.system.font.TextMetrics;
+import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -118,5 +120,37 @@ class FontServiceImplTest {
     assertTrue(fontService.measureText("\u96ea", Font.DEFAULT, 16, 1.2f).width() > 0);
     assertEquals(metrics.width(), caret.x());
     assertEquals(text.length(), caret.charIndex());
+  }
+
+  @Test
+  void measureText_resolvesOrderedFamilyRunsAndRetainsSourceRanges() {
+    TextMetrics metrics =
+        fontService.measureText(
+            "R\u00f8gue \u96ea Seed",
+            List.of(Font.ROBOTO_REGULAR, Font.NOTO_SANS_CJK_SC_REGULAR),
+            16,
+            1.2f);
+
+    List<ResolvedTextRun> runs = metrics.lines().get(0).runs();
+    assertTrue(runs.stream().anyMatch(run -> run.font().equals(Font.ROBOTO_REGULAR)));
+    assertTrue(runs.stream().anyMatch(run -> run.font().equals(Font.NOTO_SANS_CJK_SC_REGULAR)));
+    assertEquals(0, runs.get(0).sourceStart());
+    assertEquals("R\u00f8gue ", "R\u00f8gue \u96ea Seed".substring(0, runs.get(1).sourceStart()));
+    assertEquals("\u96ea", "R\u00f8gue \u96ea Seed".substring(6, 7));
+  }
+
+  @Test
+  void measureText_keepsSupplementaryCodePointAtomicAndMarksMissingGlyphs() {
+    String text = "A\uD83D\uDE00\uDBFF\uDFFF";
+    TextMetrics metrics =
+        fontService.measureText(
+            text, List.of(Font.ROBOTO_REGULAR, Font.NOTO_SANS_CJK_SC_REGULAR), 16, 1.2f);
+
+    List<ResolvedTextRun> runs = metrics.lines().get(0).runs();
+    assertTrue(runs.stream().flatMap(run -> run.glyphs().stream())
+        .anyMatch(glyph -> glyph.sourceStart() == 1 && glyph.sourceEnd() == 3));
+    assertTrue(runs.stream().flatMap(run -> run.glyphs().stream())
+        .anyMatch(glyph -> glyph.sourceStart() == 3 && glyph.sourceEnd() == 5 && glyph.replacement()));
+    assertTrue(metrics.width() > 0);
   }
 }

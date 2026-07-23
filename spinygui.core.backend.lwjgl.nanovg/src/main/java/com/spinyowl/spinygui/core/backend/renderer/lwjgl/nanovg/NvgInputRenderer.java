@@ -19,6 +19,7 @@ import static org.lwjgl.system.MemoryUtil.memFree;
 import static org.lwjgl.system.MemoryUtil.memUTF8;
 
 import com.spinyowl.spinygui.core.font.Font;
+import com.spinyowl.spinygui.core.font.FontStretch;
 import com.spinyowl.spinygui.core.node.InputElement;
 import com.spinyowl.spinygui.core.style.ResolvedStyle;
 import com.spinyowl.spinygui.core.style.stylesheet.util.StyleUtils;
@@ -26,10 +27,10 @@ import com.spinyowl.spinygui.core.style.types.Color;
 import com.spinyowl.spinygui.core.style.types.length.Length;
 import com.spinyowl.spinygui.core.system.font.TextLineMetrics;
 import com.spinyowl.spinygui.core.system.font.TextMeasurer;
+import com.spinyowl.spinygui.core.system.font.FontChainResolver;
+import com.spinyowl.spinygui.core.system.font.ResolvedTextRun;
 import java.nio.ByteBuffer;
-import java.util.Collection;
-import java.util.Set;
-import java.util.stream.Collectors;
+import java.util.List;
 import org.joml.Vector2f;
 
 class NvgInputRenderer {
@@ -100,6 +101,7 @@ class NvgInputRenderer {
         nanovgContext,
         input.value(),
         geometry.font(),
+        geometry.runs(),
         geometry.fontSize(),
         geometry.color(),
         geometry.textX(),
@@ -138,7 +140,7 @@ class NvgInputRenderer {
     TextLineMetrics line =
         textMeasurer.getTextLineMetrics(
             input.value().substring(0, safeTextIndex),
-            geometry.font(),
+            geometry.fonts(),
             geometry.fontSize(),
             geometry.requestedLineHeight());
     return line.width();
@@ -146,16 +148,19 @@ class NvgInputRenderer {
 
   private TextGeometry textGeometry(InputElement input) {
     ResolvedStyle style = input.resolvedStyle();
-    Font font = findFont(style);
+    List<Font> fonts = findFonts(style);
+    Font font = fonts.isEmpty() ? Font.DEFAULT : fonts.get(0);
     float fontSize = fontSize(input);
     float lineHeight = lineHeight(style);
     TextLineMetrics line =
-        textMeasurer.getTextLineMetrics(input.value(), font, fontSize, lineHeight);
+        textMeasurer.getTextLineMetrics(input.value(), fonts, fontSize, lineHeight);
     Vector2f contentPosition = contentPosition(input);
     Vector2f contentSize = input.box().contentSize();
     float lineTop = contentPosition.y() + Math.max(0, (contentSize.y() - line.height()) / 2f);
     return new TextGeometry(
         font,
+        fonts,
+        line.runs(),
         fontSize,
         color(input),
         contentPosition,
@@ -179,18 +184,14 @@ class NvgInputRenderer {
     return position;
   }
 
-  private Font findFont(ResolvedStyle style) {
-    Set<String> fontFamilies = style.fontFamilies();
-    if (fontFamilies == null) {
-      return Font.DEFAULT;
+  private List<Font> findFonts(ResolvedStyle style) {
+    if (style.fontFamilies() == null) {
+      return List.of(Font.DEFAULT);
     }
-    Set<Font> fonts =
-        fontFamilies.stream()
-            .filter(Font::hasFont)
-            .map(f -> Font.find(f, style.fontStyle(), style.fontWeight()))
-            .flatMap(Collection::stream)
-            .collect(Collectors.toSet());
-    return fonts.stream().findFirst().orElse(Font.DEFAULT);
+    return FontChainResolver.DEFAULT
+        .resolve(
+            style.fontFamilies(), style.fontStyle(), style.fontWeight(), FontStretch.NORMAL)
+        ;
   }
 
   private float fontSize(InputElement input) {
@@ -223,6 +224,7 @@ class NvgInputRenderer {
         long context,
         String text,
         Font font,
+        List<ResolvedTextRun> runs,
         float fontSize,
         Color color,
         float x,
@@ -235,6 +237,8 @@ class NvgInputRenderer {
 
   private record TextGeometry(
       Font font,
+      List<Font> fonts,
+      List<ResolvedTextRun> runs,
       float fontSize,
       Color color,
       Vector2f contentPosition,
@@ -274,25 +278,46 @@ class NvgInputRenderer {
         long context,
         String text,
         Font font,
+        List<ResolvedTextRun> runs,
         float fontSize,
         Color color,
         float x,
         float baseline) {
-      String fontFace = fontRegistry.fontFace(font, context);
-      if (fontFace == null) {
-        return;
-      }
-      nvgFontFace(context, fontFace);
-      nvgFontSize(context, fontSize);
       nvgTextAlign(context, NVG_ALIGN_LEFT | NVG_ALIGN_BASELINE);
       try (var nvgColor = create(color)) {
         nvgFillColor(context, nvgColor);
-        ByteBuffer textBuffer = memUTF8(fontRegistry.displayText(font, text), false);
-        try {
-          nvgText(context, x, baseline, textBuffer);
-        } finally {
-          memFree(textBuffer);
+        if (runs.isEmpty()) {
+          drawLegacyText(context, text, font, fontSize, x, baseline);
+        } else {
+          float runX = x;
+          for (ResolvedTextRun run : runs) {
+            String fontFace = fontRegistry.fontFace(run.font(), context);
+            if (fontFace == null) continue;
+            nvgFontFace(context, fontFace);
+            nvgFontSize(context, fontSize);
+            ByteBuffer textBuffer = memUTF8(run.renderedText(), false);
+            try {
+              nvgText(context, runX, baseline, textBuffer);
+            } finally {
+              memFree(textBuffer);
+            }
+            runX += run.advance();
+          }
         }
+      }
+    }
+
+    private void drawLegacyText(
+        long context, String text, Font font, float fontSize, float x, float baseline) {
+      String fontFace = fontRegistry.fontFace(font, context);
+      if (fontFace == null) return;
+      nvgFontFace(context, fontFace);
+      nvgFontSize(context, fontSize);
+      ByteBuffer textBuffer = memUTF8(fontRegistry.displayText(font, text), false);
+      try {
+        nvgText(context, x, baseline, textBuffer);
+      } finally {
+        memFree(textBuffer);
       }
     }
   }

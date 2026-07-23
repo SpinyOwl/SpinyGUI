@@ -17,7 +17,6 @@ import com.spinyowl.spinygui.core.system.font.TextMeasurer;
 import com.spinyowl.spinygui.core.system.font.TextMetrics;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 import org.joml.Vector2f;
 import org.junit.jupiter.api.Test;
 
@@ -177,7 +176,7 @@ class NvgDebugRendererTest {
     input.box().contentSize(60, 20);
     input.box().border().left(2);
     input.box().border().top(2);
-    input.resolvedStyle().fontFamilies(Set.of(Font.DEFAULT.fontFamily()));
+    input.resolvedStyle().fontFamilies(List.of(Font.DEFAULT.fontFamily()));
     input.resolvedStyle().fontSize(Length.pixel(16));
     input.resolvedStyle().lineHeight(1f);
     return input;
@@ -257,6 +256,12 @@ class NvgDebugRendererTest {
           .baseline(12)
           .fontMetrics(new FontMetrics(12, 4, 0, 16, 12))
           .build();
+    }
+
+    @Override
+    public TextLineMetrics getTextLineMetrics(
+        String text, List<Font> fonts, float fontSize, float lineHeight) {
+      return getTextLineMetrics(text, fonts.get(0), fontSize, lineHeight);
     }
 
     @Override

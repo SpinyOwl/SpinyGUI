@@ -42,7 +42,7 @@ import com.spinyowl.spinygui.core.system.font.TextLineMetrics;
 import com.spinyowl.spinygui.core.system.font.TextMeasurer;
 import com.spinyowl.spinygui.core.time.TimeService;
 import java.util.HashMap;
-import java.util.Set;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 import lombok.NonNull;
@@ -429,7 +429,7 @@ class FlexLayoutTest {
     style.justifyContent(JustifyContent.FLEX_START);
     style.alignItems(AlignItems.FLEX_START);
     style.alignSelf(AlignSelf.AUTO);
-    style.fontFamilies(Set.of("Roboto"));
+    style.fontFamilies(List.of("Roboto"));
     style.fontStyle(FontStyle.NORMAL);
     style.fontWeight(FontWeight.NORMAL);
     style.fontSize(Length.pixel(10));

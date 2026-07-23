@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
+import java.util.List;
 
 @AllArgsConstructor
 @EqualsAndHashCode
@@ -36,6 +37,9 @@ public final class TextLineMetrics {
 
   /** Font metrics used to measure this line. */
   private FontMetrics fontMetrics;
+
+  /** Resolved runs contributing to this line, retaining original UTF-16 ranges. */
+  @Builder.Default private List<ResolvedTextRun> runs = List.of();
 
   public String toString() {
     return characters.toString();

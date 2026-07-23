@@ -2,8 +2,35 @@ package com.spinyowl.spinygui.core.system.font;
 
 import com.spinyowl.spinygui.core.font.Font;
 import lombok.NonNull;
+import java.util.List;
 
 public interface TextMeasurer {
+
+  default TextMetrics measureText(
+      @NonNull String text, @NonNull List<Font> fonts, float fontSize, float lineHeight) {
+    return measureText(text, 0, fonts, fontSize, lineHeight, Float.MAX_VALUE, false);
+  }
+
+  default TextMetrics measureText(
+      @NonNull String text,
+      float offsetX,
+      @NonNull List<Font> fonts,
+      float fontSize,
+      float lineHeight,
+      float maxWidth,
+      boolean wordWrap) {
+    return measureText(text, offsetX, fonts.isEmpty() ? Font.DEFAULT : fonts.get(0), fontSize, lineHeight, maxWidth, wordWrap);
+  }
+
+  default TextLineMetrics getTextLineMetrics(
+      @NonNull String text, @NonNull List<Font> fonts, float fontSize, float lineHeight) {
+    return measureText(text, fonts, fontSize, lineHeight).lines().get(0);
+  }
+
+  default TextCaretMetrics getTextCaretMetrics(
+      @NonNull String text, @NonNull List<Font> fonts, float fontSize, float offsetX) {
+    return getTextCaretMetrics(text, fonts.isEmpty() ? Font.DEFAULT : fonts.get(0), fontSize, offsetX);
+  }
 
   /**
    * Measures a single text line and returns horizontal and vertical font metrics in one result.

@@ -28,7 +28,7 @@ import com.spinyowl.spinygui.core.style.types.length.Length;
 import com.spinyowl.spinygui.core.style.types.length.Unit;
 import com.spinyowl.spinygui.core.system.font.FontMetrics;
 import com.spinyowl.spinygui.core.system.font.TextLineMetrics;
-import java.util.Set;
+import java.util.List;
 import lombok.NonNull;
 import org.junit.jupiter.api.Test;
 
@@ -580,7 +580,7 @@ class BlockLayoutTest {
     style.borderRightStyle(borderStyle);
     style.borderBottomStyle(borderStyle);
     style.borderLeftStyle(borderStyle);
-    style.fontFamilies(Set.of("Roboto"));
+    style.fontFamilies(List.of("Roboto"));
     style.fontStyle(FontStyle.NORMAL);
     style.fontWeight(FontWeight.NORMAL);
     style.fontSize(Length.pixel(10));

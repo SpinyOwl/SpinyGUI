@@ -2,6 +2,7 @@ package com.spinyowl.spinygui.core.layout.impl;
 
 import com.google.common.collect.Iterables;
 import com.spinyowl.spinygui.core.font.Font;
+import com.spinyowl.spinygui.core.font.FontStretch;
 import com.spinyowl.spinygui.core.font.FontStyle;
 import com.spinyowl.spinygui.core.font.FontWeight;
 import com.spinyowl.spinygui.core.layout.LayoutContext;
@@ -13,13 +14,12 @@ import com.spinyowl.spinygui.core.node.layout.Rect;
 import com.spinyowl.spinygui.core.style.ResolvedStyle;
 import com.spinyowl.spinygui.core.style.stylesheet.util.StyleUtils;
 import com.spinyowl.spinygui.core.system.font.FontService;
+import com.spinyowl.spinygui.core.system.font.FontChainResolver;
 import com.spinyowl.spinygui.core.system.font.TextLineMetrics;
 import com.spinyowl.spinygui.core.system.font.TextMeasurer;
 import com.spinyowl.spinygui.core.system.font.TextMetrics;
-import java.util.Collection;
 import java.util.Comparator;
-import java.util.Set;
-import java.util.stream.Collectors;
+import java.util.List;
 import lombok.NonNull;
 
 public class TextLayoutImpl implements TextLayout {
@@ -47,14 +47,14 @@ public class TextLayoutImpl implements TextLayout {
 
     // get text related styles.
     ResolvedStyle style = parent.resolvedStyle();
-    Set<String> fontFamilies = style.fontFamilies();
+    List<String> fontFamilies = style.fontFamilies();
     FontStyle fontStyle = style.fontStyle();
     FontWeight fontWeight = style.fontWeight();
 
     Float lineHeight = style.lineHeight();
 
     // find appropriate font.
-    Font fontToUse = findFont(fontFamilies, fontStyle, fontWeight);
+    List<Font> fontsToUse = findFonts(fontFamilies, fontStyle, fontWeight);
 
     // get width of parent node.
     Box parentBox = parent.box();
@@ -77,7 +77,7 @@ public class TextLayoutImpl implements TextLayout {
 
     TextMetrics metrics =
         textMeasurer.measureText(
-            text.content(), startX, fontToUse, fontSize, lineHeight, parentWidth, false);
+             text.content(), startX, fontsToUse, fontSize, lineHeight, parentWidth, false);
 
     text.textStartX(startX);
     text.textStartY(startY);
@@ -112,13 +112,10 @@ public class TextLayoutImpl implements TextLayout {
     context.lastBlockBottomY(text.box().borderBox().y() + text.box().borderBox().height());
   }
 
-  private Font findFont(Set<String> fontFamilies, FontStyle fontStyle, FontWeight fontWeight) {
-    Set<Font> fonts =
-        fontFamilies.stream()
-            .map(f -> Font.find(f, fontStyle, fontWeight))
-            .flatMap(Collection::stream)
-            .collect(Collectors.toSet());
-    return fonts.stream().filter(fontService::isFontAvailable).findFirst().orElse(Font.DEFAULT);
+  private List<Font> findFonts(List<String> fontFamilies, FontStyle fontStyle, FontWeight fontWeight) {
+    List<Font> fonts = FontChainResolver.DEFAULT.resolve(fontFamilies, fontStyle, fontWeight, FontStretch.NORMAL);
+    List<Font> available = fonts.stream().filter(fontService::isFontAvailable).toList();
+    return available.isEmpty() ? List.of(Font.DEFAULT) : available;
   }
 
   private static TextMeasurer requireTextMeasurer(FontService fontService) {

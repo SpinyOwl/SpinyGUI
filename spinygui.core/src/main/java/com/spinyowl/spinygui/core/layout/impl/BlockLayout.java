@@ -8,6 +8,7 @@ import static com.spinyowl.spinygui.core.style.stylesheet.util.StyleUtils.getFlo
 import static com.spinyowl.spinygui.core.style.stylesheet.util.StyleUtils.getFloatLengthOptional;
 
 import com.spinyowl.spinygui.core.font.Font;
+import com.spinyowl.spinygui.core.font.FontStretch;
 import com.spinyowl.spinygui.core.layout.ElementLayout;
 import com.spinyowl.spinygui.core.layout.LayoutContext;
 import com.spinyowl.spinygui.core.layout.LayoutService;
@@ -28,11 +29,10 @@ import com.spinyowl.spinygui.core.style.types.border.BorderStyle;
 import com.spinyowl.spinygui.core.style.types.length.Length.PixelLength;
 import com.spinyowl.spinygui.core.style.types.length.Unit;
 import com.spinyowl.spinygui.core.system.font.TextMeasurer;
+import com.spinyowl.spinygui.core.system.font.FontChainResolver;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import lombok.NonNull;
@@ -515,7 +515,7 @@ public class BlockLayout implements ElementLayout {
     }
     return textMeasurer
         .getTextLineMetrics(
-            text, findFont(style), StyleUtils.getFontSize(input), style.lineHeight())
+            text, findFonts(style), StyleUtils.getFontSize(input), style.lineHeight())
         .width();
   }
 
@@ -526,7 +526,7 @@ public class BlockLayout implements ElementLayout {
     }
     return textMeasurer
         .getTextLineMetrics(
-            text, findFont(style), StyleUtils.getFontSize(button), style.lineHeight())
+            text, findFonts(style), StyleUtils.getFontSize(button), style.lineHeight())
         .width();
   }
 
@@ -568,7 +568,7 @@ public class BlockLayout implements ElementLayout {
     }
     return textMeasurer
             .getTextLineMetrics(
-                TEXTAREA_COLUMN_WIDTH_SAMPLE, findFont(style), fontSize, lineHeight)
+                TEXTAREA_COLUMN_WIDTH_SAMPLE, findFonts(style), fontSize, lineHeight)
             .width()
         / TEXTAREA_COLUMN_WIDTH_SAMPLE.length();
   }
@@ -587,7 +587,7 @@ public class BlockLayout implements ElementLayout {
     if (textMeasurer == null) {
       return fontSize * lineHeight;
     }
-    return textMeasurer.getTextLineMetrics("", findFont(style), fontSize, lineHeight).height();
+    return textMeasurer.getTextLineMetrics("", findFonts(style), fontSize, lineHeight).height();
   }
 
   private String buttonTextContent(Node node) {
@@ -602,13 +602,11 @@ public class BlockLayout implements ElementLayout {
     return "";
   }
 
-  private Font findFont(ResolvedStyle style) {
-    Set<Font> fonts =
-        style.fontFamilies().stream()
-            .map(f -> Font.find(f, style.fontStyle(), style.fontWeight()))
-            .flatMap(Collection::stream)
-            .collect(Collectors.toSet());
-    return fonts.stream().findFirst().orElse(Font.DEFAULT);
+  private List<Font> findFonts(ResolvedStyle style) {
+    return FontChainResolver.DEFAULT
+        .resolve(
+            style.fontFamilies(), style.fontStyle(), style.fontWeight(), FontStretch.NORMAL)
+        ;
   }
 
   /**

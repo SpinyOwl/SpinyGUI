@@ -14,9 +14,10 @@ import com.spinyowl.spinygui.core.system.font.TextCaretMetrics;
 import com.spinyowl.spinygui.core.system.font.TextLineMetrics;
 import com.spinyowl.spinygui.core.system.font.TextMeasurer;
 import com.spinyowl.spinygui.core.system.font.TextMetrics;
+import com.spinyowl.spinygui.core.system.font.ResolvedTextRun;
+import com.spinyowl.spinygui.core.system.font.ResolvedGlyph;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 import org.joml.Vector2f;
 import org.junit.jupiter.api.Test;
 
@@ -42,6 +43,57 @@ class NvgInputRendererTest {
     assertEquals(List.of(), selectionSink.calls());
     assertEquals(List.of("text(9,abcd,20.0,44.0,16.0)"), textSink.calls());
     assertEquals(List.of("caret(9,40.0,32.0,16.0)"), caretSink.calls());
+  }
+
+  @Test
+  void render_passesResolvedRunsInCoreOrderAndRetainsAdvances() {
+    RecordingTextSink textSink = new RecordingTextSink();
+    List<ResolvedTextRun> runs =
+        List.of(
+            new ResolvedTextRun(
+                0,
+                1,
+                Font.ROBOTO_REGULAR,
+                List.of(new ResolvedGlyph(0, 1, 'a', 'a', Font.ROBOTO_REGULAR, false)),
+                7f),
+            new ResolvedTextRun(
+                1,
+                2,
+                Font.NOTO_SANS_CJK_SC_REGULAR,
+                List.of(new ResolvedGlyph(1, 2, '\u96ea', '\u96ea', Font.NOTO_SANS_CJK_SC_REGULAR, false)),
+                16f));
+    NvgInputRenderer renderer =
+        new NvgInputRenderer(
+            new RecordingStateSink(), new RecordingSelectionSink(), textSink, new RecordingCaretSink());
+    renderer.textMeasurer(new FixedTextMeasurer(runs));
+
+    renderer.render(input("a\u96ea"), 11);
+
+    assertEquals(
+        List.of("Roboto:a@20.0+7.0", "Noto Sans CJK SC:\u96ea@27.0+16.0"),
+        textSink.runSummary());
+  }
+
+  @Test
+  void render_passesReplacementRunAsRenderableUfffdText() {
+    RecordingTextSink textSink = new RecordingTextSink();
+    List<ResolvedTextRun> runs =
+        List.of(
+            new ResolvedTextRun(
+                0,
+                2,
+                Font.NOTO_SANS_CJK_SC_REGULAR,
+                List.of(new ResolvedGlyph(0, 2, 0x10FFFF, 0xFFFD, Font.NOTO_SANS_CJK_SC_REGULAR, true)),
+                9f));
+    NvgInputRenderer renderer =
+        new NvgInputRenderer(
+            new RecordingStateSink(), new RecordingSelectionSink(), textSink, new RecordingCaretSink());
+    renderer.textMeasurer(new FixedTextMeasurer(runs));
+
+    renderer.render(input(new String(Character.toChars(0x10FFFF))), 12);
+
+    assertEquals(
+        List.of("Noto Sans CJK SC:\uFFFD@20.0+9.0"), textSink.runSummary());
   }
 
   @Test
@@ -211,7 +263,7 @@ class NvgInputRendererTest {
     input.value(value);
     input.box().contentPosition(20, 30);
     input.box().contentSize(60, 20);
-    input.resolvedStyle().fontFamilies(Set.of(Font.DEFAULT.fontFamily()));
+    input.resolvedStyle().fontFamilies(List.of(Font.DEFAULT.fontFamily()));
     input.resolvedStyle().fontSize(Length.pixel(16));
     input.resolvedStyle().lineHeight(1f);
     input.resolvedStyle().color(Color.BLACK);
@@ -252,6 +304,7 @@ class NvgInputRendererTest {
 
   private static final class RecordingTextSink implements NvgInputRenderer.InputTextSink {
     private final List<String> calls = new ArrayList<>();
+    private List<ResolvedTextRun> runs = List.of();
     private Color color;
 
     @Override
@@ -259,11 +312,13 @@ class NvgInputRendererTest {
         long context,
         String text,
         Font font,
+        List<ResolvedTextRun> runs,
         float fontSize,
         Color color,
         float x,
         float baseline) {
       this.color = color;
+      this.runs = runs;
       calls.add("text(%d,%s,%.1f,%.1f,%.1f)".formatted(context, text, x, baseline, fontSize));
     }
 
@@ -273,6 +328,16 @@ class NvgInputRendererTest {
 
     Color color() {
       return color;
+    }
+
+    List<String> runSummary() {
+      float x = 20;
+      List<String> summary = new ArrayList<>();
+      for (ResolvedTextRun run : runs) {
+        summary.add(run.font().fontFamily() + ":" + run.renderedText() + "@" + x + "+" + run.advance());
+        x += run.advance();
+      }
+      return summary;
     }
   }
 
@@ -305,6 +370,15 @@ class NvgInputRendererTest {
 
   private static final class FixedTextMeasurer implements TextMeasurer {
     private static final float CHAR_WIDTH = 10;
+    private final List<ResolvedTextRun> runs;
+
+    private FixedTextMeasurer() {
+      this(List.of());
+    }
+
+    private FixedTextMeasurer(List<ResolvedTextRun> runs) {
+      this.runs = runs;
+    }
 
     @Override
     public TextMetrics measureText(String text, Font font, float fontSize, float lineHeight) {
@@ -344,7 +418,14 @@ class NvgInputRendererTest {
           .height(16)
           .baseline(12)
           .fontMetrics(new FontMetrics(12, 4, 0, 16, 12))
+          .runs(runs)
           .build();
+    }
+
+    @Override
+    public TextLineMetrics getTextLineMetrics(
+        String text, List<Font> fonts, float fontSize, float lineHeight) {
+      return getTextLineMetrics(text, fonts.get(0), fontSize, lineHeight);
     }
 
     @Override
