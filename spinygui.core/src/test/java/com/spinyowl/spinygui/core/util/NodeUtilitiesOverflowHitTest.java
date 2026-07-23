@@ -14,7 +14,7 @@ import org.junit.jupiter.api.Test;
 class NodeUtilitiesOverflowHitTest {
 
   @Test
-  void getTargetElement_excludesChildOutsideHiddenOverflowContentBox() {
+  void getTargetElement_returnsChildInsideHiddenOverflowPaddingBox() {
     Frame frame = frame(500, 500);
     Element container = clippedElement(0, 0, 100, 100);
     container.box().padding().right(50);
@@ -23,11 +23,10 @@ class NodeUtilitiesOverflowHitTest {
     container.addChild(child);
     child.offsetParent(container);
 
-    Vector2f pointInsideChildButOutsideContent = new Vector2f(115, 15);
+    Vector2f pointInsideChildInPadding = new Vector2f(115, 15);
 
-    assertEquals(container, NodeUtilities.getTargetElement(frame, pointInsideChildButOutsideContent));
-    assertFalse(
-        NodeUtilities.getTargetElementList(frame, pointInsideChildButOutsideContent).contains(child));
+    assertEquals(child, NodeUtilities.getTargetElement(frame, pointInsideChildInPadding));
+    assertTrue(NodeUtilities.getTargetElementList(frame, pointInsideChildInPadding).contains(child));
   }
 
   @Test
@@ -105,7 +104,7 @@ class NodeUtilitiesOverflowHitTest {
   }
 
   @Test
-  void getTargetElement_excludesChildOutsideInnerNestedScrollContentBox() {
+  void getTargetElement_returnsChildInsideInnerNestedScrollPaddingBox() {
     Frame frame = frame(500, 500);
     Element outer = clippedElement(0, 0, 200, 200);
     Element inner = clippedElement(10, 10, 80, 80);
@@ -117,12 +116,11 @@ class NodeUtilitiesOverflowHitTest {
     inner.offsetParent(outer);
     child.offsetParent(inner);
 
-    Vector2f pointInsideChildButOutsideInnerContent = new Vector2f(110, 30);
+    Vector2f pointInsideChildInInnerPadding = new Vector2f(110, 30);
 
-    assertEquals(inner, NodeUtilities.getTargetElement(frame, pointInsideChildButOutsideInnerContent));
-    assertFalse(
-        NodeUtilities.getTargetElementList(frame, pointInsideChildButOutsideInnerContent)
-            .contains(child));
+    assertEquals(child, NodeUtilities.getTargetElement(frame, pointInsideChildInInnerPadding));
+    assertTrue(
+        NodeUtilities.getTargetElementList(frame, pointInsideChildInInnerPadding).contains(child));
   }
 
   private Frame frame(float width, float height) {

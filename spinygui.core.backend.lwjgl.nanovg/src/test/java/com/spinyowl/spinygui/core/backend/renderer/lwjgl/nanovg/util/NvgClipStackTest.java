@@ -32,7 +32,7 @@ class NvgClipStackTest {
   }
 
   @Test
-  void create_clipsHiddenAutoAndScrollAncestorsToContentBox() {
+  void create_clipsHiddenAutoAndScrollAncestorsToPaddingBox() {
     RecordingClipSink sink = new RecordingClipSink();
     NvgClipStack clipStack = new NvgClipStack(sink);
     Element hidden = element(10, 20, 100, 80, Overflow.HIDDEN);
@@ -59,8 +59,8 @@ class NvgClipStackTest {
 
     assertEquals(
         List.of(
-            "scissor(1,10.0,20.0,100.0,80.0)",
-            "intersect(1,35.0,53.0,70.0,60.0)",
+            "scissor(1,6.0,15.0,104.0,85.0)",
+            "intersect(1,32.0,49.0,73.0,64.0)",
             "intersect(1,82.0,109.0,40.0,30.0)"),
         sink.calls());
 
@@ -72,8 +72,8 @@ class NvgClipStackTest {
 
     assertEquals(
         List.of(
-            "scissor(1,10.0,20.0,100.0,80.0)",
-            "intersect(1,35.0,53.0,70.0,60.0)",
+            "scissor(1,6.0,15.0,104.0,85.0)",
+            "intersect(1,32.0,49.0,73.0,64.0)",
             "intersect(1,82.0,109.0,40.0,30.0)"),
         sink.calls());
   }

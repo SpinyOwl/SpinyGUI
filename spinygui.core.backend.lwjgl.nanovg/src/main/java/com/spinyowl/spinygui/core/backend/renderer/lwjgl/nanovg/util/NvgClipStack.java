@@ -57,13 +57,14 @@ public class NvgClipStack {
   private void clip(long context, Element element, boolean first) {
     var absolutePosition = element.layoutAbsolutePosition();
     var box = element.box();
-    float x = absolutePosition.x() + box.border().left() + box.padding().left();
-    float y = absolutePosition.y() + box.border().top() + box.padding().top();
-    var contentSize = box.contentSize();
+    var paddingBox = box.paddingBox();
+    var borderBox = box.borderBox();
+    float x = absolutePosition.x() + paddingBox.x() - borderBox.x();
+    float y = absolutePosition.y() + paddingBox.y() - borderBox.y();
     if (first) {
-      sink.scissor(context, x, y, contentSize.x(), contentSize.y());
+      sink.scissor(context, x, y, paddingBox.width(), paddingBox.height());
     } else {
-      sink.intersectScissor(context, x, y, contentSize.x(), contentSize.y());
+      sink.intersectScissor(context, x, y, paddingBox.width(), paddingBox.height());
     }
   }
 

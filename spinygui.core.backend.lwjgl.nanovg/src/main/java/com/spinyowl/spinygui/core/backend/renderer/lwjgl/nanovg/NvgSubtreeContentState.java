@@ -29,15 +29,15 @@ final class NvgSubtreeContentState implements NvgRenderer.SubtreeContentState {
     nvgSave(context);
     if (OverflowUtils.clipsAny(element)) {
       var position = element.layoutAbsolutePosition();
-      var border = element.box().border();
-      var padding = element.box().padding();
-      var contentSize = element.box().contentSize();
+      var box = element.box();
+      var paddingBox = box.paddingBox();
+      var borderBox = box.borderBox();
       nvgIntersectScissor(
           context,
-          position.x + border.left() + padding.left(),
-          position.y + border.top() + padding.top(),
-          contentSize.x,
-          contentSize.y);
+          position.x + paddingBox.x() - borderBox.x(),
+          position.y + paddingBox.y() - borderBox.y(),
+          paddingBox.width(),
+          paddingBox.height());
     }
     nvgTranslate(context, -element.scrollLeft(), -element.scrollTop());
     return new NvgSubtreeContentState(context);

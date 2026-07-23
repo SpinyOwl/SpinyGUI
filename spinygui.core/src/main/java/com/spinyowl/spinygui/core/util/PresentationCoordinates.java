@@ -43,6 +43,24 @@ public final class PresentationCoordinates {
         .orElse(false);
   }
 
+  public static boolean containsPaddingBox(Element element, Vector2fc viewportPoint) {
+    return toLayout(element, viewportPoint)
+        .map(
+            point -> {
+              Vector2f position = element.layoutAbsolutePosition();
+              var box = element.box();
+              var paddingBox = box.paddingBox();
+              var borderBox = box.borderBox();
+              float x = position.x + paddingBox.x() - borderBox.x();
+              float y = position.y + paddingBox.y() - borderBox.y();
+              return point.x >= x
+                  && point.x < x + paddingBox.width()
+                  && point.y >= y
+                  && point.y < y + paddingBox.height();
+            })
+        .orElse(false);
+  }
+
   public static boolean containsContentBox(Element element, Vector2fc viewportPoint) {
     return toLayout(element, viewportPoint)
         .map(

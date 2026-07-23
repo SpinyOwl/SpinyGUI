@@ -196,15 +196,15 @@ public final class NodeUtilities {
 
   private static boolean insideClippingAncestors(final Node node, final Vector2fc vector) {
     for (Element parent = node.parent(); parent != null; parent = parent.parent()) {
-      if (OverflowUtils.clipsAny(parent) && !insideContentBox(parent, vector)) {
+      if (OverflowUtils.clipsAny(parent) && !insidePaddingBox(parent, vector)) {
         return false;
       }
     }
     return true;
   }
 
-  private static boolean insideContentBox(final Element element, final Vector2fc vector) {
-    return PresentationCoordinates.containsContentBox(element, vector);
+  private static boolean insidePaddingBox(final Element element, final Vector2fc vector) {
+    return PresentationCoordinates.containsPaddingBox(element, vector);
   }
 
   public static boolean visible(Node node) {
