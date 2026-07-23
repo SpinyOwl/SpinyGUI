@@ -299,6 +299,70 @@ class OverflowLayoutTest {
   }
 
   @Test
+  void layout_whenVerticalScrollbarIsVisible_sizesPercentBlockToClientWidth() {
+    Frame frame = NodeBuilder.frame();
+    frame.frameSize(500, 500);
+    style(frame, Display.BLOCK, 500, 500);
+    Element container = NodeBuilder.div();
+    container.setAttribute("class", "panel");
+    frame.addChild(container);
+    applyStyleSheet(frame, ".panel::-webkit-scrollbar { width: 10px; }");
+    style(container, Display.BLOCK, 100, 100);
+    container.resolvedStyle().overflowY(Overflow.SCROLL);
+    Element child = NodeBuilder.div();
+    style(child, Display.BLOCK, 100, 150);
+    child.resolvedStyle().width(Length.percent(1));
+    container.addChild(child);
+
+    layoutService().layout(frame);
+
+    assertEquals(90, container.clientWidth());
+    assertEquals(90, child.box().borderBox().width());
+    assertTrue(
+        child.box().borderBox().x() + child.box().borderBox().width()
+            <= container.scrollbarMetrics().verticalTrack().x());
+  }
+
+  @Test
+  void layout_whenScrollbarAndPaddedDescendantsExist_keepsBorderBoxBeforeTrack() {
+    Frame frame = NodeBuilder.frame();
+    frame.frameSize(500, 500);
+    style(frame, Display.BLOCK, 500, 500);
+    Element container = NodeBuilder.div();
+    container.setAttribute("class", "panel");
+    frame.addChild(container);
+    applyStyleSheet(frame, ".panel::-webkit-scrollbar { width: 10px; }");
+    style(container, Display.BLOCK, 120, 100);
+    container.resolvedStyle().overflowY(Overflow.SCROLL);
+    Element wrapper = NodeBuilder.div();
+    style(wrapper, Display.BLOCK, 100, 20);
+    wrapper.resolvedStyle().width(Length.percent(1));
+    wrapper.resolvedStyle().height(Unit.AUTO);
+    wrapper.resolvedStyle().paddingLeft(Length.pixel(5));
+    wrapper.resolvedStyle().paddingRight(Length.pixel(5));
+    Element button = NodeBuilder.button();
+    style(button, Display.BLOCK, 100, 20);
+    button.resolvedStyle().width(Length.percent(1));
+    button.resolvedStyle().paddingLeft(Length.pixel(4));
+    button.resolvedStyle().paddingRight(Length.pixel(4));
+    button.resolvedStyle().borderLeftWidth(Length.pixel(2));
+    button.resolvedStyle().borderRightWidth(Length.pixel(2));
+    button.resolvedStyle().borderLeftStyle(BorderStyle.SOLID);
+    button.resolvedStyle().borderRightStyle(BorderStyle.SOLID);
+    Element spacer = NodeBuilder.div();
+    style(spacer, Display.BLOCK, 100, 150);
+    wrapper.addChild(button);
+    container.addChildren(wrapper, spacer);
+
+    layoutService().layout(frame);
+
+    assertEquals(container.clientWidth(), wrapper.box().borderBox().width());
+    assertTrue(
+        button.box().borderBox().x() + button.box().borderBox().width()
+            <= container.scrollbarMetrics().verticalTrack().x());
+  }
+
+  @Test
   void layout_whenOverflowAutoContentFits_doesNotReserveScrollbarGutter() {
     Frame frame = NodeBuilder.frame();
     frame.frameSize(500, 500);
@@ -316,6 +380,36 @@ class OverflowLayoutTest {
 
     assertEquals(100, container.clientWidth());
     assertEquals(100, container.clientHeight());
+  }
+
+  @Test
+  void layout_whenAutoVerticalScrollbarChanges_visibilityUpdatesDescendantWidth() {
+    Frame frame = NodeBuilder.frame();
+    frame.frameSize(500, 500);
+    style(frame, Display.BLOCK, 500, 500);
+    Element container = NodeBuilder.div();
+    style(container, Display.BLOCK, 100, 100);
+    container.resolvedStyle().overflowY(Overflow.AUTO);
+    Element child = NodeBuilder.div();
+    style(child, Display.BLOCK, 100, 50);
+    child.resolvedStyle().width(Length.percent(1));
+    container.addChild(child);
+    frame.addChild(container);
+
+    LayoutService layoutService = layoutService();
+    layoutService.layout(frame);
+    assertEquals(100, container.clientWidth());
+    assertEquals(100, child.box().borderBox().width());
+
+    child.resolvedStyle().height(Length.pixel(150));
+    layoutService.layout(frame);
+    assertEquals(88, container.clientWidth());
+    assertEquals(88, child.box().borderBox().width());
+
+    child.resolvedStyle().height(Length.pixel(50));
+    layoutService.layout(frame);
+    assertEquals(100, container.clientWidth());
+    assertEquals(100, child.box().borderBox().width());
   }
 
   @Test
@@ -355,6 +449,57 @@ class OverflowLayoutTest {
 
     assertEquals(88, container.clientWidth());
     assertEquals(90, container.clientHeight());
+  }
+
+  @Test
+  void layout_whenBothScrollbarsAreVisible_usesReducedVerticalTrackHeight() {
+    Frame frame = NodeBuilder.frame();
+    frame.frameSize(500, 500);
+    style(frame, Display.BLOCK, 500, 500);
+    Element container = NodeBuilder.div();
+    style(container, Display.BLOCK, 100, 100);
+    container.resolvedStyle().overflowX(Overflow.SCROLL);
+    container.resolvedStyle().overflowY(Overflow.SCROLL);
+    Element child = NodeBuilder.div();
+    style(child, Display.BLOCK, 200, 200);
+    container.addChild(child);
+    frame.addChild(container);
+
+    layoutService().layout(frame);
+
+    assertTrue(container.scrollbarMetrics().verticalVisible());
+    assertTrue(container.scrollbarMetrics().horizontalVisible());
+    assertEquals(88, container.scrollbarMetrics().verticalTrack().height());
+    assertEquals(88, container.scrollbarMetrics().horizontalTrack().width());
+  }
+
+  @Test
+  void layout_whenScrollContainersAreNested_reservesEachScrollbarGutter() {
+    Frame frame = NodeBuilder.frame();
+    frame.frameSize(500, 500);
+    style(frame, Display.BLOCK, 500, 500);
+    Element outer = NodeBuilder.div();
+    style(outer, Display.BLOCK, 120, 120);
+    outer.resolvedStyle().overflowY(Overflow.SCROLL);
+    Element inner = NodeBuilder.div();
+    style(inner, Display.BLOCK, 100, 80);
+    inner.resolvedStyle().width(Length.percent(1));
+    inner.resolvedStyle().overflowY(Overflow.SCROLL);
+    Element child = NodeBuilder.div();
+    style(child, Display.BLOCK, 100, 160);
+    child.resolvedStyle().width(Length.percent(1));
+    inner.addChild(child);
+    outer.addChild(inner);
+    frame.addChild(outer);
+
+    layoutService().layout(frame);
+
+    assertTrue(
+        inner.box().borderBox().x() + inner.box().borderBox().width()
+            <= outer.scrollbarMetrics().verticalTrack().x());
+    assertTrue(
+        child.box().borderBox().x() + child.box().borderBox().width()
+            <= inner.scrollbarMetrics().verticalTrack().x());
   }
 
   private static void applyStyleSheet(Frame frame, String css) {

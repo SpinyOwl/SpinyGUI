@@ -30,6 +30,7 @@ import com.spinyowl.spinygui.core.style.types.length.Length.PixelLength;
 import com.spinyowl.spinygui.core.style.types.length.Unit;
 import com.spinyowl.spinygui.core.system.font.TextMeasurer;
 import com.spinyowl.spinygui.core.system.font.FontChainResolver;
+import com.spinyowl.spinygui.core.util.ScrollbarGeometry;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -369,8 +370,30 @@ public class BlockLayout implements ElementLayout {
       parentBox.contentSize(frame.frameSize().x, frame.frameSize().y);
     } else {
       parentBox = parent.box();
+      ScrollbarGeometry.Metrics scrollbarMetrics = parent.scrollbarMetrics();
+      if (scrollbarMetrics != null
+          && (scrollbarMetrics.verticalVisible() || scrollbarMetrics.horizontalVisible())) {
+        parentBox = copyWithClientSize(parentBox, scrollbarMetrics);
+      }
     }
     return parentBox;
+  }
+
+  private Box copyWithClientSize(Box source, ScrollbarGeometry.Metrics scrollbarMetrics) {
+    Box copy = new Box();
+    copy.contentPosition(source.content().x(), source.content().y());
+    copy.contentSize(scrollbarMetrics.clientWidth(), scrollbarMetrics.clientHeight());
+    copyEdges(source.padding(), copy.padding());
+    copyEdges(source.border(), copy.border());
+    copyEdges(source.margin(), copy.margin());
+    return copy;
+  }
+
+  private void copyEdges(Edges source, Edges destination) {
+    destination.top(source.top());
+    destination.right(source.right());
+    destination.bottom(source.bottom());
+    destination.left(source.left());
   }
 
   private float childrenHeight(
@@ -449,7 +472,9 @@ public class BlockLayout implements ElementLayout {
       ButtonElement button, ResolvedStyle style, float parentWidth, float horizontalAdditions) {
     float width =
         style.width().isAuto()
-            ? measureButtonContentWidth(button, style) + horizontalAdditions
+            ? Display.BLOCK.equals(style.display())
+                ? parentWidth
+                : measureButtonContentWidth(button, style) + horizontalAdditions
             : getWidth(parentWidth, style);
     Optional<Float> minWidth = getFloatLengthOptional(style.minWidth(), parentWidth);
     Optional<Float> maxWidth = getFloatLengthOptional(style.maxWidth(), parentWidth);

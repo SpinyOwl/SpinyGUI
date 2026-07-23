@@ -33,18 +33,23 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class LayoutServiceImpl implements LayoutService {
 
+  private static final int MAX_SCROLLBAR_LAYOUT_PASSES = 4;
+
   @NonNull private final TextLayout textLayout;
   @NonNull private final Map<Display, ElementLayout> layoutMap;
 
   @Override
   public void layout(@NonNull Frame frame) {
-    LayoutContext context = new LayoutContext();
-    // layout all the nodes in the frame.
-    layoutNode(frame, context);
-    // update layout tree.
-    updateLayoutNodes(frame);
-    // update client size and scroll size for all the nodes in the frame.
-    updateScrollAndClientSize(frame);
+    boolean scrollbarGutterChanged;
+    int pass = 0;
+    do {
+      LayoutContext context = new LayoutContext();
+      // A prior pass's client box reserves classic scrollbar gutters for normal-flow children.
+      layoutNode(frame, context);
+      updateLayoutNodes(frame);
+      scrollbarGutterChanged = updateScrollAndClientSize(frame);
+      pass++;
+    } while (scrollbarGutterChanged && pass < MAX_SCROLLBAR_LAYOUT_PASSES);
     resolvePresentationTransforms(frame);
   }
 
@@ -63,7 +68,7 @@ public class LayoutServiceImpl implements LayoutService {
     element.children().forEach(this::resolvePresentationTransforms);
   }
 
-  private void updateScrollAndClientSize(Element element) {
+  private boolean updateScrollAndClientSize(Element element) {
     float scrollWidth = 0;
     float scrollHeight = 0;
 
@@ -79,6 +84,7 @@ public class LayoutServiceImpl implements LayoutService {
     scrollWidth = Math.max(0, scrollWidth - box.border().left() - box.padding().left());
     scrollHeight = Math.max(0, scrollHeight - box.border().top() - box.padding().top());
 
+    ScrollbarGeometry.Metrics previousScrollbarMetrics = element.scrollbarMetrics();
     ScrollbarGeometry.Metrics scrollbarMetrics = null;
     float clientWidth = box.content().width();
     float clientHeight = box.content().height();
@@ -97,11 +103,24 @@ public class LayoutServiceImpl implements LayoutService {
 
     clampScrollOffsets(element);
 
-    // update scroll and client size for all the children.
-    element.childNodes().stream()
-        .filter(child -> child instanceof Element childElement && visible(childElement))
-        .map(Element.class::cast)
-        .forEach(this::updateScrollAndClientSize);
+    float previousClientWidth =
+        previousScrollbarMetrics == null
+            ? box.content().width()
+            : previousScrollbarMetrics.clientWidth();
+    float previousClientHeight =
+        previousScrollbarMetrics == null
+            ? box.content().height()
+            : previousScrollbarMetrics.clientHeight();
+    boolean gutterChanged =
+        previousClientWidth != clientWidth || previousClientHeight != clientHeight;
+
+    // Update scroll and client size for all children, propagating a nested gutter change upward.
+    for (Node child : element.childNodes()) {
+      if (child instanceof Element childElement && visible(childElement)) {
+        gutterChanged |= updateScrollAndClientSize(childElement);
+      }
+    }
+    return gutterChanged;
   }
 
   private boolean affectsScrollSize(Node node) {

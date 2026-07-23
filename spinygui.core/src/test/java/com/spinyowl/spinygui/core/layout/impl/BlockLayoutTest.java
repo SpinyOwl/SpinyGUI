@@ -486,6 +486,7 @@ class BlockLayoutTest {
     style(frame, 0);
     ButtonElement button = NodeBuilder.button(NodeBuilder.text("Save"));
     style(button, 2);
+    button.resolvedStyle().display(Display.INLINE_BLOCK);
     frame.addChild(button);
 
     RecursiveLayoutService layoutService = new RecursiveLayoutService();
@@ -495,11 +496,39 @@ class BlockLayoutTest {
     layoutService.blockLayout(blockLayout);
 
     blockLayout.layout(frame, new LayoutContext());
+    blockLayout.layoutInlineBlock(button, frame);
 
     assertEquals(40, button.box().content().width());
     assertEquals(10, button.box().content().height());
     assertEquals(44, button.box().borderBox().width());
     assertEquals(14, button.box().borderBox().height());
+  }
+
+  @Test
+  void layout_whenButtonAutoWidthDependsOnDisplay_blockFillsAndInlineBlockStaysIntrinsic() {
+    Frame frame = NodeBuilder.frame();
+    frame.frameSize(300, 200);
+    style(frame, 0);
+    ButtonElement blockButton = NodeBuilder.button(NodeBuilder.text("Save"));
+    style(blockButton, 2);
+    frame.addChild(blockButton);
+
+    RecursiveLayoutService layoutService = new RecursiveLayoutService();
+    FixedTextMeasurer textMeasurer = new FixedTextMeasurer();
+    BlockLayout blockLayout =
+        new BlockLayout(layoutService, new InlineFormattingContext(textMeasurer), textMeasurer);
+    layoutService.blockLayout(blockLayout);
+
+    blockLayout.layout(frame, new LayoutContext());
+    assertEquals(300, blockButton.box().borderBox().width());
+
+    ButtonElement inlineBlockButton = NodeBuilder.button(NodeBuilder.text("Save"));
+    style(inlineBlockButton, 2);
+    inlineBlockButton.resolvedStyle().display(Display.INLINE_BLOCK);
+    frame.addChild(inlineBlockButton);
+    blockLayout.layoutInlineBlock(inlineBlockButton, frame);
+
+    assertEquals(44, inlineBlockButton.box().borderBox().width());
   }
 
   @Test
@@ -513,6 +542,7 @@ class BlockLayoutTest {
     span.addChild(NodeBuilder.text("Go"));
     ButtonElement button = NodeBuilder.button(span);
     style(button, 2);
+    button.resolvedStyle().display(Display.INLINE_BLOCK);
     frame.addChild(button);
 
     RecursiveLayoutService layoutService = new RecursiveLayoutService();
@@ -522,6 +552,7 @@ class BlockLayoutTest {
     layoutService.blockLayout(blockLayout);
 
     blockLayout.layout(frame, new LayoutContext());
+    blockLayout.layoutInlineBlock(button, frame);
 
     assertEquals(20, button.box().content().width());
     assertEquals(10, button.box().content().height());
