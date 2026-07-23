@@ -458,6 +458,91 @@ class LayoutServiceProviderGridTest {
     assertTrue(grid.clientHeight() < grid.scrollHeight());
   }
 
+  @Test
+  void layout_reflowsNestedNamedAreaGridAfterEachOuterTrackSizeChange() {
+    Frame frame = NodeBuilder.frame();
+    frame.frameSize(600, 120);
+    style(frame, Display.BLOCK, 600, 120);
+    Element outer = NodeBuilder.div();
+    style(outer, Display.GRID, 600, 60);
+    outer.resolvedStyle().gridTemplateRows(GridTrackList.of(java.util.List.of(GridTrack.of(GridTrackSize.fixed(Length.pixel(60))))));
+    outer.resolvedStyle().gridTemplateAreas(GridTemplateAreas.of(java.util.List.of(java.util.List.of("diagnostics"))));
+    Element nested = gridItem();
+    nested.resolvedStyle().display(Display.GRID);
+    nested.resolvedStyle().gridRowStart(GridPlacement.line("diagnostics"));
+    nested.resolvedStyle().gridTemplateColumns(
+        GridTrackList.of(java.util.List.of(
+            GridTrack.of(GridTrackSize.flexible(com.spinyowl.spinygui.core.style.types.grid.GridFraction.fr(1))),
+            GridTrack.of(GridTrackSize.fixed(Length.pixel(8))))));
+    nested.resolvedStyle().gridTemplateRows(GridTrackList.of(java.util.List.of(GridTrack.of(GridTrackSize.flexible(com.spinyowl.spinygui.core.style.types.grid.GridFraction.fr(1))))));
+    nested.resolvedStyle().gridTemplateAreas(GridTemplateAreas.of(java.util.List.of(java.util.List.of("scroll", "resize"))));
+    Element viewport = gridItem();
+    viewport.resolvedStyle().gridRowStart(GridPlacement.line("scroll"));
+    Element viewportChild = gridItem();
+    viewportChild.resolvedStyle().width(Length.pixel(20));
+    viewportChild.resolvedStyle().height(Length.pixel(10));
+    viewport.addChild(viewportChild);
+    Element handle = gridItem();
+    handle.resolvedStyle().gridRowStart(GridPlacement.line("resize"));
+    nested.addChildren(viewport, handle);
+    outer.addChild(nested);
+    frame.addChild(outer);
+    LayoutService layoutService = layoutService();
+
+    assertNestedGridTrack(layoutService, outer, nested, handle, viewportChild, 260);
+    assertNestedGridTrack(layoutService, outer, nested, handle, viewportChild, 220);
+    assertNestedGridTrack(layoutService, outer, nested, handle, viewportChild, 480);
+  }
+
+  @Test
+  void layout_absoluteZeroInsetsUsePositionedAncestorPaddingBox() {
+    Frame frame = NodeBuilder.frame();
+    frame.frameSize(400, 300);
+    style(frame, Display.BLOCK, 400, 300);
+    Element ancestor = NodeBuilder.div();
+    style(ancestor, Display.BLOCK, 180, 100);
+    ancestor.resolvedStyle().position(Position.RELATIVE);
+    ancestor.resolvedStyle().left(Length.pixel(40));
+    ancestor.resolvedStyle().top(Length.pixel(30));
+    ancestor.resolvedStyle().paddingTop(Length.pixel(7));
+    ancestor.resolvedStyle().paddingRight(Length.pixel(11));
+    ancestor.resolvedStyle().borderTopWidth(Length.pixel(3));
+    ancestor.resolvedStyle().borderRightWidth(Length.pixel(5));
+    ancestor.resolvedStyle().borderTopStyle(BorderStyle.SOLID);
+    ancestor.resolvedStyle().borderRightStyle(BorderStyle.SOLID);
+    Element child = NodeBuilder.div();
+    style(child, Display.BLOCK, 20, 10);
+    child.resolvedStyle().position(Position.ABSOLUTE);
+    child.resolvedStyle().top(Length.ZERO);
+    child.resolvedStyle().right(Length.ZERO);
+    ancestor.addChild(child);
+    frame.addChild(ancestor);
+
+    layoutService().layout(frame);
+
+    assertEquals(ancestor.absolutePosition().y() + ancestor.box().border().top(), child.absolutePosition().y(), 0.001);
+    assertEquals(
+        ancestor.absolutePosition().x() + ancestor.box().border().left() + ancestor.box().paddingBox().width(),
+        child.absolutePosition().x() + child.box().borderBox().width(),
+        0.001);
+  }
+
+  private static void assertNestedGridTrack(
+      LayoutService layoutService, Element outer, Element nested, Element handle, Element viewportChild, float width) {
+    outer.resolvedStyle().gridTemplateColumns(
+        GridTrackList.of(java.util.List.of(GridTrack.of(GridTrackSize.fixed(Length.pixel(width))))));
+    layoutService.layout(outer.frame());
+
+    assertEquals(8, handle.box().content().width(), 0.001);
+    assertEquals(width - 8, handle.box().content().x(), 0.001);
+    assertEquals(
+        nested.absolutePosition().x() + nested.box().border().left() + nested.box().paddingBox().width(),
+        handle.absolutePosition().x() + handle.box().borderBox().width(),
+        0.001);
+    assertEquals(0, viewportChild.box().content().x(), 0.001);
+    assertEquals(0, viewportChild.box().content().y(), 0.001);
+  }
+
   private static LayoutService layoutService() {
     FontService fontService =
         mock(FontService.class, withSettings().extraInterfaces(TextMeasurer.class));

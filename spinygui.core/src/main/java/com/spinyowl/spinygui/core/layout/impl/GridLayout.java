@@ -12,6 +12,7 @@ import com.spinyowl.spinygui.core.node.Node;
 import com.spinyowl.spinygui.core.node.layout.Edges;
 import com.spinyowl.spinygui.core.node.layout.Rect;
 import com.spinyowl.spinygui.core.style.ResolvedStyle;
+import com.spinyowl.spinygui.core.style.types.Display;
 import com.spinyowl.spinygui.core.style.types.flex.AlignItems;
 import com.spinyowl.spinygui.core.style.types.flex.AlignSelf;
 import com.spinyowl.spinygui.core.style.types.grid.GridAutoFlow;
@@ -39,6 +40,10 @@ public class GridLayout implements ElementLayout {
   @Override
   public void layout(Element parent, LayoutContext context) {
     blockLayout.layout(parent, true, context);
+    layoutGridContents(parent, context);
+  }
+
+  private void layoutGridContents(Element parent, LayoutContext context) {
     layoutService.layoutChildNodes(parent, context);
 
     List<Element> items = gridItems(parent);
@@ -294,7 +299,17 @@ public class GridLayout implements ElementLayout {
       float areaWidth = spanSize(columns, columnGap, range.columnStart(), range.columnEnd());
       float areaHeight = spanSize(rows, rowGap, range.rowStart(), range.rowEnd());
       applyItemBox(item.element(), areaX, areaY, areaWidth, areaHeight, parentStyle);
-      layoutService.layoutChildNodes(item.element(), new LayoutContext());
+      reflowItemContents(item.element());
+    }
+  }
+
+  private void reflowItemContents(Element item) {
+    LayoutContext context = new LayoutContext();
+    if (Display.GRID.equals(item.resolvedStyle().display())) {
+      // A nested grid must place its own items after its final grid area is known.
+      layoutGridContents(item, context);
+    } else {
+      layoutService.layoutChildNodes(item, context);
     }
   }
 

@@ -222,19 +222,16 @@ public class BlockLayout implements ElementLayout {
               + ancestor.box().padding().bottom()
               + ancestor.box().content().height();
 
-      float parentOffset = ancestor.box().content().y();
-      contentY = parentOffset + e.box().border().top() + e.box().padding().top();
+      contentY = ancestor.box().border().top() + e.box().border().top() + e.box().padding().top();
       float bottom = contentY + parentPaddingBoxHeight;
 
       if (style.top().isLength()) {
-        contentY +=
-            getFloatLength(style.top(), parentPaddingBoxHeight) - ancestor.box().padding().top();
+        contentY += getFloatLength(style.top(), parentPaddingBoxHeight);
       }
       if (style.bottom().isLength()) {
         bottom =
-            parentOffset
-                + ancestor.box().padding().bottom()
-                + ancestor.box().content().height()
+            ancestor.box().border().top()
+                + ancestor.box().paddingBox().height()
                 - getFloatLength(style.bottom(), parentPaddingBoxHeight);
       }
 

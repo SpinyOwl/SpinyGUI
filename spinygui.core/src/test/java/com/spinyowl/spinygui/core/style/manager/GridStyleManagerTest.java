@@ -134,6 +134,21 @@ class GridStyleManagerTest {
     assertEquals(template.resolvedStyle().gridTemplateColumns(), grid.resolvedStyle().gridTemplateColumns());
   }
 
+  @Test
+  void recalculateAcceptsOnlyUnitlessZeroInsets() {
+    Element zero = styledElement("top: 0; right: 0; bottom: 0; left: 0;");
+    Element nonZero = styledElement("top: 1; right: 1; bottom: 1; left: 1;");
+
+    assertEquals(Length.ZERO, zero.resolvedStyle().top());
+    assertEquals(Length.ZERO, zero.resolvedStyle().right());
+    assertEquals(Length.ZERO, zero.resolvedStyle().bottom());
+    assertEquals(Length.ZERO, zero.resolvedStyle().left());
+    assertEquals(com.spinyowl.spinygui.core.style.types.length.Unit.AUTO, nonZero.resolvedStyle().top());
+    assertEquals(com.spinyowl.spinygui.core.style.types.length.Unit.AUTO, nonZero.resolvedStyle().right());
+    assertEquals(com.spinyowl.spinygui.core.style.types.length.Unit.AUTO, nonZero.resolvedStyle().bottom());
+    assertEquals(com.spinyowl.spinygui.core.style.types.length.Unit.AUTO, nonZero.resolvedStyle().left());
+  }
+
   private Element styledElement(String style) {
     PropertyStore propertyStore = new DefaultPropertyStoreProvider().createPropertyStore();
     StyleSheetParser parser = StyleSheetParserFactory.createParser(propertyStore);
