@@ -134,8 +134,8 @@ Add these final records:
 public record ChartPayload(List<CpuChartDatum> cpu, List<RenderingChartDatum> rendering,
     List<String> historyRuns, List<ChartTrend> trends) { }
 
-public record CpuChartDatum(String label, double latency, double uncertainty,
-    double allocation, double allocationRate) { }
+public record CpuChartDatum(String label, double latency, Double uncertainty,
+    double allocation, Double allocationRate) { }
 
 public record RenderingChartDatum(String label, double cpuMedian, double cpuP95, double cpuP99,
     double gpuMedian, double gpuP95, double gpuP99) { }
@@ -146,9 +146,11 @@ public record ChartTrend(String id, String label, String unit, double minimum, d
 
 - [ ] **Step 5: Build numeric payloads without parsing display text**
 
-In `toView`, build `CpuChartDatum` and `RenderingChartDatum` directly from `CpuResult` and `SceneResult`. Add `double numericMinimum` and `double numericMaximum` to the temporary SVG `TrendSeries`, plus `double numericValue` to its temporary `TrendPoint`, so aligned trends use raw values without calling `Double.parseDouble` on formatted strings.
+In `toView`, build `CpuChartDatum` and `RenderingChartDatum` directly from `CpuResult` and `SceneResult`. Preserve absent optional CPU uncertainty/allocation-rate metrics as `null` so reports accepted by the existing parser remain renderable. Add `double numericMinimum` and `double numericMaximum` to the temporary SVG `TrendSeries`, plus `double numericValue` to its temporary `TrendPoint`, so aligned trends use raw values without calling `Double.parseDouble` on formatted strings.
 
-Pass every raw number added to `ChartPayload` through a small `finite(String metric, double value)` guard. It returns finite values unchanged and throws `IllegalArgumentException("Non-finite benchmark chart value: " + metric)` otherwise. This prevents Gson from ever receiving `NaN` or either infinity.
+Pass every required raw number added to `ChartPayload` through a small `finite(String metric, double value)` guard. Add `finiteOrNull(String metric, Double value)` for optional uncertainty and allocation rate; it returns `null` unchanged and delegates non-null values to `finite`. Both guards throw `IllegalArgumentException("Non-finite benchmark chart value: " + metric)` for non-finite values. This prevents Gson from ever receiving `NaN` or either infinity while retaining missing optional data.
+
+Add a regression test that removes `scoreError` and `gc.alloc.rate` from the CPU fixture, loads the archive, and verifies `uncertainty()` and `allocationRate()` are `null` while generated HTML still contains `not reported` in its raw table.
 
 Create `chartPayload(...)` that:
 
@@ -412,7 +414,7 @@ function mountChart(canvasId, config) {
 }
 ```
 
-Create horizontal CPU bar configs with `indexAxis:'y'`, logarithmic x-axes, `responsive:true`, `maintainAspectRatio:false`, and `animation:false`. Tooltip callbacks read uncertainty and allocation rate from `report.cpu[context.dataIndex]`.
+Create horizontal CPU bar configs with `indexAxis:'y'`, logarithmic x-axes, `responsive:true`, `maintainAspectRatio:false`, and `animation:false`. Tooltip callbacks read uncertainty and allocation rate from `report.cpu[context.dataIndex]` and display `not reported` when either optional value is `null`.
 
 Create grouped rendering configs with scene labels and median/p95/p99 datasets. Use a linear x-axis with `min:0` and `max:16667`. Dataset background color callbacks return `colors.warning` when `Number(context.raw) > 16667`.
 

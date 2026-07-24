@@ -164,9 +164,9 @@ public final class BenchmarkHtmlReportGenerator {
           number(logarithmicWidth(result.allocation(), allocationMin, allocationMax))));
       cpuChartData.add(new BenchmarkReportView.CpuChartDatum(result.name(),
           finite("CPU latency: " + result.name(), result.latency()),
-          finite("CPU uncertainty: " + result.name(), result.error()),
+          finiteOrNull("CPU uncertainty: " + result.name(), result.error()),
           finite("CPU allocation: " + result.name(), result.allocation()),
-          finite("CPU allocation rate: " + result.name(), result.allocationRate())));
+          finiteOrNull("CPU allocation rate: " + result.name(), result.allocationRate())));
     }
     List<BenchmarkReportView.SceneRow> sceneRows = new ArrayList<>();
     List<BenchmarkReportView.ChartRow> cpuChartRows = new ArrayList<>();
@@ -385,6 +385,10 @@ public final class BenchmarkHtmlReportGenerator {
   private static double finite(String metric, double value) {
     if (!Double.isFinite(value)) throw new IllegalArgumentException("Non-finite benchmark chart value: " + metric);
     return value;
+  }
+
+  private static Double finiteOrNull(String metric, Double value) {
+    return value == null ? null : finite(metric, value);
   }
 
   private static String coordinate(double value) {

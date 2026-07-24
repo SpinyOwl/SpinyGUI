@@ -27,8 +27,8 @@ public record BenchmarkReportView(
       String accessibleLabel) { }
   public record ChartPayload(List<CpuChartDatum> cpu, List<RenderingChartDatum> rendering,
       List<String> historyRuns, List<ChartTrend> trends) { }
-  public record CpuChartDatum(String label, double latency, double uncertainty,
-      double allocation, double allocationRate) { }
+  public record CpuChartDatum(String label, double latency, Double uncertainty,
+      double allocation, Double allocationRate) { }
   public record RenderingChartDatum(String label, double cpuMedian, double cpuP95, double cpuP99,
       double gpuMedian, double gpuP95, double gpuP99) { }
   public record ChartTrend(String id, String label, String unit, double minimum, double maximum,

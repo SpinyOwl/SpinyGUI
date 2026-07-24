@@ -94,6 +94,30 @@ class BenchmarkHtmlReportGeneratorTest {
   }
 
   @Test
+  void preservesMissingOptionalCpuMetricsInChartPayloadAndRawTable(@TempDir Path archive) throws IOException {
+    String cpuWithoutOptionalMetrics = cpuJson().replace(",\"scoreError\":0.5", "")
+        .replace(",\"gc.alloc.rate\":{\"score\":7}", "");
+    writePair(archive, "20260724-090000-000000000", cpuWithoutOptionalMetrics, renderingJson());
+
+    BenchmarkReportView view = BenchmarkHtmlReportGenerator.loadArchive(archive);
+
+    assertTrue(view.charts().cpu().getFirst().uncertainty() == null);
+    assertTrue(view.charts().cpu().getFirst().allocationRate() == null);
+    assertTrue(BenchmarkHtmlReportGenerator.generateArchive(archive).contains("not reported"));
+  }
+
+  @Test
+  void rejectsNonFiniteOptionalChartValues() {
+    IllegalArgumentException uncertaintyFailure = assertThrows(IllegalArgumentException.class,
+        () -> BenchmarkHtmlReportGenerator.generate(cpuJson().replace("0.5", "1e309"), renderingJson()));
+    assertTrue(uncertaintyFailure.getMessage().contains("Non-finite benchmark chart value"));
+
+    IllegalArgumentException allocationRateFailure = assertThrows(IllegalArgumentException.class,
+        () -> BenchmarkHtmlReportGenerator.generate(cpuJson().replace("\"score\":7", "\"score\":1e309"), renderingJson()));
+    assertTrue(allocationRateFailure.getMessage().contains("Non-finite benchmark chart value"));
+  }
+
+  @Test
   void loadsCompleteTimestampedPairsChronologicallyAndComputesChanges() throws IOException {
     Path archive = Files.createTempDirectory("benchmark-runs");
     String first = "20260724-090000-000000000";
