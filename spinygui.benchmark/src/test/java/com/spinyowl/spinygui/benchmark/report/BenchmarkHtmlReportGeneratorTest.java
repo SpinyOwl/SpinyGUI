@@ -9,11 +9,13 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.Locale;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 class BenchmarkHtmlReportGeneratorTest {
   @Test
-  void generatesSelfContainedEscapedReportFromBothJsonFormats() {
-    String html = BenchmarkHtmlReportGenerator.generate(cpuJson(), renderingJson());
+  void generatesSelfContainedEscapedReportFromBothJsonFormats(@TempDir Path archive) throws IOException {
+    writePair(archive, "20260724-090000-000000000", cpuJson(), renderingJson());
+    String html = BenchmarkHtmlReportGenerator.generateArchive(archive);
 
     assertTrue(html.contains("measureLatin"));
     assertTrue(html.contains("100 fragments"));
@@ -40,7 +42,7 @@ class BenchmarkHtmlReportGeneratorTest {
     assertTrue(html.contains("<section id=\"methodology\""));
     assertFalse(html.contains("tab-control"));
     assertFalse(html.contains("tab-panel"));
-    assertFalse(html.contains(":has("));
+    assertFalse(html.contains("#tab-overview"));
     assertTrue(html.contains("role=\"tooltip\""));
     assertTooltipReferences(html);
     assertTrue(html.contains("&#9432;"));
@@ -60,15 +62,17 @@ class BenchmarkHtmlReportGeneratorTest {
     assertTrue(compactHtml.contains(".report-nav{position:sticky;top:0"));
     assertTrue(compactHtml.contains(".report-nav{margin-inline:-16px;padding:12px16px16px;flex-wrap:nowrap;overflow-x:auto}"));
     assertTrue(compactHtml.contains(".report-nava{flex:none;white-space:nowrap}"));
-    assertTrue(compactHtml.contains(".trend-explorer{display:grid;grid-template-columns:260pxminmax(0,1fr)"));
-    assertTrue(compactHtml.contains(".trend-select:checked+.trend-option+.trend-panel{display:block}"));
-    assertTrue(compactHtml.contains(".trend-explorer{grid-template-columns:1fr}"));
     assertTrue(compactHtml.contains(".trend-chart{margin:0;padding:16px;border:1pxsolid#304052;border-radius:4px;min-width:820px"));
-    assertTrue(compactHtml.contains(".trend-panel{display:none;grid-column:2;grid-row:1;order:2;min-width:0;max-width:100%;overflow-x:auto;overscroll-behavior-inline:contain}"));
-    assertTrue(compactHtml.contains("@media(min-width:701px)and(max-width:1100px){.trend-explorer{grid-template-columns:minmax(180px,260px)minmax(0,1fr)}}"));
-    assertTrue(compactHtml.contains(".trend-panel{grid-column:1;grid-row:auto}"));
-    assertTrue(compactHtml.contains(".trend-option{grid-column:1;order:1"));
-    assertTrue(compactHtml.contains(".trend-panel{display:none;grid-column:2;grid-row:1;order:2"));
+    assertTrue(html.contains("<div class=\"trend-controls\" role=\"radiogroup\""));
+    assertTrue(html.contains("<div class=\"trend-panels\">"));
+    assertTrue(html.indexOf("class=\"trend-controls\"") < html.indexOf("class=\"trend-panels\""));
+    assertTrue(html.contains("<input class=\"trend-select\" type=\"radio\" id=\"cpu-trend-1-select\" name=\"trend-metric\" checked>"));
+    assertTrue(html.contains("id=\"cpu-trend-1-panel\" class=\"trend-panel\""));
+    assertTrue(compactHtml.contains(".trend-controls{display:flex;flex-wrap:wrap;gap:4px"));
+    assertTrue(compactHtml.contains(".trend-panels{min-width:0}"));
+    assertTrue(compactHtml.contains(".trend-explorer:has(#cpu-trend-1-select:checked)#cpu-trend-1-panel{display:block}"));
+    assertFalse(compactHtml.contains(".trend-explorer{display:grid;grid-template-columns:"));
+    assertFalse(compactHtml.contains(".trend-option{grid-column:"));
     assertTrue(compactHtml.contains("scroll-padding-top:72px"));
 
     String lowerCaseHtml = html.toLowerCase(Locale.ROOT);

@@ -34,13 +34,17 @@
         .note { color:#aebed0 }
         .pill { display:inline-block; background:#29384b; padding:4px 8px; border-radius:4px; margin:2px }
         .table-wrap { overflow-x:auto; -webkit-overflow-scrolling:touch }
-        .trend-explorer { display:grid; grid-template-columns:260px minmax(0,1fr); gap:16px; align-items:start }
+        .trend-explorer { min-width:0 }
+        .trend-controls { display:flex; flex-wrap:wrap; gap:4px; margin-bottom:16px }
         .trend-select { position:absolute; inline-size:1px; block-size:1px; opacity:0 }
-        .trend-option { grid-column:1; order:1; cursor:pointer; border:1px solid #304052; border-radius:4px; padding:10px; color:#e8edf5 }
+        .trend-option { cursor:pointer; border:1px solid #304052; border-radius:4px; padding:8px 10px; color:#e8edf5 }
         .trend-select:focus-visible + .trend-option { outline:3px solid #f2d05c; outline-offset:2px }
         .trend-select:checked + .trend-option { background:#55b6e8; color:#10151f; font-weight:700 }
-        .trend-panel { display:none; grid-column:2; grid-row:1; order:2; min-width:0; max-width:100%; overflow-x:auto; overscroll-behavior-inline:contain }
-        .trend-select:checked + .trend-option + .trend-panel { display:block }
+        .trend-panels { min-width:0 }
+        .trend-panel { display:none; min-width:0; max-width:100%; overflow-x:auto; overscroll-behavior-inline:contain }
+        @for(var series : model.trends())
+        .trend-explorer:has(#${series.id()}-select:checked) #${series.id()}-panel { display:block }
+        @endfor
         .trend-chart { margin:0; padding:16px; border:1px solid #304052; border-radius:4px; min-width:820px; font-size:18px }
         .trend-chart svg { display:block; width:100%; height:auto; margin-top:8px }
         .trend-grid { fill:none; stroke:#304052; stroke-width:2 }
@@ -52,9 +56,6 @@
         .info { position:relative; vertical-align:middle; border:1px solid #55b6e8; border-radius:50%; background:transparent; color:#e8edf5; font-weight:700; inline-size:1.4em; block-size:1.4em; padding:0 }
         .tooltip { display:none; position:absolute; z-index:3; inset-inline-start:0; inset-block-start:calc(100% + 6px); width:min(320px,75vw); padding:8px; border-radius:4px; background:#080c12; color:#e8edf5; text-align:left; font:13px system-ui,sans-serif }
         .info:hover .tooltip,.info:focus .tooltip { display:block }
-        @media(min-width:701px) and (max-width:1100px) {
-            .trend-explorer { grid-template-columns:minmax(180px,260px) minmax(0,1fr) }
-        }
         @media(max-width:700px) {
             main { padding:16px }
             .report-nav { margin-inline:-16px; padding:12px 16px 16px; flex-wrap:nowrap; overflow-x:auto }
@@ -66,9 +67,6 @@
             .budget-legend { flex-direction:column; gap:6px }
             table { min-width:640px }
             .tooltip { position:fixed; z-index:4; inset:16px; box-sizing:border-box; width:auto; max-height:calc(100vh - 32px); overflow:auto }
-            .trend-explorer { grid-template-columns:1fr }
-            .trend-option { grid-column:1 }
-            .trend-panel { grid-column:1; grid-row:auto }
         }
     </style>
 </head>
@@ -98,7 +96,26 @@
     </section>
     <section id="history" aria-labelledby="history-heading">
         <h2 id="history-heading">Performance history</h2><p class="note">Values are chronological; signed changes compare each complete run with its immediately previous complete run.</p>
-        <h3>Trend viewport</h3><p class="note">Choose a CPU operation or complete rendering-scene identity. Missing runs leave visible gaps; raw tables below remain the precise data view.</p><div class="trend-explorer" role="radiogroup" aria-label="Trend metric selector">@for(var series : model.trends())@if(series.id().equals(model.trends().getFirst().id()))<input class="trend-select" type="radio" id="${series.id()}-select" name="trend-metric" checked>@else<input class="trend-select" type="radio" id="${series.id()}-select" name="trend-metric">@endif<label class="trend-option" for="${series.id()}-select">${series.label()}</label><div class="trend-panel">@template.components.trendChart(series)</div>@endfor</div>
+        <h3>Trend viewport</h3><p class="note">Choose a CPU operation or complete rendering-scene identity. Missing runs leave visible gaps; raw tables below remain the precise data view.</p>
+        <div class="trend-explorer">
+            <div class="trend-controls" role="radiogroup" aria-label="Trend metric selector">
+                @for(var series : model.trends())
+                    @if(series.id().equals(model.trends().getFirst().id()))
+                        <input class="trend-select" type="radio" id="${series.id()}-select" name="trend-metric" checked>
+                    @else
+                        <input class="trend-select" type="radio" id="${series.id()}-select" name="trend-metric">
+                    @endif
+                    <label class="trend-option" for="${series.id()}-select">${series.label()}</label>
+                @endfor
+            </div>
+            <div class="trend-panels">
+                @for(var series : model.trends())
+                    <div id="${series.id()}-panel" class="trend-panel">
+                        @template.components.trendChart(series)
+                    </div>
+                @endfor
+            </div>
+        </div>
         @for(var run : model.history())<section class="history-run" id="run-${run.identifier()}" aria-labelledby="run-heading-${run.identifier()}"><h3 id="run-heading-${run.identifier()}">${run.identifier()}</h3><div class="table-wrap"><table><tr><th>CPU operation</th><th>Latency (us/op)</th><th>Change</th><th>Allocation (B/op)</th><th>Change</th></tr>@for(var row : run.cpuRows())<tr><td>${row.name()}</td><td>${row.latency()}</td><td>${row.latencyChange()}</td><td>${row.allocation()}</td><td>${row.allocationChange()}</td></tr>@endfor</table></div><div class="table-wrap"><table><tr><th>Scene</th><th>CPU median/p95/p99</th><th>CPU change</th><th>GPU median/p95/p99</th><th>GPU change</th><th>CPU/GPU 120 Hz</th><th>Budget change</th></tr>@for(var row : run.sceneRows())<tr><td>${row.fragments()}</td><td>${row.cpuLatency()}</td><td>${row.cpuChange()}</td><td>${row.gpuLatency()}</td><td>${row.gpuChange()}</td><td>${row.cpuBudget120()} / ${row.gpuBudget120()}</td><td>${row.cpuBudgetChange()} / ${row.gpuBudgetChange()}</td></tr>@endfor</table></div></section>@endfor
     </section>
     <section id="methodology" aria-labelledby="methodology-heading">

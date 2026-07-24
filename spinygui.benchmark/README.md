@@ -44,8 +44,9 @@ without running benchmarks. The
 file has inline styles and graphics only, so it can be opened directly from disk without network
 access. It is one continuous page with sticky anchored Overview, CPU, Rendering, History, and
 Methodology navigation plus a skip link. History shows every complete archived run and signed
-changes from the immediately previous complete run, plus one large CPU-latency or GPU-p99 trend
-viewport selected with keyboard-accessible radio controls. Rendering metrics identify scenes by
+changes from the immediately previous complete run, plus CPU-latency and GPU-p99 metric buttons in
+a wrapping toolbar above the selected full-width chart. On narrow screens, only the chart viewport
+scrolls when required. Rendering metrics identify scenes by
 fragments, nodes, code points, glyphs, and runs. Missing workloads leave visible line gaps while
 retaining their global timeline position; raw chronological tables remain the precise view. Information icons reveal metric help on hover or keyboard focus. Its
 self-contained markup is precompiled from JTE templates during the benchmark module's normal Java
