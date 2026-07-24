@@ -1,6 +1,7 @@
 package com.spinyowl.spinygui.benchmark.report;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
@@ -86,6 +87,13 @@ class BenchmarkHtmlReportGeneratorTest {
   }
 
   @Test
+  void rejectsNonFiniteChartValues() {
+    IllegalArgumentException failure = assertThrows(IllegalArgumentException.class,
+        () -> BenchmarkHtmlReportGenerator.generate(cpuJson().replace("12.5", "1e309"), renderingJson()));
+    assertTrue(failure.getMessage().contains("Non-finite benchmark chart value"));
+  }
+
+  @Test
   void loadsCompleteTimestampedPairsChronologicallyAndComputesChanges() throws IOException {
     Path archive = Files.createTempDirectory("benchmark-runs");
     String first = "20260724-090000-000000000";
@@ -106,6 +114,18 @@ class BenchmarkHtmlReportGeneratorTest {
 
     BenchmarkReportView view = BenchmarkHtmlReportGenerator.loadArchive(archive);
 
+    BenchmarkReportView.ChartPayload charts = view.charts();
+    assertTrue(charts.cpu().getFirst().label().equals("measure<Latin>"));
+    assertTrue(charts.cpu().getFirst().latency() == 20.0);
+    assertTrue(charts.cpu().getFirst().uncertainty() == 0.5);
+    assertTrue(charts.cpu().getFirst().allocation() == 42.0);
+    assertTrue(charts.cpu().getFirst().allocationRate() == 7.0);
+    assertTrue(charts.rendering().getFirst().cpuMedian() == 1.0);
+    assertTrue(charts.rendering().getFirst().cpuP95() == 2.0);
+    assertTrue(charts.rendering().getFirst().cpuP99() == 3.0);
+    assertTrue(charts.rendering().getFirst().gpuMedian() == 2.0);
+    assertTrue(charts.rendering().getFirst().gpuP95() == 3.0);
+    assertTrue(charts.rendering().getFirst().gpuP99() == 12.0);
     assertTrue(view.cpuRows().getFirst().latency().equals("20.000"));
     assertTrue(view.history().size() == 3);
     assertTrue(view.history().getFirst().identifier().equals(first));
@@ -116,14 +136,12 @@ class BenchmarkHtmlReportGeneratorTest {
     assertTrue(view.history().getLast().cpuRows().getFirst().latencyChange().equals("-20.000%"));
     assertTrue(view.history().getLast().cpuRows().getFirst().allocationChange().equals("+0.000%"));
     assertTrue(view.history().getLast().sceneRows().getFirst().gpuChange().contains("+0.000% / +0.000% / +50.000%"));
-    BenchmarkReportView.TrendSeries cpuTrend = trend(view, "CPU latency: measure<Latin>");
-    assertTrue(view.trends().size() == 3);
-    assertTrue(cpuTrend.points().size() == 3);
-    assertTrue(cpuTrend.points().getFirst().x().equals("100.000"));
-    assertTrue(cpuTrend.points().getLast().x().equals("1100.000"));
-    assertTrue(cpuTrend.points().stream().allMatch(point -> Double.parseDouble(point.y()) >= 80 && Double.parseDouble(point.y()) <= 620));
-    assertTrue(view.trends().stream().anyMatch(series -> series.label().contains("1,000 fragments")
-        && series.points().stream().allMatch(point -> point.y().equals("350.000"))));
+    BenchmarkReportView.ChartTrend cpuTrend = chartTrend(view, "CPU latency: measure<Latin>");
+    assertTrue(charts.historyRuns().equals(List.of(first, second, collision)));
+    assertTrue(cpuTrend.values().equals(List.of(12.5, 25.0, 20.0)));
+    assertTrue(cpuTrend.changes().equals(List.of("not available", "+100.000%", "-20.000%")));
+    assertTrue(cpuTrend.minimum() == 11.25);
+    assertTrue(cpuTrend.maximum() == 26.25);
     String html = BenchmarkHtmlReportGenerator.generateArchive(archive);
     assertTrue(html.contains("measure&lt;Latin&gt;"));
     assertTrue(html.contains("<section id=\"history\""));
@@ -153,15 +171,10 @@ class BenchmarkHtmlReportGeneratorTest {
 
     BenchmarkReportView view = BenchmarkHtmlReportGenerator.loadArchive(archive);
 
-    BenchmarkReportView.TrendSeries missingCpu = trend(view, "CPU latency: measureLatin");
-    assertTrue(view.trends().stream().filter(series -> series.label().startsWith("GPU p99: 100 fragments")).count() == 2);
-    assertTrue(missingCpu.points().size() == 2);
-    assertTrue(missingCpu.points().getFirst().x().equals("100.000"));
-    assertTrue(missingCpu.points().getLast().x().equals("1100.000"));
-    assertTrue(missingCpu.segments().size() == 2);
-    assertTrue(missingCpu.segments().stream().allMatch(segment -> segment.points().size() == 1));
-    assertTrue(missingCpu.timelineFirstRun().equals(first));
-    assertTrue(missingCpu.timelineLastRun().equals(last));
+    BenchmarkReportView.ChartTrend missingCpu = chartTrend(view, "CPU latency: measureLatin");
+    assertTrue(view.charts().trends().stream().filter(series -> series.label().startsWith("GPU p99: 100 fragments")).count() == 2);
+    assertTrue(missingCpu.values().equals(java.util.Arrays.asList(12.5, null, 12.5)));
+    assertTrue(missingCpu.changes().equals(java.util.Arrays.asList("not available", null, "not available")));
   }
 
   @Test
@@ -173,15 +186,13 @@ class BenchmarkHtmlReportGeneratorTest {
     writePair(archive, first, cpuJson().replace("measureLatin", "otherOperation"), renderingJson());
     writePair(archive, middle, cpuJson(), renderingJson());
     writePair(archive, last, cpuJson().replace("measureLatin", "otherOperation"), renderingJson());
-    BenchmarkReportView.TrendSeries boundaryOnly = trend(BenchmarkHtmlReportGenerator.loadArchive(archive), "CPU latency: measureLatin");
-    assertTrue(boundaryOnly.points().getFirst().x().equals("600.000"));
-    assertTrue(boundaryOnly.segments().size() == 1);
+    BenchmarkReportView.ChartTrend boundaryOnly = chartTrend(BenchmarkHtmlReportGenerator.loadArchive(archive), "CPU latency: measureLatin");
+    assertTrue(boundaryOnly.values().equals(java.util.Arrays.asList(null, 12.5, null)));
 
     Path singleRunArchive = Files.createTempDirectory("benchmark-single-trend");
     writePair(singleRunArchive, first, cpuJson(), renderingJson());
-    BenchmarkReportView.TrendSeries single = trend(BenchmarkHtmlReportGenerator.loadArchive(singleRunArchive), "CPU latency: measureLatin");
-    assertTrue(single.points().size() == 1);
-    assertTrue(single.points().getFirst().x().equals("600.000"));
+    BenchmarkReportView.ChartTrend single = chartTrend(BenchmarkHtmlReportGenerator.loadArchive(singleRunArchive), "CPU latency: measureLatin");
+    assertTrue(single.values().equals(List.of(12.5)));
     assertTrue(BenchmarkHtmlReportGenerator.generateArchive(singleRunArchive).contains("One matching run"));
   }
 
@@ -207,6 +218,10 @@ class BenchmarkHtmlReportGeneratorTest {
 
   private static BenchmarkReportView.TrendSeries trend(BenchmarkReportView view, String label) {
     return view.trends().stream().filter(series -> series.label().equals(label)).findFirst().orElseThrow();
+  }
+
+  private static BenchmarkReportView.ChartTrend chartTrend(BenchmarkReportView view, String label) {
+    return view.charts().trends().stream().filter(series -> series.label().equals(label)).findFirst().orElseThrow();
   }
 
   private static void assertCoordinatesAreUngrouped(String html) {
