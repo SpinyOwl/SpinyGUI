@@ -10,3 +10,6 @@
 # Binary files should be left untouched
 *.jar           binary
 
+/spinygui.benchmark/src/main/resources/com/spinyowl/spinygui/benchmark/report/*.js text eol=lf
+/spinygui.benchmark/src/main/resources/com/spinyowl/spinygui/benchmark/report/*.txt text eol=lf
+

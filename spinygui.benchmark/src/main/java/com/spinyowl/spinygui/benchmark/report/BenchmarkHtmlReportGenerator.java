@@ -4,12 +4,15 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.google.gson.GsonBuilder;
 import gg.jte.ContentType;
 import gg.jte.TemplateEngine;
 import gg.jte.output.StringOutput;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -26,8 +29,6 @@ import java.util.stream.Stream;
 /** Parses local benchmark JSON and renders its typed view through precompiled JTE templates. */
 public final class BenchmarkHtmlReportGenerator {
   private static final double BUDGET_120_HZ_MICROS = 8_333;
-  private static final double BUDGET_60_HZ_MICROS = 16_667;
-  private static final double LOGARITHMIC_MIN_WIDTH_PERCENT = 5;
   private static final DateTimeFormatter RUN_ID_FORMAT = DateTimeFormatter.ofPattern("yyyyMMdd-HHmmss-SSSSSSSSS");
   private static final Pattern CPU_FILE = Pattern.compile("text-calculation-(\\d{8}-\\d{6}-\\d{9}(?:-\\d+)?)\\.json");
   private static final Pattern RENDERING_FILE = Pattern.compile("nanovg-text-(\\d{8}-\\d{6}-\\d{9}(?:-\\d+)?)\\.json");
@@ -59,15 +60,29 @@ public final class BenchmarkHtmlReportGenerator {
     List<ArchivedRun> runs = findCompleteRuns(archive);
     if (runs.isEmpty()) throw new IllegalArgumentException("Benchmark archive contains no complete valid run pairs");
     ArchivedRun current = runs.getLast();
-    List<BenchmarkReportView.TrendSeries> trends = new ArrayList<>(cpuTrends(runs));
+    List<BenchmarkReportView.ChartTrend> trends = new ArrayList<>(cpuTrends(runs));
     trends.addAll(gpuTrends(runs));
     return toView(current.cpu(), current.rendering(), current.identifier(), history(runs), trends);
   }
 
   private static String render(BenchmarkReportView view) {
+    BenchmarkReportPage page = new BenchmarkReportPage(
+        view,
+        resource("chart.umd.min.js"),
+        resource("benchmark-charts.js"),
+        new GsonBuilder().serializeNulls().create().toJson(Map.of("chartPayloadVersion", 1, "charts", view.charts())));
     StringOutput output = new StringOutput();
-    TemplateEngine.createPrecompiled(ContentType.Html).render("report.jte", view, output);
+    TemplateEngine.createPrecompiled(ContentType.Html).render("report.jte", page, output);
     return output.toString();
+  }
+
+  private static String resource(String name) {
+    try (InputStream stream = BenchmarkHtmlReportGenerator.class.getResourceAsStream(name)) {
+      if (stream == null) throw new IllegalStateException("Missing benchmark report resource: " + name);
+      return new String(stream.readAllBytes(), StandardCharsets.UTF_8);
+    } catch (IOException exception) {
+      throw new IllegalStateException("Missing benchmark report resource: " + name, exception);
+    }
   }
 
   private static List<ArchivedRun> findCompleteRuns(Path archive) throws IOException {
@@ -150,18 +165,13 @@ public final class BenchmarkHtmlReportGenerator {
   }
 
   private static BenchmarkReportView toView(List<CpuResult> cpu, RenderingResult rendering, String currentRunIdentifier,
-      List<BenchmarkReportView.HistoryRun> history, List<BenchmarkReportView.TrendSeries> trends) {
+      List<BenchmarkReportView.HistoryRun> history, List<BenchmarkReportView.ChartTrend> trends) {
     List<BenchmarkReportView.CpuRow> cpuRows = new ArrayList<>();
     List<BenchmarkReportView.CpuChartDatum> cpuChartData = new ArrayList<>();
-    double latencyMin = cpu.stream().mapToDouble(CpuResult::latency).filter(value -> value > 0).min().orElse(1);
-    double latencyMax = cpu.stream().mapToDouble(CpuResult::latency).max().orElse(1);
-    double allocationMin = cpu.stream().mapToDouble(CpuResult::allocation).filter(value -> value > 0).min().orElse(1);
-    double allocationMax = cpu.stream().mapToDouble(CpuResult::allocation).max().orElse(1);
     for (CpuResult result : cpu) {
       cpuRows.add(new BenchmarkReportView.CpuRow(
           result.name(), number(result.latency()), metric(result.error()), number(result.allocation()),
-          metric(result.allocationRate()), number(logarithmicWidth(result.latency(), latencyMin, latencyMax)),
-          number(logarithmicWidth(result.allocation(), allocationMin, allocationMax))));
+          metric(result.allocationRate())));
       cpuChartData.add(new BenchmarkReportView.CpuChartDatum(result.name(),
           finite("CPU latency: " + result.name(), result.latency()),
           finiteOrNull("CPU uncertainty: " + result.name(), result.error()),
@@ -169,16 +179,12 @@ public final class BenchmarkHtmlReportGenerator {
           finiteOrNull("CPU allocation rate: " + result.name(), result.allocationRate())));
     }
     List<BenchmarkReportView.SceneRow> sceneRows = new ArrayList<>();
-    List<BenchmarkReportView.ChartRow> cpuChartRows = new ArrayList<>();
-    List<BenchmarkReportView.ChartRow> gpuChartRows = new ArrayList<>();
     List<BenchmarkReportView.RenderingChartDatum> renderingChartData = new ArrayList<>();
     for (SceneResult scene : rendering.scenes()) {
       String fragments = fragmentCount(scene.fragments()) + " fragments";
       sceneRows.add(new BenchmarkReportView.SceneRow(fragments, scene.codePoints() + " code points; " + scene.glyphs() + " glyphs; " + scene.runs() + " runs",
           latencyText(scene.cpu()), latencyText(scene.gpu()), budgetText(scene.cpu()), budgetText(scene.gpu()),
           scene.warmupFrames() + " warmup; " + scene.measuredFrames() + " measured"));
-      addChartRows(cpuChartRows, fragments, scene.cpu(), "");
-      addChartRows(gpuChartRows, fragments, scene.gpu(), "gpu");
       renderingChartData.add(new BenchmarkReportView.RenderingChartDatum(fragments,
           finite("Rendering CPU median: " + fragments, scene.cpu().median()),
           finite("Rendering CPU p95: " + fragments, scene.cpu().p95()),
@@ -195,41 +201,20 @@ public final class BenchmarkHtmlReportGenerator {
         "javaVersion", "javaVendor", "osName", "osVersion", "osArchitecture", "glVendor", "glRenderer", "glVersion")) {
       environment.add(new BenchmarkReportView.EnvironmentValue(key, rendering.environment().get(key).getAsString()));
     }
-    return new BenchmarkReportView(cpuRows, sceneRows, cpuChartRows, gpuChartRows, environment,
+    return new BenchmarkReportView(cpuRows, sceneRows, environment,
         rendering.pixelValidationPassed(), slowest.name(), number(slowest.latency()), allocating.name(), number(allocating.allocation()),
         fragmentCount(largestGpu.fragments()), number(largestGpu.gpu().p99()), percent(largestGpu.gpu().p99() / BUDGET_120_HZ_MICROS * 100),
-        currentRunIdentifier, history, trends, chartPayload(cpuChartData, renderingChartData, history, trends));
+        currentRunIdentifier, history, chartPayload(cpuChartData, renderingChartData, history, trends));
   }
 
   private static BenchmarkReportView.ChartPayload chartPayload(List<BenchmarkReportView.CpuChartDatum> cpu,
       List<BenchmarkReportView.RenderingChartDatum> rendering, List<BenchmarkReportView.HistoryRun> history,
-      List<BenchmarkReportView.TrendSeries> trends) {
+      List<BenchmarkReportView.ChartTrend> trends) {
     List<String> historyRuns = history.stream().map(BenchmarkReportView.HistoryRun::identifier).toList();
-    Map<String, Integer> runIndexes = new HashMap<>();
-    for (int index = 0; index < historyRuns.size(); index++) runIndexes.put(historyRuns.get(index), index);
-    List<BenchmarkReportView.ChartTrend> chartTrends = new ArrayList<>();
-    for (BenchmarkReportView.TrendSeries trend : trends) {
-      List<Double> values = new ArrayList<>();
-      List<String> changes = new ArrayList<>();
-      for (int index = 0; index < historyRuns.size(); index++) {
-        values.add(null);
-        changes.add(null);
-      }
-      for (BenchmarkReportView.TrendPoint point : trend.points()) {
-        Integer index = runIndexes.get(point.runIdentifier());
-        if (index != null) {
-          values.set(index, finite(trend.label(), point.numericValue()));
-          changes.set(index, point.change());
-        }
-      }
-      chartTrends.add(new BenchmarkReportView.ChartTrend(trend.id(), trend.label(), trend.unit(),
-          finite(trend.label() + " minimum", trend.numericMinimum()),
-          finite(trend.label() + " maximum", trend.numericMaximum()), values, changes));
-    }
-    return new BenchmarkReportView.ChartPayload(cpu, rendering, historyRuns, chartTrends);
+    return new BenchmarkReportView.ChartPayload(cpu, rendering, historyRuns, trends);
   }
 
-  private static List<BenchmarkReportView.TrendSeries> cpuTrends(List<ArchivedRun> runs) {
+  private static List<BenchmarkReportView.ChartTrend> cpuTrends(List<ArchivedRun> runs) {
     Map<String, List<TrendValue>> values = new LinkedHashMap<>();
     for (int index = 0; index < runs.size(); index++) {
       ArchivedRun current = runs.get(index);
@@ -243,7 +228,7 @@ public final class BenchmarkHtmlReportGenerator {
     return trendSeries(values, runs, "cpu", "CPU latency", "us/op");
   }
 
-  private static List<BenchmarkReportView.TrendSeries> gpuTrends(List<ArchivedRun> runs) {
+  private static List<BenchmarkReportView.ChartTrend> gpuTrends(List<ArchivedRun> runs) {
     Map<String, List<TrendValue>> values = new LinkedHashMap<>();
     for (int index = 0; index < runs.size(); index++) {
       ArchivedRun current = runs.get(index);
@@ -258,9 +243,9 @@ public final class BenchmarkHtmlReportGenerator {
     return trendSeries(values, runs, "gpu", "GPU p99", "us");
   }
 
-  private static List<BenchmarkReportView.TrendSeries> trendSeries(Map<String, List<TrendValue>> values, List<ArchivedRun> runs,
+  private static List<BenchmarkReportView.ChartTrend> trendSeries(Map<String, List<TrendValue>> values, List<ArchivedRun> runs,
       String prefix, String metric, String unit) {
-    List<BenchmarkReportView.TrendSeries> series = new ArrayList<>();
+    List<BenchmarkReportView.ChartTrend> series = new ArrayList<>();
     int seriesNumber = 1;
     for (Map.Entry<String, List<TrendValue>> entry : values.entrySet()) {
       List<TrendValue> source = entry.getValue();
@@ -269,26 +254,19 @@ public final class BenchmarkHtmlReportGenerator {
       double padding = observedMaximum == observedMinimum ? Math.max(Math.abs(observedMaximum) * .1, 1) : (observedMaximum - observedMinimum) * .1;
       double minimum = observedMinimum - padding;
       double maximum = observedMaximum + padding;
-      List<BenchmarkReportView.TrendPoint> points = new ArrayList<>();
-      List<BenchmarkReportView.TrendSegment> segments = new ArrayList<>();
-      List<BenchmarkReportView.TrendPoint> segment = new ArrayList<>();
-      int previousIndex = -2;
-      for (TrendValue value : source) {
-        double x = runs.size() <= 1 ? 600 : 100 + value.index() * 1_000.0 / (runs.size() - 1);
-        double y = 620 - (value.value() - minimum) * 540 / (maximum - minimum);
-        String formattedValue = number(value.value());
-        BenchmarkReportView.TrendPoint point = new BenchmarkReportView.TrendPoint(value.identifier(), coordinate(x), coordinate(y), formattedValue,
-            value.value(), value.change(),
-            value.identifier() + ": " + formattedValue + " " + unit + "; change " + value.change());
-        points.add(point);
-        if (value.index() != previousIndex + 1 && !segment.isEmpty()) { segments.add(new BenchmarkReportView.TrendSegment(segment)); segment = new ArrayList<>(); }
-        segment.add(point);
-        previousIndex = value.index();
+      List<Double> trendValues = new ArrayList<>();
+      List<String> changes = new ArrayList<>();
+      for (int index = 0; index < runs.size(); index++) {
+        trendValues.add(null);
+        changes.add(null);
       }
-      if (!segment.isEmpty()) segments.add(new BenchmarkReportView.TrendSegment(segment));
-      series.add(new BenchmarkReportView.TrendSeries(prefix + "-trend-" + seriesNumber++, metric + ": " + entry.getKey(), unit,
-          runs.getFirst().identifier(), runs.getLast().identifier(), number(minimum), number(maximum), minimum, maximum,
-          segments, points));
+      for (TrendValue value : source) {
+        trendValues.set(value.index(), finite(metric + ": " + entry.getKey(), value.value()));
+        changes.set(value.index(), value.change());
+      }
+      String label = metric + ": " + entry.getKey();
+      series.add(new BenchmarkReportView.ChartTrend(prefix + "-trend-" + seriesNumber++, label, unit,
+          finite(label + " minimum", minimum), finite(label + " maximum", maximum), trendValues, changes));
     }
     return series;
   }
@@ -349,18 +327,6 @@ public final class BenchmarkHtmlReportGenerator {
         + change(value.p99(), previous == null ? null : previous.p99());
   }
 
-  private static void addChartRows(List<BenchmarkReportView.ChartRow> rows, String fragments, Latency latency, String cssClass) {
-    double maximum = BUDGET_60_HZ_MICROS;
-    rows.add(chartRow(fragments + " median", latency.median(), maximum, cssClass));
-    rows.add(chartRow(fragments + " p95", latency.p95(), maximum, cssClass));
-    rows.add(chartRow(fragments + " p99", latency.p99(), maximum, cssClass));
-  }
-
-  private static BenchmarkReportView.ChartRow chartRow(String label, double value, double maximum, String cssClass) {
-    return new BenchmarkReportView.ChartRow(label, number(value), number(Math.min(100, value / maximum * 100)),
-        cssClass + (value > maximum ? " over-budget" : ""), value > maximum ? " (over 60 Hz scale)" : "");
-  }
-
   private static Latency latency(JsonObject value) {
     return new Latency(value.get("median").getAsDouble(), value.get("p95").getAsDouble(),
         value.get("p99").getAsDouble(), value.get("budget60HzPercent").getAsDouble(),
@@ -369,13 +335,6 @@ public final class BenchmarkHtmlReportGenerator {
 
   private static Double score(JsonObject value, String key) {
     return value != null && value.has(key) ? value.get(key).getAsDouble() : null;
-  }
-
-  private static double logarithmicWidth(double value, double min, double max) {
-    if (value <= 0) return 0;
-    if (max <= min) return 100;
-    return LOGARITHMIC_MIN_WIDTH_PERCENT + (100 - LOGARITHMIC_MIN_WIDTH_PERCENT)
-        * (Math.log10(value) - Math.log10(min)) / (Math.log10(max) - Math.log10(min));
   }
 
   private static String number(double value) {
@@ -389,10 +348,6 @@ public final class BenchmarkHtmlReportGenerator {
 
   private static Double finiteOrNull(String metric, Double value) {
     return value == null ? null : finite(metric, value);
-  }
-
-  private static String coordinate(double value) {
-    return String.format(Locale.ROOT, "%.3f", value);
   }
 
   private static String metric(Double value) {

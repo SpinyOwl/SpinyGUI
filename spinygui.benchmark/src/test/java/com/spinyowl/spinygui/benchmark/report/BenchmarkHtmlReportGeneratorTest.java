@@ -8,7 +8,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
-import java.util.Locale;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
@@ -23,11 +22,16 @@ class BenchmarkHtmlReportGeneratorTest {
     assertTrue(html.contains("1,000 fragments"));
     assertTrue(html.contains("&lt;GPU&gt;"));
     assertTrue(html.contains("Latency (us/op)"));
-    assertTrue(html.contains("Logarithmic scale (base 10"));
-    assertTrue(html.contains("120 Hz marker: 8,333 us"));
-    assertTrue(html.contains("60 Hz marker: 16,667 us"));
-    assertTrue(html.contains("class=\"budget-marker marker-120\""));
-    assertTrue(html.contains("class=\"budget-marker marker-60\""));
+    assertTrue(count(html, "id=\"cpu-latency-chart\"") == 1);
+    assertTrue(count(html, "id=\"cpu-allocation-chart\"") == 1);
+    assertTrue(count(html, "id=\"cpu-rendering-chart\"") == 1);
+    assertTrue(count(html, "id=\"gpu-rendering-chart\"") == 1);
+    assertTrue(count(html, "role=\"img\"") == 5);
+    assertTrue(count(html, "class=\"chart-fallback\"") == 5);
+    assertTrue(html.contains("class=\"chart-scroll\""));
+    assertTrue(html.contains("class=\"chart-frame\""));
+    assertTrue(html.contains("id=\"cpu-data\""));
+    assertTrue(html.contains("id=\"rendering-data\""));
     assertTrue(html.contains("40.000 us; 0.480% of the 120 Hz budget"));
     assertTrue(html.contains("<a class=\"skip-link\" href=\"#overview\">Skip to report content</a>"));
     assertTrue(html.contains("<nav class=\"report-nav\" aria-label=\"Benchmark report sections\">"));
@@ -54,36 +58,54 @@ class BenchmarkHtmlReportGeneratorTest {
     assertTrue(html.contains("Pixel validation: <b>passed</b>"));
     String compactHtml = html.replaceAll("\\s+", "");
     assertTrue(compactHtml.contains("@media(max-width:700px)"));
-    assertTrue(compactHtml.contains(".row{grid-template-columns:minmax(0,1fr)auto;gap:6px}"));
-    assertTrue(compactHtml.contains(".row>span:first-child{min-width:0;overflow-wrap:anywhere}"));
-    assertTrue(compactHtml.contains(".row>span:last-child{min-width:0;max-width:45vw;overflow-wrap:anywhere;text-align:right}"));
+    assertTrue(compactHtml.contains(".chart-frame{position:relative;min-width:820px;height:480px}"));
+    assertTrue(compactHtml.contains(".chart-scroll{overflow-x:auto;overscroll-behavior-inline:contain}"));
     assertTrue(compactHtml.contains(".table-wrap{overflow-x:auto"));
     assertTrue(compactHtml.contains("table{min-width:640px}"));
     assertTrue(compactHtml.contains(".tooltip{position:fixed;z-index:4;inset:16px"));
     assertTrue(compactHtml.contains(".report-nav{position:sticky;top:0"));
     assertTrue(compactHtml.contains(".report-nav{margin-inline:-16px;padding:12px16px16px;flex-wrap:nowrap;overflow-x:auto}"));
     assertTrue(compactHtml.contains(".report-nava{flex:none;white-space:nowrap}"));
-    assertTrue(compactHtml.contains(".trend-chart{margin:0;padding:16px;border:1pxsolid#304052;border-radius:4px;min-width:820px"));
-    assertTrue(html.contains("<div class=\"trend-controls\" role=\"radiogroup\""));
-    assertTrue(html.contains("<div class=\"trend-panels\">"));
-    assertTrue(html.indexOf("class=\"trend-controls\"") < html.indexOf("class=\"trend-panels\""));
-    assertTrue(html.contains("<input class=\"trend-select\" type=\"radio\" id=\"cpu-trend-1-select\" name=\"trend-metric\" checked>"));
-    assertTrue(html.contains("id=\"cpu-trend-1-panel\" class=\"trend-panel\""));
+    assertTrue(html.contains("<div class=\"trend-controls\" role=\"toolbar\" aria-label=\"Trend metric selector\">"));
+    assertTrue(html.contains("<button class=\"trend-option\" type=\"button\" data-trend-id=\"cpu-trend-1\" aria-pressed=\"true\">"));
+    assertTrue(html.contains("<canvas id=\"history-chart\" role=\"img\""));
+    assertTrue(html.contains("id=\"history-data\""));
+    assertTrue(count(html, "aria-pressed=\"true\"") == 1);
+    assertFalse(html.contains("type=\"radio\""));
+    assertFalse(html.contains("class=\"trend-panel\""));
+    assertFalse(html.contains("<svg"));
+    assertFalse(html.contains(":has("));
+    assertFalse(html.contains("cx=\""));
+    assertFalse(html.contains("<polyline"));
     assertTrue(compactHtml.contains(".trend-controls{display:flex;flex-wrap:wrap;gap:4px"));
-    assertTrue(compactHtml.contains(".trend-panels{min-width:0}"));
-    assertTrue(compactHtml.contains(".trend-explorer:has(#cpu-trend-1-select:checked)#cpu-trend-1-panel{display:block}"));
-    assertFalse(compactHtml.contains(".trend-explorer{display:grid;grid-template-columns:"));
-    assertFalse(compactHtml.contains(".trend-option{grid-column:"));
+    assertTrue(compactHtml.contains(".trend-option[aria-pressed=true]"));
+    assertTrue(compactHtml.contains(".trend-option:focus-visible"));
     assertTrue(compactHtml.contains("scroll-padding-top:72px"));
 
-    String lowerCaseHtml = html.toLowerCase(Locale.ROOT);
-    assertFalse(lowerCaseHtml.contains("http://"));
-    assertFalse(lowerCaseHtml.contains("https://"));
-    assertFalse(lowerCaseHtml.contains("//"));
-    assertFalse(lowerCaseHtml.contains("<script"));
-    assertFalse(lowerCaseHtml.contains("<link"));
-    assertFalse(lowerCaseHtml.contains("src="));
-    assertFalse(lowerCaseHtml.contains("url("));
+    assertTrue(html.contains("Chart.js v4.5.1"));
+    assertTrue(html.contains("@kurkle/color v0.3.2"));
+    assertTrue(html.contains("<script id=\"benchmark-chart-data\" type=\"application/json\">"));
+    assertTrue(html.contains("data.chartPayloadVersion"));
+    assertTrue(html.contains("indexAxis:'y'"));
+    assertTrue(html.contains("type:'logarithmic'"));
+    assertTrue(html.contains("max:16667"));
+    assertTrue(html.contains("8333"));
+    assertTrue(html.contains("budgetMarkers"));
+    assertTrue(html.contains("spanGaps:false"));
+    assertTrue(html.contains("aria-pressed"));
+    assertTrue(html.contains("historyChart.data.datasets[0].data = trend.values"));
+    assertTrue(html.contains("historyChart.update()"));
+    assertFalse(html.contains("class=\"track\""));
+    assertFalse(html.contains("class=\"budget-marker"));
+    assertTrue(count(html, "<script") == 3);
+    assertFalse(html.contains("<script src="));
+    assertFalse(html.contains("<link rel=\"stylesheet\""));
+    assertFalse(html.contains("sourceMappingURL"));
+
+    String noArchiveHtml = BenchmarkHtmlReportGenerator.generate(cpuJson(), renderingJson());
+    assertTrue(noArchiveHtml.contains("id=\"history-chart\""));
+    assertTrue(noArchiveHtml.contains("Interactive chart unavailable. <a href=\"#history-data\""));
+    assertFalse(noArchiveHtml.contains("<button class=\"trend-option\" type=\"button\" data-trend-id="));
   }
 
   @Test
@@ -103,7 +125,18 @@ class BenchmarkHtmlReportGeneratorTest {
 
     assertTrue(view.charts().cpu().getFirst().uncertainty() == null);
     assertTrue(view.charts().cpu().getFirst().allocationRate() == null);
-    assertTrue(BenchmarkHtmlReportGenerator.generateArchive(archive).contains("not reported"));
+    String html = BenchmarkHtmlReportGenerator.generateArchive(archive);
+    assertTrue(html.contains("not reported"));
+    assertTrue(html.contains("\"uncertainty\":null"));
+    assertTrue(html.contains("\"allocationRate\":null"));
+  }
+
+  @Test
+  void escapesScriptTerminationAttemptsInChartPayload() {
+    String html = BenchmarkHtmlReportGenerator.generate(cpuJson().replace("measureLatin", "measure</script><script>alert(1)</script>"), renderingJson());
+
+    assertTrue(html.contains("measure\\u003c/script\\u003e\\u003cscript\\u003ealert(1)\\u003c/script\\u003e"));
+    assertFalse(html.contains("measure</script><script>alert(1)</script>"));
   }
 
   @Test
@@ -174,12 +207,9 @@ class BenchmarkHtmlReportGeneratorTest {
     assertTrue(html.contains("GPU median/p95/p99"));
     assertTrue(html.contains("-20.000%"));
     assertTrue(html.contains("CPU latency: measure&lt;Latin&gt;"));
-    assertTrue(html.contains("<svg viewBox=\"0 0 1200 720\" aria-labelledby="));
-    assertFalse(html.contains("<svg viewBox=\"0 0 1200 720\" role=\"img\""));
-    assertTrue(html.contains("tabindex=\"0\" aria-label="));
-    assertCoordinatesAreUngrouped(html);
-    assertTrue(html.contains("type=\"radio\""));
-    assertTrue(html.contains("role=\"radiogroup\""));
+    assertTrue(html.contains("data-trend-id=\"cpu-trend-1\""));
+    assertFalse(html.contains("<svg"));
+    assertFalse(html.contains("type=\"radio\""));
   }
 
   @Test
@@ -217,7 +247,9 @@ class BenchmarkHtmlReportGeneratorTest {
     writePair(singleRunArchive, first, cpuJson(), renderingJson());
     BenchmarkReportView.ChartTrend single = chartTrend(BenchmarkHtmlReportGenerator.loadArchive(singleRunArchive), "CPU latency: measureLatin");
     assertTrue(single.values().equals(List.of(12.5)));
-    assertTrue(BenchmarkHtmlReportGenerator.generateArchive(singleRunArchive).contains("One matching run"));
+    String html = BenchmarkHtmlReportGenerator.generateArchive(singleRunArchive);
+    assertTrue(html.contains("data-trend-id=\"cpu-trend-1\""));
+    assertFalse(html.contains("One matching run"));
   }
 
   private static void writePair(Path archive, String identifier, String cpu, String rendering) throws IOException {
@@ -240,22 +272,8 @@ class BenchmarkHtmlReportGeneratorTest {
     return value.split(java.util.regex.Pattern.quote(token), -1).length - 1;
   }
 
-  private static BenchmarkReportView.TrendSeries trend(BenchmarkReportView view, String label) {
-    return view.trends().stream().filter(series -> series.label().equals(label)).findFirst().orElseThrow();
-  }
-
   private static BenchmarkReportView.ChartTrend chartTrend(BenchmarkReportView view, String label) {
     return view.charts().trends().stream().filter(series -> series.label().equals(label)).findFirst().orElseThrow();
-  }
-
-  private static void assertCoordinatesAreUngrouped(String html) {
-    var attributes = java.util.regex.Pattern.compile("(?:cx|cy|points)=\"([^\"]+)\"").matcher(html);
-    int count = 0;
-    while (attributes.find()) {
-      count++;
-      assertFalse(java.util.regex.Pattern.compile("(?<![\\d.])\\d{1,3},\\d{3}\\.\\d+").matcher(attributes.group(1)).find());
-    }
-    assertTrue(count > 0);
   }
 
   private static String cpuJson() {

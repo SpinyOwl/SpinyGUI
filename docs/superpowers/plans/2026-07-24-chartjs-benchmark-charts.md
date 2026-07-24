@@ -345,7 +345,7 @@ Inspect the JAR and confirm all three resources and precompiled `JtereportGenera
 - Consumes: `data.charts.cpu`, `data.charts.rendering`, global `Chart`, and canvas IDs from the template.
 - Produces: four independently initialized horizontal bar charts and `mountChart(canvasId, config)` for Task 4.
 
-- [ ] **Step 1: Write failing overview canvas and fallback assertions**
+- [x] **Step 1: Write failing overview canvas and fallback assertions**
 
 Assert these four IDs each occur once and every canvas has `role="img"` plus a descriptive `aria-label`:
 
@@ -372,11 +372,11 @@ assertFalse(html.contains("class=\"budget-marker"));
 
 The fifth fallback belongs to the still-existing history area and is added with the final chart shell in this task; Task 4 activates it.
 
-- [ ] **Step 2: Run the focused test and verify RED**
+- [x] **Step 2: Run the focused test and verify RED**
 
 Expected: FAIL because the four canvas elements and Chart.js layout styles do not exist.
 
-- [ ] **Step 3: Render accessible chart shells and retain precise tables**
+- [x] **Step 3: Render accessible chart shells and retain precise tables**
 
 Replace each CSS chart with this structure, using unique caption, ID, label, and fallback link text:
 
@@ -392,7 +392,7 @@ Replace each CSS chart with this structure, using unique caption, ID, label, and
 
 Add equivalent shells for allocation, CPU rendering, GPU rendering, and the history chart. Add `id="cpu-data"`, `id="rendering-data"`, and a later `id="history-data"` target around the existing precise tables. Default CSS leaves `.chart-fallback` visible; only `.chart-shell[data-chart-ready="true"] .chart-fallback` hides it.
 
-- [ ] **Step 4: Implement isolated overview Chart.js initialization**
+- [x] **Step 4: Implement isolated overview Chart.js initialization**
 
 Expand `benchmark-charts.js` with:
 
@@ -420,13 +420,13 @@ Create grouped rendering configs with scene labels and median/p95/p99 datasets. 
 
 Register a local `budgetMarkers` plugin in each rendering chart's `plugins` array. Its `afterDraw` uses `chart.scales.x.getPixelForValue` to draw lines at `8333` and `16667`; it must save and restore the canvas context.
 
-- [ ] **Step 5: Remove obsolete overview renderer state**
+- [x] **Step 5: Remove obsolete overview renderer state**
 
 Delete `chartRow.jte`, `ChartRow`, `cpuChartRows`, and `gpuChartRows`. Remove `latencyWidth`, `allocationWidth`, `cssClass`, `suffix`, `logarithmicWidth`, `addChartRows`, and `chartRow`. Keep formatted table rows and numeric `ChartPayload` rows.
 
 Remove `.chart`, `.row`, `.track`, `.bar`, `.alloc`, `.gpu`, `.budget-marker`, and their mobile rules from `report.jte`.
 
-- [ ] **Step 6: Run focused and module tests for GREEN**
+- [x] **Step 6: Run focused and module tests for GREEN**
 
 Run:
 
@@ -452,7 +452,7 @@ Expected: all tests pass; four overview charts have executable configs while the
 - Consumes: `ChartPayload.historyRuns`, `ChartPayload.trends`, `mountChart`, and `history-chart`.
 - Produces: wrapping native history buttons and one Chart instance updated in place.
 
-- [ ] **Step 1: Write failing final history markup assertions**
+- [x] **Step 1: Write failing final history markup assertions**
 
 Replace radio/panel/SVG assertions with:
 
@@ -474,11 +474,11 @@ Assert the embedded bootstrap contains stable behavior markers for `spanGaps:fal
 
 Also call `BenchmarkHtmlReportGenerator.generate(cpuJson(), renderingJson())` and assert it still renders `history-chart` and its visible fallback without rendering any `data-trend-id` button. This protects the no-archive path from an empty-list failure.
 
-- [ ] **Step 2: Run the focused test and verify RED**
+- [x] **Step 2: Run the focused test and verify RED**
 
 Expected: FAIL because radios, hidden panels, and SVG output still exist.
 
-- [ ] **Step 3: Render buttons and one history canvas**
+- [x] **Step 3: Render buttons and one history canvas**
 
 Keep `.trend-controls { display:flex; flex-wrap:wrap; gap:4px; margin-bottom:16px }`, but style `.trend-option` as a native button. Use `[aria-pressed="true"]` for selected colors and `:focus-visible` for the existing yellow outline.
 
@@ -486,7 +486,7 @@ Render one button per `model.charts().trends()`. The first button has `aria-pres
 
 Use the history chart shell created in Task 3 and wrap all existing raw history tables in a target with `id="history-data"`.
 
-- [ ] **Step 4: Initialize and update one line chart**
+- [x] **Step 4: Initialize and update one line chart**
 
 Add these behaviors to `benchmark-charts.js`:
 
@@ -513,7 +513,7 @@ Add tooltip callbacks that use `activeTrend` plus `context.dataIndex` to return 
 
 On button activation, look up the trend before changing state. If absent, log an error and keep the current selection. Otherwise update the old/new `aria-pressed` values, canvas `aria-label`, dataset label/data, assign `activeTrend = trend`, update y-axis min/max, and call `historyChart.update()`.
 
-- [ ] **Step 5: Remove the SVG bridge and coordinate model**
+- [x] **Step 5: Remove the SVG bridge and coordinate model**
 
 Delete `trendChart.jte`, `TrendSegment`, `TrendPoint`, old SVG `TrendSeries`, `coordinate`, and all x/y/segment generation. Change `loadArchive` to build `ChartTrend` directly from the `TrendValue` maps and global run indices, retaining the existing 10% y-range padding with a minimum padding of `1`.
 
@@ -521,7 +521,7 @@ Remove the temporary top-level `trends` field from `BenchmarkReportView`; the on
 
 Remove `.trend-chart`, `.trend-grid`, `.trend-line`, `.trend-point`, and `.trend-label` CSS.
 
-- [ ] **Step 6: Verify the history regression tests and module suite**
+- [x] **Step 6: Verify the history regression tests and module suite**
 
 Run:
 
@@ -544,13 +544,13 @@ Expected: aligned null gaps, duplicate scene identity, boundaries, one-run trend
 - Consumes: final report generator, precompiled templates, vendored resources, and the existing benchmark archive.
 - Produces: contributor documentation and a verified generated Chart.js report.
 
-- [ ] **Step 1: Update contributor documentation**
+- [x] **Step 1: Update contributor documentation**
 
 State that reports embed Chart.js 4.5.1 and inline JavaScript, remain one offline file, initialize four overview charts plus one reusable history chart, offer pointer tooltips and keyboard-operable metric buttons, and retain visible fallback explanations and raw tables.
 
 Remove the claim that the file has only inline styles and graphics. Explicitly state that no CDN or network resource is used.
 
-- [ ] **Step 2: Regenerate the report without rerunning benchmarks**
+- [x] **Step 2: Regenerate the report without rerunning benchmarks**
 
 Run:
 
@@ -575,7 +575,7 @@ In browser developer tools, verify no network request occurs. Disable JavaScript
 
 If browser automation or an observable browser is unavailable, record these checks as manual follow-up rather than claiming them complete.
 
-- [ ] **Step 4: Run full automated verification**
+- [x] **Step 4: Run full automated verification**
 
 Run:
 
