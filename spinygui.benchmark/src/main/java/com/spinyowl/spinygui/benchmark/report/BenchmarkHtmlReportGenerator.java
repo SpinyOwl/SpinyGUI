@@ -13,6 +13,7 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -44,7 +45,7 @@ public final class BenchmarkHtmlReportGenerator {
   }
 
   public static String generate(String cpuJson, String renderingJson) {
-    BenchmarkReportView view = toView(parseCpu(cpuJson), parseRendering(renderingJson), "Current input", List.of());
+    BenchmarkReportView view = toView(parseCpu(cpuJson), parseRendering(renderingJson), "Current input", List.of(), List.of());
     return render(view);
   }
 
@@ -58,7 +59,9 @@ public final class BenchmarkHtmlReportGenerator {
     List<ArchivedRun> runs = findCompleteRuns(archive);
     if (runs.isEmpty()) throw new IllegalArgumentException("Benchmark archive contains no complete valid run pairs");
     ArchivedRun current = runs.getLast();
-    return toView(current.cpu(), current.rendering(), current.identifier(), history(runs));
+    List<BenchmarkReportView.TrendSeries> trends = new ArrayList<>(cpuTrends(runs));
+    trends.addAll(gpuTrends(runs));
+    return toView(current.cpu(), current.rendering(), current.identifier(), history(runs), trends);
   }
 
   private static String render(BenchmarkReportView view) {
@@ -137,7 +140,7 @@ public final class BenchmarkHtmlReportGenerator {
     List<SceneResult> scenes = new ArrayList<>();
     for (JsonElement entry : root.getAsJsonArray("scenes")) {
       JsonObject scene = entry.getAsJsonObject();
-      scenes.add(new SceneResult(scene.get("textFragmentCount").getAsInt(), scene.get("textCodePointCount").getAsInt(),
+      scenes.add(new SceneResult(scene.get("textFragmentCount").getAsInt(), scene.has("textNodeCount") ? scene.get("textNodeCount").getAsInt() : scene.get("textFragmentCount").getAsInt(), scene.get("textCodePointCount").getAsInt(),
           scene.get("resolvedGlyphCount").getAsInt(), scene.get("resolvedRunCount").getAsInt(),
           scene.get("warmupFrameCount").getAsInt(), scene.get("measuredFrameCount").getAsInt(),
           latency(scene.getAsJsonObject("cpuSubmissionMicros")), latency(scene.getAsJsonObject("gpuCompleteMicros"))));
@@ -147,7 +150,7 @@ public final class BenchmarkHtmlReportGenerator {
   }
 
   private static BenchmarkReportView toView(List<CpuResult> cpu, RenderingResult rendering, String currentRunIdentifier,
-      List<BenchmarkReportView.HistoryRun> history) {
+      List<BenchmarkReportView.HistoryRun> history, List<BenchmarkReportView.TrendSeries> trends) {
     List<BenchmarkReportView.CpuRow> cpuRows = new ArrayList<>();
     double latencyMin = cpu.stream().mapToDouble(CpuResult::latency).filter(value -> value > 0).min().orElse(1);
     double latencyMax = cpu.stream().mapToDouble(CpuResult::latency).max().orElse(1);
@@ -181,7 +184,69 @@ public final class BenchmarkHtmlReportGenerator {
     return new BenchmarkReportView(cpuRows, sceneRows, cpuChartRows, gpuChartRows, environment,
         rendering.pixelValidationPassed(), slowest.name(), number(slowest.latency()), allocating.name(), number(allocating.allocation()),
         fragmentCount(largestGpu.fragments()), number(largestGpu.gpu().p99()), percent(largestGpu.gpu().p99() / BUDGET_120_HZ_MICROS * 100),
-        currentRunIdentifier, history);
+        currentRunIdentifier, history, trends);
+  }
+
+  private static List<BenchmarkReportView.TrendSeries> cpuTrends(List<ArchivedRun> runs) {
+    Map<String, List<TrendValue>> values = new LinkedHashMap<>();
+    for (int index = 0; index < runs.size(); index++) {
+      ArchivedRun current = runs.get(index);
+      Map<String, CpuResult> previous = index == 0 ? Map.of() : cpuByName(runs.get(index - 1).cpu());
+      for (CpuResult result : current.cpu()) {
+        CpuResult prior = previous.get(result.name());
+        values.computeIfAbsent(result.name(), ignored -> new ArrayList<>()).add(
+            new TrendValue(index, current.identifier(), result.latency(), change(result.latency(), prior == null ? null : prior.latency())));
+      }
+    }
+    return trendSeries(values, runs, "cpu", "CPU latency", "us/op");
+  }
+
+  private static List<BenchmarkReportView.TrendSeries> gpuTrends(List<ArchivedRun> runs) {
+    Map<String, List<TrendValue>> values = new LinkedHashMap<>();
+    for (int index = 0; index < runs.size(); index++) {
+      ArchivedRun current = runs.get(index);
+      Map<SceneIdentity, SceneResult> previous = index == 0 ? Map.of() : scenesByIdentity(runs.get(index - 1).rendering());
+      for (SceneResult scene : current.rendering().scenes()) {
+        SceneResult prior = previous.get(scene.identity());
+        String sceneLabel = sceneLabel(scene);
+        values.computeIfAbsent(sceneLabel, ignored -> new ArrayList<>()).add(new TrendValue(index, current.identifier(), scene.gpu().p99(),
+            change(scene.gpu().p99(), prior == null ? null : prior.gpu().p99())));
+      }
+    }
+    return trendSeries(values, runs, "gpu", "GPU p99", "us");
+  }
+
+  private static List<BenchmarkReportView.TrendSeries> trendSeries(Map<String, List<TrendValue>> values, List<ArchivedRun> runs,
+      String prefix, String metric, String unit) {
+    List<BenchmarkReportView.TrendSeries> series = new ArrayList<>();
+    int seriesNumber = 1;
+    for (Map.Entry<String, List<TrendValue>> entry : values.entrySet()) {
+      List<TrendValue> source = entry.getValue();
+      double observedMinimum = source.stream().mapToDouble(TrendValue::value).min().orElse(0);
+      double observedMaximum = source.stream().mapToDouble(TrendValue::value).max().orElse(0);
+      double padding = observedMaximum == observedMinimum ? Math.max(Math.abs(observedMaximum) * .1, 1) : (observedMaximum - observedMinimum) * .1;
+      double minimum = observedMinimum - padding;
+      double maximum = observedMaximum + padding;
+      List<BenchmarkReportView.TrendPoint> points = new ArrayList<>();
+      List<BenchmarkReportView.TrendSegment> segments = new ArrayList<>();
+      List<BenchmarkReportView.TrendPoint> segment = new ArrayList<>();
+      int previousIndex = -2;
+      for (TrendValue value : source) {
+        double x = runs.size() <= 1 ? 600 : 100 + value.index() * 1_000.0 / (runs.size() - 1);
+        double y = 620 - (value.value() - minimum) * 540 / (maximum - minimum);
+        String formattedValue = number(value.value());
+        BenchmarkReportView.TrendPoint point = new BenchmarkReportView.TrendPoint(value.identifier(), coordinate(x), coordinate(y), formattedValue, value.change(),
+            value.identifier() + ": " + formattedValue + " " + unit + "; change " + value.change());
+        points.add(point);
+        if (value.index() != previousIndex + 1 && !segment.isEmpty()) { segments.add(new BenchmarkReportView.TrendSegment(segment)); segment = new ArrayList<>(); }
+        segment.add(point);
+        previousIndex = value.index();
+      }
+      if (!segment.isEmpty()) segments.add(new BenchmarkReportView.TrendSegment(segment));
+      series.add(new BenchmarkReportView.TrendSeries(prefix + "-trend-" + seriesNumber++, metric + ": " + entry.getKey(), unit,
+          runs.getFirst().identifier(), runs.getLast().identifier(), number(minimum), number(maximum), segments, points));
+    }
+    return series;
   }
 
   private static List<BenchmarkReportView.HistoryRun> history(List<ArchivedRun> runs) {
@@ -189,7 +254,7 @@ public final class BenchmarkHtmlReportGenerator {
     ArchivedRun previous = null;
     for (ArchivedRun current : runs) {
       Map<String, CpuResult> previousCpu = previous == null ? Map.of() : cpuByName(previous.cpu());
-      Map<Integer, SceneResult> previousScenes = previous == null ? Map.of() : scenesByFragments(previous.rendering());
+      Map<SceneIdentity, SceneResult> previousScenes = previous == null ? Map.of() : scenesByIdentity(previous.rendering());
       List<BenchmarkReportView.CpuHistoryRow> cpuRows = new ArrayList<>();
       for (CpuResult result : current.cpu()) {
         CpuResult prior = previousCpu.get(result.name());
@@ -198,7 +263,7 @@ public final class BenchmarkHtmlReportGenerator {
       }
       List<BenchmarkReportView.SceneHistoryRow> sceneRows = new ArrayList<>();
       for (SceneResult scene : current.rendering().scenes()) {
-        SceneResult prior = previousScenes.get(scene.fragments());
+        SceneResult prior = previousScenes.get(scene.identity());
         sceneRows.add(new BenchmarkReportView.SceneHistoryRow(fragmentCount(scene.fragments()), latencyText(scene.cpu()),
             latencyText(scene.gpu()), latencyChange(scene.cpu(), prior == null ? null : prior.cpu()),
             latencyChange(scene.gpu(), prior == null ? null : prior.gpu()), percent(scene.cpu().budget120()),
@@ -217,10 +282,15 @@ public final class BenchmarkHtmlReportGenerator {
     return values;
   }
 
-  private static Map<Integer, SceneResult> scenesByFragments(RenderingResult rendering) {
-    Map<Integer, SceneResult> values = new HashMap<>();
-    for (SceneResult row : rendering.scenes()) values.put(row.fragments(), row);
+  private static Map<SceneIdentity, SceneResult> scenesByIdentity(RenderingResult rendering) {
+    Map<SceneIdentity, SceneResult> values = new HashMap<>();
+    for (SceneResult row : rendering.scenes()) values.put(row.identity(), row);
     return values;
+  }
+
+  private static String sceneLabel(SceneResult scene) {
+    return fragmentCount(scene.fragments()) + " fragments; " + scene.nodes() + " nodes; " + scene.codePoints()
+        + " code points; " + scene.glyphs() + " glyphs; " + scene.runs() + " runs";
   }
 
   private static String change(double value, Double previous) {
@@ -268,6 +338,10 @@ public final class BenchmarkHtmlReportGenerator {
     return String.format(Locale.ROOT, "%,.3f", value);
   }
 
+  private static String coordinate(double value) {
+    return String.format(Locale.ROOT, "%.3f", value);
+  }
+
   private static String metric(Double value) {
     return value == null || !Double.isFinite(value) ? "not reported" : number(value);
   }
@@ -295,8 +369,11 @@ public final class BenchmarkHtmlReportGenerator {
   }
 
   private record SceneResult(
-      int fragments, int codePoints, int glyphs, int runs, int warmupFrames, int measuredFrames, Latency cpu, Latency gpu) {
+      int fragments, int nodes, int codePoints, int glyphs, int runs, int warmupFrames, int measuredFrames, Latency cpu, Latency gpu) {
+    SceneIdentity identity() { return new SceneIdentity(fragments, nodes, codePoints, glyphs, runs); }
   }
+
+  private record SceneIdentity(int fragments, int nodes, int codePoints, int glyphs, int runs) { }
 
   private record Latency(double median, double p95, double p99, double budget60, double budget120) {
   }
@@ -305,5 +382,8 @@ public final class BenchmarkHtmlReportGenerator {
   }
 
   private record RunIdentifier(LocalDateTime timestamp, int sequence) {
+  }
+
+  private record TrendValue(int index, String identifier, double value, String change) {
   }
 }

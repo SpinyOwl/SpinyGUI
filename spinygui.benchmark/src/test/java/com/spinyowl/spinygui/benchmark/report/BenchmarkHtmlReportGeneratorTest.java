@@ -60,6 +60,15 @@ class BenchmarkHtmlReportGeneratorTest {
     assertTrue(compactHtml.contains(".report-nav{position:sticky;top:0"));
     assertTrue(compactHtml.contains(".report-nav{margin-inline:-16px;padding:12px16px16px;flex-wrap:nowrap;overflow-x:auto}"));
     assertTrue(compactHtml.contains(".report-nava{flex:none;white-space:nowrap}"));
+    assertTrue(compactHtml.contains(".trend-explorer{display:grid;grid-template-columns:260pxminmax(0,1fr)"));
+    assertTrue(compactHtml.contains(".trend-select:checked+.trend-option+.trend-panel{display:block}"));
+    assertTrue(compactHtml.contains(".trend-explorer{grid-template-columns:1fr}"));
+    assertTrue(compactHtml.contains(".trend-chart{margin:0;padding:16px;border:1pxsolid#304052;border-radius:4px;min-width:820px"));
+    assertTrue(compactHtml.contains(".trend-panel{display:none;grid-column:2;grid-row:1;order:2;min-width:0;max-width:100%;overflow-x:auto;overscroll-behavior-inline:contain}"));
+    assertTrue(compactHtml.contains("@media(min-width:701px)and(max-width:1100px){.trend-explorer{grid-template-columns:minmax(180px,260px)minmax(0,1fr)}}"));
+    assertTrue(compactHtml.contains(".trend-panel{grid-column:1;grid-row:auto}"));
+    assertTrue(compactHtml.contains(".trend-option{grid-column:1;order:1"));
+    assertTrue(compactHtml.contains(".trend-panel{display:none;grid-column:2;grid-row:1;order:2"));
     assertTrue(compactHtml.contains("scroll-padding-top:72px"));
 
     String lowerCaseHtml = html.toLowerCase(Locale.ROOT);
@@ -78,11 +87,12 @@ class BenchmarkHtmlReportGeneratorTest {
     String first = "20260724-090000-000000000";
     String second = "20260724-100000-000000000";
     String collision = second + "-000001";
-    writePair(archive, second, cpuJson().replace("12.5", "25.0"), renderingJson().replace("\"p99\":4", "\"p99\":8")
+    String escapedCpu = cpuJson().replace("measureLatin", "measure<Latin>");
+    writePair(archive, second, escapedCpu.replace("12.5", "25.0"), renderingJson().replace("\"p99\":4,", "\"p99\":8,")
         .replace("\"budget120HzPercent\":4", "\"budget120HzPercent\":8"));
-    writePair(archive, collision, cpuJson().replace("12.5", "20.0"), renderingJson().replace("\"p99\":4", "\"p99\":12")
+    writePair(archive, collision, escapedCpu.replace("12.5", "20.0"), renderingJson().replace("\"p99\":4,", "\"p99\":12,")
         .replace("\"budget120HzPercent\":4", "\"budget120HzPercent\":12"));
-    writePair(archive, first, cpuJson(), renderingJson());
+    writePair(archive, first, escapedCpu, renderingJson());
     Files.writeString(archive.resolve("text-calculation-20260724-110000-000000000.json"), cpuJson());
     writePair(archive, "20260724-120000-000000000", "{not-json", renderingJson());
     writePair(archive, "20260724-130000-000000000", "[{\"benchmark\":\"missing-metrics\"}]", renderingJson());
@@ -102,13 +112,73 @@ class BenchmarkHtmlReportGeneratorTest {
     assertTrue(view.history().getLast().cpuRows().getFirst().latencyChange().equals("-20.000%"));
     assertTrue(view.history().getLast().cpuRows().getFirst().allocationChange().equals("+0.000%"));
     assertTrue(view.history().getLast().sceneRows().getFirst().gpuChange().contains("+0.000% / +0.000% / +50.000%"));
+    BenchmarkReportView.TrendSeries cpuTrend = trend(view, "CPU latency: measure<Latin>");
+    assertTrue(view.trends().size() == 3);
+    assertTrue(cpuTrend.points().size() == 3);
+    assertTrue(cpuTrend.points().getFirst().x().equals("100.000"));
+    assertTrue(cpuTrend.points().getLast().x().equals("1100.000"));
+    assertTrue(cpuTrend.points().stream().allMatch(point -> Double.parseDouble(point.y()) >= 80 && Double.parseDouble(point.y()) <= 620));
+    assertTrue(view.trends().stream().anyMatch(series -> series.label().contains("1,000 fragments")
+        && series.points().stream().allMatch(point -> point.y().equals("350.000"))));
     String html = BenchmarkHtmlReportGenerator.generateArchive(archive);
-    assertTrue(html.contains("measureLatin"));
+    assertTrue(html.contains("measure&lt;Latin&gt;"));
     assertTrue(html.contains("<section id=\"history\""));
     assertTrue(html.contains(collision));
     assertTrue(html.contains("CPU median/p95/p99"));
     assertTrue(html.contains("GPU median/p95/p99"));
     assertTrue(html.contains("-20.000%"));
+    assertTrue(html.contains("CPU latency: measure&lt;Latin&gt;"));
+    assertTrue(html.contains("<svg viewBox=\"0 0 1200 720\" aria-labelledby="));
+    assertFalse(html.contains("<svg viewBox=\"0 0 1200 720\" role=\"img\""));
+    assertTrue(html.contains("tabindex=\"0\" aria-label="));
+    assertCoordinatesAreUngrouped(html);
+    assertTrue(html.contains("type=\"radio\""));
+    assertTrue(html.contains("role=\"radiogroup\""));
+  }
+
+  @Test
+  void distinguishesDuplicateFragmentsAndSplitsMissingSeriesAtGlobalTimelineGaps() throws IOException {
+    Path archive = Files.createTempDirectory("benchmark-trend-gaps");
+    String first = "20260724-090000-000000000";
+    String middle = "20260724-100000-000000000";
+    String last = "20260724-110000-000000000";
+    String duplicateFragments = renderingJson().replace("\"textFragmentCount\":1000", "\"textFragmentCount\":100");
+    writePair(archive, first, cpuJson(), duplicateFragments);
+    writePair(archive, middle, cpuJson().replace("measureLatin", "otherOperation"), duplicateFragments);
+    writePair(archive, last, cpuJson(), duplicateFragments);
+
+    BenchmarkReportView view = BenchmarkHtmlReportGenerator.loadArchive(archive);
+
+    BenchmarkReportView.TrendSeries missingCpu = trend(view, "CPU latency: measureLatin");
+    assertTrue(view.trends().stream().filter(series -> series.label().startsWith("GPU p99: 100 fragments")).count() == 2);
+    assertTrue(missingCpu.points().size() == 2);
+    assertTrue(missingCpu.points().getFirst().x().equals("100.000"));
+    assertTrue(missingCpu.points().getLast().x().equals("1100.000"));
+    assertTrue(missingCpu.segments().size() == 2);
+    assertTrue(missingCpu.segments().stream().allMatch(segment -> segment.points().size() == 1));
+    assertTrue(missingCpu.timelineFirstRun().equals(first));
+    assertTrue(missingCpu.timelineLastRun().equals(last));
+  }
+
+  @Test
+  void keepsBoundaryGapsAndSingleRunChartsOnTheGlobalTimeline() throws IOException {
+    Path archive = Files.createTempDirectory("benchmark-trend-boundaries");
+    String first = "20260724-090000-000000000";
+    String middle = "20260724-100000-000000000";
+    String last = "20260724-110000-000000000";
+    writePair(archive, first, cpuJson().replace("measureLatin", "otherOperation"), renderingJson());
+    writePair(archive, middle, cpuJson(), renderingJson());
+    writePair(archive, last, cpuJson().replace("measureLatin", "otherOperation"), renderingJson());
+    BenchmarkReportView.TrendSeries boundaryOnly = trend(BenchmarkHtmlReportGenerator.loadArchive(archive), "CPU latency: measureLatin");
+    assertTrue(boundaryOnly.points().getFirst().x().equals("600.000"));
+    assertTrue(boundaryOnly.segments().size() == 1);
+
+    Path singleRunArchive = Files.createTempDirectory("benchmark-single-trend");
+    writePair(singleRunArchive, first, cpuJson(), renderingJson());
+    BenchmarkReportView.TrendSeries single = trend(BenchmarkHtmlReportGenerator.loadArchive(singleRunArchive), "CPU latency: measureLatin");
+    assertTrue(single.points().size() == 1);
+    assertTrue(single.points().getFirst().x().equals("600.000"));
+    assertTrue(BenchmarkHtmlReportGenerator.generateArchive(singleRunArchive).contains("One matching run"));
   }
 
   private static void writePair(Path archive, String identifier, String cpu, String rendering) throws IOException {
@@ -129,6 +199,20 @@ class BenchmarkHtmlReportGeneratorTest {
 
   private static int count(String value, String token) {
     return value.split(java.util.regex.Pattern.quote(token), -1).length - 1;
+  }
+
+  private static BenchmarkReportView.TrendSeries trend(BenchmarkReportView view, String label) {
+    return view.trends().stream().filter(series -> series.label().equals(label)).findFirst().orElseThrow();
+  }
+
+  private static void assertCoordinatesAreUngrouped(String html) {
+    var attributes = java.util.regex.Pattern.compile("(?:cx|cy|points)=\"([^\"]+)\"").matcher(html);
+    int count = 0;
+    while (attributes.find()) {
+      count++;
+      assertFalse(java.util.regex.Pattern.compile("(?<![\\d.])\\d{1,3},\\d{3}\\.\\d+").matcher(attributes.group(1)).find());
+    }
+    assertTrue(count > 0);
   }
 
   private static String cpuJson() {

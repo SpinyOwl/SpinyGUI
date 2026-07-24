@@ -74,6 +74,18 @@ Implement calculation and rendering benchmarks that produce reproducible local r
 **Enables:** T10.
 **Parallelizable with:** None.
 
+### T12: Add Historical Trend Charts
+
+**Depends on:** T10.
+**Enables:** T13.
+**Parallelizable with:** None.
+
+### T13: Contain Trend Explorer Width
+
+**Depends on:** T12.
+**Enables:** None.
+**Parallelizable with:** None.
+
 ## Dependency Graph
 
 ```mermaid
@@ -89,6 +101,8 @@ flowchart TD
   T9["T9: Persist Timestamped Benchmark Runs"]
   T10["T10: Render Anchored Performance History"]
   T11["T11: Prevent Historical Run Overwrite"]
+  T12["T12: Add Historical Trend Charts"]
+  T13["T13: Contain Trend Explorer Width"]
   T1 --> T2
   T1 --> T3
   T2 --> T4
@@ -100,4 +114,6 @@ flowchart TD
   T8 --> T9
   T9 --> T11
   T11 --> T10
+  T10 --> T12
+  T12 --> T13
 ```
