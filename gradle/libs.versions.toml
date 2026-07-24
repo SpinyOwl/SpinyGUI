@@ -10,6 +10,8 @@ gson = "2.14.0"
 guava = "33.6.0-jre"
 joml = "1.10.8"
 jomlPrimitives = "1.10.0"
+jmh = "1.37"
+jte = "3.2.4"
 jsoup = "1.22.2"
 junit = "6.0.3"
 junitPlatform = "1.10.5"
@@ -35,6 +37,9 @@ guava = { module = "com.google.guava:guava", version.ref = "guava" }
 joml = { module = "org.joml:joml", version.ref = "joml" }
 jomlExperimental = { module = "org.joml:joml-experimental", version.ref = "joml" }
 jomlPrimitives = { module = "org.joml:joml-primitives", version.ref = "jomlPrimitives" }
+jmhCore = { module = "org.openjdk.jmh:jmh-core", version.ref = "jmh" }
+jmhGeneratorAnnprocess = { module = "org.openjdk.jmh:jmh-generator-annprocess", version.ref = "jmh" }
+jteRuntime = { module = "gg.jte:jte-runtime", version.ref = "jte" }
 jsoup = { module = "org.jsoup:jsoup", version.ref = "jsoup" }
 junit = { module = "org.junit.jupiter:junit-jupiter", version.ref = "junit" }
 junitParams = { module = "org.junit.jupiter:junit-jupiter-params", version.ref = "junit" }
@@ -59,3 +64,6 @@ lwjgl = [
     "lwjglStb",
     "lwjglYoga"
 ]
+
+[plugins]
+jte = { id = "gg.jte.gradle", version.ref = "jte" }

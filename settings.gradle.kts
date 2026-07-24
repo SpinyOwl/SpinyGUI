@@ -16,6 +16,7 @@ include(
     "spinygui.core",
     "spinygui.core.backend",
     "spinygui.core.backend.lwjgl.nanovg",
+    "spinygui.benchmark",
     "spinygui.demo.simple",
     "spinygui.demo.complex"
 )
