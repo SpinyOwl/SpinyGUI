@@ -26,9 +26,9 @@ This change intentionally relaxes the prior JavaScript-free constraint. It does 
 
 ## Dependency Packaging
 
-Vendor the official `chart.umd.min.js` distribution for Chart.js 4.5.1 as a benchmark classpath resource. Keep its MIT license header and add a repository license copy or third-party notice beside the vendored asset.
+Vendor the official `chart.umd.min.js` distribution for Chart.js 4.5.1 as a benchmark classpath resource. Preserve its Chart.js and bundled `@kurkle/color` license banners, and add the full corresponding MIT license texts beside the vendored asset or in a benchmark third-party notice. Remove only a trailing source-map directive if the distribution contains one, so opening the report cannot request a companion map file.
 
-`BenchmarkHtmlReportGenerator` loads the pinned resource and supplies it to the precompiled JTE report template. The generated HTML embeds the bundle in an inline `<script>` block before the report bootstrap code. No generated `<script src>`, `<link>`, `http://`, `https://`, or other external resource reference is permitted.
+`BenchmarkHtmlReportGenerator` loads the pinned resource and supplies it to the precompiled JTE report template. The generated HTML embeds the bundle in an inline `<script>` block before the report bootstrap code. No generated `<script src>`, stylesheet `<link>`, source-map directive, or other resource-loading reference is permitted. URL literals inside preserved upstream license banners or library source are allowed because they do not initiate requests; browser verification must confirm that the finished report performs no network access.
 
 The generated file will be larger by approximately the minified Chart.js bundle size. Portability and deterministic offline behavior take priority over minimizing report size.
 
@@ -46,7 +46,7 @@ The chart payload contains:
 - One history series per metric with numeric values or `null` at runs where that metric is absent.
 - Per-point signed change text for history tooltips.
 
-The generator serializes the payload with Gson using HTML-safe escaping. In particular, `<`, `>`, `&`, quotes, and label content capable of terminating a script element must remain escaped. The template may bypass JTE escaping only for the trusted vendored bundle and generator-owned, verified-safe JSON or bootstrap source.
+The generator serializes the payload with Gson using HTML-safe escaping and places it in one `<script id="benchmark-chart-data" type="application/json">` element. The bootstrap parses that element rather than interpolating benchmark values into executable JavaScript. In particular, `<`, `>`, `&`, quotes, and label content capable of terminating a script element must remain escaped. The template may bypass JTE escaping only for the trusted vendored bundle and generator-owned, verified-safe JSON or bootstrap source.
 
 ### Chart Runtime
 
@@ -98,6 +98,8 @@ Each chart also has adjacent fallback text that identifies the matching precise 
 
 The report must not rely on canvas fallback children alone because browsers that support canvas but block JavaScript do not display those children. The adjacent fallback element is the authoritative failure state.
 
+Chart.js tooltips are pointer interactions and are not treated as the accessible representation of the data. Keyboard users can operate the native history metric buttons, while the persistent summaries and tables remain the authoritative keyboard and screen-reader data views. This design does not add custom keyboard navigation inside canvas pixels.
+
 ## Cleanup
 
 Remove code that exists only for the old renderers after Chart.js output is covered:
@@ -125,7 +127,8 @@ Follow red-green TDD for each behavior change.
 Automated tests cover:
 
 - The pinned Chart.js 4.5.1 resource and retained MIT license notice.
-- Embedding the bundle and bootstrap while rejecting external URLs and resource tags.
+- Embedding the bundle and bootstrap while rejecting resource-loading tags, attributes, and source-map directives. Incidental URL literals inside preserved third-party source are not failures.
+- Preserving the Chart.js and bundled `@kurkle/color` notices and full MIT license texts.
 - HTML-safe serialization of benchmark labels and script-termination attempts.
 - Numeric CPU and rendering datasets and units.
 - Fixed rendering scale and both frame-budget marker values.
