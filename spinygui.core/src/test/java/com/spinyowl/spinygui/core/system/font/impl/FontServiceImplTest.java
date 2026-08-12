@@ -2,9 +2,14 @@ package com.spinyowl.spinygui.core.system.font.impl;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import com.spinyowl.spinygui.core.diagnostic.DiagnosticSession;
+import com.spinyowl.spinygui.core.diagnostic.DiagnosticSnapshot;
+import com.spinyowl.spinygui.core.diagnostic.TextDiagnosticCounter;
 import com.spinyowl.spinygui.core.font.Font;
+import com.spinyowl.spinygui.core.system.font.FontChainResolver;
 import com.spinyowl.spinygui.core.system.font.ResolvedTextRun;
 import com.spinyowl.spinygui.core.system.font.TextCaretMetrics;
 import com.spinyowl.spinygui.core.system.font.TextLineMetrics;
@@ -152,5 +157,86 @@ class FontServiceImplTest {
     assertTrue(runs.stream().flatMap(run -> run.glyphs().stream())
         .anyMatch(glyph -> glyph.sourceStart() == 3 && glyph.sourceEnd() == 5 && glyph.replacement()));
     assertTrue(metrics.width() > 0);
+  }
+
+  @Test
+  void diagnostics_exposeDuplicateResolutionAndQuadraticCurrentRunCopyingWithoutChangingOutput() {
+    String text = "aaaa";
+    TextMetrics expected = fontService.measureText(text, Font.DEFAULT, 16, 1.2f);
+    DiagnosticSession diagnostics = diagnostics();
+    FontServiceImpl instrumented =
+        new FontServiceImpl(
+            new FontStorageImpl(), false, FontChainResolver.DEFAULT, diagnostics);
+
+    TextMetrics actual = instrumented.measureText(text, Font.DEFAULT, 16, 1.2f);
+    DiagnosticSnapshot snapshot = diagnostics.snapshot();
+
+    assertEquals(expected, actual);
+    assertEquals(8, snapshot.value(TextDiagnosticCounter.SOURCE_CODE_POINTS_SCANNED));
+    assertEquals(8, snapshot.value(TextDiagnosticCounter.LOGICAL_GLYPH_RESOLUTIONS));
+    assertEquals(16, snapshot.value(TextDiagnosticCounter.NATIVE_GLYPH_INDEX_PROBES));
+    assertEquals(15, snapshot.value(TextDiagnosticCounter.GLYPH_SLOTS_COPIED));
+    assertEquals(6, snapshot.value(TextDiagnosticCounter.GLYPH_SLOTS_MOVED));
+    assertEquals(0, snapshot.value(TextDiagnosticCounter.CHARACTER_BUILDER_APPENDS));
+    assertEquals(0, snapshot.value(TextDiagnosticCounter.CHARACTER_BUILDER_FREEZES));
+    assertEquals(3, snapshot.value(TextDiagnosticCounter.GLYPH_SLOT_BUILDER_APPENDS));
+    assertEquals(3, snapshot.value(TextDiagnosticCounter.GLYPH_SLOT_BUILDER_FREEZES));
+    assertEquals(4, snapshot.value(TextDiagnosticCounter.RUN_BUILDER_APPENDS));
+    assertEquals(0, snapshot.value(TextDiagnosticCounter.RUN_BUILDER_FREEZES));
+    assertEquals(1, snapshot.value(TextDiagnosticCounter.COMPLETE_TEXT_MEASUREMENTS));
+    assertEquals(
+        1,
+        snapshot.value(TextDiagnosticCounter.TEXT_MEASURER_MEASURE_TEXT_FONT_ENTRIES));
+    assertEquals(
+        1,
+        snapshot.value(
+            TextDiagnosticCounter.TEXT_MEASURER_MEASURE_TEXT_FONT_LIST_FULL_ENTRIES));
+  }
+
+  @Test
+  void diagnostics_glyphSlotCopiesAndRelocationsIndependentlyMatchQuadraticCurrentTotals() {
+    assertQuadraticRunAssemblyCounts(1, 0, 0);
+    assertQuadraticRunAssemblyCounts(4, 15, 6);
+    assertQuadraticRunAssemblyCounts(8, 63, 28);
+    assertQuadraticRunAssemblyCounts(16, 255, 120);
+  }
+
+  @Test
+  void disabledDiagnosticsUseStableNoOpResultsAcrossMeasurement() {
+    FontServiceImpl disabled = new FontServiceImpl(new FontStorageImpl(), false);
+    DiagnosticSnapshot before = disabled.diagnostics().snapshot();
+
+    disabled.measureText("unchanged", Font.DEFAULT, 16, 1.2f);
+
+    assertSame(DiagnosticSession.disabled(), disabled.diagnostics());
+    assertSame(before, disabled.diagnostics().snapshot());
+  }
+
+  private DiagnosticSession diagnostics() {
+    return DiagnosticSession.enabled(List.of(TextDiagnosticCounter.values()));
+  }
+
+  private void assertQuadraticRunAssemblyCounts(
+      int glyphCount, long expectedCopies, long expectedMoves) {
+    DiagnosticSession diagnostics = diagnostics();
+    FontServiceImpl instrumented =
+        new FontServiceImpl(
+            new FontStorageImpl(), false, FontChainResolver.DEFAULT, diagnostics);
+
+    instrumented.measureText("a".repeat(glyphCount), Font.DEFAULT, 16, 1.2f);
+    DiagnosticSnapshot snapshot = diagnostics.snapshot();
+
+    assertEquals(expectedCopies, snapshot.value(TextDiagnosticCounter.GLYPH_SLOTS_COPIED));
+    assertEquals(expectedMoves, snapshot.value(TextDiagnosticCounter.GLYPH_SLOTS_MOVED));
+    assertEquals(0, snapshot.value(TextDiagnosticCounter.CHARACTER_BUILDER_APPENDS));
+    assertEquals(0, snapshot.value(TextDiagnosticCounter.CHARACTER_BUILDER_FREEZES));
+    assertEquals(
+        glyphCount - 1,
+        snapshot.value(TextDiagnosticCounter.GLYPH_SLOT_BUILDER_APPENDS));
+    assertEquals(
+        glyphCount - 1,
+        snapshot.value(TextDiagnosticCounter.GLYPH_SLOT_BUILDER_FREEZES));
+    assertEquals(glyphCount, snapshot.value(TextDiagnosticCounter.RUN_BUILDER_APPENDS));
+    assertEquals(0, snapshot.value(TextDiagnosticCounter.RUN_BUILDER_FREEZES));
   }
 }

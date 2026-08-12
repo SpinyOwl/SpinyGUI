@@ -1,23 +1,14 @@
 package com.spinyowl.spinygui.core.backend.renderer.lwjgl.nanovg;
 
-import static com.spinyowl.spinygui.core.backend.renderer.lwjgl.nanovg.util.NvgColorUtil.create;
-import static com.spinyowl.spinygui.core.backend.renderer.lwjgl.nanovg.util.NvgRenderUtils.createScissor;
-import static com.spinyowl.spinygui.core.backend.renderer.lwjgl.nanovg.util.NvgRenderUtils.resetScissor;
+import static com.spinyowl.spinygui.core.backend.renderer.lwjgl.nanovg.NvgTextOutcomeDiagnostics.TextPath.INPUT;
 import static com.spinyowl.spinygui.core.backend.renderer.lwjgl.nanovg.util.NvgRenderUtils.withPresentedOpacity;
-import static com.spinyowl.spinygui.core.backend.renderer.lwjgl.nanovg.util.NvgShapes.drawRect;
 import static org.lwjgl.nanovg.NanoVG.NVG_ALIGN_BASELINE;
 import static org.lwjgl.nanovg.NanoVG.NVG_ALIGN_LEFT;
-import static org.lwjgl.nanovg.NanoVG.nvgFillColor;
-import static org.lwjgl.nanovg.NanoVG.nvgFontFace;
-import static org.lwjgl.nanovg.NanoVG.nvgFontSize;
-import static org.lwjgl.nanovg.NanoVG.nvgIntersectScissor;
-import static org.lwjgl.nanovg.NanoVG.nvgRestore;
-import static org.lwjgl.nanovg.NanoVG.nvgSave;
-import static org.lwjgl.nanovg.NanoVG.nvgText;
-import static org.lwjgl.nanovg.NanoVG.nvgTextAlign;
-import static org.lwjgl.system.MemoryUtil.memFree;
-import static org.lwjgl.system.MemoryUtil.memUTF8;
 
+import com.spinyowl.spinygui.core.backend.renderer.lwjgl.nanovg.diagnostic.NvgDiagnosticCounter;
+import com.spinyowl.spinygui.core.backend.renderer.lwjgl.nanovg.util.NvgClipStack;
+import com.spinyowl.spinygui.core.diagnostic.DiagnosticSession;
+import com.spinyowl.spinygui.core.diagnostic.TextDiagnosticCounter;
 import com.spinyowl.spinygui.core.font.Font;
 import com.spinyowl.spinygui.core.font.FontStretch;
 import com.spinyowl.spinygui.core.node.InputElement;
@@ -25,11 +16,10 @@ import com.spinyowl.spinygui.core.style.ResolvedStyle;
 import com.spinyowl.spinygui.core.style.stylesheet.util.StyleUtils;
 import com.spinyowl.spinygui.core.style.types.Color;
 import com.spinyowl.spinygui.core.style.types.length.Length;
-import com.spinyowl.spinygui.core.system.font.TextLineMetrics;
-import com.spinyowl.spinygui.core.system.font.TextMeasurer;
 import com.spinyowl.spinygui.core.system.font.FontChainResolver;
 import com.spinyowl.spinygui.core.system.font.ResolvedTextRun;
-import java.nio.ByteBuffer;
+import com.spinyowl.spinygui.core.system.font.TextLineMetrics;
+import com.spinyowl.spinygui.core.system.font.TextMeasurer;
 import java.util.List;
 import org.joml.Vector2f;
 
@@ -47,15 +37,23 @@ class NvgInputRenderer {
   private TextMeasurer textMeasurer;
 
   NvgInputRenderer() {
-    this(new NvgFontRegistry());
+    this(new NvgFontRegistry(), DiagnosticSession.disabled());
   }
 
   NvgInputRenderer(NvgFontRegistry fontRegistry) {
+    this(fontRegistry, DiagnosticSession.disabled());
+  }
+
+  NvgInputRenderer(NvgFontRegistry fontRegistry, DiagnosticSession diagnostics) {
+    this(new NanoVgTextCommandSink(fontRegistry, diagnostics), diagnostics);
+  }
+
+  NvgInputRenderer(NvgTextCommandSink commands, DiagnosticSession diagnostics) {
     this(
-        new NanoVgInputStateSink(),
-        new NanoVgInputSelectionSink(),
-        new NanoVgInputTextSink(fontRegistry),
-        new NanoVgInputCaretSink());
+        new CommandStateSink(commands),
+        new CommandSelectionSink(commands),
+        new CommandTextSink(commands, diagnostics),
+        new CommandCaretSink(commands));
   }
 
   NvgInputRenderer(
@@ -147,6 +145,7 @@ class NvgInputRenderer {
   }
 
   private TextGeometry textGeometry(InputElement input) {
+    textMeasurer.diagnostics().increment(TextDiagnosticCounter.INPUT_COMPLETE_LAYOUTS);
     ResolvedStyle style = input.resolvedStyle();
     List<Font> fonts = findFonts(style);
     Font font = fonts.isEmpty() ? Font.DEFAULT : fonts.get(0);
@@ -188,10 +187,9 @@ class NvgInputRenderer {
     if (style.fontFamilies() == null) {
       return List.of(Font.DEFAULT);
     }
+    textMeasurer.diagnostics().increment(TextDiagnosticCounter.FONT_CHAIN_RESOLUTIONS);
     return FontChainResolver.DEFAULT
-        .resolve(
-            style.fontFamilies(), style.fontStyle(), style.fontWeight(), FontStretch.NORMAL)
-        ;
+        .resolve(style.fontFamilies(), style.fontStyle(), style.fontWeight(), FontStretch.NORMAL);
   }
 
   private float fontSize(InputElement input) {
@@ -249,28 +247,56 @@ class NvgInputRenderer {
       float lineHeight,
       float requestedLineHeight) {}
 
-  private static final class NanoVgInputStateSink implements InputStateSink {
+  private static final class CommandStateSink implements InputStateSink {
+    private final NvgTextCommandSink commands;
+    private final NvgClipStack clipStack;
+
+    private CommandStateSink(NvgTextCommandSink commands) {
+      this.commands = commands;
+      clipStack =
+          new NvgClipStack(
+              new NvgClipStack.ClipSink() {
+                @Override
+                public void scissor(long context, float x, float y, float width, float height) {
+                  commands.scissor(context, x, y, width, height);
+                }
+
+                @Override
+                public void intersectScissor(
+                    long context, float x, float y, float width, float height) {
+                  commands.intersectScissor(context, x, y, width, height);
+                }
+
+                @Override
+                public void reset(long context) {
+                  commands.resetScissor(context);
+                }
+              });
+    }
+
     @Override
     public void begin(
         long context, InputElement input, Vector2f contentPosition, Vector2f contentSize) {
-      createScissor(context, input);
-      nvgSave(context);
-      nvgIntersectScissor(
+      clipStack.create(context, input);
+      commands.beginScope(context, NvgTextCommand.TextPath.INPUT);
+      commands.intersectScissor(
           context, contentPosition.x(), contentPosition.y(), contentSize.x(), contentSize.y());
     }
 
     @Override
     public void end(long context) {
-      nvgRestore(context);
-      resetScissor(context);
+      commands.endScope(context, NvgTextCommand.TextPath.INPUT);
+      clipStack.reset(context);
     }
   }
 
-  private static final class NanoVgInputTextSink implements InputTextSink {
-    private final NvgFontRegistry fontRegistry;
+  private static final class CommandTextSink implements InputTextSink {
+    private final NvgTextCommandSink commands;
+    private final NvgTextSubmission submission;
 
-    private NanoVgInputTextSink(NvgFontRegistry fontRegistry) {
-      this.fontRegistry = fontRegistry;
+    private CommandTextSink(NvgTextCommandSink commands, DiagnosticSession diagnostics) {
+      this.commands = commands;
+      submission = new NvgTextSubmission(commands, diagnostics);
     }
 
     @Override
@@ -283,56 +309,64 @@ class NvgInputRenderer {
         Color color,
         float x,
         float baseline) {
-      nvgTextAlign(context, NVG_ALIGN_LEFT | NVG_ALIGN_BASELINE);
-      try (var nvgColor = create(color)) {
-        nvgFillColor(context, nvgColor);
-        if (runs.isEmpty()) {
-          drawLegacyText(context, text, font, fontSize, x, baseline);
-        } else {
-          float runX = x;
-          for (ResolvedTextRun run : runs) {
-            String fontFace = fontRegistry.fontFace(run.font(), context);
-            if (fontFace == null) continue;
-            nvgFontFace(context, fontFace);
-            nvgFontSize(context, fontSize);
-            ByteBuffer textBuffer = memUTF8(run.renderedText(), false);
-            try {
-              nvgText(context, runX, baseline, textBuffer);
-            } finally {
-              memFree(textBuffer);
-            }
-            runX += run.advance();
-          }
+      commands.align(context, NVG_ALIGN_LEFT | NVG_ALIGN_BASELINE);
+      commands.fillColor(context, color);
+      if (runs.isEmpty()) {
+        submission.submit(
+            context,
+            NvgTextCommand.TextPath.INPUT,
+            INPUT,
+            font,
+            fontSize,
+            null,
+            commands.displayText(font, text),
+            x,
+            baseline);
+        return;
+      }
+      float runX = x;
+      for (ResolvedTextRun run : runs) {
+        if (submission.submit(
+            context,
+            NvgTextCommand.TextPath.INPUT,
+            INPUT,
+            run.font(),
+            fontSize,
+            null,
+            run.renderedText(),
+            runX,
+            baseline)) {
+          commands.advance(NvgTextCommand.TextPath.INPUT, runX, run.advance());
+          runX += run.advance();
         }
       }
     }
-
-    private void drawLegacyText(
-        long context, String text, Font font, float fontSize, float x, float baseline) {
-      String fontFace = fontRegistry.fontFace(font, context);
-      if (fontFace == null) return;
-      nvgFontFace(context, fontFace);
-      nvgFontSize(context, fontSize);
-      ByteBuffer textBuffer = memUTF8(fontRegistry.displayText(font, text), false);
-      try {
-        nvgText(context, x, baseline, textBuffer);
-      } finally {
-        memFree(textBuffer);
-      }
-    }
   }
 
-  private static final class NanoVgInputSelectionSink implements InputSelectionSink {
+  private static final class CommandSelectionSink implements InputSelectionSink {
+    private final NvgTextCommandSink commands;
+
+    private CommandSelectionSink(NvgTextCommandSink commands) {
+      this.commands = commands;
+    }
+
     @Override
     public void drawSelection(long context, float x, float y, float width, float height) {
-      drawRect(context, new Vector2f(x, y), new Vector2f(width, height), SELECTION_COLOR);
+      commands.selection(context, x, y, width, height, SELECTION_COLOR);
     }
   }
 
-  private static final class NanoVgInputCaretSink implements InputCaretSink {
+  private static final class CommandCaretSink implements InputCaretSink {
+    private final NvgTextCommandSink commands;
+
+    private CommandCaretSink(NvgTextCommandSink commands) {
+      this.commands = commands;
+    }
+
     @Override
     public void drawCaret(long context, float x, float y, float height) {
-      drawRect(context, new Vector2f(x, y), new Vector2f(CARET_WIDTH, height), CARET_COLOR);
+      commands.caret(context, x, y, CARET_WIDTH, height, CARET_COLOR);
     }
   }
+
 }

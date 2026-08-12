@@ -6,7 +6,9 @@ import static com.spinyowl.spinygui.core.style.stylesheet.Properties.OPACITY;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import com.spinyowl.spinygui.core.backend.renderer.lwjgl.nanovg.diagnostic.NvgDiagnosticCounter;
 import com.spinyowl.spinygui.core.backend.renderer.lwjgl.nanovg.util.NvgClipStack.ClipSink;
+import com.spinyowl.spinygui.core.diagnostic.DiagnosticSession;
 import com.spinyowl.spinygui.core.node.Element;
 import com.spinyowl.spinygui.core.node.NodeBuilder;
 import com.spinyowl.spinygui.core.style.types.Color;
@@ -86,6 +88,34 @@ class NvgClipStackTest {
     clipStack.reset(7);
 
     assertEquals(List.of("reset(7)"), sink.calls());
+  }
+
+  @Test
+  void diagnosticsCountClipCommandsWithoutChangingSinkOrdering() {
+    Element outer = element(10, 20, 100, 80, Overflow.HIDDEN);
+    Element inner = element(30, 40, 70, 60, Overflow.AUTO);
+    Element child = element(0, 0, 10, 10, Overflow.VISIBLE);
+    outer.addChild(inner);
+    inner.addChild(child);
+    inner.offsetParent(outer);
+    child.offsetParent(inner);
+    RecordingClipSink disabledSink = new RecordingClipSink();
+    NvgClipStack disabled = new NvgClipStack(disabledSink);
+    RecordingClipSink enabledSink = new RecordingClipSink();
+    DiagnosticSession diagnostics =
+        DiagnosticSession.enabled(List.of(NvgDiagnosticCounter.values()));
+    NvgClipStack enabled = new NvgClipStack(enabledSink, diagnostics);
+
+    disabled.create(9, child);
+    disabled.reset(9);
+    enabled.create(9, child);
+    enabled.reset(9);
+
+    assertEquals(disabledSink.calls(), enabledSink.calls());
+    assertEquals(1, diagnostics.snapshot().value(NvgDiagnosticCounter.SCISSOR_CALLS));
+    assertEquals(
+        1, diagnostics.snapshot().value(NvgDiagnosticCounter.INTERSECT_SCISSOR_CALLS));
+    assertEquals(1, diagnostics.snapshot().value(NvgDiagnosticCounter.RESET_SCISSOR_CALLS));
   }
 
   private Element element(float x, float y, float width, float height, Overflow overflow) {

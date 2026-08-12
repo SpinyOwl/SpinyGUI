@@ -2,6 +2,9 @@ package com.spinyowl.spinygui.core.backend.renderer.lwjgl.nanovg;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import com.spinyowl.spinygui.core.backend.renderer.lwjgl.nanovg.diagnostic.NvgDiagnosticCounter;
+import com.spinyowl.spinygui.core.backend.renderer.lwjgl.nanovg.util.NvgClipStack;
+import com.spinyowl.spinygui.core.diagnostic.DiagnosticSession;
 import com.spinyowl.spinygui.core.font.Font;
 import com.spinyowl.spinygui.core.layout.InlineFragment;
 import com.spinyowl.spinygui.core.node.Element;
@@ -9,6 +12,7 @@ import com.spinyowl.spinygui.core.node.Frame;
 import com.spinyowl.spinygui.core.node.InputElement;
 import com.spinyowl.spinygui.core.node.Node;
 import com.spinyowl.spinygui.core.node.Text;
+import com.spinyowl.spinygui.core.style.types.Overflow;
 import com.spinyowl.spinygui.core.style.types.length.Length;
 import com.spinyowl.spinygui.core.system.font.TextCaretMetrics;
 import com.spinyowl.spinygui.core.system.font.FontMetrics;
@@ -155,6 +159,83 @@ class NvgDebugRendererTest {
     renderer.render(frame, 3, new Vector2f(28, 35));
 
     assertEquals(List.of("caret(3,24.0,32.0,16.0)"), caretSink.calls());
+  }
+
+  @Test
+  void enabledDebugStateCountsCommandsWithoutChangingDisabledCommandOrder() {
+    Frame frame = clippedHoveredTextFrame();
+    List<String> disabledCalls = new ArrayList<>();
+    NvgDebugRenderer disabled = recordingDebugRenderer(DiagnosticSession.disabled(), disabledCalls);
+    DiagnosticSession diagnostics =
+        DiagnosticSession.enabled(List.of(NvgDiagnosticCounter.values()));
+    List<String> enabledCalls = new ArrayList<>();
+    NvgDebugRenderer enabled = recordingDebugRenderer(diagnostics, enabledCalls);
+
+    disabled.render(frame, 17, null);
+    enabled.render(frame, 17, null);
+
+    assertEquals(List.of("scissor", "save", "highlight", "restore", "reset"), disabledCalls);
+    assertEquals(disabledCalls, enabledCalls);
+    assertEquals(1, diagnostics.snapshot().value(NvgDiagnosticCounter.SCISSOR_CALLS));
+    assertEquals(1, diagnostics.snapshot().value(NvgDiagnosticCounter.SAVE_CALLS));
+    assertEquals(1, diagnostics.snapshot().value(NvgDiagnosticCounter.RESTORE_CALLS));
+    assertEquals(1, diagnostics.snapshot().value(NvgDiagnosticCounter.RESET_SCISSOR_CALLS));
+  }
+
+  private Frame clippedHoveredTextFrame() {
+    Frame frame = new Frame();
+    Element parent = new Element("div");
+    parent.hovered(true);
+    parent.resolvedStyle().overflowX(Overflow.HIDDEN);
+    parent.resolvedStyle().overflowY(Overflow.HIDDEN);
+    parent.box().contentPosition(10, 20);
+    parent.box().contentSize(100, 80);
+    Text text = new Text("abc");
+    text.inlineFragments(List.of(fragment("abc", 3, 5, 20, 10)));
+    frame.addChild(parent);
+    parent.addChild(text);
+    frame.layoutChildNodes(List.of(parent));
+    parent.layoutChildNodes(List.of(text));
+    text.offsetParent(parent);
+    return frame;
+  }
+
+  private NvgDebugRenderer recordingDebugRenderer(
+      DiagnosticSession diagnostics, List<String> calls) {
+    NvgClipStack.ClipSink clipSink =
+        new NvgClipStack.ClipSink() {
+          @Override
+          public void scissor(long context, float x, float y, float width, float height) {
+            calls.add("scissor");
+          }
+
+          @Override
+          public void intersectScissor(
+              long context, float x, float y, float width, float height) {
+            calls.add("intersect");
+          }
+
+          @Override
+          public void reset(long context) {
+            calls.add("reset");
+          }
+        };
+    NvgDebugRenderer.NativeStateSink stateSink =
+        new NvgDebugRenderer.NativeStateSink() {
+          @Override
+          public void save(long context) {
+            calls.add("save");
+          }
+
+          @Override
+          public void restore(long context) {
+            calls.add("restore");
+          }
+        };
+    return new NvgDebugRenderer(
+        (context, x, y, width, height) -> calls.add("highlight"),
+        (context, x, y, height) -> calls.add("caret"),
+        new NvgDebugRenderer.NanoVgStateSink(diagnostics, clipSink, stateSink));
   }
 
   private InlineFragment fragment(String text, float x, float y, float width, float height) {

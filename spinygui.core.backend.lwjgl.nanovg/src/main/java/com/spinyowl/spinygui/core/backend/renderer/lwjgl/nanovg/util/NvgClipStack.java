@@ -4,6 +4,8 @@ import static org.lwjgl.nanovg.NanoVG.nvgIntersectScissor;
 import static org.lwjgl.nanovg.NanoVG.nvgResetScissor;
 import static org.lwjgl.nanovg.NanoVG.nvgScissor;
 
+import com.spinyowl.spinygui.core.backend.renderer.lwjgl.nanovg.diagnostic.NvgDiagnosticCounter;
+import com.spinyowl.spinygui.core.diagnostic.DiagnosticSession;
 import com.spinyowl.spinygui.core.node.Element;
 import com.spinyowl.spinygui.core.node.Node;
 import com.spinyowl.spinygui.core.util.OverflowUtils;
@@ -14,9 +16,15 @@ import lombok.NonNull;
 public class NvgClipStack {
 
   private final ClipSink sink;
+  private final DiagnosticSession diagnostics;
 
   public NvgClipStack(@NonNull ClipSink sink) {
+    this(sink, DiagnosticSession.disabled());
+  }
+
+  public NvgClipStack(@NonNull ClipSink sink, @NonNull DiagnosticSession diagnostics) {
     this.sink = sink;
+    this.diagnostics = diagnostics;
   }
 
   public void create(long context, Node node) {
@@ -51,6 +59,7 @@ public class NvgClipStack {
   }
 
   public void reset(long context) {
+    diagnostics.increment(NvgDiagnosticCounter.RESET_SCISSOR_CALLS);
     sink.reset(context);
   }
 
@@ -62,8 +71,10 @@ public class NvgClipStack {
     float x = absolutePosition.x() + paddingBox.x() - borderBox.x();
     float y = absolutePosition.y() + paddingBox.y() - borderBox.y();
     if (first) {
+      diagnostics.increment(NvgDiagnosticCounter.SCISSOR_CALLS);
       sink.scissor(context, x, y, paddingBox.width(), paddingBox.height());
     } else {
+      diagnostics.increment(NvgDiagnosticCounter.INTERSECT_SCISSOR_CALLS);
       sink.intersectScissor(context, x, y, paddingBox.width(), paddingBox.height());
     }
   }
@@ -77,7 +88,6 @@ public class NvgClipStack {
   }
 
   public static final class NanoVgClipSink implements ClipSink {
-
     @Override
     public void scissor(long context, float x, float y, float width, float height) {
       nvgScissor(context, x, y, width, height);

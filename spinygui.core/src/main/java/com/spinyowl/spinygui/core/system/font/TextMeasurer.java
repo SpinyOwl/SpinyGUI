@@ -1,13 +1,21 @@
 package com.spinyowl.spinygui.core.system.font;
 
+import com.spinyowl.spinygui.core.diagnostic.DiagnosticSession;
+import com.spinyowl.spinygui.core.diagnostic.TextDiagnosticCounter;
 import com.spinyowl.spinygui.core.font.Font;
 import lombok.NonNull;
 import java.util.List;
 
 public interface TextMeasurer {
 
+  /** Narrow diagnostics hook; implementations remain allocation-free when returning the default. */
+  default DiagnosticSession diagnostics() {
+    return DiagnosticSession.disabled();
+  }
+
   default TextMetrics measureText(
       @NonNull String text, @NonNull List<Font> fonts, float fontSize, float lineHeight) {
+    diagnostics().increment(TextDiagnosticCounter.TEXT_MEASURER_MEASURE_TEXT_FONT_LIST_ENTRIES);
     return measureText(text, 0, fonts, fontSize, lineHeight, Float.MAX_VALUE, false);
   }
 
@@ -19,16 +27,22 @@ public interface TextMeasurer {
       float lineHeight,
       float maxWidth,
       boolean wordWrap) {
+    diagnostics().increment(
+        TextDiagnosticCounter.TEXT_MEASURER_MEASURE_TEXT_FONT_LIST_FULL_ENTRIES);
     return measureText(text, offsetX, fonts.isEmpty() ? Font.DEFAULT : fonts.get(0), fontSize, lineHeight, maxWidth, wordWrap);
   }
 
   default TextLineMetrics getTextLineMetrics(
       @NonNull String text, @NonNull List<Font> fonts, float fontSize, float lineHeight) {
+    diagnostics().increment(
+        TextDiagnosticCounter.TEXT_MEASURER_GET_TEXT_LINE_METRICS_FONT_LIST_ENTRIES);
     return measureText(text, fonts, fontSize, lineHeight).lines().get(0);
   }
 
   default TextCaretMetrics getTextCaretMetrics(
       @NonNull String text, @NonNull List<Font> fonts, float fontSize, float offsetX) {
+    diagnostics().increment(
+        TextDiagnosticCounter.TEXT_MEASURER_GET_TEXT_CARET_METRICS_FONT_LIST_ENTRIES);
     return getTextCaretMetrics(text, fonts.isEmpty() ? Font.DEFAULT : fonts.get(0), fontSize, offsetX);
   }
 

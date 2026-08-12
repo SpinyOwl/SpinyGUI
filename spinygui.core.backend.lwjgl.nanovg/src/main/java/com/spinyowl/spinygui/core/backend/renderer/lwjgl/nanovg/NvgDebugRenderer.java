@@ -1,12 +1,13 @@
 package com.spinyowl.spinygui.core.backend.renderer.lwjgl.nanovg;
 
-import static com.spinyowl.spinygui.core.backend.renderer.lwjgl.nanovg.util.NvgRenderUtils.createScissor;
-import static com.spinyowl.spinygui.core.backend.renderer.lwjgl.nanovg.util.NvgRenderUtils.resetScissor;
 import static com.spinyowl.spinygui.core.backend.renderer.lwjgl.nanovg.util.NvgShapes.drawRect;
 import static com.spinyowl.spinygui.core.backend.renderer.lwjgl.nanovg.util.NvgShapes.drawRectStroke;
 import static org.lwjgl.nanovg.NanoVG.nvgRestore;
 import static org.lwjgl.nanovg.NanoVG.nvgSave;
 
+import com.spinyowl.spinygui.core.backend.renderer.lwjgl.nanovg.diagnostic.NvgDiagnosticCounter;
+import com.spinyowl.spinygui.core.backend.renderer.lwjgl.nanovg.util.NvgClipStack;
+import com.spinyowl.spinygui.core.diagnostic.DiagnosticSession;
 import com.spinyowl.spinygui.core.font.Font;
 import com.spinyowl.spinygui.core.font.FontStretch;
 import com.spinyowl.spinygui.core.layout.InlineFragment;
@@ -43,7 +44,14 @@ class NvgDebugRenderer implements NvgRenderer.DebugRenderer {
   private TextMeasurer textMeasurer;
 
   NvgDebugRenderer() {
-    this(new NanoVgHighlightSink(), new NanoVgCaretDrawingSink(), new NanoVgStateSink());
+    this(DiagnosticSession.disabled());
+  }
+
+  NvgDebugRenderer(DiagnosticSession diagnostics) {
+    this(
+        new NanoVgHighlightSink(),
+        new NanoVgCaretDrawingSink(),
+        new NanoVgStateSink(diagnostics));
   }
 
   NvgDebugRenderer(HighlightSink highlightSink, CaretSink caretSink, StateSink stateSink) {
@@ -253,6 +261,12 @@ class NvgDebugRenderer implements NvgRenderer.DebugRenderer {
     void end(long context);
   }
 
+  interface NativeStateSink {
+    void save(long context);
+
+    void restore(long context);
+  }
+
   private static final class NanoVgHighlightSink implements HighlightSink {
     @Override
     public void highlight(long context, float x, float y, float width, float height) {
@@ -270,17 +284,48 @@ class NvgDebugRenderer implements NvgRenderer.DebugRenderer {
     }
   }
 
-  private static final class NanoVgStateSink implements StateSink {
+  static final class NanoVgStateSink implements StateSink {
+    private final DiagnosticSession diagnostics;
+    private final NvgClipStack clipStack;
+    private final NativeStateSink nativeStateSink;
+
+    private NanoVgStateSink(DiagnosticSession diagnostics) {
+      this(diagnostics, new NvgClipStack.NanoVgClipSink(), new NanoVgNativeStateSink());
+    }
+
+    NanoVgStateSink(
+        DiagnosticSession diagnostics,
+        NvgClipStack.ClipSink clipSink,
+        NativeStateSink nativeStateSink) {
+      this.diagnostics = diagnostics;
+      this.clipStack = new NvgClipStack(clipSink, diagnostics);
+      this.nativeStateSink = nativeStateSink;
+    }
+
     @Override
     public void begin(long context, Node clipNode) {
-      createScissor(context, clipNode);
-      nvgSave(context);
+      clipStack.create(context, clipNode);
+      diagnostics.increment(NvgDiagnosticCounter.SAVE_CALLS);
+      nativeStateSink.save(context);
     }
 
     @Override
     public void end(long context) {
+      diagnostics.increment(NvgDiagnosticCounter.RESTORE_CALLS);
+      nativeStateSink.restore(context);
+      clipStack.reset(context);
+    }
+  }
+
+  private static final class NanoVgNativeStateSink implements NativeStateSink {
+    @Override
+    public void save(long context) {
+      nvgSave(context);
+    }
+
+    @Override
+    public void restore(long context) {
       nvgRestore(context);
-      resetScissor(context);
     }
   }
 }

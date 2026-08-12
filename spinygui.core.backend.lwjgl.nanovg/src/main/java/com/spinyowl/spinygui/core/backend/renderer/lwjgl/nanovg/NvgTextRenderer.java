@@ -1,93 +1,132 @@
 package com.spinyowl.spinygui.core.backend.renderer.lwjgl.nanovg;
 
-import static com.spinyowl.spinygui.core.backend.renderer.lwjgl.nanovg.util.NvgColorUtil.create;
+import static com.spinyowl.spinygui.core.backend.renderer.lwjgl.nanovg.NvgTextOutcomeDiagnostics.TextPath.NORMAL;
 import static com.spinyowl.spinygui.core.backend.renderer.lwjgl.nanovg.util.NvgRenderUtils.withPresentedOpacity;
 import static org.lwjgl.nanovg.NanoVG.NVG_ALIGN_BASELINE;
 import static org.lwjgl.nanovg.NanoVG.NVG_ALIGN_LEFT;
-import static org.lwjgl.nanovg.NanoVG.nvgFillColor;
-import static org.lwjgl.nanovg.NanoVG.nvgFontFace;
-import static org.lwjgl.nanovg.NanoVG.nvgFontSize;
-import static org.lwjgl.nanovg.NanoVG.nvgRestore;
-import static org.lwjgl.nanovg.NanoVG.nvgSave;
-import static org.lwjgl.nanovg.NanoVG.nvgText;
-import static org.lwjgl.nanovg.NanoVG.nvgTextAlign;
-import static org.lwjgl.system.MemoryUtil.memFree;
-import static org.lwjgl.system.MemoryUtil.memUTF8;
 
+import com.spinyowl.spinygui.core.backend.renderer.lwjgl.nanovg.diagnostic.NvgDiagnosticCounter;
+import com.spinyowl.spinygui.core.diagnostic.DiagnosticSession;
 import com.spinyowl.spinygui.core.layout.InlineFragment;
 import com.spinyowl.spinygui.core.node.Element;
 import com.spinyowl.spinygui.core.node.Node;
 import com.spinyowl.spinygui.core.node.Text;
-import com.spinyowl.spinygui.core.style.types.Display;
 import com.spinyowl.spinygui.core.style.types.Color;
+import com.spinyowl.spinygui.core.style.types.Display;
 import com.spinyowl.spinygui.core.system.font.ResolvedTextRun;
-import java.nio.ByteBuffer;
 import org.joml.Vector2f;
 
 public class NvgTextRenderer {
-  private final TextSink textSink;
+  private final NvgTextCommandSink commands;
+  private final DiagnosticSession diagnostics;
+  private final NvgTextSubmission submission;
+  private final TextSink legacySink;
 
   public NvgTextRenderer() {
-    this(new NvgFontRegistry());
+    this(new NvgFontRegistry(), DiagnosticSession.disabled());
   }
 
   NvgTextRenderer(NvgFontRegistry fontRegistry) {
-    this(new NanoVgTextSink(fontRegistry));
+    this(fontRegistry, DiagnosticSession.disabled());
   }
 
-  NvgTextRenderer(TextSink textSink) {
-    this.textSink = textSink;
+  NvgTextRenderer(NvgFontRegistry fontRegistry, DiagnosticSession diagnostics) {
+    this(new NanoVgTextCommandSink(fontRegistry, diagnostics), diagnostics);
   }
 
-  public void render(Node node, long nanovg) {
+  NvgTextRenderer(NvgTextCommandSink commands) {
+    this(commands, DiagnosticSession.disabled());
+  }
+
+  NvgTextRenderer(NvgTextCommandSink commands, DiagnosticSession diagnostics) {
+    this.commands = commands;
+    this.diagnostics = diagnostics;
+    submission = new NvgTextSubmission(commands, diagnostics);
+    legacySink = null;
+  }
+
+  NvgTextRenderer(TextSink legacySink) {
+    commands = null;
+    diagnostics = DiagnosticSession.disabled();
+    submission = null;
+    this.legacySink = legacySink;
+  }
+
+  public void render(Node node, long context) {
     Text text = node.asText();
-    if (text.inlineFragments().isEmpty()) {
-      return;
-    }
-
-    nvgSave(nanovg);
-    nvgTextAlign(nanovg, NVG_ALIGN_LEFT | NVG_ALIGN_BASELINE);
-    renderFragments(text, nanovg, inlineFormattingOffset(text));
-    nvgRestore(nanovg);
+    if (text.inlineFragments().isEmpty()) return;
+    commands.beginScope(context, NvgTextCommand.TextPath.NORMAL);
+    commands.align(context, NVG_ALIGN_LEFT | NVG_ALIGN_BASELINE);
+    renderFragments(text, context, inlineFormattingOffset(text));
+    commands.endScope(context, NvgTextCommand.TextPath.NORMAL);
   }
 
   Vector2f inlineFormattingOffset(Text text) {
     Element parent = text.parent();
-    while (parent != null && Display.INLINE.equals(parent.resolvedStyle().display())) {
-      parent = parent.parent();
-    }
-    if (parent != null) {
-      return parent.layoutAbsolutePosition();
-    }
-    return text.offsetParent() == null
-        ? new Vector2f()
-        : text
-            .offsetParent()
-            .layoutAbsolutePosition();
+    while (parent != null && Display.INLINE.equals(parent.resolvedStyle().display())) parent = parent.parent();
+    if (parent != null) return parent.layoutAbsolutePosition();
+    return text.offsetParent() == null ? new Vector2f() : text.offsetParent().layoutAbsolutePosition();
   }
 
-  void renderFragments(Text text, long nanovg, Vector2f offset) {
+  void renderFragments(Text text, long context, Vector2f offset) {
     for (InlineFragment fragment : text.inlineFragments()) {
-      renderFragment(text, fragment, nanovg, offset);
+      if (legacySink != null) {
+        if (fragment.textFragment()) {
+          Element element = fragment.node() == null ? text.parent() : fragment.node().parent();
+          Color color = element == null ? fragment.color() : element.presentedStyle().color();
+          legacySink.drawText(context, withFragmentColor(fragment, withColor(fragment.color(), color, element)), offset.x + fragment.x(), offset.y + fragment.baseline());
+        }
+      } else {
+        renderFragment(text, fragment, context, offset);
+      }
     }
   }
 
-  private void renderFragment(Text text, InlineFragment fragment, long nanovg, Vector2f offset) {
-    if (!fragment.textFragment()) {
-      return;
-    }
+  private void renderFragment(Text text, InlineFragment fragment, long context, Vector2f offset) {
+    if (!fragment.textFragment()) return;
     Element element = fragment.node() == null ? text.parent() : fragment.node().parent();
     Color color = element == null ? fragment.color() : element.presentedStyle().color();
-    textSink.drawText(
-        nanovg,
-        withColor(fragment, color, element),
-        offset.x + fragment.x(),
-        offset.y + fragment.baseline());
+    Color presented = withColor(fragment.color(), color, element);
+    float x = offset.x + fragment.x();
+    float baseline = offset.y + fragment.baseline();
+    if (fragment.runs().isEmpty()) {
+      submit(
+          context,
+          fragment.font(),
+          fragment.fontSize(),
+          presented,
+          commands.displayText(fragment.font(), fragment.text()),
+          x,
+          baseline);
+      return;
+    }
+    float runX = x;
+    for (ResolvedTextRun run : fragment.runs()) {
+      submit(context, run.font(), fragment.fontSize(), presented, run.renderedText(), runX, baseline);
+      commands.advance(NvgTextCommand.TextPath.NORMAL, runX, run.advance());
+      runX += run.advance();
+    }
   }
 
-  private InlineFragment withColor(InlineFragment fragment, Color color, Element element) {
-    Color fallback = color == null ? fragment.color() : color;
-    Color presented = element == null ? fallback : withPresentedOpacity(fallback, element);
+  private void submit(long context, com.spinyowl.spinygui.core.font.Font font, float size, Color color, String text, float x, float baseline) {
+    submission.submit(
+        context,
+        NvgTextCommand.TextPath.NORMAL,
+        NORMAL,
+        font,
+        size,
+        color,
+        text,
+        x,
+        baseline);
+  }
+
+  private Color withColor(Color fallback, Color color, Element element) {
+    Color resolved = color == null ? fallback : color;
+    return element == null ? resolved : withPresentedOpacity(resolved, element);
+  }
+
+  private InlineFragment withFragmentColor(InlineFragment fragment, Color color) {
     return InlineFragment.builder()
         .node(fragment.node())
         .text(fragment.text())
@@ -98,70 +137,12 @@ public class NvgTextRenderer {
         .baseline(fragment.baseline())
         .font(fragment.font())
         .fontSize(fragment.fontSize())
-        .color(presented)
+        .color(color)
         .runs(fragment.runs())
         .build();
   }
 
   interface TextSink {
     void drawText(long context, InlineFragment fragment, float x, float baseline);
-  }
-
-  private static final class NanoVgTextSink implements TextSink {
-    private final NvgFontRegistry fontRegistry;
-
-    private NanoVgTextSink(NvgFontRegistry fontRegistry) {
-      this.fontRegistry = fontRegistry;
-    }
-
-    @Override
-  public void drawText(long context, InlineFragment fragment, float x, float baseline) {
-      if (!fragment.runs().isEmpty()) {
-        float runX = x;
-        for (ResolvedTextRun run : fragment.runs()) {
-          drawResolvedRun(context, fragment, run, runX, baseline);
-          runX += run.advance();
-        }
-        return;
-      }
-      drawLegacyText(context, fragment, x, baseline);
-    }
-
-    private void drawResolvedRun(
-        long context, InlineFragment fragment, ResolvedTextRun run, float x, float baseline) {
-      String fontFace = fontRegistry.fontFace(run.font(), context);
-      if (fontFace == null) {
-        return;
-      }
-      nvgFontFace(context, fontFace);
-      nvgFontSize(context, fragment.fontSize());
-      try (var color = create(fragment.color())) {
-        nvgFillColor(context, color);
-        ByteBuffer textBuffer = memUTF8(run.renderedText(), false);
-        try {
-          nvgText(context, x, baseline, textBuffer);
-        } finally {
-          memFree(textBuffer);
-        }
-      }
-    }
-
-    private void drawLegacyText(long context, InlineFragment fragment, float x, float baseline) {
-      String fontFace = fontRegistry.fontFace(fragment.font(), context);
-      if (fontFace == null) {
-        return;
-      }
-      nvgFontFace(context, fontFace);
-      nvgFontSize(context, fragment.fontSize());
-      try (var color = create(fragment.color())) {
-        nvgFillColor(context, color);
-        ByteBuffer textBuffer = memUTF8(fontRegistry.displayText(fragment.font(), fragment.text()), false);
-        try {
-          nvgText(context, x, baseline, textBuffer);
-        } finally {
-          memFree(textBuffer);
-        }
-      }
-    }
   }
 }

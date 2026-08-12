@@ -5,6 +5,9 @@ import static com.spinyowl.spinygui.core.style.stylesheet.Properties.COLOR;
 import static com.spinyowl.spinygui.core.style.stylesheet.Properties.OPACITY;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import com.spinyowl.spinygui.core.diagnostic.DiagnosticSession;
+import com.spinyowl.spinygui.core.diagnostic.TextDiagnosticCounter;
+import com.spinyowl.spinygui.core.backend.renderer.lwjgl.nanovg.diagnostic.NvgDiagnosticCounter;
 import com.spinyowl.spinygui.core.font.Font;
 import com.spinyowl.spinygui.core.node.InputElement;
 import com.spinyowl.spinygui.core.style.types.Color;
@@ -258,6 +261,96 @@ class NvgInputRendererTest {
     assertEquals(List.of(), textSink.calls());
   }
 
+  @Test
+  void render_reportsOneCompleteInputLayoutAndEveryRepeatedPrefixMeasurement() {
+    DiagnosticSession diagnostics =
+        DiagnosticSession.enabled(List.of(TextDiagnosticCounter.values()));
+    FixedTextMeasurer textMeasurer = new FixedTextMeasurer(List.of(), diagnostics);
+    RecordingTextSink textSink = new RecordingTextSink();
+    NvgInputRenderer renderer =
+        new NvgInputRenderer(
+            new RecordingStateSink(),
+            new RecordingSelectionSink(),
+            textSink,
+            new RecordingCaretSink());
+    renderer.textMeasurer(textMeasurer);
+    InputElement input = input("abcdef");
+    input.focused(true);
+    input.select(1, 4);
+
+    renderer.render(input, 13);
+
+    assertEquals(List.of("abcdef", "a", "abcd", "abcd"), textMeasurer.measuredTexts());
+    assertEquals(List.of("text(13,abcdef,20.0,44.0,16.0)"), textSink.calls());
+    assertEquals(
+        1, diagnostics.snapshot().value(TextDiagnosticCounter.INPUT_COMPLETE_LAYOUTS));
+    assertEquals(
+        4,
+        diagnostics
+            .snapshot()
+            .value(
+                TextDiagnosticCounter.TEXT_MEASURER_GET_TEXT_LINE_METRICS_FONT_LIST_ENTRIES));
+    assertEquals(
+        1, diagnostics.snapshot().value(TextDiagnosticCounter.FONT_CHAIN_RESOLUTIONS));
+  }
+
+  @Test
+  void commandSinkRecordsFocusedSelectionReplacementAndFaceFailureInProductionOrder() {
+    DiagnosticSession diagnostics =
+        DiagnosticSession.enabled(List.of(NvgDiagnosticCounter.values()));
+    NvgTextCommandRecorder recorder =
+        new NvgTextCommandRecorder(font -> !font.equals(Font.ROBOTO_REGULAR));
+    List<ResolvedTextRun> runs =
+        List.of(
+            new ResolvedTextRun(
+                0,
+                2,
+                Font.NOTO_SANS_CJK_SC_REGULAR,
+                List.of(
+                    new ResolvedGlyph(
+                        0, 2, 0x1F600, 0xFFFD, Font.NOTO_SANS_CJK_SC_REGULAR, true)),
+                9),
+            new ResolvedTextRun(
+                2,
+                3,
+                Font.ROBOTO_REGULAR,
+                List.of(new ResolvedGlyph(2, 3, 'a', 'a', Font.ROBOTO_REGULAR, false)),
+                7));
+    NvgInputRenderer renderer = new NvgInputRenderer(recorder, diagnostics);
+    renderer.textMeasurer(new FixedTextMeasurer(runs));
+    InputElement input = input("\uD83D\uDE00a");
+    input.caretIndex(2);
+    input.select(0, 2);
+    input.focused(true);
+
+    renderer.render(input, 4);
+
+    List<NvgTextCommand> commands = recorder.commands();
+    assertEquals(new NvgTextCommand.Scope(NvgTextCommand.TextPath.INPUT, true), commands.get(0));
+    assertEquals(NvgTextCommand.Clip.class, commands.get(1).getClass());
+    assertEquals(NvgTextCommand.Selection.class, commands.get(2).getClass());
+    assertEquals(new NvgTextCommand.Alignment(65), commands.get(3));
+    assertEquals(new NvgTextCommand.FillColor(Color.BLACK), commands.get(4));
+    assertEquals(
+        new NvgTextCommand.Text(NvgTextCommand.TextPath.INPUT, "\uFFFD", 3, 20, 44),
+        commands.get(9));
+    assertEquals(
+        new NvgTextCommand.Advance(NvgTextCommand.TextPath.INPUT, 20, 9), commands.get(10));
+    assertEquals(
+        new NvgTextCommand.Outcome(
+            NvgTextCommand.TextPath.INPUT,
+            NvgDiagnosticCounter.INPUT_TEXT_ITEMS_FACE_SELECTION_FAILED.id()),
+        commands.get(13));
+    assertEquals(NvgTextCommand.Caret.class, commands.get(14).getClass());
+    assertEquals(new NvgTextCommand.Scope(NvgTextCommand.TextPath.INPUT, false), commands.get(15));
+    assertEquals(NvgTextCommand.Clip.class, commands.get(16).getClass());
+    assertEquals(2, diagnostics.snapshot().value(NvgDiagnosticCounter.INPUT_TEXT_ITEMS_CONSIDERED));
+    assertEquals(1, diagnostics.snapshot().value(NvgDiagnosticCounter.INPUT_TEXT_ITEMS_SUBMITTED));
+    assertEquals(
+        1,
+        diagnostics.snapshot().value(NvgDiagnosticCounter.INPUT_TEXT_ITEMS_FACE_SELECTION_FAILED));
+  }
+
   private InputElement input(String value) {
     InputElement input = new InputElement();
     input.value(value);
@@ -368,16 +461,29 @@ class NvgInputRendererTest {
     }
   }
 
-  private static final class FixedTextMeasurer implements TextMeasurer {
+  static final class FixedTextMeasurer implements TextMeasurer {
     private static final float CHAR_WIDTH = 10;
     private final List<ResolvedTextRun> runs;
+    private final DiagnosticSession diagnostics;
+    private final List<String> measuredTexts = new ArrayList<>();
 
-    private FixedTextMeasurer() {
-      this(List.of());
+    FixedTextMeasurer() {
+      this(List.of(), DiagnosticSession.disabled());
     }
 
-    private FixedTextMeasurer(List<ResolvedTextRun> runs) {
+    FixedTextMeasurer(List<ResolvedTextRun> runs) {
+      this(runs, DiagnosticSession.disabled());
+    }
+
+    FixedTextMeasurer(
+        List<ResolvedTextRun> runs, DiagnosticSession diagnostics) {
       this.runs = runs;
+      this.diagnostics = diagnostics;
+    }
+
+    @Override
+    public DiagnosticSession diagnostics() {
+      return diagnostics;
     }
 
     @Override
@@ -425,7 +531,14 @@ class NvgInputRendererTest {
     @Override
     public TextLineMetrics getTextLineMetrics(
         String text, List<Font> fonts, float fontSize, float lineHeight) {
+      diagnostics.increment(
+          TextDiagnosticCounter.TEXT_MEASURER_GET_TEXT_LINE_METRICS_FONT_LIST_ENTRIES);
+      measuredTexts.add(text);
       return getTextLineMetrics(text, fonts.get(0), fontSize, lineHeight);
+    }
+
+    private List<String> measuredTexts() {
+      return List.copyOf(measuredTexts);
     }
 
     @Override

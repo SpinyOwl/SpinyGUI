@@ -14,6 +14,7 @@ import static com.spinyowl.spinygui.core.style.types.WhiteSpace.PRE;
 import static com.spinyowl.spinygui.core.style.types.WhiteSpace.PRE_WRAP;
 import static com.spinyowl.spinygui.core.style.types.WordBreak.BREAK_ALL;
 
+import com.spinyowl.spinygui.core.diagnostic.TextDiagnosticCounter;
 import com.spinyowl.spinygui.core.font.Font;
 import com.spinyowl.spinygui.core.font.FontStretch;
 import com.spinyowl.spinygui.core.layout.InlineFragment;
@@ -203,6 +204,7 @@ public class InlineFormattingContext {
   }
 
   private List<InlineUnit> textUnits(Text text, ResolvedStyle style) {
+    textMeasurer.diagnostics().increment(TextDiagnosticCounter.NORMALIZATION_SCANS);
     String normalized = InlineWhitespace.normalize(text.content() == null ? "" : text.content(), style);
     var result = new ArrayList<InlineUnit>();
     WhiteSpace whiteSpace = style.whiteSpace();
@@ -535,6 +537,7 @@ public class InlineFormattingContext {
   }
 
   private List<Font> findFonts(ResolvedStyle style) {
+    textMeasurer.diagnostics().increment(TextDiagnosticCounter.FONT_CHAIN_RESOLUTIONS);
     return FontChainResolver.DEFAULT
         .resolve(
             style.fontFamilies(), style.fontStyle(), style.fontWeight(), FontStretch.NORMAL)

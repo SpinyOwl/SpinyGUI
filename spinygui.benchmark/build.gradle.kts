@@ -52,6 +52,7 @@ abstract class BenchmarkRunIdService : BuildService<BenchmarkRunIdParameters>, A
     private fun hasArchivedOutput(archive: File, identifier: String): Boolean =
         archive.resolve("text-calculation-$identifier.json").exists()
             || archive.resolve("nanovg-text-$identifier.json").exists()
+            || archive.resolve("text-diagnostics-$identifier.json").exists()
 
     override fun close() {
         reservation?.delete()
@@ -62,19 +63,29 @@ class TimestampedReportArgumentAction(
     private val archive: File,
     private val filePrefix: String,
     private val outputOption: String?,
+    private val runIdService: Provider<BenchmarkRunIdService>,
+    private val pairing: String
+) : Action<Task> {
+    override fun execute(task: Task) {
+        archive.mkdirs()
+        val runId = runIdService.get().runId()
+        val output = archive.resolve("$filePrefix-$runId.json").absolutePath
+        if (outputOption == null) {
+            (task as JavaExec).args(output, runId, pairing)
+        } else {
+            (task as JavaExec).args(outputOption, output, "--spiny-run-id", runId, "--spiny-pairing", pairing)
+        }
+    }
+}
+
+class ArchiveReportArgumentAction(
+    private val archive: File,
     private val runIdService: Provider<BenchmarkRunIdService>
 ) : Action<Task> {
     override fun execute(task: Task) {
         archive.mkdirs()
-        val output = archive.resolve("$filePrefix-${runIdService.get().runId()}.json").absolutePath
-        if (outputOption == null) (task as JavaExec).args(output) else (task as JavaExec).args(outputOption, output)
-    }
-}
-
-class ArchiveReportArgumentAction(private val archive: File) : Action<Task> {
-    override fun execute(task: Task) {
-        archive.mkdirs()
-        (task as JavaExec).args(archive.absolutePath, archive.resolve("index.html").absolutePath)
+        val runId = runIdService.get().runId()
+        (task as JavaExec).args(archive.absolutePath, archive.resolve("index.html").absolutePath, runId)
     }
 }
 
@@ -140,6 +151,12 @@ val benchmarkRunId = gradle.sharedServices.registerIfAbsent("benchmarkRunId", Be
     parameters.baseOverride.set(providers.gradleProperty("benchmarkRunIdBase").orElse(""))
 }
 
+fun Task.freshBenchmarkRun() {
+    doNotTrackState(
+        "Benchmark artifacts use a runtime-reserved archive ID and must execute fresh; Gradle cannot safely track dynamic output paths."
+    )
+}
+
 tasks.register("reserveBenchmarkRunId") {
     group = "benchmark"
     description = "Reserves and prints a fresh archive run ID without running benchmarks."
@@ -151,7 +168,7 @@ tasks.register<JavaExec>("jmhCpu") {
     description = "Runs CPU text benchmarks and writes a JSON report."
     dependsOn("classes")
     classpath = sourceSets["main"].runtimeClasspath
-    mainClass.set("org.openjdk.jmh.Main")
+    mainClass.set("com.spinyowl.spinygui.benchmark.cpu.CpuBenchmarkMain")
     args(
         "com.spinyowl.spinygui.benchmark.cpu.*",
         "-wi", "3",
@@ -163,7 +180,8 @@ tasks.register<JavaExec>("jmhCpu") {
         "-prof", "gc",
         "-rf", "json"
     )
-    doFirst(TimestampedReportArgumentAction(benchmarkArchive.asFile, "text-calculation", "-rff", benchmarkRunId))
+    doFirst(TimestampedReportArgumentAction(benchmarkArchive.asFile, "text-calculation", "-rff", benchmarkRunId, "unpaired-investigation"))
+    freshBenchmarkRun()
 }
 
 tasks.register<JavaExec>("jmhRendering") {
@@ -173,14 +191,77 @@ tasks.register<JavaExec>("jmhRendering") {
     classpath = sourceSets["main"].runtimeClasspath
     mainClass.set("com.spinyowl.spinygui.benchmark.rendering.RenderingBenchmarkMain")
     jvmArgs("--enable-native-access=ALL-UNNAMED")
-    doFirst(TimestampedReportArgumentAction(benchmarkArchive.asFile, "nanovg-text", null, benchmarkRunId))
+    doFirst(TimestampedReportArgumentAction(benchmarkArchive.asFile, "nanovg-text", null, benchmarkRunId, "unpaired-investigation"))
+    freshBenchmarkRun()
+}
+
+tasks.register<JavaExec>("counterDiagnostics") {
+    group = "benchmark"
+    description = "Runs identified text workloads without timing and writes diagnostic counters."
+    dependsOn("classes")
+    classpath = sourceSets["main"].runtimeClasspath
+    mainClass.set("com.spinyowl.spinygui.benchmark.diagnostic.CounterDiagnosticsMain")
+    jvmArgs("--enable-native-access=ALL-UNNAMED")
+    doFirst(TimestampedReportArgumentAction(benchmarkArchive.asFile, "text-diagnostics", null, benchmarkRunId, "unpaired-investigation"))
+    freshBenchmarkRun()
+}
+
+tasks.register<JavaExec>("localImageComparison") {
+    group = "verification"
+    description = "Explicitly captures and compares approved local renderer boundary scenes."
+    dependsOn("classes")
+    classpath = sourceSets["main"].runtimeClasspath
+    mainClass.set("com.spinyowl.spinygui.benchmark.rendering.LocalImageComparisonMain")
+    jvmArgs("--enable-native-access=ALL-UNNAMED")
+    args(
+        layout.projectDirectory.dir("local-image-references").asFile.absolutePath,
+        layout.buildDirectory.dir("local-image-comparison").get().asFile.absolutePath
+    )
+    providers.systemProperty("spinygui.rendering.localImageComparison").orNull?.let {
+        systemProperty("spinygui.rendering.localImageComparison", it)
+    }
+}
+
+val benchmarkReportCpu = tasks.register<JavaExec>("benchmarkReportCpu") {
+    group = "benchmark"
+    description = "Runs the CPU half of one report-owned paired benchmark run."
+    dependsOn("classes")
+    classpath = sourceSets["main"].runtimeClasspath
+    mainClass.set("com.spinyowl.spinygui.benchmark.cpu.CpuBenchmarkMain")
+    args(
+        "com.spinyowl.spinygui.benchmark.cpu.*",
+        "-wi", "3",
+        "-i", "5",
+        "-w", "500ms",
+        "-r", "500ms",
+        "-f", "2",
+        "-jvmArgsAppend", "--enable-native-access=ALL-UNNAMED",
+        "-prof", "gc",
+        "-rf", "json"
+    )
+    doFirst(TimestampedReportArgumentAction(benchmarkArchive.asFile, "text-calculation", "-rff", benchmarkRunId, "paired-report"))
+    freshBenchmarkRun()
+}
+
+val benchmarkReportRendering = tasks.register<JavaExec>("benchmarkReportRendering") {
+    group = "benchmark"
+    description = "Runs the rendering half of one report-owned paired benchmark run."
+    dependsOn("classes")
+    classpath = sourceSets["main"].runtimeClasspath
+    mainClass.set("com.spinyowl.spinygui.benchmark.rendering.RenderingBenchmarkMain")
+    jvmArgs("--enable-native-access=ALL-UNNAMED")
+    dependsOn(benchmarkReportCpu)
+    mustRunAfter(benchmarkReportCpu)
+    doFirst(TimestampedReportArgumentAction(benchmarkArchive.asFile, "nanovg-text", null, benchmarkRunId, "paired-report"))
+    freshBenchmarkRun()
 }
 
 tasks.register<JavaExec>("benchmarkReport") {
     group = "benchmark"
     description = "Runs local benchmarks and writes a self-contained HTML report."
-    dependsOn("jmhCpu", "jmhRendering")
+    dependsOn(benchmarkReportRendering)
     classpath = sourceSets["main"].runtimeClasspath
     mainClass.set("com.spinyowl.spinygui.benchmark.report.BenchmarkHtmlReportGenerator")
-    doFirst(ArchiveReportArgumentAction(benchmarkArchive.asFile))
+    doFirst(ArchiveReportArgumentAction(benchmarkArchive.asFile, benchmarkRunId))
+    freshBenchmarkRun()
 }

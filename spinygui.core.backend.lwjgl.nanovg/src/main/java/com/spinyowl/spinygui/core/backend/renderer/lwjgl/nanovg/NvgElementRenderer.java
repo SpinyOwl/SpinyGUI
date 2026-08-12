@@ -7,12 +7,23 @@ import static com.spinyowl.spinygui.core.util.NodeUtilities.visible;
 import static org.lwjgl.nanovg.NanoVG.nvgRestore;
 import static org.lwjgl.nanovg.NanoVG.nvgSave;
 
+import com.spinyowl.spinygui.core.backend.renderer.lwjgl.nanovg.diagnostic.NvgDiagnosticCounter;
+import com.spinyowl.spinygui.core.diagnostic.DiagnosticSession;
 import com.spinyowl.spinygui.core.node.Element;
 import com.spinyowl.spinygui.core.node.Node;
 import com.spinyowl.spinygui.core.style.types.Display;
 import org.joml.Vector2f;
 
 public class NvgElementRenderer {
+  private final DiagnosticSession diagnostics;
+
+  public NvgElementRenderer() {
+    this(DiagnosticSession.disabled());
+  }
+
+  NvgElementRenderer(DiagnosticSession diagnostics) {
+    this.diagnostics = diagnostics;
+  }
 
   public void render(Node node, long nanovg) {
     Element element = node.asElement();
@@ -21,6 +32,7 @@ public class NvgElementRenderer {
       var presentedStyle = element.presentedStyle();
       if ((Display.INLINE.equals(style.display()) || Display.INLINE_BLOCK.equals(style.display()))
           && !element.inlineFragments().isEmpty()) {
+        diagnostics.increment(NvgDiagnosticCounter.SAVE_CALLS);
         nvgSave(nanovg);
         Vector2f offset = inlineFormattingOffset(element);
         element
@@ -32,6 +44,7 @@ public class NvgElementRenderer {
                         new Vector2f(offset.x + fragment.x(), offset.y + fragment.y()),
                         new Vector2f(fragment.width(), fragment.height()),
                         withPresentedOpacity(presentedStyle.backgroundColor(), element)));
+        diagnostics.increment(NvgDiagnosticCounter.RESTORE_CALLS);
         nvgRestore(nanovg);
         return;
       }
@@ -42,8 +55,10 @@ public class NvgElementRenderer {
       var size = element.size();
 
       // render self
+      diagnostics.increment(NvgDiagnosticCounter.SAVE_CALLS);
       nvgSave(nanovg);
       drawRect(nanovg, position, size, backgroundColor, borderRadius);
+      diagnostics.increment(NvgDiagnosticCounter.RESTORE_CALLS);
       nvgRestore(nanovg);
     }
   }

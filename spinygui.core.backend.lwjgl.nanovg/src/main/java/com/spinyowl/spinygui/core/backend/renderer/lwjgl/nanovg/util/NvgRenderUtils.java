@@ -173,44 +173,24 @@ public final class NvgRenderUtils {
     nvgTextAlign(context, hAlign | vAlign);
   }
 
-  /**
-   * Creates scissor for provided component by it's parent components, executes runnable and resets
-   * scissor.
-   *
-   * @param context nanovg context.
-   * @param node node.
-   */
+  /** Creates ancestor clipping, runs the action, and resets clipping afterwards. */
   public static void inScissor(long context, Node node, Runnable runnable) {
     createScissor(context, node);
     runnable.run();
     resetScissor(context);
   }
 
-  /**
-   * Creates scissor for provided component by it's parent components.
-   *
-   * @param context nanovg context.
-   * @param node node.
-   */
+  /** Creates clipping for the node's offset-parent chain with disabled diagnostics. */
   public static void createScissor(long context, Node node) {
     CLIP_STACK.create(context, node);
   }
 
-  /**
-   * Creates scissor by provided component and it's parent components.
-   *
-   * @param context nanovg context.
-   * @param parent parent node.
-   */
+  /** Creates clipping for the supplied parent chain with disabled diagnostics. */
   public static void createScissorByParent(long context, Node parent) {
     CLIP_STACK.createByParent(context, parent);
   }
 
-  /**
-   * Used to reset scissor.
-   *
-   * @param context nanovg context pointer.
-   */
+  /** Resets clipping through the legacy disabled-diagnostics facade. */
   public static void resetScissor(long context) {
     CLIP_STACK.reset(context);
   }

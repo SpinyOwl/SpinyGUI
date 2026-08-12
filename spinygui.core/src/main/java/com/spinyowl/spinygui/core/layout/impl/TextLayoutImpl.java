@@ -1,6 +1,7 @@
 package com.spinyowl.spinygui.core.layout.impl;
 
 import com.google.common.collect.Iterables;
+import com.spinyowl.spinygui.core.diagnostic.TextDiagnosticCounter;
 import com.spinyowl.spinygui.core.font.Font;
 import com.spinyowl.spinygui.core.font.FontStretch;
 import com.spinyowl.spinygui.core.font.FontStyle;
@@ -113,6 +114,7 @@ public class TextLayoutImpl implements TextLayout {
   }
 
   private List<Font> findFonts(List<String> fontFamilies, FontStyle fontStyle, FontWeight fontWeight) {
+    textMeasurer.diagnostics().increment(TextDiagnosticCounter.FONT_CHAIN_RESOLUTIONS);
     List<Font> fonts = FontChainResolver.DEFAULT.resolve(fontFamilies, fontStyle, fontWeight, FontStretch.NORMAL);
     List<Font> available = fonts.stream().filter(fontService::isFontAvailable).toList();
     return available.isEmpty() ? List.of(Font.DEFAULT) : available;

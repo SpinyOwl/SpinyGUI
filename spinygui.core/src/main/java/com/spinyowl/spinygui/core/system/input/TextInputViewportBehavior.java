@@ -1,5 +1,6 @@
 package com.spinyowl.spinygui.core.system.input;
 
+import com.spinyowl.spinygui.core.diagnostic.TextDiagnosticCounter;
 import com.spinyowl.spinygui.core.font.FontStretch;
 import com.spinyowl.spinygui.core.node.InputElement;
 import com.spinyowl.spinygui.core.style.ResolvedStyle;
@@ -52,6 +53,7 @@ public class TextInputViewportBehavior {
     if (style.fontFamilies() == null) {
       return List.of(Font.DEFAULT);
     }
+    textMeasurer.diagnostics().increment(TextDiagnosticCounter.FONT_CHAIN_RESOLUTIONS);
     return FontChainResolver.DEFAULT
         .resolve(
             style.fontFamilies(), style.fontStyle(), style.fontWeight(), FontStretch.NORMAL);

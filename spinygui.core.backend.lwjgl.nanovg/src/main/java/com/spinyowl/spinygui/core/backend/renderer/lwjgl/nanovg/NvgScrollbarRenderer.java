@@ -1,7 +1,5 @@
 package com.spinyowl.spinygui.core.backend.renderer.lwjgl.nanovg;
 
-import static com.spinyowl.spinygui.core.backend.renderer.lwjgl.nanovg.util.NvgRenderUtils.createScissor;
-import static com.spinyowl.spinygui.core.backend.renderer.lwjgl.nanovg.util.NvgRenderUtils.resetScissor;
 import static com.spinyowl.spinygui.core.backend.renderer.lwjgl.nanovg.util.NvgShapes.MIN_ALPHA;
 import static com.spinyowl.spinygui.core.backend.renderer.lwjgl.nanovg.util.NvgShapes.drawRect;
 import static com.spinyowl.spinygui.core.backend.renderer.lwjgl.nanovg.util.NvgShapes.drawRectStroke;
@@ -11,6 +9,9 @@ import static org.lwjgl.nanovg.NanoVG.nvgIntersectScissor;
 import static org.lwjgl.nanovg.NanoVG.nvgRestore;
 import static org.lwjgl.nanovg.NanoVG.nvgSave;
 
+import com.spinyowl.spinygui.core.backend.renderer.lwjgl.nanovg.diagnostic.NvgDiagnosticCounter;
+import com.spinyowl.spinygui.core.backend.renderer.lwjgl.nanovg.util.NvgClipStack;
+import com.spinyowl.spinygui.core.diagnostic.DiagnosticSession;
 import com.spinyowl.spinygui.core.node.Element;
 import com.spinyowl.spinygui.core.node.layout.Rect;
 import com.spinyowl.spinygui.core.style.ResolvedStyle;
@@ -28,7 +29,11 @@ class NvgScrollbarRenderer {
   private final ScrollbarShapeSink shapeSink;
 
   NvgScrollbarRenderer() {
-    this(new NanoVgScrollbarShapeSink());
+    this(DiagnosticSession.disabled());
+  }
+
+  NvgScrollbarRenderer(DiagnosticSession diagnostics) {
+    this(new NanoVgScrollbarShapeSink(diagnostics));
   }
 
   NvgScrollbarRenderer(ScrollbarShapeSink shapeSink) {
@@ -159,11 +164,20 @@ class NvgScrollbarRenderer {
   }
 
   private static final class NanoVgScrollbarShapeSink implements ScrollbarShapeSink {
+    private final DiagnosticSession diagnostics;
+    private final NvgClipStack clipStack;
+
+    private NanoVgScrollbarShapeSink(DiagnosticSession diagnostics) {
+      this.diagnostics = diagnostics;
+      this.clipStack = new NvgClipStack(new NvgClipStack.NanoVgClipSink(), diagnostics);
+    }
 
     @Override
     public void begin(long context, Element element, Rect borderBox) {
-      createScissor(context, element);
+      clipStack.create(context, element);
+      diagnostics.increment(NvgDiagnosticCounter.SAVE_CALLS);
       nvgSave(context);
+      diagnostics.increment(NvgDiagnosticCounter.INTERSECT_SCISSOR_CALLS);
       nvgIntersectScissor(
           context, borderBox.x(), borderBox.y(), borderBox.width(), borderBox.height());
     }
@@ -192,8 +206,9 @@ class NvgScrollbarRenderer {
 
     @Override
     public void end(long context) {
+      diagnostics.increment(NvgDiagnosticCounter.RESTORE_CALLS);
       nvgRestore(context);
-      resetScissor(context);
+      clipStack.reset(context);
     }
   }
 }

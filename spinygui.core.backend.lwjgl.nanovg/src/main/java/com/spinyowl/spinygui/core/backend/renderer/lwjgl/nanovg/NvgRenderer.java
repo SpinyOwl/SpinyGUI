@@ -11,6 +11,7 @@ import static org.lwjgl.opengl.GL11.glDisable;
 import static org.lwjgl.opengl.GL11.glEnable;
 import static org.lwjgl.opengl.GL11.glGetInteger;
 import com.spinyowl.spinygui.core.backend.renderer.Renderer;
+import com.spinyowl.spinygui.core.diagnostic.DiagnosticSession;
 import com.spinyowl.spinygui.core.node.Element;
 import com.spinyowl.spinygui.core.node.Frame;
 import com.spinyowl.spinygui.core.node.InputElement;
@@ -20,6 +21,7 @@ import com.spinyowl.spinygui.core.node.TextareaElement;
 import com.spinyowl.spinygui.core.style.types.AffineTransform;
 import com.spinyowl.spinygui.core.system.font.TextMeasurer;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicBoolean;
 import org.joml.Vector2f;
 import org.joml.Vector2fc;
@@ -38,26 +40,38 @@ public class NvgRenderer implements Renderer {
   private final NvgInputRenderer inputRenderer;
   private final NvgTextareaRenderer textareaRenderer;
   private final NvgScrollbarRenderer scrollbarRenderer;
+  private final DiagnosticSession diagnostics;
+  private final NvgTextCommandSink textCommands;
   private DebugRenderer debugRenderer;
 
   private boolean isVersionNew;
   private boolean debugMode;
   private Vector2f debugMousePosition;
   private long nanovgContext;
-  private NvgTransformState.Factory transformStateFactory = NvgTransformState.FACTORY;
-  private SubtreeContentState.Factory subtreeContentStateFactory = NvgSubtreeContentState.FACTORY;
+  private NvgTransformState.Factory transformStateFactory;
+  private SubtreeContentState.Factory subtreeContentStateFactory;
   private SubtreeContentRenderer subtreeContentRenderer = this::renderSubtreeContent;
 
   public NvgRenderer(boolean antialiasingEnabled) {
+    this(antialiasingEnabled, DiagnosticSession.disabled());
+  }
+
+  public NvgRenderer(boolean antialiasingEnabled, DiagnosticSession diagnostics) {
     NvgFontRegistry fontRegistry = new NvgFontRegistry();
     this.antialiasingEnabled = antialiasingEnabled;
-    this.elementRenderer = new NvgElementRenderer();
-    this.textRenderer = new NvgTextRenderer(fontRegistry);
+    this.diagnostics = Objects.requireNonNull(diagnostics, "diagnostics");
+    this.textCommands = new NanoVgTextCommandSink(fontRegistry, this.diagnostics);
+    this.elementRenderer = new NvgElementRenderer(this.diagnostics);
+    this.textRenderer = new NvgTextRenderer(textCommands, this.diagnostics);
     this.borderRenderer = new NvgBorderRenderer();
-    this.inputRenderer = new NvgInputRenderer(fontRegistry);
-    this.textareaRenderer = new NvgTextareaRenderer(fontRegistry);
-    this.scrollbarRenderer = new NvgScrollbarRenderer();
-    this.debugRenderer = new NvgDebugRenderer();
+    this.inputRenderer = new NvgInputRenderer(textCommands, this.diagnostics);
+    this.textareaRenderer = new NvgTextareaRenderer(textCommands, this.diagnostics);
+    this.scrollbarRenderer = new NvgScrollbarRenderer(this.diagnostics);
+    this.debugRenderer = new NvgDebugRenderer(this.diagnostics);
+    this.transformStateFactory =
+        (context, transform) -> NvgTransformState.apply(context, transform, textCommands);
+    this.subtreeContentStateFactory =
+        (context, element) -> NvgSubtreeContentState.apply(context, element, textCommands);
   }
 
   public NvgRenderer() {
