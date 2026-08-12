@@ -11,7 +11,7 @@ with force-full fallback whenever the dependency boundary is uncertain.
 
 ### P1: Define dirty dependency and fallback contracts
 **Document:** [P1 - Define dirty dependency and fallback contracts](M5/P1%20-%20Define%20dirty%20dependency%20and%20fallback%20contracts.md)
-**Depends on:** M2, M3, M4, M6. **Enables:** P2. **Parallelizable with:** None.
+**Depends on:** M1.5, M2, M3, M4, M6. **Enables:** P2. **Parallelizable with:** None.
 **Purpose:** Specify causes, affected roots, UI-thread ownership, E5 session integration, and correctness fallback.
 
 ### P2: Recalculate affected styles
@@ -31,5 +31,6 @@ with force-full fallback whenever the dependency boundary is uncertain.
 ## Dependency Graph
 ```mermaid
 flowchart TD
-  P1["P1: Define dirty dependency and fallback contracts"] --> P2["P2: Recalculate affected styles"] --> P3["P3: Retain layout structures and validate convergence"]
+  M15["M1.5: Input-impact contract"] --> P1["P1: Define dirty dependency and fallback contracts"]
+  P1 --> P2["P2: Recalculate affected styles"] --> P3["P3: Retain layout structures and validate convergence"]
 ```

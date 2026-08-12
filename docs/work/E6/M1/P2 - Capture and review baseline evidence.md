@@ -13,7 +13,7 @@ Archive reproducible capped and uncapped frame-path baselines and assign every m
 - [ ] Incomparable environment/settings fingerprints are rejected or marked rather than compared.
 
 ### T2: Review findings and freeze ownership
-**Depends on:** T1. **Enables:** M2, M3, M4, M6. **Parallelizable with:** None.
+**Depends on:** T1. **Enables:** M1.5, M2, M3, M4, M6. **Parallelizable with:** None.
 **Changes:**
 - [ ] Map each material category to one E6 milestone or document it as deferred/rejected.
 - [ ] Record unexpected findings that invalidate the proposed ordering.

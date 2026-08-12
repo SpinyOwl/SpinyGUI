@@ -17,6 +17,7 @@ validated path toward incremental style and layout work.
 
 | Finding | E5 disposition | E6 disposition |
 |---|---|---|
+| Input with no presentation effect still triggers host refresh | E5 owns whole-frame dirty-session contracts | M1.5 |
 | F1 child views and traversal | Not covered | M2 |
 | F2 geometry allocation | Not covered outside control coordinates | M2 |
 | F3 presentation transform composition | E5/M8 owns whole-frame transform decisions | M2 owns allocation-free renderer composition; M5 may retain validated transform results |
@@ -59,7 +60,7 @@ validated path toward incremental style and layout work.
 expanded, pointer-active, scroll, and resize states before changing hot paths.
 
 **Depends on:** Accepted and committed E5 (external).
-**Enables:** M2, M3, M4, M6.
+**Enables:** M1.5, M2, M3, M4, M6.
 **Parallelizable with:** None.
 
 **Architectural Proposition:** Use E5's comparability rules and structural counters, supplemented by
@@ -75,6 +76,33 @@ host frame cap cannot conceal per-frame work.
 
 **Validation:** A reviewer can reproduce a comparable baseline and identify which later milestone
 owns each measured category.
+
+### M1.5: Skip Proven No-Impact Input Frames
+
+**Document:** [M1.5 - Skip proven no-impact input frames](E6/M1.5%20-%20Skip%20proven%20no-impact%20input%20frames.md)
+
+**Purpose:** Give hosts a conservative, backend-neutral result that distinguishes input processing
+which provably left presentation unchanged from input that requires full style/layout refresh.
+
+**Depends on:** M1.
+**Enables:** M5 and host integrations that currently refresh on raw input presence.
+**Parallelizable with:** M2, M3, M4, M6 after M1.
+
+**Architectural Proposition:** Input processing returns only `UNCHANGED` when the framework can prove
+that no hover, focus, pressed, scroll, edit, listener, shortcut, or structural/style state changed.
+Actual effects and unknowns collapse to `FULL_REFRESH_REQUIRED`; finer paint/style/layout outcomes are
+deferred until incremental invalidation owns those distinctions.
+
+**Key Work:**
+- Define the binary impact contract, conservative fallback, legacy compatibility, and counters.
+- Prove same-hit-path pointer motion is unchanged only when no capture/drag/selection/listener or
+  interaction state can be affected.
+- Prove key/character input is unchanged only when no focused editor, shortcut, listener, or UI state
+  consumes it.
+- Validate host integration against force-full behavior and matched capped/uncapped evidence.
+
+**Validation:** No-impact pointer and keyboard scenarios stop requesting full refresh, while every
+actual or unproven UI effect retains force-full-equivalent presentation.
 
 ### M2: Remove Steady-State Traversal and Renderer Allocation
 
@@ -167,7 +195,7 @@ with evidence.
 **Purpose:** Progress from E5's proven whole-domain skipping to correctly scoped style and layout work
 for changed elements, descendants, and affected ancestors.
 
-**Depends on:** M2, M3, M4, M6.
+**Depends on:** M1.5, M2, M3, M4, M6.
 **Enables:** None.
 **Parallelizable with:** None.
 
@@ -221,6 +249,8 @@ retention, sibling endpoints, and lookup behavior; indexing never returns a deta
   presentation changes; introduce them only behind explicit invalidation tests.
 - Incremental layout may leave stale geometry; force-full fallback and convergence reporting remain
   mandatory.
+- Input-impact classification can miss arbitrary listener or interaction state effects; only proven
+  unchanged processing may skip refresh, and unknowns must remain full-refresh-required.
 - Property-store changes can break consumers of `styles()` map order or mutability; audit before
   migration.
 - Tree changes affect parser output, events, focus, and layout-child ownership; structural invariants
@@ -232,19 +262,21 @@ retention, sibling endpoints, and lookup behavior; indexing never returns a deta
   integration.
 - Compare optimized and force-full/reference behavior using deterministic fixtures and E5-compatible
   recordings.
-- Review M2, M3, M4, and M6 separately. M5 begins only after their contracts and regression suites are
-  accepted.
+- Review M1.5, M2, M3, M4, and M6 separately. M5 begins only after their contracts and regression
+  suites are accepted.
 
 ## Dependency Graph
 
 ```mermaid
 flowchart TD
   M1["M1: Establish Comparable Frame-Path Evidence"]
+  M15["M1.5: Skip Proven No-Impact Input Frames"]
   M2["M2: Remove Steady-State Traversal and Renderer Allocation"]
   M3["M3: Reduce Selector Candidate and Style-Rebuild Work"]
   M4["M4: Redesign Hot Resolved-Property Storage"]
   M6["M6: Harden Tree Mutation and Lookup"]
   M5["M5: Add Incremental Style and Retained Layout Boundaries"]
+  M1 --> M15
   M1 --> M2
   M1 --> M3
   M1 --> M4
@@ -253,4 +285,5 @@ flowchart TD
   M3 --> M5
   M4 --> M5
   M6 --> M5
+  M15 --> M5
 ```

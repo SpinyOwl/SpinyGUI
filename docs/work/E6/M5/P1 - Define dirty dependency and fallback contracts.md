@@ -5,7 +5,7 @@ Specify safe affected-root invalidation that extends, rather than changes, E5 wh
 
 ## Phase Tasks
 ### T1: Define causes, roots, and UI-thread ownership
-**Depends on:** M2, M3, M4, M6. **Enables:** T2. **Parallelizable with:** None.
+**Depends on:** M1.5, M2, M3, M4, M6. **Enables:** T2. **Parallelizable with:** None.
 **Changes:**
 - [ ] Define style/layout dirty causes for DOM, class/style, pseudo-state, font, resize, scroll, transforms, visibility, and scrollbars.
 - [ ] Define affected descendants/ancestors and the relationship to E5 epochs and force-full calls.
@@ -26,5 +26,6 @@ Specify safe affected-root invalidation that extends, rather than changes, E5 wh
 ## Dependency Graph
 ```mermaid
 flowchart TD
-  T1["T1: Define causes, roots, and UI-thread ownership"] --> T2["T2: Define outcome, fallback, and convergence rules"]
+  M15["M1.5: Input-impact contract"] --> T1["T1: Define causes, roots, and UI-thread ownership"]
+  T1 --> T2["T2: Define outcome, fallback, and convergence rules"]
 ```

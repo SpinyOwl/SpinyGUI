@@ -16,7 +16,7 @@ correctness before hot-path changes begin.
 
 ### P2: Capture and review baseline evidence
 **Document:** [P2 - Capture and review baseline evidence](M1/P2%20-%20Capture%20and%20review%20baseline%20evidence.md)
-**Depends on:** P1. **Enables:** M2, M3, M4, M6. **Parallelizable with:** None.
+**Depends on:** P1. **Enables:** M1.5, M2, M3, M4, M6. **Parallelizable with:** None.
 **Purpose:** Capture capped/uncapped recordings and assign each material cost to one E6 owner.
 
 ## Milestone Validation
