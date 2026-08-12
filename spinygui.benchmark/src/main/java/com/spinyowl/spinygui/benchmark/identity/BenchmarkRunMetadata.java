@@ -116,7 +116,8 @@ public record BenchmarkRunMetadata(
   public enum Artifact {
     CPU("cpu"),
     RENDERING("rendering"),
-    COUNTER_DIAGNOSTICS("counter-diagnostics");
+    COUNTER_DIAGNOSTICS("counter-diagnostics"),
+    FRAME_BASELINE("frame-baseline");
 
     private final String json;
 

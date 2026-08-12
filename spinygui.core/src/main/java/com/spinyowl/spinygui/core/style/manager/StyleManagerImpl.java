@@ -1,6 +1,7 @@
 package com.spinyowl.spinygui.core.style.manager;
 
 import com.spinyowl.spinygui.core.animation.StyleChangeListener;
+import com.spinyowl.spinygui.core.diagnostic.FrameDiagnosticCounter;
 import com.spinyowl.spinygui.core.node.Element;
 import com.spinyowl.spinygui.core.node.Frame;
 import com.spinyowl.spinygui.core.parser.StyleSheetParser;
@@ -74,6 +75,7 @@ public class StyleManagerImpl implements StyleManager {
   private List<Ruleset> userAgentRulesets;
 
   public void recalculate(Frame frame) {
+    frame.diagnostics().increment(FrameDiagnosticCounter.STYLE_RECALCULATIONS);
     updateStyles(frame, frame.styleSheets());
     resolveStyles(frame);
   }
@@ -91,7 +93,17 @@ public class StyleManagerImpl implements StyleManager {
         .resolvedStyle()
         .rules()
         .forEach(
-            ruleSet -> ruleSet.declarations().forEach(declaration -> declaration.apply(element)));
+            ruleSet ->
+                ruleSet
+                    .declarations()
+                    .forEach(
+                        declaration -> {
+                          element
+                              .frame()
+                              .diagnostics()
+                              .increment(FrameDiagnosticCounter.PROPERTY_APPLICATIONS);
+                          declaration.apply(element);
+                        }));
     applyAbsentProperties(element);
     if (styleChangeListener == null) element.presentationState().reset();
     else
@@ -103,7 +115,14 @@ public class StyleManagerImpl implements StyleManager {
     Map<String, Object> styles = element.resolvedStyle().styles();
     properties().stream()
         .filter(property -> !styles.containsKey(property.name()))
-        .forEach(property -> property.computeAbsent(element, styles));
+        .forEach(
+            property -> {
+              element
+                  .frame()
+                  .diagnostics()
+                  .increment(FrameDiagnosticCounter.PROPERTY_APPLICATIONS);
+              property.computeAbsent(element, styles);
+            });
   }
 
   private void applyScrollbarStyles(Element element) {
@@ -192,6 +211,10 @@ public class StyleManagerImpl implements StyleManager {
       List<ScrollbarRuleset> scrollbarRules, Element element) {
     List<ScrollbarRuleset> rulesets = new ArrayList<>();
     for (ScrollbarRuleset scrollbarRule : scrollbarRules) {
+      element
+          .frame()
+          .diagnostics()
+          .increment(FrameDiagnosticCounter.SELECTOR_TESTS);
       if (scrollbarRule.ruleset().test(element)) {
         rulesets.add(scrollbarRule);
       }
@@ -202,7 +225,18 @@ public class StyleManagerImpl implements StyleManager {
 
   private Ruleset matchingRuleSet(Ruleset ruleSet, Element element) {
     List<Selector> selectors =
-        ruleSet.selectors().stream().filter(selector -> selector.test(element)).toList();
+        ruleSet
+            .selectors()
+            .stream()
+            .filter(
+                selector -> {
+                  element
+                      .frame()
+                      .diagnostics()
+                      .increment(FrameDiagnosticCounter.SELECTOR_TESTS);
+                  return selector.test(element);
+                })
+            .toList();
     return selectors.isEmpty() ? null : new Ruleset(selectors, ruleSet.declarations());
   }
 

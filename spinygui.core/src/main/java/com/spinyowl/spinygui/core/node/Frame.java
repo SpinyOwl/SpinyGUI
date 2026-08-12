@@ -2,6 +2,8 @@ package com.spinyowl.spinygui.core.node;
 
 import com.spinyowl.spinygui.core.event.WindowCloseEvent;
 import com.spinyowl.spinygui.core.event.listener.EventListener;
+import com.spinyowl.spinygui.core.diagnostic.DiagnosticSession;
+import com.spinyowl.spinygui.core.diagnostic.FrameDiagnosticCounter;
 import com.spinyowl.spinygui.core.style.stylesheet.StyleSheet;
 import java.util.ArrayList;
 import java.util.List;
@@ -23,6 +25,9 @@ public class Frame extends Element {
   protected final List<StyleSheet> styleSheets = new CopyOnWriteArrayList<>();
 
   @Getter @Setter @NonNull private Vector2f frameSize = new Vector2f();
+
+  /** Optional owner-thread diagnostics for one frame evidence session. */
+  @Getter @Setter @NonNull private DiagnosticSession diagnostics = DiagnosticSession.disabled();
 
   /** Default constructor which provide {@link #FRAME_TAG_NAME} string to super constructor. */
   public Frame() {
@@ -164,6 +169,7 @@ public class Frame extends Element {
 
   private boolean checkAttributeValueAndAdd(
       Element element, List<Element> foundElements, String attribute, String value) {
+    diagnostics().increment(FrameDiagnosticCounter.LOOKUP_NODE_VISITS);
     if (element.hasAttribute(attribute) && Objects.equals(value, element.getAttribute(attribute))) {
       foundElements.add(element);
       return true;

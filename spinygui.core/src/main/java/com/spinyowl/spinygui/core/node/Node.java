@@ -1,5 +1,7 @@
 package com.spinyowl.spinygui.core.node;
 
+import com.spinyowl.spinygui.core.diagnostic.DiagnosticSession;
+import com.spinyowl.spinygui.core.diagnostic.FrameDiagnosticCounter;
 import com.spinyowl.spinygui.core.node.intersection.Intersection;
 import com.spinyowl.spinygui.core.node.intersection.Intersections;
 import com.spinyowl.spinygui.core.node.layout.Box;
@@ -154,6 +156,7 @@ public abstract class Node {
    */
   @SuppressWarnings("squid:S6204")
   public List<Element> children() {
+    frameDiagnostics().increment(FrameDiagnosticCounter.ELEMENT_VIEW_READS);
     return childNodes().stream()
         .filter(Element.class::isInstance)
         .map(Element.class::cast)
@@ -216,6 +219,7 @@ public abstract class Node {
 
   /** Returns absolute position of node (border-box) on virtual window surface. */
   public Vector2f absolutePosition() {
+    frameDiagnostics().increment(FrameDiagnosticCounter.GEOMETRY_POSITION_READS);
     var borderBox = this.box().borderBoxPosition();
     if (this.offsetParent != null) {
       borderBox
@@ -230,6 +234,7 @@ public abstract class Node {
    * translations are applied. Render traversal uses this value while it owns scroll translation.
    */
   public Vector2f layoutAbsolutePosition() {
+    frameDiagnostics().increment(FrameDiagnosticCounter.GEOMETRY_POSITION_READS);
     var borderBox = this.box().borderBoxPosition();
     if (this.offsetParent != null) {
       borderBox.add(offsetParent.layoutAbsolutePosition());
@@ -239,6 +244,12 @@ public abstract class Node {
 
   /** Returns size of node (border-box) on virtual window surface. */
   public Vector2f size() {
+    frameDiagnostics().increment(FrameDiagnosticCounter.GEOMETRY_SIZE_READS);
     return box.borderBoxSize();
+  }
+
+  protected final DiagnosticSession frameDiagnostics() {
+    Frame frame = frame();
+    return frame == null ? DiagnosticSession.disabled() : frame.diagnostics();
   }
 }

@@ -53,6 +53,7 @@ abstract class BenchmarkRunIdService : BuildService<BenchmarkRunIdParameters>, A
         archive.resolve("text-calculation-$identifier.json").exists()
             || archive.resolve("nanovg-text-$identifier.json").exists()
             || archive.resolve("text-diagnostics-$identifier.json").exists()
+            || archive.resolve("frame-baseline-$identifier.json").exists()
 
     override fun close() {
         reservation?.delete()
@@ -203,6 +204,24 @@ tasks.register<JavaExec>("counterDiagnostics") {
     mainClass.set("com.spinyowl.spinygui.benchmark.diagnostic.CounterDiagnosticsMain")
     jvmArgs("--enable-native-access=ALL-UNNAMED")
     doFirst(TimestampedReportArgumentAction(benchmarkArchive.asFile, "text-diagnostics", null, benchmarkRunId, "unpaired-investigation"))
+    freshBenchmarkRun()
+}
+
+tasks.register<JavaExec>("frameBaseline") {
+    group = "benchmark"
+    description = "Captures matched E6 non-text frame-path baselines at uncapped, 120 Hz, and 60 Hz."
+    dependsOn("classes")
+    classpath = sourceSets["main"].runtimeClasspath
+    mainClass.set("com.spinyowl.spinygui.benchmark.frame.FrameBaselineMain")
+    doFirst {
+        systemProperty(
+            "spinygui.e6.frame.durationMillis",
+            providers.gradleProperty("frameBaselineDurationMillis").orElse("10000").get())
+        systemProperty(
+            "spinygui.e6.frame.profiles",
+            providers.gradleProperty("frameBaselineProfiles").orElse("true").get())
+    }
+    doFirst(TimestampedReportArgumentAction(benchmarkArchive.asFile, "frame-baseline", null, benchmarkRunId, "paired-report"))
     freshBenchmarkRun()
 }
 

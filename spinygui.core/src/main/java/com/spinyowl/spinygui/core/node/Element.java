@@ -5,6 +5,7 @@ import static com.spinyowl.spinygui.core.util.Reference.containsReference;
 import com.spinyowl.spinygui.core.event.Event;
 import com.spinyowl.spinygui.core.event.EventTarget;
 import com.spinyowl.spinygui.core.event.listener.EventListener;
+import com.spinyowl.spinygui.core.diagnostic.FrameDiagnosticCounter;
 import com.spinyowl.spinygui.core.layout.InlineFragment;
 import com.spinyowl.spinygui.core.style.ResolvedStyle;
 import com.spinyowl.spinygui.core.style.types.ScrollbarPart;
@@ -154,6 +155,7 @@ public class Element extends Node implements EventTarget {
   public void removeChild(@NonNull Node node) {
     unlinkSiblings(node);
     if (childNodes.remove(node)) {
+      frameDiagnostics().increment(FrameDiagnosticCounter.MUTATION_DETACHMENTS);
       resetPresentationState(node);
       node.parent(null);
     }
@@ -190,6 +192,8 @@ public class Element extends Node implements EventTarget {
 
     childNodes.add(node);
 
+    frameDiagnostics().increment(FrameDiagnosticCounter.MUTATION_ATTACHMENTS);
+
     linkSiblings(node);
 
     node.parent(this);
@@ -209,6 +213,7 @@ public class Element extends Node implements EventTarget {
 
   @Override
   public List<Node> childNodes() {
+    frameDiagnostics().increment(FrameDiagnosticCounter.CHILD_NODE_VIEW_READS);
     return Collections.unmodifiableList(childNodes);
   }
 

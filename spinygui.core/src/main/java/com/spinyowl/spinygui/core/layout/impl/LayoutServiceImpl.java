@@ -9,6 +9,7 @@ import com.spinyowl.spinygui.core.layout.ElementLayout;
 import com.spinyowl.spinygui.core.layout.LayoutContext;
 import com.spinyowl.spinygui.core.layout.LayoutService;
 import com.spinyowl.spinygui.core.layout.TextLayout;
+import com.spinyowl.spinygui.core.diagnostic.FrameDiagnosticCounter;
 import com.spinyowl.spinygui.core.node.Element;
 import com.spinyowl.spinygui.core.node.Frame;
 import com.spinyowl.spinygui.core.node.Node;
@@ -43,6 +44,7 @@ public class LayoutServiceImpl implements LayoutService {
     boolean scrollbarGutterChanged;
     int pass = 0;
     do {
+      frame.diagnostics().increment(FrameDiagnosticCounter.LAYOUT_PASSES);
       LayoutContext context = new LayoutContext();
       // A prior pass's client box reserves classic scrollbar gutters for normal-flow children.
       layoutNode(frame, context);
@@ -54,6 +56,10 @@ public class LayoutServiceImpl implements LayoutService {
   }
 
   private void resolvePresentationTransforms(Element element) {
+    element
+        .frame()
+        .diagnostics()
+        .increment(FrameDiagnosticCounter.TRANSFORM_COMPOSITIONS);
     var size = element.box().borderBoxSize();
     var transform = element.presentedStyle().transform();
     var origin = element.resolvedStyle().transformOrigin();
@@ -69,6 +75,10 @@ public class LayoutServiceImpl implements LayoutService {
   }
 
   private boolean updateScrollAndClientSize(Element element) {
+    element
+        .frame()
+        .diagnostics()
+        .increment(FrameDiagnosticCounter.SCROLL_CONVERGENCE_CHECKS);
     float scrollWidth = 0;
     float scrollHeight = 0;
 
@@ -131,6 +141,7 @@ public class LayoutServiceImpl implements LayoutService {
   }
 
   public void layoutNode(@NonNull Node node, @NonNull LayoutContext context) {
+    node.frame().diagnostics().increment(FrameDiagnosticCounter.LAYOUT_NODE_VISITS);
     if (node instanceof Element element) {
       if (!visible(element)) {
         clearHiddenSubtree(element);
