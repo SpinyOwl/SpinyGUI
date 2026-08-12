@@ -28,19 +28,51 @@
                 x:{...xScale, title:{display:true, text:xTitle, color:colors.text}, ticks:{color:colors.muted}, grid:{color:colors.grid}},
                 y:{title:{display:true, text:yTitle, color:colors.text}, ticks:{color:colors.muted}, grid:{color:colors.grid}}
             },
+            layout:{padding:{right:68}},
             plugins:{legend:{labels:{color:colors.text}}, tooltip:{backgroundColor:'#080c12', titleColor:colors.text, bodyColor:colors.text}}
         };
     }
 
+    function formatChartValue(value) {
+        return Number(value).toLocaleString(undefined, {maximumFractionDigits:3});
+    }
+
+    const valueLabels = {
+        id:'valueLabels',
+        afterDatasetsDraw(chart) {
+            const context = chart.ctx;
+            context.save();
+            context.fillStyle = colors.text;
+            context.font = '12px system-ui, sans-serif';
+            context.textBaseline = 'middle';
+            chart.data.datasets.forEach((dataset, datasetIndex) => {
+                const meta = chart.getDatasetMeta(datasetIndex);
+                meta.data.forEach((bar, dataIndex) => {
+                    const value = dataset.data[dataIndex];
+                    const preferredX = bar.x + 6;
+                    const clipped = preferredX > chart.chartArea.right - 4;
+                    context.textAlign = clipped ? 'right' : 'left';
+                    context.fillText(`${formatChartValue(value)} ${dataset.valueLabelUnit}`,
+                        clipped ? chart.chartArea.right - 4 : preferredX, bar.y);
+                });
+            });
+            context.restore();
+        }
+    };
+
     function cpuConfig(xTitle, yTitle, label, color, value, tooltipLines) {
         const options = chartOptions({type:'logarithmic'}, xTitle, yTitle);
+        options.scales.x.ticks.callback = value => Number.isInteger(Math.log10(Number(value)))
+            ? Number(value).toLocaleString() : '';
         options.plugins.tooltip.callbacks = {label(context) {
             return tooltipLines(report.cpu[context.dataIndex]);
         }};
         return {
             type:'bar',
-            data:{labels:report.cpu.map(row => row.label), datasets:[{label, data:report.cpu.map(value), backgroundColor:color}]},
-            options
+            data:{labels:report.cpu.map(row => row.label), datasets:[{label, data:report.cpu.map(value),
+                backgroundColor:color, valueLabelUnit:xTitle.match(/\((.+)\)/)?.[1] ?? ''}]},
+            options,
+            plugins:[valueLabels]
         };
     }
 
@@ -52,12 +84,17 @@
             context.save();
             context.strokeStyle = '#f2d05c';
             context.setLineDash([5, 4]);
-            for (const value of [8333, 16667]) {
+            context.fillStyle = '#f2d05c';
+            context.font = '12px system-ui, sans-serif';
+            context.textBaseline = 'top';
+            for (const [value, label] of [[8333, '120 Hz'], [16667, '60 Hz']]) {
                 const x = scale.getPixelForValue(value);
                 context.beginPath();
                 context.moveTo(x, chart.chartArea.top);
                 context.lineTo(x, chart.chartArea.bottom);
                 context.stroke();
+                context.textAlign = value === 16667 ? 'right' : 'left';
+                context.fillText(label, value === 16667 ? x - 4 : x + 4, chart.chartArea.top + 4);
             }
             context.restore();
         }
@@ -92,7 +129,7 @@
     ]));
 
     const trends = new Map(report.trends.map(trend => [trend.id, trend]));
-    const trendButtons = Array.from(document.querySelectorAll('[data-trend-id]'));
+    const trendSelect = document.getElementById('trend-select');
     let historyChart = null;
     let activeTrend = null;
 
@@ -118,16 +155,13 @@
         };
     }
 
-    function activateTrend(button) {
-        const trend = trends.get(button.dataset.trendId);
+    function activateTrend(trendId) {
+        const trend = trends.get(trendId);
         if (!trend) {
-            console.error(`Unable to select missing history trend ${button.dataset.trendId}`);
+            console.error(`Unable to select missing history trend ${trendId}`);
             return;
         }
         if (!historyChart) return;
-        const selectedButton = trendButtons.find(candidate => candidate.getAttribute('aria-pressed') === 'true');
-        if (selectedButton) selectedButton.setAttribute('aria-pressed', 'false');
-        button.setAttribute('aria-pressed', 'true');
         const canvas = document.getElementById('history-chart');
         canvas.setAttribute('aria-label', `${trend.label} history trend in ${trend.unit}. Use the precise history tables below for values.`);
         historyChart.data.datasets[0].label = `${trend.label} (${trend.unit})`;
@@ -139,14 +173,39 @@
         historyChart.update();
     }
 
-    const initialButton = trendButtons.find(button => button.getAttribute('aria-pressed') === 'true');
-    if (initialButton) {
-        const initialTrend = trends.get(initialButton.dataset.trendId);
+    if (trendSelect) {
+        const initialTrend = trends.get(trendSelect.value);
         if (initialTrend) {
             const canvas = document.getElementById('history-chart');
             canvas.setAttribute('aria-label', `${initialTrend.label} history trend in ${initialTrend.unit}. Use the precise history tables below for values.`);
             historyChart = mountChart('history-chart', historyConfig(initialTrend));
         }
+        trendSelect.addEventListener('change', () => activateTrend(trendSelect.value));
     }
-    trendButtons.forEach(button => button.addEventListener('click', () => activateTrend(button)));
+
+    const navLinks = Array.from(document.querySelectorAll('.report-nav a'));
+    const sections = navLinks.map(link => document.querySelector(link.getAttribute('href'))).filter(Boolean);
+    if (sections.length) {
+        let navFrame = 0;
+        const updateActiveNavigation = () => {
+            const activationLine = 90;
+            const active = sections.reduce((current, section) =>
+                section.getBoundingClientRect().top <= activationLine ? section : current, sections[0]);
+            navLinks.forEach(link => {
+                if (link.getAttribute('href') === `#${active.id}`) link.setAttribute('aria-current', 'location');
+                else link.removeAttribute('aria-current');
+            });
+        };
+        const scheduleNavigationUpdate = () => {
+            if (navFrame) return;
+            navFrame = window.requestAnimationFrame(() => {
+                navFrame = 0;
+                updateActiveNavigation();
+            });
+        };
+        window.addEventListener('scroll', scheduleNavigationUpdate, {passive:true});
+        window.addEventListener('resize', scheduleNavigationUpdate);
+        window.addEventListener('hashchange', scheduleNavigationUpdate);
+        updateActiveNavigation();
+    }
 })();

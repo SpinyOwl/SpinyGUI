@@ -160,7 +160,7 @@ class FontServiceImplTest {
   }
 
   @Test
-  void diagnostics_exposeDuplicateResolutionAndQuadraticCurrentRunCopyingWithoutChangingOutput() {
+  void diagnostics_exposeDuplicateResolutionAndLinearCurrentRunAssemblyWithoutChangingOutput() {
     String text = "aaaa";
     TextMetrics expected = fontService.measureText(text, Font.DEFAULT, 16, 1.2f);
     DiagnosticSession diagnostics = diagnostics();
@@ -175,14 +175,14 @@ class FontServiceImplTest {
     assertEquals(8, snapshot.value(TextDiagnosticCounter.SOURCE_CODE_POINTS_SCANNED));
     assertEquals(8, snapshot.value(TextDiagnosticCounter.LOGICAL_GLYPH_RESOLUTIONS));
     assertEquals(16, snapshot.value(TextDiagnosticCounter.NATIVE_GLYPH_INDEX_PROBES));
-    assertEquals(15, snapshot.value(TextDiagnosticCounter.GLYPH_SLOTS_COPIED));
-    assertEquals(6, snapshot.value(TextDiagnosticCounter.GLYPH_SLOTS_MOVED));
+    assertEquals(4, snapshot.value(TextDiagnosticCounter.GLYPH_SLOTS_COPIED));
+    assertEquals(0, snapshot.value(TextDiagnosticCounter.GLYPH_SLOTS_MOVED));
     assertEquals(0, snapshot.value(TextDiagnosticCounter.CHARACTER_BUILDER_APPENDS));
     assertEquals(0, snapshot.value(TextDiagnosticCounter.CHARACTER_BUILDER_FREEZES));
-    assertEquals(3, snapshot.value(TextDiagnosticCounter.GLYPH_SLOT_BUILDER_APPENDS));
-    assertEquals(3, snapshot.value(TextDiagnosticCounter.GLYPH_SLOT_BUILDER_FREEZES));
-    assertEquals(4, snapshot.value(TextDiagnosticCounter.RUN_BUILDER_APPENDS));
-    assertEquals(0, snapshot.value(TextDiagnosticCounter.RUN_BUILDER_FREEZES));
+    assertEquals(4, snapshot.value(TextDiagnosticCounter.GLYPH_SLOT_BUILDER_APPENDS));
+    assertEquals(1, snapshot.value(TextDiagnosticCounter.GLYPH_SLOT_BUILDER_FREEZES));
+    assertEquals(1, snapshot.value(TextDiagnosticCounter.RUN_BUILDER_APPENDS));
+    assertEquals(1, snapshot.value(TextDiagnosticCounter.RUN_BUILDER_FREEZES));
     assertEquals(1, snapshot.value(TextDiagnosticCounter.COMPLETE_TEXT_MEASUREMENTS));
     assertEquals(
         1,
@@ -194,11 +194,11 @@ class FontServiceImplTest {
   }
 
   @Test
-  void diagnostics_glyphSlotCopiesAndRelocationsIndependentlyMatchQuadraticCurrentTotals() {
-    assertQuadraticRunAssemblyCounts(1, 0, 0);
-    assertQuadraticRunAssemblyCounts(4, 15, 6);
-    assertQuadraticRunAssemblyCounts(8, 63, 28);
-    assertQuadraticRunAssemblyCounts(16, 255, 120);
+  void diagnostics_glyphSlotCopiesStayLinearForLongSingleFontRuns() {
+    assertLinearRunAssemblyCounts(1);
+    assertLinearRunAssemblyCounts(4);
+    assertLinearRunAssemblyCounts(8);
+    assertLinearRunAssemblyCounts(16);
   }
 
   @Test
@@ -216,8 +216,7 @@ class FontServiceImplTest {
     return DiagnosticSession.enabled(List.of(TextDiagnosticCounter.values()));
   }
 
-  private void assertQuadraticRunAssemblyCounts(
-      int glyphCount, long expectedCopies, long expectedMoves) {
+  private void assertLinearRunAssemblyCounts(int glyphCount) {
     DiagnosticSession diagnostics = diagnostics();
     FontServiceImpl instrumented =
         new FontServiceImpl(
@@ -226,17 +225,17 @@ class FontServiceImplTest {
     instrumented.measureText("a".repeat(glyphCount), Font.DEFAULT, 16, 1.2f);
     DiagnosticSnapshot snapshot = diagnostics.snapshot();
 
-    assertEquals(expectedCopies, snapshot.value(TextDiagnosticCounter.GLYPH_SLOTS_COPIED));
-    assertEquals(expectedMoves, snapshot.value(TextDiagnosticCounter.GLYPH_SLOTS_MOVED));
+    assertEquals(glyphCount, snapshot.value(TextDiagnosticCounter.GLYPH_SLOTS_COPIED));
+    assertEquals(0, snapshot.value(TextDiagnosticCounter.GLYPH_SLOTS_MOVED));
     assertEquals(0, snapshot.value(TextDiagnosticCounter.CHARACTER_BUILDER_APPENDS));
     assertEquals(0, snapshot.value(TextDiagnosticCounter.CHARACTER_BUILDER_FREEZES));
     assertEquals(
-        glyphCount - 1,
+        glyphCount,
         snapshot.value(TextDiagnosticCounter.GLYPH_SLOT_BUILDER_APPENDS));
     assertEquals(
-        glyphCount - 1,
+        1,
         snapshot.value(TextDiagnosticCounter.GLYPH_SLOT_BUILDER_FREEZES));
-    assertEquals(glyphCount, snapshot.value(TextDiagnosticCounter.RUN_BUILDER_APPENDS));
-    assertEquals(0, snapshot.value(TextDiagnosticCounter.RUN_BUILDER_FREEZES));
+    assertEquals(1, snapshot.value(TextDiagnosticCounter.RUN_BUILDER_APPENDS));
+    assertEquals(1, snapshot.value(TextDiagnosticCounter.RUN_BUILDER_FREEZES));
   }
 }

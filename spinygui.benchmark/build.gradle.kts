@@ -256,9 +256,18 @@ val benchmarkReportRendering = tasks.register<JavaExec>("benchmarkReportRenderin
     freshBenchmarkRun()
 }
 
+tasks.register<JavaExec>("generateBenchmarkReport") {
+    group = "benchmark"
+    description = "Regenerates the HTML report and normalized manifest from the existing local archive."
+    dependsOn("classes")
+    classpath = sourceSets["main"].runtimeClasspath
+    mainClass.set("com.spinyowl.spinygui.benchmark.report.BenchmarkHtmlReportGenerator")
+    args(benchmarkArchive.asFile.absolutePath, benchmarkArchive.file("index.html").asFile.absolutePath)
+}
+
 tasks.register<JavaExec>("benchmarkReport") {
     group = "benchmark"
-    description = "Runs local benchmarks and writes a self-contained HTML report."
+    description = "Runs local benchmarks and writes a self-contained HTML report plus normalized archive manifest."
     dependsOn(benchmarkReportRendering)
     classpath = sourceSets["main"].runtimeClasspath
     mainClass.set("com.spinyowl.spinygui.benchmark.report.BenchmarkHtmlReportGenerator")

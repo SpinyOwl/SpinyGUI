@@ -517,6 +517,10 @@ public class FontServiceImpl implements FontService, TextMeasurer {
       String text, int start, int end, List<Font> fonts, float fontSize) {
     if (start >= end || fonts.isEmpty()) return List.of();
     List<ResolvedTextRun> runs = new ArrayList<>();
+    List<ResolvedGlyph> glyphs = new ArrayList<>();
+    Font runFont = null;
+    int runStart = start;
+    float runAdvance = 0;
     GlyphMeasurement previous = null;
     for (int i = start; i < end; ) {
       diagnostics.increment(TextDiagnosticCounter.SOURCE_CODE_POINTS_SCANNED);
@@ -530,33 +534,35 @@ public class FontServiceImpl implements FontService, TextMeasurer {
       if (previous == null || !previous.font().equals(selected)) {
         advance = measureRunGlyphAdvance(measurement, null, fontSize);
       }
-      if (!runs.isEmpty() && runs.get(runs.size() - 1).font().equals(selected)) {
-        ResolvedTextRun previousRun = runs.remove(runs.size() - 1);
-        List<ResolvedGlyph> glyphs = new ArrayList<>(previousRun.glyphs());
-        diagnostics.add(TextDiagnosticCounter.GLYPH_SLOTS_COPIED, previousRun.glyphs().size());
-        int relocatedGlyphSlots = glyphs.size();
-        glyphs.add(glyph);
-        diagnostics.increment(TextDiagnosticCounter.GLYPH_SLOT_BUILDER_APPENDS);
-        diagnostics.add(TextDiagnosticCounter.GLYPH_SLOTS_MOVED, relocatedGlyphSlots);
-        ResolvedTextRun extendedRun =
-            new ResolvedTextRun(
-                previousRun.sourceStart(),
-                next,
-                selected,
-                glyphs,
-                previousRun.advance() + advance);
-        diagnostics.add(TextDiagnosticCounter.GLYPH_SLOTS_COPIED, glyphs.size());
-        diagnostics.increment(TextDiagnosticCounter.GLYPH_SLOT_BUILDER_FREEZES);
-        runs.add(extendedRun);
-        diagnostics.increment(TextDiagnosticCounter.RUN_BUILDER_APPENDS);
-      } else {
-        runs.add(new ResolvedTextRun(i, next, selected, List.of(glyph), advance));
-        diagnostics.increment(TextDiagnosticCounter.RUN_BUILDER_APPENDS);
+      if (runFont != null && !runFont.equals(selected)) {
+        addResolvedRun(runs, runStart, i, runFont, glyphs, runAdvance);
+        glyphs = new ArrayList<>();
+        runStart = i;
+        runAdvance = 0;
       }
+      runFont = selected;
+      glyphs.add(glyph);
+      diagnostics.increment(TextDiagnosticCounter.GLYPH_SLOT_BUILDER_APPENDS);
+      runAdvance += advance;
       previous = measurement;
       i = next;
     }
+    addResolvedRun(runs, runStart, end, runFont, glyphs, runAdvance);
     return runs;
+  }
+
+  private void addResolvedRun(
+      List<ResolvedTextRun> runs,
+      int start,
+      int end,
+      Font font,
+      List<ResolvedGlyph> glyphs,
+      float advance) {
+    diagnostics.add(TextDiagnosticCounter.GLYPH_SLOTS_COPIED, glyphs.size());
+    diagnostics.increment(TextDiagnosticCounter.GLYPH_SLOT_BUILDER_FREEZES);
+    runs.add(new ResolvedTextRun(start, end, font, glyphs, advance));
+    diagnostics.increment(TextDiagnosticCounter.RUN_BUILDER_APPENDS);
+    diagnostics.increment(TextDiagnosticCounter.RUN_BUILDER_FREEZES);
   }
 
   private boolean hasGlyph(Font font, int codePoint) {

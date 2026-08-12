@@ -39,15 +39,17 @@ class BenchmarkHtmlReportGeneratorTest {
     assertTrue(count(html, "id=\"cpu-allocation-chart\"") == 1);
     assertTrue(count(html, "id=\"cpu-rendering-chart\"") == 1);
     assertTrue(count(html, "id=\"gpu-rendering-chart\"") == 1);
-    assertTrue(count(html, "role=\"img\"") == 5);
-    assertTrue(count(html, "class=\"chart-fallback\"") == 5);
+    assertTrue(count(html, "role=\"img\"") == 4);
+    assertTrue(count(html, "class=\"chart-fallback\"") == 4);
     assertTrue(html.contains("class=\"chart-scroll\""));
     assertTrue(html.contains("class=\"chart-frame\""));
     assertTrue(html.contains("id=\"cpu-data\""));
     assertTrue(html.contains("id=\"rendering-data\""));
-    assertTrue(html.contains("40.000 us; 0.480% of the 120 Hz budget"));
+    assertTrue(html.contains("<span class=\"summary-value\">40.000 us</span>"));
+    assertTrue(html.contains("0.480% of the 120 Hz budget"));
     assertTrue(html.contains("<a class=\"skip-link\" href=\"#overview\">Skip to report content</a>"));
     assertTrue(html.contains("<nav class=\"report-nav\" aria-label=\"Benchmark report sections\">"));
+    assertTrue(html.contains("href=\"#overview\" aria-current=\"location\""));
     assertTrue(html.contains("href=\"#overview\""));
     assertTrue(html.contains("href=\"#cpu\""));
     assertTrue(html.contains("href=\"#rendering\""));
@@ -73,40 +75,44 @@ class BenchmarkHtmlReportGeneratorTest {
     assertTrue(
         html.contains(
             "30 alternating warmup + 0 synchronized validation = 30 pre-measure exposures; 200 measured"));
-    assertTrue(html.contains("Structural validation: <b>passed (4 approved scenes,"));
+    assertTrue(html.contains("Structural validation: passed (4 approved scenes,"));
+    assertTrue(html.contains("class=\"summary-grid\""));
+    assertTrue(html.contains("Technical evidence and fingerprints"));
+    assertTrue(html.contains("Archive status: 1 eligible runs, 0 excluded timing artifacts"));
     String compactHtml = html.replaceAll("\\s+", "");
     String chartGuidance = "<p class=\"chart-guidance\">How to read: Lower values are better.</p>";
-    assertEquals(5, count(html, chartGuidance));
+    assertEquals(4, count(html, chartGuidance));
     for (String caption : List.of("CPU operation latency (us/op)", "Normalized CPU allocation (B/op)",
-        "CPU submission latency by rendering scene", "GPU-complete latency by rendering scene",
-        "Performance history trend")) {
+        "CPU submission latency by rendering scene", "GPU-complete latency by rendering scene")) {
       assertTrue(html.contains("<figcaption>" + caption + "</figcaption>" + chartGuidance));
     }
     assertTrue(compactHtml.contains(".chart-guidance{color:#aebed0;margin:008px}"));
     assertTrue(compactHtml.contains("@media(max-width:700px)"));
     assertTrue(compactHtml.contains(".chart-frame{position:relative;min-width:820px;height:480px}"));
-    assertTrue(compactHtml.contains(".chart-scroll{overflow-x:auto;overscroll-behavior-inline:contain}"));
-    assertTrue(compactHtml.contains(".table-wrap{overflow-x:auto"));
+    assertTrue(compactHtml.contains(".chart-scroll{max-width:100%;overflow-x:auto;overscroll-behavior-inline:contain}"));
+    assertTrue(compactHtml.contains(".table-wrap{max-width:100%;overflow-x:auto"));
+    assertTrue(compactHtml.contains(".pill{display:inline-block;box-sizing:border-box;max-width:100%;overflow-wrap:anywhere"));
+    assertTrue(compactHtml.contains(".metadata-griddd{min-width:0;margin:0;overflow-wrap:anywhere}"));
     assertTrue(compactHtml.contains("table{min-width:640px}"));
     assertTrue(compactHtml.contains(".tooltip{position:fixed;z-index:4;inset:16px"));
     assertTrue(compactHtml.contains(".report-nav{position:sticky;top:0"));
-    assertTrue(compactHtml.contains(".report-nav{margin-inline:-16px;padding:12px16px16px;flex-wrap:nowrap;overflow-x:auto}"));
+    assertTrue(compactHtml.contains(".report-nav{margin-inline:-16px;padding:12px16px10px;flex-wrap:nowrap;overflow-x:auto;scrollbar-width:thin}"));
     assertTrue(compactHtml.contains(".report-nava{flex:none;white-space:nowrap}"));
-    assertTrue(html.contains("<div class=\"trend-controls\" role=\"toolbar\" aria-label=\"Trend metric selector\">"));
-    assertTrue(html.contains("<button class=\"trend-option\" type=\"button\" data-trend-id=\"cpu-trend-1\" aria-pressed=\"true\">"));
-    assertTrue(html.contains("<canvas id=\"history-chart\" role=\"img\""));
+    assertTrue(html.contains("<div class=\"empty-state\"><h3>No trend yet</h3>"));
+    assertFalse(html.contains("id=\"trend-select\""));
+    assertFalse(html.contains("<canvas id=\"history-chart\" role=\"img\""));
     assertTrue(html.contains("id=\"history-data\""));
-    assertTrue(count(html, "aria-pressed=\"true\"") == 1);
-    assertFalse(html.contains("type=\"radio\""));
-    assertFalse(html.contains("class=\"trend-panel\""));
+    assertTrue(html.contains("<caption>Precise CPU benchmark results</caption>"));
+    assertTrue(html.contains("<thead>"));
+    assertTrue(html.contains("scope=\"col\""));
+    assertTrue(html.contains("scope=\"row\""));
     assertFalse(html.contains("<svg"));
     assertFalse(html.contains(":has("));
     assertFalse(html.contains("cx=\""));
     assertFalse(html.contains("<polyline"));
-    assertTrue(compactHtml.contains(".trend-controls{display:flex;flex-wrap:wrap;gap:4px"));
-    assertTrue(compactHtml.contains(".trend-option[aria-pressed=true]"));
-    assertTrue(compactHtml.contains(".trend-option:focus-visible"));
-    assertTrue(compactHtml.contains("scroll-padding-top:72px"));
+    assertTrue(compactHtml.contains(".trend-select:focus-visible"));
+    assertTrue(compactHtml.contains("scroll-padding-top:76px"));
+    assertFalse(compactHtml.contains("scroll-margin-top:"));
 
     assertTrue(html.contains("Chart.js v4.5.1"));
     assertTrue(html.contains("@kurkle/color v0.3.2"));
@@ -117,9 +123,13 @@ class BenchmarkHtmlReportGeneratorTest {
     assertTrue(html.contains("max:16667"));
     assertTrue(html.contains("8333"));
     assertTrue(html.contains("budgetMarkers"));
+    assertTrue(html.contains("[[8333, '120 Hz'], [16667, '60 Hz']]"));
+    assertTrue(html.contains("valueLabels"));
+    assertTrue(html.contains("updateActiveNavigation"));
+    assertTrue(html.contains("window.requestAnimationFrame"));
+    assertTrue(html.contains("Number.isInteger(Math.log10(Number(value)))"));
     assertTrue(html.contains("spanGaps:false"));
     assertTrue(html.contains("return change && /^[+-]/.test(change) ? colors.blue : 'transparent'"));
-    assertTrue(html.contains("aria-pressed"));
     assertTrue(html.contains("function chartOptions(xScale, xTitle, yTitle)"));
     assertTrue(html.contains("x:{...xScale, title:{display:true, text:xTitle, color:colors.text}, ticks:{color:colors.muted}, grid:{color:colors.grid}}"));
     assertTrue(html.contains("y:{title:{display:true, text:yTitle, color:colors.text}, ticks:{color:colors.muted}, grid:{color:colors.grid}}"));
@@ -130,7 +140,7 @@ class BenchmarkHtmlReportGeneratorTest {
     assertTrue(html.contains("x:{title:{display:true, text:'Benchmark run', color:colors.text}, ticks:{color:colors.muted},grid:{color:colors.grid}}"));
     assertTrue(html.contains("y:{min:trend.minimum,max:trend.maximum,title:{display:true, text:historyMetricTitle(trend), color:colors.text},ticks:{color:colors.muted},grid:{color:colors.grid}}"));
     assertTrue(html.contains("historyChart.data.datasets[0].data = trend.values"));
-    assertInOrder(html, "function activateTrend(button)",
+    assertInOrder(html, "function activateTrend(trendId)",
         "historyChart.options.scales.y.title.text = historyMetricTitle(trend);", "historyChart.update();");
     assertFalse(html.contains("class=\"track\""));
     assertFalse(html.contains("class=\"budget-marker"));
@@ -140,9 +150,44 @@ class BenchmarkHtmlReportGeneratorTest {
     assertFalse(html.contains("sourceMappingURL"));
 
     String noArchiveHtml = BenchmarkHtmlReportGenerator.generate(cpuJson(), renderingJson());
-    assertTrue(noArchiveHtml.contains("id=\"history-chart\""));
-    assertTrue(noArchiveHtml.contains("Interactive chart unavailable. <a href=\"#history-data\""));
-    assertFalse(noArchiveHtml.contains("<button class=\"trend-option\" type=\"button\" data-trend-id="));
+    assertFalse(noArchiveHtml.contains("id=\"history-chart\""));
+    assertTrue(noArchiveHtml.contains("No trend yet"));
+    assertFalse(noArchiveHtml.contains("id=\"trend-select\""));
+  }
+
+  @Test
+  void reportsArchiveHealthAndWritesNormalizedManifest(@TempDir Path archive) throws IOException {
+    String included = "20260724-090000-000000000";
+    String cpuOnly = "20260724-100000-000000000";
+    String diagnostics = "20260724-110000-000000000";
+    writePair(archive, included, cpuJson(), renderingJson());
+    Files.writeString(
+        archive.resolve("text-calculation-" + cpuOnly + ".json"),
+        withRunMetadata(cpuJson(), cpuOnly, "cpu", "paired-report", timedMode()));
+    Files.writeString(archive.resolve("text-diagnostics-" + diagnostics + ".json"), "{}");
+
+    BenchmarkReportView view = BenchmarkHtmlReportGenerator.loadArchive(archive);
+    String html = BenchmarkHtmlReportGenerator.generateArchive(archive);
+    JsonObject manifest = JsonParser.parseString(BenchmarkHtmlReportGenerator.generateManifest(archive)).getAsJsonObject();
+
+    assertEquals(1, view.archiveHealth().eligibleRunCount());
+    assertEquals(1, view.archiveHealth().excludedTimingArtifactCount());
+    assertEquals(1, view.archiveHealth().diagnosticArtifactCount());
+    assertEquals(4, view.archiveHealth().artifacts().size());
+    assertTrue(html.contains("Missing rendering artifact with the same run ID"));
+    assertTrue(html.contains("Counter diagnostics are not timing/allocation history"));
+    assertEquals(1, manifest.get("schemaVersion").getAsInt());
+    assertEquals(included, manifest.get("currentRunIdentifier").getAsString());
+    assertTrue(manifest.has("generatedAtLocal"));
+    assertTrue(manifest.has("currentSummary"));
+    assertEquals(4, manifest.getAsJsonObject("archive").getAsJsonArray("artifacts").size());
+
+    Path output = archive.resolve("report.html");
+    BenchmarkHtmlReportGenerator.main(new String[] {archive.toString(), output.toString(), included});
+    assertTrue(Files.readString(output).contains("SpinyGUI Local Benchmark Report"));
+    assertTrue(Files.exists(archive.resolve("report-manifest.json")));
+    assertEquals(included, JsonParser.parseString(Files.readString(archive.resolve("report-manifest.json")))
+        .getAsJsonObject().get("currentRunIdentifier").getAsString());
   }
 
   @Test
@@ -310,9 +355,10 @@ class BenchmarkHtmlReportGeneratorTest {
     assertTrue(html.contains("GPU median/p95/p99"));
     assertTrue(html.contains("-20.000%"));
     assertTrue(html.contains("CPU latency: measure&lt;Latin&gt;"));
-    assertTrue(html.contains("data-trend-id=\"cpu-trend-1\""));
+    assertTrue(html.contains("<select class=\"trend-select\" id=\"trend-select\">"));
+    assertTrue(html.contains("<option value=\"cpu-trend-1\" selected>CPU latency: measure&lt;Latin&gt;</option>"));
+    assertTrue(html.contains("<canvas id=\"history-chart\" role=\"img\""));
     assertFalse(html.contains("<svg"));
-    assertFalse(html.contains("type=\"radio\""));
   }
 
   @Test
@@ -337,7 +383,7 @@ class BenchmarkHtmlReportGeneratorTest {
   }
 
   @Test
-  void keepsBoundaryGapsAndSingleRunChartsOnTheGlobalTimeline() throws IOException {
+  void keepsBoundaryGapsAndShowsAnInsufficientHistoryStateForOneRun() throws IOException {
     Path archive = Files.createTempDirectory("benchmark-trend-boundaries");
     String first = "20260724-090000-000000000";
     String middle = "20260724-100000-000000000";
@@ -355,8 +401,10 @@ class BenchmarkHtmlReportGeneratorTest {
     BenchmarkReportView.ChartTrend single = chartTrend(BenchmarkHtmlReportGenerator.loadArchive(singleRunArchive), "CPU latency: measureLatin");
     assertTrue(single.values().equals(List.of(12.5)));
     String html = BenchmarkHtmlReportGenerator.generateArchive(singleRunArchive);
-    assertTrue(html.contains("data-trend-id=\"cpu-trend-1\""));
-    assertFalse(html.contains("One matching run"));
+    assertFalse(html.contains("id=\"trend-select\""));
+    assertFalse(html.contains("id=\"history-chart\""));
+    assertTrue(html.contains("<h3>No trend yet</h3>"));
+    assertTrue(html.contains("Generate one more comparable CPU/rendering pair"));
   }
 
   @Test
@@ -542,8 +590,8 @@ class BenchmarkHtmlReportGeneratorTest {
     for (String text : List.of(
         "Diagnostics-enabled counter runs are separate evidence",
         "required fingerprints qualify every signed delta",
-        "corrected 31/30 total exposures",
-        "observed structural evidence only",
+        "Implementation revisions are traceability metadata only",
+        "describe observed structure and never identify a series",
         "hardware-, operating-system-, JVM-, GPU-, and driver-sensitive")) {
       assertTrue(html.contains(text));
     }

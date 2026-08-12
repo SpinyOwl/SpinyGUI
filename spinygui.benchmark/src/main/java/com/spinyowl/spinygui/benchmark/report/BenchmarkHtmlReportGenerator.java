@@ -4,6 +4,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.spinyowl.spinygui.benchmark.identity.BenchmarkRunMetadata;
 import com.spinyowl.spinygui.benchmark.identity.BenchmarkRunMetadata.Artifact;
@@ -43,6 +44,9 @@ public final class BenchmarkHtmlReportGenerator {
   private static final DateTimeFormatter RUN_ID_FORMAT = DateTimeFormatter.ofPattern("yyyyMMdd-HHmmss-SSSSSSSSS");
   private static final Pattern CPU_FILE = Pattern.compile("text-calculation-(\\d{8}-\\d{6}-\\d{9}(?:-\\d+)?)\\.json");
   private static final Pattern RENDERING_FILE = Pattern.compile("nanovg-text-(\\d{8}-\\d{6}-\\d{9}(?:-\\d+)?)\\.json");
+  private static final Pattern DIAGNOSTIC_FILE = Pattern.compile("text-diagnostics-(\\d{8}-\\d{6}-\\d{9}(?:-\\d+)?)\\.json");
+  private static final String MANIFEST_FILE = "report-manifest.json";
+  private static final Gson REPORT_JSON = new GsonBuilder().serializeNulls().setPrettyPrinting().create();
 
   private BenchmarkHtmlReportGenerator() {
   }
@@ -52,51 +56,40 @@ public final class BenchmarkHtmlReportGenerator {
       throw new IllegalArgumentException(
           "Expected benchmark archive and HTML output paths, with an optional report-owned run ID");
     }
+    Path archive = Path.of(args[0]);
     Path output = Path.of(args[1]);
     Files.createDirectories(output.getParent());
-    Files.writeString(
-        output,
-        args.length == 2
-            ? generateArchive(Path.of(args[0]))
-            : render(loadArchive(Path.of(args[0]), args[2])));
+    ReportBundle bundle = args.length == 2 ? loadBundle(archive, null) : loadBundle(archive, args[2]);
+    Files.writeString(output, render(bundle.view()));
+    Files.writeString(output.resolveSibling(MANIFEST_FILE), manifestJson(bundle));
   }
 
   public static String generate(String cpuJson, String renderingJson) {
-    BenchmarkReportView view = toView(parseCpu(cpuJson), parseRendering(renderingJson), "Current input", List.of(), List.of());
+    BenchmarkReportView.ArchiveHealth health = new BenchmarkReportView.ArchiveHealth(1, 0, 0, List.of());
+    BenchmarkReportView view = toView(parseCpu(cpuJson), parseRendering(renderingJson), "Current input",
+        List.of(), List.of(), health);
     return render(view);
   }
 
   /** Loads complete archived pairs in chronological order and renders the newest pair as the current report. */
   public static String generateArchive(Path archive) throws IOException {
-    return render(loadArchive(archive));
+    return render(loadBundle(archive, null).view());
+  }
+
+  /** Generates the normalized, human-oriented archive manifest used beside the HTML report. */
+  public static String generateManifest(Path archive) throws IOException {
+    return manifestJson(loadBundle(archive, null));
   }
 
   /** Loads complete archived pairs in chronological order and selects the newest pair as current. */
   public static BenchmarkReportView loadArchive(Path archive) throws IOException {
-    List<ArchivedRun> runs = findCompleteRuns(archive);
-    if (runs.isEmpty()) throw new IllegalArgumentException("Benchmark archive contains no complete valid run pairs");
-    ArchivedRun current = runs.getLast();
-    List<BenchmarkReportView.ChartTrend> trends = new ArrayList<>(cpuTrends(runs));
-    trends.addAll(gpuTrends(runs));
-    return toView(current.cpu(), current.rendering(), current.identifier(), history(runs), trends);
+    return loadBundle(archive, null).view();
   }
 
   /** Loads exactly the fresh report-owned pair; stale eligible archive pairs are not substituted. */
   public static BenchmarkReportView loadArchive(Path archive, String expectedRunIdentifier)
       throws IOException {
-    ArchivedRun current =
-        findCompleteRuns(archive).stream()
-            .filter(run -> run.identifier().equals(expectedRunIdentifier))
-            .findFirst()
-            .orElseThrow(
-                () ->
-                    new IllegalArgumentException(
-                        "Benchmark archive contains no eligible complete pair for report-owned run ID: "
-                            + expectedRunIdentifier));
-    List<ArchivedRun> history = findCompleteRuns(archive);
-    List<BenchmarkReportView.ChartTrend> trends = new ArrayList<>(cpuTrends(history));
-    trends.addAll(gpuTrends(history));
-    return toView(current.cpu(), current.rendering(), current.identifier(), history(history), trends);
+    return loadBundle(archive, expectedRunIdentifier).view();
   }
 
   private static String render(BenchmarkReportView view) {
@@ -110,6 +103,24 @@ public final class BenchmarkHtmlReportGenerator {
     return output.toString();
   }
 
+  private static String manifestJson(ReportBundle bundle) {
+    BenchmarkReportView view = bundle.view();
+    ReportManifest manifest = new ReportManifest(
+        1,
+        bundle.currentTimestamp().toString(),
+        view.currentRunIdentifier(),
+        view.evidenceStatus(),
+        view.buildStatus(),
+        new ManifestSummary(
+            view.structuralValidationStatus(),
+            new ManifestMetric(view.slowestCpuName(), view.slowestCpuLatency(), "us/op"),
+            new ManifestMetric(view.largestAllocationName(), view.largestAllocation(), "B/op"),
+            new ManifestMetric("GPU p99", view.largestGpuP99(), "us"),
+            view.largestGpuBudget120()),
+        bundle.health());
+    return REPORT_JSON.toJson(manifest) + System.lineSeparator();
+  }
+
   private static String resource(String name) {
     try (InputStream stream = BenchmarkHtmlReportGenerator.class.getResourceAsStream(name)) {
       if (stream == null) throw new IllegalStateException("Missing benchmark report resource: " + name);
@@ -119,34 +130,106 @@ public final class BenchmarkHtmlReportGenerator {
     }
   }
 
-  private static List<ArchivedRun> findCompleteRuns(Path archive) throws IOException {
-    if (!Files.isDirectory(archive)) return List.of();
+  private static ReportBundle loadBundle(Path archive, String expectedRunIdentifier) throws IOException {
+    ArchiveScan scan = scanArchive(archive);
+    if (scan.runs().isEmpty()) {
+      throw new IllegalArgumentException("Benchmark archive contains no complete valid run pairs");
+    }
+    ArchivedRun current = expectedRunIdentifier == null
+        ? scan.runs().getLast()
+        : scan.runs().stream()
+            .filter(run -> run.identifier().equals(expectedRunIdentifier))
+            .findFirst()
+            .orElseThrow(() -> new IllegalArgumentException(
+                "Benchmark archive contains no eligible complete pair for report-owned run ID: "
+                    + expectedRunIdentifier));
+    List<BenchmarkReportView.ChartTrend> trends = new ArrayList<>(cpuTrends(scan.runs()));
+    trends.addAll(gpuTrends(scan.runs()));
+    BenchmarkReportView view = toView(current.cpu(), current.rendering(), current.identifier(),
+        history(scan.runs()), trends, scan.health());
+    return new ReportBundle(view, current.timestamp(), scan.health());
+  }
+
+  private static ArchiveScan scanArchive(Path archive) throws IOException {
+    if (!Files.isDirectory(archive)) {
+      return new ArchiveScan(List.of(), new BenchmarkReportView.ArchiveHealth(0, 0, 0, List.of()));
+    }
     Map<String, Path> cpuFiles = new HashMap<>();
     Map<String, Path> renderingFiles = new HashMap<>();
+    Map<String, Path> diagnosticFiles = new HashMap<>();
     try (Stream<Path> files = Files.list(archive)) {
-      files.filter(Files::isRegularFile).forEach(file -> collectFile(file, CPU_FILE, cpuFiles));
-    }
-    try (Stream<Path> files = Files.list(archive)) {
-      files.filter(Files::isRegularFile).forEach(file -> collectFile(file, RENDERING_FILE, renderingFiles));
+      files.filter(Files::isRegularFile).forEach(file -> {
+        collectFile(file, CPU_FILE, cpuFiles);
+        collectFile(file, RENDERING_FILE, renderingFiles);
+        collectFile(file, DIAGNOSTIC_FILE, diagnosticFiles);
+      });
     }
     List<ArchivedRun> runs = new ArrayList<>();
-    for (Map.Entry<String, Path> cpu : cpuFiles.entrySet()) {
-      Path rendering = renderingFiles.get(cpu.getKey());
-      if (rendering == null) continue;
+    List<BenchmarkReportView.ArchiveArtifact> artifacts = new ArrayList<>();
+    Set<String> timingIdentifiers = new TreeSet<>();
+    timingIdentifiers.addAll(cpuFiles.keySet());
+    timingIdentifiers.addAll(renderingFiles.keySet());
+    for (String identifierText : timingIdentifiers) {
+      Path cpu = cpuFiles.get(identifierText);
+      Path rendering = renderingFiles.get(identifierText);
+      if (cpu == null) {
+        artifacts.add(archiveArtifact(rendering, identifierText, "rendering", "excluded",
+            "Missing CPU artifact with the same run ID"));
+        continue;
+      }
+      if (rendering == null) {
+        artifacts.add(archiveArtifact(cpu, identifierText, "cpu", "excluded",
+            "Missing rendering artifact with the same run ID"));
+        continue;
+      }
       try {
-        RunIdentifier identifier = parseIdentifier(cpu.getKey());
-        if (identifier == null) continue;
-        List<CpuResult> cpuResults = parseCpu(Files.readString(cpu.getValue()));
+        RunIdentifier identifier = parseIdentifier(identifierText);
+        if (identifier == null) {
+          artifacts.add(archiveArtifact(cpu, identifierText, "cpu", "excluded", "Invalid sortable run ID"));
+          artifacts.add(archiveArtifact(rendering, identifierText, "rendering", "excluded", "Invalid sortable run ID"));
+          continue;
+        }
+        List<CpuResult> cpuResults = parseCpu(Files.readString(cpu));
         RenderingResult renderingResult = parseRendering(Files.readString(rendering));
-        if (!baselineEligiblePair(cpu.getKey(), cpuResults, renderingResult)) continue;
-        runs.add(new ArchivedRun(cpu.getKey(), identifier.timestamp(), identifier.sequence(),
-            cpuResults, renderingResult));
-      } catch (RuntimeException ignored) {
-        // Ignore malformed pairs so a partial local run cannot prevent report regeneration.
+        if (!baselineEligiblePair(identifierText, cpuResults, renderingResult)) {
+          artifacts.add(archiveArtifact(cpu, identifierText, "cpu", "excluded",
+              "Pair is not eligible for timing/allocation history"));
+          artifacts.add(archiveArtifact(rendering, identifierText, "rendering", "excluded",
+              "Pair is not eligible for timing/allocation history"));
+          continue;
+        }
+        runs.add(new ArchivedRun(identifierText, identifier.timestamp(), identifier.sequence(), cpuResults, renderingResult));
+        artifacts.add(archiveArtifact(cpu, identifierText, "cpu", "included", "Eligible complete timing pair"));
+        artifacts.add(archiveArtifact(rendering, identifierText, "rendering", "included", "Eligible complete timing pair"));
+      } catch (RuntimeException failure) {
+        String reason = "Invalid timing pair: " + failureReason(failure);
+        artifacts.add(archiveArtifact(cpu, identifierText, "cpu", "excluded", reason));
+        artifacts.add(archiveArtifact(rendering, identifierText, "rendering", "excluded", reason));
       }
     }
+    for (Map.Entry<String, Path> diagnostic : diagnosticFiles.entrySet()) {
+      artifacts.add(archiveArtifact(diagnostic.getValue(), diagnostic.getKey(), "diagnostics", "separate-evidence",
+          "Counter diagnostics are not timing/allocation history"));
+    }
     runs.sort(Comparator.comparing(ArchivedRun::timestamp).thenComparingInt(ArchivedRun::sequence));
-    return runs;
+    artifacts.sort(Comparator.comparing(BenchmarkReportView.ArchiveArtifact::fileName));
+    int excludedTiming = (int) artifacts.stream()
+        .filter(artifact -> artifact.status().equals("excluded") && !artifact.kind().equals("diagnostics"))
+        .count();
+    BenchmarkReportView.ArchiveHealth health = new BenchmarkReportView.ArchiveHealth(
+        runs.size(), excludedTiming, diagnosticFiles.size(), List.copyOf(artifacts));
+    return new ArchiveScan(List.copyOf(runs), health);
+  }
+
+  private static BenchmarkReportView.ArchiveArtifact archiveArtifact(Path file, String identifier,
+      String kind, String status, String reason) {
+    return new BenchmarkReportView.ArchiveArtifact(
+        file.getFileName().toString(), identifier, kind, status, reason);
+  }
+
+  private static String failureReason(RuntimeException failure) {
+    String message = failure.getMessage();
+    return message == null || message.isBlank() ? failure.getClass().getSimpleName() : message;
   }
 
   private static void collectFile(Path file, Pattern pattern, Map<String, Path> target) {
@@ -226,7 +309,8 @@ public final class BenchmarkHtmlReportGenerator {
   }
 
   private static BenchmarkReportView toView(List<CpuResult> cpu, RenderingResult rendering, String currentRunIdentifier,
-      List<BenchmarkReportView.HistoryRun> history, List<BenchmarkReportView.ChartTrend> trends) {
+      List<BenchmarkReportView.HistoryRun> history, List<BenchmarkReportView.ChartTrend> trends,
+      BenchmarkReportView.ArchiveHealth archiveHealth) {
     List<BenchmarkReportView.CpuRow> cpuRows = new ArrayList<>();
     List<BenchmarkReportView.CpuChartDatum> cpuChartData = new ArrayList<>();
     for (CpuResult result : cpu) {
@@ -269,8 +353,19 @@ public final class BenchmarkHtmlReportGenerator {
                 key, rendering.environment().get(key).getAsString()));
       }
     }
-    return new BenchmarkReportView(cpuRows, sceneRows, environment, comparability(cpu, rendering),
-        implementation(cpu, rendering),
+    List<BenchmarkReportView.MetadataValue> comparability = comparability(cpu, rendering);
+    List<BenchmarkReportView.MetadataValue> implementation = implementation(cpu, rendering);
+    String evidenceStatus = cpu.stream().allMatch(result -> result.comparability().available())
+        && rendering.scenes().stream().allMatch(scene -> scene.comparability().available())
+            ? "Complete identity and comparability metadata"
+            : "Some results cannot be compared safely";
+    String buildStatus = implementation.stream()
+        .filter(entry -> entry.key().equals("implementationRevision"))
+        .map(BenchmarkReportView.MetadataValue::value)
+        .findFirst()
+        .orElse("not reported");
+    return new BenchmarkReportView(cpuRows, sceneRows, environment, comparability,
+        implementation, evidenceStatus, buildStatus, archiveHealth,
         rendering.structuralValidation().status(), slowest.name(), number(slowest.latency()), allocating.name(), number(allocating.allocation()),
         fragmentCount(largestGpu.fragments()), number(largestGpu.gpu().p99()), percent(largestGpu.gpu().p99() / BUDGET_120_HZ_MICROS * 100),
         currentRunIdentifier, history, chartPayload(cpuChartData, renderingChartData, history, trends));
@@ -939,6 +1034,25 @@ public final class BenchmarkHtmlReportGenerator {
   }
 
   private record Latency(double median, double p95, double p99, double budget60, double budget120) {
+  }
+
+  private record ArchiveScan(List<ArchivedRun> runs, BenchmarkReportView.ArchiveHealth health) {
+  }
+
+  private record ReportBundle(BenchmarkReportView view, LocalDateTime currentTimestamp,
+      BenchmarkReportView.ArchiveHealth health) {
+  }
+
+  private record ReportManifest(int schemaVersion, String generatedAtLocal, String currentRunIdentifier,
+      String evidenceStatus, String buildStatus, ManifestSummary currentSummary,
+      BenchmarkReportView.ArchiveHealth archive) {
+  }
+
+  private record ManifestSummary(String structuralValidation, ManifestMetric slowestCpuOperation,
+      ManifestMetric largestAllocation, ManifestMetric largestGpuP99, String largestGpuBudget120) {
+  }
+
+  private record ManifestMetric(String label, String value, String unit) {
   }
 
   private record ArchivedRun(String identifier, LocalDateTime timestamp, int sequence, List<CpuResult> cpu, RenderingResult rendering) {

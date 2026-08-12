@@ -7,6 +7,7 @@ public record BenchmarkReportView(
     List<CpuRow> cpuRows, List<SceneRow> sceneRows,
     List<EnvironmentValue> environment, List<MetadataValue> comparability,
     List<MetadataValue> implementation,
+    String evidenceStatus, String buildStatus, ArchiveHealth archiveHealth,
     String structuralValidationStatus, String slowestCpuName, String slowestCpuLatency,
     String largestAllocationName, String largestAllocation, String largestGpuFragments, String largestGpuP99,
     String largestGpuBudget120, String currentRunIdentifier, List<HistoryRun> history, ChartPayload charts) {
@@ -18,6 +19,10 @@ public record BenchmarkReportView(
       List<MetadataValue> comparability) { }
   public record EnvironmentValue(String key, String value) { }
   public record MetadataValue(String key, String value) { }
+  public record ArchiveHealth(int eligibleRunCount, int excludedTimingArtifactCount,
+      int diagnosticArtifactCount, List<ArchiveArtifact> artifacts) { }
+  public record ArchiveArtifact(String fileName, String runIdentifier, String kind,
+      String status, String reason) { }
   public record HistoryRun(String identifier, List<MetadataValue> comparability,
       List<MetadataValue> implementation,
       List<CpuHistoryRow> cpuRows, List<SceneHistoryRow> sceneRows) { }

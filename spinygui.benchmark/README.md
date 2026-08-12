@@ -19,8 +19,8 @@ stages in order:
 
 1. Runs the CPU JMH benchmarks.
 2. Runs the NanoVG rendering benchmark.
-3. Generates `spinygui.benchmark/reports/index.html` from the newly captured pair and the eligible
-   local history.
+3. Generates `spinygui.benchmark/reports/index.html` and `report-manifest.json` from the newly
+   captured pair and the eligible local history.
 
 The two JSON files in the pair share a reserved run ID:
 
@@ -31,6 +31,10 @@ Every invocation executes the producers and report generator afresh. The report 
 HTML file: its styles, Chart.js 4.5.1, and report JavaScript are embedded, so it can be opened
 directly from disk without a server or network connection.
 
+`report-manifest.json` is a normalized, human-oriented summary of the selected run, current
+hotspots, archive eligibility, excluded timing artifacts, and separate diagnostic evidence. The
+canonical JMH, rendering, and diagnostic JSON artifacts remain unchanged.
+
 The `reports/` archive is machine-local and ignored by Git. `clean` does not delete it; remove old
 files manually when local retention is no longer useful. The report keeps raw files on disk but uses
 only complete, valid, comparable paired runs for its accepted history and signed deltas.
@@ -39,10 +43,11 @@ only complete, valid, comparable paired runs for its accepted history and signed
 
 | Target | Use it for | Output |
 | --- | --- | --- |
-| `benchmarkReport` | Recommended complete CPU/rendering run and HTML report | Paired CPU/rendering JSON plus `reports/index.html` |
+| `benchmarkReport` | Recommended complete CPU/rendering run and report | Paired CPU/rendering JSON plus `reports/index.html` and `reports/report-manifest.json` |
 | `jmhCpu` | Standalone CPU timing/allocation investigation | `reports/text-calculation-<run-id>.json` |
 | `jmhRendering` | Standalone NanoVG rendering investigation | `reports/nanovg-text-<run-id>.json` |
 | `counterDiagnostics` | Untimed CPU and renderer structural counters | `reports/text-diagnostics-<run-id>.json` |
+| `generateBenchmarkReport` | Regenerate the report from the existing local archive | `reports/index.html` and `reports/report-manifest.json` |
 | `localImageComparison` | Optional, environment-specific renderer image validation | `build/local-image-comparison/` |
 | `reserveBenchmarkRunId` | Print and briefly reserve a fresh archive ID without running benchmarks | Console output only |
 | `precompileJte` | Compile report templates as a build/debugging step | Generated classes under `build/` |
@@ -55,8 +60,8 @@ List the registered tasks and their Gradle descriptions with:
 
 `benchmarkReportCpu` and `benchmarkReportRendering` also appear in that list. They are ordered,
 report-owned producer stages used by `benchmarkReport`; normally, do not invoke them directly.
-There is currently no report-only target that regenerates `index.html` without capturing a fresh
-paired run.
+Use `generateBenchmarkReport` when you want to refresh the report and manifest without capturing a
+new paired run.
 
 Timed benchmarks and optional image comparison are deliberately not part of `test` or `check`.
 Run the benchmark module's automated tests separately with:
