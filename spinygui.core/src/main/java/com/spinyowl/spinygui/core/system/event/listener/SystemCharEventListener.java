@@ -2,6 +2,7 @@ package com.spinyowl.spinygui.core.system.event.listener;
 
 import com.spinyowl.spinygui.core.event.CharEvent;
 import com.spinyowl.spinygui.core.event.processor.EventProcessor;
+import com.spinyowl.spinygui.core.event.processor.InputProcessingBatch;
 import com.spinyowl.spinygui.core.node.Frame;
 import com.spinyowl.spinygui.core.node.InputElement;
 import com.spinyowl.spinygui.core.node.TextareaElement;
@@ -47,19 +48,41 @@ public class SystemCharEventListener extends AbstractSystemEventListener<SystemC
    */
   @Override
   public void process(@NonNull SystemCharEvent event, @NonNull Frame frame) {
+    processInternal(event, frame, null);
+  }
+
+  @Override
+  public void processWithImpact(
+      @NonNull SystemCharEvent event,
+      @NonNull Frame frame,
+      @NonNull InputProcessingBatch batch) {
+    processInternal(event, frame, batch);
+  }
+
+  private void processInternal(
+      SystemCharEvent event, Frame frame, InputProcessingBatch batch) {
     var focusedElement = frame.getFocusedElement();
     if (focusedElement == null) {
       return;
     }
 
+    boolean changed = false;
     if (focusedElement instanceof InputElement input) {
-      if (TEXT_INPUT_BEHAVIOR.insertPrintable(input, event.codepoint())) {
+      changed = TEXT_INPUT_BEHAVIOR.insertPrintable(input, event.codepoint());
+      if (changed) {
         ensureCaretVisible(input);
       }
     } else if (focusedElement instanceof TextareaElement textarea) {
-      if (TEXTAREA_BEHAVIOR.insertPrintable(textarea, event.codepoint())) {
+      changed = TEXTAREA_BEHAVIOR.insertPrintable(textarea, event.codepoint());
+      if (changed) {
         ensureCaretVisible(textarea);
       }
+    }
+    if (changed) {
+      batchMarkKnownEffect(batch);
+    }
+    if (focusedElement.hasListenersFor(CharEvent.class)) {
+      batchMarkUnknownFallback(batch);
     }
 
     eventProcessor.push(
@@ -69,6 +92,18 @@ public class SystemCharEventListener extends AbstractSystemEventListener<SystemC
             .timestamp(timeService.currentTime())
             .input(TextUtil.cpToStr(event.codepoint()))
             .build());
+  }
+
+  private void batchMarkKnownEffect(InputProcessingBatch batch) {
+    if (batch != null) {
+      batch.markKnownEffect();
+    }
+  }
+
+  private void batchMarkUnknownFallback(InputProcessingBatch batch) {
+    if (batch != null) {
+      batch.markUnknownFallback();
+    }
   }
 
   private void ensureCaretVisible(InputElement input) {

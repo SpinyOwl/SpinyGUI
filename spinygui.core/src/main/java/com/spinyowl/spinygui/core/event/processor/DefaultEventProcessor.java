@@ -10,6 +10,7 @@ public class DefaultEventProcessor implements EventProcessor {
 
   private Queue<Event> first = new LinkedList<>();
   private Queue<Event> second = new LinkedList<>();
+  private final InputProcessingCounters inputProcessingCounters = new InputProcessingCounters();
 
   @Override
   public void push(Event event) {
@@ -19,18 +20,37 @@ public class DefaultEventProcessor implements EventProcessor {
   @Override
   @SuppressWarnings({"rawtypes", "unchecked"})
   public void processEvents() {
+    processEventsWithResult();
+  }
+
+  @Override
+  @SuppressWarnings({"rawtypes", "unchecked"})
+  public InputProcessingResult processEventsWithResult() {
+    InputProcessingBatch batch = new InputProcessingBatch();
     if (first.isEmpty()) {
-      return;
+      inputProcessingCounters.record(batch);
+      return batch.result();
     }
 
     swap();
     for (var event = second.poll(); event != null; event = second.poll()) {
       EventTarget target = event.target();
       var listeners = target.getListeners(event.getClass());
-      for (EventListener listener : listeners) {
-        listener.process(event);
+      if (listeners.isEmpty()) {
+        batch.markUnknownFallback();
+      } else {
+        for (EventListener listener : listeners) {
+          listener.processWithImpact(event, batch);
+        }
       }
     }
+    inputProcessingCounters.record(batch);
+    return batch.result();
+  }
+
+  @Override
+  public InputProcessingCounters.Snapshot inputProcessingCounters() {
+    return inputProcessingCounters.snapshot();
   }
 
   private void swap() {

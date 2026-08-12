@@ -54,6 +54,7 @@ abstract class BenchmarkRunIdService : BuildService<BenchmarkRunIdParameters>, A
             || archive.resolve("nanovg-text-$identifier.json").exists()
             || archive.resolve("text-diagnostics-$identifier.json").exists()
             || archive.resolve("frame-baseline-$identifier.json").exists()
+            || archive.resolve("input-impact-$identifier.json").exists()
 
     override fun close() {
         reservation?.delete()
@@ -222,6 +223,21 @@ tasks.register<JavaExec>("frameBaseline") {
             providers.gradleProperty("frameBaselineProfiles").orElse("true").get())
     }
     doFirst(TimestampedReportArgumentAction(benchmarkArchive.asFile, "frame-baseline", null, benchmarkRunId, "paired-report"))
+    freshBenchmarkRun()
+}
+
+tasks.register<JavaExec>("inputImpactEvidence") {
+    group = "benchmark"
+    description = "Captures matched E6/M1.5 input-impact and refresh-request evidence."
+    dependsOn("classes")
+    classpath = sourceSets["main"].runtimeClasspath
+    mainClass.set("com.spinyowl.spinygui.benchmark.frame.InputImpactEvidenceMain")
+    doFirst {
+        systemProperty(
+            "spinygui.e6.input.durationMillis",
+            providers.gradleProperty("inputImpactDurationMillis").orElse("1000").get())
+    }
+    doFirst(TimestampedReportArgumentAction(benchmarkArchive.asFile, "input-impact", null, benchmarkRunId, "paired-report"))
     freshBenchmarkRun()
 }
 

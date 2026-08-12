@@ -19,16 +19,16 @@ allowed to skip host style/layout refresh.
 **Purpose:** Make `UNCHANGED` a proof and keep actual or unknown effects on the safe full-refresh path.
 **Depends on:** E6/M1. **Enables:** T2. **Parallelizable with:** None.
 **Changes:**
-- [ ] Add or evolve the event-processor API with two semantic outcomes: proven unchanged and full
+- [x] Add or evolve the event-processor API with two semantic outcomes: proven unchanged and full
   refresh required, with unknown folded into the latter.
-- [ ] Define batch aggregation so any effect/unknown dominates unchanged events.
-- [ ] Preserve source/binary compatibility where required, or provide an explicit migration adapter
+- [x] Define batch aggregation so any effect/unknown dominates unchanged events.
+- [x] Preserve source/binary compatibility where required, or provide an explicit migration adapter
   whose behavior remains full-refresh-compatible.
-- [ ] Keep the contract in core event/input ownership without backend or host dependencies.
+- [x] Keep the contract in core event/input ownership without backend or host dependencies.
 **Acceptance Checks:**
-- [ ] An empty or fully proven-no-impact batch reports unchanged.
-- [ ] Any mixed batch containing an effect or unknown reports full refresh required.
-- [ ] Legacy callers cannot accidentally acquire optimistic skip behavior.
+- [x] An empty or fully proven-no-impact batch reports unchanged.
+- [x] Any mixed batch containing an effect or unknown reports full refresh required.
+- [x] Legacy callers cannot accidentally acquire optimistic skip behavior.
 **Risks:** A nullable, tri-state, or implicitly defaulted result could make unknown input appear safe.
 
 ### T2: Define Effect Sources, Fallback, and Observability
@@ -37,16 +37,16 @@ allowed to skip host style/layout refresh.
 per-event logs.
 **Depends on:** T1. **Enables:** P2 and P3. **Parallelizable with:** None.
 **Changes:**
-- [ ] Classify hover path, focus, pressed state, scroll offsets, drag/capture, text/caret/selection,
+- [x] Classify hover path, focus, pressed state, scroll offsets, drag/capture, text/caret/selection,
   shortcut actions, DOM/style/class changes, and arbitrary listener dispatch as effects or unknowns.
-- [ ] Define how internal listeners report known effects and how uninstrumented application listeners
+- [x] Define how internal listeners report known effects and how uninstrumented application listeners
   force the fallback.
-- [ ] Add counters for proven unchanged, known effect, and unknown fallback at processing-batch scope.
-- [ ] Add reference tests that compare optimized decisions with forced full-refresh execution.
+- [x] Add counters for proven unchanged, known effect, and unknown fallback at processing-batch scope.
+- [x] Add reference tests that compare optimized decisions with forced full-refresh execution.
 **Acceptance Checks:**
-- [ ] Every current system event listener has an explicit conservative classification rule.
-- [ ] Unclassified listeners/events cannot produce unchanged.
-- [ ] Counters identify why refresh was retained without logging each frame or event.
+- [x] Every current system event listener has an explicit conservative classification rule.
+- [x] Unclassified listeners/events cannot produce unchanged.
+- [x] Counters identify why refresh was retained without logging each frame or event.
 **Risks:** State changes outside the event processor can escape classification; those paths remain
 full-refresh-required until ownership is explicit.
 
@@ -55,6 +55,18 @@ full-refresh-required until ownership is explicit.
 - Run core event-processor and system-listener tests.
 - Add mixed-batch, legacy-call, unknown-event, and arbitrary-listener cases.
 - Review module exports if the host-facing result becomes public API.
+
+## Implemented Contract
+
+- `EventProcessor.processEventsWithResult()` and `SystemEventProcessor.processEventsWithResult()` expose
+  the binary result while the existing `processEvents()` methods remain force-full-compatible.
+- `InputProcessingBatch` uses `PROVEN_UNCHANGED`, `KNOWN_EFFECT`, and `UNKNOWN_FALLBACK` internally;
+  only the first maps to `UNCHANGED`.
+- Existing system and GUI listeners dispatch through conservative default adapters. Legacy or
+  uninstrumented listeners mark `UNKNOWN_FALLBACK`; future pointer and keyboard phases must override
+  the adapter only when they can prove no presentation effect.
+- `InputProcessingCounters` records one cumulative decision per processing batch without event-level
+  logging.
 
 ## Dependency Graph
 

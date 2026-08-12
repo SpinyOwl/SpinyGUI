@@ -117,7 +117,8 @@ public record BenchmarkRunMetadata(
     CPU("cpu"),
     RENDERING("rendering"),
     COUNTER_DIAGNOSTICS("counter-diagnostics"),
-    FRAME_BASELINE("frame-baseline");
+    FRAME_BASELINE("frame-baseline"),
+    INPUT_IMPACT("input-impact");
 
     private final String json;
 

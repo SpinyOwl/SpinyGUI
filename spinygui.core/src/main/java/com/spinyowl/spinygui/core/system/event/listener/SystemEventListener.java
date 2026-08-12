@@ -1,5 +1,6 @@
 package com.spinyowl.spinygui.core.system.event.listener;
 
+import com.spinyowl.spinygui.core.event.processor.InputProcessingBatch;
 import com.spinyowl.spinygui.core.node.Frame;
 import com.spinyowl.spinygui.core.system.event.SystemEvent;
 import lombok.NonNull;
@@ -18,4 +19,16 @@ public interface SystemEventListener<E extends SystemEvent> {
    * @param frame target frame for system event.
    */
   void process(@NonNull E event, @NonNull Frame frame);
+
+  /**
+   * Dispatch adapter for conservative input-impact reporting.
+   *
+   * <p>Existing listeners remain source-compatible and are treated as unknown. A listener must
+   * explicitly override this method before its dispatch can contribute a proven unchanged result.
+   */
+  default void processWithImpact(
+      @NonNull E event, @NonNull Frame frame, @NonNull InputProcessingBatch batch) {
+    process(event, frame);
+    batch.markUnknownFallback();
+  }
 }

@@ -11,7 +11,8 @@ public final class BenchmarkInvocationMetadata {
   public static BenchmarkRunMetadata timed(String runId, Artifact artifact, Pairing pairing) {
     if (artifact != Artifact.CPU
         && artifact != Artifact.RENDERING
-        && artifact != Artifact.FRAME_BASELINE) {
+        && artifact != Artifact.FRAME_BASELINE
+        && artifact != Artifact.INPUT_IMPACT) {
       throw new IllegalArgumentException(
           "Timed benchmark artifacts must be CPU, rendering, or frame baseline");
     }

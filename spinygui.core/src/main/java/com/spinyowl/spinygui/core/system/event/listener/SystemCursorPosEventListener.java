@@ -5,9 +5,11 @@ import static com.spinyowl.spinygui.core.input.MouseButton.RIGHT;
 
 import com.spinyowl.spinygui.core.event.CursorEnterEvent;
 import com.spinyowl.spinygui.core.event.CursorExitEvent;
+import com.spinyowl.spinygui.core.event.MouseClickEvent;
 import com.spinyowl.spinygui.core.event.MouseDragEvent;
 import com.spinyowl.spinygui.core.event.ScrollEvent;
 import com.spinyowl.spinygui.core.event.processor.EventProcessor;
+import com.spinyowl.spinygui.core.event.processor.InputProcessingBatch;
 import com.spinyowl.spinygui.core.input.MouseService;
 import com.spinyowl.spinygui.core.input.MouseService.CursorPositions;
 import com.spinyowl.spinygui.core.node.Element;
@@ -25,7 +27,10 @@ import com.spinyowl.spinygui.core.system.input.TextareaMouseCaretBehavior;
 import com.spinyowl.spinygui.core.system.input.TextareaViewportBehavior;
 import com.spinyowl.spinygui.core.time.TimeService;
 import com.spinyowl.spinygui.core.util.NodeUtilities;
+import java.util.ArrayList;
+import java.util.IdentityHashMap;
 import java.util.List;
+import java.util.Map;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.NonNull;
@@ -44,6 +49,8 @@ public class SystemCursorPosEventListener
   @EqualsAndHashCode.Exclude
   private final TextareaMouseCaretBehavior textareaMouseCaretBehavior;
   @EqualsAndHashCode.Exclude private final TextareaViewportBehavior textareaViewportBehavior;
+  @EqualsAndHashCode.Exclude
+  private final Map<Frame, HitPathState> hitPaths = new IdentityHashMap<>();
 
   @Builder
   public SystemCursorPosEventListener(
@@ -76,22 +83,55 @@ public class SystemCursorPosEventListener
    */
   @Override
   public void process(@NonNull SystemCursorPosEvent event, @NonNull Frame frame) {
+    processInternal(event, frame, null);
+  }
+
+  @Override
+  public void processWithImpact(
+      @NonNull SystemCursorPosEvent event,
+      @NonNull Frame frame,
+      @NonNull InputProcessingBatch batch) {
+    processInternal(event, frame, batch);
+  }
+
+  private void processInternal(
+      SystemCursorPosEvent event, Frame frame, InputProcessingBatch batch) {
     Vector2fc current = new Vector2f(event.posX(), event.posY());
     Vector2fc previous = mouseService.getCursorPositions(frame).current();
     mouseService.setCursorPositions(frame, new CursorPositions(current, previous));
 
     var focusedElement = frame.getFocusedElement();
+    HitPathState hitPath = hitPaths.computeIfAbsent(frame, ignored -> new HitPathState());
+    boolean sameHitPath = hitPath.refresh(frame, current, previous);
 
     // Generate enter / exit events.
-    generateEnterAndExitEvents(frame, current, previous);
+    if (!sameHitPath) {
+      generateEnterEvent(frame, current, hitPath.current());
+      generateExitEvent(frame, current, hitPath.current(), hitPath.previous());
+      markKnownEffect(batch);
+    }
+    if (hasPointerListeners(hitPath.current())) {
+      markUnknownFallback(batch);
+    }
+    hitPath.advance();
 
     if (scrollbarInteraction.dragging() && mouseService.pressed(LEFT)) {
+      markUnknownFallback(batch);
       pushScrollEvent(frame, scrollbarInteraction.dragTo(current));
       return;
     }
 
     boolean leftPressed = mouseService.pressed(LEFT);
     boolean rightPressed = mouseService.pressed(RIGHT);
+    if (scrollbarInteraction.dragging()) {
+      markUnknownFallback(batch);
+    }
+    if (leftPressed || rightPressed) {
+      markKnownEffect(batch);
+    }
+    if (focusedElement != null && focusedElement.pressed()) {
+      markUnknownFallback(batch);
+    }
 
     // Generate drag events.
     if (focusedElement != null && (leftPressed || rightPressed)) {
@@ -118,6 +158,31 @@ public class SystemCursorPosEventListener
     }
   }
 
+  private boolean hasPointerListeners(List<Element> path) {
+    for (Element element : path) {
+      if (element.hasListenersFor(CursorEnterEvent.class)
+          || element.hasListenersFor(CursorExitEvent.class)
+          || element.hasListenersFor(MouseDragEvent.class)
+          || element.hasListenersFor(MouseClickEvent.class)
+          || element.hasListenersFor(ScrollEvent.class)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  private void markKnownEffect(InputProcessingBatch batch) {
+    if (batch != null) {
+      batch.markKnownEffect();
+    }
+  }
+
+  private void markUnknownFallback(InputProcessingBatch batch) {
+    if (batch != null) {
+      batch.markUnknownFallback();
+    }
+  }
+
   private void pushScrollEvent(Frame frame, ScrollDelta delta) {
     if (!delta.changed()) {
       return;
@@ -130,15 +195,6 @@ public class SystemCursorPosEventListener
             .offsetX(delta.x())
             .offsetY(delta.y())
             .build());
-  }
-
-  private void generateEnterAndExitEvents(Frame frame, Vector2fc current, Vector2fc previous) {
-    var currentTargetElements = NodeUtilities.getTargetElementList(frame, current);
-    var prevTargetElements = NodeUtilities.getTargetElementList(frame, previous);
-    if (!currentTargetElements.equals(prevTargetElements)) {
-      generateEnterEvent(frame, current, currentTargetElements);
-      generateExitEvent(frame, current, currentTargetElements, prevTargetElements);
-    }
   }
 
   private void generateEnterEvent(
@@ -166,8 +222,10 @@ public class SystemCursorPosEventListener
       List<Element> currentTargetElements,
       List<Element> previousTargetElements) {
 
-    previousTargetElements.removeAll(currentTargetElements);
     for (Element prevTarget : previousTargetElements) {
+      if (currentTargetElements.contains(prevTarget)) {
+        continue;
+      }
       Vector2f intersection = prevTarget.box().borderBoxPosition().sub(current).negate();
       CursorExitEvent exitEvent =
           CursorExitEvent.builder()
@@ -179,6 +237,35 @@ public class SystemCursorPosEventListener
               .build();
       eventProcessor.push(exitEvent);
       prevTarget.hovered(false);
+    }
+  }
+
+  private static final class HitPathState {
+    private List<Element> current = new ArrayList<>();
+    private List<Element> previous = new ArrayList<>();
+    private boolean initialized;
+
+    private boolean refresh(Frame frame, Vector2fc currentPoint, Vector2fc previousPoint) {
+      if (!initialized) {
+        NodeUtilities.replaceTargetElementList(frame, previousPoint, previous);
+        initialized = true;
+      }
+      NodeUtilities.replaceTargetElementList(frame, currentPoint, current);
+      return current.equals(previous);
+    }
+
+    private List<Element> current() {
+      return current;
+    }
+
+    private List<Element> previous() {
+      return previous;
+    }
+
+    private void advance() {
+      List<Element> path = previous;
+      previous = current;
+      current = path;
     }
   }
 }

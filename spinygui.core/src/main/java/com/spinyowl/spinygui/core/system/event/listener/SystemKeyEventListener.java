@@ -4,6 +4,7 @@ import com.spinyowl.spinygui.core.clipboard.Clipboard;
 import com.spinyowl.spinygui.core.event.ActionEvent;
 import com.spinyowl.spinygui.core.event.KeyboardEvent;
 import com.spinyowl.spinygui.core.event.processor.EventProcessor;
+import com.spinyowl.spinygui.core.event.processor.InputProcessingBatch;
 import com.spinyowl.spinygui.core.input.KeyAction;
 import com.spinyowl.spinygui.core.input.KeyCode;
 import com.spinyowl.spinygui.core.input.Keyboard;
@@ -65,56 +66,100 @@ public class SystemKeyEventListener extends AbstractSystemEventListener<SystemKe
    */
   @Override
   public void process(@NonNull SystemKeyEvent event, @NonNull Frame frame) {
+    processInternal(event, frame, null);
+  }
+
+  @Override
+  public void processWithImpact(
+      @NonNull SystemKeyEvent event,
+      @NonNull Frame frame,
+      @NonNull InputProcessingBatch batch) {
+    processInternal(event, frame, batch);
+  }
+
+  private void processInternal(
+      SystemKeyEvent event, Frame frame, InputProcessingBatch batch) {
     var element = frame.getFocusedElement();
-    if (element != null) {
-
-      int keyCode = event.keyCode();
-      var keyCodeObject = keyboard.layout().keyCode(keyCode);
-      if (keyCodeObject == null) {
-        keyCodeObject = KeyCode.UNKNOWN;
+    if (element == null && batch == null) {
+      return;
+    }
+    int keyCode = event.keyCode();
+    var keyCodeObject = keyboard.layout().keyCode(keyCode);
+    if (keyCodeObject == null) {
+      keyCodeObject = KeyCode.UNKNOWN;
+      markUnknownFallback(batch);
+    } else if (batch != null) {
+      var shortcutRegistry = keyboard.shortcuts();
+      if (shortcutRegistry == null
+          || shortcutRegistry.mayConsume(keyCodeObject, event.mappedMods())) {
+        markUnknownFallback(batch);
       }
-      var key = new KeyboardKey(keyCodeObject, keyCode, event.scancode());
-      var action = getAction(event);
+    }
+    if (element == null) {
+      return;
+    }
 
-      if (element instanceof InputElement input) {
-        if (input.buttonInput()) {
-          if (BUTTON_BEHAVIOR.handleKey(input, keyCodeObject, action)) {
-            generateActionEvent(frame, input);
-          }
-        } else {
-          boolean control = event.mods().contains(SystemKeyMod.CONTROL);
-          boolean shift = event.mods().contains(SystemKeyMod.SHIFT);
-          boolean changed =
-              control && isTextInputShortcut(keyCodeObject)
-                  ? TEXT_INPUT_BEHAVIOR.handleShortcut(
-                      input, keyCodeObject, action, clipboardAdapter())
-                  : TEXT_INPUT_BEHAVIOR.handleKey(input, keyCodeObject, action, shift, control);
-          if (changed) {
-            ensureCaretVisible(input);
-          }
+    var key = new KeyboardKey(keyCodeObject, keyCode, event.scancode());
+    var action = getAction(event);
+
+    if (element instanceof InputElement input) {
+      if (input.buttonInput()) {
+        if (BUTTON_BEHAVIOR.handleKey(input, keyCodeObject, action)) {
+          markKnownEffect(batch);
+          generateActionEvent(frame, input);
         }
-      } else if (element instanceof ButtonElement button) {
-        if (BUTTON_BEHAVIOR.handleKey(button, keyCodeObject, action)) {
-          generateActionEvent(frame, button);
-        }
-      } else if (element instanceof TextareaElement textarea) {
+      } else {
+        boolean control = event.mods().contains(SystemKeyMod.CONTROL);
+        boolean shift = event.mods().contains(SystemKeyMod.SHIFT);
         boolean changed =
-            textareaBehavior.handleKey(
-                textarea, keyCodeObject, action, event.mods().contains(SystemKeyMod.SHIFT));
+            control && isTextInputShortcut(keyCodeObject)
+                ? TEXT_INPUT_BEHAVIOR.handleShortcut(
+                    input, keyCodeObject, action, clipboardAdapter())
+                : TEXT_INPUT_BEHAVIOR.handleKey(input, keyCodeObject, action, shift, control);
         if (changed) {
-          ensureCaretVisible(textarea);
+          markKnownEffect(batch);
+          ensureCaretVisible(input);
         }
       }
+    } else if (element instanceof ButtonElement button) {
+      if (BUTTON_BEHAVIOR.handleKey(button, keyCodeObject, action)) {
+        markKnownEffect(batch);
+        generateActionEvent(frame, button);
+      }
+    } else if (element instanceof TextareaElement textarea) {
+      boolean changed =
+          textareaBehavior.handleKey(
+              textarea, keyCodeObject, action, event.mods().contains(SystemKeyMod.SHIFT));
+      if (changed) {
+        markKnownEffect(batch);
+        ensureCaretVisible(textarea);
+      }
+    }
 
-      eventProcessor.push(
-          KeyboardEvent.builder()
-              .source(frame)
-              .target(element)
-              .key(key)
-              .timestamp(timeService.currentTime())
-              .mods(event.mappedMods())
-              .action(action)
-              .build());
+    if (element.hasListenersFor(KeyboardEvent.class)) {
+      markUnknownFallback(batch);
+    }
+
+    eventProcessor.push(
+        KeyboardEvent.builder()
+            .source(frame)
+            .target(element)
+            .key(key)
+            .timestamp(timeService.currentTime())
+            .mods(event.mappedMods())
+            .action(action)
+            .build());
+  }
+
+  private void markKnownEffect(InputProcessingBatch batch) {
+    if (batch != null) {
+      batch.markKnownEffect();
+    }
+  }
+
+  private void markUnknownFallback(InputProcessingBatch batch) {
+    if (batch != null) {
+      batch.markUnknownFallback();
     }
   }
 

@@ -2,8 +2,11 @@ package com.spinyowl.spinygui.core.input.impl;
 
 import com.spinyowl.spinygui.core.input.Shortcut;
 import com.spinyowl.spinygui.core.input.ShortcutRegistry;
+import com.spinyowl.spinygui.core.input.KeyCode;
+import com.spinyowl.spinygui.core.input.KeyMod;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 import lombok.NonNull;
 
 /** Used to store shortcuts. */
@@ -47,5 +50,10 @@ public class ShortcutRegistryImpl implements ShortcutRegistry {
   @Override
   public Shortcut shortcut(@NonNull String name) {
     return shortcuts.get(name.toLowerCase().trim());
+  }
+
+  @Override
+  public boolean mayConsume(@NonNull KeyCode key, @NonNull Set<KeyMod> mods) {
+    return shortcuts.values().stream().anyMatch(shortcut -> shortcut.check(key, mods));
   }
 }

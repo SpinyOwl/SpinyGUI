@@ -161,6 +161,13 @@ public final class NodeUtilities {
     return fillTargetElementList(vector, element, new ArrayList<>());
   }
 
+  /** Replaces a caller-owned hit path without allocating a target collection. */
+  public static void replaceTargetElementList(
+      final Element element, final Vector2fc vector, final List<Element> targetList) {
+    targetList.clear();
+    fillTargetElementList(vector, element, targetList);
+  }
+
   /**
    * Used to search all elements (under point) in element. New located target element will be added
    * to target list.
@@ -175,7 +182,11 @@ public final class NodeUtilities {
       if (intersects(element, vector)) {
         targetList.add(element);
       }
-      element.children().forEach(child -> fillTargetElementList(vector, child, targetList));
+      for (Node childNode : element.childNodes()) {
+        if (childNode instanceof Element child) {
+          fillTargetElementList(vector, child, targetList);
+        }
+      }
     }
     return targetList;
   }

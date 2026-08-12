@@ -1,5 +1,7 @@
 package com.spinyowl.spinygui.core.input;
 
+import java.util.Set;
+
 /** Used to store shortcuts. */
 public interface ShortcutRegistry {
 
@@ -36,4 +38,14 @@ public interface ShortcutRegistry {
    * @return shortcut for specified name or null if not found.
    */
   Shortcut shortcut(String name);
+
+  /**
+   * Returns whether this registry may consume the supplied key combination.
+   *
+   * <p>The conservative default treats custom registries as possibly consuming the input. An
+   * implementation may return false only when it can prove that no registered shortcut matches.
+   */
+  default boolean mayConsume(KeyCode key, Set<KeyMod> mods) {
+    return true;
+  }
 }
