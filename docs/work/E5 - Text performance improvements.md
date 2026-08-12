@@ -2,441 +2,410 @@
 
 ## Goal
 
-Improve text preparation, measurement and layout, editable-control reuse, and NanoVG submission
-performance while preserving current UTF-16 source indices, fallback-font selection, wrapping,
-metrics, caret behavior, and visual output.
+Deliver an implementation-ready, dependency-first text-performance architecture that repairs the
+evidence boundary, makes uncached measurement and inline preparation linear, establishes real font
+identity and lifecycle, shares naturally bounded editable-control snapshots, bounds NanoVG
+submission and persistent caches, and optionally skips whole style/layout domains only when an
+explicit session proves their outputs current.
 
-## Non-Goals / Deferred Work
+## External Prerequisite
 
-- Full shaping, grapheme-cluster editing, Unicode line-breaking conformance, bidirectional text,
-  ligatures, or HarfBuzz integration. This epic remains code-point based and treats valid surrogate
-  pairs atomically under the current UTF-16 contract.
-- Unbounded Java or native-memory caches, native buffers retained per run, or fragment
-  concatenation that could change fallback faces, kerning boundaries, metrics, or draw order.
-- Using mutable `ResolvedStyle` identity as a persistent cache key.
-- Full inline-fragment caching before reliable style and layout dirty versions exist.
-- Making broad dirty style/layout ownership a prerequisite for safe algorithmic fixes, pass-local
-  reuse, bounded primitive caches, control snapshots, or renderer staging.
-- Hardware-sensitive performance thresholds in normal CI. Local benchmark results remain
-  informational and comparable only on equivalent environments.
-- General layout-object, parser/style, or non-text rendering cleanup unless measurement shows it
-  is necessary to realize a milestone in this epic.
+- E4 benchmark infrastructure, through `docs/work/E4/M1/P1 - Add and run text benchmarks.md`, must
+  be accepted and committed before E5/M1 starts. E5 extends that history and does not edit, merge,
+  renumber, or replace E4 artifacts.
 
-## Context
+## Non-Goals
 
-- E4 and the current `spinygui.benchmark` workspace establish JMH CPU/allocation workloads and a
-  hidden-context NanoVG harness. The checked-in/current local baseline reports approximately
-  37.6 ms and 368 MB/op for 5K+ character single-font measurement, 394 us and 931 KB/op for
-  text-dense inline layout, and 4.69 ms CPU submission / 6.31 ms GPU-complete for 1,000 fragments
-  and 3,000 resolved runs.
-- `FontServiceImpl.measureText` resolves glyphs while measuring width and wrapping, then
-  `addLine`/`resolveRuns` resolves them again. Extending a same-font run removes and reconstructs
-  immutable glyph lists, producing quadratic copying in the dominant benchmark.
-- `InlineWhitespace` performs replacement and regex passes. `InlineFormattingContext` creates
-  substrings and per-space/per-character units, resolves the same font chain for temporary units,
-  and can split by UTF-16 `char` rather than code point.
-- `NvgInputRenderer` measures the complete value and prefix substrings during rendering.
-  `MultilineTextControlMetrics` and `NvgTextareaRenderer` repeatedly split, wrap, and measure the
-  complete value; a K-line selection can cause roughly `2K + 3` complete layouts.
-- `ResolvedTextRun.renderedText()` rebuilds immutable run text on demand. Text, input, and textarea
-  NanoVG paths allocate and free UTF-8 native buffers per run and repeat font, size, and color
-  state; the large E4 scene submits 3,000 runs.
-- Existing long-lived reuse covers font bytes, STB font info, NanoVG faces, an inline-style parse
-  LRU, and pass-local `InlineUnit` measurements. Font-chain, font-metric, glyph/miss,
-  advance/kerning, prepared-node-text, resolved-sequence, wrapped-layout, and control-result reuse
-  do not yet have explicit ownership and invalidation contracts.
-- The complex demo recalculates style and layout every frame, and `LayoutServiceImpl` may repeat
-  layout for scrollbar convergence. Reliable dirty ownership is therefore a larger architectural
-  boundary than the local text fixes.
+- Targeted subtree, formatting-context, or selector-indexed incremental layout.
+- Full inline-fragment, retained-layout-result, or historical editable-control caching.
+- Automatic interception of every existing public mutable alias; opt-in sessions require explicit
+  invalidation for mutations they cannot observe, while legacy service calls remain force-full.
+- Full shaping/HarfBuzz, bidi, grapheme editing, ligatures, or expanded Unicode line-breaking.
+- Unbounded caches, weak ownership without an independent hard bound, or persistent native buffers
+  per run.
+- A mandatory dependency on the optional E2 frame runtime. M8 is backend-neutral and usable by a
+  manual host; a future E2 adapter may consume it without duplicating its contract.
+- Production implementation, tests, benchmarks, build changes, or generated output in this
+  documentation revision.
 
-## Assumptions and Open Questions
+## Architecture Constraints
 
-- Assumption: E4 remains the benchmark-infrastructure epic; E5 extends its workloads and consumes
-  its local reports rather than replacing or renumbering E4 artifacts.
-- Assumption: optimized outputs must remain structurally and visually equivalent under the current
-  pixel-rounding and replacement-marker behavior, even when an alternative would be faster.
-- Assumption: caches introduced here are bounded or have naturally bounded owners, expose
-  diagnostics, and can be cleared or invalidated deterministically.
-- Question: whether resolved-sequence reuse belongs inside the font service or behind a dedicated
-  immutable text-preparation boundary. M2 must stabilize the uncached result contract before M6
-  chooses the owner.
-- Question: whether renderer staging should use a frame arena, a reusable growable buffer with a
-  hard cap, or stack/native interop for small runs. M5 must select using allocation counters and
-  explicit teardown behavior rather than retaining one native allocation per run.
+- Font-registry mutation, text measurement/layout, cache use, and rendering are UI-thread confined.
+  E5 does not introduce concurrent atomic registry snapshots.
+- Existing `StyleManager.recalculate` and `LayoutService.layout` semantics remain force-full.
+- Structural recordings and deterministic counters are portable primary evidence. Timings,
+  allocations, and local image comparisons are supporting evidence under explicit comparability
+  rules.
+- Semantic workload/scenario IDs and comparability fingerprints contain only benchmark/workload/
+  schema/behavior-contract identity, declared settings, and relevant environment/JVM/driver fields.
+  The implementation-under-test/build/commit revision is reported metadata but is excluded from
+  fingerprint equality because that revision is the intentional comparison dimension; a behavior-
+  contract migration may instead bump the contract/workload version. Observed glyph/run/fragment
+  counts and other outputs remain evidence under that fixed identity and never create a new series.
+- Persistent font-dependent state consumes the real M3 generation. M5 must not ship against a fake
+  or temporary version source.
+- Every behavioral contradiction named by M2 is an approval gate with compatibility/migration
+  impact; implementation cannot silently preserve or silently change it.
+- Every persistent cache has immutable keys, UI-thread ownership, a hard entry/weight/admission
+  policy, diagnostics, clear/teardown, oversized-value behavior, and disabled mode.
+- M8 tracks monotonic source/output epochs and per-session consumer watermarks. It never treats a
+  monotonic version as a globally cleared dirty flag.
 
 ## Milestones
 
-### M1: Establish the performance evidence and compatibility boundary
+### M1: Repair evidence and comparability
 
-**Document:** [M1 - Establish the performance evidence and compatibility boundary](E5/M1%20-%20Establish%20the%20performance%20evidence%20and%20compatibility%20boundary.md)
+**Document:** [M1 - Repair evidence and comparability](E5/M1%20-%20Repair%20evidence%20and%20comparability.md)
 
-**Purpose:** Extend E4 evidence so algorithmic complexity, reuse effectiveness, and renderer
-submission work can be evaluated without replacing correctness with machine-specific timing goals.
+**Purpose:** Make workload identity, diagnostics, reporting, renderer/control recordings, and
+cross-run comparability trustworthy before optimization.
 
-**Depends on:** None.
-**Enables:** M2.
+**Depends on:** Accepted and committed E4/M1/P1 (external).
+**Enables:** M2, M3.
 **Parallelizable with:** None.
 
-**Architectural Proposition:** Treat benchmark workloads, operation counters, behavioral
-regressions, and pixel checks as complementary evidence. Latency and allocation reports remain
-local and informational; deterministic complexity and call-count assertions may be automated.
+**Architectural Proposition:** Timed/allocation runs are diagnostics-disabled; counter-only runs are
+untimed and diagnostics-enabled. Semantic benchmark/workload/schema/behavior-contract identity,
+relevant environment/JVM/driver fields, and declared settings decide whether a delta is comparable;
+the reported implementation/build/commit revision does not participate in fingerprint equality.
 
 **Key Work:**
+- Identify every parameterized JMH workload and renderer/control/visible/offscreen/unchanged scene
+  by declared behavior-affecting inputs/configuration only; preserve distinct E4 and E5 series while
+  keeping changed output counts under the same scenario ID.
+- Distinguish source scans, logical resolutions, native probes/calls, builder work, complete control
+  layouts, all `TextMeasurer` entry points, UTF-8/NanoVG work, and culling.
+- Add text/input/textarea recording seams, including a textarea renderer seam; replace non-black
+  smoke as correctness evidence with structural recording plus an opt-in image policy.
+- Correct the rendering pre-measure sequence: the alternating loop warms small/large 30/30, then
+  pixel validation renders/synchronizes small once for an actual 31/30 asymmetry. Either validate
+  outside a fresh equal warmup/measurement sequence or report that complete distribution, then
+  recapture the baseline.
+- Produce exactly one paired archived run per `benchmarkReport` invocation and never rerun the pair
+  under a mismatched identifier merely to regenerate a report.
 
-- Extend the benchmark boundary with input and textarea workloads, size-scaled measurement and
-  wrapping cases, unchanged-frame scenarios, and visible/offscreen text scenes.
-- Add counters for glyph lookup, advance/kerning lookup, resolved-run construction, complete
-  control layouts, UTF-8 bytes/allocations, NanoVG text calls, state changes, and culled work.
-- Define representative scaling points that distinguish linear growth from the current
-  same-font-run quadratic behavior and expose the `2K + 3` textarea-selection pattern.
-- Freeze compatibility fixtures for UTF-16 ranges, surrogate-pair atomicity, fallback and missing
-  glyph runs, wrapping boundaries, line metrics, caret/hit testing, selection, and pixels.
-- Preserve the E4 baseline and report format as historical local evidence; record environment and
-  workload shape rather than introducing absolute CI pass/fail budgets.
+**Validation:** Incomparable contract/workload/environment/settings fingerprints suppress or mark
+deltas, while a changed reported implementation revision remains comparable by design; deterministic
+evidence exposes current duplicate work; one diagnostics-disabled paired invocation captures the
+reviewed baseline.
 
-**Open Questions:**
+### M2: Approve measurement contracts and implement linear resolution
 
-- Which renderer counters can be gathered through existing sinks and which require a narrow
-  diagnostic boundary that remains disabled or near-zero-cost outside benchmarks?
+**Document:** [M2 - Approve measurement contracts and implement linear resolution](E5/M2%20-%20Approve%20measurement%20contracts%20and%20implement%20linear%20resolution.md)
 
-**Validation:**
-
-- Reports show latency, normalized allocation, workload size, and deterministic counters for the
-  new scenarios.
-- A reviewer can identify superlinear measurement and repeated control layouts from scaling and
-  counters without relying on a specific CPU or GPU.
-- Existing E4 files and the benchmark module remain intact and continue to run independently of
-  normal `test` and `check` tasks.
-
-### M2: Produce resolved measurement in one linear pass
-
-**Document:** [M2 - Produce resolved measurement in one linear pass](E5/M2%20-%20Produce%20resolved%20measurement%20in%20one%20linear%20pass.md)
-
-**Purpose:** Remove the dominant duplicate glyph resolution and quadratic immutable-list copying
-before adding persistent caches.
+**Purpose:** Resolve ambiguous behavior explicitly, then eliminate duplicate glyph resolution and
+quadratic suffix/run copying before persistent caches exist.
 
 **Depends on:** M1.
-**Enables:** M3, M4.
-**Parallelizable with:** None.
+**Enables:** M4, M5, M7.
+**Parallelizable with:** M3, only after M1 and only while approved public contracts/files are
+partitioned.
 
-**Architectural Proposition:** `FontServiceImpl` should scan code points once into mutable,
-measurement-local line and run builders that retain resolved glyph identity, UTF-16 source ranges,
-advances, and wrap candidates. Builders become immutable `TextMetrics`, `TextLineMetrics`, and
-`ResolvedTextRun` values only at completed line/result boundaries; wrapping reuses scanned data
-rather than resolving the accepted range again.
-
-**Key Work:**
-
-- Define the single-pass result contract for explicit newlines, word wrapping, offset widths,
-  replacement markers, font-run transitions, kerning resets, pixel rounding, and line ranges.
-- Replace same-font run reconstruction with append-only mutable builders whose final immutable
-  copy cost is linear in output size.
-- Ensure wrap backtracking or replay does not repeat font and native metric lookup for already
-  scanned code points; bound any retained candidate state by the active line.
-- Make caret advances available from the same resolved primitives where doing so preserves current
-  API behavior, without coupling measurement to a persistent cache.
-- Keep correctness tests and M1 counters able to compare old and new outputs during review.
-
-**Open Questions:**
-
-- Whether line builders retain every cumulative advance or only the source boundaries needed by
-  current consumers. The decision must support M4 without turning all measurements into
-  control-specific snapshots.
-
-**Validation:**
-
-- Single-font and fallback workloads scale approximately linearly in code-point count and no
-  glyph range is resolved a second time solely to construct runs.
-- Long single-font allocation drops by orders of magnitude relative to the E4 local baseline,
-  while exact line widths, ranges, runs, fallback choice, and replacement behavior remain covered.
-- Supplementary code points are never split and all public source indices remain UTF-16 indices.
-
-### M3: Make inline text preparation range- and code-point-based
-
-**Document:** [M3 - Make inline text preparation range- and code-point-based](E5/M3%20-%20Make%20inline%20text%20preparation%20range-%20and%20code-point-based.md)
-
-**Purpose:** Reduce transient strings, temporary units, repeated font-chain resolution, and
-duplicate measurements in text-dense inline layout.
-
-**Depends on:** M2.
-**Enables:** M6.
-**Parallelizable with:** M4, M5.
-
-**Architectural Proposition:** Normalize each text node with one deterministic scan and represent
-inline work as ranges over prepared immutable text plus explicit break/space metadata. Split and
-wrap at code-point boundaries, resolve typography once per compatible pass-local style value, and
-materialize fragment text only at the durable output boundary.
+**Architectural Proposition:** A code-point scan appends width-independent resolved primitives to
+measurement-local private run/line builders. Public `TextLineMetrics`, `ResolvedTextRun`, and caret
+arrays freeze exactly once only after P3 final wrapping, deferred-suffix placement, and line-start
+kerning reset; wrapping reuses scanned primitives without repeated native probes.
 
 **Key Work:**
+- Approve `wordWrap`, replacement face, empty-chain, CR/LF, UTF-16 `charCount`, immutability,
+  fallback vertical metrics, zero/narrow width, surrogate-interior setter, and source-coordinate
+  contracts plus exact horizontal/vertical rounding/accumulation order and caret midpoint ties with
+  migration impact.
+- Keep raw base advance, pair-kerning inputs, and UTF-16 boundaries on width-independent primitives;
+  after wrapping/reset, freeze one rebased cumulative caret-advance array per final line. Reject a
+  source-global cumulative array.
+- Let P2 validate private mutable/frozen builder invariants, but do not publish incomplete public
+  line/run/caret results; any P2 immutable fixture is private or already at a proven final boundary.
+- Add an internal compatible range-aware measurement overload/adapter so M4 does not allocate one
+  temporary `String` per measured range while current public `TextMeasurer` APIs remain compatible.
+- Distinguish logical glyph resolution from the multiple native glyph-index probes fallback may
+  require.
+- Prove linear builder/freeze work against long deferred suffixes, narrow widths, fallback
+  transitions, and line-start kerning resets.
 
-- Replace chained replacement/regex normalization with a single-pass prepared-text result that
-  preserves the current `white-space` and `tab-size` behavior.
-- Replace substring-backed and per-character `InlineUnit` proliferation with source/prepared ranges,
-  code-point-safe break candidates, and compact special units for newlines, collapsible spaces,
-  spacers, and inline blocks.
-- Reuse font chains, font size, line height, and measurements within one formatting pass when their
-  value inputs are identical; do not key pass-local reuse by mutable style object identity.
-- Preserve line-edge whitespace trimming, wrapping modes, fallback runs, fragment ownership,
-  baselines, inline-element union boxes, and existing layout output contracts.
-- Keep full inline-fragment reuse out of this milestone; scrollbar convergence may invoke the
-  improved algorithm repeatedly until M7 supplies trustworthy dirty versions.
+**Validation:** Contract decisions are approved; public UTF-16 indices and code-point atomicity are
+tested; cold/disabled counters show no repeated scan/probe solely for wrapping or run construction
+and no quadratic suffix copying/moving.
 
-**Open Questions:**
+### M3: Establish font identity, generations, and lifecycle
 
-- Whether prepared normalized text should be stored on a text node immediately or remain
-  pass-local until M6 establishes bounded ownership and invalidation.
+**Document:** [M3 - Establish font identity generations and lifecycle](E5/M3%20-%20Establish%20font%20identity%20generations%20and%20lifecycle.md)
 
-**Validation:**
+**Purpose:** Create one real core font registry/resource identity, monotonic semantic generations,
+central resolver use, and deterministic core/NanoVG resource teardown before inline preparation,
+snapshots, rendering, and caches consume font-dependent state.
 
-- The text-dense inline workload shows materially lower allocation and avoids one temporary object
-  per UTF-16 code unit in break-all/preserved-space cases.
-- Complexity and counters demonstrate one normalization scan and value-based font-chain reuse per
-  compatible pass.
-- Existing whitespace, wrapping, alignment, fallback, supplementary-code-point, and inline-element
-  regressions produce equivalent fragments and geometry.
+**Depends on:** M1.
+**Enables:** M4, M5, M6, M7.
+**Parallelizable with:** M2, only after M1 and only while approved public contracts/files are
+partitioned.
 
-### M4: Share immutable editable-control text snapshots
-
-**Document:** [M4 - Share immutable editable-control text snapshots](E5/M4%20-%20Share%20immutable%20editable-control%20text%20snapshots.md)
-
-**Purpose:** Compute input and textarea layout once per relevant state and share it across
-rendering, caret placement, hit testing, viewport behavior, selection, and event handling.
-
-**Depends on:** M2.
-**Enables:** M5.
-**Parallelizable with:** M3.
-
-**Architectural Proposition:** Each editable control owns at most its current immutable text
-snapshot. A snapshot contains resolved typography, line/range/run metrics, and cumulative
-code-point-safe caret advances so reads are cheap and consistent. Caret, selection, focus, color,
-and scroll are consumers, not snapshot invalidators.
+**Architectural Proposition:** Registry content and generation are observed consistently on the UI
+thread. Core semantic generation is independent of context-local NanoVG face creation, while all
+font bytes, STB info, face buffers, contexts, and services have explicit owners and close order.
 
 **Key Work:**
+- Define generation effects for bootstrap, add/replace, underlying-byte reload/replacement,
+  clear/removal if supported, duplicate/no-op, and failure; route or reject every public mutation
+  alias (`Font.addFont`, `SystemFontLoader`, `FontStorage.loadFont`, and bootstrap registration).
+- Replace bypasses through `FontChainResolver.DEFAULT` with injected/central resolver ownership and
+  make mutation aliases delegate atomically on the UI thread.
+- Bound or naturally scope `FontStorageImpl` bytes, `FontServiceImpl` STB info, NanoVG buffers/info/
+  faces, and contexts; honor `freeData=false` until context deletion.
+- Decide the mutable direct-buffer compatibility/lifetime contract, including previously returned
+  aliases, and select an active-context same-path reload strategy that cannot retain old
+  `freeData=false` buffers without a hard bound/forced rotation.
+- Define context replacement support/rejection, repeated destroy, use-after-destroy, face-creation
+  failure, and teardown sequencing.
 
-- Define one shared snapshot contract for single-line and multiline controls, with line lookup,
-  UTF-16 caret boundaries, cumulative advances, hit testing, content extent, and resolved runs.
-- Invalidate on exact value, typography, or font-registry generation changes; additionally
-  invalidate textarea snapshots when content width or wrapping policy changes.
-- Explicitly avoid invalidation for caret/selection/focus/color/scroll changes so unchanged text
-  remains reusable while presentation and viewport state vary.
-- Route `NvgInputRenderer`, `MultilineTextControlMetrics`, `NvgTextareaRenderer`, input viewport,
-  and event behavior through the same snapshot owner instead of full-value and prefix-substring
-  remeasurement.
-- Keep one current snapshot per control or another naturally bounded equivalent; do not create a
-  history keyed by every edited value or width.
+**Validation:** UI-thread violations are rejected/documented, generation observations are coherent,
+and context deletion precedes buffer/info release. M3 exposes the centralized resolver/thread
+contract and production generation consumed by M4/M5/M6/M7.
 
-**Open Questions:**
+### M4: Prepare inline text with ranges and code points
 
-- Whether the snapshot owner is the control node or a control-text service. The selected owner must
-  be reachable by renderer and event code without making the core depend on NanoVG.
+**Document:** [M4 - Prepare inline text with ranges and code points](E5/M4%20-%20Prepare%20inline%20text%20with%20ranges%20and%20code%20points.md)
 
-**Validation:**
+**Purpose:** Reduce temporary strings/units and repeated preparation while initially preserving the
+durable fragment structure exposed by current tests.
 
-- A K-line selection performs one complete layout for a valid snapshot, not approximately
-  `2K + 3`, and caret/prefix widths come from cumulative advances rather than substring measures.
-- Unchanged-frame and caret/selection/scroll-only scenarios reuse the same snapshot; value,
-  typography, font-generation, width, and wrap changes rebuild exactly when required.
-- Existing input/textarea editing, fallback, UTF-16 caret, hit-test, selection, and viewport tests
-  remain behaviorally equivalent.
+**Depends on:** M2, M3.
+**Enables:** M6, M7.
+**Parallelizable with:** M5 after M3 completes and the shared M2 text contract is frozen.
 
-### M5: Bound and reduce NanoVG text submission work
-
-**Document:** [M5 - Bound and reduce NanoVG text submission work](E5/M5%20-%20Bound%20and%20reduce%20NanoVG%20text%20submission%20work.md)
-
-**Purpose:** Lower per-run native allocation, repeated immutable text construction, redundant
-NanoVG state changes, and offscreen draw submission without changing run boundaries or pixels.
-
-**Depends on:** M4.
-**Enables:** M6.
-**Parallelizable with:** M3.
-
-**Architectural Proposition:** Immutable resolved runs retain their rendered text once, while the
-renderer owns a frame-scoped or bounded reusable UTF-8 staging strategy with explicit reset and
-destroy behavior. State is hoisted only across adjacent draws where face, size, color, transform,
-clip, opacity, and ordering semantics prove it safe.
+**Architectural Proposition:** One whitespace scan produces immutable prepared text and explicit
+UTF-16 mappings among original-node, normalized, unit/range, fragment-local, and resolved-run
+coordinates. Inline work references code-point-safe ranges and materializes current durable
+fragments at the existing output boundary.
 
 **Key Work:**
+- Define mappings for tabs, collapse, CR/LF decisions, replacement, splits, and wrap boundaries.
+- Define form-feed and vertical-tab behavior alongside tabs/collapse, and replace temporary
+  substrings/per-character units with prepared ranges and compact special units.
+- Gate implementation that resolves/reuses font chains on M3/P2 central resolver/mutation ownership.
+- Consume M2's range-aware measurement boundary with zero temporary range strings; materialize
+  exactly one `String` for each preserved text-bearing fragment that requires one and zero for
+  null-text spacer, element, or union fragments, with explicit counters.
+- Reuse immutable typography/font-chain values only within one UI-thread-confined pass.
+- Preserve fragment count/text/ownership and explicitly assert node reference identity because
+  `InlineFragment.equals` excludes `node`.
 
-- Make rendered run text an immutable prepared value rather than rebuilding it on every
-  `renderedText()` call.
-- Select a renderer-owned UTF-8 staging design using M1 counters, enforce a documented upper bound,
-  release native memory on renderer destruction, and fall back safely for oversized runs.
-- Share the staging and state-tracking boundary across text, input, and textarea paths while
-  preserving backend neutrality in core data models.
-- Suppress redundant face/size/color state changes only when NanoVG save/restore, transforms,
-  clipping, animated presentation values, and control draw ordering remain equivalent.
-- Cull complete text fragments and textarea lines conservatively against established clip/content
-  bounds; retain any draw whose bounds are uncertain. Do not concatenate runs or fragments merely
-  to reduce calls.
+**Validation:** One normalization scan and code-point-safe range traversal reduce temporary
+allocation; durable-string counters equal the preserved text-bearing fragment subset and remain zero
+for null-text spacer/element/union fragments. Durable allocation is not claimed eliminated, and
+fragment coalescing remains a separately approved behavior change.
 
-**Open Questions:**
+### M5: Share bounded editable-control snapshots
 
-- Whether NanoVG internally copies UTF-8 bytes synchronously for every supported backend; staging
-  lifetime must cover the documented native call contract before reuse.
+**Document:** [M5 - Share bounded editable-control snapshots](E5/M5%20-%20Share%20bounded%20editable-control%20snapshots.md)
 
-**Validation:**
+**Purpose:** Give each input/textarea one lazily validated immutable text-local geometry snapshot
+shared by every render, event, caret, selection, hit-test, scroll, and viewport consumer.
 
-- The 3,000-run scene shows reduced native allocations and state calls, with renderer counters
-  explaining the improvement separately from GPU variance.
-- Offscreen scenes and scrolled textareas submit fewer text calls while boundary-touching glyphs,
-  fallback transitions, selections, carets, transforms, clips, and animated colors remain visible.
-- Hidden-context pixel validation and recording-sink tests confirm unchanged run order, x advances,
-  faces, state, and output.
+**Depends on:** M2, M3.
+**Enables:** M6, M7.
+**Parallelizable with:** M4 after M3 completes and the shared M2 text contract is frozen.
 
-### M6: Add bounded text cache infrastructure with explicit generations
-
-**Document:** [M6 - Add bounded text cache infrastructure with explicit generations](E5/M6%20-%20Add%20bounded%20text%20cache%20infrastructure%20with%20explicit%20generations.md)
-
-**Purpose:** Capture repeated primitive and immutable text work only after the uncached algorithms
-and ownership boundaries are efficient and observable.
-
-**Depends on:** M3, M5.
-**Enables:** M7.
-**Parallelizable with:** None.
-
-**Architectural Proposition:** Every persistent cache declares an exact value key, owner, lifetime,
-size policy, invalidation/generation rule, diagnostics, and clear path. Width participates only in
-wrapping keys, not font-chain, glyph, advance, prepared-text, or resolved-sequence keys.
+**Architectural Proposition:** A core `ControlTextLayoutService`-style boundary manages one snapshot
+slot on each control. The slot is excluded from generated equality/hash/toString; core remains
+NanoVG-independent; consumers explicitly convert text-local geometry through layout, viewport,
+ancestor scroll, and presentation transforms.
 
 **Key Work:**
+- Validate the effective key on every query because current mutable aliases are not observable.
+- Key exact value, complete effective typography/line height, measurement context/configuration,
+  real M3 generation, and textarea content width/current actual wrap policy.
+- Keep input placement/content height and color/focus/caret/selection/scroll outside the text-layout
+  key; retain no history or global control identity map.
+- Define whole-control/paragraph/visual-line/fragment/run/replacement mappings and multi-paragraph
+  wrapped fallback fixtures.
+- Route normal and debug renderer paths plus control-specific behaviors through the same service/slot,
+  then migrate shared listener/provider dispatch in a separate integration phase.
 
-- Add a monotonic font-registry generation and define stable font identity/generation values for
-  all text caches. Font-chain keys contain ordered family names, requested style/weight/stretch,
-  and registry generation.
-- Define bounded font-service primitive caches: font metrics keyed by font identity/generation,
-  size, line height, and rounding mode; glyph indices including misses keyed by font
-  identity/generation and code point; advances and kerning keyed by font identity/generation,
-  glyph or glyph pair, size, and rounding mode.
-- Define prepared-node-text reuse keyed by exact content, `white-space`, and `tab-size`, with a
-  node-scoped/weak or bounded owner and deterministic replacement on content changes.
-- Define resolved-sequence keys from exact UTF-16 text, ordered font identities/generations, size,
-  rounding mode, and reserved future shaping attributes. Keep width out of this key.
-- Define wrapped-layout keys by the resolved-sequence identity/key plus exact width, offset,
-  wrapping mode, and line-breaking policy. Bound retained widths/results rather than accumulating
-  every resize value.
-- Reuse M4's naturally bounded per-control snapshot contract instead of adding a second global
-  control-layout cache. Expose hit/miss/eviction and retained-size diagnostics to M1 workloads.
+**Validation:** Warm non-key queries call no `TextMeasurer` entry point; an invalidating edit/key/char
+operation causes exactly one rebuild at the next required query, after which warm queries call zero;
+non-invalidating presentation/interaction changes reuse. Debug/listener paths share the service,
+surrogate-interior setters follow M2, and textarea tests use the current wrap constant unless M2
+separately approves an API.
 
-**Open Questions:**
+### M6: Bound NanoVG text submission
 
-- Which primitive caches are per `FontServiceImpl` versus shared by a registry, and what
-  synchronization cost is acceptable if services are used concurrently?
-- What entry-count or weight bounds reflect real text sizes without allowing a few large strings
-  to dominate retained memory? Validate with churn workloads before selecting defaults.
+**Document:** [M6 - Bound NanoVG text submission](E5/M6%20-%20Bound%20NanoVG%20text%20submission.md)
 
-**Validation:**
+**Purpose:** Reduce and bound rendered-text preparation, UTF-8 staging, NanoVG text/state calls, and
+only culling backed by conservative visibility evidence.
 
-- Key-equivalence and invalidation tests prove that every listed input changes reuse exactly as
-  documented, including cached missing glyphs and font-generation changes.
-- Churn tests demonstrate bounded Java/native retention and observable eviction; cache-disabled
-  mode remains correct and useful for benchmark comparison.
-- Unchanged-value scenarios reduce native font calls and preparation work without hiding
-  superlinear behavior or changing UTF-16, wrapping, metrics, fallback, or pixels.
+**Depends on:** M3, M4, M5.
+**Enables:** M8.
+**Parallelizable with:** M7 only for backend-only phases after M6/P1 freezes shared data/lifecycle
+contracts and the phases do not share benchmark/report files.
 
-### M7: Establish dirty style and layout ownership for future retained layout reuse
+**Architectural Proposition:** Keep the public `ResolvedTextRun` record components, canonical
+constructor, accessors, equality/hash/toString semantics compatible; do not assume a record can add
+an instance cache. A reviewed compatible representation or direct glyph-to-staging path feeds a
+renderer/context-owned frame-scoped or hard-capped UTF-8 staging owner.
 
-**Document:** [M7 - Establish dirty style and layout ownership for future retained layout reuse](E5/M7%20-%20Establish%20dirty%20style%20and%20layout%20ownership%20for%20future%20retained%20layout%20reuse.md)
+**Key Work:**
+- Prove native call lifetime against a pinned or reproducibly identified LWJGL/NanoVG implementation.
+- Share one observable submission seam across text/input/textarea, with oversized fallback, reset,
+  teardown, text alignment, known save/restore boundaries, and face-failure x-advance behavior.
+- Track state only while all relevant mutations are mediated; invalidate at unknown boundaries.
+- Gate textarea lines and general fragments/runs alike on conservative ink bounds plus propagated
+  Java-side clip/transform evidence covering fallback, overhang, and antialias fringe. Defer either
+  class when proof/data are absent; never use line/advance rectangles as ink bounds.
 
-**Purpose:** Create the later architectural boundary required to avoid whole-frame style/layout
-recalculation and to make future inline-fragment caching safe.
+**Validation:** Structural recordings/counters are primary; local image comparisons validate
+boundaries; context/font lifecycle matches M3; no unbounded or per-run native retention appears.
 
-**Depends on:** M6.
+### M7: Add bounded generation-safe text caches
+
+**Document:** [M7 - Add bounded generation-safe text caches](E5/M7%20-%20Add%20bounded%20generation-safe%20text%20caches.md)
+
+**Purpose:** Add independently reviewable bounded cache families on corrected data boundaries after
+uncached algorithms, generations, and naturally bounded snapshots are stable.
+
+**Depends on:** M2, M3, M4, M5.
+**Enables:** M8.
+**Parallelizable with:** M6 only for backend-only M6 phases after M6/P1 and with disjoint files/tests.
+
+**Architectural Proposition:** Cache width-independent resolved primitives—source boundaries,
+face/glyph choices, base advances, and pair-kerning inputs—not final line-specific
+`ResolvedTextRun` values. Final runs materialize after wrapping and line-start kerning reset; width
+exists only in exact wrap keys based on P1's immutable semantic resolved-primitive value key, not an
+evictable cache-entry identity.
+
+**Key Work:**
+- Define immutable key tables, UI-thread ownership, hard bounds/weight/admission, oversized behavior,
+  hit/miss/eviction/retained-weight diagnostics, clear/teardown, and disabled mode.
+- Split font-chain, metrics, glyph/miss, advance, kerning, prepared-node, resolved-primitives, and
+  wrap families into reviewable phases.
+- Prohibit persistent keys/references from using cache-entry identity; define immutable semantic
+  value-key/value reference direction, explicit shared-object weight accounting, independent clear,
+  and downstream-to-upstream teardown.
+- Include existing M3 font/native resources in aggregate retention claims and preserve M5's one-slot
+  snapshots rather than adding a global control cache.
+
+**Validation:** Cold, warm, churn, and disabled workloads prove exact keys, bounded aggregate
+retention, generation safety, and linear disabled behavior. Pre-laid-out rendering scenes alone do
+not count as cache-reuse proof.
+
+### M8: Add opt-in whole-frame dirty orchestration
+
+**Document:** [M8 - Add opt-in whole-frame dirty orchestration](E5/M8%20-%20Add%20opt-in%20whole-frame%20dirty%20orchestration.md)
+
+**Purpose:** Add a backend-neutral opt-in session that skips complete style/layout domains for a
+whole frame when current without changing legacy force-full service behavior.
+
+**Depends on:** M6, M7.
 **Enables:** None.
 **Parallelizable with:** None.
 
-**Architectural Proposition:** Nodes and frame orchestration should expose explicit style,
-intrinsic/text, geometry, overflow, and presentation invalidation with monotonic versions and
-upward/downward propagation rules. Scrollbar-convergence passes remain a bounded layout concern,
-not implicit evidence that every node is dirty.
+**Architectural Proposition:** Monotonic source epochs, produced/output epochs, and per-session
+consumer watermarks govern whole-frame decisions under a UI-thread, non-reentrant/queued-mutation
+model. Successful/converged outcomes alone advance watermarks. A failed attempt produces no session-
+renderable output, cannot render through session-managed paths, and advances no watermarks; direct
+legacy renderer bypass is an explicit host obligation and unsupported misuse.
 
 **Key Work:**
+- Keep direct `StyleManager`/`LayoutService` calls force-full; add explicit manual-host/session
+  invalidation for unobservable aliases and optional adapters for known runtime/event sources.
+- Require an outcome-capable layout subinterface/adapter for skip-aware session eligibility without
+  adding a source-breaking abstract method to `LayoutService`; legacy/custom services remain
+  force-full unless truthfully adapted.
+- Skip only complete style/layout domains, never targeted subtrees or formatting contexts.
+- Require force-full retry after failure/unconverged max-pass results; no transactional rollback is
+  promised. Session-managed paths reject invalid output; direct renderer bypass on the shared frame
+  remains an explicit unsupported host misuse. Permit only one active skip-aware session per frame.
+- Define staged host ordering as capture pre-style source state, resolve style, invoke a host
+  transition tick whose outcome records expected presentation-domain changes, capture post-tick
+  state, re-decide required layout/presentation-transform/render work for the same frame, then render.
+  Expected tick changes are the explicit exception to ordinary in-flight supersession; unrelated
+  mutations still supersede publication. Include pseudo-state/transition scenarios without E2.
+- Resolve presentation transforms separately on transform-only frames while geometry changes
+  invalidate percentage/origin-dependent transforms.
+- Keep static scrollbar geometry layout-owned but derive thumb position from current scroll at
+  render/input time only after an explicit `ScrollbarGeometry.Metrics` compatibility decision. Paint
+  cleanliness never implies renderer skipping for immediate-mode hosts.
 
-- Define ownership and propagation for DOM/value changes, stylesheet and inherited-style changes,
-  font-registry generations, viewport/containing-block changes, controls, scrolling, and animated
-  paint-only presentation values.
-- Separate style dirtiness, layout dirtiness, paint dirtiness, and text/intrinsic invalidation so
-  paint-only changes do not discard M4/M6 text results.
-- Specify how `StyleManagerImpl`, `LayoutServiceImpl`, optional frame runtime work, and manually
-  composed hosts consume and clear versions across failed or repeated passes.
-- Prove unchanged-frame skipping and targeted subtree invalidation before authorizing persistent
-  inline-fragment or full layout-result caching in a later epic or milestone plan.
-- Keep parser/style hot-path and general layout-object optimization as evidence-driven follow-up,
-  not implicit scope expansion.
+**Validation:** The scenario matrix covers unchanged, paint-only, scroll-only, transform-only,
+expected same-frame transition geometry/transform/paint changes, unrelated mutation during a tick,
+hover/focus/active pseudo-state changes, edit, font generation, resize, DOM/style, convergence/max-
+pass/failure, explicit invalidation, legacy force-full/custom-service eligibility, and mutation queued
+during processing. Expected transition changes cause neither endless retry nor one-frame latency;
+completion proves only whole-frame skipping.
 
-**Open Questions:**
+## Remaining Evidence-Driven Decision Gates
 
-- Whether invalidation versions live directly on nodes or in a runtime-owned side table for hosts
-  that use services independently.
-- How style rule changes communicate the smallest safe affected subtree without requiring a full
-  selector dependency index in the first iteration.
+- M1 must account for the actual 30/30 alternating warmup plus synchronized small-scene image
+  validation (31/30 pre-measure). It must move validation outside a fresh equal sequence or report the
+  complete distribution, then recapture the baseline.
+- M2 must approve each listed behavior/immutability/index/coordinate outcome and migration impact
+  before the linear builder path is implemented.
+- M3 must select exact registry/resource bounds and either support or explicitly reject renderer
+  context replacement under the approved UI-thread lifecycle.
+- M6 must select the public-compatible rendered-text path and bounded staging design from pinned
+  native-source evidence; general fragment/run culling remains gated on conservative ink and
+  Java-side clip/transform proof.
+- M7 must select per-family entry/weight/admission defaults and enablement from bounded churn and
+  aggregate retention evidence, not only warm latency.
+- M8 must finalize the compatible outcome/session API shape and epoch overflow policy while retaining
+  the already approved whole-frame-only, force-full legacy, failure, and manual-invalidation rules.
 
-**Validation:**
+## Cross-Cutting Risks and Stop Criteria
 
-- An architecture review records version owners, mutation entry points, propagation, service
-  ordering, and manual-host compatibility before implementation-level planning.
-- Unchanged-frame and targeted-mutation evidence demonstrates that skipped work is explainable and
-  stale layout cannot survive font, style, text, width, or scrollbar-gutter changes.
-- Full inline-fragment caching remains deferred until these invariants are executable and reliable.
-
-## Cross-Cutting Risks
-
-- **Behavior drift from faster algorithms:** A width, kerning reset, fallback, replacement, or
-  wrap-boundary change can desynchronize layout and rendering. Compare structural outputs and
-  pixels, not timing alone.
-- **UTF-16/code-point confusion:** Range units and cumulative advances must expose UTF-16 indices
-  while scanning code points. Stop a milestone if a valid surrogate pair can be split.
-- **Cache staleness:** The global font registry is mutable today. No font-dependent persistent
-  cache is safe until its generation is part of the contract.
-- **Memory moved rather than removed:** Cached strings, glyph arrays, control snapshots, and native
-  staging can trade allocation rate for retained memory. Require bounds, churn evidence, teardown,
-  and diagnostics.
-- **Unsafe renderer batching:** NanoVG state, clipping, transforms, opacity, fallback faces, and
-  ordering can make adjacent calls appear mergeable when they are not. Prefer state suppression
-  and staging over concatenation.
-- **Benchmark overfitting:** Optimize workload causes and complexity, then verify representative
-  mixed scripts, wrapping, controls, and offscreen scenes. Do not tune only the 5K single-font case.
-- **Parallel change conflicts:** M3 and M4 are safe to pursue in parallel after M2 because their
-  primary ownership is inline layout versus controls. M5 waits for M4 because both integrate input
-  and textarea rendering, but M5 can proceed in parallel with unfinished M3 work.
-- **Dirty-layout scope expansion:** M7 must not delay M2-M6 or retroactively make local caches depend
-  on full-frame orchestration. Conversely, M2-M6 must not claim safe full-fragment retention.
+- Stop any phase that can split a valid surrogate pair or loses a required source-coordinate mapping.
+- Stop font-dependent retention until M3 generation and teardown are production-ready.
+- Stop a cache lacking a hard/natural bound, independent clear semantics, or explainable aggregate
+  weight; weak ownership alone is not a bound.
+- Stop staging or buffer reuse unless native pointer lifetime and teardown order are reproducible.
+- Defer textarea-line or general text culling when conservative ink bounds or effective clip/
+  transform propagation are absent.
+- Treat any unresolved M2 contradiction as a prerequisite decision, not an implementation default.
+- Treat incomplete session mutation coverage as an explicit manual-invalidation requirement, not a
+  claim of automatic incremental correctness.
 
 ## Verification / Review Strategy
 
-- Review M1 as the evidence and compatibility contract before performance implementation. Preserve
-  local environment metadata and avoid absolute CI latency thresholds.
-- Review M2 with complexity scaling, allocation profiles, glyph/run counters, and exact metric/run
-  equivalence before considering persistent caching.
-- After M2, M3 and M4 may be planned and reviewed independently. Re-run focused font, inline
-  whitespace/layout, input viewport/behavior, textarea metrics/behavior, and supplementary Unicode
-  regressions at each boundary.
-- Review M5 with recording sinks, state/call counters, native-allocation diagnostics, conservative
-  culling boundary cases, hidden-context pixel validation, and local CPU/GPU-complete reports.
-- Review M6 cache families separately by ownership and key contract. Require generation,
-  invalidation, bound/weight, eviction, clear/teardown, and cache-disabled comparison evidence for
-  each family before enabling it by default.
-- Treat E4 baseline values as comparison points on equivalent hardware only. Use scaling shape,
-  normalized allocation, deterministic operation counts, behavioral tests, and pixels as the
-  portable review evidence.
-- Review M7 as an architecture initiative with explicit mutation/ownership tables and unchanged-
-  frame/subtree scenarios before creating any nested implementation plan for retained layout.
+- Use supported focused tasks such as `./gradlew :spinygui.core:test`,
+  `./gradlew :spinygui.core.backend.lwjgl.nanovg:test`, and
+  `./gradlew :spinygui.benchmark:test`; phase documents name verified class filters.
+- Capture a paired timed/allocation report by invoking
+  `./gradlew :spinygui.benchmark:benchmarkReport` once. Do not run `jmhCpu` and `jmhRendering` first
+  and then invoke `benchmarkReport`, because that would archive another pair.
+- Use `jmhCpu` or `jmhRendering` alone only for an explicitly unpaired local investigation whose
+  output is not presented as the paired E5 baseline.
+- Keep diagnostics-enabled counter-only execution separate from diagnostics-disabled timed and
+  allocation evidence.
+- Run `./gradlew test` at milestone integration boundaries; no benchmark latency or image threshold
+  enters normal `test`/`check`.
 
 ## Dependency Graph
 
 ```mermaid
 flowchart TD
-  M1["M1: Establish the performance evidence and compatibility boundary"]
-  M2["M2: Produce resolved measurement in one linear pass"]
-  M3["M3: Make inline text preparation range- and code-point-based"]
-  M4["M4: Share immutable editable-control text snapshots"]
-  M5["M5: Bound and reduce NanoVG text submission work"]
-  M6["M6: Add bounded text cache infrastructure with explicit generations"]
-  M7["M7: Establish dirty style and layout ownership for future retained layout reuse"]
+  E4["External: accepted and committed E4/M1/P1"]
+  M1["M1: Repair evidence and comparability"]
+  M2["M2: Approve measurement contracts and implement linear resolution"]
+  M3["M3: Establish font identity, generations, and lifecycle"]
+  M4["M4: Prepare inline text with ranges and code points"]
+  M5["M5: Share bounded editable-control snapshots"]
+  M6["M6: Bound NanoVG text submission"]
+  M7["M7: Add bounded generation-safe text caches"]
+  M8["M8: Add opt-in whole-frame dirty orchestration"]
+  E4 --> M1
   M1 --> M2
-  M2 --> M3
+  M1 --> M3
   M2 --> M4
-  M4 --> M5
+  M3 --> M4
+  M2 --> M5
+  M3 --> M5
   M3 --> M6
+  M4 --> M6
   M5 --> M6
-  M6 --> M7
+  M2 --> M7
+  M3 --> M7
+  M4 --> M7
+  M5 --> M7
+  M6 --> M8
+  M7 --> M8
 ```

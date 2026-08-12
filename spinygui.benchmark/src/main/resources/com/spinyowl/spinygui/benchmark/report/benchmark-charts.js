@@ -18,22 +18,22 @@
         }
     }
 
-    function chartOptions(xScale) {
+    function chartOptions(xScale, xTitle, yTitle) {
         return {
             indexAxis:'y',
             responsive:true,
             maintainAspectRatio:false,
             animation:false,
             scales:{
-                x:{...xScale, ticks:{color:colors.muted}, grid:{color:colors.grid}},
-                y:{ticks:{color:colors.muted}, grid:{color:colors.grid}}
+                x:{...xScale, title:{display:true, text:xTitle, color:colors.text}, ticks:{color:colors.muted}, grid:{color:colors.grid}},
+                y:{title:{display:true, text:yTitle, color:colors.text}, ticks:{color:colors.muted}, grid:{color:colors.grid}}
             },
             plugins:{legend:{labels:{color:colors.text}}, tooltip:{backgroundColor:'#080c12', titleColor:colors.text, bodyColor:colors.text}}
         };
     }
 
-    function cpuConfig(label, color, value, tooltipLines) {
-        const options = chartOptions({type:'logarithmic'});
+    function cpuConfig(xTitle, yTitle, label, color, value, tooltipLines) {
+        const options = chartOptions({type:'logarithmic'}, xTitle, yTitle);
         options.plugins.tooltip.callbacks = {label(context) {
             return tooltipLines(report.cpu[context.dataIndex]);
         }};
@@ -63,8 +63,8 @@
         }
     };
 
-    function renderingConfig(label, fields) {
-        const options = chartOptions({type:'linear', min:0, max:16667});
+    function renderingConfig(xTitle, yTitle, label, fields) {
+        const options = chartOptions({type:'linear', min:0, max:16667}, xTitle, yTitle);
         return {
             type:'bar',
             data:{
@@ -80,14 +80,14 @@
         };
     }
 
-    mountChart('cpu-latency-chart', cpuConfig('Latency (us/op)', colors.blue, row => row.latency,
+    mountChart('cpu-latency-chart', cpuConfig('Latency (us/op)', 'CPU operation', 'Latency (us/op)', colors.blue, row => row.latency,
         row => [`${row.latency} us/op`, `Uncertainty: ${row.uncertainty === null ? 'not reported' : `${row.uncertainty} us/op`}`]));
-    mountChart('cpu-allocation-chart', cpuConfig('Allocation (B/op)', colors.orange, row => row.allocation,
+    mountChart('cpu-allocation-chart', cpuConfig('Allocation (B/op)', 'CPU operation', 'Allocation (B/op)', colors.orange, row => row.allocation,
         row => [`${row.allocation} B/op`, `Allocation rate: ${row.allocationRate === null ? 'not reported' : `${row.allocationRate} MB/sec`}`]));
-    mountChart('cpu-rendering-chart', renderingConfig('CPU submission latency', [
+    mountChart('cpu-rendering-chart', renderingConfig('Latency (us)', 'Rendering scene', 'CPU submission latency', [
         ['Median', 'cpuMedian', colors.blue], ['p95', 'cpuP95', colors.orange], ['p99', 'cpuP99', colors.purple]
     ]));
-    mountChart('gpu-rendering-chart', renderingConfig('GPU-complete latency', [
+    mountChart('gpu-rendering-chart', renderingConfig('Latency (us)', 'Rendering scene', 'GPU-complete latency', [
         ['Median', 'gpuMedian', colors.blue], ['p95', 'gpuP95', colors.orange], ['p99', 'gpuP99', colors.purple]
     ]));
 
@@ -96,15 +96,21 @@
     let historyChart = null;
     let activeTrend = null;
 
+    function historyMetricTitle(trend) {
+        return trend.id.startsWith('cpu-') ? 'CPU latency (us/op)' : 'GPU p99 latency (us)';
+    }
+
     function historyConfig(trend) {
         activeTrend = trend;
         return {
             type:'line',
             data:{labels:report.historyRuns, datasets:[{label:`${trend.label} (${trend.unit})`, data:trend.values,
-                borderColor:colors.blue, backgroundColor:colors.blue, pointBackgroundColor:'#f2d05c', spanGaps:false}]},
+                borderColor:colors.blue, backgroundColor:colors.blue, pointBackgroundColor:'#f2d05c', spanGaps:false,
+                segment:{borderColor(context) { const change = trend.changes[context.p1DataIndex];
+                    return change && /^[+-]/.test(change) ? colors.blue : 'transparent'; }}}]},
             options:{responsive:true, maintainAspectRatio:false, animation:false,
-                scales:{x:{ticks:{color:colors.muted},grid:{color:colors.grid}},
-                    y:{min:trend.minimum,max:trend.maximum,ticks:{color:colors.muted},grid:{color:colors.grid}}},
+                scales:{x:{title:{display:true, text:'Benchmark run', color:colors.text}, ticks:{color:colors.muted},grid:{color:colors.grid}},
+                    y:{min:trend.minimum,max:trend.maximum,title:{display:true, text:historyMetricTitle(trend), color:colors.text},ticks:{color:colors.muted},grid:{color:colors.grid}}},
                 plugins:{legend:{labels:{color:colors.text}}, tooltip:{backgroundColor:'#080c12', titleColor:colors.text, bodyColor:colors.text,
                     callbacks:{title(context) { return report.historyRuns[context[0].dataIndex]; }, label(context) {
                         return `${Number(context.parsed.y).toLocaleString()} ${activeTrend.unit}`;
@@ -129,6 +135,7 @@
         activeTrend = trend;
         historyChart.options.scales.y.min = trend.minimum;
         historyChart.options.scales.y.max = trend.maximum;
+        historyChart.options.scales.y.title.text = historyMetricTitle(trend);
         historyChart.update();
     }
 

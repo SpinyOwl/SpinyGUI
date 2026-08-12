@@ -9,7 +9,7 @@ Prevent the large selected trend chart from causing page-level horizontal overfl
 ## Dependencies
 
 - Depends on: T12 complete.
-- Enables: None.
+- Enables: T14.
 - Parallelizable with: None.
 
 ## Required Changes

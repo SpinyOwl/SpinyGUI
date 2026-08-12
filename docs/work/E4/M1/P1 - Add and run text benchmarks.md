@@ -83,6 +83,12 @@ Implement calculation and rendering benchmarks that produce reproducible local r
 ### T13: Contain Trend Explorer Width
 
 **Depends on:** T12.
+**Enables:** T14.
+**Parallelizable with:** None.
+
+### T14: Improve Benchmark Chart Readability
+
+**Depends on:** T13.
 **Enables:** None.
 **Parallelizable with:** None.
 
@@ -103,6 +109,7 @@ flowchart TD
   T11["T11: Prevent Historical Run Overwrite"]
   T12["T12: Add Historical Trend Charts"]
   T13["T13: Contain Trend Explorer Width"]
+  T14["T14: Improve Benchmark Chart Readability"]
   T1 --> T2
   T1 --> T3
   T2 --> T4
@@ -116,4 +123,5 @@ flowchart TD
   T11 --> T10
   T10 --> T12
   T12 --> T13
+  T13 --> T14
 ```
