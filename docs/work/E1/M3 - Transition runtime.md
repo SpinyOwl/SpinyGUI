@@ -1,5 +1,7 @@
 # M3: Transition runtime
 
+**Status:** Implemented subset
+
 ## Goal
 Create deterministic, retargetable presentation tracks from style changes without mutating computed CSS.
 
@@ -42,4 +44,3 @@ flowchart TD
   P1 --> P2
   P2 --> P3
 ```
-

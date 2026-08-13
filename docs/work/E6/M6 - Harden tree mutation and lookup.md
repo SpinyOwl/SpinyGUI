@@ -1,5 +1,7 @@
 # M6: Harden Tree Mutation and Lookup
 
+**Status:** Planned
+
 Parent plan: `docs/work/E6 - Frame pipeline performance.md`
 
 ## Goal

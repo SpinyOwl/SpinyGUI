@@ -1,5 +1,7 @@
 # M7: Add Bounded Generation-Safe Text Caches
 
+**Status:** Planned
+
 Parent plan: `docs/work/E5 - Text performance improvements.md`
 
 ## Goal

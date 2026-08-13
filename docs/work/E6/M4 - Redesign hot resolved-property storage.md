@@ -1,5 +1,7 @@
 # M4: Redesign Hot Resolved-Property Storage
 
+**Status:** Planned
+
 Parent plan: `docs/work/E6 - Frame pipeline performance.md`
 
 ## Goal

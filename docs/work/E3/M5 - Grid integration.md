@@ -1,9 +1,11 @@
 # M5: Grid integration
 
+**Status:** Implemented subset
+
 ## Goal
 
-Integrate final grid boxes with alignment, stretch, nested child layout, scrolling, clipping, and
-input behavior.
+Integrate final grid boxes with item alignment, stretch, nested child layout, scrolling, clipping,
+and input geometry.
 
 **Depends on:** M4.
 **Enables:** M6.
@@ -14,6 +16,11 @@ input behavior.
 - Parent epic: `docs/work/E3 - CSS Grid support.md`.
 - M4 produces final item areas and occupancy.
 - Existing renderer and input paths consume final layout boxes; M5 must preserve that boundary.
+
+## Current Boundary
+
+Item alignment/stretch, nested-grid reflow, and overflow metrics are implemented. Container-level
+`justify-content`/`align-content` and broader control/text interaction proof remain open.
 
 ## Phases
 

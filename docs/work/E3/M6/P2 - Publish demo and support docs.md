@@ -1,5 +1,7 @@
 # P2: Publish demo and support docs
 
+**Status:** In progress
+
 ## Goal
 
 Create a manual grid proof surface and publish only the support claims backed by M6/P1 tests.

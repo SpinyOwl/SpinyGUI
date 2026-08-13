@@ -1,5 +1,7 @@
 # M1: Transform contract
 
+**Status:** Complete
+
 ## Goal
 Define one backend-neutral 2D transform and visual-coordinate contract before parser, renderer, or input work.
 
@@ -33,4 +35,3 @@ flowchart TD
   P2["P2: Define visual-coordinate boundary"]
   P1 --> P2
 ```
-

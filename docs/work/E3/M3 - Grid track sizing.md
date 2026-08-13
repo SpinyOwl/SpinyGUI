@@ -1,5 +1,7 @@
 # M3: Grid track sizing
 
+**Status:** Implemented subset
+
 ## Goal
 
 Expand explicit and implicit tracks and resolve their Grid Level 1 sizes before full item
@@ -13,7 +15,8 @@ placement is introduced.
 
 - Parent epic: `docs/work/E3 - CSS Grid support.md`.
 - M2 has a dedicated formatter and fixed-track geometry.
-- Intrinsic contributions must use existing child-layout measurement boundaries.
+- The current implementation covers the supported track kinds and implicit tracks; complete
+  intrinsic contribution and convergence proof remains open.
 
 ## Phases
 

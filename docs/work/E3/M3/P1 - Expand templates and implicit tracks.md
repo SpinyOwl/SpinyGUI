@@ -1,5 +1,7 @@
 # P1: Expand templates and implicit tracks
 
+**Status:** Implemented subset
+
 ## Goal
 
 Turn typed explicit templates and placement demand into an ordered row/column track model with

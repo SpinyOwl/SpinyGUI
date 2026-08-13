@@ -1,5 +1,7 @@
 # P2: Parse and normalize declarations
 
+**Status:** Implemented subset
+
 ## Goal
 
 Map the supported Grid Level 1 CSS subset into the M1 typed values and normalize supported

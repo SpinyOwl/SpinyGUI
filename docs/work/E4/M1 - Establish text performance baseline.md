@@ -1,5 +1,7 @@
 # M1: Establish Text Performance Baseline
 
+**Status:** Complete with verification caveat
+
 Parent plan: `docs/work/E4 - Text performance benchmarks.md`
 
 ## Goal

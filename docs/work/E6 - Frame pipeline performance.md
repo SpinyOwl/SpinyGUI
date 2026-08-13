@@ -1,5 +1,7 @@
 # E6: Frame Pipeline Performance
 
+**Status:** In progress
+
 ## Goal
 
 Reduce the CPU time and transient allocation of the non-text frame pipeline without changing the
@@ -54,6 +56,8 @@ validated path toward incremental style and layout work.
 
 ### M1: Establish Comparable Frame-Path Evidence
 
+**Status:** Complete
+
 **Document:** [M1 - Establish comparable frame-path evidence](E6/M1%20-%20Establish%20comparable%20frame-path%20evidence.md)
 
 **Purpose:** Turn the JFR findings into repeatable allocation and execution evidence for collapsed,
@@ -78,6 +82,8 @@ host frame cap cannot conceal per-frame work.
 owns each measured category.
 
 ### M1.5: Skip Proven No-Impact Input Frames
+
+**Status:** Complete
 
 **Document:** [M1.5 - Skip proven no-impact input frames](E6/M1.5%20-%20Skip%20proven%20no-impact%20input%20frames.md)
 
@@ -105,6 +111,8 @@ deferred until incremental invalidation owns those distinctions.
 actual or unproven UI effect retains force-full-equivalent presentation.
 
 ### M2: Remove Steady-State Traversal and Renderer Allocation
+
+**Status:** Planned
 
 **Document:** [M2 - Remove steady-state traversal and renderer allocation](E6/M2%20-%20Remove%20steady-state%20traversal%20and%20renderer%20allocation.md)
 
@@ -137,6 +145,8 @@ visual and coordinate fixtures remain equivalent.
 
 ### M3: Reduce Selector Candidate and Style-Rebuild Work
 
+**Status:** Planned
+
 **Document:** [M3 - Reduce selector candidate and style-rebuild work](E6/M3%20-%20Reduce%20selector%20candidate%20and%20style-rebuild%20work.md)
 
 **Purpose:** Remove repeated regex/tokenization and all-rule matching while preserving CSS matching,
@@ -166,6 +176,8 @@ work materially reduced.
 
 ### M4: Redesign Hot Resolved-Property Storage
 
+**Status:** Planned
+
 **Document:** [M4 - Redesign hot resolved-property storage](E6/M4%20-%20Redesign%20hot%20resolved-property%20storage.md)
 
 **Purpose:** Reduce string comparison, tree traversal, and allocation in resolved-style reads and
@@ -189,6 +201,8 @@ compatible; benchmarks demonstrate reduced `TreeMap`/`String.compareTo` pressure
 with evidence.
 
 ### M5: Add Incremental Style and Retained Layout Boundaries
+
+**Status:** Planned
 
 **Document:** [M5 - Add incremental style and retained layout boundaries](E6/M5%20-%20Add%20incremental%20style%20and%20retained%20layout%20boundaries.md)
 
@@ -217,6 +231,8 @@ subtrees, hover/focus/pressed state, resize, and failure/convergence equivalence
 execution.
 
 ### M6: Harden Tree Mutation and Lookup
+
+**Status:** Planned
 
 **Document:** [M6 - Harden tree mutation and lookup](E6/M6%20-%20Harden%20tree%20mutation%20and%20lookup.md)
 

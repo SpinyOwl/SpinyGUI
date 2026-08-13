@@ -1,5 +1,7 @@
 # M1: Repair Evidence and Comparability
 
+**Status:** Complete
+
 Parent plan: `docs/work/E5 - Text performance improvements.md`
 
 ## Goal

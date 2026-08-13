@@ -1,5 +1,7 @@
 # M8: Add Opt-In Whole-Frame Dirty Orchestration
 
+**Status:** Planned
+
 Parent plan: `docs/work/E5 - Text performance improvements.md`
 
 ## Goal

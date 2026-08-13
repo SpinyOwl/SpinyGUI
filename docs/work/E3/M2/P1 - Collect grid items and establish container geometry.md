@@ -1,5 +1,7 @@
 # P1: Collect grid items and establish container geometry
 
+**Status:** Implemented
+
 ## Goal
 
 Create the `GridLayout` boundary, reuse block container sizing, and identify normal-flow grid

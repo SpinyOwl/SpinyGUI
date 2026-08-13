@@ -17,11 +17,32 @@ Implement CSS Grid as a first-class SpinyGUI layout mode. `display: grid` should
 - The CSS value visitor already produces `TermIdent`, `TermLength`, `TermFloat`, `TermInteger`, `TermFunction`, and nested `TermList` values, which can represent grid grammar constructs such as slash-separated placement, `repeat(...)`, `minmax(...)`, and comma-separated template areas.
 - `LayoutServiceProvider` wires display values to `ElementLayout` implementations. `FlexLayout` is the closest precedent: it first uses block layout to establish the container box, then applies a dedicated layout algorithm to children.
 - `LayoutServiceImpl` owns hidden-subtree cleanup, child layout dispatch, layout-tree population, scroll/client size updates, and scroll offset clamping. Grid must preserve those contracts.
-- `docs/features/css-properties-support.md` currently marks all grid properties unchecked and classifies the feature family as XL subsystem work.
+- `docs/features/css-properties-support.md` records the currently supported Grid subset and its
+  explicit deferrals.
+
+## Current Implementation Status
+
+The original phase checklist below predates the current implementation. The following boundaries
+are now present in the code and covered by focused tests or the complex demo:
+
+- Phase 1/2: typed grid track, placement, template-area, gap, and auto-flow values; shorthand
+  expansion; resolved-style accessors; and defaults.
+- Phase 3: `Display.GRID` dispatches to `GridLayout`, which reuses block container sizing and
+  preserves hidden/absolute child eligibility rules.
+- Phase 4/5: explicit and implicit tracks, fixed/percentage/`fr`/`minmax`/`fit-content` sizing,
+  gaps, explicit placement, named areas, row/column auto-flow, and dense placement.
+- Phase 6: item alignment/stretch, nested-grid reflow, and grid overflow metrics.
+- Phase 7: parser/style tests, layout tests, and a real complex-demo grid example exist.
+
+The remaining work is deliberately narrower than the original plan: container-level
+`justify-content`/`align-content`, complete intrinsic-sizing/two-pass convergence, named-line and
+`span <name>` semantics, broader invalid-grammar and control/text interaction coverage, renderer
+and manual proof, and final support-matrix/plan checkbox reconciliation.
 
 ## Implementation Phases
 
 ### Phase 1: Style Contract and Parser Support
+**Status:** Implemented subset; unsupported grammar rejection remains open.
 **Purpose:** Make grid syntax parseable, validated, and resolved through the existing CSS property pipeline.
 
 **Changes:**
@@ -43,6 +64,7 @@ Implement CSS Grid as a first-class SpinyGUI layout mode. `display: grid` should
 **Risks:** The parser grammar can recognize more CSS than the semantic model supports. Keep support bounded to typed, tested grid values.
 
 ### Phase 2: Grid Value Model and Resolved Style Accessors
+**Status:** Implemented subset.
 **Purpose:** Provide strongly typed grid values for layout without passing raw parser terms into `GridLayout`.
 
 **Changes:**
@@ -63,6 +85,7 @@ Implement CSS Grid as a first-class SpinyGUI layout mode. `display: grid` should
 **Risks:** Overly generic value objects can become a second CSS AST. Keep the model focused on values needed by layout.
 
 ### Phase 3: Grid Formatting Context and Layout Service Wiring
+**Status:** Implemented.
 **Purpose:** Add a dedicated layout algorithm and dispatch `Display.GRID` to it.
 
 **Changes:**
@@ -83,6 +106,7 @@ Implement CSS Grid as a first-class SpinyGUI layout mode. `display: grid` should
 **Risks:** Grid item layout may require a second child layout pass after assigned item sizes are known. Keep the pass explicit and test nested content.
 
 ### Phase 4: Track Sizing Algorithm
+**Status:** Implemented subset; intrinsic sizing/convergence remains open.
 **Purpose:** Compute explicit and implicit grid tracks according to CSS Grid Level 1 sizing behavior.
 
 **Changes:**
@@ -105,6 +129,7 @@ Implement CSS Grid as a first-class SpinyGUI layout mode. `display: grid` should
 **Risks:** Intrinsic sizing is the highest-complexity part of full Grid. Add tests around each track sizing rule before broadening coverage.
 
 ### Phase 5: Item Placement Algorithm
+**Status:** Implemented subset; named-line and edge-case compatibility remains open.
 **Purpose:** Place grid items into explicit or implicit grid areas using CSS Grid line, span, area, and auto-placement rules.
 
 **Changes:**
@@ -127,6 +152,7 @@ Implement CSS Grid as a first-class SpinyGUI layout mode. `display: grid` should
 **Risks:** Browser behavior around invalid and overlapping placement has many edge cases. Document any intentionally unsupported or simplified behavior in the tests and support matrix.
 
 ### Phase 6: Alignment, Stretch, Overflow, and Nested Layout Integration
+**Status:** Implemented subset; container alignment and broader interaction proof remain open.
 **Purpose:** Make grid layout behave correctly with existing style, overflow, render, and input systems.
 
 **Changes:**
@@ -148,6 +174,7 @@ Implement CSS Grid as a first-class SpinyGUI layout mode. `display: grid` should
 **Risks:** Alignment properties are shared with flex concepts but not identical. Keep grid-specific behavior separate when semantics differ.
 
 ### Phase 7: Regression Tests, Demo Coverage, and Docs Update
+**Status:** In progress.
 **Purpose:** Lock behavior down and make support status visible.
 
 **Changes:**

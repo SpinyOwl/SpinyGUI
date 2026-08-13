@@ -1,5 +1,7 @@
 # P2: Integrate nested layout overflow and input
 
+**Status:** Implemented subset
+
 ## Goal
 
 Re-layout child content after grid sizing and prove existing overflow, clipping, rendering, and

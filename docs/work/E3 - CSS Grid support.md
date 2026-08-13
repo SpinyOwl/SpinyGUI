@@ -1,5 +1,7 @@
 # E3 - CSS Grid support
 
+**Status:** In progress
+
 ## Goal
 
 Deliver a first-class CSS Grid Level 1 formatting context for SpinyGUI. A grid container must
@@ -14,14 +16,31 @@ preserve the existing layout, overflow, rendering, and hit-testing contracts.
 
 ## Context
 
-- `display: grid` currently resolves but is routed to `BlockLayout`; it does not create a grid
-  formatting context.
-- `GridPropertyProvider` currently validates and stores many values as raw terms. Layout must not
-  consume those parser terms directly.
+- `display: grid` resolves through the normal property pipeline and dispatches to `GridLayout`.
+- `GridPropertyProvider` converts the supported grammar into typed grid values. Unsupported and
+  edge-case grammar still needs broader rejection and compatibility coverage.
 - `FlexLayout`, `BlockLayout`, `LayoutServiceImpl`, and the existing overflow and nested-layout
   paths define the compatibility boundary for a new layout mode.
 - [Display Grid Implementation Plan](../features/display-grid-implementation-plan.md) is the
   source research document; this epic is the execution graph.
+
+## Verified Implementation Boundary
+
+The current checkout already contains and tests a substantial Grid Level 1 subset:
+
+- typed track, placement, template-area, gap, and auto-flow values with shorthand expansion;
+- dedicated `GridLayout` dispatch with fixed, percentage, `fr`, `minmax`, `fit-content`, and
+  repeated tracks;
+- explicit placement, named template areas, row/column auto-flow, dense packing, implicit tracks,
+  item alignment/stretch, nested grid reflow, and grid overflow metrics;
+- complex-demo coverage using real grid CSS; and
+- focused style/layout tests covering parser resolution, fixed tracks, placement, areas, flexible
+  sizing, overflow, positioned containers, and nested grids.
+
+This is an implemented subset, not complete Grid Level 1 support. Remaining evidence and behavior
+boundaries include container-level `justify-content`/`align-content`, full intrinsic-sizing
+convergence, named-line and `span <name>` semantics, broader invalid-grammar coverage, control/text
+interaction regressions, renderer/manual proof, and final support-matrix reconciliation.
 
 ## Assumptions and Open Questions
 
@@ -61,6 +80,8 @@ silently treating it as supported.
 - Whether named-line repetition and `span <name>` can be fully represented without a larger CSS
   value-model change.
 
+**Status:** Implemented subset.
+
 **Validation:**
 
 - Style tests prove equivalent longhand and shorthand declarations produce identical typed values.
@@ -94,6 +115,8 @@ grid-specific layout component own item collection, cell geometry, and child-siz
 - Whether absolute descendants require a grid-area containing-block rule beyond current positioned
   ancestor behavior.
 
+**Status:** Implemented.
+
 **Validation:**
 
 - Fixed-track grids produce expected border-box coordinates and sizes.
@@ -126,6 +149,8 @@ rules can be tested as deterministic geometry independently of renderer behavior
 - Whether `fit-content` and intrinsic contributions require new measurement APIs, or can be
   derived safely from the existing text and child layout data.
 
+**Status:** Implemented subset.
+
 **Validation:**
 
 - Focused geometry tests cover each track kind, gaps, min/max constraints, and implicit tracks.
@@ -155,6 +180,8 @@ template areas, and auto-placement; do not encode placement decisions into rende
 
 - How strictly to match browser behavior for named-line ambiguity and overlapping items; record
   any bounded deviations in tests and support documentation.
+
+**Status:** Implemented subset.
 
 **Validation:**
 
@@ -188,6 +215,8 @@ from final layout boxes.
 - Whether item baseline alignment belongs in this milestone or should be documented as a deferred
   Level 1 limitation if the current inline baseline model cannot support it safely.
 
+**Status:** Implemented subset.
+
 **Validation:**
 
 - Nested and scrollable grid tests verify final geometry, interaction, and scroll metrics.
@@ -218,6 +247,8 @@ demo, not parser registration alone.
 
 - None; unresolved compatibility decisions from M1–M5 must be documented before this milestone is
   complete.
+
+**Status:** In progress.
 
 **Validation:**
 

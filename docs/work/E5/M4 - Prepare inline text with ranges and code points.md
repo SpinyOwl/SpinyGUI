@@ -1,5 +1,7 @@
 # M4: Prepare Inline Text with Ranges and Code Points
 
+**Status:** Planned
+
 Parent plan: `docs/work/E5 - Text performance improvements.md`
 
 ## Goal

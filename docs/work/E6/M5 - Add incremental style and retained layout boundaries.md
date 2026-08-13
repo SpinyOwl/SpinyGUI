@@ -1,5 +1,7 @@
 # M5: Add Incremental Style and Retained Layout Boundaries
 
+**Status:** Planned
+
 Parent plan: `docs/work/E6 - Frame pipeline performance.md`
 
 ## Goal

@@ -1,5 +1,7 @@
 # M5: Share Bounded Editable-Control Snapshots
 
+**Status:** Planned
+
 Parent plan: `docs/work/E5 - Text performance improvements.md`
 
 ## Goal

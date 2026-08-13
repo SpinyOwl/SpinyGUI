@@ -1,5 +1,7 @@
 # M4: Grid placement and auto-flow
 
+**Status:** Implemented subset
+
 ## Goal
 
 Resolve explicit placement and template areas, then fill remaining cells with deterministic
@@ -12,7 +14,13 @@ Grid Level 1 auto-flow behavior.
 ## Context
 
 - Parent epic: `docs/work/E3 - CSS Grid support.md`.
-- M3 provides final track lines and bounded measurement behavior.
+- M3 provides the supported track lines and bounded measurement behavior.
+
+## Current Boundary
+
+Numeric placement, supported spans, named template areas, row/column auto-flow, and dense
+placement are implemented. Named-line ambiguity, `span <name>`, and overlapping-item edge cases
+still require explicit compatibility decisions and proof.
 
 ## Phases
 

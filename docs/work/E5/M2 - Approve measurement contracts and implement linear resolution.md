@@ -1,5 +1,7 @@
 # M2: Approve Measurement Contracts and Implement Linear Resolution
 
+**Status:** Planned
+
 Parent plan: `docs/work/E5 - Text performance improvements.md`
 
 ## Goal

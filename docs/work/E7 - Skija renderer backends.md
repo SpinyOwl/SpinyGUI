@@ -1,9 +1,11 @@
 # E7: Skija Renderer Backends
 
+**Status:** Planned
+
 ## Document Context
 
 - Parent: None.
-- Children: Planned milestone documents under `docs/work/E7/`.
+- Children: No milestone documents are present yet; the planned milestone breakdown remains to be created.
 - Related: [Project Structure](../../PROJECT_STRUCTURE.md), [Agent Code Style And Principles](../../AGENTS_CODE_STYLE.md), [E6: Frame Pipeline Performance](E6%20-%20Frame%20pipeline%20performance.md).
 - Next: M1 - Define renderer host and Skija compatibility boundaries.
 

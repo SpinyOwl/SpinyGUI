@@ -1,5 +1,7 @@
 # M3: Establish Font Identity, Generations, and Lifecycle
 
+**Status:** Planned
+
 Parent plan: `docs/work/E5 - Text performance improvements.md`
 
 ## Goal

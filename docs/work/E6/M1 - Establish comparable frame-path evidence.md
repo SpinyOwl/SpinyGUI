@@ -1,5 +1,7 @@
 # M1: Establish Comparable Frame-Path Evidence
 
+**Status:** Complete
+
 Parent plan: `docs/work/E6 - Frame pipeline performance.md`
 
 ## Goal

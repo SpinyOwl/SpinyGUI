@@ -1,5 +1,7 @@
 # P1: Add end-to-end grid coverage
 
+**Status:** In progress
+
 ## Goal
 
 Prove the delivered grid subset across style resolution, layout geometry, NanoVG rendering, and

@@ -1,9 +1,16 @@
 # E2: Frame runtime integration
 
+**Status:** Planned
+
 ## Goal
 Offer an optional, higher-level frame runtime that composes existing manual services in one documented lifecycle while retaining direct host integration as a supported path.
 
 ## Context
+
+> **Current status note:** No frame-runtime implementation was found in the current
+> checkout. The checked documents under `docs/work/E2/M1/P1/` describe the separate
+> font-family resolution initiative and should not be treated as evidence for this epic.
+
 - E1/M3 establishes the explicit host-owned transition coordinator update boundary; it is the prerequisite integration contract.
 - Current demos manually assemble parsing, style, layout, event, renderer, and animation services, and no shared runtime owns their ordering.
 - The runtime must remain backend-agnostic: renderers consume a styled/laid-out `Frame` and core must not depend on NanoVG.
@@ -11,6 +18,7 @@ Offer an optional, higher-level frame runtime that composes existing manual serv
 ## Milestones
 
 ### M1: Define optional runtime contract
+**Status:** Planned
 **Purpose:** Specify ownership, public lifecycle, extension points, and coexistence with manually composed hosts.
 
 **Depends on:** E1/M3.
@@ -27,6 +35,7 @@ Offer an optional, higher-level frame runtime that composes existing manual serv
 **Validation:** A reviewed public contract and fake-service ordering tests make it possible to implement without guessing behavior.
 
 ### M2: Implement core frame orchestration
+**Status:** Planned
 **Purpose:** Provide the opt-in runtime implementation and deterministic lifecycle tests.
 
 **Depends on:** M1.
@@ -43,6 +52,7 @@ Offer an optional, higher-level frame runtime that composes existing manual serv
 **Validation:** A fake host proves each service runs exactly in documented order, and manual composition remains source/binary compatible where feasible.
 
 ### M3: Integrate reference hosts and document adoption
+**Status:** Planned
 **Purpose:** Validate the option in demos and provide an incremental adoption path.
 
 **Depends on:** M2.

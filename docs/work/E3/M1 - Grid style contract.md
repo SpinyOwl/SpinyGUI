@@ -1,5 +1,7 @@
 # M1: Grid style contract
 
+**Status:** Implemented subset
+
 ## Goal
 
 Replace raw grid CSS terms with a bounded, typed Grid Level 1 style contract that the layout
@@ -12,8 +14,8 @@ engine can consume without reparsing stylesheet syntax.
 ## Context
 
 - Parent epic: `docs/work/E3 - CSS Grid support.md`.
-- `GridPropertyProvider` currently validates broad grammar and stores many values as raw terms.
-- Typed values must be complete before `GridLayout` is introduced.
+- `GridPropertyProvider` resolves the supported grammar into typed values consumed by layout.
+- Named-line repetition, `span <name>`, and complete invalid-grammar rejection remain bounded gaps.
 
 ## Phases
 

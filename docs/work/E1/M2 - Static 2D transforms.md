@@ -1,5 +1,7 @@
 # M2: Static 2D transforms
 
+**Status:** Implemented subset
+
 ## Goal
 Support static transform and transform-origin through CSS parsing, NanoVG painting, clipping/scrolling, and pointer targeting.
 
@@ -42,4 +44,3 @@ flowchart TD
   P1 --> P2
   P2 --> P3
 ```
-

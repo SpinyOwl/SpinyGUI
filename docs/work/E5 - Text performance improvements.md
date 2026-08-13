@@ -1,5 +1,7 @@
 # E5: Text Performance Improvements
 
+**Status:** In progress
+
 ## Goal
 
 Deliver an implementation-ready, dependency-first text-performance architecture that repairs the
@@ -55,6 +57,8 @@ explicit session proves their outputs current.
 
 ### M1: Repair evidence and comparability
 
+**Status:** Complete
+
 **Document:** [M1 - Repair evidence and comparability](E5/M1%20-%20Repair%20evidence%20and%20comparability.md)
 
 **Purpose:** Make workload identity, diagnostics, reporting, renderer/control recordings, and
@@ -90,6 +94,8 @@ evidence exposes current duplicate work; one diagnostics-disabled paired invocat
 reviewed baseline.
 
 ### M2: Approve measurement contracts and implement linear resolution
+
+**Status:** Planned
 
 **Document:** [M2 - Approve measurement contracts and implement linear resolution](E5/M2%20-%20Approve%20measurement%20contracts%20and%20implement%20linear%20resolution.md)
 
@@ -129,6 +135,8 @@ and no quadratic suffix copying/moving.
 
 ### M3: Establish font identity, generations, and lifecycle
 
+**Status:** Planned
+
 **Document:** [M3 - Establish font identity generations and lifecycle](E5/M3%20-%20Establish%20font%20identity%20generations%20and%20lifecycle.md)
 
 **Purpose:** Create one real core font registry/resource identity, monotonic semantic generations,
@@ -164,6 +172,8 @@ contract and production generation consumed by M4/M5/M6/M7.
 
 ### M4: Prepare inline text with ranges and code points
 
+**Status:** Planned
+
 **Document:** [M4 - Prepare inline text with ranges and code points](E5/M4%20-%20Prepare%20inline%20text%20with%20ranges%20and%20code%20points.md)
 
 **Purpose:** Reduce temporary strings/units and repeated preparation while initially preserving the
@@ -196,6 +206,8 @@ for null-text spacer/element/union fragments. Durable allocation is not claimed 
 fragment coalescing remains a separately approved behavior change.
 
 ### M5: Share bounded editable-control snapshots
+
+**Status:** Planned
 
 **Document:** [M5 - Share bounded editable-control snapshots](E5/M5%20-%20Share%20bounded%20editable-control%20snapshots.md)
 
@@ -230,6 +242,8 @@ separately approves an API.
 
 ### M6: Bound NanoVG text submission
 
+**Status:** Planned
+
 **Document:** [M6 - Bound NanoVG text submission](E5/M6%20-%20Bound%20NanoVG%20text%20submission.md)
 
 **Purpose:** Reduce and bound rendered-text preparation, UTF-8 staging, NanoVG text/state calls, and
@@ -258,6 +272,8 @@ renderer/context-owned frame-scoped or hard-capped UTF-8 staging owner.
 boundaries; context/font lifecycle matches M3; no unbounded or per-run native retention appears.
 
 ### M7: Add bounded generation-safe text caches
+
+**Status:** Planned
 
 **Document:** [M7 - Add bounded generation-safe text caches](E5/M7%20-%20Add%20bounded%20generation-safe%20text%20caches.md)
 
@@ -290,6 +306,8 @@ retention, generation safety, and linear disabled behavior. Pre-laid-out renderi
 not count as cache-reuse proof.
 
 ### M8: Add opt-in whole-frame dirty orchestration
+
+**Status:** Planned
 
 **Document:** [M8 - Add opt-in whole-frame dirty orchestration](E5/M8%20-%20Add%20opt-in%20whole-frame%20dirty%20orchestration.md)
 

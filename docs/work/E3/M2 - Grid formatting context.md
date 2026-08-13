@@ -1,9 +1,11 @@
 # M2: Grid formatting context
 
+**Status:** Implemented
+
 ## Goal
 
-Replace the current `Display.GRID -> BlockLayout` fallback with a dedicated grid formatting
-context that has correct item eligibility and fixed-track geometry.
+Dispatch `Display.GRID` to a dedicated grid formatting context with correct item eligibility and
+fixed-track geometry.
 
 **Depends on:** M1.
 **Enables:** M3.

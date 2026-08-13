@@ -1,5 +1,7 @@
 # E1: CSS Animation Support
 
+**Status:** In progress
+
 ## Goal
 Deliver bounded CSS motion support in this order: static 2D transforms, paint-only transitions, then keyframe animations on the same deterministic timeline.
 
@@ -11,21 +13,25 @@ Deliver bounded CSS motion support in this order: static 2D transforms, paint-on
 ## Milestones
 
 ### M1: Transform contract
+**Status:** Complete
 **Depends on:** None.
 **Enables:** M2, M3.
 **Parallelizable with:** None.
 
 ### M2: Static 2D transforms
+**Status:** Implemented subset
 **Depends on:** M1.
 **Enables:** M3, M6.
 **Parallelizable with:** None.
 
 ### M3: Transition runtime
+**Status:** Implemented subset
 **Depends on:** M1, M2.
 **Enables:** M4, M5.
 **Parallelizable with:** None.
 
 ### M4: CSS transitions
+**Status:** Implemented subset
 **Depends on:** M3.
 **Enables:** M5, M6.
 **Parallelizable with:** None.
@@ -36,11 +42,13 @@ pseudo-part changes remain immediate or deferred. Focused automated verification
 configured JDK.
 
 ### M5: Keyframe animations
+**Status:** Planned
 **Depends on:** M3, M4.
 **Enables:** M6.
 **Parallelizable with:** None.
 
 ### M6: Harden and document
+**Status:** Planned
 **Depends on:** M2, M4, M5.
 **Enables:** None.
 **Parallelizable with:** None.

@@ -1,5 +1,7 @@
 # M4: CSS transitions
 
+**Status:** Implemented subset
+
 ## Goal
 Render the approved transition subset end to end and make its support boundary visible.
 

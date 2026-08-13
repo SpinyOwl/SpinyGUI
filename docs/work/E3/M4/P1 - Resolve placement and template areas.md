@@ -1,5 +1,7 @@
 # P1: Resolve placement and template areas
 
+**Status:** Implemented subset
+
 ## Goal
 
 Resolve grid row/column declarations and named template areas into concrete grid ranges before

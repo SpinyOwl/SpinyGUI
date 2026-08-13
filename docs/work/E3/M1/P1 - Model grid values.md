@@ -1,5 +1,7 @@
 # P1: Model grid values
 
+**Status:** Implemented subset
+
 ## Goal
 
 Define the immutable Grid Level 1 value model and defaults required by style resolution and

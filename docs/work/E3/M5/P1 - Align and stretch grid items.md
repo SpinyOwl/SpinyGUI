@@ -1,5 +1,7 @@
 # P1: Align and stretch grid items
 
+**Status:** Implemented subset
+
 ## Goal
 
 Apply supported Grid Level 1 alignment and stretch semantics to already placed item areas.

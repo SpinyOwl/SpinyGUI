@@ -1,5 +1,7 @@
 # M6: Harden and document
 
+**Status:** Planned
+
 ## Goal
 Lock delivered behavior with resilience tests and maintain an exact support boundary.
 
@@ -33,4 +35,3 @@ flowchart TD
   P2["P2: Close documentation and next boundary"]
   P1 --> P2
 ```
-

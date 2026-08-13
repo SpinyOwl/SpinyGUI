@@ -1,5 +1,7 @@
 # M3: Reduce Selector Candidate and Style-Rebuild Work
 
+**Status:** Planned
+
 Parent plan: `docs/work/E6 - Frame pipeline performance.md`
 
 ## Goal

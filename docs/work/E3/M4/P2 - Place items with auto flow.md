@@ -1,5 +1,7 @@
 # P2: Place items with auto flow
 
+**Status:** Implemented subset
+
 ## Goal
 
 Fill unoccupied grid cells using row/column auto-flow, grow implicit tracks as required, and

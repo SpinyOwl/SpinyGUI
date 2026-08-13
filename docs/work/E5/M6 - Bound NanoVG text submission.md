@@ -1,5 +1,7 @@
 # M6: Bound NanoVG Text Submission
 
+**Status:** Planned
+
 Parent plan: `docs/work/E5 - Text performance improvements.md`
 
 ## Goal

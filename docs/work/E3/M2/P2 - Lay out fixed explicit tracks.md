@@ -1,5 +1,7 @@
 # P2: Lay out fixed explicit tracks
 
+**Status:** Implemented
+
 ## Goal
 
 Place eligible items into fixed explicit row and column tracks, proving the formatting-context

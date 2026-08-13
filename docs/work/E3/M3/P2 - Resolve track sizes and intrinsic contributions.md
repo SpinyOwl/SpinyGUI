@@ -1,5 +1,7 @@
 # P2: Resolve track sizes and intrinsic contributions
 
+**Status:** Implemented subset
+
 ## Goal
 
 Compute stable pixel geometry for supported grid tracks, including flexible and

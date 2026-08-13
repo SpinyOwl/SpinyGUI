@@ -1,5 +1,7 @@
 # M5: Keyframe animations
 
+**Status:** Planned
+
 ## Goal
 Add @keyframes and animation declarations on the transition scheduler and interpolation registry.
 
@@ -42,4 +44,3 @@ flowchart TD
   P1 --> P2
   P2 --> P3
 ```
-

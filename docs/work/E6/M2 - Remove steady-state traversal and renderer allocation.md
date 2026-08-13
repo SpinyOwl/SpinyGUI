@@ -1,5 +1,7 @@
 # M2: Remove Steady-State Traversal and Renderer Allocation
 
+**Status:** Planned
+
 Parent plan: `docs/work/E6 - Frame pipeline performance.md`
 
 ## Goal

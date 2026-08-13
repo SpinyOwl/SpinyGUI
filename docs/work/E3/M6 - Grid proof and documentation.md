@@ -1,5 +1,7 @@
 # M6: Grid proof and documentation
 
+**Status:** In progress
+
 ## Goal
 
 Prove the delivered Grid Level 1 subset through end-to-end tests and a real demo, then publish an
@@ -12,7 +14,8 @@ accurate support contract.
 ## Context
 
 - Parent epic: `docs/work/E3 - CSS Grid support.md`.
-- M5 completes layout and interaction integration; documentation must now follow tested behavior.
+- M5 provides the implemented subset; documentation must now follow tested behavior and record the
+  remaining alignment, intrinsic-sizing, interaction, renderer, and manual-verification limits.
 
 ## Phases
 
