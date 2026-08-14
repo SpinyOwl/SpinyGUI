@@ -95,12 +95,12 @@ reviewed baseline.
 
 ### M2: Approve measurement contracts and implement linear resolution
 
-**Status:** Planned
+**Status:** In progress
 
 **Document:** [M2 - Approve measurement contracts and implement linear resolution](E5/M2%20-%20Approve%20measurement%20contracts%20and%20implement%20linear%20resolution.md)
 
-**Purpose:** Resolve ambiguous behavior explicitly, then eliminate duplicate glyph resolution and
-quadratic suffix/run copying before persistent caches exist.
+**Purpose:** Encode the approved measurement contract, then eliminate duplicate glyph resolution and
+quadratic suffix copying before persistent caches exist.
 
 **Depends on:** M1.
 **Enables:** M4, M5, M7.
@@ -113,7 +113,7 @@ arrays freeze exactly once only after P3 final wrapping, deferred-suffix placeme
 kerning reset; wrapping reuses scanned primitives without repeated native probes.
 
 **Key Work:**
-- Approve `wordWrap`, replacement face, empty-chain, CR/LF, UTF-16 `charCount`, immutability,
+- Encode the approved `wordWrap`, replacement face, empty-chain, CR/LF/CRLF, UTF-16 ranges, immutability,
   fallback vertical metrics, zero/narrow width, surrogate-interior setter, and source-coordinate
   contracts plus exact horizontal/vertical rounding/accumulation order and caret midpoint ties with
   migration impact.
@@ -126,6 +126,8 @@ kerning reset; wrapping reuses scanned primitives without repeated native probes
   temporary `String` per measured range while current public `TextMeasurer` APIs remain compatible.
 - Distinguish logical glyph resolution from the multiple native glyph-index probes fallback may
   require.
+- Preserve the landed append-only `resolveRuns` glyph accumulation as partial linear evidence, while
+  removing the remaining duplicate measure/run/caret scans and deferred-suffix replay.
 - Prove linear builder/freeze work against long deferred suffixes, narrow widths, fallback
   transitions, and line-start kerning resets.
 
@@ -357,8 +359,8 @@ completion proves only whole-frame skipping.
 - M1 must account for the actual 30/30 alternating warmup plus synchronized small-scene image
   validation (31/30 pre-measure). It must move validation outside a fresh equal sequence or report the
   complete distribution, then recapture the baseline.
-- M2 must approve each listed behavior/immutability/index/coordinate outcome and migration impact
-  before the linear builder path is implemented.
+- M2/P1 must encode each approved behavior/immutability/index/coordinate outcome as Javadoc,
+  characterization/target fixtures, and migration notes before the linear builder path starts.
 - M3 must select exact registry/resource bounds and either support or explicitly reject renderer
   context replacement under the approved UI-thread lifecycle.
 - M6 must select the public-compatible rendered-text path and bounded staging design from pinned

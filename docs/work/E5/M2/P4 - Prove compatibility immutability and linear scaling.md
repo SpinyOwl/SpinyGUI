@@ -1,9 +1,17 @@
 # P4: Prove Compatibility, Immutability, and Linear Scaling
 
+**Status:** Planned
+
+## Document Context
+
+- **Parent:** [M2 - Approve measurement contracts and implement linear resolution](../M2%20-%20Approve%20measurement%20contracts%20and%20implement%20linear%20resolution.md)
+- **Previous:** [P3 - Integrate wrapping, line materialization, and caret queries](P3%20-%20Integrate%20wrapping%20line%20materialization%20and%20caret%20queries.md)
+- **Next:** [M4 - Prepare inline text with ranges and code points](../M4%20-%20Prepare%20inline%20text%20with%20ranges%20and%20code%20points.md) and [M5 - Share bounded editable-control snapshots](../M5%20-%20Share%20bounded%20editable-control%20snapshots.md)
+
 ## Goal
 
-Prove that uncached measurement follows every approved M2 contract, exposes immutable results where
-selected, and scales linearly under adversarial wrapping/fallback workloads.
+Prove that uncached measurement follows every approved M2 contract, exposes deep immutable results,
+and scales linearly under adversarial wrapping/fallback workloads.
 
 ## Non-Goals
 
@@ -52,7 +60,7 @@ behavior change lacks P1 approval/migration notes.
 **Parallelizable with:** None.
 
 **Changes:**
-- [ ] If P1 selected immutable results, attempt mutation of source lists after construction and every
+- [ ] Attempt mutation of source lists after construction and every
   returned line/run/glyph/line-local cumulative-caret/nested collection.
 - [ ] Verify records/builders/accessors/equality/hash/string remain compatible as approved and no
   measurement-local builder storage escapes.
@@ -61,8 +69,7 @@ behavior change lacks P1 approval/migration notes.
 **Acceptance Checks:**
 - [ ] Source-list mutation cannot alter a frozen result and returned nested collections reject or
   isolate mutation according to P1.
-- [ ] If any result remains intentionally mutable, its ownership and exclusion from persistent cache
-  values is explicit.
+- [ ] No public result or nested value retains a mutable source/builder alias.
 
 **Risks / Stop Criteria:** Do not describe a result as immutable while any nested mutable alias can
 change it.

@@ -1,5 +1,13 @@
 # P2: Build Resolved Primitives and Append-Only Builders
 
+**Status:** Planned
+
+## Document Context
+
+- **Parent:** [M2 - Approve measurement contracts and implement linear resolution](../M2%20-%20Approve%20measurement%20contracts%20and%20implement%20linear%20resolution.md)
+- **Previous:** [P1 - Approve resolved-measurement contracts](P1%20-%20Approve%20resolved-measurement%20contracts.md)
+- **Next:** [P3 - Integrate wrapping, line materialization, and caret queries](P3%20-%20Integrate%20wrapping%20line%20materialization%20and%20caret%20queries.md)
+
 ## Goal
 
 Scan source code points once into measurement-local resolved primitives and private append-only glyph/
@@ -17,7 +25,10 @@ output size without publishing incomplete public line results.
 
 - Parent milestone: `docs/work/E5/M2 - Approve measurement contracts and implement linear resolution.md`.
 - Phase entry gate: M2/P1 decisions and fixtures are approved.
-- Current `resolveRuns` repeats glyph selection and reconstructs growing immutable run glyph lists.
+- Current `resolveRuns` already appends accepted glyphs linearly and freezes once at each public run
+  boundary. Preserve that accepted narrow optimization, but do not mistake it for the M2 target:
+  `measureText` still scans/resolves source, accepted line ranges are resolved again for public runs,
+  wrap replay can revisit a deferred suffix, and caret lookup scans/resolves independently.
 
 ## Phase Tasks
 
@@ -47,20 +58,23 @@ output size without publishing incomplete public line results.
 **Risks / Stop Criteria:** Stop if resolution data must be recomputed to identify a later line/run or
 if the primitive conflates source and rendered code points.
 
-### T2: Add append-only glyph and run builders
-**Purpose:** Eliminate remove/copy/recreate behavior when extending same-face runs.
+### T2: Generalize append-only glyph and run builders
+**Purpose:** Retain the existing append-only run behavior while moving shared measurement data to
+private ranges that avoid duplicate resolution and premature public publication.
 
 **Depends on:** T1.
 **Enables:** T3.
 **Parallelizable with:** None.
 
 **Changes:**
-- [ ] Add measurement-local append-only storage for resolved glyphs and contiguous face runs with
-  amortized-linear growth and explicit slot append/move counters.
+- [ ] Reuse or adapt the accepted append-only glyph storage for measurement-local resolved glyphs
+  and contiguous face runs with amortized-linear growth and explicit slot append/move counters.
 - [ ] Represent run boundaries as ranges over builder storage until P3's one final public freeze rather
   than replacing a public run on each glyph; any P2 frozen snapshot is a private test representation.
 - [ ] Reserve P1 defensive-copy/record compatibility for P3's final public publication boundary; do
   not construct an incomplete public `ResolvedTextRun` in P2.
+- [ ] Preserve the current linear copied/moved-slot evidence while extending counters to distinguish
+  initial source resolution from later range materialization.
 
 **Acceptance Checks:**
 - [ ] A long single-face run performs one append per glyph and at most one private invariant-fixture

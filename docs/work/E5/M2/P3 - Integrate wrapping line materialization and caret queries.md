@@ -1,5 +1,13 @@
 # P3: Integrate Wrapping, Line Materialization, and Caret Queries
 
+**Status:** Planned
+
+## Document Context
+
+- **Parent:** [M2 - Approve measurement contracts and implement linear resolution](../M2%20-%20Approve%20measurement%20contracts%20and%20implement%20linear%20resolution.md)
+- **Previous:** [P2 - Build resolved primitives and append-only builders](P2%20-%20Build%20resolved%20primitives%20and%20append-only%20builders.md)
+- **Next:** [P4 - Prove compatibility, immutability, and linear scaling](P4%20-%20Prove%20compatibility%20immutability%20and%20linear%20scaling.md)
+
 ## Goal
 
 Use retained resolved primitives for wrapping and caret queries without rescanning/reprobing deferred
@@ -28,9 +36,10 @@ suffixes, and materialize final runs only after correct line-start kerning reset
 **Parallelizable with:** None.
 
 **Changes:**
-- [ ] Implement explicit newline and approved word/character wrap candidates as primitive indexes/
-  ranges, including first-line offset, zero/narrow width, oversized first primitive, spaces, and
-  trailing separators.
+- [ ] Implement atomic LF/CR/CRLF separators and `wordWrap=true` word-boundary candidates with
+  character-boundary fallback; implement `wordWrap=false` character boundaries directly.
+- [ ] Cover first-line offset, valid zero/narrow width, oversized first primitives, spaces, trailing
+  separators, and positive-infinite width while guaranteeing progress.
 - [ ] Transfer/defer suffix ranges without source rescan or native glyph/advance reprobe and bound
   candidate state by the active line/result.
 - [ ] Count primitive visits and glyph slots moved/copied for long suffix and one-code-point-per-line
@@ -84,8 +93,8 @@ policy.
 **Changes:**
 - [ ] Implement caret lookup over final line-local cumulative code-point boundaries/advances with the
   approved below/exactly-at/above midpoint tie, offset, empty-line, replacement, and coordinate behavior.
-- [ ] Update input/textarea setter/helper behavior to apply the P1 surrogate-interior decision
-  consistently, with migration tests.
+- [ ] Update input/textarea setter/helper behavior to clamp to source range and then snap backward
+  from a surrogate interior to the preceding valid code-point boundary, with migration tests.
 - [ ] Ensure all `TextMeasurer` caret/line/default entry points delegate without duplicate full scans
   beyond their documented call semantics.
 
