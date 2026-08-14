@@ -1,11 +1,18 @@
 # T1 - Add Typed Numeric Chart Payloads
 
+## Document Context
+
+- Parent: [P1 - Chart.js Report Implementation](../P1%20-%20Chart.js%20Report%20Implementation.md).
+- Children: None.
+- Related: [Chart.js benchmark charts source plan](../../../../superpowers/plans/2026-07-24-chartjs-benchmark-charts.md), Task 1.
+- Next: [T2 - Pin And Embed Chart.js Assets](T2%20-%20Pin%20And%20Embed%20Chart.js%20Assets.md).
+
 ## Status and dependency
 
 - Depends on: none.
 - Enables: T2.
-- Implementation commit under correction: `d58908b2bc43cd6e90b0d3dcd386ae36be9f5f25`.
-- Current review state: rejected once for a P2/Important regression involving absent optional CPU metrics.
+- Initial implementation commit: `d58908b2bc43cd6e90b0d3dcd386ae36be9f5f25`.
+- Current review state: accepted at `f8eb7687` after correcting the recorded P2/Important regression involving absent optional CPU metrics.
 
 ## Sources
 

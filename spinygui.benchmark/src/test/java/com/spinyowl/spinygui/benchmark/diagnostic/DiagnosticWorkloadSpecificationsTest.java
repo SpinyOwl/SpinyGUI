@@ -380,17 +380,20 @@ class DiagnosticWorkloadSpecificationsTest {
   }
 
   @Test
-  void scaledCpuFixturesExposeCurrentQuadraticGlyphMovementWithoutClocks() throws Exception {
+  void scaledCpuFixturesExposeCurrentLinearRunAssemblyWithoutClocks() throws Exception {
     List<Entry> entries = CounterDiagnosticsMain.runCpuScenarios();
     Map<String, Entry> byName =
         entries.stream()
             .collect(java.util.stream.Collectors.toMap(Entry::scenarioName, entry -> entry));
 
-    assertEquals(28, moved(byName.get("run-assembly-8")));
-    assertEquals(120, moved(byName.get("run-assembly-16")));
-    assertEquals(496, moved(byName.get("run-assembly-32")));
-    assertEquals(4, moved(byName.get("run-assembly-16")) / moved(byName.get("run-assembly-8")));
-    assertTrue(moved(byName.get("run-assembly-32")) > 4 * moved(byName.get("run-assembly-16")));
+    for (int glyphCount : List.of(8, 16, 32)) {
+      Entry entry = byName.get("run-assembly-" + glyphCount);
+      assertEquals(glyphCount, counter(entry, TextDiagnosticCounter.GLYPH_SLOTS_COPIED));
+      assertEquals(0, counter(entry, TextDiagnosticCounter.GLYPH_SLOTS_MOVED));
+      assertEquals(glyphCount, counter(entry, TextDiagnosticCounter.GLYPH_SLOT_BUILDER_APPENDS));
+      assertEquals(1, counter(entry, TextDiagnosticCounter.GLYPH_SLOT_BUILDER_FREEZES));
+      assertEquals(1, counter(entry, TextDiagnosticCounter.RUN_BUILDER_FREEZES));
+    }
     assertTrue(
         observed(
                 byName.get("multi-paragraph-fallback-deferred-suffix"),
@@ -626,8 +629,8 @@ class DiagnosticWorkloadSpecificationsTest {
             .diagnostics());
   }
 
-  private static long moved(Entry entry) {
-    return entry.counters().get(TextDiagnosticCounter.GLYPH_SLOTS_MOVED.id());
+  private static long counter(Entry entry, TextDiagnosticCounter counter) {
+    return entry.counters().get(counter.id());
   }
 
   private static long observed(Entry entry, String key) {

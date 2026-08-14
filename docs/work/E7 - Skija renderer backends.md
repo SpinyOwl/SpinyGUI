@@ -25,6 +25,10 @@ accepted only after a supported Skija/GLFW presentation path is demonstrated on 
 - Promising pixel-identical output between NanoVG and Skija where the underlying rasterizers differ.
 - Making Skija a transitive dependency of `spinygui.core`, `spinygui.core.backend`, or the aggregate
   `spinygui` module.
+- Building a generic benchmark-metric plugin framework or arbitrary metric dashboard before a second
+  renderer producer exists.
+- Requiring side-by-side multi-renderer capture in one report run; initial renderer benchmarking uses
+  one explicitly selected backend artifact per paired run.
 
 ## Architecture Constraints
 
@@ -42,6 +46,38 @@ accepted only after a supported Skija/GLFW presentation path is demonstrated on 
 - Skija's repository describes the bindings as public alpha; its documented GLFW example is OpenGL,
   while Vulkan support must be validated by a source-compatible prototype before a production backend
   contract is committed.
+
+## Renderer Benchmark Evidence Contract
+
+Before M2 or M3 adds a renderer benchmark producer, M1 must define the contract for a benchmark-only
+adapter boundary that leaves the core `Renderer` SPI unchanged and maps each supported backend to this
+common evidence:
+
+- Stable backend identity and display name, graphics API, renderer/library version, device/driver
+  provenance, and an explicit completion/synchronization mode.
+- Render-call CPU elapsed time measured immediately before `Renderer.render(...)` through its return.
+- Synchronized completion elapsed time measured from the same start through a backend-specific,
+  documented completion fence. Reports call this synchronized completion latency, not pure GPU time.
+- Median, p95, p99, measured sample count, warmup count, and derived 60/120 Hz budget percentages for
+  both common durations.
+- Shared declared workload identity and observed scene evidence, including nodes, fragments, code
+  points, resolved glyphs, and resolved runs where the scene produces them.
+
+Backend identity, graphics API, completion mode, workload/profile identity, environment, and benchmark
+settings participate in history partitioning and delta qualification. Different backends may be shown
+as separate evidence, but they never receive a signed cross-backend regression delta or a connected
+history segment. Report headings and metric labels come from backend and completion metadata rather
+than hard-coded NanoVG, OpenGL, or GPU wording.
+
+Accepted timing requires the selected backend's structural or conformance validation to pass first.
+The validation mechanism may remain backend-specific; the common report contract records its status
+without pretending that NanoVG commands, Skia operations, and Vulkan submissions are equivalent.
+
+Backend-specific counters remain optional extensions until at least two implementations demonstrate
+the same semantics. NanoVG command counts, Skia operations, Vulkan submissions, driver timestamps, and
+similar numeric values must not enter common charts solely because they are available. JVM allocation
+per frame/per second may join the common contract only when every selected adapter measures the same
+host boundary and allocation scope.
 
 ## Milestones
 
@@ -73,6 +109,11 @@ until both implementations demonstrate a stable, genuinely shared requirement.
 - Record a small, version-pinned Vulkan feasibility spike using Skija `0.143.17`, GLFW, and a native
   window surface. The result must identify the actual Java API calls, resource ownership, resize path,
   and supported platform matrix, or stop Vulkan backend implementation.
+- Define the benchmark-only renderer adapter contract and common evidence vocabulary above, document
+  how the existing NanoVG/OpenGL producer semantics map to it without rewriting accepted historical
+  artifacts, and make the reviewed contract a readiness gate for the first Skija benchmark producer.
+- Define artifact identity and report partitioning so backend/API/completion provenance is visible and
+  no signed delta crosses a backend or incompatible profile boundary.
 
 **Open Questions:**
 
@@ -85,7 +126,9 @@ until both implementations demonstrate a stable, genuinely shared requirement.
 
 **Validation:** The proposed module and host contracts compile with the existing NanoVG demo, its
 window/input behavior remains intact, and the Vulkan spike produces a documented go/no-go result rather
-than an inferred capability claim.
+than an inferred capability claim. The existing NanoVG benchmark maps unambiguously to render-call CPU
+and synchronized-completion timing, while a prospective Skija adapter can supply the same required
+fields without adding API-specific types to core or introducing cross-backend signed deltas.
 
 ### M2: Deliver the Skija OpenGL Renderer
 
@@ -110,6 +153,9 @@ traversal to Skija Canvas state, preserving paint order, transforms, clipping, a
 - Add focused backend tests plus scene/image or structural assertions for the supported feature set.
 - Add an opt-in demo launcher that selects the Skija OpenGL renderer while retaining all existing
   NanoVG launchers.
+- Implement the M1 benchmark-only adapter boundary when the first additional producer needs it, map
+  NanoVG without changing accepted history identity, and add an opt-in Skija/OpenGL producer that
+  emits the common evidence plus backend-specific provenance.
 
 **Open Questions:**
 
@@ -146,6 +192,8 @@ couple either renderer to the other or assume their native lifecycle APIs are in
   demo launcher independent of the OpenGL and NanoVG renderers.
 - Add hardware-backed smoke tests where CI capabilities allow, with deterministic no-GPU/unsupported
   environment skips and manual target-platform verification instructions.
+- Add a Vulkan benchmark producer only after the feasibility spike identifies a valid synchronized
+  completion fence that satisfies the M1 common timing boundary.
 
 **Open Questions:**
 
@@ -181,6 +229,9 @@ semantics rather than raster-perfect pixels, with targeted image tolerances only
   visual differences, and the public-alpha version-pinning policy.
 - Keep existing NanoVG tests and demos as regression coverage; do not change their default behavior or
   dependency graph.
+- Verify common renderer metrics, provenance, structural-validation status, and history partitioning
+  for every supported backend. Defer a combined side-by-side dashboard until it has an explicit user
+  workflow and more than one stable producer.
 
 **Validation:** All three backends are buildable and independently runnable; the conformance suite has
 explicit supported/unsupported outcomes per backend; platform packaging checks pass for the committed

@@ -4,7 +4,7 @@
 
 **Goal:** Replace every benchmark report chart with embedded Chart.js 4.5.1 charts while retaining one portable offline HTML file, precise tables, accessible fallbacks, and the wrapping history selector.
 
-**Architecture:** The report generator builds a typed numeric `ChartPayload`, serializes it with Gson's HTML-safe defaults, and renders it through a `BenchmarkReportPage` alongside pinned classpath JavaScript resources. Four overview canvases initialize independently, while native history buttons update one reusable line-chart instance; each canvas keeps a visible table fallback until its Chart instance succeeds.
+**Architecture:** The report generator builds a typed numeric `ChartPayload`, serializes it with Gson's HTML-safe defaults, and renders it through a `BenchmarkReportPage` alongside pinned classpath JavaScript resources. Four overview canvases initialize independently, while a labelled native history `<select>` updates one reusable line-chart instance; each canvas keeps a visible table fallback until its Chart instance succeeds.
 
 **Tech Stack:** Java 25, Gradle 9.5.1, JTE 3.2.4 precompiled templates, Gson 2.14.0, Chart.js 4.5.1 UMD, JUnit 6.
 
@@ -17,7 +17,7 @@
 - URL literals inside the embedded third-party source are allowed; opening the report must perform no network requests.
 - Preserve benchmark parsing, archive selection, chronological history, scene identity, summaries, and raw tables.
 - Use Gson HTML-safe JSON in `<script id="benchmark-chart-data" type="application/json">`; never interpolate benchmark labels into executable JavaScript.
-- Keep history controls keyboard-operable native buttons with `aria-pressed`.
+- Keep history selection keyboard-operable through a labelled native `<select>`.
 - Keep each chart's initial fallback visible until that chart initializes successfully.
 - Keep a dedicated relatively positioned parent per canvas and local horizontal scrolling around an `820px` minimum chart viewport.
 - Chart.js tooltips are pointer enhancements; summaries and tables remain the keyboard and screen-reader data representation.
@@ -31,7 +31,7 @@
 - `BenchmarkHtmlReportGenerator.java`: archive parsing, numeric chart payload construction, HTML-safe JSON serialization, trusted resource loading, and JTE rendering.
 - `BenchmarkReportPage.java`: template boundary containing the report view, embedded assets, and chart JSON.
 - `.gitattributes`: LF normalization for hash-pinned JavaScript and license resources.
-- `report.jte`: accessible chart markup, report styling, native history buttons, and trusted inline assets.
+- `report.jte`: accessible chart markup, report styling, the labelled native history selector, and trusted inline assets.
 - `benchmark-charts.js`: report-owned Chart.js configuration, custom budget-marker plugin, isolated initialization, and history selection behavior.
 - `chart.umd.min.js`: pinned Chart.js 4.5.1 distribution with only the source-map directive removed.
 - `THIRD-PARTY-LICENSES.txt`: full Chart.js and `@kurkle/color` MIT licenses.
@@ -51,7 +51,7 @@
 - Consumes: parsed `CpuResult`, `RenderingResult`, ordered `ArchivedRun`, and existing formatted table rows.
 - Produces: `BenchmarkReportView.ChartPayload`, `CpuChartDatum`, `RenderingChartDatum`, and `ChartTrend` with aligned values for later JSON serialization.
 
-- [ ] **Step 1: Add failing assertions for raw overview values**
+- [x] **Step 1: Add failing assertions for raw overview values**
 
 In `loadsCompleteTimestampedPairsChronologicallyAndComputesChanges()`, assert literal numeric values independent of display strings:
 
@@ -70,7 +70,7 @@ assertTrue(charts.rendering().getFirst().gpuP95() == 3.0);
 assertTrue(charts.rendering().getFirst().gpuP99() == 12.0);
 ```
 
-- [ ] **Step 2: Replace SVG-coordinate expectations with failing aligned-history expectations**
+- [x] **Step 2: Replace SVG-coordinate expectations with failing aligned-history expectations**
 
 Use the final payload API in the three history tests:
 
@@ -114,7 +114,7 @@ IllegalArgumentException failure = assertThrows(IllegalArgumentException.class,
 assertTrue(failure.getMessage().contains("Non-finite benchmark chart value"));
 ```
 
-- [ ] **Step 3: Run the focused test and verify RED**
+- [x] **Step 3: Run the focused test and verify RED**
 
 Run:
 
@@ -124,7 +124,7 @@ Run:
 
 Expected: compilation fails because `charts()`, `ChartPayload`, and `ChartTrend` do not exist.
 
-- [ ] **Step 4: Add final chart payload records**
+- [x] **Step 4: Add final chart payload records**
 
 Append `ChartPayload charts` to `BenchmarkReportView` while retaining the old `cpuChartRows`, `gpuChartRows`, and SVG `trends` fields only until their consuming templates are replaced in Tasks 3 and 4.
 
@@ -144,7 +144,7 @@ public record ChartTrend(String id, String label, String unit, double minimum, d
     List<Double> values, List<String> changes) { }
 ```
 
-- [ ] **Step 5: Build numeric payloads without parsing display text**
+- [x] **Step 5: Build numeric payloads without parsing display text**
 
 In `toView`, build `CpuChartDatum` and `RenderingChartDatum` directly from `CpuResult` and `SceneResult`. Preserve absent optional CPU uncertainty/allocation-rate metrics as `null` so reports accepted by the existing parser remain renderable. Add `double numericMinimum` and `double numericMaximum` to the temporary SVG `TrendSeries`, plus `double numericValue` to its temporary `TrendPoint`, so aligned trends use raw values without calling `Double.parseDouble` on formatted strings.
 
@@ -162,7 +162,7 @@ Create `chartPayload(...)` that:
 
 For `generate(cpuJson, renderingJson)`, return populated overview arrays with empty `historyRuns` and `trends`.
 
-- [ ] **Step 6: Run focused and module tests for GREEN**
+- [x] **Step 6: Run focused and module tests for GREEN**
 
 Run:
 
@@ -191,7 +191,7 @@ Expected: all benchmark tests pass while the old chart markup remains unchanged.
 - Consumes: `BenchmarkReportView.charts()` from Task 1 and classpath resources under `/com/spinyowl/spinygui/benchmark/report/`.
 - Produces: `BenchmarkReportPage(BenchmarkReportView report, String chartJs, String chartBootstrap, String chartDataJson)` and three trusted inline script blocks.
 
-- [ ] **Step 1: Write failing asset integrity tests**
+- [x] **Step 1: Write failing asset integrity tests**
 
 Create `BenchmarkChartAssetsTest` with a `resource(String)` helper using `getResourceAsStream`. Assert:
 
@@ -207,7 +207,7 @@ assertTrue(sha256(chartJs).equals("84d0e233daba702b8f77d669d8c137cad36d441a10f20
 
 Implement `sha256` with `MessageDigest.getInstance("SHA-256")` and `HexFormat.of().formatHex(...)`, hashing UTF-8 bytes.
 
-- [ ] **Step 2: Run the asset test and verify RED**
+- [x] **Step 2: Run the asset test and verify RED**
 
 Run:
 
@@ -217,7 +217,7 @@ Run:
 
 Expected: FAIL because the resources do not exist.
 
-- [ ] **Step 3: Vendor the exact third-party assets**
+- [x] **Step 3: Vendor the exact third-party assets**
 
 Import `https://cdn.jsdelivr.net/npm/chart.js@4.5.1/dist/chart.umd.min.js`, removing only the line containing `sourceMappingURL`. The unmodified upstream SHA-256 is `48444a82d4edcb5bec0f1965faacdde18d9c17db3063d042abada2f705c9f54a`; the required stripped UTF-8 resource SHA-256 is `84d0e233daba702b8f77d669d8c137cad36d441a10f200b6f2d3ab553bdfcf6b`.
 
@@ -257,7 +257,7 @@ Use the exact package license sources:
 - `https://cdn.jsdelivr.net/npm/chart.js@4.5.1/LICENSE.md`
 - `https://cdn.jsdelivr.net/npm/@kurkle/color@0.3.2/LICENSE.md`
 
-- [ ] **Step 4: Add the page boundary and failing embedding assertions**
+- [x] **Step 4: Add the page boundary and failing embedding assertions**
 
 Create:
 
@@ -282,11 +282,11 @@ assertFalse(html.contains("sourceMappingURL"));
 
 Add a malicious-label case using `measure</script><script>alert(1)</script>` and assert the generated data contains `measure\\u003c/script\\u003e\\u003cscript\\u003ealert(1)\\u003c/script\\u003e` but never contains the literal injected script.
 
-- [ ] **Step 5: Run the focused generator test and verify RED**
+- [x] **Step 5: Run the focused generator test and verify RED**
 
 Run the focused test. Expected: FAIL because the page does not embed Chart.js, chart JSON, or the bootstrap.
 
-- [ ] **Step 6: Load trusted resources and serialize safe JSON**
+- [x] **Step 6: Load trusted resources and serialize safe JSON**
 
 In `BenchmarkHtmlReportGenerator`, add a UTF-8 `resource(String name)` method that throws `IllegalStateException("Missing benchmark report resource: " + name)` for a missing stream and wraps read failures with the same resource name.
 
@@ -318,7 +318,7 @@ Create an initial `benchmark-charts.js` that parses the payload inside an IIFE a
 })();
 ```
 
-- [ ] **Step 7: Run asset, focused, JTE, and JAR checks for GREEN**
+- [x] **Step 7: Run asset, focused, JTE, and JAR checks for GREEN**
 
 Run:
 
@@ -450,19 +450,21 @@ Expected: all tests pass; four overview charts have executable configs while the
 
 **Interfaces:**
 - Consumes: `ChartPayload.historyRuns`, `ChartPayload.trends`, `mountChart`, and `history-chart`.
-- Produces: wrapping native history buttons and one Chart instance updated in place.
+- Produces: a labelled native history `<select>` and one Chart instance updated in place.
 
 - [x] **Step 1: Write failing final history markup assertions**
 
-Replace radio/panel/SVG assertions with:
+Replace radio/panel/SVG assertions with the current selector contract:
 
 ```java
-assertTrue(html.contains("<div class=\"trend-controls\" role=\"toolbar\" aria-label=\"Trend metric selector\">"));
-assertTrue(html.contains("<button class=\"trend-option\" type=\"button\" data-trend-id=\"cpu-trend-1\" aria-pressed=\"true\">"));
+assertTrue(html.contains("<label class=\"trend-label\" for=\"trend-select\">Metric</label>"));
+assertTrue(html.contains("<select class=\"trend-select\" id=\"trend-select\">"));
+assertTrue(html.contains("<option value=\"cpu-trend-1\" selected>"));
 assertTrue(html.contains("<canvas id=\"history-chart\" role=\"img\""));
 assertTrue(html.contains("id=\"history-data\""));
-assertTrue(count(html, "aria-pressed=\"true\"") == 1);
 assertFalse(html.contains("type=\"radio\""));
+assertFalse(html.contains("data-trend-id="));
+assertFalse(html.contains("aria-pressed"));
 assertFalse(html.contains("class=\"trend-panel\""));
 assertFalse(html.contains("<svg"));
 assertFalse(html.contains(":has("));
@@ -470,19 +472,19 @@ assertFalse(html.contains("cx=\""));
 assertFalse(html.contains("<polyline"));
 ```
 
-Assert the embedded bootstrap contains stable behavior markers for `spanGaps:false`, `aria-pressed`, assignment to the history dataset, and `historyChart.update()`.
+Assert the embedded bootstrap contains stable behavior markers for `spanGaps:false`, the selector's `change` handler, assignment to the history dataset, the selected y-axis title, the canvas accessible label, tooltip metadata, and `historyChart.update()`.
 
-Also call `BenchmarkHtmlReportGenerator.generate(cpuJson(), renderingJson())` and assert it still renders `history-chart` and its visible fallback without rendering any `data-trend-id` button. This protects the no-archive path from an empty-list failure.
+Also call `BenchmarkHtmlReportGenerator.generate(cpuJson(), renderingJson())` and assert it renders the explicit `No trend yet` state without `trend-select` or `history-chart`. This protects the insufficient-history path from an empty-list failure.
 
 - [x] **Step 2: Run the focused test and verify RED**
 
 Expected: FAIL because radios, hidden panels, and SVG output still exist.
 
-- [x] **Step 3: Render buttons and one history canvas**
+- [x] **Step 3: Render the labelled selector and one history canvas**
 
-Keep `.trend-controls { display:flex; flex-wrap:wrap; gap:4px; margin-bottom:16px }`, but style `.trend-option` as a native button. Use `[aria-pressed="true"]` for selected colors and `:focus-visible` for the existing yellow outline.
+Render a visible `Metric` label associated to `select#trend-select`, and retain the existing yellow `:focus-visible` outline on the native selector.
 
-Render one button per `model.charts().trends()`. The first button has `aria-pressed="true"`; all others have `false`. Do not call `getFirst()` outside a non-empty loop. Remove `.trend-panels`, `.trend-panel`, generated `:has()` rules, radios, labels, and SVG component calls.
+Render one option per `model.charts().trends()` and mark the first option selected. Do not call `getFirst()` outside the branch that requires at least two eligible history runs. Remove `.trend-controls`, `.trend-option`, `.trend-panels`, `.trend-panel`, generated `:has()` rules, radio/button selector mappings, and SVG component calls.
 
 Use the history chart shell created in Task 3 and wrap all existing raw history tables in a target with `id="history-data"`.
 
@@ -492,7 +494,7 @@ Add these behaviors to `benchmark-charts.js`:
 
 ```javascript
 const trends = new Map(report.trends.map(trend => [trend.id, trend]));
-const trendButtons = Array.from(document.querySelectorAll('[data-trend-id]'));
+const trendSelect = document.getElementById('trend-select');
 let historyChart = null;
 let activeTrend = null;
 
@@ -509,9 +511,9 @@ function historyConfig(trend) {
 }
 ```
 
-Add tooltip callbacks that use `activeTrend` plus `context.dataIndex` to return the run identifier, value with unit, and aligned signed change. Initialize from the button whose `aria-pressed` is `true`. If there are no trends, leave the fallback visible without throwing.
+Add tooltip callbacks that use `activeTrend` plus `context.dataIndex` to return the run identifier, value with unit, and aligned signed change. Initialize from `trendSelect.value`. If the selector is absent, leave the explicit insufficient-history state without throwing.
 
-On button activation, look up the trend before changing state. If absent, log an error and keep the current selection. Otherwise update the old/new `aria-pressed` values, canvas `aria-label`, dataset label/data, assign `activeTrend = trend`, update y-axis min/max, and call `historyChart.update()`.
+On selector change, look up the trend before changing chart state. If absent, log an error and keep the current chart state. Otherwise update the canvas `aria-label`, dataset label/data, `activeTrend`, y-axis min/max and title, then call `historyChart.update()`.
 
 - [x] **Step 5: Remove the SVG bridge and coordinate model**
 
@@ -530,7 +532,7 @@ Run:
 .\gradlew.bat :spinygui.benchmark:test
 ```
 
-Expected: aligned null gaps, duplicate scene identity, boundaries, one-run trends, generated buttons, and all benchmark tests pass.
+Expected: aligned null gaps, duplicate scene identity, boundaries, one-run trends, generated selector options, and all benchmark tests pass.
 
 ---
 
@@ -546,7 +548,7 @@ Expected: aligned null gaps, duplicate scene identity, boundaries, one-run trend
 
 - [x] **Step 1: Update contributor documentation**
 
-State that reports embed Chart.js 4.5.1 and inline JavaScript, remain one offline file, initialize four overview charts plus one reusable history chart, offer pointer tooltips and keyboard-operable metric buttons, and retain visible fallback explanations and raw tables.
+State that reports embed Chart.js 4.5.1 and inline JavaScript, remain one offline file, initialize four overview charts plus one reusable history chart, offer pointer tooltips and a keyboard-operable labelled metric selector, and retain visible fallback explanations and raw tables.
 
 Remove the claim that the file has only inline styles and graphics. Explicitly state that no CDN or network resource is used.
 
@@ -555,21 +557,21 @@ Remove the claim that the file has only inline styles and graphics. Explicitly s
 Run:
 
 ```powershell
-.\gradlew.bat :spinygui.benchmark:benchmarkReport -x :spinygui.benchmark:jmhCpu -x :spinygui.benchmark:jmhRendering
+.\gradlew.bat :spinygui.benchmark:generateBenchmarkReport
 ```
 
 Inspect `reports/index.html` and confirm:
 
 - Exactly five chart canvases.
 - Four overview Chart constructors and one initial history constructor can run from embedded data.
-- Exactly one history button begins with `aria-pressed="true"`.
-- No SVG, CSS chart row, trend panel, radio selector, `script src`, stylesheet link, or `sourceMappingURL` remains.
+- A labelled `select#trend-select` contains the history metrics and its first option is selected.
+- No SVG, CSS chart row, trend panel, radio/button selector mapping, `script src`, stylesheet link, or `sourceMappingURL` remains.
 - Chart.js and bootstrap code precede the closing body tag.
 - Raw CPU, rendering, and history tables remain present.
 
-- [ ] **Step 3: Perform browser behavior checks**
+- [x] **Step 3: Perform browser behavior checks**
 
-Open the generated file directly from disk on desktop and a narrow viewport. Verify tooltips, logarithmic CPU axes, grouped percentile bars, `8,333`/`16,667` markers, over-budget warning colors, wrapped history buttons, in-place history updates, visible missing-data gaps, and chart-local horizontal scrolling.
+Open the generated file directly from disk on desktop and a narrow viewport. Verify tooltips, logarithmic CPU axes, grouped percentile bars, `8,333`/`16,667` markers, over-budget warning colors, keyboard selection through the labelled history `<select>`, one-chart in-place updates, selected y-axis titles, updated accessible labels, visible missing-data gaps, and chart-local horizontal scrolling.
 
 In browser developer tools, verify no network request occurs. Disable JavaScript and reload; verify all five fallback explanations and all raw tables remain readable.
 

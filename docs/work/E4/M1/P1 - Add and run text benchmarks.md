@@ -1,5 +1,7 @@
 # P1: Add And Run Text Benchmarks
 
+**Status:** Complete
+
 Parent milestone: `docs/work/E4/M1 - Establish text performance baseline.md`
 
 ## Goal

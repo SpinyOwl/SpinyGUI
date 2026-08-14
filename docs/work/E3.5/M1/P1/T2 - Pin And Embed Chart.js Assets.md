@@ -1,5 +1,12 @@
 # T2 - Pin And Embed Chart.js Assets
 
+## Document Context
+
+- Parent: [P1 - Chart.js Report Implementation](../P1%20-%20Chart.js%20Report%20Implementation.md).
+- Children: None.
+- Related: [Chart.js benchmark charts source plan](../../../../superpowers/plans/2026-07-24-chartjs-benchmark-charts.md), Task 2.
+- Next: [T3 - Replace Overview Charts](T3%20-%20Replace%20Overview%20Charts.md).
+
 ## Status and dependency
 
 - Depends on: T1, accepted at `f8eb7687` after one correction/review retry.
@@ -11,8 +18,8 @@
 - Plan: `../../../../superpowers/plans/2026-07-24-chartjs-benchmark-charts.md`, Task 2.
 - Approved design: `../../../../superpowers/specs/2026-07-24-chartjs-benchmark-charts-design.md`.
 - Repository style: `../../../../../AGENTS_CODE_STYLE.md`.
-- Parent graph: `work/E1/M1/P1 - Chart.js Report Implementation.md`.
-- Accepted T1 context: `work/E1/M1/P1/T1 - Add Typed Numeric Chart Payloads.md`.
+- Parent graph: [P1 - Chart.js Report Implementation](../P1%20-%20Chart.js%20Report%20Implementation.md).
+- Accepted T1 context: [T1 - Add Typed Numeric Chart Payloads](T1%20-%20Add%20Typed%20Numeric%20Chart%20Payloads.md).
 
 Read these sources and re-check all relevant current files before editing. The plan's complete Task 2 steps, exact asset source URLs, hashes, license text, file list, APIs, and commands are binding.
 
