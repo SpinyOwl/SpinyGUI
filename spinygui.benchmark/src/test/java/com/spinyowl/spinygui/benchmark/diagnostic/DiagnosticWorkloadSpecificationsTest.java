@@ -388,21 +388,28 @@ class DiagnosticWorkloadSpecificationsTest {
 
     for (int glyphCount : List.of(8, 16, 32)) {
       Entry entry = byName.get("run-assembly-" + glyphCount);
-      assertEquals(glyphCount, counter(entry, TextDiagnosticCounter.GLYPH_SLOTS_COPIED));
+      assertEquals(glyphCount * 2L, counter(entry, TextDiagnosticCounter.GLYPH_SLOTS_COPIED));
       assertEquals(0, counter(entry, TextDiagnosticCounter.GLYPH_SLOTS_MOVED));
-      assertEquals(glyphCount, counter(entry, TextDiagnosticCounter.GLYPH_SLOT_BUILDER_APPENDS));
-      assertEquals(1, counter(entry, TextDiagnosticCounter.GLYPH_SLOT_BUILDER_FREEZES));
-      assertEquals(1, counter(entry, TextDiagnosticCounter.RUN_BUILDER_FREEZES));
+      assertEquals(
+          glyphCount,
+          counter(entry, TextDiagnosticCounter.INITIAL_RESOLUTION_GLYPH_SLOTS_COPIED));
+      assertEquals(
+          glyphCount,
+          counter(entry, TextDiagnosticCounter.RANGE_MATERIALIZATION_GLYPH_SLOTS_COPIED));
+      assertEquals(
+          glyphCount * 2L,
+          counter(entry, TextDiagnosticCounter.GLYPH_SLOT_BUILDER_APPENDS));
+      assertEquals(2, counter(entry, TextDiagnosticCounter.GLYPH_SLOT_BUILDER_FREEZES));
+      assertEquals(2, counter(entry, TextDiagnosticCounter.RUN_BUILDER_FREEZES));
+      assertEquals(0, counter(entry, TextDiagnosticCounter.RANGE_TEMPORARY_STRINGS));
     }
+    Entry deferred = byName.get("multi-paragraph-fallback-deferred-suffix");
+    assertEquals(0, observed(deferred, "observed-deferred-suffix-code-point-count"));
+    assertEquals(25, counter(deferred, TextDiagnosticCounter.SOURCE_CODE_POINTS_SCANNED));
+    assertEquals(25, counter(deferred, TextDiagnosticCounter.WRAP_PRIMITIVE_VISITS));
     assertTrue(
         observed(
-                byName.get("multi-paragraph-fallback-deferred-suffix"),
-                "observed-deferred-suffix-code-point-count")
-            > 0);
-    assertTrue(
-        observed(
-                byName.get("multi-paragraph-fallback-deferred-suffix"),
-                "observed-fallback-transition-count")
+                deferred, "observed-fallback-transition-count")
             > 0);
     assertTrue(
         observed(
@@ -410,7 +417,7 @@ class DiagnosticWorkloadSpecificationsTest {
                 "observed-line-start-kerning-transition-count")
             > 0);
     assertEquals(
-        0,
+        26,
         observed(byName.get("zero-width-boundary"), "observed-visual-line-count"));
 
     String runnerSource =

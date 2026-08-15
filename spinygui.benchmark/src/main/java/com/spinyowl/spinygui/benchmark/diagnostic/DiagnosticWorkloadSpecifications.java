@@ -70,7 +70,7 @@ public final class DiagnosticWorkloadSpecifications {
           cpu("run-assembly-8", "a".repeat(8), 100_000, false, 1, 0, 0, 0),
           cpu("run-assembly-16", "a".repeat(16), 100_000, false, 1, 0, 0, 0),
           cpu("run-assembly-32", "a".repeat(32), 100_000, false, 1, 0, 0, 0),
-          cpu("zero-width-boundary", "Boundary a雪 remains unscanned", 0, true, 0, 0, 0, 0),
+          cpu("zero-width-boundary", "Boundary a雪 remains unscanned", 0, true, 26, 2, 0, 25),
           cpu(
               "multi-paragraph-fallback-line-start",
               HARD_WRAP_PARAGRAPHS,
@@ -87,7 +87,7 @@ public final class DiagnosticWorkloadSpecifications {
               true,
                6,
                4,
-               2,
+               0,
                4));
 
   public static final List<RendererScenario> RENDERER_SCENARIOS = createRendererScenarios();
@@ -207,13 +207,13 @@ public final class DiagnosticWorkloadSpecifications {
         throw new IllegalArgumentException(
             "CPU declared source shape does not match exact content: " + name);
       }
-      if (wrapWidthPx < 0.1f
-          && (expectedShape.visualLineCount() != 0
-              || expectedShape.fallbackTransitionCount() != 0
+      if (name.equals("zero-width-boundary")
+          && (expectedShape.visualLineCount() != 26
+              || expectedShape.fallbackTransitionCount() != 2
               || expectedShape.deferredSuffixCodePointCount() != 0
-              || expectedShape.lineStartKerningTransitionCount() != 0)) {
+              || expectedShape.lineStartKerningTransitionCount() != 25)) {
         throw new IllegalArgumentException(
-            "Zero-width boundary must declare only its executed early-return work");
+            "Zero-width boundary must declare its exact progressing-wrap work");
       }
     }
 

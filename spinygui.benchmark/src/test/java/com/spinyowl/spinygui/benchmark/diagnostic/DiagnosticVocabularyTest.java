@@ -42,20 +42,33 @@ class DiagnosticVocabularyTest {
             "core.control.textarea-complete-layouts",
             "core.text.character-builder-appends",
             "core.text.character-builder-freezes",
+            "core.text.caret-boundary-builder-appends",
+            "core.text.caret-boundary-builder-freezes",
+            "core.text.caret-stop-search-comparisons",
             "core.text.complete-measurements",
             "core.text.font-chain-resolutions",
+            "core.text.advance-slot-builder-appends",
+            "core.text.advance-slot-builder-freezes",
             "core.text.glyph-slot-builder-appends",
             "core.text.glyph-slot-builder-freezes",
             "core.text.glyph-slots-copied",
             "core.text.glyph-slots-moved",
+            "core.text.initial-resolution.glyph-slots-copied",
             "core.text.logical-glyph-resolutions",
+            "core.text.line-builder-appends",
+            "core.text.line-builder-freezes",
             "core.text.native-glyph-advance-calls",
             "core.text.native-glyph-index-probes",
             "core.text.native-kerning-calls",
             "core.text.normalization-scans",
+            "core.text.range-materialization.glyph-slots-copied",
+            "core.text.range-preparations",
+            "core.text.range-temporary-strings",
+            "core.text.result-builder-freezes",
             "core.text.run-builder-appends",
             "core.text.run-builder-freezes",
             "core.text.source-code-points-scanned",
+            "core.text.wrap.primitive-visits",
             "core.text-measurer.get-text-caret-metrics-font-list.entries",
             "core.text-measurer.get-text-caret-metrics-font.entries",
             "core.text-measurer.get-text-line-metrics-font-list.entries",
@@ -109,7 +122,7 @@ class DiagnosticVocabularyTest {
 
     assertEquals(expected, actual);
     assertEquals(expected.size(), vocabulary.size());
-    assertEquals("core-text-diagnostics-1", TextDiagnosticCounter.VOCABULARY_VERSION);
+    assertEquals("core-text-diagnostics-7", TextDiagnosticCounter.VOCABULARY_VERSION);
     assertEquals("nanovg-text-diagnostics-2", NvgDiagnosticCounter.VOCABULARY_VERSION);
     vocabulary.forEach(
         counter -> {

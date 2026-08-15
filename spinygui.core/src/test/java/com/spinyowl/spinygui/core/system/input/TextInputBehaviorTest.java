@@ -42,6 +42,54 @@ class TextInputBehaviorTest {
     assertEquals("", input.value());
   }
 
+  @Test
+  void externallyAssignedIndices_clampAsUtf16OffsetsAndSnapFromSurrogateInterior() {
+    InputElement input = new InputElement();
+    input.value("a\uD83D\uDE00b");
+
+    input.caretIndex(-10);
+    assertEquals(0, input.caretIndex());
+    input.caretIndex(99);
+    assertEquals(4, input.caretIndex());
+    input.caretIndex(2);
+    assertEquals(1, input.caretIndex());
+    assertEquals(1, input.selectionAnchor());
+
+    input.select(2, 99);
+    assertEquals(1, input.selectionAnchor());
+    assertEquals(4, input.caretIndex());
+    assertEquals(1, input.selectionStart());
+    assertEquals(4, input.selectionEnd());
+  }
+
+  @Test
+  void externallyAssignedIndices_snapBackwardFromSurrogateInterior() {
+    InputElement input = new InputElement();
+    input.value("a\uD83D\uDE00b");
+
+    input.caretIndex(2);
+    assertEquals(1, input.caretIndex());
+    assertEquals(1, input.selectionAnchor());
+
+    input.select(2, 3);
+    assertEquals(1, input.selectionAnchor());
+    assertEquals(3, input.caretIndex());
+
+    input.selectionAnchor(2);
+    assertEquals(1, input.selectionAnchor());
+    assertEquals(3, input.caretIndex());
+
+    input.value("ab");
+    input.caretIndex(1);
+    input.value("\uD83D\uDE00");
+    assertEquals(0, input.caretIndex());
+    assertEquals(0, input.selectionAnchor());
+
+    input.value("a\uD83Db");
+    input.caretIndex(2);
+    assertEquals(2, input.caretIndex());
+  }
+
   private static final class Clipboard implements TextInputBehavior.TextClipboard {
     private String text;
 

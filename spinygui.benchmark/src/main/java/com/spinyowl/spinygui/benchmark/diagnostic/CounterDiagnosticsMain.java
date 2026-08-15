@@ -181,17 +181,10 @@ public final class CounterDiagnosticsMain {
     long glyphs = glyphCount(metrics.lines());
     long runs = metrics.lines().stream().mapToLong(line -> line.runs().size()).sum();
     long sourceScans = snapshot.value(TextDiagnosticCounter.SOURCE_CODE_POINTS_SCANNED);
-    long processedSource = Math.max(0, sourceScans - glyphs);
+    long processedSource = sourceScans;
     int lineStarts = wrappedLineStarts(scenario.text(), metrics.lines());
     int deferred =
-        scenario.wrapWidthPx() < 0.1f
-            ? 0
-            : Math.toIntExact(
-                Math.max(
-                    0,
-                    processedSource
-                        - codePointCount(scenario.text())
-                        - lineStarts));
+        Math.toIntExact(Math.max(0, processedSource - codePointCount(scenario.text())));
     return new ObservedShape(
         DiagnosticWorkloadSpecifications.sourceTextSha256(List.of(scenario.text())),
         codePointCount(scenario.text()),

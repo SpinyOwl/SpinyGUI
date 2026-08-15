@@ -1,7 +1,7 @@
 # Text Diagnostics Counter Contract
 
 This document defines the opt-in counter contract used by E5 structural investigation. The core
-vocabulary is `core-text-diagnostics-1`; the NanoVG vocabulary is
+vocabulary is `core-text-diagnostics-7`; the NanoVG vocabulary is
 `nanovg-text-diagnostics-2`. Counter-only runners, renderer recordings, and optimization behavior are
 separate work.
 
@@ -60,24 +60,44 @@ additive and are not deduplicated:
 - Source and font work: source code points scanned, logical glyph resolutions, native glyph-index
   probes, native advance calls, native kerning calls, normalization scans, and font-chain resolutions.
 - Materialization work: copied and moved glyph slots plus separate append/freeze counts for
-  character, run, and glyph-slot builders.
+  character, run, glyph-slot, private pre-wrap line, UTF-16 caret-boundary, and raw/rebased advance
+  slot builders, plus private prepared-result freezes and validated shared-source range
+  preparations. Legacy range-adapter temporary `String` slices have a dedicated allocation counter;
+  direct production capability dispatch must keep it at zero. Private wrap primitive visits count
+  forward inspections used to select hard-line,
+  word-boundary, and character-fallback ranges. Dedicated copy counters attribute slots to the
+  initial resolved-primitive freeze or later range materialization.
+- Final caret lookup: advance-midpoint and source-boundary comparisons performed by binary search
+  over one immutable line-local caret-stop value.
 - Completion work: complete underlying text measurements, complete input layouts, and complete
   textarea layouts.
 - API entries: all nine currently declared `TextMeasurer` signatures—four list/default signatures and
   five single-font signatures—each with a distinct entry counter.
 
-Copied slots mean data duplicated into another representation. In the current run assembly this
-includes both the copy into an exact-sized mutable `ArrayList` and the later immutable freeze copy.
-Moved slots mean existing mutable storage shifted or relocated, including the exact-sized list's
-existing slots relocated when the following append grows its storage. Appends count appended items;
-freezes count builder-to-immutable transitions. Normalization counts complete scans, while source
-scanning counts visited code points.
-
-Current `resolveRuns` has no resolved-character builder. Its mutable run list records run appends but
-is returned directly, so it records no run-builder freeze. A new run's singleton `List.of` glyph list
-is constructed immutable and is not a glyph-slot builder append/freeze. Extending an existing run does
-append one glyph to mutable construction storage and then freezes that storage through
-`ResolvedTextRun`'s immutable copy, so only that extension records glyph-slot append/freeze events.
+Copied slots mean data duplicated into another representation. Moved slots are explicit algorithmic
+relocations between logical builder positions; internal `ArrayList` capacity growth is not observable
+counter work. Appends count appended items and freezes count builder-to-immutable transitions. The
+private resolved-primitive seam freezes its storage once and increments both the aggregate and
+`initial-resolution` copy counters. Private pre-wrap line preparation retains primitive/run ranges,
+line-local caret boundaries, and individual raw/rebased advance slots without copying glyph slots.
+The active final range materializer increments the separate `range-materialization` copy counter, so
+resolution and publication costs are not conflated. Production whole-string and range-capability
+requests both route through `PreparedRange`, private wrapping, and one final materialization. Each
+increments `range-preparations` and `complete-measurements` once; the direct capability adds no
+public `TextMeasurer` entry, while public whole-string requests record the signatures they actually
+enter through normal overload/default delegation.
+The legacy range-adapter fallback increments `range-temporary-strings` exactly once before allocating
+a selected-range string and records the public entry of the wrapped legacy measurer. Production
+whole-string and direct-capability range paths never increment it. Normalization counts complete
+scans, while source scanning counts
+visited code points. P3's private wrapping planner
+increments `wrap.primitive-visits` once per inspected resolved primitive, including both halves of an
+atomic CRLF marker, and does not increment glyph-slot move or range-materialization copy counters.
+Direct final advance-midpoint and source-index caret-stop lookups increment only
+`caret-stop-search-comparisons`; they perform no source scan, resolution, native measurement,
+substring, or complete measurement. A public `FontServiceImpl` caret request prepares and completes
+one measurement before performing that final lookup, so it records the normal range preparation,
+resolution, final materialization, and complete-measurement work exactly once.
 
 ## NanoVG vocabulary
 

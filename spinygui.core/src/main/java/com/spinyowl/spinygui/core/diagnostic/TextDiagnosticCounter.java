@@ -30,6 +30,14 @@ public enum TextDiagnosticCounter implements DiagnosticCounter {
       "core.text.glyph-slots-moved",
       DiagnosticUnit.GLYPH_SLOTS,
       "Glyph slots shifted or relocated within mutable construction storage."),
+  INITIAL_RESOLUTION_GLYPH_SLOTS_COPIED(
+      "core.text.initial-resolution.glyph-slots-copied",
+      DiagnosticUnit.GLYPH_SLOTS,
+      "Resolved glyph slots copied when initial source resolution storage is frozen."),
+  RANGE_MATERIALIZATION_GLYPH_SLOTS_COPIED(
+      "core.text.range-materialization.glyph-slots-copied",
+      DiagnosticUnit.GLYPH_SLOTS,
+      "Resolved glyph slots copied while materializing later private or public ranges."),
   CHARACTER_BUILDER_APPENDS(
       "core.text.character-builder-appends",
       DiagnosticUnit.ITEMS,
@@ -54,6 +62,50 @@ public enum TextDiagnosticCounter implements DiagnosticCounter {
       "core.text.glyph-slot-builder-freezes",
       DiagnosticUnit.CALLS,
       "Glyph-slot builders frozen into immutable output."),
+  LINE_BUILDER_APPENDS(
+      "core.text.line-builder-appends",
+      DiagnosticUnit.ITEMS,
+      "Private pre-wrap lines appended to a result builder."),
+  LINE_BUILDER_FREEZES(
+      "core.text.line-builder-freezes",
+      DiagnosticUnit.CALLS,
+      "Private pre-wrap line builders frozen into immutable output."),
+  CARET_BOUNDARY_BUILDER_APPENDS(
+      "core.text.caret-boundary-builder-appends",
+      DiagnosticUnit.ITEMS,
+      "UTF-16 caret boundaries appended to private line storage."),
+  CARET_BOUNDARY_BUILDER_FREEZES(
+      "core.text.caret-boundary-builder-freezes",
+      DiagnosticUnit.CALLS,
+      "Private caret-boundary builders frozen into immutable output."),
+  ADVANCE_SLOT_BUILDER_APPENDS(
+      "core.text.advance-slot-builder-appends",
+      DiagnosticUnit.ITEMS,
+      "Raw or line-start-rebased glyph advance slots appended to private storage."),
+  ADVANCE_SLOT_BUILDER_FREEZES(
+      "core.text.advance-slot-builder-freezes",
+      DiagnosticUnit.CALLS,
+      "Private raw or rebased advance-slot builders frozen into immutable output."),
+  RESULT_BUILDER_FREEZES(
+      "core.text.result-builder-freezes",
+      DiagnosticUnit.CALLS,
+      "Private prepared-measurement result builders frozen into immutable output."),
+  RANGE_PREPARATIONS(
+      "core.text.range-preparations",
+      DiagnosticUnit.CALLS,
+      "Validated shared-source ranges prepared into private measurement storage."),
+  RANGE_TEMPORARY_STRINGS(
+      "core.text.range-temporary-strings",
+      DiagnosticUnit.CALLS,
+      "Temporary String slices allocated by the legacy range-adapter fallback."),
+  WRAP_PRIMITIVE_VISITS(
+      "core.text.wrap.primitive-visits",
+      DiagnosticUnit.ITEMS,
+      "Resolved primitives inspected while selecting private wrap and hard-line ranges."),
+  CARET_STOP_SEARCH_COMPARISONS(
+      "core.text.caret-stop-search-comparisons",
+      DiagnosticUnit.ITEMS,
+      "Advance-midpoint or source-boundary comparisons performed by final line caret lookup."),
   NORMALIZATION_SCANS(
       "core.text.normalization-scans",
       DiagnosticUnit.CALLS,
@@ -112,7 +164,7 @@ public enum TextDiagnosticCounter implements DiagnosticCounter {
       "Calls to getTextCaretMetrics(String,Font,float,float)."),
   ;
 
-  public static final String VOCABULARY_VERSION = "core-text-diagnostics-1";
+  public static final String VOCABULARY_VERSION = "core-text-diagnostics-7";
 
   private final String id;
   private final DiagnosticUnit unit;

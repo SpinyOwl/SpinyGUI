@@ -80,4 +80,50 @@ class TextareaBehaviorTest {
     assertTrue(behavior.handleKey(textarea, KeyCode.END, KeyAction.PRESS));
     assertEquals(6, textarea.caretIndex());
   }
+
+  @Test
+  void externallyAssignedIndices_clampAsUtf16OffsetsAndSnapFromSurrogateInterior() {
+    TextareaElement textarea = new TextareaElement("a\uD83D\uDE00b");
+
+    textarea.caretIndex(-10);
+    assertEquals(0, textarea.caretIndex());
+    textarea.caretIndex(99);
+    assertEquals(4, textarea.caretIndex());
+    textarea.caretIndex(2);
+    assertEquals(1, textarea.caretIndex());
+    assertEquals(1, textarea.selectionAnchor());
+
+    textarea.select(2, 99);
+    assertEquals(1, textarea.selectionAnchor());
+    assertEquals(4, textarea.caretIndex());
+    assertEquals(1, textarea.selectionStart());
+    assertEquals(4, textarea.selectionEnd());
+  }
+
+  @Test
+  void externallyAssignedIndices_snapBackwardFromSurrogateInterior() {
+    TextareaElement textarea = new TextareaElement("a\uD83D\uDE00b");
+
+    textarea.caretIndex(2);
+    assertEquals(1, textarea.caretIndex());
+    assertEquals(1, textarea.selectionAnchor());
+
+    textarea.select(2, 3);
+    assertEquals(1, textarea.selectionAnchor());
+    assertEquals(3, textarea.caretIndex());
+
+    textarea.selectionAnchor(2);
+    assertEquals(1, textarea.selectionAnchor());
+    assertEquals(3, textarea.caretIndex());
+
+    textarea.value("ab");
+    textarea.caretIndex(1);
+    textarea.value("\uD83D\uDE00");
+    assertEquals(0, textarea.caretIndex());
+    assertEquals(0, textarea.selectionAnchor());
+
+    textarea.value("a\uD83Db");
+    textarea.caretIndex(2);
+    assertEquals(2, textarea.caretIndex());
+  }
 }
