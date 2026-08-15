@@ -1,6 +1,6 @@
 # P3: Integrate Wrapping, Line Materialization, and Caret Queries
 
-**Status:** Planned
+**Status:** Complete
 
 ## Document Context
 
@@ -23,8 +23,18 @@ suffixes, and materialize final runs only after correct line-start kerning reset
 - Parent milestone: `docs/work/E5/M2 - Approve measurement contracts and implement linear resolution.md`.
 - Phase entry gate: M2/P2 primitives/private builders are structurally correct and no incomplete
   public line/run/caret result has been published.
+- Contract authority: [P1 - Approved resolved-measurement contracts](P1%20-%20Approve%20resolved-measurement%20contracts.md).
 - Deferred suffixes and narrow widths are adversarial: implementation must not repeatedly copy/move a
   suffix or repeat native probes when choosing a wrap boundary.
+
+## Implementation Handoff
+
+- **Measurement implementation:** `spinygui.core/src/main/java/com/spinyowl/spinygui/core/system/font/impl/FontServiceImpl.java` and the internal types under `spinygui.core/src/main/java/com/spinyowl/spinygui/core/system/font/internal/`
+- **Public-compatible result surface:** `TextMeasurer.java`, `TextMetrics.java`, `TextLineMetrics.java`, `ResolvedTextRun.java`, `ResolvedGlyph.java`, and `TextCaretMetrics.java`
+- **Control surface:** `spinygui.core/src/main/java/com/spinyowl/spinygui/core/node/InputElement.java` and `TextareaElement.java`
+- **Focused evidence:** `FontServiceImplTest.java`, `FontServiceImplMeasurementContractTest.java`, `TextInputBehaviorTest.java`, `TextareaBehaviorTest.java`, and benchmark diagnostic workload/vocabulary tests
+- **Accepted baseline:** P1 and P2 are complete in the current shared diff. Preserve `PreparedRange`, private prepared-measurement/builders, diagnostics-v6 attribution, public type signatures, and `ResolvedTextRun` record components.
+- **Worktree constraint:** Preserve unrelated `.worktrees/nested-scroll-text-rendering` state and accepted E5 documentation changes. Do not stage or commit during implementation.
 
 ## Phase Tasks
 
@@ -36,19 +46,19 @@ suffixes, and materialize final runs only after correct line-start kerning reset
 **Parallelizable with:** None.
 
 **Changes:**
-- [ ] Implement atomic LF/CR/CRLF separators and `wordWrap=true` word-boundary candidates with
+- [x] Implement atomic LF/CR/CRLF separators and `wordWrap=true` word-boundary candidates with
   character-boundary fallback; implement `wordWrap=false` character boundaries directly.
-- [ ] Cover first-line offset, valid zero/narrow width, oversized first primitives, spaces, trailing
+- [x] Cover first-line offset, valid zero/narrow width, oversized first primitives, spaces, trailing
   separators, and positive-infinite width while guaranteeing progress.
-- [ ] Transfer/defer suffix ranges without source rescan or native glyph/advance reprobe and bound
+- [x] Transfer/defer suffix ranges without source rescan or native glyph/advance reprobe and bound
   candidate state by the active line/result.
-- [ ] Count primitive visits and glyph slots moved/copied for long suffix and one-code-point-per-line
+- [x] Count primitive visits and glyph slots moved/copied for long suffix and one-code-point-per-line
   adversarial cases.
 
 **Acceptance Checks:**
-- [ ] Each accepted/deferred primitive is visited/moved a constant bounded number of times across the
+- [x] Each accepted/deferred primitive is visited/moved a constant bounded number of times across the
   complete result.
-- [ ] Supplementary code points and replacement source ranges cross a wrap boundary atomically.
+- [x] Supplementary code points and replacement source ranges cross a wrap boundary atomically.
 
 **Risks / Stop Criteria:** Stop if resetting a line sets the source cursor backward and repeats
 resolution or if suffix storage can grow/copy quadratically.
@@ -61,23 +71,28 @@ resolution or if suffix storage can grow/copy quadratically.
 **Parallelizable with:** None.
 
 **Changes:**
-- [ ] Reset previous-glyph/pair contribution at every explicit or wrapped line start before
+- [x] Reset previous-glyph/pair contribution at every explicit or wrapped line start before
   accumulating final run/line advances.
-- [ ] Preserve kerning within same-face runs, reset across selected face changes as approved, and keep
+- [x] Preserve kerning within same-face runs, reset across selected face changes as approved, and keep
   source range/char-count/newline semantics from P1.
-- [ ] Rebase from raw primitive base advances/pair inputs only after final wrapping, deferred-suffix
-  placement, and line-start reset; then freeze and publish each public `TextLineMetrics`,
-  `ResolvedTextRun`, and line-local cumulative caret-advance array exactly once using P2 builders. Do
-  not create or retain a source-global cumulative array.
+- [x] Rebase from raw primitive base advances/pair inputs only after final wrapping, deferred-suffix
+  placement, and line-start reset; then freeze each public `TextLineMetrics`/`ResolvedTextRun` and
+  aligned internal `FinalLineCaretStops` exactly once inside immutable `ResolvedMeasurement`. Add
+  `RangeTextMeasurerCapability` with the approved `ResolvedMeasurement` return signature and add
+  `RangeTextMeasurerAdapter` with legacy nested absolute-index translation at this same final
+  boundary. Wire `FontServiceImpl` through P2's `PreparedRange` seam and let public/adapter paths
+  project the same frozen `TextMetrics`. Do not create or retain a source-global cumulative array.
 
 **Acceptance Checks:**
-- [ ] Fixtures distinguish same text at source start versus wrapped line start and prove no leading
+- [x] Fixtures distinguish same text at source start versus wrapped line start and prove no leading
   inherited kerning.
-- [ ] Fallback transitions and replacement markers have exact run x advances and source ranges.
-- [ ] Fractional/rounded advances and vertical metrics follow P1's exact accumulation order before
+- [x] Fallback transitions and replacement markers have exact run x advances and source ranges.
+- [x] Fractional/rounded advances and vertical metrics follow P1's exact accumulation order before
   final line arrays/results are frozen.
-- [ ] No public line/run/caret value existed at an incomplete P2 boundary or requires a second freeze
+- [x] No public line/run/caret value existed at an incomplete P2 boundary or requires a second freeze
   after publication.
+- [x] Direct range capability and legacy-adapter results satisfy P1 nested absolute-index/parity and
+  counter-attribution targets; only the production capability path makes a zero-copy claim.
 
 **Risks / Stop Criteria:** Stop if primitive base values already include inseparable prior-line
 kerning or if final run values are reused across different line starts.
@@ -91,19 +106,19 @@ policy.
 **Parallelizable with:** None.
 
 **Changes:**
-- [ ] Implement caret lookup over final line-local cumulative code-point boundaries/advances with the
+- [x] Implement caret lookup over final line-local cumulative code-point boundaries/advances with the
   approved below/exactly-at/above midpoint tie, offset, empty-line, replacement, and coordinate behavior.
-- [ ] Update input/textarea setter/helper behavior to clamp to source range and then snap backward
+- [x] Update input/textarea setter/helper behavior to clamp to source range and then snap backward
   from a surrogate interior to the preceding valid code-point boundary, with migration tests.
-- [ ] Ensure all `TextMeasurer` caret/line/default entry points delegate without duplicate full scans
+- [x] Ensure all `TextMeasurer` caret/line/default entry points delegate without duplicate full scans
   beyond their documented call semantics.
 
 **Acceptance Checks:**
-- [ ] Caret lookup never returns the interior of a valid surrogate pair and agrees with line/run
+- [x] Caret lookup never returns the interior of a valid surrogate pair and agrees with line/run
   coordinates across fallback/replacement fixtures.
-- [ ] The same raw primitive sequence wrapped at different widths produces independent rebased line
+- [x] The same raw primitive sequence wrapped at different widths produces independent rebased line
   arrays with correct first-glyph zero-kerning and midpoint behavior.
-- [ ] Control setters and measurement APIs share one boundary policy; no prefix substring measure is
+- [x] Control setters and measurement APIs share one boundary policy; no prefix substring measure is
   required by the new primitive result.
 
 **Risks / Stop Criteria:** Stop if caret coordinates depend on remeasuring source prefixes or if API

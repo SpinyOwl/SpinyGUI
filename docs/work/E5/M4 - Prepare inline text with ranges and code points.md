@@ -12,8 +12,10 @@ fragment structure and ownership contract.
 
 ## Context
 
-- M2 supplies approved CR/LF, replacement, source-index, wrapping, and resolved-run contracts; M3
-  supplies centralized resolver ownership, generation, UI-thread mutation rules, and lifecycle.
+- [M2/P1's approved measurement contract](M2/P1%20-%20Approve%20resolved-measurement%20contracts.md)
+  supplies CR/LF, replacement, absolute source-index, text-local coordinate, immutable-result,
+  wrapping, and range-adapter rules; M3 supplies centralized resolver ownership, generation,
+  UI-thread mutation rules, and lifecycle.
 - M4 starts after M2 and M3. M4/P2 additionally names M3/P2 as the precise source of its resolver/pass
   assumptions so the cross-phase dependency remains reciprocal and reviewable.
 - Existing tests expose durable `InlineFragment` count/text/geometry and ownership; equality excludes

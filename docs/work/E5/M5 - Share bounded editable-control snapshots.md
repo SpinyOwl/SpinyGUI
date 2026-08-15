@@ -12,8 +12,10 @@ selection, hit-test, viewport, and scroll behavior.
 
 ## Context
 
-- M2 supplies approved measurement/coordinate/surrogate behavior; M3 supplies the real semantic
-  font generation. No temporary generation source is allowed.
+- [M2/P1's approved measurement contract](M2/P1%20-%20Approve%20resolved-measurement%20contracts.md)
+  supplies wrapping/replacement, absolute UTF-16, clamp-then-snap, text-local coordinate,
+  per-final-line caret, and deep-immutability rules; M3 supplies the real semantic font generation.
+  No temporary generation source is allowed.
 - Current mutations are not comprehensively observable, so every service query performs complete
   effective-key validation rather than relying only on eager invalidation.
 - The snapshot slot is naturally bounded to one current value per control, holds no history, and is

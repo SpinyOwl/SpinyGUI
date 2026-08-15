@@ -12,7 +12,10 @@ font generations, prepared ranges, and control snapshots are stable.
 
 ## Context
 
-- M2-M5 supply the primitive, lifecycle, prepared-text, and naturally bounded control contracts.
+- [M2/P1's approved measurement contract](M2/P1%20-%20Approve%20resolved-measurement%20contracts.md)
+  fixes wrap/replacement, source/text-local coordinates, per-final-line caret representation, range
+  behavior, and deep immutability; M3-M5 supply lifecycle, prepared-text, and naturally bounded
+  control contracts.
 - Width-independent resolved primitives contain source boundaries, face/glyph selection, base
   advances, and pair-kerning inputs. Final line-specific `ResolvedTextRun` advances are materialized
   only after wrapping and line-start kerning reset.

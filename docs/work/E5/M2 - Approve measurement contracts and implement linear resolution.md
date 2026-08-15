@@ -1,6 +1,6 @@
 # M2: Approve Measurement Contracts and Implement Linear Resolution
 
-**Status:** In progress
+**Status:** Complete
 
 ## Document Context
 
@@ -17,14 +17,19 @@ wrapping/freeze work.
 ## Context
 
 - M1 supplies trustworthy counters, workload identities, and structural fixtures.
-- The measurement contract was approved on 2026-08-14. P1 must now encode it in Javadoc,
-  characterization/target fixtures, and explicit migration notes before P2 implementation starts.
+- The measurement contract was approved on 2026-08-14 and P1 encoded it in current-truthful
+  Javadoc, active characterization, disabled migration targets, and explicit compatibility notes.
+  P2 and P3 implement the approved boundary, and P4 completes compatibility, immutability,
+  zero-copy, and uncached linear-scaling proof in the current shared diff.
 - Public source indices remain UTF-16; valid surrogate pairs remain atomic during scanning,
   wrapping, caret placement, and run construction.
-- A narrow append-only optimization is already present in `FontServiceImpl.resolveRuns`: accepted
-  glyphs are appended linearly and frozen once at the run boundary. This is useful evidence, but it
-  does not complete any M2 task because measurement still resolves accepted ranges more than once,
-  wrap replay can revisit suffixes, and caret queries rescan independently.
+- Before P2/P3, `FontServiceImpl.resolveRuns` provided only a narrow append-only optimization:
+  accepted glyphs were appended linearly and frozen once at a run boundary, while measurement still
+  resolved accepted ranges more than once, wrap replay could revisit suffixes, and caret queries
+  rescanned independently. The completed P2/P3 implementation replaces that historical baseline
+  with retained resolved primitives, bounded wrapping, final line-local materialization, and caret
+  lookup over final stops; P4 remains responsible for the complete compatibility, immutability, and
+  linear-scaling proof.
 - M2 is a bounded compatibility migration. It preserves existing public type signatures and
   `ResolvedTextRun` record components while intentionally correcting documented contract gaps.
 
@@ -32,7 +37,7 @@ wrapping/freeze work.
 
 ### P1: Approve resolved-measurement contracts
 
-**Status:** In progress
+**Status:** Complete
 
 **Document:** [P1 - Approve resolved-measurement contracts](M2/P1%20-%20Approve%20resolved-measurement%20contracts.md)
 
@@ -70,7 +75,7 @@ explicit compatibility/migration statement.
 
 ### P2: Build resolved primitives and append-only builders
 
-**Status:** Planned
+**Status:** Complete
 
 **Document:** [P2 - Build resolved primitives and append-only builders](M2/P2%20-%20Build%20resolved%20primitives%20and%20append-only%20builders.md)
 
@@ -89,8 +94,9 @@ source boundaries, and replacement state for later line materialization.
 - Introduce code-point-safe resolved primitives carrying approved UTF-16 source boundaries.
 - Add append-only measurement-local glyph/run/line builders; validate private mutable/frozen builder
   invariants without publishing incomplete public line/run/caret results.
-- Add a compatible internal range-aware measurement boundary over source/prepared ranges without
-  forcing a new public abstract method or one temporary `String` per call.
+- Add the exact immutable internal `PreparedRange` request/private seam without a new public abstract
+  method or temporary capability result. P3 adds the final capability, adapter, and
+  `ResolvedMeasurement` dispatch together over this zero-copy seam.
 - Preserve raw primitive inputs and defensive-copy rules without adding a source-global cumulative
   array or persistent cache.
 
@@ -104,7 +110,7 @@ reconstructs a growing immutable run/list for each appended glyph.
 
 ### P3: Integrate wrapping, line materialization, and caret queries
 
-**Status:** Planned
+**Status:** Complete
 
 **Document:** [P3 - Integrate wrapping line materialization and caret queries](M2/P3%20-%20Integrate%20wrapping%20line%20materialization%20and%20caret%20queries.md)
 
@@ -137,7 +143,7 @@ quadratically, or carries kerning across a line boundary.
 
 ### P4: Prove compatibility, immutability, and linear scaling
 
-**Status:** Planned
+**Status:** Complete
 
 **Document:** [P4 - Prove compatibility immutability and linear scaling](M2/P4%20-%20Prove%20compatibility%20immutability%20and%20linear%20scaling.md)
 
@@ -165,15 +171,36 @@ algorithmic boundary; local timing/allocation evidence supports but does not rep
 **Validation:** Source scans, builder work, and slot movement scale linearly; accepted ranges are not
 re-probed solely for wrapping/run construction; every `TextMeasurer` entry point follows one contract.
 
+**Completion evidence:** Fresh size-scaled whole-string fixtures (`8/16/32` units), shared-source
+range batches (`16/32/64` ranges), and `4,096` final-stop queries prove the exact counter formulas,
+bounded native probes, logarithmic caret lookup, zero slot movement, zero direct-capability temporary
+range strings, and absence of persistent measurement caches. Paired diagnostics-disabled benchmark
+run `20260815-213944-045890100` generated a complete internally paired standalone CPU/rendering
+report only after deterministic checks passed. It is not comparison-qualified against accepted M1
+baseline `20260812-155701-296656400`: those ignored baseline artifacts are absent, the available
+toolchain/current run use JVM `25.0.3`, and the archived JVM `25.0.1` pairs are not the accepted M1
+record. The report correctly suppresses deltas with `environment.jvm-version differs`.
+Timing/allocation values remain supporting local evidence rather than a completion gate, pass
+threshold, or improvement claim.
+
 **Risks / Stop Criteria:** Do not proceed to M4/M5/M7 when any structural fixture drifts without an
 approved migration or when counters retain quadratic growth.
 
 ## Milestone Validation
 
-- `./gradlew :spinygui.core:test --tests 'com.spinyowl.spinygui.core.system.font.impl.FontServiceImplTest'`
-- `./gradlew :spinygui.core:test --tests 'com.spinyowl.spinygui.core.system.input.*'`
-- `./gradlew :spinygui.benchmark:test`
-- Run `./gradlew test` after the final contract/complexity review.
+- Deterministic scaling/structural selection completed `47/47`:
+  `./gradlew :spinygui.core:test --tests 'com.spinyowl.spinygui.core.system.font.impl.FontServiceImplLinearScalingTest' --tests 'com.spinyowl.spinygui.core.system.font.impl.FontServiceImplMeasurementContractTest' --tests 'com.spinyowl.spinygui.core.system.font.impl.FontServiceImplStructuralContractTest' -x :spinygui.core:jacocoTestReport`.
+- The focused font/control surface completed `90/90`; full core completed `525/525`; and full
+  benchmark completed `112/112`. Focused/full core commands excluded
+  `:spinygui.core:jacocoTestReport` because its report-output issue is unrelated to the selected test
+  execution.
+- `./gradlew test -x :spinygui.core:jacocoTestReport` completed successfully at the aggregate
+  boundary. Its first sandboxed attempt could not create the demo test-class and NanoVG HTML-report
+  directories; the identical command passed outside that filesystem restriction, so no test or
+  behavioral failure remains.
+- Source/bytecode zero-copy checks, the report-generation dry run, Markdown links, and
+  `git diff --check` passed. Run `20260815-213944-045890100` remains standalone supporting evidence;
+  deterministic counters and structural proof are the M2 completion gate.
 
 ## Dependency Graph
 

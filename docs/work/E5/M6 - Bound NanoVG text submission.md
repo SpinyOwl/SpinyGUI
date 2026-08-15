@@ -12,6 +12,9 @@ core/backend compatibility.
 
 ## Context
 
+- [M2/P1's approved measurement contract](M2/P1%20-%20Approve%20resolved-measurement%20contracts.md)
+  fixes replacement selection, absolute source evidence, line-local run advances, immutable public
+  results, and `ResolvedTextRun` record compatibility for every renderer path.
 - M3 owns renderer/context/font teardown; M4 and M5 provide stable normal/control text outputs.
 - `ResolvedTextRun` is a public record. Retaining rendered text must preserve its record components,
   canonical constructor, accessors, equality, hash, and string behavior.

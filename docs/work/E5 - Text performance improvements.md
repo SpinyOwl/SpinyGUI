@@ -95,7 +95,7 @@ reviewed baseline.
 
 ### M2: Approve measurement contracts and implement linear resolution
 
-**Status:** In progress
+**Status:** Complete
 
 **Document:** [M2 - Approve measurement contracts and implement linear resolution](E5/M2%20-%20Approve%20measurement%20contracts%20and%20implement%20linear%20resolution.md)
 
@@ -126,14 +126,21 @@ kerning reset; wrapping reuses scanned primitives without repeated native probes
   temporary `String` per measured range while current public `TextMeasurer` APIs remain compatible.
 - Distinguish logical glyph resolution from the multiple native glyph-index probes fallback may
   require.
-- Preserve the landed append-only `resolveRuns` glyph accumulation as partial linear evidence, while
-  removing the remaining duplicate measure/run/caret scans and deferred-suffix replay.
+- Preserve append-only glyph accumulation while removing duplicate measure/run/caret scans and
+  deferred-suffix replay through retained resolved primitives, bounded wrapping, and final caret
+  stops.
 - Prove linear builder/freeze work against long deferred suffixes, narrow widths, fallback
   transitions, and line-start kerning resets.
 
 **Validation:** Contract decisions are approved; public UTF-16 indices and code-point atomicity are
 tested; cold/disabled counters show no repeated scan/probe solely for wrapping or run construction
 and no quadratic suffix copying/moving.
+
+**Completion boundary:** P1-P4 are complete. Exact deterministic counter formulas, structural
+zero-copy/call-graph fixtures, compatibility and deep-immutability tests, full core/benchmark tests,
+and the aggregate test boundary pass. Paired run `20260815-213944-045890100` is valid standalone
+supporting evidence but not an M1-qualified delta because the accepted baseline artifacts are absent
+and the current JVM differs; report suppression is therefore expected. M3 is the next milestone.
 
 ### M3: Establish font identity, generations, and lifecycle
 
@@ -359,8 +366,6 @@ completion proves only whole-frame skipping.
 - M1 must account for the actual 30/30 alternating warmup plus synchronized small-scene image
   validation (31/30 pre-measure). It must move validation outside a fresh equal sequence or report the
   complete distribution, then recapture the baseline.
-- M2/P1 must encode each approved behavior/immutability/index/coordinate outcome as Javadoc,
-  characterization/target fixtures, and migration notes before the linear builder path starts.
 - M3 must select exact registry/resource bounds and either support or explicitly reject renderer
   context replacement under the approved UI-thread lifecycle.
 - M6 must select the public-compatible rendered-text path and bounded staging design from pinned
