@@ -38,6 +38,7 @@ import com.spinyowl.spinygui.core.style.types.length.Length;
 import com.spinyowl.spinygui.core.style.types.length.Unit;
 import com.spinyowl.spinygui.core.system.event.processor.SystemEventProcessor;
 import com.spinyowl.spinygui.core.system.font.FontMetrics;
+import com.spinyowl.spinygui.core.system.font.FontTestOwner;
 import com.spinyowl.spinygui.core.system.font.TextLineMetrics;
 import com.spinyowl.spinygui.core.system.font.TextMeasurer;
 import com.spinyowl.spinygui.core.time.TimeService;
@@ -46,9 +47,15 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 import lombok.NonNull;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 class FlexLayoutTest {
+
+  @BeforeEach
+  void installFontOwner() {
+    FontTestOwner.install();
+  }
 
   @Test
   void setLength_whenPixelLengthHasIntegerLookingValue_passesFloatValue() {

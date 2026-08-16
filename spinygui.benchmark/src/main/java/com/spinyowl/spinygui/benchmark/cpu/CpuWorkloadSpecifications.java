@@ -25,7 +25,6 @@ import com.spinyowl.spinygui.core.style.types.Position;
 import com.spinyowl.spinygui.core.style.types.TextAlign;
 import com.spinyowl.spinygui.core.style.types.WhiteSpace;
 import com.spinyowl.spinygui.core.style.types.WordBreak;
-import com.spinyowl.spinygui.core.system.font.FontChainResolver;
 import com.spinyowl.spinygui.core.system.font.TextCaretMetrics;
 import com.spinyowl.spinygui.core.system.font.TextMetrics;
 import com.spinyowl.spinygui.core.system.font.impl.FontServiceImpl;
@@ -118,6 +117,7 @@ public final class CpuWorkloadSpecifications {
           0,
           new TextStyleSpecification(
               List.of(Font.DEFAULT),
+              List.of(Font.ROBOTO_REGULAR, Font.ROBOTO_LIGHT, Font.ROBOTO_BOLD),
               FontStyle.NORMAL,
               FontWeight.NORMAL,
               FontStretch.NORMAL,
@@ -407,9 +407,14 @@ public final class CpuWorkloadSpecifications {
       if (!"default".equals(fontResolver)) {
         throw new IllegalStateException("Unsupported CPU benchmark font resolver: " + fontResolver);
       }
-      return new FontServiceImpl(
-          new FontStorageImpl(), roundToPixel, FontChainResolver.DEFAULT,
-          Objects.requireNonNull(diagnostics, "diagnostics"));
+      FontServiceImpl service =
+          new FontServiceImpl(
+              new FontStorageImpl(),
+              roundToPixel,
+              Objects.requireNonNull(diagnostics, "diagnostics"));
+      service.installSemanticOwner();
+      preparedInlineLayout.style().verifyResolution(service.fontChainResolver());
+      return service;
     }
 
     public void warmFonts(FontServiceImpl fontService) {

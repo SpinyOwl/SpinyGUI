@@ -25,6 +25,7 @@ import com.spinyowl.spinygui.core.style.types.WordBreak;
 import com.spinyowl.spinygui.core.style.types.border.BorderStyle;
 import com.spinyowl.spinygui.core.style.types.length.Length;
 import com.spinyowl.spinygui.core.system.font.FontMetrics;
+import com.spinyowl.spinygui.core.system.font.FontTestOwner;
 import com.spinyowl.spinygui.core.system.font.TextLineMetrics;
 import java.util.List;
 import lombok.NonNull;
@@ -38,6 +39,7 @@ class InlineFormattingContextTest {
 
   @BeforeEach
   void setUp() {
+    FontTestOwner.install();
     textMeasurer = new FixedTextMeasurer();
     formattingContext = new InlineFormattingContext(textMeasurer);
     parent = NodeBuilder.div();

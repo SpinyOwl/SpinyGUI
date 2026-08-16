@@ -25,7 +25,6 @@ import com.spinyowl.spinygui.core.style.types.Position;
 import com.spinyowl.spinygui.core.style.types.TextAlign;
 import com.spinyowl.spinygui.core.style.types.WhiteSpace;
 import com.spinyowl.spinygui.core.style.types.WordBreak;
-import com.spinyowl.spinygui.core.system.font.FontChainResolver;
 import com.spinyowl.spinygui.core.system.font.impl.FontServiceImpl;
 import com.spinyowl.spinygui.core.system.font.impl.FontStorageImpl;
 import java.util.Collections;
@@ -43,6 +42,11 @@ public final class RenderingWorkloadSpecifications {
           new ContainerSpecification(20, 20, 1240, 680),
           new TextStyleSpecification(
               List.of(Font.ROBOTO_REGULAR, Font.NOTO_SANS_CJK_SC_REGULAR),
+              List.of(
+                  Font.ROBOTO_REGULAR,
+                  Font.ROBOTO_LIGHT,
+                  Font.ROBOTO_BOLD,
+                  Font.NOTO_SANS_CJK_SC_REGULAR),
               FontStyle.NORMAL,
               FontWeight.NORMAL,
               FontStretch.NORMAL,
@@ -234,9 +238,14 @@ public final class RenderingWorkloadSpecifications {
     }
 
     public FontServiceImpl createFontService(DiagnosticSession diagnostics) {
-      return new FontServiceImpl(
-          new FontStorageImpl(), roundToPixel, FontChainResolver.DEFAULT,
-          Objects.requireNonNull(diagnostics, "diagnostics"));
+      FontServiceImpl service =
+          new FontServiceImpl(
+              new FontStorageImpl(),
+              roundToPixel,
+              Objects.requireNonNull(diagnostics, "diagnostics"));
+      service.installSemanticOwner();
+      style.verifyResolution(service.fontChainResolver());
+      return service;
     }
 
     public SceneSpecification scene(String name) {

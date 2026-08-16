@@ -462,12 +462,18 @@ class FontServiceImplLinearScalingTest {
   }
 
   private FontServiceImpl disabledService() {
-    return new FontServiceImpl(new FontStorageImpl(), false);
+    FontServiceImpl service = new FontServiceImpl(new FontStorageImpl(), false);
+    service.installSemanticOwner();
+    service.loadFont(NOTO_EMOJI.path());
+    return service;
   }
 
   private FontServiceImpl service(DiagnosticSession diagnostics) {
-    return new FontServiceImpl(
-        new FontStorageImpl(), false, FontChainResolver.DEFAULT, diagnostics);
+    FontServiceImpl service =
+        new FontServiceImpl(new FontStorageImpl(), false, FontChainResolver.DEFAULT, diagnostics);
+    service.installSemanticOwner();
+    service.loadFont(NOTO_EMOJI.path());
+    return service;
   }
 
   private DiagnosticSession diagnostics() {

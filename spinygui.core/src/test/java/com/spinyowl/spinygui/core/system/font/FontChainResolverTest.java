@@ -1,21 +1,65 @@
 package com.spinyowl.spinygui.core.system.font;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotSame;
+import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.spinyowl.spinygui.core.font.Font;
 import com.spinyowl.spinygui.core.font.FontStretch;
 import com.spinyowl.spinygui.core.font.FontStyle;
 import com.spinyowl.spinygui.core.font.FontWeight;
+import com.spinyowl.spinygui.core.system.font.impl.FontServiceImpl;
+import com.spinyowl.spinygui.core.system.font.impl.FontStorageImpl;
+import java.nio.ByteBuffer;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 class FontChainResolverTest {
+  private FontServiceImpl fontService;
+
+  @BeforeEach
+  void installProductionOwner() {
+    if (Font.hasSemanticOwner()) {
+      Font.semanticService().close();
+    }
+    fontService = new FontServiceImpl(new FontStorageImpl(), false);
+    fontService.installSemanticOwner();
+  }
+
+  @Test
+  void productionServiceAndCompatibilityDefaultDelegateToTheOwnersSingleResolver() {
+    Font custom =
+        register(
+            new Font(
+                "T3 Owner Family",
+                FontStyle.NORMAL,
+                FontStretch.NORMAL,
+                FontWeight.REGULAR,
+                "fonts/t3-owner.ttf"));
+
+    assertAllResolversReturn(custom);
+    assertSame(Font.semanticOwner().resolver(), fontService.fontChainResolver());
+  }
+
+  @SuppressWarnings("deprecation")
+  @Test
+  void compatibilityServiceConstructorCannotInstallAnIndependentResolver() {
+    FontChainResolver independent = (families, style, weight, stretch) -> List.of();
+    FontServiceImpl compatibility =
+        new FontServiceImpl(new FontStorageImpl(), false, independent);
+    compatibility.installSemanticOwner();
+
+    assertNotSame(independent, compatibility.fontChainResolver());
+    assertSame(Font.semanticOwner().resolver(), compatibility.fontChainResolver());
+  }
 
   @Test
   void resolve_prefersCssFamilyOrderOverRegistryInsertionOrder() {
     Font second =
-        Font.addFont(
+        register(
             new Font(
                 "T2 Second Family",
                 FontStyle.NORMAL,
@@ -23,7 +67,7 @@ class FontChainResolverTest {
                 FontWeight.REGULAR,
                 "fonts/t2-second.ttf"));
     Font first =
-        Font.addFont(
+        register(
             new Font(
                 "T2 First Family",
                 FontStyle.NORMAL,
@@ -63,7 +107,7 @@ class FontChainResolverTest {
   @Test
   void resolve_retainsNamedLatinIconAndEmojiPrimaryFaces() {
     Font icon =
-        Font.addFont(
+        register(
             new Font(
                 "T2 Icon Family",
                 FontStyle.NORMAL,
@@ -71,7 +115,7 @@ class FontChainResolverTest {
                 FontWeight.REGULAR,
                 "fonts/t2-icon.ttf"));
     Font emoji =
-        Font.addFont(
+        register(
             new Font(
                 "T2 Emoji Family",
                 FontStyle.NORMAL,
@@ -89,7 +133,7 @@ class FontChainResolverTest {
 
   @Test
   void resolve_prefersExactFaceThenDeterministicNearestFaceWithinAFamily() {
-    Font.addFont(
+    register(
         new Font(
             "T2 Matching Family",
             FontStyle.NORMAL,
@@ -97,14 +141,14 @@ class FontChainResolverTest {
             FontWeight.BOLD,
             "fonts/t2-fallback.ttf"));
     Font exact =
-        Font.addFont(
+        register(
             new Font(
                 "T2 Matching Family",
                 FontStyle.ITALIC,
                 FontStretch.NORMAL,
                 FontWeight.BOLD,
                 "fonts/t2-exact.ttf"));
-    Font.addFont(
+    register(
         new Font(
             "T2 Nearest Family",
             FontStyle.NORMAL,
@@ -112,7 +156,7 @@ class FontChainResolverTest {
             FontWeight.REGULAR,
             "fonts/t2-nearest-regular.ttf"));
     Font nearest =
-        Font.addFont(
+        register(
             new Font(
                 "T2 Nearest Family",
                 FontStyle.NORMAL,
@@ -140,5 +184,34 @@ class FontChainResolverTest {
   private List<Font> resolve(List<String> families) {
     return FontChainResolver.DEFAULT.resolve(
         families, FontStyle.NORMAL, FontWeight.REGULAR, FontStretch.NORMAL);
+  }
+
+  private Font register(Font font) {
+    SemanticFontOwner.Mutation mutation =
+        Font.semanticOwner()
+            .add(
+                SemanticFontOwner.FontRequest.from(
+                    font,
+                    () ->
+                        ByteBuffer.wrap(font.path().getBytes(StandardCharsets.UTF_8)),
+                    bytes -> {},
+                    (request, bytes) -> {}));
+    assertTrue(mutation.outcome() != SemanticFontOwner.MutationOutcome.REJECTED);
+    return font;
+  }
+
+  private void assertAllResolversReturn(Font font) {
+    List<Font> ownerResolved = resolveWith(Font.semanticOwner().resolver(), font.fontFamily());
+    List<Font> serviceResolved = resolveWith(fontService.fontChainResolver(), font.fontFamily());
+    List<Font> compatibilityResolved = resolveWith(FontChainResolver.DEFAULT, font.fontFamily());
+
+    assertEquals(List.of(font), ownerResolved);
+    assertEquals(ownerResolved, serviceResolved);
+    assertEquals(ownerResolved, compatibilityResolved);
+  }
+
+  private List<Font> resolveWith(FontChainResolver resolver, String family) {
+    return resolver.resolve(
+        List.of(family), FontStyle.NORMAL, FontWeight.REGULAR, FontStretch.NORMAL);
   }
 }

@@ -15,7 +15,6 @@ import com.spinyowl.spinygui.core.node.layout.Rect;
 import com.spinyowl.spinygui.core.style.ResolvedStyle;
 import com.spinyowl.spinygui.core.style.stylesheet.util.StyleUtils;
 import com.spinyowl.spinygui.core.system.font.FontService;
-import com.spinyowl.spinygui.core.system.font.FontChainResolver;
 import com.spinyowl.spinygui.core.system.font.TextLineMetrics;
 import com.spinyowl.spinygui.core.system.font.TextMeasurer;
 import com.spinyowl.spinygui.core.system.font.TextMetrics;
@@ -113,9 +112,12 @@ public class TextLayoutImpl implements TextLayout {
     context.lastBlockBottomY(text.box().borderBox().y() + text.box().borderBox().height());
   }
 
-  private List<Font> findFonts(List<String> fontFamilies, FontStyle fontStyle, FontWeight fontWeight) {
+  List<Font> findFonts(List<String> fontFamilies, FontStyle fontStyle, FontWeight fontWeight) {
     textMeasurer.diagnostics().increment(TextDiagnosticCounter.FONT_CHAIN_RESOLUTIONS);
-    List<Font> fonts = FontChainResolver.DEFAULT.resolve(fontFamilies, fontStyle, fontWeight, FontStretch.NORMAL);
+    List<Font> fonts =
+        fontService
+            .fontChainResolver()
+            .resolve(fontFamilies, fontStyle, fontWeight, FontStretch.NORMAL);
     List<Font> available = fonts.stream().filter(fontService::isFontAvailable).toList();
     return available.isEmpty() ? List.of(Font.DEFAULT) : available;
   }

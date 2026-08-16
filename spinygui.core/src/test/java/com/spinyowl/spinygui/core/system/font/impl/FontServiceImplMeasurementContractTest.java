@@ -23,6 +23,7 @@ import com.spinyowl.spinygui.core.system.font.TextMeasurer;
 import com.spinyowl.spinygui.core.system.font.TextMetrics;
 import com.spinyowl.spinygui.core.system.font.internal.FinalLineCaretStops;
 import com.spinyowl.spinygui.core.system.font.internal.ResolvedMeasurement;
+import com.spinyowl.spinygui.core.util.IOUtil;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -55,6 +56,9 @@ class FontServiceImplMeasurementContractTest {
   @BeforeEach
   void setUp() {
     fontService = new FontServiceImpl(new FontStorageImpl(), false);
+    fontService.installSemanticOwner();
+    fontService.loadFont(MATERIAL_ICONS.path());
+    fontService.loadFont(NOTO_EMOJI.path());
   }
 
   @Test
@@ -791,6 +795,7 @@ class FontServiceImplMeasurementContractTest {
   @Test
   void pixelRoundedVerticalMetrics_roundComponentsBeforeLineCountAccumulation() {
     FontServiceImpl rounded = new FontServiceImpl(new FontStorageImpl(), true);
+    rounded.installSemanticOwner();
 
     TextMetrics metrics =
         rounded.measureText(
@@ -1642,8 +1647,12 @@ class FontServiceImplMeasurementContractTest {
   }
 
   private FontServiceImpl instrumentedFontService(DiagnosticSession diagnostics) {
-    return new FontServiceImpl(
-        new FontStorageImpl(), false, FontChainResolver.DEFAULT, diagnostics);
+    FontServiceImpl service =
+        new FontServiceImpl(new FontStorageImpl(), false, FontChainResolver.DEFAULT, diagnostics);
+    service.installSemanticOwner();
+    service.loadFont(MATERIAL_ICONS.path());
+    service.loadFont(NOTO_EMOJI.path());
+    return service;
   }
 
   private void assertRangeWorkCounters(
@@ -1800,7 +1809,7 @@ class FontServiceImplMeasurementContractTest {
   }
 
   private int glyphIndex(Font font, int codePoint) {
-    ByteBuffer data = new FontStorageImpl().getFontData(font.path());
+    ByteBuffer data = IOUtil.resourceAsByteBuffer(font.path());
     try (MemoryStack stack = MemoryStack.stackPush()) {
       STBTTFontinfo fontInfo = STBTTFontinfo.malloc(stack);
       assertTrue(stbtt_InitFont(fontInfo, data));

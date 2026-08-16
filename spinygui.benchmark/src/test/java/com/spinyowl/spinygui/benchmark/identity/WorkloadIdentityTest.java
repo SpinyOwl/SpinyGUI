@@ -1866,6 +1866,7 @@ class WorkloadIdentityTest {
       FontStretch effectiveStretch) {
     return new TextStyleSpecification(
         orderedFonts,
+        declaredResolvedFonts(orderedFonts),
         source.fontStyle(),
         source.fontWeight(),
         effectiveStretch,
@@ -1887,6 +1888,9 @@ class WorkloadIdentityTest {
         drift == InlineStyleDrift.ORDERED_FONTS
             ? List.of(Font.NOTO_SANS_CJK_SC_REGULAR)
             : source.orderedFonts(),
+        drift == InlineStyleDrift.ORDERED_FONTS
+            ? List.of(Font.NOTO_SANS_CJK_SC_REGULAR)
+            : source.resolvedFonts(),
         drift == InlineStyleDrift.FONT_STYLE ? FontStyle.ITALIC : source.fontStyle(),
         drift == InlineStyleDrift.FONT_WEIGHT ? FontWeight.BOLD : source.fontWeight(),
         drift == InlineStyleDrift.EFFECTIVE_STRETCH
@@ -1902,6 +1906,21 @@ class WorkloadIdentityTest {
         drift == InlineStyleDrift.OVERFLOW_WRAP ? OverflowWrap.BREAK_WORD : source.overflowWrap(),
         drift == InlineStyleDrift.WORD_BREAK ? WordBreak.BREAK_ALL : source.wordBreak(),
         drift == InlineStyleDrift.TAB_SIZE ? source.tabSize() + 1 : source.tabSize());
+  }
+
+  private static List<Font> declaredResolvedFonts(List<Font> orderedFonts) {
+    List<Font> builtIns =
+        List.of(
+            Font.ROBOTO_REGULAR,
+            Font.ROBOTO_LIGHT,
+            Font.ROBOTO_BOLD,
+            Font.NOTO_SANS_CJK_SC_REGULAR);
+    return orderedFonts.stream()
+        .flatMap(
+            requested ->
+                builtIns.stream()
+                    .filter(font -> font.fontFamily().equalsIgnoreCase(requested.fontFamily())))
+        .toList();
   }
 
   private static CpuWorkloadSpecifications.InlineLayoutSpec copyInline(

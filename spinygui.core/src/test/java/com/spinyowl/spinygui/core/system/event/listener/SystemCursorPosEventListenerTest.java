@@ -27,6 +27,7 @@ import com.spinyowl.spinygui.core.node.InputElement;
 import com.spinyowl.spinygui.core.node.TextareaElement;
 import com.spinyowl.spinygui.core.system.event.SystemCursorPosEvent;
 import com.spinyowl.spinygui.core.system.font.FontMetrics;
+import com.spinyowl.spinygui.core.system.font.FontTestOwner;
 import com.spinyowl.spinygui.core.system.font.TextCaretMetrics;
 import com.spinyowl.spinygui.core.system.font.TextLineMetrics;
 import com.spinyowl.spinygui.core.system.font.TextMeasurer;
@@ -56,6 +57,7 @@ class SystemCursorPosEventListenerTest {
 
   @BeforeEach
   void setUp() {
+    FontTestOwner.install();
     listener =
         SystemCursorPosEventListener.builder()
             .eventProcessor(eventProcessor)

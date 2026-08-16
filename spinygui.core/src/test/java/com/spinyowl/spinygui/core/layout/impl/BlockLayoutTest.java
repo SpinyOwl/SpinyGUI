@@ -27,12 +27,19 @@ import com.spinyowl.spinygui.core.style.types.border.BorderStyle;
 import com.spinyowl.spinygui.core.style.types.length.Length;
 import com.spinyowl.spinygui.core.style.types.length.Unit;
 import com.spinyowl.spinygui.core.system.font.FontMetrics;
+import com.spinyowl.spinygui.core.system.font.FontTestOwner;
 import com.spinyowl.spinygui.core.system.font.TextLineMetrics;
 import java.util.List;
 import lombok.NonNull;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 class BlockLayoutTest {
+
+  @BeforeEach
+  void installFontOwner() {
+    FontTestOwner.install();
+  }
 
   @Test
   void layout_whenNestedBlockHasInlineTextBeforeBlockChild_doesNotDoubleCountParentOffset() {

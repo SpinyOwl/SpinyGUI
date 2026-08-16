@@ -7,13 +7,19 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.spinyowl.spinygui.benchmark.identity.BenchmarkInputManifests.InputSet;
+import com.spinyowl.spinygui.benchmark.BenchmarkFontTestOwner;
 import com.spinyowl.spinygui.benchmark.identity.BenchmarkRunMetadata;
 import com.spinyowl.spinygui.benchmark.identity.ComparabilityMetadata;
 import com.spinyowl.spinygui.benchmark.identity.WorkloadIdentity;
 import com.spinyowl.spinygui.benchmark.identity.WorkloadIdentity.Dimension;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.BeforeEach;
 
 class CpuBenchmarkReportTest {
+  @BeforeEach
+  void installFontOwner() {
+    BenchmarkFontTestOwner.install();
+  }
   @Test
   void enrichesEveryActualCurrentJmhOperationWithRequiredMetadata() {
     JsonArray report = new JsonArray();

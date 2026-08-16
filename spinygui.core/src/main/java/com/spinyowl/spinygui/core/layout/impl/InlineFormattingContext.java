@@ -29,7 +29,6 @@ import com.spinyowl.spinygui.core.style.types.WhiteSpace;
 import com.spinyowl.spinygui.core.style.types.WordBreak;
 import com.spinyowl.spinygui.core.system.font.TextLineMetrics;
 import com.spinyowl.spinygui.core.system.font.TextMeasurer;
-import com.spinyowl.spinygui.core.system.font.FontChainResolver;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.IdentityHashMap;
@@ -538,7 +537,7 @@ public class InlineFormattingContext {
 
   private List<Font> findFonts(ResolvedStyle style) {
     textMeasurer.diagnostics().increment(TextDiagnosticCounter.FONT_CHAIN_RESOLUTIONS);
-    return FontChainResolver.DEFAULT
+    return Font.semanticOwner().resolver()
         .resolve(
             style.fontFamilies(), style.fontStyle(), style.fontWeight(), FontStretch.NORMAL)
         ;

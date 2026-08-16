@@ -34,6 +34,7 @@ class FontServiceImplTest {
   @BeforeEach
   void setUp() {
     fontService = new FontServiceImpl(new FontStorageImpl(), false);
+    fontService.installSemanticOwner();
   }
 
   @Test
@@ -177,6 +178,7 @@ class FontServiceImplTest {
     FontServiceImpl instrumented =
         new FontServiceImpl(
             new FontStorageImpl(), false, FontChainResolver.DEFAULT, diagnostics);
+    instrumented.installSemanticOwner();
 
     TextMetrics actual = instrumented.measureText(text, Font.DEFAULT, 16, 1.2f);
     DiagnosticSnapshot snapshot = diagnostics.snapshot();
@@ -216,6 +218,7 @@ class FontServiceImplTest {
     FontServiceImpl instrumented =
         new FontServiceImpl(
             new FontStorageImpl(), false, FontChainResolver.DEFAULT, diagnostics);
+    instrumented.installSemanticOwner();
 
     FontServiceImpl.ResolvedPrimitiveSequence sequence =
         instrumented.resolvePrimitives(
@@ -262,6 +265,7 @@ class FontServiceImplTest {
     FontServiceImpl instrumented =
         new FontServiceImpl(
             new FontStorageImpl(), false, FontChainResolver.DEFAULT, diagnostics);
+    instrumented.installSemanticOwner();
     FontServiceImpl.ResolvedPrimitiveSequence sequence =
         instrumented.resolvePrimitives(source, 0, source.length(), List.of(Font.DEFAULT), 16);
     List<FontServiceImpl.ResolvedPrimitive> primitives = sequence.primitives();
@@ -394,6 +398,7 @@ class FontServiceImplTest {
     FontServiceImpl instrumented =
         new FontServiceImpl(
             new FontStorageImpl(), false, FontChainResolver.DEFAULT, diagnostics);
+    instrumented.installSemanticOwner();
 
     FontServiceImpl.ResolvedPrimitiveSequence sequence =
         instrumented.resolvePrimitives(
@@ -726,6 +731,7 @@ class FontServiceImplTest {
     FontServiceImpl instrumented =
         new FontServiceImpl(
             new FontStorageImpl(), false, FontChainResolver.DEFAULT, diagnostics);
+    instrumented.installSemanticOwner();
     List<Font> fonts = List.of(Font.ROBOTO_REGULAR, Font.NOTO_SANS_CJK_SC_REGULAR);
 
     List<FontServiceImpl.PrivatePreparedMeasurement> prepared =
@@ -773,6 +779,7 @@ class FontServiceImplTest {
   @Test
   void disabledDiagnosticsUseStableNoOpResultsAcrossMeasurement() {
     FontServiceImpl disabled = new FontServiceImpl(new FontStorageImpl(), false);
+    disabled.installSemanticOwner();
     DiagnosticSnapshot before = disabled.diagnostics().snapshot();
 
     disabled.measureText("unchanged", Font.DEFAULT, 16, 1.2f);
@@ -830,6 +837,7 @@ class FontServiceImplTest {
     FontServiceImpl instrumented =
         new FontServiceImpl(
             new FontStorageImpl(), false, FontChainResolver.DEFAULT, diagnostics);
+    instrumented.installSemanticOwner();
 
     FontServiceImpl.ResolvedPrimitiveSequence sequence =
         instrumented.resolvePrimitives(
@@ -903,6 +911,7 @@ class FontServiceImplTest {
     FontServiceImpl instrumented =
         new FontServiceImpl(
             new FontStorageImpl(), false, FontChainResolver.DEFAULT, diagnostics);
+    instrumented.installSemanticOwner();
 
     FontServiceImpl.PrivatePreparedMeasurement prepared =
         instrumented.preparePrivateMeasurement(
@@ -962,6 +971,7 @@ class FontServiceImplTest {
     FontServiceImpl instrumented =
         new FontServiceImpl(
             new FontStorageImpl(), false, FontChainResolver.DEFAULT, diagnostics);
+    instrumented.installSemanticOwner();
 
     FontServiceImpl.PrivatePreparedMeasurement prepared =
         instrumented.preparePrivateMeasurement(
@@ -1009,6 +1019,7 @@ class FontServiceImplTest {
     FontServiceImpl instrumented =
         new FontServiceImpl(
             new FontStorageImpl(), false, FontChainResolver.DEFAULT, diagnostics);
+    instrumented.installSemanticOwner();
 
     instrumented.measureText("a".repeat(glyphCount), Font.DEFAULT, 16, 1.2f);
     DiagnosticSnapshot snapshot = diagnostics.snapshot();

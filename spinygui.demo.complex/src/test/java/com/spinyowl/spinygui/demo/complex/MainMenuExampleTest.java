@@ -44,7 +44,7 @@ class MainMenuExampleTest {
                 .build(),
             new DefaultEventProcessor(),
             () -> 0,
-            new FontServiceImpl(new FontStorageImpl(), true));
+            installedFontService());
 
     layoutService.layout(frame);
 
@@ -66,7 +66,7 @@ class MainMenuExampleTest {
                 .build(),
             new DefaultEventProcessor(),
             () -> 0,
-            new FontServiceImpl(new FontStorageImpl(), true));
+            installedFontService());
 
     layoutService.layout(frame);
 
@@ -85,6 +85,12 @@ class MainMenuExampleTest {
     frame.styleSheets().add(parser.parse(readResource("com/spinyowl/spinygui/demo/main-menu.css")));
     new StyleManagerImpl(propertyStore, parser).recalculate(frame);
     return frame;
+  }
+
+  private static FontServiceImpl installedFontService() {
+    FontServiceImpl service = new FontServiceImpl(new FontStorageImpl(), true);
+    service.installSemanticOwner();
+    return service;
   }
 
   private static String readResource(String path) {

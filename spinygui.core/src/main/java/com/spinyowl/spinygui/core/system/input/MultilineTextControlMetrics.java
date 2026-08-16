@@ -10,7 +10,6 @@ import com.spinyowl.spinygui.core.style.types.length.Length;
 import com.spinyowl.spinygui.core.system.font.TextCaretMetrics;
 import com.spinyowl.spinygui.core.system.font.TextLineMetrics;
 import com.spinyowl.spinygui.core.system.font.TextMeasurer;
-import com.spinyowl.spinygui.core.system.font.FontChainResolver;
 import com.spinyowl.spinygui.core.system.font.TextMetrics;
 import com.spinyowl.spinygui.core.system.font.ResolvedTextRun;
 import java.util.ArrayList;
@@ -193,7 +192,7 @@ public class MultilineTextControlMetrics {
       return List.of(Font.DEFAULT);
     }
     textMeasurer.diagnostics().increment(TextDiagnosticCounter.FONT_CHAIN_RESOLUTIONS);
-    return FontChainResolver.DEFAULT
+    return Font.semanticOwner().resolver()
         .resolve(
             style.fontFamilies(), style.fontStyle(), style.fontWeight(), FontStretch.NORMAL);
   }

@@ -246,6 +246,7 @@ public abstract class Demo {
 
     FontStorage fontStorage = new FontStorageImpl();
     FontService fontService = new FontServiceImpl(fontStorage, true);
+    fontService.installSemanticOwner();
     if (renderer instanceof NvgRenderer nvg && fontService instanceof TextMeasurer textMeasurer) {
       nvg.textMeasurer(textMeasurer);
     }

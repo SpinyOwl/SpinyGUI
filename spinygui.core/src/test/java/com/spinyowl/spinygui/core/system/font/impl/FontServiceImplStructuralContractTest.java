@@ -7,6 +7,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.spinyowl.spinygui.core.font.Font;
 import com.spinyowl.spinygui.core.system.font.FontMetrics;
+import com.spinyowl.spinygui.core.system.font.FontResourceObservation;
+import com.spinyowl.spinygui.core.system.font.FontService;
 import com.spinyowl.spinygui.core.system.font.ResolvedGlyph;
 import com.spinyowl.spinygui.core.system.font.ResolvedTextRun;
 import com.spinyowl.spinygui.core.system.font.TextCaretMetrics;
@@ -448,7 +450,8 @@ class FontServiceImplStructuralContractTest {
 
     assertEquals(
         Set.of(
-            "fontInfoMap:java.util.Map<java.lang.String, org.lwjgl.stb.STBTTFontinfo>"),
+            "fontInfoMap:java.util.Map<java.lang.String, "
+                + "com.spinyowl.spinygui.core.system.font.impl.FontServiceImpl$OwnedFontInfo>"),
         mapFields);
     assertTrue(
         Arrays.stream(FontServiceImpl.class.getDeclaredFields())
@@ -459,6 +462,37 @@ class FontServiceImplStructuralContractTest {
                         || Collection.class.isAssignableFrom(field.getType())
                         || field.getType().isArray()),
         "FontServiceImpl must not retain source, range, result, collection, or array state");
+  }
+
+  @Test
+  void resourceObservationIsImmutableAndExposesOnlyBoundedNeutralCounts() throws Exception {
+    assertTrue(FontResourceObservation.class.isRecord());
+    assertExactPublicConstructors(
+        FontResourceObservation.class,
+        constructorDescriptor(
+            int.class,
+            long.class,
+            int.class,
+            long.class,
+            FontResourceObservation.AliasLifetime.class));
+    assertExactRecordComponents(
+        FontResourceObservation.class,
+        new Component("ownerByteEntries", int.class),
+        new Component("ownerByteCapacity", long.class),
+        new Component("ownerStbInfoEntries", int.class),
+        new Component("issuedExternalAliasViews", long.class),
+        new Component("aliasLifetime", FontResourceObservation.AliasLifetime.class));
+    assertEquals(
+        FontResourceObservation.class,
+        FontService.class.getMethod("resourceObservation").getReturnType());
+    assertTrue(
+        Arrays.stream(FontResourceObservation.class.getRecordComponents())
+            .noneMatch(
+                component ->
+                    Map.class.isAssignableFrom(component.getType())
+                        || java.nio.Buffer.class.isAssignableFrom(component.getType())
+                        || component.getType().getName().contains("STB")),
+        "resource observation must not expose owner maps, byte views, or native handles");
   }
 
   private void assertExactPublicConstructors(Class<?> type, String... expectedDescriptors) {

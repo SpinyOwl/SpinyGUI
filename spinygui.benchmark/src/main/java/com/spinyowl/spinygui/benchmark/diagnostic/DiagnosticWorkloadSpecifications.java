@@ -44,6 +44,11 @@ public final class DiagnosticWorkloadSpecifications {
   private static final TextStyleSpecification STYLE =
       new TextStyleSpecification(
           PREWARM_FONTS,
+          List.of(
+              Font.ROBOTO_REGULAR,
+              Font.ROBOTO_LIGHT,
+              Font.ROBOTO_BOLD,
+              Font.NOTO_SANS_CJK_SC_REGULAR),
           FontStyle.NORMAL,
           FontWeight.NORMAL,
           FontStretch.NORMAL,

@@ -45,7 +45,9 @@ public final class IOUtil {
       if (stream == null) {
         return null;
       }
-      return asByteBuffer(stream);
+      try (stream) {
+        return asByteBuffer(stream);
+      }
     }
   }
 
@@ -104,10 +106,13 @@ public final class IOUtil {
   }
 
   /**
-   * Used to convert byte array to read-ready {@link ByteBuffer}.
+   * Converts a byte array to a read-ready JVM-managed direct {@link ByteBuffer}.
+   *
+   * <p>The allocation is created by {@link ByteBuffer#allocateDirect(int)} and follows normal JVM
+   * reachability/cleaner lifetime. It is not an explicitly freed LWJGL native allocation.
    *
    * @param bytes source
-   * @return ByteBuffer with specified data.
+   * @return direct buffer with the specified data
    */
   @SneakyThrows
   public static ByteBuffer asByteBuffer(byte[] bytes) {

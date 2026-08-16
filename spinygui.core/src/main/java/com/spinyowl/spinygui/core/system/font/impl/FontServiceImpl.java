@@ -20,10 +20,18 @@ import com.spinyowl.spinygui.core.font.FontWeight;
 import com.spinyowl.spinygui.core.system.font.FontChainResolver;
 import com.spinyowl.spinygui.core.system.font.FontLoadingException;
 import com.spinyowl.spinygui.core.system.font.FontMetrics;
+import com.spinyowl.spinygui.core.system.font.FontResourceObservation;
 import com.spinyowl.spinygui.core.system.font.FontService;
+import com.spinyowl.spinygui.core.system.font.FontSemanticObservation;
 import com.spinyowl.spinygui.core.system.font.FontStorage;
 import com.spinyowl.spinygui.core.system.font.ResolvedGlyph;
 import com.spinyowl.spinygui.core.system.font.ResolvedTextRun;
+import com.spinyowl.spinygui.core.system.font.SemanticFontOwner;
+import com.spinyowl.spinygui.core.system.font.SemanticFontOwner.FaceKey;
+import com.spinyowl.spinygui.core.system.font.SemanticFontOwner.FontLoadRequest;
+import com.spinyowl.spinygui.core.system.font.SemanticFontOwner.FontRequest;
+import com.spinyowl.spinygui.core.system.font.SemanticFontOwner.Mutation;
+import com.spinyowl.spinygui.core.system.font.SemanticFontOwner.MutationOutcome;
 import com.spinyowl.spinygui.core.system.font.TextCaretMetrics;
 import com.spinyowl.spinygui.core.system.font.TextLineMetrics;
 import com.spinyowl.spinygui.core.system.font.TextMeasurer;
@@ -37,10 +45,11 @@ import java.nio.IntBuffer;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicReference;
 import lombok.NonNull;
 import org.lwjgl.stb.STBTTFontinfo;
 import org.lwjgl.stb.STBTruetype;
@@ -60,14 +69,55 @@ public class FontServiceImpl implements FontService, TextMeasurer, RangeTextMeas
 
   @NonNull private final FontStorage fontStorage;
   private final boolean roundToPixel;
-  @NonNull private final FontChainResolver fontChainResolver;
   @NonNull private final DiagnosticSession diagnostics;
-  private final Map<String, STBTTFontinfo> fontInfoMap = new ConcurrentHashMap<>();
+  @NonNull private final ResourceLifecycleObserver resourceLifecycleObserver;
+  @NonNull private final TransactionFailureInjector transactionFailureInjector;
+  private Map<String, OwnedFontInfo> fontInfoMap = new HashMap<>();
+  private SemanticFontOwner semanticOwner;
+  private FontServiceImpl aggregateService;
 
   public FontServiceImpl(@NonNull FontStorage fontStorage, boolean roundToPixel) {
-    this(fontStorage, roundToPixel, FontChainResolver.DEFAULT, DiagnosticSession.disabled());
+    this(fontStorage, roundToPixel, DiagnosticSession.disabled());
   }
 
+  public FontServiceImpl(
+      @NonNull FontStorage fontStorage,
+      boolean roundToPixel,
+      @NonNull DiagnosticSession diagnostics) {
+    this(fontStorage, roundToPixel, diagnostics, ResourceLifecycleObserver.NO_OP);
+  }
+
+  FontServiceImpl(
+      @NonNull FontStorage fontStorage,
+      boolean roundToPixel,
+      @NonNull DiagnosticSession diagnostics,
+      @NonNull ResourceLifecycleObserver resourceLifecycleObserver) {
+    this(
+        fontStorage,
+        roundToPixel,
+        diagnostics,
+        resourceLifecycleObserver,
+        TransactionFailureInjector.NO_OP);
+  }
+
+  FontServiceImpl(
+      @NonNull FontStorage fontStorage,
+      boolean roundToPixel,
+      @NonNull DiagnosticSession diagnostics,
+      @NonNull ResourceLifecycleObserver resourceLifecycleObserver,
+      @NonNull TransactionFailureInjector transactionFailureInjector) {
+    this.fontStorage = fontStorage;
+    this.roundToPixel = roundToPixel;
+    this.diagnostics = diagnostics;
+    this.resourceLifecycleObserver = resourceLifecycleObserver;
+    this.transactionFailureInjector = transactionFailureInjector;
+  }
+
+  /**
+   * @deprecated resolver selection is owned by the installed {@link SemanticFontOwner}; the
+   *     argument is retained only for source compatibility and cannot replace production ownership
+   */
+  @Deprecated(forRemoval = false)
   public FontServiceImpl(
       @NonNull FontStorage fontStorage,
       boolean roundToPixel,
@@ -75,15 +125,18 @@ public class FontServiceImpl implements FontService, TextMeasurer, RangeTextMeas
     this(fontStorage, roundToPixel, fontChainResolver, DiagnosticSession.disabled());
   }
 
+  /**
+   * @deprecated resolver selection is owned by the installed {@link SemanticFontOwner}; the
+   *     argument is retained only for source compatibility and cannot replace production ownership
+   */
+  @Deprecated(forRemoval = false)
   public FontServiceImpl(
       @NonNull FontStorage fontStorage,
       boolean roundToPixel,
       @NonNull FontChainResolver fontChainResolver,
       @NonNull DiagnosticSession diagnostics) {
-    this.fontStorage = fontStorage;
-    this.roundToPixel = roundToPixel;
-    this.fontChainResolver = fontChainResolver;
-    this.diagnostics = diagnostics;
+    this(fontStorage, roundToPixel, diagnostics);
+    Objects.requireNonNull(fontChainResolver, "fontChainResolver");
   }
 
   @Override
@@ -91,11 +144,274 @@ public class FontServiceImpl implements FontService, TextMeasurer, RangeTextMeas
     return diagnostics;
   }
 
+  @Override
+  public SemanticFontOwner installSemanticOwner() {
+    if (semanticOwner != null) {
+      semanticOwner.verifyUse();
+      return semanticOwner;
+    }
+
+    FontStorageImpl storage = atomicStorage();
+    if (Font.hasSemanticOwner()) {
+      FontService installed = Font.semanticService();
+      if (!(installed instanceof FontServiceImpl installedAggregate)) {
+        throw new IllegalStateException(
+            "Installed semantic font service cannot share the production resource aggregate");
+      }
+      SemanticFontOwner selected = Font.semanticOwner();
+      semanticOwner = selected;
+      aggregateService = installedAggregate.resourceAggregate();
+      fontInfoMap = aggregateService.fontInfoMap;
+      return selected;
+    }
+
+    List<StagedBuiltIn> staged =
+        List.of(
+            new StagedBuiltIn(Font.ROBOTO_LIGHT),
+            new StagedBuiltIn(Font.ROBOTO_BOLD),
+            new StagedBuiltIn(Font.ROBOTO_REGULAR),
+            new StagedBuiltIn(Font.NOTO_SANS_CJK_SC_REGULAR));
+    List<FontRequest> requests = new ArrayList<>(staged.size());
+    for (int index = 0; index < staged.size(); index++) {
+      requests.add(builtInRequest(storage, staged.get(index), index == staged.size() - 1));
+    }
+
+    try {
+      SemanticFontOwner selected = new SemanticFontOwner(requests);
+      Mutation bootstrap = selected.install().bootstrap();
+      if (bootstrap.outcome() == MutationOutcome.REJECTED) {
+        throw new IllegalStateException("Semantic font built-in bootstrap failed");
+      }
+
+      for (StagedBuiltIn candidate : staged) {
+        ByteBuffer bytes = Objects.requireNonNull(candidate.bytes().get());
+        OwnedFontInfo info = Objects.requireNonNull(candidate.info().get());
+        String locator = SemanticFontOwner.normalizeLocator(candidate.font().path());
+        storage.commitFontData(locator, bytes);
+        fontInfoMap.put(locator, info);
+        info.transferAfterPublication();
+      }
+      semanticOwner = selected;
+      Font.installSemanticOwner(selected, this);
+      storage.bindPublicReads(selected, this);
+      return selected;
+    } catch (RuntimeException | Error failure) {
+      teardownAllRetainedResources(storage);
+      staged.forEach(candidate -> candidate.freeIfStaged());
+      throw failure;
+    }
+  }
+
+  @Override
+  public FontChainResolver fontChainResolver() {
+    return requireSemanticOwner().resolver();
+  }
+
+  @Override
+  public FontSemanticObservation semanticObservation() {
+    SemanticFontOwner.Observation observation = requireSemanticOwner().observation();
+    return new FontSemanticObservation(
+        observation.generation(),
+        observation.identities().stream()
+            .map(
+                identity ->
+                    new FontSemanticObservation.Identity(
+                        identity.key().family(),
+                        identity.key().style(),
+                        identity.key().weight(),
+                        identity.key().stretch(),
+                        identity.normalizedLocator(),
+                        identity.byteRevision()))
+            .toList());
+  }
+
+  @Override
+  public FontResourceObservation resourceObservation() {
+    if (resourceAggregate() != this) {
+      return resourceAggregate().resourceObservation();
+    }
+    requireSemanticOwner();
+    FontStorageImpl.ResourceSnapshot storage = atomicStorage().resourceSnapshot();
+    return new FontResourceObservation(
+        storage.byteEntries(),
+        storage.byteCapacity(),
+        fontInfoMap.size(),
+        storage.issuedExternalAliasViews(),
+        FontResourceObservation.AliasLifetime.JVM_MANAGED_CALLER_RETAINABLE);
+  }
+
+  @Override
+  public Mutation clear() {
+    if (resourceAggregate() != this) {
+      return resourceAggregate().clear();
+    }
+    SemanticFontOwner owner = requireSemanticOwner();
+    Mutation mutation = owner.clear();
+    if (mutation.outcome() == MutationOutcome.CHANGED) {
+      teardownAllRetainedResources(atomicStorage());
+    }
+    return mutation;
+  }
+
+  @Override
+  public void close() {
+    if (resourceAggregate() != this) {
+      resourceAggregate().close();
+      return;
+    }
+    if (semanticOwner == null) {
+      throw new IllegalStateException("Font service semantic owner is not installed");
+    }
+    SemanticFontOwner owner = semanticOwner;
+    if (!owner.prepareResourceClose()) {
+      teardownAllRetainedResources(atomicStorage());
+      Font.releaseSemanticOwner(owner, this);
+      return;
+    }
+    teardownAllRetainedResources(atomicStorage());
+    owner.completeCloseAfterResourceTeardown();
+    Font.releaseSemanticOwner(owner, this);
+  }
+
   /** {@inheritDoc} */
   @Override
-  @SuppressWarnings("squid:S3776")
   public Font loadFont(String path) throws FontLoadingException {
-    STBTTFontinfo fontInfo = getFontInfo(path);
+    if (resourceAggregate() != this) {
+      return resourceAggregate().loadFont(path);
+    }
+    SemanticFontOwner owner = requireSemanticOwner();
+    FontStorageImpl storage = atomicStorage();
+    List<Font> registeredBefore = owner.registeredFonts();
+    String normalizedLocator = SemanticFontOwner.normalizeLocator(path);
+    String sourcePath =
+        owner.registeredFonts().stream()
+            .map(Font::path)
+            .filter(
+                registeredPath ->
+                    SemanticFontOwner.normalizeLocator(registeredPath).equals(normalizedLocator))
+            .findFirst()
+            .orElse(path);
+    AtomicReference<ByteBuffer> stagedBytes = new AtomicReference<>();
+    AtomicReference<OwnedFontInfo> stagedInfo = new AtomicReference<>();
+    AtomicReference<Font> stagedDescriptor = new AtomicReference<>();
+    Mutation mutation;
+    try {
+      mutation =
+          owner.load(
+              new FontLoadRequest(
+                  path,
+                  () -> {
+                    ByteBuffer bytes = storage.stageFontData(sourcePath);
+                    stagedBytes.set(bytes);
+                    return bytes;
+                  },
+                  bytes -> {
+                    OwnedFontInfo info = createOwnedFontInfo(sourcePath, bytes);
+                    stagedInfo.set(info);
+                    try {
+                      Font descriptor = parseFontDescriptor(sourcePath, info.value());
+                      transactionFailureInjector.before(TransactionStage.AFTER_DESCRIPTOR_PARSE);
+                      info.discardStagedBorrowedViews();
+                      stagedDescriptor.set(descriptor);
+                      return descriptor;
+                    } catch (RuntimeException | Error failure) {
+                      info.freeStaged();
+                      throw failure;
+                    }
+                  }),
+              provisional ->
+                  publishLoadedResources(
+                      storage,
+                      registeredBefore,
+                      stagedBytes,
+                      stagedInfo,
+                      stagedDescriptor,
+                      provisional));
+    } catch (RuntimeException | Error failure) {
+      OwnedFontInfo rejected = stagedInfo.get();
+      if (rejected != null) {
+        rejected.freeStaged();
+      }
+      throw failure;
+    }
+    if (mutation.outcome() == MutationOutcome.REJECTED) {
+      OwnedFontInfo rejected = stagedInfo.get();
+      if (rejected != null) {
+        rejected.freeStaged();
+      }
+      throw new FontLoadingException("Failed to load font from '%s'".formatted(path));
+    }
+
+    Font parsed = Objects.requireNonNull(stagedDescriptor.get());
+    FaceKey loadedFace = faceKey(parsed);
+    Font canonical =
+        owner.registeredFonts().stream()
+            .filter(registered -> faceKey(registered).equals(loadedFace))
+            .findFirst()
+            .orElseThrow(() -> new IllegalStateException("Published font descriptor is unavailable"));
+    return canonical;
+  }
+
+  private void publishLoadedResources(
+      FontStorageImpl storage,
+      List<Font> registeredBefore,
+      AtomicReference<ByteBuffer> stagedBytes,
+      AtomicReference<OwnedFontInfo> stagedInfo,
+      AtomicReference<Font> stagedDescriptor,
+      Mutation mutation) {
+    OwnedFontInfo preparedInfo = stagedInfo.get();
+    if (mutation.outcome() == MutationOutcome.REJECTED || preparedInfo == null) {
+      return;
+    }
+    if (mutation.outcome() == MutationOutcome.UNCHANGED) {
+      preparedInfo.freeStaged();
+      return;
+    }
+
+    Font parsed = Objects.requireNonNull(stagedDescriptor.get());
+    Font previous =
+        registeredBefore.stream()
+            .filter(registered -> faceKey(registered).equals(faceKey(parsed)))
+            .findFirst()
+            .orElse(null);
+    String newLocator = SemanticFontOwner.normalizeLocator(parsed.path());
+    String previousLocator =
+        previous == null ? null : SemanticFontOwner.normalizeLocator(previous.path());
+    ByteBuffer previousBytesAtNewLocator = storage.ownedFontData(newLocator);
+    OwnedFontInfo previousInfoAtNewLocator = fontInfoMap.get(newLocator);
+    ByteBuffer previousFaceBytes =
+        previousLocator == null ? null : storage.ownedFontData(previousLocator);
+    OwnedFontInfo previousFaceInfo =
+        previousLocator == null ? null : fontInfoMap.get(previousLocator);
+
+    try {
+      transactionFailureInjector.before(TransactionStage.BEFORE_BYTE_CACHE_COMMIT);
+      storage.commitFontData(newLocator, Objects.requireNonNull(stagedBytes.get()));
+      transactionFailureInjector.before(TransactionStage.BEFORE_INFO_MAP_PUT);
+      fontInfoMap.put(newLocator, preparedInfo);
+      transactionFailureInjector.before(TransactionStage.BEFORE_RESOURCE_TRANSFER);
+      preparedInfo.transferAfterPublication();
+      if (previous != null) {
+        retirePreviousAfterReplacement(
+            storage,
+            previousLocator,
+            newLocator,
+            previousFaceInfo);
+      }
+    } catch (RuntimeException | Error failure) {
+      restoreInfo(fontInfoMap, newLocator, previousInfoAtNewLocator);
+      storage.restoreFontData(newLocator, previousBytesAtNewLocator);
+      if (previousLocator != null && !previousLocator.equals(newLocator)) {
+        restoreInfo(fontInfoMap, previousLocator, previousFaceInfo);
+        storage.restoreFontData(previousLocator, previousFaceBytes);
+      }
+      preparedInfo.freeAfterFailedPublication();
+      throw failure;
+    }
+  }
+
+  @SuppressWarnings("squid:S3776")
+  private Font parseFontDescriptor(String path, STBTTFontinfo fontInfo) {
     String fontFamily = getFontFamily(fontInfo);
     String subfamily = getSubfamily(fontInfo);
 
@@ -140,6 +456,20 @@ public class FontServiceImpl implements FontService, TextMeasurer, RangeTextMeas
 
   @Override
   public boolean isFontAvailable(@NonNull Font font) {
+    if (resourceAggregate() != this) {
+      return resourceAggregate().isFontAvailable(font);
+    }
+    if (fontStorage instanceof FontStorageImpl) {
+      SemanticFontOwner owner = requireSemanticOwner();
+      String locator = SemanticFontOwner.normalizeLocator(font.path());
+      FaceKey requestedFace = faceKey(font);
+      return fontInfoMap.containsKey(locator)
+          && owner.registeredFonts().stream()
+              .anyMatch(
+                  registered ->
+                      faceKey(registered).equals(requestedFace)
+                          && SemanticFontOwner.normalizeLocator(registered.path()).equals(locator));
+    }
     return fontInfoMap.containsKey(font.path());
   }
 
@@ -155,6 +485,155 @@ public class FontServiceImpl implements FontService, TextMeasurer, RangeTextMeas
     return typographicFontFamily.isBlank()
         ? getInfo(fontInfo, FONT_FAMILY_INDEX)
         : typographicFontFamily;
+  }
+
+  private FontRequest builtInRequest(
+      FontStorageImpl storage, StagedBuiltIn candidate, boolean finalCandidate) {
+    return FontRequest.from(
+        candidate.font(),
+        () -> {
+          ByteBuffer bytes = storage.stageFontData(candidate.font().path());
+          candidate.bytes().set(bytes);
+          return bytes;
+        },
+        bytes -> {
+          OwnedFontInfo info = createOwnedFontInfo(candidate.font().path(), bytes);
+          candidate.info().set(info);
+          try {
+            transactionFailureInjector.before(TransactionStage.AFTER_DESCRIPTOR_PARSE);
+            info.discardStagedBorrowedViews();
+            if (finalCandidate) {
+              verifyStagedPublicationPreconditions(true);
+            }
+          } catch (RuntimeException | Error failure) {
+            info.freeStaged();
+            throw failure;
+          }
+        },
+        (request, bytes) -> {});
+  }
+
+  private static FaceKey faceKey(Font font) {
+    return new FaceKey(
+        font.fontFamily(),
+        font.style().name(),
+        font.weight().name(),
+        font.stretch().name());
+  }
+
+  private SemanticFontOwner requireSemanticOwner() {
+    if (semanticOwner == null) {
+      throw new IllegalStateException("Font service semantic owner is not installed");
+    }
+    SemanticFontOwner installed = Font.semanticOwner();
+    if (installed != semanticOwner) {
+      throw new IllegalStateException("Font service is not attached to the production semantic owner");
+    }
+    return installed;
+  }
+
+  void verifyPublicStorageRead(FontStorageImpl storage, SemanticFontOwner expectedOwner) {
+    FontServiceImpl aggregate = resourceAggregate();
+    if (aggregate != this) {
+      aggregate.verifyPublicStorageRead(storage, expectedOwner);
+      return;
+    }
+    if (fontStorage != storage || semanticOwner != expectedOwner) {
+      throw new IllegalStateException(
+          "Font storage is not owned by the installed semantic service aggregate");
+    }
+    if (requireSemanticOwner() != expectedOwner || Font.semanticService() != this) {
+      throw new IllegalStateException(
+          "Font storage semantic owner/service aggregate is no longer installed");
+    }
+  }
+
+  private FontStorageImpl atomicStorage() {
+    if (fontStorage instanceof FontStorageImpl storage) {
+      return storage;
+    }
+    throw new IllegalStateException(
+        "Semantic font mutation requires FontStorageImpl staged publication");
+  }
+
+  private FontServiceImpl resourceAggregate() {
+    return aggregateService == null ? this : aggregateService;
+  }
+
+  private void verifyStagedPublicationPreconditions(boolean includesOwnerBinding) {
+    transactionFailureInjector.before(TransactionStage.BEFORE_CACHE_PUBLICATION);
+    if (includesOwnerBinding) {
+      transactionFailureInjector.before(TransactionStage.BEFORE_OWNER_BINDING);
+    }
+    transactionFailureInjector.before(TransactionStage.BEFORE_RESOURCE_TRANSFER);
+  }
+
+  private void retirePreviousAfterReplacement(
+      FontStorageImpl storage,
+      String previousLocator,
+      String newLocator,
+      OwnedFontInfo previousInfo) {
+    boolean sameLocator = previousLocator.equals(newLocator);
+    transactionFailureInjector.before(TransactionStage.BEFORE_RETAINED_RETIREMENT);
+    recordTeardown(ResourceLifecycleEvent.STOP_USE);
+    OwnedFontInfo retained = sameLocator ? previousInfo : fontInfoMap.remove(previousLocator);
+    recordTeardown(
+        ResourceLifecycleEvent.CLEAR_DEPENDENT_MEASUREMENT_AND_INFO_REFERENCES);
+    recordTeardown(
+        ResourceLifecycleEvent.DISCARD_RETAINED_BORROWED_STB_NAME_TABLE_AND_BYTE_BUFFER_VIEWS);
+    if (retained != null) {
+      transactionFailureInjector.before(TransactionStage.BEFORE_RETAINED_INFO_FREE);
+      retained.freeRetained();
+    }
+    recordTeardown(
+        ResourceLifecycleEvent.FREE_RETAINED_OWNER_CONTROLLED_STBTT_FONT_INFO);
+    if (!sameLocator) {
+      storage.retireFontData(previousLocator);
+    }
+    recordTeardown(ResourceLifecycleEvent.DROP_RETAINED_BYTE_OWNER_REFERENCES);
+  }
+
+  private static void restoreInfo(
+      Map<String, OwnedFontInfo> infos, String locator, OwnedFontInfo previous) {
+    if (previous == null) {
+      infos.remove(locator);
+    } else {
+      infos.put(locator, previous);
+    }
+  }
+
+  private void teardownAllRetainedResources(FontStorageImpl storage) {
+    if (fontInfoMap.isEmpty() && !storage.hasFontData()) {
+      return;
+    }
+    recordTeardown(ResourceLifecycleEvent.STOP_USE);
+    List<OwnedFontInfo> retained = List.copyOf(fontInfoMap.values());
+    fontInfoMap.clear();
+    recordTeardown(
+        ResourceLifecycleEvent.CLEAR_DEPENDENT_MEASUREMENT_AND_INFO_REFERENCES);
+    recordTeardown(
+        ResourceLifecycleEvent.DISCARD_RETAINED_BORROWED_STB_NAME_TABLE_AND_BYTE_BUFFER_VIEWS);
+    retained.forEach(OwnedFontInfo::freeRetained);
+    recordTeardown(
+        ResourceLifecycleEvent.FREE_RETAINED_OWNER_CONTROLLED_STBTT_FONT_INFO);
+    storage.clearFontData();
+    recordTeardown(ResourceLifecycleEvent.DROP_RETAINED_BYTE_OWNER_REFERENCES);
+  }
+
+  private void recordPreparation(ResourceLifecycleEvent event) {
+    try {
+      resourceLifecycleObserver.preparation(event);
+    } catch (RuntimeException | Error failure) {
+      LOG.warn("Font resource preparation observer failed at {}", event, failure);
+    }
+  }
+
+  private void recordTeardown(ResourceLifecycleEvent event) {
+    try {
+      resourceLifecycleObserver.teardown(event);
+    } catch (RuntimeException | Error failure) {
+      LOG.warn("Font resource teardown observer failed at {}", event, failure);
+    }
   }
 
   /** {@inheritDoc} */
@@ -381,32 +860,211 @@ public class FontServiceImpl implements FontService, TextMeasurer, RangeTextMeas
   }
 
   private STBTTFontinfo getFontInfo(String fontPath) throws FontLoadingException {
-    return fontInfoMap.computeIfAbsent(fontPath, this::createFontInfo);
+    if (resourceAggregate() != this) {
+      return resourceAggregate().getFontInfo(fontPath);
+    }
+    if (!(fontStorage instanceof FontStorageImpl)) {
+      throw new IllegalStateException(
+          "Native font measurement requires the installed FontStorageImpl lifecycle aggregate");
+    }
+    String cacheKey = SemanticFontOwner.normalizeLocator(fontPath);
+    requireSemanticOwner();
+    OwnedFontInfo cached = fontInfoMap.get(cacheKey);
+    if (cached != null) {
+      return cached.value();
+    }
+    OwnedFontInfo created = createOwnedFontInfo(fontPath, fontStorage.getFontData(fontPath));
+    created.discardStagedBorrowedViews();
+    fontInfoMap.put(cacheKey, created);
+    created.transferAfterPublication();
+    return created.value();
   }
 
-  private STBTTFontinfo createFontInfo(String fontPath) throws FontLoadingException {
-    ByteBuffer fontData = fontStorage.getFontData(fontPath);
-    STBTTFontinfo stbttFontinfo = STBTTFontinfo.create();
-    if (fontData == null || !STBTruetype.stbtt_InitFont(stbttFontinfo, fontData)) {
-      throw new FontLoadingException("Failed to load font from '%s'".formatted(fontPath));
+  private OwnedFontInfo createOwnedFontInfo(String fontPath, ByteBuffer fontData)
+      throws FontLoadingException {
+    OwnedFontInfo owned = allocateOwnedFontInfo();
+    try {
+      transactionFailureInjector.before(TransactionStage.AFTER_NATIVE_ALLOCATION);
+      if (!hasSupportedSfntHeader(fontData)
+          || !STBTruetype.stbtt_InitFont(owned.value(), fontData)) {
+        throw new FontLoadingException("Failed to load font from '%s'".formatted(fontPath));
+      }
+
+      for (int i = 0; i < 25; i++) {
+        ByteBuffer name =
+            stbtt_GetFontNameString(
+                owned.value(),
+                STBTT_PLATFORM_ID_MICROSOFT,
+                STBTT_MS_EID_UNICODE_BMP,
+                STBTT_MS_LANG_ENGLISH,
+                i);
+        if (name != null) {
+          byte[] bytes = new byte[name.capacity()];
+          name.get(bytes);
+        }
+      }
+      return owned;
+    } catch (RuntimeException | Error failure) {
+      owned.freeStaged();
+      throw failure;
+    }
+  }
+
+  private OwnedFontInfo allocateOwnedFontInfo() {
+    STBTTFontinfo allocated = STBTTFontinfo.malloc();
+    try {
+      return new OwnedFontInfo(allocated);
+    } catch (RuntimeException | Error failure) {
+      allocated.free();
+      throw failure;
+    }
+  }
+
+  private static boolean hasSupportedSfntHeader(ByteBuffer fontData) {
+    if (fontData == null || fontData.remaining() < 12) {
+      return false;
+    }
+    int offset = fontData.position();
+    int signature =
+        Byte.toUnsignedInt(fontData.get(offset)) << 24
+            | Byte.toUnsignedInt(fontData.get(offset + 1)) << 16
+            | Byte.toUnsignedInt(fontData.get(offset + 2)) << 8
+            | Byte.toUnsignedInt(fontData.get(offset + 3));
+    return signature == 0x00010000
+        || signature == 0x4f54544f
+        || signature == 0x74727565
+        || signature == 0x74797031
+        || signature == 0x74746366;
+  }
+
+  enum ResourceLifecycleEvent {
+    ALLOCATE_TRANSACTION_OWNED_STBTT_FONT_INFO,
+    DISCARD_STAGED_BORROWED_STB_NAME_TABLE_AND_BYTE_BUFFER_VIEWS,
+    TRANSFER_STAGED_STBTT_FONT_INFO_AFTER_SUCCESSFUL_PUBLICATION,
+    FREE_TRANSACTION_OWNED_STAGED_STBTT_FONT_INFO,
+    DROP_STAGED_BYTE_OWNER_REFERENCE,
+    FREE_ROLLED_BACK_TRANSFERRED_STBTT_FONT_INFO,
+    DROP_ROLLED_BACK_TRANSFERRED_BYTE_OWNER_REFERENCE,
+    STOP_USE,
+    CLEAR_DEPENDENT_MEASUREMENT_AND_INFO_REFERENCES,
+    DISCARD_RETAINED_BORROWED_STB_NAME_TABLE_AND_BYTE_BUFFER_VIEWS,
+    FREE_RETAINED_OWNER_CONTROLLED_STBTT_FONT_INFO,
+    DROP_RETAINED_BYTE_OWNER_REFERENCES
+  }
+
+  static class ResourceLifecycleObserver {
+    private static final ResourceLifecycleObserver NO_OP = new ResourceLifecycleObserver();
+
+    void preparation(ResourceLifecycleEvent event) {}
+
+    void teardown(ResourceLifecycleEvent event) {}
+  }
+
+  enum TransactionStage {
+    AFTER_NATIVE_ALLOCATION,
+    AFTER_DESCRIPTOR_PARSE,
+    BEFORE_CACHE_PUBLICATION,
+    BEFORE_OWNER_BINDING,
+    BEFORE_RETAINED_RETIREMENT,
+    BEFORE_RETAINED_INFO_FREE,
+    BEFORE_BYTE_CACHE_COMMIT,
+    BEFORE_INFO_MAP_PUT,
+    BEFORE_RESOURCE_TRANSFER
+  }
+
+  static class TransactionFailureInjector {
+    private static final TransactionFailureInjector NO_OP = new TransactionFailureInjector();
+
+    void before(TransactionStage stage) {}
+  }
+
+  private final class OwnedFontInfo {
+    private final STBTTFontinfo value;
+    private OwnershipState state = OwnershipState.STAGED;
+    private boolean stagedBorrowedViewsDiscarded;
+
+    private OwnedFontInfo(STBTTFontinfo value) {
+      this.value = value;
+      recordPreparation(ResourceLifecycleEvent.ALLOCATE_TRANSACTION_OWNED_STBTT_FONT_INFO);
     }
 
-    for (int i = 0; i < 25; i++) {
-      ByteBuffer name =
-          stbtt_GetFontNameString(
-              stbttFontinfo,
-              STBTT_PLATFORM_ID_MICROSOFT,
-              STBTT_MS_EID_UNICODE_BMP,
-              STBTT_MS_LANG_ENGLISH,
-              i);
-      // bytebuffer to string
-      if (name != null) {
-        byte[] bytes = new byte[name.capacity()];
-        name.get(bytes);
+    private STBTTFontinfo value() {
+      if (state == OwnershipState.FREED) {
+        throw new IllegalStateException("Owner-controlled STB font info is already freed");
+      }
+      return value;
+    }
+
+    private void discardStagedBorrowedViews() {
+      if (state == OwnershipState.STAGED && !stagedBorrowedViewsDiscarded) {
+        stagedBorrowedViewsDiscarded = true;
+        recordPreparation(
+            ResourceLifecycleEvent
+                .DISCARD_STAGED_BORROWED_STB_NAME_TABLE_AND_BYTE_BUFFER_VIEWS);
       }
     }
 
-    return stbttFontinfo;
+    private void transferAfterPublication() {
+      if (state != OwnershipState.STAGED) {
+        return;
+      }
+      discardStagedBorrowedViews();
+      state = OwnershipState.RETAINED;
+      recordPreparation(
+          ResourceLifecycleEvent.TRANSFER_STAGED_STBTT_FONT_INFO_AFTER_SUCCESSFUL_PUBLICATION);
+    }
+
+    private void freeStaged() {
+      if (state != OwnershipState.STAGED) {
+        return;
+      }
+      discardStagedBorrowedViews();
+      value.free();
+      state = OwnershipState.FREED;
+      recordPreparation(
+          ResourceLifecycleEvent.FREE_TRANSACTION_OWNED_STAGED_STBTT_FONT_INFO);
+      recordPreparation(ResourceLifecycleEvent.DROP_STAGED_BYTE_OWNER_REFERENCE);
+    }
+
+    private void freeRetained() {
+      if (state != OwnershipState.RETAINED) {
+        return;
+      }
+      value.free();
+      state = OwnershipState.FREED;
+    }
+
+    private void freeAfterFailedPublication() {
+      if (state == OwnershipState.STAGED) {
+        freeStaged();
+      } else if (state == OwnershipState.RETAINED) {
+        freeRetained();
+        recordPreparation(
+            ResourceLifecycleEvent.FREE_ROLLED_BACK_TRANSFERRED_STBTT_FONT_INFO);
+        recordPreparation(
+            ResourceLifecycleEvent.DROP_ROLLED_BACK_TRANSFERRED_BYTE_OWNER_REFERENCE);
+      }
+    }
+  }
+
+  private enum OwnershipState {
+    STAGED,
+    RETAINED,
+    FREED
+  }
+
+  private record StagedBuiltIn(
+      Font font, AtomicReference<ByteBuffer> bytes, AtomicReference<OwnedFontInfo> info) {
+    private StagedBuiltIn(Font font) {
+      this(font, new AtomicReference<>(), new AtomicReference<>());
+    }
+
+    private void freeIfStaged() {
+      OwnedFontInfo staged = info.get();
+      if (staged != null) {
+        staged.freeStaged();
+      }
+    }
   }
 
   /**

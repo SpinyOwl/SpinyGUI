@@ -53,7 +53,6 @@ import com.spinyowl.spinygui.core.node.Node;
 import com.spinyowl.spinygui.core.node.NodeBuilder;
 import com.spinyowl.spinygui.core.node.Text;
 import com.spinyowl.spinygui.core.node.TextareaElement;
-import com.spinyowl.spinygui.core.system.font.FontChainResolver;
 import com.spinyowl.spinygui.core.system.font.ResolvedGlyph;
 import com.spinyowl.spinygui.core.system.font.TextLineMetrics;
 import com.spinyowl.spinygui.core.system.font.TextMetrics;
@@ -121,7 +120,8 @@ public final class CounterDiagnosticsMain {
     DiagnosticSession diagnostics =
         DiagnosticSession.enabled(Arrays.asList(TextDiagnosticCounter.values()));
     FontServiceImpl fontService =
-        new FontServiceImpl(new FontStorageImpl(), false, FontChainResolver.DEFAULT, diagnostics);
+        new FontServiceImpl(new FontStorageImpl(), false, diagnostics);
+    fontService.installSemanticOwner();
 
     scenario.execute(fontService);
     diagnostics.reset();
@@ -204,8 +204,9 @@ public final class CounterDiagnosticsMain {
   static PreparedScene prepareScene(
       RendererScenario scenario, DiagnosticSession diagnostics) {
     FontServiceImpl fontService =
-        new FontServiceImpl(
-            new FontStorageImpl(), true, FontChainResolver.DEFAULT, diagnostics);
+        new FontServiceImpl(new FontStorageImpl(), true, diagnostics);
+    fontService.installSemanticOwner();
+    scenario.style().verifyResolution(fontService.fontChainResolver());
     fontService.measureText(
         scenario.prewarmText(),
         scenario.prewarmFonts(),

@@ -21,6 +21,7 @@ import java.util.Objects;
 /** Effective inline-text style shared by benchmark execution and declared-input identity. */
 public record TextStyleSpecification(
     List<Font> orderedFonts,
+    List<Font> expectedResolvedFonts,
     FontStyle fontStyle,
     FontWeight fontWeight,
     FontStretch effectiveFontStretch,
@@ -37,8 +38,12 @@ public record TextStyleSpecification(
 
   public TextStyleSpecification {
     orderedFonts = List.copyOf(orderedFonts);
+    expectedResolvedFonts = List.copyOf(expectedResolvedFonts);
     if (orderedFonts.isEmpty()) {
       throw new IllegalArgumentException("orderedFonts cannot be empty");
+    }
+    if (expectedResolvedFonts.isEmpty()) {
+      throw new IllegalArgumentException("expectedResolvedFonts cannot be empty");
     }
     Objects.requireNonNull(fontStyle, "fontStyle");
     Objects.requireNonNull(fontWeight, "fontWeight");
@@ -74,10 +79,27 @@ public record TextStyleSpecification(
     return orderedFonts.stream().map(TextStyleSpecification::fontObjectIdentity).toList();
   }
 
-  /** Exact faces selected by the production default resolver for this effective style. */
+  /** Exact owner-resolved faces declared for execution identity before runtime composition. */
   public List<Font> resolvedFonts() {
-    return FontChainResolver.DEFAULT.resolve(
-        fontFamilies(), fontStyle, fontWeight, effectiveFontStretch);
+    return expectedResolvedFonts;
+  }
+
+  /**
+   * Resolves through an explicitly supplied installed-owner resolver and verifies the declaration.
+   *
+   * @param resolver installed production owner's resolver
+   * @return exact resolved faces
+   * @throws IllegalStateException when runtime resolution differs from the declared benchmark input
+   */
+  public List<Font> verifyResolution(FontChainResolver resolver) {
+    List<Font> resolved =
+        Objects.requireNonNull(resolver, "resolver")
+            .resolve(fontFamilies(), fontStyle, fontWeight, effectiveFontStretch);
+    if (!resolved.equals(expectedResolvedFonts)) {
+      throw new IllegalStateException(
+          "Installed owner font resolution does not match the benchmark declaration");
+    }
+    return resolved;
   }
 
   public List<String> resolvedFontObjectIdentities() {

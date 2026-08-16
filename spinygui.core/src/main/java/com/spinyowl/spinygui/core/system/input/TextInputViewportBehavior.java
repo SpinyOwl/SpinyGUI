@@ -7,7 +7,6 @@ import com.spinyowl.spinygui.core.style.ResolvedStyle;
 import com.spinyowl.spinygui.core.style.stylesheet.util.StyleUtils;
 import com.spinyowl.spinygui.core.style.types.length.Length;
 import com.spinyowl.spinygui.core.system.font.TextMeasurer;
-import com.spinyowl.spinygui.core.system.font.FontChainResolver;
 import lombok.NonNull;
 import java.util.List;
 import com.spinyowl.spinygui.core.font.Font;
@@ -54,7 +53,7 @@ public class TextInputViewportBehavior {
       return List.of(Font.DEFAULT);
     }
     textMeasurer.diagnostics().increment(TextDiagnosticCounter.FONT_CHAIN_RESOLUTIONS);
-    return FontChainResolver.DEFAULT
+    return Font.semanticOwner().resolver()
         .resolve(
             style.fontFamilies(), style.fontStyle(), style.fontWeight(), FontStretch.NORMAL);
   }

@@ -30,7 +30,6 @@ import com.spinyowl.spinygui.core.style.types.border.BorderStyle;
 import com.spinyowl.spinygui.core.style.types.length.Length.PixelLength;
 import com.spinyowl.spinygui.core.style.types.length.Unit;
 import com.spinyowl.spinygui.core.system.font.TextMeasurer;
-import com.spinyowl.spinygui.core.system.font.FontChainResolver;
 import com.spinyowl.spinygui.core.util.ScrollbarGeometry;
 import java.util.ArrayList;
 import java.util.List;
@@ -629,7 +628,7 @@ public class BlockLayout implements ElementLayout {
     if (textMeasurer != null) {
       textMeasurer.diagnostics().increment(TextDiagnosticCounter.FONT_CHAIN_RESOLUTIONS);
     }
-    return FontChainResolver.DEFAULT
+    return Font.semanticOwner().resolver()
         .resolve(
             style.fontFamilies(), style.fontStyle(), style.fontWeight(), FontStretch.NORMAL)
         ;

@@ -1,7 +1,6 @@
 package com.spinyowl.spinygui.core.system.font;
 
 import static org.slf4j.LoggerFactory.getLogger;
-import com.spinyowl.spinygui.core.font.Font;
 import java.io.File;
 import java.util.Collection;
 import java.util.LinkedList;
@@ -15,14 +14,20 @@ import org.slf4j.Logger;
 public class SystemFontLoader {
   private static final Logger LOG = getLogger(SystemFontLoader.class);
 
-  @NonNull private final FontStorage fontStorage;
+  /** Retained only for builder/source compatibility; mutation is owned by {@link FontService}. */
+  @Deprecated(forRemoval = true)
+  @NonNull
+  private final FontStorage fontStorage;
   @NonNull private final FontService fontService;
   @NonNull private final FontDirectoriesProvider fontDirectoriesProvider;
 
   /**
-   * Loads all system fonts to {@link FontStorage}
+   * Discovers {@code .ttf} files and asks the explicitly installed {@link FontService} to stage,
+   * validate, and publish each face as one independent semantic transaction. A failed face is logged
+   * without publishing storage/service/registry state and does not prevent later paths from being
+   * attempted.
    *
-   * @return list of fonts loaded to font storage.
+   * @return paths successfully published by the semantic owner
    */
   public List<String> loadSystemFonts() {
     List<String> fontPaths =
@@ -33,19 +38,21 @@ public class SystemFontLoader {
 
     List<String> loadedFonts = new LinkedList<>();
     for (String fontPath : fontPaths) {
-      if (fontStorage.loadFont(fontPath) != null) loadedFonts.add(fontPath);
+      if (loadFontSafe(fontPath)) {
+        loadedFonts.add(fontPath);
+      }
     }
 
-    loadedFonts.forEach(this::loadFontSafe);
-
-    return loadedFonts;
+    return List.copyOf(loadedFonts);
   }
 
-  private void loadFontSafe(String font) {
+  private boolean loadFontSafe(String font) {
     try {
-      Font.addFont(fontService.loadFont(font));
+      fontService.loadFont(font);
+      return true;
     } catch (Exception e) {
       LOG.error("Can't load font {}", font, e);
+      return false;
     }
   }
 

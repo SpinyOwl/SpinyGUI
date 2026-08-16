@@ -9,6 +9,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.google.gson.JsonPrimitive;
 import com.spinyowl.spinygui.benchmark.diagnostic.CounterDiagnosticArtifact.Entry;
+import com.spinyowl.spinygui.benchmark.BenchmarkFontTestOwner;
 import com.spinyowl.spinygui.benchmark.identity.BenchmarkRunMetadata;
 import com.spinyowl.spinygui.benchmark.identity.ComparabilityMetadata;
 import com.spinyowl.spinygui.benchmark.identity.WorkloadIdentity.Category;
@@ -29,6 +30,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.BeforeEach;
 
 class DiagnosticWorkloadSpecificationsTest {
   private static final ComparabilityMetadata.Environment CPU_ENVIRONMENT =
@@ -42,6 +44,11 @@ class DiagnosticWorkloadSpecificationsTest {
           "GL vendor", "renderer", "driver", "4.6");
   private static final ComparabilityMetadata.Implementation IMPLEMENTATION =
       new ComparabilityMetadata.Implementation("impl", "build", "commit");
+
+  @BeforeEach
+  void installFontOwner() {
+    BenchmarkFontTestOwner.install();
+  }
 
   @Test
   void declaredInputsAreSourceBoundAndRendererFontsCoverEveryReachableFace() {

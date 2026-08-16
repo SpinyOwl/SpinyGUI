@@ -10,6 +10,10 @@ import lombok.NonNull;
 
 /** Resolves named CSS font families to registered faces in deterministic fallback order. */
 public interface FontChainResolver {
+  /**
+   * Stateless compatibility entry point that delegates each resolution to the explicitly installed
+   * semantic owner's resolver. Access does not select a thread or create registry state.
+   */
   FontChainResolver DEFAULT = new DefaultFontChainResolver();
 
   /**

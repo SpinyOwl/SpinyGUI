@@ -20,13 +20,20 @@ import com.spinyowl.spinygui.core.style.stylesheet.impl.DefaultPropertyStoreProv
 import com.spinyowl.spinygui.core.style.types.Display;
 import com.spinyowl.spinygui.core.system.event.processor.SystemEventProcessor;
 import com.spinyowl.spinygui.core.system.font.FontMetrics;
+import com.spinyowl.spinygui.core.system.font.FontTestOwner;
 import com.spinyowl.spinygui.core.system.font.TextLineMetrics;
 import com.spinyowl.spinygui.core.time.TimeService;
 import java.util.HashMap;
 import lombok.NonNull;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 class ParsedInlineWhitespaceLayoutTest {
+
+  @BeforeEach
+  void installFontOwner() {
+    FontTestOwner.install();
+  }
 
   @Test
   void layout_whenParsedLabelsContainSpaces_preservesMeasuredSpaceAdvances() {

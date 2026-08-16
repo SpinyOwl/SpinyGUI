@@ -14,7 +14,6 @@ import com.spinyowl.spinygui.core.layout.impl.TextLayoutImpl;
 import com.spinyowl.spinygui.core.node.Element;
 import com.spinyowl.spinygui.core.node.Frame;
 import com.spinyowl.spinygui.core.node.Node;
-import com.spinyowl.spinygui.core.system.font.FontChainResolver;
 import com.spinyowl.spinygui.core.system.font.impl.FontServiceImpl;
 import com.spinyowl.spinygui.core.system.font.impl.FontStorageImpl;
 import com.spinyowl.spinygui.core.style.manager.StyleManagerImpl;
@@ -411,8 +410,8 @@ public final class FrameBaselineRecorder {
           new StyleManagerImpl(propertyStore, parser, (element, previous, current) -> {});
       DiagnosticSession textDiagnostics = DiagnosticSession.disabled();
       FontServiceImpl fontService =
-          new FontServiceImpl(
-              new FontStorageImpl(), false, FontChainResolver.DEFAULT, textDiagnostics);
+          new FontServiceImpl(new FontStorageImpl(), false, textDiagnostics);
+      fontService.installSemanticOwner();
       InlineFormattingContext inline = new InlineFormattingContext(fontService);
       Map<Display, com.spinyowl.spinygui.core.layout.ElementLayout> layouts = new HashMap<>();
       LayoutServiceImpl layout =

@@ -6,15 +6,21 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import com.spinyowl.spinygui.core.diagnostic.DiagnosticSession;
 import com.spinyowl.spinygui.core.diagnostic.TextDiagnosticCounter;
 import com.spinyowl.spinygui.core.font.Font;
+import com.spinyowl.spinygui.core.font.FontStretch;
+import com.spinyowl.spinygui.core.font.FontStyle;
+import com.spinyowl.spinygui.core.font.FontWeight;
 import com.spinyowl.spinygui.core.node.TextareaElement;
 import com.spinyowl.spinygui.core.system.font.FontChainResolver;
+import com.spinyowl.spinygui.core.system.font.SemanticFontOwner;
 import com.spinyowl.spinygui.core.system.font.impl.FontServiceImpl;
 import com.spinyowl.spinygui.core.system.font.impl.FontStorageImpl;
+import java.nio.ByteBuffer;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 
 class MultilineTextControlMetricsTest {
-  private final FontServiceImpl fontService = new FontServiceImpl(new FontStorageImpl(), false);
+  private final FontServiceImpl fontService = installedService();
   private final MultilineTextControlMetrics metrics = new MultilineTextControlMetrics(fontService);
 
   @Test
@@ -47,6 +53,7 @@ class MultilineTextControlMetricsTest {
     FontServiceImpl instrumentedFontService =
         new FontServiceImpl(
             new FontStorageImpl(), false, FontChainResolver.DEFAULT, diagnostics);
+    instrumentedFontService.installSemanticOwner();
     MultilineTextControlMetrics instrumentedMetrics =
         new MultilineTextControlMetrics(instrumentedFontService);
     TextareaElement textarea = textarea("abc");
@@ -61,6 +68,40 @@ class MultilineTextControlMetricsTest {
     assertTrue(second.x() > first.x());
     assertEquals(
         3, diagnostics.snapshot().value(TextDiagnosticCounter.TEXTAREA_COMPLETE_LAYOUTS));
+  }
+
+  @Test
+  void textareaMetricsObserveOwnerMutationThroughTheSharedResolver() {
+    String family = "T3 Textarea Family";
+    TextareaElement textarea = textarea("abc");
+    textarea.resolvedStyle().fontFamilies(List.of(family));
+
+    assertTrue(metrics.textStyle(textarea).fonts().isEmpty());
+
+    long generation = Font.semanticOwner().generation();
+    Font registered =
+        new Font(
+            family,
+            FontStyle.NORMAL,
+            FontStretch.NORMAL,
+            FontWeight.REGULAR,
+            "fonts/t3-textarea.ttf");
+    Font.semanticOwner()
+        .add(
+            SemanticFontOwner.FontRequest.from(
+                registered,
+                () -> ByteBuffer.wrap(registered.path().getBytes(StandardCharsets.UTF_8)),
+                bytes -> {},
+                (request, bytes) -> {}));
+
+    assertEquals(List.of(registered), metrics.textStyle(textarea).fonts());
+    assertEquals(generation + 1, Font.semanticOwner().generation());
+  }
+
+  private static FontServiceImpl installedService() {
+    FontServiceImpl service = new FontServiceImpl(new FontStorageImpl(), false);
+    service.installSemanticOwner();
+    return service;
   }
 
   private TextareaElement textarea(String value) {
