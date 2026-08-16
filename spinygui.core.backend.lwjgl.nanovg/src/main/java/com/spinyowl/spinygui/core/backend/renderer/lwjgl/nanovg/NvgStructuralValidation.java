@@ -23,6 +23,7 @@ import org.joml.Vector2f;
 /** Portable validation that traverses production text renderers through the recording sink. */
 public final class NvgStructuralValidation {
   public static final String VALIDATOR_VERSION = "nvg-production-command-validator-v1";
+  private static final long VALIDATION_CONTEXT = 1L;
   private NvgStructuralValidation() {}
 
   public static Evidence validate(Frame frame, TextMeasurer textMeasurer) {
@@ -156,7 +157,9 @@ public final class NvgStructuralValidation {
           .forEach(
               fragment -> {
                 if (fragment.runs().isEmpty()) {
-                  expected.add(registry.displayText(fragment.font(), fragment.text()));
+                  expected.add(
+                      registry.displayText(
+                          VALIDATION_CONTEXT, fragment.font(), fragment.text()));
                 } else {
                   fragment.runs().forEach(run -> expected.add(run.renderedText()));
                 }

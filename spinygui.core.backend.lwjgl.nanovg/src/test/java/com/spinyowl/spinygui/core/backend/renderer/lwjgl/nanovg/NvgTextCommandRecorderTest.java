@@ -13,10 +13,24 @@ import com.spinyowl.spinygui.core.style.types.Color;
 import com.spinyowl.spinygui.core.style.types.Overflow;
 import com.spinyowl.spinygui.core.system.font.ResolvedGlyph;
 import com.spinyowl.spinygui.core.system.font.ResolvedTextRun;
+import com.spinyowl.spinygui.core.system.font.impl.FontServiceImpl;
 import java.util.List;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 class NvgTextCommandRecorderTest {
+  private FontServiceImpl fontService;
+
+  @BeforeEach
+  void installFontOwner() {
+    fontService = NvgFontTestOwner.install();
+  }
+
+  @AfterEach
+  void closeFontOwner() {
+    fontService.close();
+  }
 
   @Test
   void normalTextRecordsReplacementFaceFailureAndTheActualAdvanceBranch() {

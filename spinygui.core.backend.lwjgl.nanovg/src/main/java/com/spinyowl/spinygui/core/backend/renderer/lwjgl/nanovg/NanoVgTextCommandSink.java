@@ -27,7 +27,9 @@ final class NanoVgTextCommandSink implements NvgTextCommandSink {
   public void endTransform(long c) { diagnostics.increment(NvgDiagnosticCounter.RESTORE_CALLS); nvgRestore(c); }
   public void align(long c,int v) { diagnostics.increment(NvgDiagnosticCounter.TEXT_ALIGN_CALLS); nvgTextAlign(c,v); }
   public boolean selectFace(long c,NvgTextCommand.TextPath p,Font f) { String face=fontRegistry.fontFace(f,c); if(face==null)return false; diagnostics.increment(NvgDiagnosticCounter.FONT_FACE_CALLS); nvgFontFace(c,face); return true; }
-  public String displayText(Font font, String text) { return fontRegistry.displayText(font, text); }
+  public String displayText(long context, Font font, String text) {
+    return fontRegistry.displayText(context, font, text);
+  }
   public void fontSize(long c,float v) { diagnostics.increment(NvgDiagnosticCounter.FONT_SIZE_CALLS); nvgFontSize(c,v); }
   public void fillColor(long c,Color color) { try(var nativeColor=create(color)){ diagnostics.increment(NvgDiagnosticCounter.FILL_COLOR_CALLS); nvgFillColor(c,nativeColor); } }
   public void text(long c,NvgTextCommand.TextPath p,String text,float x,float y) { ByteBuffer b=NvgUtf8Staging.encode(text,diagnostics); try { diagnostics.increment(NvgDiagnosticCounter.TEXT_CALLS); nvgText(c,x,y,b); } finally { memFree(b); } }

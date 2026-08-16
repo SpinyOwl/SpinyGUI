@@ -318,7 +318,7 @@ class NvgInputRenderer {
             font,
             fontSize,
             null,
-            commands.displayText(font, text),
+            commands.displayText(context, font, text),
             x,
             baseline);
         return;

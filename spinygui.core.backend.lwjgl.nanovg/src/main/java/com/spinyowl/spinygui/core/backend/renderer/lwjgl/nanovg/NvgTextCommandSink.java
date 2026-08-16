@@ -16,7 +16,7 @@ interface NvgTextCommandSink {
   void endTransform(long context);
   void align(long context, int value);
   boolean selectFace(long context, NvgTextCommand.TextPath path, Font font);
-  String displayText(Font font, String text);
+  String displayText(long context, Font font, String text);
   void fontSize(long context, float value);
   void fillColor(long context, Color color);
   void text(long context, NvgTextCommand.TextPath path, String text, float x, float baseline);

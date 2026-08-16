@@ -11,6 +11,8 @@ import java.util.function.Predicate;
 
 /** In-memory command sink. It follows the production render path; it does not recreate it. */
 final class NvgTextCommandRecorder implements NvgTextCommandSink {
+  private static final long RECORDING_CONTEXT = 1L;
+
   private final Predicate<Font> availableFaces;
   private final DiagnosticSession diagnostics;
   private final NvgFontRegistry fontRegistry = new NvgFontRegistry();
@@ -117,8 +119,8 @@ final class NvgTextCommandRecorder implements NvgTextCommandSink {
   }
 
   @Override
-  public String displayText(Font font, String text) {
-    return fontRegistry.displayText(font, text);
+  public String displayText(long context, Font font, String text) {
+    return fontRegistry.displayText(context == 0 ? RECORDING_CONTEXT : context, font, text);
   }
 
   @Override

@@ -95,7 +95,7 @@ public class NvgTextRenderer {
           fragment.font(),
           fragment.fontSize(),
           presented,
-          commands.displayText(fragment.font(), fragment.text()),
+          commands.displayText(context, fragment.font(), fragment.text()),
           x,
           baseline);
       return;

@@ -254,7 +254,7 @@ class NvgTextareaRenderer {
             style.fonts().get(0),
             null,
             null,
-            commands.displayText(style.fonts().get(0), line.text()),
+            commands.displayText(context, style.fonts().get(0), line.text()),
             x,
             baseline);
         return;

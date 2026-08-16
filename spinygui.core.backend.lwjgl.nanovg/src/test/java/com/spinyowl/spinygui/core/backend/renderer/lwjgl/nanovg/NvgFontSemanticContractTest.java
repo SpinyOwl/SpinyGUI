@@ -16,6 +16,7 @@ import com.spinyowl.spinygui.core.font.Font;
 import com.spinyowl.spinygui.core.font.FontStretch;
 import com.spinyowl.spinygui.core.font.FontStyle;
 import com.spinyowl.spinygui.core.font.FontWeight;
+import com.spinyowl.spinygui.core.system.font.impl.FontServiceImpl;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -29,6 +30,7 @@ import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
@@ -39,10 +41,16 @@ class NvgFontSemanticContractTest {
   private static final long CONTEXT = 37L;
 
   @TempDir Path fontDirectory;
+  private FontServiceImpl fontService;
 
   @BeforeEach
   void installFontOwner() {
-    NvgFontTestOwner.install();
+    fontService = NvgFontTestOwner.install();
+  }
+
+  @AfterEach
+  void closeFontOwner() {
+    fontService.close();
   }
 
   @Test
@@ -58,6 +66,11 @@ class NvgFontSemanticContractTest {
             .filter(type -> type.getSimpleName().equals("FontFace"))
             .findFirst()
             .orElseThrow();
+    Class<?> resourceKey =
+        Arrays.stream(NvgFontRegistry.class.getDeclaredClasses())
+            .filter(type -> type.getSimpleName().equals("FontResourceKey"))
+            .findFirst()
+            .orElseThrow();
     String source = Files.readString(nvgFontRegistrySource());
 
     assertAll(
@@ -66,10 +79,17 @@ class NvgFontSemanticContractTest {
         () -> assertTrue(key.contains(Font.ROBOTO_REGULAR.path())),
         () ->
             assertEquals(
-                Set.of("name", "id"),
+                Set.of("resourceKey", "name", "id"),
                 Arrays.stream(fontFace.getRecordComponents())
                     .map(component -> component.getName())
                     .collect(java.util.stream.Collectors.toSet())),
+        () ->
+            assertEquals(
+                Set.of("context", "faceKey", "semanticIdentity", "normalizedLocator"),
+                Arrays.stream(resourceKey.getRecordComponents())
+                    .map(component -> component.getName())
+                    .collect(java.util.stream.Collectors.toSet())),
+        () -> assertEquals(1, NvgFontResourceObservation.HARD_CONTEXT_LIMIT),
         () ->
             assertNotSame(
                 backendMap(first, "loadedFontFaces"), backendMap(second, "loadedFontFaces")),
@@ -108,12 +128,12 @@ class NvgFontSemanticContractTest {
             fontPath.toString());
     NvgFontRegistry registry = new NvgFontRegistry();
 
-    String displayed = registry.displayText(font, "A");
+    String displayed = registry.displayText(CONTEXT, font, "A");
 
     assertAll(
         () -> assertEquals("A", displayed),
-        () -> assertTrue(backendMap(registry, "fontBuffers").containsKey(font.path())),
-        () -> assertTrue(backendMap(registry, "fontInfos").containsKey(font.path())),
+        () -> assertEquals(1, registry.observation().bufferEntries()),
+        () -> assertEquals(1, registry.observation().fontInfoEntries()),
         () -> assertEquals(fontPath.toString(), font.path()));
   }
 
@@ -142,7 +162,10 @@ class NvgFontSemanticContractTest {
     boolean failedRetry =
         failedSelection.selectFace(CONTEXT, NvgTextCommand.TextPath.NORMAL, Font.ROBOTO_REGULAR);
     String missingAttempt = registry.fontFace(missing, CONTEXT);
-    String missingRetry = registry.fontFace(missing, CONTEXT + 1);
+    IllegalStateException contextMismatch =
+        assertThrows(
+            IllegalStateException.class,
+            () -> registry.fontFace(missing, CONTEXT + 1));
 
     assertAll(
         () -> assertTrue(selected),
@@ -150,7 +173,7 @@ class NvgFontSemanticContractTest {
         () -> assertFalse(failed),
         () -> assertFalse(failedRetry),
         () -> assertNull(missingAttempt),
-        () -> assertNull(missingRetry),
+        () -> assertTrue(contextMismatch.getMessage().contains("different context")),
         () -> assertTrue(backendMap(registry, "loadedFontFaces").isEmpty()),
         () -> assertTrue(backendMap(registry, "fontBuffers").isEmpty()),
         () -> assertTrue(backendMap(registry, "fontInfos").isEmpty()),

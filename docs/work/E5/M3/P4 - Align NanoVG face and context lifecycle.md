@@ -93,23 +93,75 @@ context nor retains versioned buffers; context-local map ownership and release r
 **Parallelizable with:** None.
 
 **Changes:**
-- [ ] Assign the renderer/context owner to loaded face names/IDs, font buffers, buffer duplicates/
+- [x] Assign the renderer/context owner to loaded face names/IDs, font buffers, buffer duplicates/
   views, backend STB info, and failed face-creation retry state.
-- [ ] Observe M3 semantic identity/generation so replaced fonts retire/recreate context-local state
+- [x] Observe M3 semantic identity/generation so replaced fonts retire/recreate context-local state
   according to the selected rejection/rotation/versioned-bound strategy without mutating core generation.
-- [ ] Define natural/hard bounds and diagnostics for existing backend face/buffer/info maps and make
+- [x] Define natural/hard bounds and diagnostics for existing backend face/buffer/info maps and make
   them visible to M7 aggregate retention accounting.
 
 **Acceptance Checks:**
-- [ ] One context cannot reuse a face ID/name created for another context; accepted semantic reload
+- [x] One context cannot reuse a face ID/name created for another context; accepted semantic reload
   either fails before mutation or rotates/recreates before new drawing. Versioned retention, if
   selected, forces rotation at the hard bound before accepting another retained version.
-- [ ] Face-creation failure retains/releases only documented state and supports the selected retry
+- [x] Face-creation failure retains/releases only documented state and supports the selected retry
   behavior without leaks.
 
 **Risks / Stop Criteria:** Stop if context-local entries are keyed only by a semantic font while
 context identity can change, if same-path reload has no selected strategy, or if failure/old-version
 retention is unbounded.
+
+#### T2 ownership, reconciliation, and bounds
+
+`NvgFontRegistry` is owned by one renderer and binds permanently to the renderer's single non-zero
+NanoVG context identity during initialization. A context mismatch is rejected before lookup or face
+creation. Glyph conversion receives and binds the render context before the later face-selection
+step, so the first buffer/info entry and its face share one resource key. An unbound registry cannot
+create resources, and its observation must report zero context/resource/failure counts. Recording-
+only sinks use an explicit non-zero logical recording context rather than creating context-zero
+entries. Face names/IDs, `freeData=false` backing buffers, backend `STBTTFontinfo` Java views, and
+retryable face-failure keys are indexed by the bound context plus the current semantic identity. An
+explicitly supplied unregistered compatibility descriptor uses its normalized locator as a local
+identity and cannot displace a registered semantic face. If that face key later becomes registered,
+an unused compatibility entry yields to the installed semantic identity during reconciliation.
+
+| Resource | Retention and retry rule | Bound visible to M7 |
+|---|---|---|
+| NanoVG face name/ID | Publish only after `nvgCreateFontMem` succeeds; reuse only for the same resource identity in the same bound context | Natural one per successfully used current identity; hard one-context owner |
+| `freeData=false` backing buffer | Retain the owner buffer for every live face; reuse it across retries for the same resource key | Natural one per resource key represented by the context |
+| Submitted duplicate buffer view | Create per native call and never retain the Java view; NanoVG may retain the shared address while the owner buffer remains live | Hard retained-view count of zero |
+| Backend `STBTTFontinfo` | Retain the current JVM-managed structure view only after successful initialization; discard unused stale-version map references during generation reconciliation | Natural one per inspected current resource key; deterministic allocation/free conversion remains T3 |
+| Failed face attempt | Retain no name, ID, or submitted view; retain one retry marker and its reusable backing buffer whether native creation returns `-1` or throws | Retry markers never exceed retained backing-buffer entries; success removes the marker |
+
+Every face/glyph-inspection/diagnostic use reconciles the owner's immutable semantic observation.
+Unchanged generations do no work. A changed generation discards unused stale-version buffer/info/
+retry references before creating current entries; a stale caller descriptor is rejected. The T1
+preflight continues to reject same-key replacement while a successful face is active, so no old
+face or `freeData=false` buffer is silently reused after core publication. Backend creation,
+failure, retry, and observation never mutate core generation.
+
+`NvgFontResourceObservation` exposes the reconciled generation, exact context identity/count,
+face/buffer/info/retry counts, cumulative face failures, the hard zero retained-submitted-view count,
+and immutable retained semantic identities. There is no speculative LRU or arbitrary font-entry cap:
+the current semantic identities actually used by the one context are the natural production bound;
+M7 can aggregate these explicit counts and apply its later weighted budget.
+
+#### T2 evidence
+
+- `NvgFontRegistryTest.displayBeforeFaceSelectionBindsOneContextWithoutDuplication` freezes the
+  production display-before-face order, proves context zero is rejected without allocation, and
+  observes one shared buffer/info/face entry after binding the real context.
+- `NvgRendererLifecycleTest.fontResourcesAreContextOwnedAndCannotReuseAcrossRenderers` proves exact
+  context binding, independent face creation, same-context reuse, shared backing addresses for
+  call-local duplicate views, the hard zero retained-view count, and no core-generation effect.
+- `failedFaceCreationIsBoundedAndSuccessfulRetryPublishesOnce` proves returned and thrown native
+  failures retain one bounded retry key/buffer, no face, and no submitted view; successful retry
+  publishes one face and clears the marker without changing semantic generation.
+- `semanticObservationKeepsOnlyCurrentUnusedBackendIdentity` proves an accepted replacement with no
+  active face advances only core generation, discards the unused prior backend identity, recreates
+  one current buffer/info pair, and rejects later use of the stale descriptor.
+- `unregisteredCompatibilityStateYieldsToInstalledSemanticIdentity` proves an unused local
+  compatibility entry is retired rather than duplicated when its face key becomes registered.
 
 ### T3: Enforce delete-before-release teardown
 **Purpose:** Honor `freeData=false` and align all font/context resources with one close sequence.

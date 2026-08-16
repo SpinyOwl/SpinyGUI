@@ -127,6 +127,7 @@ public class NvgRenderer implements Renderer {
         throw new IllegalStateException("NanoVG context creation failed");
       }
       nanovgContext = contextHandle.identity();
+      fontRegistry.bindContext(nanovgContext, owner.observation());
       mutationPreflightRegistration =
           Objects.requireNonNull(
               semanticPreflightInstaller.install(owner, fontRegistry),
@@ -322,6 +323,16 @@ public class NvgRenderer implements Renderer {
     debugRenderer.textMeasurer(textMeasurer);
   }
 
+  /**
+   * Returns immutable context-local font retention diagnostics for M7 aggregation.
+   *
+   * @return the resources currently owned by this initialized renderer/context
+   */
+  public NvgFontResourceObservation fontResourceObservation() {
+    requireInitializedUse("font resource observation", nanovgContext);
+    return fontRegistry.observation();
+  }
+
   State state() {
     return state;
   }
@@ -336,6 +347,11 @@ public class NvgRenderer implements Renderer {
 
   String fontFace(Font font, long context) {
     return fontRegistry.fontFace(font, context);
+  }
+
+  String displayText(Font font, String text) {
+    requireInitializedUse("font glyph inspection", nanovgContext);
+    return fontRegistry.displayText(nanovgContext, font, text);
   }
 
   void requireFontFaceUse(long context) {
