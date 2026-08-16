@@ -20,6 +20,8 @@ import java.lang.reflect.Field;
 import java.nio.ByteBuffer;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
@@ -28,6 +30,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
+import org.lwjgl.stb.STBTTFontinfo;
 import org.lwjgl.system.MemoryUtil;
 
 class NvgRendererLifecycleTest {
@@ -92,13 +95,22 @@ class NvgRendererLifecycleTest {
                 () -> renderer.fontFace(Font.ROBOTO_REGULAR, CONTEXT)));
 
     RecordingContextApi neverInitializedContexts = new RecordingContextApi(CONTEXT + 1);
-    NvgRenderer neverInitialized = renderer(neverInitializedContexts);
+    List<String> neverInitializedLifecycle = new ArrayList<>();
+    NvgRenderer neverInitialized =
+        renderer(
+            neverInitializedContexts,
+            neverInitializedLifecycle,
+            NvgFontRegistry.FontInfoAllocator.MANAGED,
+            (context, name, bytes) -> 7);
     neverInitialized.destroy();
     neverInitialized.destroy();
     assertAll(
         () -> assertEquals(NvgRenderer.State.DESTROYED, neverInitialized.state()),
         () -> assertEquals(0, neverInitializedContexts.creations),
-        () -> assertEquals(0, neverInitializedContexts.deletions));
+        () -> assertEquals(0, neverInitializedContexts.deletions),
+        () ->
+            assertEquals(
+                List.of("SHARED_CORE_CLOSE_SAFE"), neverInitializedLifecycle));
   }
 
   @DisplayName("P4 T1: every renderer operation is confined to its UI thread")
@@ -193,6 +205,7 @@ class NvgRendererLifecycleTest {
             });
 
     IllegalStateException failure = assertThrows(IllegalStateException.class, renderer::initialize);
+    NvgFontResourceObservation releasedAfterRollback = registry(renderer).observation();
 
     assertAll(
         () -> assertEquals("preflight binding failed", failure.getMessage()),
@@ -200,6 +213,10 @@ class NvgRendererLifecycleTest {
         () -> assertEquals(0, renderer.contextIdentity()),
         () -> assertEquals(1, contexts.creations),
         () -> assertEquals(1, contexts.deletions),
+        () -> assertEquals(0, releasedAfterRollback.contextCount()),
+        () -> assertEquals(0, releasedAfterRollback.bufferEntries()),
+        () -> assertEquals(0, releasedAfterRollback.fontInfoEntries()),
+        () -> assertEquals(0, releasedAfterRollback.faceEntries()),
         () -> assertThrows(IllegalStateException.class, renderer::initialize),
         () ->
             assertThrows(
@@ -384,6 +401,12 @@ class NvgRendererLifecycleTest {
         () -> assertEquals(generationBefore, fontService.semanticObservation().generation()));
 
     renderer.destroy();
+    NvgFontResourceObservation released = registry(renderer).observation();
+    assertAll(
+        () -> assertEquals(0, released.contextCount()),
+        () -> assertEquals(0, released.faceEntries()),
+        () -> assertEquals(0, released.bufferEntries()),
+        () -> assertEquals(0, released.retryableFaceFailures()));
   }
 
   @DisplayName("P4 T2: semantic change retires unused old-version backend entries")
@@ -456,6 +479,186 @@ class NvgRendererLifecycleTest {
     renderer.destroy();
   }
 
+  @DisplayName("P4 T3: context deletion precedes exact-once backend resource release")
+  @Test
+  void destroyDeletesContextBeforeReleasingFontResourcesExactlyOnce() {
+    List<String> lifecycle = new ArrayList<>();
+    RecordingContextApi contexts = new RecordingContextApi(CONTEXT);
+    contexts.onDelete = () -> lifecycle.add("DELETE_CONTEXT");
+    RecordingFontInfoAllocator allocator = new RecordingFontInfoAllocator(lifecycle);
+    NvgRenderer renderer = renderer(contexts, lifecycle, allocator, (context, name, bytes) -> 7);
+    renderer.initialize();
+    assertEquals("A", renderer.displayText(Font.ROBOTO_REGULAR, "A"));
+    assertNotNull(renderer.fontFace(Font.ROBOTO_REGULAR, CONTEXT));
+
+    renderer.destroy();
+    NvgFontResourceObservation released = registry(renderer).observation();
+    fontService.close();
+    renderer.destroy();
+
+    assertAll(
+        () ->
+            assertEquals(
+                List.of(
+                    "STOP_SUBMISSION_USE",
+                    "DELETE_CONTEXT",
+                    "CONTEXT_DELETED",
+                    "RELEASE_FACE_AND_RETRY_STATE",
+                    "NATIVE_FONT_INFO_FREE",
+                    "FREE_BACKEND_STB_FONT_INFO",
+                    "DROP_FONT_BUFFER_REFERENCES",
+                    "BACKEND_FONT_RESOURCES_RELEASED",
+                    "CLOSE_CORE_LIFECYCLE_REGISTRATIONS",
+                    "SHARED_CORE_CLOSE_SAFE"),
+                lifecycle),
+        () -> assertEquals(1, allocator.allocations),
+        () -> assertEquals(1, allocator.frees),
+        () -> assertEquals(1, contexts.deletionAttempts),
+        () -> assertEquals(1, contexts.deletions),
+        () -> assertEquals(0, released.contextCount()),
+        () -> assertEquals(0, released.faceEntries()),
+        () -> assertEquals(0, released.bufferEntries()),
+        () -> assertEquals(0, released.fontInfoEntries()),
+        () -> assertEquals(0, released.retryableFaceFailures()),
+        () -> assertEquals(0, released.faceCreationFailures()));
+  }
+
+  @DisplayName("P4 T3: failed context deletion retains resources for one successful retry")
+  @Test
+  void failedContextDeleteRetainsResourcesAndRetryReleasesExactlyOnce() {
+    List<String> lifecycle = new ArrayList<>();
+    RecordingContextApi contexts = new RecordingContextApi(CONTEXT);
+    AtomicInteger deleteAttempts = new AtomicInteger();
+    contexts.onDelete =
+        () -> {
+          lifecycle.add("DELETE_CONTEXT");
+          if (deleteAttempts.getAndIncrement() == 0) {
+            throw new IllegalStateException("injected context delete failure");
+          }
+        };
+    RecordingFontInfoAllocator allocator = new RecordingFontInfoAllocator(lifecycle);
+    NvgRenderer renderer = renderer(contexts, lifecycle, allocator, (context, name, bytes) -> 7);
+    renderer.initialize();
+    assertEquals("A", renderer.displayText(Font.ROBOTO_REGULAR, "A"));
+    assertNotNull(renderer.fontFace(Font.ROBOTO_REGULAR, CONTEXT));
+
+    IllegalStateException failure = assertThrows(IllegalStateException.class, renderer::destroy);
+    NvgFontResourceObservation retained = registry(renderer).observation();
+    int freesAfterFailure = allocator.frees;
+    renderer.destroy();
+    renderer.destroy();
+    NvgFontResourceObservation released = registry(renderer).observation();
+
+    assertAll(
+        () -> assertEquals("injected context delete failure", failure.getMessage()),
+        () -> assertEquals(1, retained.contextCount()),
+        () -> assertEquals(1, retained.faceEntries()),
+        () -> assertEquals(1, retained.bufferEntries()),
+        () -> assertEquals(1, retained.fontInfoEntries()),
+        () -> assertEquals(0, freesAfterFailure),
+        () -> assertEquals(1, allocator.frees),
+        () -> assertEquals(2, contexts.deletionAttempts),
+        () -> assertEquals(1, contexts.deletions),
+        () -> assertEquals(0, released.contextCount()),
+        () -> assertEquals(0, released.bufferEntries()),
+        () -> assertEquals(0, released.fontInfoEntries()),
+        () -> assertEquals(0, released.faceEntries()),
+        () -> assertEquals(0, released.retryableFaceFailures()),
+        () ->
+            assertEquals(
+                List.of(
+                    "STOP_SUBMISSION_USE",
+                    "DELETE_CONTEXT",
+                    "DELETE_CONTEXT",
+                    "CONTEXT_DELETED",
+                    "RELEASE_FACE_AND_RETRY_STATE",
+                    "NATIVE_FONT_INFO_FREE",
+                    "FREE_BACKEND_STB_FONT_INFO",
+                    "DROP_FONT_BUFFER_REFERENCES",
+                    "BACKEND_FONT_RESOURCES_RELEASED",
+                    "CLOSE_CORE_LIFECYCLE_REGISTRATIONS",
+                    "SHARED_CORE_CLOSE_SAFE"),
+                lifecycle));
+  }
+
+  @DisplayName("P4 T3: repeated delete failures retain the core-close dependency")
+  @Test
+  void repeatedContextDeleteFailuresRetainCoreCloseDependency() {
+    RecordingContextApi contexts = new RecordingContextApi(CONTEXT);
+    AtomicInteger injectedFailures = new AtomicInteger(2);
+    contexts.onDelete =
+        () -> {
+          if (injectedFailures.getAndDecrement() > 0) {
+            throw new IllegalStateException("injected persistent context delete failure");
+          }
+        };
+    NvgRenderer renderer = renderer(contexts);
+    renderer.initialize();
+
+    IllegalStateException firstFailure =
+        assertThrows(IllegalStateException.class, renderer::destroy);
+    IllegalStateException retryFailure =
+        assertThrows(IllegalStateException.class, renderer::destroy);
+    IllegalStateException coreCloseRejection =
+        assertThrows(IllegalStateException.class, fontService::close);
+
+    assertAll(
+        () -> assertEquals("injected persistent context delete failure", firstFailure.getMessage()),
+        () -> assertEquals("injected persistent context delete failure", retryFailure.getMessage()),
+        () -> assertTrue(coreCloseRejection.getMessage().contains("NanoVG renderer context lifecycle")),
+        () -> assertEquals(NvgRenderer.State.FAILED, renderer.state()),
+        () -> assertEquals(2, contexts.deletionAttempts),
+        () -> assertEquals(0, contexts.deletions));
+
+    renderer.destroy();
+    assertEquals(3, contexts.deletionAttempts);
+    assertEquals(1, contexts.deletions);
+  }
+
+  @DisplayName("P4 T3: core close rejects until initialized backend resources release")
+  @Test
+  void coreCloseFirstRejectsWithoutPublicationAndRemainsRecoverable() {
+    List<String> lifecycle = new ArrayList<>();
+    RecordingContextApi contexts = new RecordingContextApi(CONTEXT);
+    AtomicReference<Throwable> closeDuringContextCreation = new AtomicReference<>();
+    contexts.onCreate =
+        () -> {
+          try {
+            fontService.close();
+          } catch (Throwable failure) {
+            closeDuringContextCreation.set(failure);
+          }
+        };
+    RecordingFontInfoAllocator allocator = new RecordingFontInfoAllocator(lifecycle);
+    NvgRenderer renderer = renderer(contexts, lifecycle, allocator, (context, name, bytes) -> 7);
+    renderer.initialize();
+    assertEquals("A", renderer.displayText(Font.ROBOTO_REGULAR, "A"));
+    assertNotNull(renderer.fontFace(Font.ROBOTO_REGULAR, CONTEXT));
+    FontSemanticObservation semanticBefore = fontService.semanticObservation();
+    FontResourceObservation coreResourcesBefore = fontService.resourceObservation();
+    NvgFontResourceObservation backendResourcesBefore = renderer.fontResourceObservation();
+
+    IllegalStateException rejected =
+        assertThrows(IllegalStateException.class, fontService::close);
+
+    assertAll(
+        () ->
+            assertInstanceOf(
+                IllegalStateException.class, closeDuringContextCreation.get()),
+        () -> assertTrue(rejected.getMessage().contains("NanoVG renderer context lifecycle")),
+        () -> assertEquals(semanticBefore, fontService.semanticObservation()),
+        () -> assertEquals(coreResourcesBefore, fontService.resourceObservation()),
+        () -> assertEquals(backendResourcesBefore, renderer.fontResourceObservation()),
+        () -> assertEquals(0, contexts.deletionAttempts),
+        () -> assertEquals(0, allocator.frees));
+
+    renderer.destroy();
+    assertEquals(1, contexts.deletions);
+    assertEquals(1, allocator.frees);
+    fontService.close();
+    renderer.destroy();
+  }
+
   private NvgRenderer renderer(RecordingContextApi contexts) {
     return renderer(contexts, (context, name, bytes) -> 7);
   }
@@ -469,14 +672,36 @@ class NvgRendererLifecycleTest {
         faceCreator);
   }
 
+  private NvgRenderer renderer(
+      RecordingContextApi contexts,
+      List<String> lifecycle,
+      NvgFontRegistry.FontInfoAllocator allocator,
+      NvgFontRegistry.FaceCreator faceCreator) {
+    return new NvgRenderer(
+        true,
+        DiagnosticSession.disabled(),
+        contexts,
+        faceCreator,
+        (owner, registry) -> owner.registerMutationPreflight(registry::beforeReplacement),
+        event -> lifecycle.add(event.name()),
+        allocator);
+  }
+
+  private static NvgFontRegistry registry(NvgRenderer renderer) {
+    try {
+      Field registryField = NvgRenderer.class.getDeclaredField("fontRegistry");
+      registryField.setAccessible(true);
+      return (NvgFontRegistry) registryField.get(renderer);
+    } catch (ReflectiveOperationException failure) {
+      throw new AssertionError(failure);
+    }
+  }
+
   @SuppressWarnings("unchecked")
   private static ByteBuffer onlyOwnedBuffer(NvgRenderer renderer) throws Exception {
-    Field registryField = NvgRenderer.class.getDeclaredField("fontRegistry");
-    registryField.setAccessible(true);
-    NvgFontRegistry registry = (NvgFontRegistry) registryField.get(renderer);
     Field buffersField = NvgFontRegistry.class.getDeclaredField("fontBuffers");
     buffersField.setAccessible(true);
-    Map<?, ByteBuffer> buffers = (Map<?, ByteBuffer>) buffersField.get(registry);
+    Map<?, ByteBuffer> buffers = (Map<?, ByteBuffer>) buffersField.get(registry(renderer));
     return buffers.values().iterator().next();
   }
 
@@ -510,6 +735,7 @@ class NvgRendererLifecycleTest {
     private final long context;
     private int creations;
     private int deletions;
+    private int deletionAttempts;
     private Runnable onCreate = () -> {};
     private Runnable onDelete = () -> {};
 
@@ -527,8 +753,33 @@ class NvgRendererLifecycleTest {
     @Override
     public void delete(NvgRenderer.ContextHandle deleted) {
       assertEquals(context, deleted.identity());
+      deletionAttempts++;
       onDelete.run();
       deletions++;
+    }
+  }
+
+  private static final class RecordingFontInfoAllocator
+      implements NvgFontRegistry.FontInfoAllocator {
+    private final List<String> lifecycle;
+    private int allocations;
+    private int frees;
+
+    private RecordingFontInfoAllocator(List<String> lifecycle) {
+      this.lifecycle = lifecycle;
+    }
+
+    @Override
+    public STBTTFontinfo allocate() {
+      allocations++;
+      return STBTTFontinfo.malloc();
+    }
+
+    @Override
+    public void free(STBTTFontinfo fontInfo) {
+      lifecycle.add("NATIVE_FONT_INFO_FREE");
+      frees++;
+      fontInfo.free();
     }
   }
 }

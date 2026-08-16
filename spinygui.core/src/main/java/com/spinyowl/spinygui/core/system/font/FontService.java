@@ -78,7 +78,8 @@ public interface FontService extends AutoCloseable {
    * compatible no-op for legacy service implementations that do not own native font resources.
    *
    * @throws IllegalStateException for production implementations before installation, off the owner
-   *     thread, or during active read/use
+   *     thread, during active read/use, or while a registered backend dependency still requires
+   *     the core font resources
    */
   @Override
   default void close() {}

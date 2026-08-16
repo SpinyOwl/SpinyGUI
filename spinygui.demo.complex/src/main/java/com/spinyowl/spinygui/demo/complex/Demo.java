@@ -95,6 +95,7 @@ public abstract class Demo {
   private SystemEventProcessor systemEventProcessor;
   private LayoutService layoutService;
   private StyleManager styleManager;
+  private FontService fontService;
 
   private Frame frame;
   private long window;
@@ -119,28 +120,31 @@ public abstract class Demo {
     glfwMakeContextCurrent(window);
     GLCapabilities glCapabilities = createCapabilities();
 
-    renderer.initialize();
+    try {
+      renderer.initialize();
 
-    glfwMakeContextCurrent(window);
-    setCapabilities(glCapabilities);
-    glfwSwapInterval(0); // disable vsync
+      glfwMakeContextCurrent(window);
+      setCapabilities(glCapabilities);
+      glfwSwapInterval(0); // disable vsync
 
-    long millis = System.currentTimeMillis();
-    int fps = 0;
-    while (running) {
-      tick();
-      fps++;
+      long millis = System.currentTimeMillis();
+      int fps = 0;
+      while (running) {
+        tick();
+        fps++;
 
-      long now = System.currentTimeMillis();
-      if (now >= millis + 1000) {
-        GLFW.glfwSetWindowTitle(window, "FPS: " + fps);
+        long now = System.currentTimeMillis();
+        if (now >= millis + 1000) {
+          GLFW.glfwSetWindowTitle(window, "FPS: " + fps);
 
-        millis = now;
-        fps = 0;
+          millis = now;
+          fps = 0;
+        }
       }
+    } finally {
+      renderer.destroy();
+      fontService.close();
     }
-
-    renderer.destroy();
   }
 
   private void tick() {
@@ -245,7 +249,7 @@ public abstract class Demo {
     eventProcessor = new DefaultEventProcessor();
 
     FontStorage fontStorage = new FontStorageImpl();
-    FontService fontService = new FontServiceImpl(fontStorage, true);
+    fontService = new FontServiceImpl(fontStorage, true);
     fontService.installSemanticOwner();
     if (renderer instanceof NvgRenderer nvg && fontService instanceof TextMeasurer textMeasurer) {
       nvg.textMeasurer(textMeasurer);

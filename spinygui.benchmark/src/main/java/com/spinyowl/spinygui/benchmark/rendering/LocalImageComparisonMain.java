@@ -32,6 +32,7 @@ import static org.lwjgl.opengl.GL30.glGetInteger;
 import static org.lwjgl.system.MemoryUtil.NULL;
 
 import com.google.gson.GsonBuilder;
+import com.spinyowl.spinygui.benchmark.RendererHostLifecycle;
 import com.spinyowl.spinygui.benchmark.identity.BenchmarkRuntimeMetadata;
 import com.spinyowl.spinygui.benchmark.rendering.LocalImageComparisonPolicy.ComparisonOutcome;
 import com.spinyowl.spinygui.benchmark.rendering.LocalImageComparisonPolicy.EnvironmentFingerprint;
@@ -73,10 +74,12 @@ public final class LocalImageComparisonMain {
     Path artifactRoot = Path.of(args[1]);
     Files.createDirectories(artifactRoot);
     List<SceneOutcome> outcomes = new ArrayList<>();
-    try (Context context = new Context()) {
+    try (
+        FontServiceImpl fontService =
+            RenderingWorkloadSpecifications.CURRENT.createFontService(
+                DiagnosticSession.disabled());
+        Context context = new Context()) {
       context.initialize();
-      FontServiceImpl fontService =
-          RenderingWorkloadSpecifications.CURRENT.createFontService(DiagnosticSession.disabled());
       context.initializeRenderer(fontService);
       EnvironmentFingerprint environment = context.environment();
       for (RenderingBoundaryScenes.BoundaryScene scene : RenderingBoundaryScenes.scenes(fontService)) {
@@ -106,8 +109,8 @@ public final class LocalImageComparisonMain {
   private static final class Context implements AutoCloseable {
     private long window;
     private NvgRenderer renderer;
+    private RendererHostLifecycle<NvgRenderer> rendererLifecycle;
     private boolean glfwInitialized;
-    private boolean rendererInitialized;
 
     private void initialize() {
       if (!glfwInit()) throw new IllegalStateException("Unable to initialize GLFW");
@@ -124,10 +127,14 @@ public final class LocalImageComparisonMain {
     }
 
     private void initializeRenderer(FontServiceImpl fontService) {
-      renderer = new NvgRenderer(true, DiagnosticSession.disabled());
-      renderer.initialize();
+      rendererLifecycle =
+          new RendererHostLifecycle<>(
+              () -> new NvgRenderer(true, DiagnosticSession.disabled()),
+              NvgRenderer::initialize,
+              NvgRenderer::destroy,
+              this::closeHost);
+      renderer = rendererLifecycle.initialize();
       renderer.textMeasurer(fontService);
-      rendererInitialized = true;
     }
 
     private void capture(Frame frame, Path output) throws IOException {
@@ -175,16 +182,20 @@ public final class LocalImageComparisonMain {
 
     @Override
     public void close() {
-      try {
-        if (rendererInitialized) renderer.destroy();
-      } finally {
-        setCapabilities(null);
-        if (window != NULL) {
-          glfwMakeContextCurrent(NULL);
-          glfwDestroyWindow(window);
-        }
-        if (glfwInitialized) glfwTerminate();
+      if (rendererLifecycle != null) {
+        rendererLifecycle.close();
+      } else {
+        closeHost();
       }
+    }
+
+    private void closeHost() {
+      setCapabilities(null);
+      if (window != NULL) {
+        glfwMakeContextCurrent(NULL);
+        glfwDestroyWindow(window);
+      }
+      if (glfwInitialized) glfwTerminate();
     }
   }
 }

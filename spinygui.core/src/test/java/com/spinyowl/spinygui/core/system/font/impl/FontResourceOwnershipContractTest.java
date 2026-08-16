@@ -480,6 +480,37 @@ class FontResourceOwnershipContractTest {
         () -> assertEquals(retainedByte, externalAlias.get(0)));
   }
 
+  @DisplayName("P4 T3: registered backend dependency rejects core close before teardown")
+  @Test
+  void backendCloseDependencyKeepsCoreCloseAtomicAndRecoverable() {
+    FontServiceImpl service = new FontServiceImpl(new FontStorageImpl(), false);
+    SemanticFontOwner owner = service.installSemanticOwner();
+    FontSemanticObservation semanticBefore = service.semanticObservation();
+    FontResourceObservation resourcesBefore = service.resourceObservation();
+    SemanticFontOwner.ResourceCloseDependencyRegistration dependency =
+        owner.registerResourceCloseDependency("test backend context one");
+    SemanticFontOwner.ResourceCloseDependencyRegistration secondDependency =
+        owner.registerResourceCloseDependency("test backend context two");
+
+    IllegalStateException rejected =
+        assertThrows(IllegalStateException.class, service::close);
+
+    assertAll(
+        () -> assertTrue(rejected.getMessage().contains("test backend context one")),
+        () -> assertTrue(rejected.getMessage().contains("test backend context two")),
+        () -> assertEquals(semanticBefore, service.semanticObservation()),
+        () -> assertEquals(resourcesBefore, service.resourceObservation()),
+        () -> assertSame(service, Font.semanticService()));
+
+    dependency.close();
+    dependency.close();
+    IllegalStateException stillRejected =
+        assertThrows(IllegalStateException.class, service::close);
+    assertTrue(stillRejected.getMessage().contains("test backend context two"));
+    secondDependency.close();
+    assertDoesNotThrow(service::close);
+  }
+
   @DisplayName("P3 T3 target: diagnostics distinguish owner resources from issued aliases")
   @Test
   void retentionDiagnosticsNeverClaimExternalAliasesWereDeterministicallyFreed() throws Exception {

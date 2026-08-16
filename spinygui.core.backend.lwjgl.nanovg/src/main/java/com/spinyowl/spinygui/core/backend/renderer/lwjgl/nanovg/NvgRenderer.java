@@ -36,6 +36,7 @@ public class NvgRenderer implements Renderer {
   private final boolean antialiasingEnabled;
   private final ContextApi contextApi;
   private final SemanticPreflightInstaller semanticPreflightInstaller;
+  private final LifecycleHook lifecycleHook;
   private final NvgFontRegistry fontRegistry;
   private final NvgElementRenderer elementRenderer;
   private final NvgTextRenderer textRenderer;
@@ -53,7 +54,10 @@ public class NvgRenderer implements Renderer {
   private ContextHandle contextHandle;
   private State state = State.NEW;
   private Thread uiThread;
+  private boolean submissionUseStopped;
+  private boolean sharedCoreCloseSafeAnnounced;
   private SemanticFontOwner.MutationPreflightRegistration mutationPreflightRegistration;
+  private SemanticFontOwner.ResourceCloseDependencyRegistration resourceCloseDependencyRegistration;
   private NvgTransformState.Factory transformStateFactory;
   private SubtreeContentState.Factory subtreeContentStateFactory;
   private SubtreeContentRenderer subtreeContentRenderer = this::renderSubtreeContent;
@@ -68,7 +72,9 @@ public class NvgRenderer implements Renderer {
         diagnostics,
         LwjglContextApi.INSTANCE,
         NvgFontRegistry.FaceCreator.NATIVE,
-        (owner, registry) -> owner.registerMutationPreflight(registry::beforeReplacement));
+        (owner, registry) -> owner.registerMutationPreflight(registry::beforeReplacement),
+        LifecycleHook.NO_OP,
+        NvgFontRegistry.FontInfoAllocator.OWNED);
   }
 
   NvgRenderer(
@@ -81,7 +87,9 @@ public class NvgRenderer implements Renderer {
         diagnostics,
         contextApi,
         faceCreator,
-        (owner, registry) -> owner.registerMutationPreflight(registry::beforeReplacement));
+        (owner, registry) -> owner.registerMutationPreflight(registry::beforeReplacement),
+        LifecycleHook.NO_OP,
+        NvgFontRegistry.FontInfoAllocator.OWNED);
   }
 
   NvgRenderer(
@@ -90,12 +98,31 @@ public class NvgRenderer implements Renderer {
       ContextApi contextApi,
       NvgFontRegistry.FaceCreator faceCreator,
       SemanticPreflightInstaller semanticPreflightInstaller) {
+    this(
+        antialiasingEnabled,
+        diagnostics,
+        contextApi,
+        faceCreator,
+        semanticPreflightInstaller,
+        LifecycleHook.NO_OP,
+        NvgFontRegistry.FontInfoAllocator.OWNED);
+  }
+
+  NvgRenderer(
+      boolean antialiasingEnabled,
+      DiagnosticSession diagnostics,
+      ContextApi contextApi,
+      NvgFontRegistry.FaceCreator faceCreator,
+      SemanticPreflightInstaller semanticPreflightInstaller,
+      LifecycleHook lifecycleHook,
+      NvgFontRegistry.FontInfoAllocator fontInfoAllocator) {
     this.antialiasingEnabled = antialiasingEnabled;
     this.diagnostics = Objects.requireNonNull(diagnostics, "diagnostics");
     this.contextApi = Objects.requireNonNull(contextApi, "contextApi");
     this.semanticPreflightInstaller =
         Objects.requireNonNull(semanticPreflightInstaller, "semanticPreflightInstaller");
-    this.fontRegistry = new NvgFontRegistry(this, faceCreator);
+    this.lifecycleHook = Objects.requireNonNull(lifecycleHook, "lifecycleHook");
+    this.fontRegistry = new NvgFontRegistry(this, faceCreator, fontInfoAllocator);
     this.textCommands = new NanoVgTextCommandSink(fontRegistry, this.diagnostics);
     this.elementRenderer = new NvgElementRenderer(this.diagnostics);
     this.textRenderer = new NvgTextRenderer(textCommands, this.diagnostics);
@@ -122,6 +149,8 @@ public class NvgRenderer implements Renderer {
     uiThread = owner.ownerThread();
     state = State.INITIALIZING;
     try {
+      resourceCloseDependencyRegistration =
+          owner.registerResourceCloseDependency("NanoVG renderer context lifecycle");
       contextHandle = contextApi.create(antialiasingEnabled);
       if (contextHandle == null || contextHandle.identity() == 0) {
         throw new IllegalStateException("NanoVG context creation failed");
@@ -284,12 +313,7 @@ public class NvgRenderer implements Renderer {
     }
     state = State.DESTROYING;
     try {
-      if (contextHandle != null) {
-        contextApi.delete(contextHandle);
-      }
-      closeMutationPreflight();
-      contextHandle = null;
-      nanovgContext = 0;
+      teardownContextResources();
       state = State.DESTROYED;
     } catch (RuntimeException | Error failure) {
       state = State.FAILED;
@@ -371,6 +395,14 @@ public class NvgRenderer implements Renderer {
   }
 
   private void requireUiThread() {
+    if (uiThread != null && Thread.currentThread() != uiThread) {
+      throw new IllegalStateException("NanoVG renderer operation requires its UI thread");
+    }
+    // A completed renderer retains its thread identity so repeated destroy remains a no-op even
+    // after the composition owner has closed the shared font service at SHARED_CORE_CLOSE_SAFE.
+    if (state == State.DESTROYED && uiThread != null) {
+      return;
+    }
     SemanticFontOwner owner = Font.semanticOwner();
     Thread installedThread = owner.ownerThread();
     if (uiThread == null) {
@@ -382,25 +414,62 @@ public class NvgRenderer implements Renderer {
   }
 
   private void rollbackFailedInitialization(Throwable failure) {
-    if (contextHandle != null) {
-      try {
-        contextApi.delete(contextHandle);
-        contextHandle = null;
-        nanovgContext = 0;
-      } catch (RuntimeException | Error rollbackFailure) {
-        failure.addSuppressed(rollbackFailure);
-      }
-    }
-    if (contextHandle == null) {
-      closeMutationPreflight();
+    try {
+      teardownContextResources();
+    } catch (RuntimeException | Error rollbackFailure) {
+      failure.addSuppressed(rollbackFailure);
     }
   }
 
-  private void closeMutationPreflight() {
+  private void teardownContextResources() {
+    if (contextHandle == null && nanovgContext == 0 && !fontRegistry.hasBoundContext()) {
+      closeCoreLifecycleRegistrations();
+      announceSharedCoreCloseSafe();
+      return;
+    }
+
+    if (!submissionUseStopped) {
+      recordLifecycle(LifecycleEvent.STOP_SUBMISSION_USE);
+      submissionUseStopped = true;
+    }
+    if (contextHandle != null) {
+      contextApi.delete(contextHandle);
+      contextHandle = null;
+      nanovgContext = 0;
+      recordLifecycle(LifecycleEvent.CONTEXT_DELETED);
+    }
+    fontRegistry.releaseAfterContextDelete();
+    recordLifecycle(LifecycleEvent.BACKEND_FONT_RESOURCES_RELEASED);
+    closeCoreLifecycleRegistrations();
+    announceSharedCoreCloseSafe();
+  }
+
+  private void closeCoreLifecycleRegistrations() {
+    boolean closedRegistration = false;
     if (mutationPreflightRegistration != null) {
       mutationPreflightRegistration.close();
       mutationPreflightRegistration = null;
+      closedRegistration = true;
     }
+    if (resourceCloseDependencyRegistration != null) {
+      resourceCloseDependencyRegistration.close();
+      resourceCloseDependencyRegistration = null;
+      closedRegistration = true;
+    }
+    if (closedRegistration) {
+      recordLifecycle(LifecycleEvent.CLOSE_CORE_LIFECYCLE_REGISTRATIONS);
+    }
+  }
+
+  private void announceSharedCoreCloseSafe() {
+    if (!sharedCoreCloseSafeAnnounced) {
+      recordLifecycle(LifecycleEvent.SHARED_CORE_CLOSE_SAFE);
+      sharedCoreCloseSafeAnnounced = true;
+    }
+  }
+
+  void recordLifecycle(LifecycleEvent event) {
+    lifecycleHook.onLifecycle(event);
   }
 
   enum State {
@@ -433,6 +502,28 @@ public class NvgRenderer implements Renderer {
   interface SemanticPreflightInstaller {
     SemanticFontOwner.MutationPreflightRegistration install(
         SemanticFontOwner owner, NvgFontRegistry registry);
+  }
+
+  /**
+   * Ordered, owner-thread backend lifecycle boundary that future M6 staging ownership can join.
+   * Implementations observe completed transitions and must not throw.
+   */
+  @FunctionalInterface
+  interface LifecycleHook {
+    LifecycleHook NO_OP = event -> {};
+
+    void onLifecycle(LifecycleEvent event);
+  }
+
+  enum LifecycleEvent {
+    STOP_SUBMISSION_USE,
+    CONTEXT_DELETED,
+    RELEASE_FACE_AND_RETRY_STATE,
+    FREE_BACKEND_STB_FONT_INFO,
+    DROP_FONT_BUFFER_REFERENCES,
+    BACKEND_FONT_RESOURCES_RELEASED,
+    CLOSE_CORE_LIFECYCLE_REGISTRATIONS,
+    SHARED_CORE_CLOSE_SAFE
   }
 
   private enum LwjglContextApi implements ContextApi {

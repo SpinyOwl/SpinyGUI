@@ -5,7 +5,8 @@
 ## Goal
 
 Implement explicit renderer/context/font-face states and teardown so context deletion precedes the
-release of every `freeData=false` font buffer and backend STB resource.
+release of every `freeData=false` font buffer and backend STB resource that may still be referenced
+by a native face. Safe unused/stale entries may retire during semantic reconciliation.
 
 ## Non-Goals
 
@@ -56,9 +57,9 @@ does not provide concurrent renderer support.
 
 | State | `initialize` | `render` / `fontFace` | `destroy` |
 |---|---|---|---|
-| `NEW` | Create one context, bind its exact identity and semantic replacement preflight | Reject | Transition directly to `DESTROYED` without creating a context |
+| `NEW` | Register the core-close dependency before context creation, then create one context and bind its exact identity and semantic replacement preflight | Reject | Transition directly to `DESTROYED` without creating a context |
 | `INITIALIZING` | Reject re-entry | Reject | Reject re-entry |
-| `INITIALIZED` | Reject a second initialization or context replacement | Allow only for the bound context identity | Delete the bound context, unregister preflight, then enter `DESTROYED` |
+| `INITIALIZED` | Reject a second initialization or context replacement | Allow only for the bound context identity | Delete the bound context, release backend resources, unregister the preflight and close dependency, then enter `DESTROYED` |
 | `FAILED` | Reject retry on the same renderer | Reject | Retry any remaining context rollback, then enter `DESTROYED` |
 | `DESTROYING` | Reject | Reject | Reject re-entry |
 | `DESTROYED` | Reject use-after-destroy | Reject use-after-destroy | Owner-thread no-op |
@@ -130,7 +131,7 @@ an unused compatibility entry yields to the installed semantic identity during r
 | NanoVG face name/ID | Publish only after `nvgCreateFontMem` succeeds; reuse only for the same resource identity in the same bound context | Natural one per successfully used current identity; hard one-context owner |
 | `freeData=false` backing buffer | Retain the owner buffer for every live face; reuse it across retries for the same resource key | Natural one per resource key represented by the context |
 | Submitted duplicate buffer view | Create per native call and never retain the Java view; NanoVG may retain the shared address while the owner buffer remains live | Hard retained-view count of zero |
-| Backend `STBTTFontinfo` | Retain the current JVM-managed structure view only after successful initialization; discard unused stale-version map references during generation reconciliation | Natural one per inspected current resource key; deterministic allocation/free conversion remains T3 |
+| Backend `STBTTFontinfo` | Retain the current renderer-owned `malloc` structure only after successful initialization; free unused stale-version entries during generation reconciliation and all remaining entries after context deletion | Natural one per inspected current resource key; each owned allocation is freed exactly once |
 | Failed face attempt | Retain no name, ID, or submitted view; retain one retry marker and its reusable backing buffer whether native creation returns `-1` or throws | Retry markers never exceed retained backing-buffer entries; success removes the marker |
 
 Every face/glyph-inspection/diagnostic use reconciles the owner's immutable semantic observation.
@@ -171,18 +172,84 @@ M7 can aggregate these explicit counts and apply its later weighted budget.
 **Parallelizable with:** None.
 
 **Changes:**
-- [ ] Stop frame/submission use, delete the NanoVG context, then release/clear context-local faces,
-  backend STB info, and font buffers/views; close shared core resources only after backend dependents.
-- [ ] Integrate success, face failure, context creation failure, and repeated destroy cleanup paths.
-- [ ] Expose lifecycle hooks M6 staging can later join without changing teardown order.
+- [x] Stop frame/submission use, delete the NanoVG context, then release/clear all remaining
+  context/native-face-dependent faces, backend STB info, and font buffers/views; close shared core
+  resources only after backend dependents.
+- [x] Integrate success, face failure, context creation failure, and repeated destroy cleanup paths.
+- [x] Expose lifecycle hooks M6 staging can later join without changing teardown order.
 
 **Acceptance Checks:**
-- [ ] Lifecycle recording asserts context-delete occurs before any `freeData=false` backing buffer/
-  info release and each resource releases once.
-- [ ] Partial initialization and repeated destroy leak no retained buffer/info/face entry.
+- [x] Lifecycle recording asserts context-delete occurs before teardown releases any remaining
+  native-face-dependent `freeData=false` backing buffer/info and each resource releases once.
+- [x] Partial initialization and repeated destroy leak no retained buffer/info/face entry.
 
 **Risks / Stop Criteria:** Never release/reload a backing buffer in-place while an active context can
 still reference it.
+
+#### T3 teardown and ownership contract
+
+An initialized `NvgRenderer` owns the context-local native lifetime. Its teardown order is fixed:
+
+1. stop new frame/submission use;
+2. delete the exact bound NanoVG context;
+3. drop context-local face and retry state;
+4. free each renderer-owned `STBTTFontinfo` allocated with `malloc` exactly once;
+5. drop the `freeData=false` backing-buffer references;
+6. unregister the semantic replacement preflight and core-close dependency; and
+7. announce the boundary at which composition may close the shared core font service.
+
+The backing buffers are JVM-managed direct buffers. Teardown drops only the renderer's owner
+references after context deletion; it does not claim deterministic freeing of caller aliases or the
+direct buffers themselves. Recording/standalone registry seams that do not own a native NanoVG
+context continue to use JVM-managed STB structure views and therefore do not claim deterministic
+native release. Production `NvgRenderer` registries use explicit `malloc`/`free` ownership.
+Delete-before-release applies to entries that may still back a published native face. An unused or
+failed-attempt entry has no native face reference, so semantic reconciliation may safely free its STB
+info and drop its buffer reference while the context remains live.
+
+Context deletion failure retains every dependent face, info, and backing-buffer entry and leaves the
+renderer in `FAILED`, so a later owner-thread `destroy` retries deletion before releasing anything.
+Once deletion succeeds, face/retry state is discarded, owned font infos are freed, and only then are
+buffer references dropped. Repeated destroy is an owner-thread no-op, including after composition
+has closed the core font service at the final safe boundary. Initialization rollback uses the same
+ordered teardown; a failure before context creation unregisters the already-installed core-close
+dependency without claiming that a semantic replacement preflight was installed.
+
+The package lifecycle hook reports completed transitions in this order and must not throw. It is the
+explicit seam for M6 staging ownership; M6 can join the stop/release boundary without changing the
+context-delete-before-release invariant.
+
+Renderer initialization registers a backend-neutral close dependency with the semantic owner before
+calling the context factory. Core `FontService.close()` therefore rejects before core teardown while
+context creation or renderer use can retain backend resources, leaving semantic and core/backend
+resource observations unchanged and recoverable. Renderer teardown removes this dependency only
+after context deletion and backend release. Production demo, timed-rendering, local-comparison, and
+renderer-diagnostics composition roots close the renderer/context resource before their font service
+by construction. The benchmark host wrappers retain a renderer before calling `initialize`; if
+initialization or the first context-delete attempt fails, they retry renderer teardown while the GL
+host is still valid and close the host only after the retry succeeds.
+
+#### T3 evidence
+
+- `NvgRendererLifecycleTest.destroyDeletesContextBeforeReleasingFontResourcesExactlyOnce` records
+  context deletion before native-info release and backing-reference drop, proves one allocation/free
+  and one deletion across repeated destroy, observes zero retained resources, and repeats destroy
+  after shared-core close.
+- `failedContextDeleteRetainsResourcesAndRetryReleasesExactlyOnce` proves a failed delete retains the
+  face, info, and backing buffer without freeing, while one retry releases each resource once.
+- `coreCloseFirstRejectsWithoutPublicationAndRemainsRecoverable` proves core-close-first rejects
+  without semantic/core/backend publication or release, after which renderer-first teardown and core
+  close both succeed.
+- `RendererHostLifecycleTest` proves an initialization failure does not lose the constructed
+  renderer, the first delete failure retries successfully while the host remains open, and host close
+  precedes font-service close. Its persistent-failure fixture proves exactly two teardown attempts,
+  preserves the original failure with the retry failure suppressed, and performs no host close.
+- `NvgRendererLifecycleTest.repeatedContextDeleteFailuresRetainCoreCloseDependency` proves two real
+  context-delete failures leave the renderer failed, the native host lifetime unresolved, and the
+  core-close dependency registered until a later successful renderer teardown. T3 checkboxes were
+  reopened for this review retry and rechecked only after the focused and broad gates passed.
+- Initialization-preflight rollback and face-creation failure fixtures observe zero retained entries
+  after destroy through the same production teardown path.
 
 ### T4: Prove integrated identity and lifecycle behavior
 **Purpose:** Establish the M3 production gate consumed by snapshots, submission, and caches.

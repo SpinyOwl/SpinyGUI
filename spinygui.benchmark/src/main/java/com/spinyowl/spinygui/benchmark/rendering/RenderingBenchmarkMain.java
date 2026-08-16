@@ -25,6 +25,7 @@ import static org.lwjgl.system.MemoryUtil.NULL;
 
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
+import com.spinyowl.spinygui.benchmark.RendererHostLifecycle;
 import com.spinyowl.spinygui.benchmark.identity.BenchmarkRuntimeMetadata;
 import com.spinyowl.spinygui.benchmark.identity.BenchmarkInvocationMetadata;
 import com.spinyowl.spinygui.benchmark.identity.BenchmarkRunMetadata;
@@ -74,10 +75,11 @@ public final class RenderingBenchmarkMain {
   }
 
   private RenderingReport run(BenchmarkRunMetadata runMetadata) {
-    try (HiddenContext context = new HiddenContext()) {
+    DiagnosticSession diagnostics = DiagnosticSession.disabled();
+    try (
+        FontServiceImpl fontService = SPECIFICATION.createFontService(diagnostics);
+        HiddenContext context = new HiddenContext()) {
       context.initialize();
-      DiagnosticSession diagnostics = DiagnosticSession.disabled();
-      FontServiceImpl fontService = SPECIFICATION.createFontService(diagnostics);
       List<Scene> scenes =
           SPECIFICATION.measurementOrder().stream()
               .map(scene -> createScene(fontService, scene))
@@ -348,8 +350,8 @@ public final class RenderingBenchmarkMain {
   private static final class HiddenContext implements AutoCloseable {
     private long window;
     private NvgRenderer renderer;
+    private RendererHostLifecycle<NvgRenderer> rendererLifecycle;
     private boolean glfwInitialized;
-    private boolean rendererInitialized;
 
     void initialize() {
       if (!glfwInit()) {
@@ -376,9 +378,13 @@ public final class RenderingBenchmarkMain {
     }
 
     void initializeRenderer(DiagnosticSession diagnostics) {
-      renderer = new NvgRenderer(true, diagnostics);
-      renderer.initialize();
-      rendererInitialized = true;
+      rendererLifecycle =
+          new RendererHostLifecycle<>(
+              () -> new NvgRenderer(true, diagnostics),
+              NvgRenderer::initialize,
+              NvgRenderer::destroy,
+              this::closeHost);
+      renderer = rendererLifecycle.initialize();
     }
 
     FrameTiming render(Frame frame) {
@@ -412,19 +418,21 @@ public final class RenderingBenchmarkMain {
 
     @Override
     public void close() {
-      try {
-        if (rendererInitialized) {
-          renderer.destroy();
-        }
-      } finally {
-        setCapabilities(null);
-        if (window != NULL) {
-          glfwMakeContextCurrent(NULL);
-          glfwDestroyWindow(window);
-        }
-        if (glfwInitialized) {
-          glfwTerminate();
-        }
+      if (rendererLifecycle != null) {
+        rendererLifecycle.close();
+      } else {
+        closeHost();
+      }
+    }
+
+    private void closeHost() {
+      setCapabilities(null);
+      if (window != NULL) {
+        glfwMakeContextCurrent(NULL);
+        glfwDestroyWindow(window);
+      }
+      if (glfwInitialized) {
+        glfwTerminate();
       }
     }
   }

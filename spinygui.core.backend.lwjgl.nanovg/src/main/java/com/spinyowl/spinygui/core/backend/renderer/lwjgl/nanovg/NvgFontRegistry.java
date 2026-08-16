@@ -11,6 +11,7 @@ import java.nio.ByteBuffer;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
@@ -21,10 +22,11 @@ class NvgFontRegistry {
 
   private final Map<FontResourceKey, FontFace> loadedFontFaces = new HashMap<>();
   private final Map<FontResourceKey, ByteBuffer> fontBuffers = new HashMap<>();
-  private final Map<FontResourceKey, STBTTFontinfo> fontInfos = new HashMap<>();
+  private final Map<FontResourceKey, OwnedFontInfo> fontInfos = new HashMap<>();
   private final Set<FontResourceKey> retryableFaceFailures = new HashSet<>();
   private final NvgRenderer renderer;
   private final FaceCreator faceCreator;
+  private final FontInfoAllocator fontInfoAllocator;
 
   private Map<SemanticFontOwner.FaceKey, SemanticFontOwner.Identity> observedIdentities = Map.of();
   private long observedGeneration;
@@ -32,12 +34,18 @@ class NvgFontRegistry {
   private long faceCreationFailures;
 
   NvgFontRegistry() {
-    this(null, FaceCreator.NATIVE);
+    this(null, FaceCreator.NATIVE, FontInfoAllocator.MANAGED);
   }
 
   NvgFontRegistry(NvgRenderer renderer, FaceCreator faceCreator) {
+    this(renderer, faceCreator, FontInfoAllocator.OWNED);
+  }
+
+  NvgFontRegistry(
+      NvgRenderer renderer, FaceCreator faceCreator, FontInfoAllocator fontInfoAllocator) {
     this.renderer = renderer;
     this.faceCreator = Objects.requireNonNull(faceCreator, "faceCreator");
+    this.fontInfoAllocator = Objects.requireNonNull(fontInfoAllocator, "fontInfoAllocator");
   }
 
   void bindContext(long context, SemanticFontOwner.Observation observation) {
@@ -136,6 +144,58 @@ class NvgFontRegistry {
         retainedIdentities);
   }
 
+  boolean hasBoundContext() {
+    return contextIdentity != 0;
+  }
+
+  void releaseAfterContextDelete() {
+    if (contextIdentity == 0) {
+      return;
+    }
+
+    loadedFontFaces.clear();
+    retryableFaceFailures.clear();
+    recordLifecycle(NvgRenderer.LifecycleEvent.RELEASE_FACE_AND_RETRY_STATE);
+
+    RuntimeException runtimeFailure = null;
+    Error errorFailure = null;
+    for (Map.Entry<FontResourceKey, OwnedFontInfo> entry : List.copyOf(fontInfos.entrySet())) {
+      try {
+        entry.getValue().free();
+        fontInfos.remove(entry.getKey());
+        recordLifecycle(NvgRenderer.LifecycleEvent.FREE_BACKEND_STB_FONT_INFO);
+      } catch (RuntimeException failure) {
+        if (runtimeFailure == null) {
+          runtimeFailure = failure;
+        } else {
+          runtimeFailure.addSuppressed(failure);
+        }
+      } catch (Error failure) {
+        if (errorFailure == null) {
+          errorFailure = failure;
+        } else {
+          errorFailure.addSuppressed(failure);
+        }
+      }
+    }
+    if (runtimeFailure != null) {
+      if (errorFailure != null) {
+        runtimeFailure.addSuppressed(errorFailure);
+      }
+      throw runtimeFailure;
+    }
+    if (errorFailure != null) {
+      throw errorFailure;
+    }
+
+    fontBuffers.clear();
+    recordLifecycle(NvgRenderer.LifecycleEvent.DROP_FONT_BUFFER_REFERENCES);
+    observedIdentities = Map.of();
+    observedGeneration = 0;
+    faceCreationFailures = 0;
+    contextIdentity = 0;
+  }
+
   private boolean hasGlyph(Font primaryFont, int codePoint) {
     return glyphIndex(primaryFont, codePoint) != 0;
   }
@@ -153,16 +213,21 @@ class NvgFontRegistry {
   private int glyphIndex(Font font, int codePoint) {
     FontResourceKey key = resourceKey(font);
     return stbtt_FindGlyphIndex(
-        fontInfos.computeIfAbsent(key, ignored -> loadFontInfo(key, font)), codePoint);
+        fontInfos.computeIfAbsent(key, ignored -> loadFontInfo(key, font)).value(), codePoint);
   }
 
-  private STBTTFontinfo loadFontInfo(FontResourceKey key, Font font) {
+  private OwnedFontInfo loadFontInfo(FontResourceKey key, Font font) {
     ByteBuffer fontBuffer = fontBuffer(key, font);
-    STBTTFontinfo fontInfo = STBTTFontinfo.create();
-    if (fontBuffer == null || !stbtt_InitFont(fontInfo, fontBuffer.duplicate())) {
-      throw new IllegalStateException("Failed to load font from '%s'".formatted(font.path()));
+    STBTTFontinfo fontInfo = fontInfoAllocator.allocate();
+    try {
+      if (fontBuffer == null || !stbtt_InitFont(fontInfo, fontBuffer.duplicate())) {
+        throw new IllegalStateException("Failed to load font from '%s'".formatted(font.path()));
+      }
+      return new OwnedFontInfo(fontInfo, fontInfoAllocator);
+    } catch (RuntimeException | Error failure) {
+      fontInfoAllocator.free(fontInfo);
+      throw failure;
     }
-    return fontInfo;
   }
 
   private ByteBuffer fontBuffer(FontResourceKey key, Font font) {
@@ -195,8 +260,14 @@ class NvgFontRegistry {
           "NanoVG active font face is stale; destroy and replace the renderer");
     }
 
-    fontInfos.keySet().removeIf(resource -> resource.isStale(current));
-    fontBuffers.keySet().removeIf(resource -> resource.isStale(current));
+    List<FontResourceKey> staleInfos =
+        fontInfos.keySet().stream().filter(resource -> resource.isStale(current)).toList();
+    for (FontResourceKey stale : staleInfos) {
+      fontInfos.get(stale).free();
+      fontInfos.remove(stale);
+    }
+    fontBuffers.keySet().removeIf(
+        resource -> resource.isStale(current) && !fontInfos.containsKey(resource));
     retryableFaceFailures.removeIf(resource -> resource.isStale(current));
     observedIdentities = Map.copyOf(current);
     observedGeneration = observation.generation();
@@ -246,12 +317,72 @@ class NvgFontRegistry {
         .forEach(destination::add);
   }
 
+  private void recordLifecycle(NvgRenderer.LifecycleEvent event) {
+    if (renderer != null) {
+      renderer.recordLifecycle(event);
+    }
+  }
+
   @FunctionalInterface
   interface FaceCreator {
     FaceCreator NATIVE =
         (context, name, bytes) -> nvgCreateFontMem(context, name, bytes, false);
 
     int create(long context, String name, ByteBuffer bytes);
+  }
+
+  interface FontInfoAllocator {
+    FontInfoAllocator MANAGED =
+        new FontInfoAllocator() {
+          @Override
+          public STBTTFontinfo allocate() {
+            return STBTTFontinfo.create();
+          }
+
+          @Override
+          public void free(STBTTFontinfo fontInfo) {}
+        };
+    FontInfoAllocator OWNED =
+        new FontInfoAllocator() {
+          @Override
+          public STBTTFontinfo allocate() {
+            return STBTTFontinfo.malloc();
+          }
+
+          @Override
+          public void free(STBTTFontinfo fontInfo) {
+            fontInfo.free();
+          }
+        };
+
+    STBTTFontinfo allocate();
+
+    void free(STBTTFontinfo fontInfo);
+  }
+
+  private static final class OwnedFontInfo {
+    private final STBTTFontinfo value;
+    private final FontInfoAllocator allocator;
+    private boolean freed;
+
+    private OwnedFontInfo(STBTTFontinfo value, FontInfoAllocator allocator) {
+      this.value = Objects.requireNonNull(value, "value");
+      this.allocator = Objects.requireNonNull(allocator, "allocator");
+    }
+
+    private STBTTFontinfo value() {
+      if (freed) {
+        throw new IllegalStateException("NanoVG backend STB font info is already freed");
+      }
+      return value;
+    }
+
+    private void free() {
+      if (!freed) {
+        allocator.free(value);
+        freed = true;
+      }
+    }
   }
 
   private record FontResourceKey(

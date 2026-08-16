@@ -26,6 +26,7 @@ import static org.lwjgl.system.MemoryUtil.NULL;
 
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonPrimitive;
+import com.spinyowl.spinygui.benchmark.RendererHostLifecycle;
 import com.spinyowl.spinygui.benchmark.diagnostic.CounterDiagnosticArtifact.Entry;
 import com.spinyowl.spinygui.benchmark.diagnostic.DiagnosticWorkloadSpecifications.CpuScenario;
 import com.spinyowl.spinygui.benchmark.diagnostic.DiagnosticWorkloadSpecifications.ObservedShape;
@@ -143,7 +144,10 @@ public final class CounterDiagnosticsMain {
     List<Entry> entries = new ArrayList<>();
     for (RendererScenario scenario : DiagnosticWorkloadSpecifications.RENDERER_SCENARIOS) {
       DiagnosticSession diagnostics = DiagnosticSession.enabled(combinedVocabulary());
-      try (HiddenContext context = new HiddenContext(diagnostics)) {
+      PreparedScene prepared = prepareScene(scenario, diagnostics);
+      try (
+          FontServiceImpl ignored = prepared.fontService();
+          HiddenContext context = new HiddenContext(diagnostics)) {
         context.initialize();
         ComparabilityMetadata.Environment environment =
             BenchmarkRuntimeMetadata.renderingEnvironment(
@@ -151,7 +155,6 @@ public final class CounterDiagnosticsMain {
                 glGetString(GL_RENDERER),
                 glGetString(GL_VERSION),
                 glGetString(GL_VERSION));
-        PreparedScene prepared = prepareScene(scenario, diagnostics);
         ObservedShape preparedObserved = observeRenderer(prepared);
         scenario.validateObserved(preparedObserved);
         if ("unchanged".equals(scenario.submissionState())) {
@@ -857,6 +860,7 @@ public final class CounterDiagnosticsMain {
     private final DiagnosticSession diagnostics;
     private long window;
     private NvgRenderer renderer;
+    private RendererHostLifecycle<NvgRenderer> rendererLifecycle;
     private boolean glfwInitialized;
 
     private HiddenContext(DiagnosticSession diagnostics) {
@@ -885,8 +889,13 @@ public final class CounterDiagnosticsMain {
           0,
           DiagnosticWorkloadSpecifications.FRAME_WIDTH_PX,
           DiagnosticWorkloadSpecifications.FRAME_HEIGHT_PX);
-      renderer = new NvgRenderer(true, diagnostics);
-      renderer.initialize();
+      rendererLifecycle =
+          new RendererHostLifecycle<>(
+              () -> new NvgRenderer(true, diagnostics),
+              NvgRenderer::initialize,
+              NvgRenderer::destroy,
+              this::closeHost);
+      renderer = rendererLifecycle.initialize();
     }
 
     private void render(PreparedScene scene) {
@@ -911,16 +920,20 @@ public final class CounterDiagnosticsMain {
 
     @Override
     public void close() {
-      try {
-        if (renderer != null) renderer.destroy();
-      } finally {
-        setCapabilities(null);
-        if (window != NULL) {
-          glfwMakeContextCurrent(NULL);
-          glfwDestroyWindow(window);
-        }
-        if (glfwInitialized) glfwTerminate();
+      if (rendererLifecycle != null) {
+        rendererLifecycle.close();
+      } else {
+        closeHost();
       }
+    }
+
+    private void closeHost() {
+      setCapabilities(null);
+      if (window != NULL) {
+        glfwMakeContextCurrent(NULL);
+        glfwDestroyWindow(window);
+      }
+      if (glfwInitialized) glfwTerminate();
     }
   }
 }

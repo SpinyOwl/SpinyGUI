@@ -25,6 +25,7 @@ public final class SemanticFontOwner {
   private final List<FontRequest> builtIns;
   private final FontChainResolver resolver = new SemanticFontChainResolver(this);
   private final List<MutationPreflight> mutationPreflights = new ArrayList<>();
+  private final List<ResourceCloseDependency> resourceCloseDependencies = new ArrayList<>();
   private Snapshot snapshot = new Snapshot(0, Map.of(), Map.of());
   private Lifecycle lifecycle = Lifecycle.NEW;
   private Thread ownerThread;
@@ -245,6 +246,30 @@ public final class SemanticFontOwner {
   }
 
   /**
+   * Registers an owner-thread dependency that must release its resources before coordinated core
+   * font close can begin.
+   *
+   * <p>The dependency is descriptive only: core close rejects before teardown while the returned
+   * handle remains registered. This keeps backend state out of semantic identity while preventing
+   * a caller from stranding native resources that still depend on core-owned font data.
+   *
+   * @param description stable description included in rejection diagnostics
+   * @return idempotent owner-thread registration handle
+   */
+  public ResourceCloseDependencyRegistration registerResourceCloseDependency(
+      String description) {
+    Objects.requireNonNull(description, "description");
+    if (description.isBlank()) {
+      throw new IllegalArgumentException("Resource close dependency description must not be blank");
+    }
+    requireUseAllowed();
+    ResourceCloseDependency dependency = new ResourceCloseDependency(description);
+    resourceCloseDependencies.add(dependency);
+    return new OwnerResourceCloseDependencyRegistration(
+        this, dependency, Thread.currentThread());
+  }
+
+  /**
    * Opens a nestable owner-thread read/use scope.
    *
    * @param kind scope category
@@ -261,8 +286,8 @@ public final class SemanticFontOwner {
    * Verifies that coordinated resource close may begin.
    *
    * @return {@code true} when resources still need teardown, or {@code false} after an earlier close
-   * @throws IllegalStateException before installation, off the owner thread, during mutation, or
-   *     while a read/use scope is active
+   * @throws IllegalStateException before installation, off the owner thread, during mutation, while
+   *     a read/use scope is active, or while a dependent resource registration remains active
    */
   public boolean prepareResourceClose() {
     requireNoMutationInProgress();
@@ -272,6 +297,13 @@ public final class SemanticFontOwner {
     }
     if (activeReadUseScopes != 0) {
       throw new IllegalStateException("Semantic font owner cannot close during read/use scope");
+    }
+    if (!resourceCloseDependencies.isEmpty()) {
+      throw new IllegalStateException(
+          "Semantic font owner cannot close before dependent resources: "
+              + resourceCloseDependencies.stream()
+                  .map(ResourceCloseDependency::description)
+                  .toList());
     }
     return true;
   }
@@ -441,6 +473,16 @@ public final class SemanticFontOwner {
           "Semantic mutation preflight must close on its registration thread");
     }
     mutationPreflights.remove(preflight);
+  }
+
+  private void unregisterResourceCloseDependency(
+      ResourceCloseDependency dependency, Thread registrationThread) {
+    requireUseAllowed();
+    if (Thread.currentThread() != registrationThread) {
+      throw new IllegalStateException(
+          "Resource close dependency must close on its registration thread");
+    }
+    resourceCloseDependencies.remove(dependency);
   }
 
   private void requireUseAllowed() {
@@ -688,6 +730,13 @@ public final class SemanticFontOwner {
     void close();
   }
 
+  /** Owner-thread handle for one dependent-resource close guard. */
+  public interface ResourceCloseDependencyRegistration extends AutoCloseable {
+    /** Removes the dependency after its resources are released; repeated close is a no-op. */
+    @Override
+    void close();
+  }
+
   /**
    * Result of one semantic transaction.
    *
@@ -791,6 +840,18 @@ public final class SemanticFontOwner {
 
   private record PreparedFont(Identity identity, Font descriptor) {}
 
+  private static final class ResourceCloseDependency {
+    private final String description;
+
+    private ResourceCloseDependency(String description) {
+      this.description = description;
+    }
+
+    private String description() {
+      return description;
+    }
+  }
+
   private static final class OwnerReadUseScope implements ReadUseScope {
     private final SemanticFontOwner owner;
     private final Thread openingThread;
@@ -831,6 +892,32 @@ public final class SemanticFontOwner {
         return;
       }
       owner.unregisterMutationPreflight(preflight, registrationThread);
+      closed = true;
+    }
+  }
+
+  private static final class OwnerResourceCloseDependencyRegistration
+      implements ResourceCloseDependencyRegistration {
+    private final SemanticFontOwner owner;
+    private final ResourceCloseDependency dependency;
+    private final Thread registrationThread;
+    private boolean closed;
+
+    private OwnerResourceCloseDependencyRegistration(
+        SemanticFontOwner owner,
+        ResourceCloseDependency dependency,
+        Thread registrationThread) {
+      this.owner = owner;
+      this.dependency = dependency;
+      this.registrationThread = registrationThread;
+    }
+
+    @Override
+    public void close() {
+      if (closed) {
+        return;
+      }
+      owner.unregisterResourceCloseDependency(dependency, registrationThread);
       closed = true;
     }
   }
