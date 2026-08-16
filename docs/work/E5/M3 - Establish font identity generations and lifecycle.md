@@ -1,8 +1,10 @@
 # M3: Establish Font Identity, Generations, and Lifecycle
 
-**Status:** Planned
+**Status:** In progress
 
 Parent plan: `docs/work/E5 - Text performance improvements.md`
+
+Next: [P4 - Align NanoVG face and context lifecycle](M3/P4%20-%20Align%20NanoVG%20face%20and%20context%20lifecycle.md)
 
 ## Goal
 
@@ -22,6 +24,8 @@ dependent state.
 ## Phases
 
 ### P1: Approve semantic font and thread contracts
+
+**Status:** Complete
 
 **Document:** [P1 - Approve semantic font and thread contracts](M3/P1%20-%20Approve%20semantic%20font%20and%20thread%20contracts.md)
 
@@ -55,6 +59,8 @@ left accidentally concurrent rather than rejected/documented.
 
 ### P2: Centralize registry generation and resolver ownership
 
+**Status:** Complete
+
 **Document:** [P2 - Centralize registry generation and resolver ownership](M3/P2%20-%20Centralize%20registry%20generation%20and%20resolver%20ownership.md)
 
 **Purpose:** Implement the production semantic generation and ensure every production font-chain
@@ -87,6 +93,8 @@ generation without a fake intermediary.
 or cache ownership.
 
 ### P3: Bound and close core font resources
+
+**Status:** Complete
 
 **Document:** [P3 - Bound and close core font resources](M3/P3%20-%20Bound%20and%20close%20core%20font%20resources.md)
 

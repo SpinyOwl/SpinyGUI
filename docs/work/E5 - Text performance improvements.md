@@ -144,7 +144,7 @@ and the current JVM differs; report suppression is therefore expected. M3 is the
 
 ### M3: Establish font identity, generations, and lifecycle
 
-**Status:** Planned
+**Status:** In progress
 
 **Document:** [M3 - Establish font identity generations and lifecycle](E5/M3%20-%20Establish%20font%20identity%20generations%20and%20lifecycle.md)
 

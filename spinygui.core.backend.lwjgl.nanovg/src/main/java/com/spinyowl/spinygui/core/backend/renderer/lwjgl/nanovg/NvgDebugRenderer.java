@@ -24,7 +24,6 @@ import com.spinyowl.spinygui.core.style.types.length.Length;
 import com.spinyowl.spinygui.core.system.font.TextCaretMetrics;
 import com.spinyowl.spinygui.core.system.font.TextLineMetrics;
 import com.spinyowl.spinygui.core.system.font.TextMeasurer;
-import com.spinyowl.spinygui.core.system.font.FontChainResolver;
 import com.spinyowl.spinygui.core.system.font.ResolvedTextRun;
 import java.util.List;
 import org.joml.Vector2f;
@@ -193,11 +192,11 @@ class NvgDebugRenderer implements NvgRenderer.DebugRenderer {
     return position;
   }
 
-  private Font findFont(ResolvedStyle style) {
+  Font findFont(ResolvedStyle style) {
     if (style.fontFamilies() == null) {
       return Font.DEFAULT;
     }
-    return FontChainResolver.DEFAULT
+    return Font.semanticOwner().resolver()
         .resolve(
             style.fontFamilies(), style.fontStyle(), style.fontWeight(), FontStretch.NORMAL)
         .stream()

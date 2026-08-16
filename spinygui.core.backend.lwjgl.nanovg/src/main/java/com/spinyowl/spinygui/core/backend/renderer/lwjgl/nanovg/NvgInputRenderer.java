@@ -16,7 +16,6 @@ import com.spinyowl.spinygui.core.style.ResolvedStyle;
 import com.spinyowl.spinygui.core.style.stylesheet.util.StyleUtils;
 import com.spinyowl.spinygui.core.style.types.Color;
 import com.spinyowl.spinygui.core.style.types.length.Length;
-import com.spinyowl.spinygui.core.system.font.FontChainResolver;
 import com.spinyowl.spinygui.core.system.font.ResolvedTextRun;
 import com.spinyowl.spinygui.core.system.font.TextLineMetrics;
 import com.spinyowl.spinygui.core.system.font.TextMeasurer;
@@ -183,12 +182,12 @@ class NvgInputRenderer {
     return position;
   }
 
-  private List<Font> findFonts(ResolvedStyle style) {
+  List<Font> findFonts(ResolvedStyle style) {
     if (style.fontFamilies() == null) {
       return List.of(Font.DEFAULT);
     }
     textMeasurer.diagnostics().increment(TextDiagnosticCounter.FONT_CHAIN_RESOLUTIONS);
-    return FontChainResolver.DEFAULT
+    return Font.semanticOwner().resolver()
         .resolve(style.fontFamilies(), style.fontStyle(), style.fontWeight(), FontStretch.NORMAL);
   }
 

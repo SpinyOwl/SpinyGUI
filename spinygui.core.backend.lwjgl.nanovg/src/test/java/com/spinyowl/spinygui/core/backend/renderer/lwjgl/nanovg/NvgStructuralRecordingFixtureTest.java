@@ -23,9 +23,15 @@ import com.spinyowl.spinygui.core.system.font.TextMeasurer;
 import com.spinyowl.spinygui.core.system.font.TextMetrics;
 import java.util.ArrayList;
 import java.util.List;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 class NvgStructuralRecordingFixtureTest {
+
+  @BeforeEach
+  void installFontOwner() {
+    NvgFontTestOwner.install();
+  }
 
   @Test
   void normalTextFixtureFreezesFragmentsRunsReplacementTransformClipAndOffscreenSubmission() {

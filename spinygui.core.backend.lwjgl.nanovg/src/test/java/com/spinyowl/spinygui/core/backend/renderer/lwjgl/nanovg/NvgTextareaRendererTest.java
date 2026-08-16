@@ -15,12 +15,16 @@ import com.spinyowl.spinygui.core.system.font.TextCaretMetrics;
 import com.spinyowl.spinygui.core.system.font.TextLineMetrics;
 import com.spinyowl.spinygui.core.system.font.TextMeasurer;
 import com.spinyowl.spinygui.core.system.font.TextMetrics;
-import com.spinyowl.spinygui.core.system.font.impl.FontServiceImpl;
-import com.spinyowl.spinygui.core.system.font.impl.FontStorageImpl;
 import java.util.List;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 class NvgTextareaRendererTest {
+
+  @BeforeEach
+  void installFontOwner() {
+    NvgFontTestOwner.install();
+  }
 
   @Test
   void commandSinkRecordsSelectionTextCaretAndOneProductionFontSizeInOrder() {
@@ -28,7 +32,7 @@ class NvgTextareaRendererTest {
         DiagnosticSession.enabled(List.of(NvgDiagnosticCounter.values()));
     NvgTextCommandRecorder recorder = new NvgTextCommandRecorder();
     NvgTextareaRenderer renderer = new NvgTextareaRenderer(recorder, diagnostics);
-    renderer.textMeasurer(new FontServiceImpl(new FontStorageImpl(), false));
+    renderer.textMeasurer(NvgFontTestOwner.install());
     TextareaElement textarea = new TextareaElement("a\u96EA");
     textarea.box().contentPosition(20, 30);
     textarea.box().contentSize(100, 40);

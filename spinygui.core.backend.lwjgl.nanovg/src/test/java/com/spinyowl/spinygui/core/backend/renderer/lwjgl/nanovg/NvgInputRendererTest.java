@@ -22,9 +22,15 @@ import com.spinyowl.spinygui.core.system.font.ResolvedGlyph;
 import java.util.ArrayList;
 import java.util.List;
 import org.joml.Vector2f;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 class NvgInputRendererTest {
+
+  @BeforeEach
+  void installFontOwner() {
+    NvgFontTestOwner.install();
+  }
 
   @Test
   void render_whenTextInputIsFocused_drawsValueAndCaretClippedToContentBox() {

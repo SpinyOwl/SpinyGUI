@@ -1,5 +1,7 @@
 # P4: Align NanoVG Face and Context Lifecycle
 
+**Status:** In progress
+
 ## Goal
 
 Implement explicit renderer/context/font-face states and teardown so context deletion precedes the
@@ -29,23 +31,59 @@ use-after-destroy explicit.
 **Parallelizable with:** None.
 
 **Changes:**
-- [ ] Define renderer states for new/uninitialized, initializing, initialized with context identity,
+- [x] Define renderer states for new/uninitialized, initializing, initialized with context identity,
   failed/partially initialized, destroying, and destroyed.
-- [ ] Select full context replacement/reinitialization support or explicit rejection; specify calls
+- [x] Select full context replacement/reinitialization support or explicit rejection; specify calls
   to initialize/render/fontFace/destroy in every state.
-- [ ] Select one active-context same-path semantic reload strategy: reject reload while an affected
+- [x] Select one active-context same-path semantic reload strategy: reject reload while an affected
   context is active, rotate/recreate the context, or retain versioned buffers only until forced
   context rotation at a hard bound.
-- [ ] Implement UI-thread checks, repeated destroy behavior, use-after-destroy rejection, and partial
+- [x] Implement UI-thread checks, repeated destroy behavior, use-after-destroy rejection, and partial
   initialization rollback without relying only on `AtomicBoolean` concurrency semantics.
 
 **Acceptance Checks:**
-- [ ] Transition tests cover initialize twice, render before init, replacement/mismatched context,
+- [x] Transition tests cover initialize twice, render before init, replacement/mismatched context,
   creation failure, destroy twice, use after destroy, and the selected active-context reload strategy.
-- [ ] State transitions do not imply concurrent renderer support.
+- [x] State transitions do not imply concurrent renderer support.
 
 **Risks / Stop Criteria:** Stop if a failed initialize leaves a context/resource set that later
 appears initialized or if context replacement is accidentally partially supported.
+
+#### T1 lifecycle and reload contract
+
+All operations are confined to the exact semantic-owner installation/UI thread; the state machine
+does not provide concurrent renderer support.
+
+| State | `initialize` | `render` / `fontFace` | `destroy` |
+|---|---|---|---|
+| `NEW` | Create one context, bind its exact identity and semantic replacement preflight | Reject | Transition directly to `DESTROYED` without creating a context |
+| `INITIALIZING` | Reject re-entry | Reject | Reject re-entry |
+| `INITIALIZED` | Reject a second initialization or context replacement | Allow only for the bound context identity | Delete the bound context, unregister preflight, then enter `DESTROYED` |
+| `FAILED` | Reject retry on the same renderer | Reject | Retry any remaining context rollback, then enter `DESTROYED` |
+| `DESTROYING` | Reject | Reject | Reject re-entry |
+| `DESTROYED` | Reject use-after-destroy | Reject use-after-destroy | Owner-thread no-op |
+
+Initialization failure after native context creation deletes that partial context and enters
+`FAILED`; the same renderer cannot silently appear initialized later. A delete failure remains
+`FAILED` so explicit destroy can retry the outstanding rollback.
+
+The active-face policy is explicit rejection. An initialized renderer registers a backend-neutral
+semantic preflight. Exact duplicate/no-op loads and additions for a different face key remain legal,
+but a same-key/different-identity mutation is rejected before core generation, descriptor, byte, or
+native-info publication when that renderer has created the affected face. The caller must destroy
+that renderer and construct/initialize a new renderer before the reload. T1 neither auto-rotates a
+context nor retains versioned buffers; context-local map ownership and release remain T2/T3 work.
+
+#### T1 evidence
+
+- `NvgRendererLifecycleTest` covers the six states, context identity mismatch, initialize/destroy
+  repetition, owner-thread confinement, post-create rollback, and active-face replacement rejection
+  before semantic/resource publication.
+- Four active P4 characterization targets in `NvgFontSemanticContractTest` exercise initialized
+  creation/reuse, off-thread rejection, destroy/use-after-destroy, and partial-create retry policy.
+- `FontSemanticContractTest` proves the renderer-neutral preflight leaves semantic and resource
+  observations unchanged on rejection, bypasses exact duplicates, and unregisters before a later
+  accepted replacement.
 
 ### T2: Own context-local faces, buffers, and STB info
 **Purpose:** Retain backend resources exactly as long as the context/native contract requires.

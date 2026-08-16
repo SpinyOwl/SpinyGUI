@@ -22,9 +22,15 @@ import com.spinyowl.spinygui.core.system.font.TextMetrics;
 import java.util.ArrayList;
 import java.util.List;
 import org.joml.Vector2f;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 class NvgDebugRendererTest {
+
+  @BeforeEach
+  void installFontOwner() {
+    NvgFontTestOwner.install();
+  }
 
   @Test
   void render_whenParentElementHovered_highlightsTextInlineFragments() {

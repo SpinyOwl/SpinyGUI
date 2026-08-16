@@ -12,6 +12,7 @@ import static org.lwjgl.opengl.GL11.glEnable;
 import static org.lwjgl.opengl.GL11.glGetInteger;
 import com.spinyowl.spinygui.core.backend.renderer.Renderer;
 import com.spinyowl.spinygui.core.diagnostic.DiagnosticSession;
+import com.spinyowl.spinygui.core.font.Font;
 import com.spinyowl.spinygui.core.node.Element;
 import com.spinyowl.spinygui.core.node.Frame;
 import com.spinyowl.spinygui.core.node.InputElement;
@@ -19,10 +20,10 @@ import com.spinyowl.spinygui.core.node.Node;
 import com.spinyowl.spinygui.core.node.Text;
 import com.spinyowl.spinygui.core.node.TextareaElement;
 import com.spinyowl.spinygui.core.style.types.AffineTransform;
+import com.spinyowl.spinygui.core.system.font.SemanticFontOwner;
 import com.spinyowl.spinygui.core.system.font.TextMeasurer;
 import java.util.List;
 import java.util.Objects;
-import java.util.concurrent.atomic.AtomicBoolean;
 import org.joml.Vector2f;
 import org.joml.Vector2fc;
 import org.joml.Vector2ic;
@@ -33,7 +34,9 @@ import org.lwjgl.opengl.GL30;
 public class NvgRenderer implements Renderer {
 
   private final boolean antialiasingEnabled;
-  private final AtomicBoolean initialized = new AtomicBoolean(false);
+  private final ContextApi contextApi;
+  private final SemanticPreflightInstaller semanticPreflightInstaller;
+  private final NvgFontRegistry fontRegistry;
   private final NvgElementRenderer elementRenderer;
   private final NvgTextRenderer textRenderer;
   private final NvgBorderRenderer borderRenderer;
@@ -44,10 +47,13 @@ public class NvgRenderer implements Renderer {
   private final NvgTextCommandSink textCommands;
   private DebugRenderer debugRenderer;
 
-  private boolean isVersionNew;
   private boolean debugMode;
   private Vector2f debugMousePosition;
   private long nanovgContext;
+  private ContextHandle contextHandle;
+  private State state = State.NEW;
+  private Thread uiThread;
+  private SemanticFontOwner.MutationPreflightRegistration mutationPreflightRegistration;
   private NvgTransformState.Factory transformStateFactory;
   private SubtreeContentState.Factory subtreeContentStateFactory;
   private SubtreeContentRenderer subtreeContentRenderer = this::renderSubtreeContent;
@@ -57,9 +63,39 @@ public class NvgRenderer implements Renderer {
   }
 
   public NvgRenderer(boolean antialiasingEnabled, DiagnosticSession diagnostics) {
-    NvgFontRegistry fontRegistry = new NvgFontRegistry();
+    this(
+        antialiasingEnabled,
+        diagnostics,
+        LwjglContextApi.INSTANCE,
+        NvgFontRegistry.FaceCreator.NATIVE,
+        (owner, registry) -> owner.registerMutationPreflight(registry::beforeReplacement));
+  }
+
+  NvgRenderer(
+      boolean antialiasingEnabled,
+      DiagnosticSession diagnostics,
+      ContextApi contextApi,
+      NvgFontRegistry.FaceCreator faceCreator) {
+    this(
+        antialiasingEnabled,
+        diagnostics,
+        contextApi,
+        faceCreator,
+        (owner, registry) -> owner.registerMutationPreflight(registry::beforeReplacement));
+  }
+
+  NvgRenderer(
+      boolean antialiasingEnabled,
+      DiagnosticSession diagnostics,
+      ContextApi contextApi,
+      NvgFontRegistry.FaceCreator faceCreator,
+      SemanticPreflightInstaller semanticPreflightInstaller) {
     this.antialiasingEnabled = antialiasingEnabled;
     this.diagnostics = Objects.requireNonNull(diagnostics, "diagnostics");
+    this.contextApi = Objects.requireNonNull(contextApi, "contextApi");
+    this.semanticPreflightInstaller =
+        Objects.requireNonNull(semanticPreflightInstaller, "semanticPreflightInstaller");
+    this.fontRegistry = new NvgFontRegistry(this, faceCreator);
     this.textCommands = new NanoVgTextCommandSink(fontRegistry, this.diagnostics);
     this.elementRenderer = new NvgElementRenderer(this.diagnostics);
     this.textRenderer = new NvgTextRenderer(textCommands, this.diagnostics);
@@ -79,31 +115,39 @@ public class NvgRenderer implements Renderer {
   }
 
   public void initialize() {
-    if (initialized.compareAndSet(false, true)) {
-      isVersionNew =
-          (glGetInteger(GL30.GL_MAJOR_VERSION) > 3)
-              || glGetInteger(GL30.GL_MAJOR_VERSION) == 3
-                  && glGetInteger(GL30.GL_MINOR_VERSION) >= 2;
-
-      if (isVersionNew) {
-        int flags =
-            antialiasingEnabled
-                ? NanoVGGL3.NVG_STENCIL_STROKES | NanoVGGL3.NVG_ANTIALIAS
-                : NanoVGGL3.NVG_STENCIL_STROKES;
-        nanovgContext = NanoVGGL3.nvgCreate(flags);
-      } else {
-        int flags =
-            antialiasingEnabled
-                ? NanoVGGL2.NVG_STENCIL_STROKES | NanoVGGL2.NVG_ANTIALIAS
-                : NanoVGGL2.NVG_STENCIL_STROKES;
-        nanovgContext = NanoVGGL2.nvgCreate(flags);
+    SemanticFontOwner owner = Font.semanticOwner();
+    if (state != State.NEW) {
+      throw new IllegalStateException("NanoVG renderer cannot initialize from " + state);
+    }
+    uiThread = owner.ownerThread();
+    state = State.INITIALIZING;
+    try {
+      contextHandle = contextApi.create(antialiasingEnabled);
+      if (contextHandle == null || contextHandle.identity() == 0) {
+        throw new IllegalStateException("NanoVG context creation failed");
       }
-
+      nanovgContext = contextHandle.identity();
+      mutationPreflightRegistration =
+          Objects.requireNonNull(
+              semanticPreflightInstaller.install(owner, fontRegistry),
+              "semantic mutation preflight registration");
+      state = State.INITIALIZED;
+    } catch (RuntimeException | Error failure) {
+      rollbackFailedInitialization(failure);
+      state = State.FAILED;
+      throw failure;
     }
   }
 
   @Override
   public void render(long window, Vector2fc windowSize, Vector2ic frameBufferSize, Frame frame) {
+    requireInitializedUse("render", nanovgContext);
+    try (var ignored = Font.semanticOwner().openReadUseScope(SemanticFontOwner.ReadUseKind.RENDER)) {
+      renderFrame(windowSize, frameBufferSize, frame);
+    }
+  }
+
+  private void renderFrame(Vector2fc windowSize, Vector2ic frameBufferSize, Frame frame) {
 
     float pixelRatio = windowSize.x() / frameBufferSize.x();
 
@@ -230,10 +274,25 @@ public class NvgRenderer implements Renderer {
   }
 
   public void destroy() {
-    if (isVersionNew) {
-      NanoVGGL3.nnvgDelete(nanovgContext);
-    } else {
-      NanoVGGL2.nnvgDelete(nanovgContext);
+    requireUiThread();
+    if (state == State.DESTROYED) {
+      return;
+    }
+    if (state == State.INITIALIZING || state == State.DESTROYING) {
+      throw new IllegalStateException("NanoVG renderer cannot destroy from " + state);
+    }
+    state = State.DESTROYING;
+    try {
+      if (contextHandle != null) {
+        contextApi.delete(contextHandle);
+      }
+      closeMutationPreflight();
+      contextHandle = null;
+      nanovgContext = 0;
+      state = State.DESTROYED;
+    } catch (RuntimeException | Error failure) {
+      state = State.FAILED;
+      throw failure;
     }
     //
     // RendererProvider.getInstance().getComponentRenderers().forEach(ComponentRenderer::destroy);
@@ -261,5 +320,135 @@ public class NvgRenderer implements Renderer {
     inputRenderer.textMeasurer(textMeasurer);
     textareaRenderer.textMeasurer(textMeasurer);
     debugRenderer.textMeasurer(textMeasurer);
+  }
+
+  State state() {
+    return state;
+  }
+
+  Thread uiThread() {
+    return uiThread;
+  }
+
+  long contextIdentity() {
+    return nanovgContext;
+  }
+
+  String fontFace(Font font, long context) {
+    return fontRegistry.fontFace(font, context);
+  }
+
+  void requireFontFaceUse(long context) {
+    requireInitializedUse("font face", context);
+  }
+
+  private void requireInitializedUse(String operation, long context) {
+    requireUiThread();
+    if (state != State.INITIALIZED) {
+      throw new IllegalStateException(
+          "NanoVG renderer " + operation + " requires INITIALIZED state, was " + state);
+    }
+    if (context != nanovgContext) {
+      throw new IllegalStateException(
+          "NanoVG renderer rejects context replacement or mismatch after initialization");
+    }
+  }
+
+  private void requireUiThread() {
+    SemanticFontOwner owner = Font.semanticOwner();
+    Thread installedThread = owner.ownerThread();
+    if (uiThread == null) {
+      uiThread = installedThread;
+    }
+    if (Thread.currentThread() != uiThread || installedThread != uiThread) {
+      throw new IllegalStateException("NanoVG renderer operation requires its UI thread");
+    }
+  }
+
+  private void rollbackFailedInitialization(Throwable failure) {
+    if (contextHandle != null) {
+      try {
+        contextApi.delete(contextHandle);
+        contextHandle = null;
+        nanovgContext = 0;
+      } catch (RuntimeException | Error rollbackFailure) {
+        failure.addSuppressed(rollbackFailure);
+      }
+    }
+    if (contextHandle == null) {
+      closeMutationPreflight();
+    }
+  }
+
+  private void closeMutationPreflight() {
+    if (mutationPreflightRegistration != null) {
+      mutationPreflightRegistration.close();
+      mutationPreflightRegistration = null;
+    }
+  }
+
+  enum State {
+    NEW,
+    INITIALIZING,
+    INITIALIZED,
+    FAILED,
+    DESTROYING,
+    DESTROYED
+  }
+
+  record ContextHandle(long identity, Profile profile) {
+    ContextHandle {
+      Objects.requireNonNull(profile, "profile");
+    }
+  }
+
+  enum Profile {
+    GL2,
+    GL3
+  }
+
+  interface ContextApi {
+    ContextHandle create(boolean antialiasingEnabled);
+
+    void delete(ContextHandle context);
+  }
+
+  @FunctionalInterface
+  interface SemanticPreflightInstaller {
+    SemanticFontOwner.MutationPreflightRegistration install(
+        SemanticFontOwner owner, NvgFontRegistry registry);
+  }
+
+  private enum LwjglContextApi implements ContextApi {
+    INSTANCE;
+
+    @Override
+    public ContextHandle create(boolean antialiasingEnabled) {
+      boolean versionNew =
+          (glGetInteger(GL30.GL_MAJOR_VERSION) > 3)
+              || glGetInteger(GL30.GL_MAJOR_VERSION) == 3
+                  && glGetInteger(GL30.GL_MINOR_VERSION) >= 2;
+      if (versionNew) {
+        int flags =
+            antialiasingEnabled
+                ? NanoVGGL3.NVG_STENCIL_STROKES | NanoVGGL3.NVG_ANTIALIAS
+                : NanoVGGL3.NVG_STENCIL_STROKES;
+        return new ContextHandle(NanoVGGL3.nvgCreate(flags), Profile.GL3);
+      }
+      int flags =
+          antialiasingEnabled
+              ? NanoVGGL2.NVG_STENCIL_STROKES | NanoVGGL2.NVG_ANTIALIAS
+              : NanoVGGL2.NVG_STENCIL_STROKES;
+      return new ContextHandle(NanoVGGL2.nvgCreate(flags), Profile.GL2);
+    }
+
+    @Override
+    public void delete(ContextHandle context) {
+      if (context.profile() == Profile.GL3) {
+        NanoVGGL3.nnvgDelete(context.identity());
+      } else {
+        NanoVGGL2.nnvgDelete(context.identity());
+      }
+    }
   }
 }
