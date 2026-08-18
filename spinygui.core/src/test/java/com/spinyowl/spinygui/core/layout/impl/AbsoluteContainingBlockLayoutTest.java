@@ -4,6 +4,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.spinyowl.spinygui.core.font.Font;
+import com.spinyowl.spinygui.core.font.FontStyle;
+import com.spinyowl.spinygui.core.font.FontWeight;
 import com.spinyowl.spinygui.core.layout.ElementLayout;
 import com.spinyowl.spinygui.core.layout.LayoutContext;
 import com.spinyowl.spinygui.core.layout.LayoutService;
@@ -12,8 +14,12 @@ import com.spinyowl.spinygui.core.node.Frame;
 import com.spinyowl.spinygui.core.node.Node;
 import com.spinyowl.spinygui.core.node.NodeBuilder;
 import com.spinyowl.spinygui.core.style.ResolvedStyle;
+import com.spinyowl.spinygui.core.style.types.Color;
 import com.spinyowl.spinygui.core.style.types.Display;
+import com.spinyowl.spinygui.core.style.types.OverflowWrap;
 import com.spinyowl.spinygui.core.style.types.Position;
+import com.spinyowl.spinygui.core.style.types.TextAlign;
+import com.spinyowl.spinygui.core.style.types.WhiteSpace;
 import com.spinyowl.spinygui.core.style.types.border.BorderStyle;
 import com.spinyowl.spinygui.core.style.types.length.Length;
 import com.spinyowl.spinygui.core.style.types.length.Unit;
@@ -109,6 +115,16 @@ class AbsoluteContainingBlockLayoutTest {
     style.borderRightStyle(BorderStyle.NONE);
     style.borderBottomStyle(BorderStyle.NONE);
     style.borderLeftStyle(BorderStyle.NONE);
+    style.fontFamilies(List.of("Roboto"));
+    style.fontStyle(FontStyle.NORMAL);
+    style.fontWeight(FontWeight.NORMAL);
+    style.fontSize(Length.pixel(10));
+    style.lineHeight(1f);
+    style.color(Color.BLACK);
+    style.whiteSpace(WhiteSpace.NORMAL);
+    style.textAlign(TextAlign.LEFT);
+    style.overflowWrap(OverflowWrap.NORMAL);
+    style.tabSize(4);
   }
 
   private static final class RecursiveLayoutService implements LayoutService {
