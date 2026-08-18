@@ -1,7 +1,6 @@
 package com.spinyowl.spinygui.core.backend.renderer.lwjgl.nanovg;
 
 import static org.lwjgl.nanovg.NanoVG.NVG_IMAGE_FLIPY;
-import static org.lwjgl.nanovg.NanoVG.NVG_IMAGE_NODELETE;
 import static org.lwjgl.nanovg.NanoVG.nvgBeginPath;
 import static org.lwjgl.nanovg.NanoVG.nvgDeleteImage;
 import static org.lwjgl.nanovg.NanoVG.nvgFill;
@@ -84,11 +83,12 @@ final class NvgExternalTextureRenderer {
   }
 
   private int createImage(long context, TextureBinding binding) {
-    int flags = NVG_IMAGE_NODELETE | NVG_IMAGE_FLIPY;
     if (GL.getCapabilities().OpenGL30) {
+      int flags = org.lwjgl.nanovg.NanoVGGL3.NVG_IMAGE_NODELETE | NVG_IMAGE_FLIPY;
       return org.lwjgl.nanovg.NanoVGGL3.nvglCreateImageFromHandle(
           context, binding.textureId(), binding.width(), binding.height(), flags);
     }
+    int flags = org.lwjgl.nanovg.NanoVGGL2.NVG_IMAGE_NODELETE | NVG_IMAGE_FLIPY;
     return org.lwjgl.nanovg.NanoVGGL2.nvglCreateImageFromHandle(
         context, binding.textureId(), binding.width(), binding.height(), flags);
   }
