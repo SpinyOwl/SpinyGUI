@@ -8,13 +8,13 @@ import static org.lwjgl.nanovg.NanoVG.nvgFill;
 import static org.lwjgl.nanovg.NanoVG.nvgFillPaint;
 import static org.lwjgl.nanovg.NanoVG.nvgImagePattern;
 import static org.lwjgl.nanovg.NanoVG.nvgRect;
-import static org.lwjgl.nanovg.NanoVGGL2.nvglCreateImageFromHandle;
 
 import com.spinyowl.spinygui.core.node.Element;
 import java.util.IdentityHashMap;
 import java.util.Map;
 import java.util.Objects;
 import org.lwjgl.nanovg.NVGPaint;
+import org.lwjgl.opengl.GL;
 import org.lwjgl.system.MemoryStack;
 
 /** Draws externally owned OpenGL textures inside ordinary SpinyGUI elements. */
@@ -37,14 +37,14 @@ final class NvgExternalTextureRenderer {
     if (image != null && context != 0) nvgDeleteImage(context, image.imageId());
   }
 
-  void render(Element element, long context, NvgRenderer.Profile profile) {
+  void render(Element element, long context) {
     TextureBinding binding = bindings.get(element);
     if (binding == null) return;
 
     ImageBinding image = images.get(element);
     if (image == null || !image.texture().equals(binding)) {
       if (image != null) nvgDeleteImage(context, image.imageId());
-      int imageId = createImage(context, profile, binding);
+      int imageId = createImage(context, binding);
       if (imageId <= 0) {
         throw new IllegalStateException("NanoVG failed to wrap external OpenGL texture");
       }
@@ -83,14 +83,14 @@ final class NvgExternalTextureRenderer {
     bindings.clear();
   }
 
-  private int createImage(long context, NvgRenderer.Profile profile, TextureBinding binding) {
+  private int createImage(long context, TextureBinding binding) {
     int flags = NVG_IMAGE_NODELETE | NVG_IMAGE_FLIPY;
-    return switch (profile) {
-      case GL2 -> nvglCreateImageFromHandle(
+    if (GL.getCapabilities().OpenGL30) {
+      return org.lwjgl.nanovg.NanoVGGL3.nvglCreateImageFromHandle(
           context, binding.textureId(), binding.width(), binding.height(), flags);
-      case GL3 -> org.lwjgl.nanovg.NanoVGGL3.nvglCreateImageFromHandle(
-          context, binding.textureId(), binding.width(), binding.height(), flags);
-    };
+    }
+    return org.lwjgl.nanovg.NanoVGGL2.nvglCreateImageFromHandle(
+        context, binding.textureId(), binding.width(), binding.height(), flags);
   }
 
   private record TextureBinding(int textureId, int width, int height) {}
