@@ -6,12 +6,14 @@ import com.spinyowl.spinygui.core.system.font.ResolvedTextRun;
 import com.spinyowl.spinygui.core.style.types.Color;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
+import lombok.ToString;
 import lombok.Value;
 import java.util.List;
 
 @Value
 @Builder
 @EqualsAndHashCode(exclude = "node")
+@ToString(exclude = "node")
 public class InlineFragment {
   Node node;
   String text;
