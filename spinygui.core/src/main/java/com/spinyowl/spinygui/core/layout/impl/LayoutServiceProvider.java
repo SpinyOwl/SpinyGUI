@@ -53,7 +53,7 @@ public final class LayoutServiceProvider {
     elementLayoutMap.put(Display.GRID, new GridLayout(blockLayout, layoutService));
 
     var flexLayout =
-        new FlexLayout(
+        new IntrinsicFlexLayout(
             systemEventProcessor, eventProcessor, timeService, blockLayout, layoutService);
     elementLayoutMap.put(Display.FLEX, flexLayout);
 
