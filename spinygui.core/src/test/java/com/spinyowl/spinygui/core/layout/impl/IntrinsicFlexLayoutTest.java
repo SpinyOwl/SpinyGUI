@@ -1,5 +1,6 @@
 package com.spinyowl.spinygui.core.layout.impl;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 
@@ -68,6 +69,52 @@ class IntrinsicFlexLayoutTest {
     float metricsBottom = metrics.box().borderBox().y() + metrics.box().borderBox().height();
     assertTrue(metrics.box().borderBox().height() >= 112f);
     assertTrue(footer.box().borderBox().y() >= metricsBottom);
+  }
+
+  @Test
+  void layout_whenRowContainsAutoWidthFlexItems_usesTheirIntrinsicWidths() {
+    Frame frame = NodeBuilder.frame();
+    Element identity = NodeBuilder.div();
+    Element identityContent = NodeBuilder.div();
+    Element actions = NodeBuilder.div();
+    Element firstAction = NodeBuilder.div();
+    Element secondAction = NodeBuilder.div();
+
+    frame.addChildren(identity, actions);
+    identity.addChild(identityContent);
+    actions.addChildren(firstAction, secondAction);
+
+    style(frame);
+    style(identity);
+    style(identityContent);
+    style(actions);
+    style(firstAction);
+    style(secondAction);
+
+    frame.frameSize(640, 72);
+    frame.resolvedStyle().display(Display.FLEX);
+    frame.resolvedStyle().flexDirection(FlexDirection.ROW);
+    frame.resolvedStyle().justifyContent(JustifyContent.SPACE_BETWEEN);
+    frame.resolvedStyle().width(Length.pixel(640));
+    frame.resolvedStyle().height(Length.pixel(72));
+
+    identity.resolvedStyle().display(Display.FLEX);
+    identity.resolvedStyle().flexDirection(FlexDirection.COLUMN);
+    identityContent.resolvedStyle().width(Length.pixel(120));
+    identityContent.resolvedStyle().height(Length.pixel(20));
+
+    actions.resolvedStyle().display(Display.FLEX);
+    actions.resolvedStyle().flexDirection(FlexDirection.ROW);
+    firstAction.resolvedStyle().width(Length.pixel(60));
+    firstAction.resolvedStyle().height(Length.pixel(32));
+    secondAction.resolvedStyle().width(Length.pixel(70));
+    secondAction.resolvedStyle().height(Length.pixel(32));
+
+    layoutService().layout(frame);
+
+    assertEquals(120f, identity.box().content().width(), 0.01f);
+    assertEquals(130f, actions.box().content().width(), 0.01f);
+    assertTrue(actions.box().borderBox().x() + actions.box().borderBox().width() <= 640.01f);
   }
 
   private static LayoutService layoutService() {
