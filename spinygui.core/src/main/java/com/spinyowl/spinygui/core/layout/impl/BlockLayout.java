@@ -79,14 +79,10 @@ public class BlockLayout implements ElementLayout {
 
     ResolvedStyle style = element.resolvedStyle();
 
-    // calculate borders
     setBorders(style, element.box().border());
-
-    // calculate paddings
     setPadding(
         parentBox.content().width(), parentBox.content().height(), style, element.box().padding());
 
-    // calculate content position
     Position elementPosition = element.resolvedStyle().position();
     if (Position.STATIC.equals(elementPosition)) {
       layoutStaticBlock(element, parentBox, style, skipChildren, ctx);
@@ -200,12 +196,18 @@ public class BlockLayout implements ElementLayout {
             + e.box().padding().left()
             + e.box().padding().right();
 
-    // should be called here to calculate children before calculating content width
-    float childrenHeight = childrenHeight(e, style, skipChildren, ctx);
-
-    // calculate content x position and width
     calculateHorizontalPositionAndWidth(
         parentBox, style, ancestor.box(), e.box(), horizontalAdditions);
+
+    if (stretchesVertically(style)) {
+      layoutVerticallyStretchedAbsoluteBlock(e, ancestor, style, verticalAdditions);
+      if (!skipChildren) {
+        layoutFlowChildren(e);
+      }
+      return;
+    }
+
+    float childrenHeight = childrenHeight(e, style, skipChildren, ctx);
 
     float contentY;
     float borderBoxHeight;
@@ -258,6 +260,34 @@ public class BlockLayout implements ElementLayout {
 
     e.box().content().y(contentY);
     e.box().content().height(borderBoxHeight - verticalAdditions);
+  }
+
+  private boolean stretchesVertically(ResolvedStyle style) {
+    return style.height().isAuto() && style.top().isLength() && style.bottom().isLength();
+  }
+
+  private void layoutVerticallyStretchedAbsoluteBlock(
+      Element e, Element ancestor, ResolvedStyle style, float verticalAdditions) {
+    float parentPaddingBoxHeight =
+        ancestor.box().padding().top()
+            + ancestor.box().padding().bottom()
+            + ancestor.box().content().height();
+
+    float contentY =
+        ancestor.box().border().top()
+            + e.box().border().top()
+            + e.box().padding().top()
+            + getFloatLength(style.top(), parentPaddingBoxHeight);
+    float bottom =
+        ancestor.box().border().top()
+            + ancestor.box().paddingBox().height()
+            - getFloatLength(style.bottom(), parentPaddingBoxHeight);
+    float borderBoxHeight =
+        getBorderBoxHeight(
+            e, style, verticalAdditions, 0f, contentY, parentPaddingBoxHeight, bottom);
+
+    e.box().content().y(contentY);
+    e.box().content().height(Math.max(0f, borderBoxHeight - verticalAdditions));
   }
 
   private float getBorderBoxHeight(
@@ -630,18 +660,9 @@ public class BlockLayout implements ElementLayout {
     }
     return Font.semanticOwner().resolver()
         .resolve(
-            style.fontFamilies(), style.fontStyle(), style.fontWeight(), FontStretch.NORMAL)
-        ;
+            style.fontFamilies(), style.fontStyle(), style.fontWeight(), FontStretch.NORMAL);
   }
 
-  /**
-   * Returns the height of the element's content, i.e. the height of the element's content box.
-   *
-   * @param parentHeight the height of the element's containing block.
-   * @param borderBoxHeight the height of the element's children with border and padding.
-   * @param style the element's style.
-   * @return the height of the element's content.
-   */
   private float getHeight(float parentHeight, float borderBoxHeight, ResolvedStyle style) {
     Optional<Float> height;
     if (!style.height().isAuto()) {
@@ -659,8 +680,6 @@ public class BlockLayout implements ElementLayout {
   }
 
   private boolean shouldSkip(Element element) {
-    // skip layout if element has no frame - that means that it is not attached to any
-    // node tree (and tree root is frame).
     return element.frame() == null || (element.parent() == null && !(element instanceof Frame));
   }
 
