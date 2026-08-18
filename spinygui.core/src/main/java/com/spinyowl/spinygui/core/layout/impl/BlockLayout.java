@@ -76,7 +76,6 @@ public class BlockLayout implements ElementLayout {
     }
 
     Box parentBox = getParentDimensions(element, element.parent());
-
     ResolvedStyle style = element.resolvedStyle();
 
     setBorders(style, element.box().border());
@@ -144,13 +143,27 @@ public class BlockLayout implements ElementLayout {
     contentWidth -= horizontalAdditions;
     box.content().width(contentWidth);
 
-    float borderBoxHeight;
     if (e instanceof Frame frame) {
+      box.content().height(Math.max(0f, frame.frameSize().y - verticalAdditions));
       if (!skipChildren) {
         layoutService.layoutChildNodes(e, ctx);
       }
-      borderBoxHeight = frame.frameSize().y;
-    } else if (e instanceof InputElement input && input.textInput()) {
+      finishBlockFlow(e, ctx);
+      return;
+    }
+
+    if (!style.height().isAuto()) {
+      float borderBoxHeight = getHeight(parentBox.content().height(), verticalAdditions, style);
+      box.content().height(Math.max(0f, borderBoxHeight - verticalAdditions));
+      if (!skipChildren) {
+        layoutFlowChildren(e);
+      }
+      finishBlockFlow(e, ctx);
+      return;
+    }
+
+    float borderBoxHeight;
+    if (e instanceof InputElement input && input.textInput()) {
       borderBoxHeight =
           getTextInputHeight(e, style, parentBox.content().height(), verticalAdditions);
     } else if (e instanceof InputElement input && input.buttonInput()) {
@@ -173,12 +186,14 @@ public class BlockLayout implements ElementLayout {
       borderBoxHeight =
           getHeight(parentBox.content().height(), childrenHeight + verticalAdditions, style);
     }
-    float contentHeight = borderBoxHeight - verticalAdditions;
-    box.content().height(contentHeight);
+    box.content().height(Math.max(0f, borderBoxHeight - verticalAdditions));
+    finishBlockFlow(e, ctx);
+  }
 
+  private void finishBlockFlow(Element e, LayoutContext ctx) {
     ctx.lastTextEndY(null);
     ctx.previousNode(e);
-    ctx.lastBlockBottomY(box.borderBox().y() + box.borderBox().height());
+    ctx.lastBlockBottomY(e.box().borderBox().y() + e.box().borderBox().height());
   }
 
   private void layoutAbsoluteBlock(
@@ -215,10 +230,8 @@ public class BlockLayout implements ElementLayout {
       float parentPaddingBoxHeight = parentBox.paddingBox().height();
       float parentOffset = parentBox.content().y();
       contentY = getAutoVerticalContentY(ctx, e.box().border(), e.box().padding(), parentOffset);
-
       borderBoxHeight =
           getHeight(parentPaddingBoxHeight, childrenHeight + verticalAdditions, style);
-
     } else {
       float parentPaddingBoxHeight =
           ancestor.box().padding().top()
@@ -259,7 +272,7 @@ public class BlockLayout implements ElementLayout {
     }
 
     e.box().content().y(contentY);
-    e.box().content().height(borderBoxHeight - verticalAdditions);
+    e.box().content().height(Math.max(0f, borderBoxHeight - verticalAdditions));
   }
 
   private boolean stretchesVertically(ResolvedStyle style) {
@@ -310,9 +323,7 @@ public class BlockLayout implements ElementLayout {
 
   private static float getAutoVerticalContentY(
       LayoutContext ctx, Edges border, Edges padding, float parentOffset) {
-    float contentY;
-    contentY = parentOffset + border.top() + padding.top();
-
+    float contentY = parentOffset + border.top() + padding.top();
     Float blockBottomY = ctx.lastBlockBottomY();
     if (blockBottomY != null) {
       contentY = blockBottomY + border.top();
@@ -359,9 +370,8 @@ public class BlockLayout implements ElementLayout {
     }
 
     contentWidth -= horizontalAdditions;
-
     box.content().x(contentX);
-    box.content().width(contentWidth);
+    box.content().width(Math.max(0f, contentWidth));
   }
 
   private void layoutRelativeBlock(
