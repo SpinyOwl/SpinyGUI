@@ -44,9 +44,6 @@ public final class LayoutServiceProvider {
     var blockLayout = new BlockLayout(layoutService, inlineFormattingContext, textMeasurer);
     inlineFormattingContext.inlineBlockLayout(blockLayout::layoutInlineBlock);
     elementLayoutMap.put(Display.BLOCK, blockLayout);
-    // Inline-block elements normally participate in a parent's inline formatting context. Flex and
-    // grid items are laid out through direct dispatch instead, so they still need their own block
-    // formatting context before the outer layout engine positions them.
     elementLayoutMap.put(
         Display.INLINE_BLOCK,
         (element, context) -> blockLayout.layoutInlineBlock(element, element.parent()));
