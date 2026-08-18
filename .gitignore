@@ -16,6 +16,7 @@ hs_err_pid*
 .project
 /.settings/
 /lwjgl-extract/
+/.worktrees/
 
 # Ignore Gradle project-specific cache directory
 .gradle
