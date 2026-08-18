@@ -133,10 +133,10 @@ class FlexInlineBlockLayoutTest {
     style.marginRight(Length.ZERO);
     style.marginBottom(Length.ZERO);
     style.marginLeft(Length.ZERO);
-    style.borderTopWidth(Length.ZERO);
-    style.borderRightWidth(Length.ZERO);
-    style.borderBottomWidth(Length.ZERO);
-    style.borderLeftWidth(Length.ZERO);
+    style.borderTopWidth(Length.pixel(0));
+    style.borderRightWidth(Length.pixel(0));
+    style.borderBottomWidth(Length.pixel(0));
+    style.borderLeftWidth(Length.pixel(0));
     style.borderTopStyle(BorderStyle.NONE);
     style.borderRightStyle(BorderStyle.NONE);
     style.borderBottomStyle(BorderStyle.NONE);
