@@ -95,6 +95,10 @@ class AbsoluteContainingBlockLayoutTest {
     style.position(Position.STATIC);
     style.width(Unit.AUTO);
     style.height(Unit.AUTO);
+    style.top(Unit.AUTO);
+    style.right(Unit.AUTO);
+    style.bottom(Unit.AUTO);
+    style.left(Unit.AUTO);
     style.minWidth(null);
     style.maxWidth(null);
     style.minHeight(null);
