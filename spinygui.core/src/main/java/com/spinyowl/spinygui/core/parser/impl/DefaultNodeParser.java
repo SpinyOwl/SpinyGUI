@@ -8,6 +8,7 @@ import com.spinyowl.spinygui.core.node.ButtonElement;
 import com.spinyowl.spinygui.core.node.Element;
 import com.spinyowl.spinygui.core.node.EmptyElement;
 import com.spinyowl.spinygui.core.node.Frame;
+import com.spinyowl.spinygui.core.node.ImgElement;
 import com.spinyowl.spinygui.core.node.InputElement;
 import com.spinyowl.spinygui.core.node.Node;
 import com.spinyowl.spinygui.core.node.Text;
@@ -78,6 +79,8 @@ public class DefaultNodeParser implements NodeParser {
     Node node;
     if ("input".equals(tagName)) {
       node = new InputElement();
+    } else if (ImgElement.IMG_TAG_NAME.equals(tagName)) {
+      node = new ImgElement();
     } else if ("button".equals(tagName)) {
       node = new ButtonElement();
       createChildNodes(element, context, node);
@@ -106,8 +109,6 @@ public class DefaultNodeParser implements NodeParser {
     context.hasRoot = true;
     return node;
   }
-
-  // unmarshaller section
 
   private void createChildNodes(
       org.jsoup.nodes.Element element, NodeConverterContext context, Node node) {
