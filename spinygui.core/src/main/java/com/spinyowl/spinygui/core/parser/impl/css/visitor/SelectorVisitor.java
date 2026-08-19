@@ -14,6 +14,7 @@ import com.spinyowl.spinygui.core.style.stylesheet.selector.combinator.ChildSele
 import com.spinyowl.spinygui.core.style.stylesheet.selector.combinator.DescendantSelector;
 import com.spinyowl.spinygui.core.style.stylesheet.selector.combinator.GeneralSiblingSelector;
 import com.spinyowl.spinygui.core.style.stylesheet.selector.pseudoclass.ActiveSelector;
+import com.spinyowl.spinygui.core.style.stylesheet.selector.pseudoclass.DisabledSelector;
 import com.spinyowl.spinygui.core.style.stylesheet.selector.pseudoclass.FocusSelector;
 import com.spinyowl.spinygui.core.style.stylesheet.selector.pseudoclass.HoverSelector;
 import com.spinyowl.spinygui.core.style.stylesheet.selector.pseudoelement.AfterSelector;
@@ -97,6 +98,10 @@ public class SelectorVisitor extends CSS3BaseVisitor<Selector> {
 
     if ("active".equals(selectorName)) {
       return new ActiveSelector();
+    }
+
+    if ("disabled".equals(selectorName)) {
+      return new DisabledSelector();
     }
 
     if ("before".equals(selectorName)) {
