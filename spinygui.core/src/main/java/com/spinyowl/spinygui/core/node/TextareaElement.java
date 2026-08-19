@@ -1,5 +1,6 @@
 package com.spinyowl.spinygui.core.node;
 
+import static com.spinyowl.spinygui.core.node.NodeBuilder.ATTR_DISABLED;
 import static com.spinyowl.spinygui.core.node.NodeBuilder.NODE_TEXTAREA;
 
 import java.util.Map;
@@ -103,6 +104,11 @@ public class TextareaElement extends Element {
 
   public void textScrollLeft(float textScrollLeft) {
     this.textScrollLeft = Math.max(0, textScrollLeft);
+  }
+
+  @Override
+  public boolean disabled() {
+    return hasAttribute(ATTR_DISABLED);
   }
 
   private int clampTextIndex(int index) {
