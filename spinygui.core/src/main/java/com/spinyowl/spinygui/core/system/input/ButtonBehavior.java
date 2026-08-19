@@ -19,7 +19,11 @@ public class ButtonBehavior {
 
   private boolean handleKey(
       Element element, boolean activatable, KeyCode keyCode, KeyAction action) {
-    if (!activatable || !activationKey(keyCode)) {
+    if (!activatable) {
+      element.pressed(false);
+      return false;
+    }
+    if (!activationKey(keyCode)) {
       return false;
     }
 
