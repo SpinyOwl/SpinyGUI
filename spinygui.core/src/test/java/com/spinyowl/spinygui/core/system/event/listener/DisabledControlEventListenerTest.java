@@ -5,13 +5,15 @@ import static com.spinyowl.spinygui.core.node.NodeBuilder.button;
 import static com.spinyowl.spinygui.core.node.NodeBuilder.disabled;
 import static com.spinyowl.spinygui.core.node.NodeBuilder.frame;
 import static com.spinyowl.spinygui.core.node.NodeBuilder.textarea;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
 import com.google.common.collect.ImmutableSet;
+import com.spinyowl.spinygui.core.event.MouseClickEvent;
 import com.spinyowl.spinygui.core.event.processor.EventProcessor;
 import com.spinyowl.spinygui.core.input.Keyboard;
 import com.spinyowl.spinygui.core.input.MouseService;
@@ -75,9 +77,51 @@ class DisabledControlEventListenerTest {
   }
 
   @Test
+  void mouseReleaseOverDisabledButtonClearsPreviouslyPressedControl() {
+    ButtonElement disabledButton = button(attrs(disabled()));
+    disabledButton.box().contentSize(20, 20);
+    disabledButton.box().contentPosition(20, 20);
+
+    ButtonElement focusedButton = button();
+    focusedButton.focused(true);
+    focusedButton.pressed(true);
+    focusedButton.box().contentSize(20, 20);
+    focusedButton.box().contentPosition(50, 20);
+
+    Frame frame = frame(disabledButton, focusedButton);
+    frame.box().contentSize(100, 100);
+
+    Vector2f cursor = new Vector2f(25, 25);
+    when(mouseService.getCursorPositions(frame)).thenReturn(new CursorPositions(cursor, cursor));
+    when(timeService.currentTime()).thenReturn(1D);
+
+    SystemMouseClickEvent event =
+        SystemMouseClickEvent.builder()
+            .action(SystemKeyAction.RELEASE)
+            .mods(ImmutableSet.of())
+            .frame(frame)
+            .button(SystemMouseButton.LEFT)
+            .build();
+
+    var listener =
+        SystemMouseClickEventListener.builder()
+            .eventProcessor(eventProcessor)
+            .timeService(timeService)
+            .mouseService(mouseService)
+            .build();
+
+    listener.process(event, frame);
+
+    assertFalse(disabledButton.pressed());
+    assertFalse(focusedButton.pressed());
+    verify(eventProcessor).push(any(MouseClickEvent.class));
+  }
+
+  @Test
   void keyPressOnFocusedDisabledButtonDoesNotActivateOrDispatchKeyboardEvent() {
     ButtonElement button = button(attrs(disabled()));
     button.focused(true);
+    button.pressed(true);
     Frame frame = frame(button);
 
     SystemKeyEvent event =
