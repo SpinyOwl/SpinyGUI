@@ -1,5 +1,6 @@
 package com.spinyowl.spinygui.core.node;
 
+import static com.spinyowl.spinygui.core.node.NodeBuilder.ATTR_DISABLED;
 import static com.spinyowl.spinygui.core.node.NodeBuilder.ATTR_TYPE;
 import static com.spinyowl.spinygui.core.node.NodeBuilder.NODE_BUTTON;
 import static com.spinyowl.spinygui.core.node.NodeBuilder.TYPE_BUTTON;
@@ -37,6 +38,11 @@ public class ButtonElement extends Element {
     this.type = type == null || type.isBlank() ? TYPE_SUBMIT : type;
   }
 
+  @Override
+  public boolean disabled() {
+    return hasAttribute(ATTR_DISABLED);
+  }
+
   public boolean plainButton() {
     return TYPE_BUTTON.equalsIgnoreCase(type);
   }
@@ -50,6 +56,6 @@ public class ButtonElement extends Element {
   }
 
   public boolean activatable() {
-    return plainButton() || submitButton() || resetButton();
+    return !disabled() && (plainButton() || submitButton() || resetButton());
   }
 }

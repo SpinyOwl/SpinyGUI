@@ -62,7 +62,7 @@ public class SystemCharEventListener extends AbstractSystemEventListener<SystemC
   private void processInternal(
       SystemCharEvent event, Frame frame, InputProcessingBatch batch) {
     var focusedElement = frame.getFocusedElement();
-    if (focusedElement == null) {
+    if (focusedElement == null || focusedElement.disabled()) {
       return;
     }
 
