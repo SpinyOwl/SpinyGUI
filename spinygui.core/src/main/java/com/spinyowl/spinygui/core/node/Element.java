@@ -114,6 +114,11 @@ public class Element extends Node implements EventTarget {
     return attributes.containsKey(attribute);
   }
 
+  /** Returns whether this element is a control disabled by its {@code disabled} attribute. */
+  public boolean disabled() {
+    return false;
+  }
+
   @Override
   public void removeAttribute(String attribute) {
     attributes.remove(attribute);
