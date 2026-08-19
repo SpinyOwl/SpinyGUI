@@ -5,6 +5,7 @@ import static com.spinyowl.spinygui.core.system.input.SystemKeyAction.PRESS;
 import static com.spinyowl.spinygui.core.system.input.SystemKeyAction.RELEASE;
 import static com.spinyowl.spinygui.core.util.NodeUtilities.getTargetElement;
 import static com.spinyowl.spinygui.core.util.NodeUtilities.visible;
+
 import com.spinyowl.spinygui.core.event.ActionEvent;
 import com.spinyowl.spinygui.core.event.FocusInEvent;
 import com.spinyowl.spinygui.core.event.FocusOutEvent;
@@ -20,7 +21,11 @@ import com.spinyowl.spinygui.core.node.InputElement;
 import com.spinyowl.spinygui.core.node.TextareaElement;
 import com.spinyowl.spinygui.core.system.event.SystemMouseClickEvent;
 import com.spinyowl.spinygui.core.system.font.TextMeasurer;
+import com.spinyowl.spinygui.core.system.input.CheckboxBehavior;
+import com.spinyowl.spinygui.core.system.input.InputBehaviorRegistry;
 import com.spinyowl.spinygui.core.system.input.MultilineTextControlMetrics;
+import com.spinyowl.spinygui.core.system.input.RadioBehavior;
+import com.spinyowl.spinygui.core.system.input.RangeBehavior;
 import com.spinyowl.spinygui.core.system.input.ScrollbarInteraction;
 import com.spinyowl.spinygui.core.system.input.ScrollbarInteraction.HitPart;
 import com.spinyowl.spinygui.core.system.input.ScrollbarInteraction.ScrollDelta;
@@ -37,6 +42,10 @@ import org.joml.Vector2fc;
 @EqualsAndHashCode
 public class SystemMouseClickEventListener
     extends AbstractSystemEventListener<SystemMouseClickEvent> {
+
+  private static final CheckboxBehavior CHECKBOX_BEHAVIOR = new CheckboxBehavior();
+  private static final RadioBehavior RADIO_BEHAVIOR = new RadioBehavior();
+  private static final RangeBehavior RANGE_BEHAVIOR = new RangeBehavior();
 
   @NonNull private final MouseService mouseService;
   @EqualsAndHashCode.Exclude
@@ -169,7 +178,10 @@ public class SystemMouseClickEventListener
         focusedElement.pressed(false);
         if (focusedElement == target) {
           generateClickEvent(event, frame, cursorPosition, target);
-          generateActionEvent(frame, target);
+          if (event.button().mouseButton() == LEFT) {
+            activateInput(frame, target);
+            generateActionEvent(frame, target);
+          }
         }
         generateReleaseEvent(event, frame, focusedElement, cursorPosition);
       }
@@ -185,6 +197,11 @@ public class SystemMouseClickEventListener
     removeFocus(target, frame);
     target.pressed(true);
     placeInputCaret(target, cursorPosition, event.mods().contains(SystemKeyMod.SHIFT));
+    if (event.button().mouseButton() == LEFT
+        && target instanceof InputElement input
+        && InputBehaviorRegistry.kind(input) == InputBehaviorRegistry.Kind.RANGE) {
+      RANGE_BEHAVIOR.setFromPointer(input, cursorPosition);
+    }
 
     if (focusedElement != target) {
       target.focused(true);
@@ -198,10 +215,25 @@ public class SystemMouseClickEventListener
   }
 
   private void placeInputCaret(Element target, Vector2fc cursorPosition, boolean extendSelection) {
-    if (textInputMouseCaretBehavior != null && target instanceof InputElement input) {
+    if (textInputMouseCaretBehavior != null
+        && target instanceof InputElement input
+        && InputBehaviorRegistry.textEditable(input)) {
       textInputMouseCaretBehavior.placeCaret(input, cursorPosition, extendSelection);
     } else if (textareaMouseCaretBehavior != null && target instanceof TextareaElement textarea) {
       textareaMouseCaretBehavior.placeCaret(textarea, cursorPosition, extendSelection);
+    }
+  }
+
+  private void activateInput(Frame frame, Element target) {
+    if (!(target instanceof InputElement input)) {
+      return;
+    }
+    switch (InputBehaviorRegistry.kind(input)) {
+      case CHECKBOX -> CHECKBOX_BEHAVIOR.activate(input);
+      case RADIO -> RADIO_BEHAVIOR.activate(input, frame);
+      default -> {
+        // Button-like controls emit ActionEvent; range updates on pointer press/drag.
+      }
     }
   }
 
@@ -301,7 +333,7 @@ public class SystemMouseClickEventListener
 
   private boolean activatable(Element target) {
     return target instanceof ButtonElement button && button.activatable()
-        || target instanceof InputElement input && input.buttonInput() && !input.disabled();
+        || target instanceof InputElement input && InputBehaviorRegistry.activatable(input);
   }
 
   private Element buttonOwner(Element target) {

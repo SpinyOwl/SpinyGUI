@@ -18,7 +18,9 @@ import com.spinyowl.spinygui.core.node.InputElement;
 import com.spinyowl.spinygui.core.node.TextareaElement;
 import com.spinyowl.spinygui.core.system.event.SystemCursorPosEvent;
 import com.spinyowl.spinygui.core.system.font.TextMeasurer;
+import com.spinyowl.spinygui.core.system.input.InputBehaviorRegistry;
 import com.spinyowl.spinygui.core.system.input.MultilineTextControlMetrics;
+import com.spinyowl.spinygui.core.system.input.RangeBehavior;
 import com.spinyowl.spinygui.core.system.input.ScrollbarInteraction;
 import com.spinyowl.spinygui.core.system.input.ScrollbarInteraction.ScrollDelta;
 import com.spinyowl.spinygui.core.system.input.TextInputMouseCaretBehavior;
@@ -40,6 +42,8 @@ import org.joml.Vector2fc;
 @EqualsAndHashCode
 public class SystemCursorPosEventListener
     extends AbstractSystemEventListener<SystemCursorPosEvent> {
+
+  private static final RangeBehavior RANGE_BEHAVIOR = new RangeBehavior();
 
   @NonNull private final MouseService mouseService;
   @EqualsAndHashCode.Exclude private final ScrollbarInteraction scrollbarInteraction;
@@ -136,7 +140,7 @@ public class SystemCursorPosEventListener
     // Generate drag events.
     if (focusedElement != null && (leftPressed || rightPressed)) {
       if (leftPressed && focusedElement.pressed()) {
-        extendTextSelection(focusedElement, current);
+        updatePressedInput(focusedElement, current);
       }
       Vector2f delta = current.sub(previous, new Vector2f());
       eventProcessor.push(
@@ -144,17 +148,31 @@ public class SystemCursorPosEventListener
     }
   }
 
-  private void extendTextSelection(Element element, Vector2fc cursorPosition) {
-    if (element instanceof InputElement input && textInputMouseCaretBehavior != null) {
-      if (textInputMouseCaretBehavior.placeCaret(input, cursorPosition, true)
-          && textInputViewportBehavior != null) {
-        textInputViewportBehavior.ensureCaretVisible(input);
+  private void updatePressedInput(Element element, Vector2fc cursorPosition) {
+    if (element instanceof InputElement input) {
+      if (InputBehaviorRegistry.kind(input) == InputBehaviorRegistry.Kind.RANGE) {
+        RANGE_BEHAVIOR.setFromPointer(input, cursorPosition);
+      } else if (InputBehaviorRegistry.textEditable(input)) {
+        extendTextSelection(input, cursorPosition);
       }
-    } else if (element instanceof TextareaElement textarea && textareaMouseCaretBehavior != null) {
-      if (textareaMouseCaretBehavior.placeCaret(textarea, cursorPosition, true)
-          && textareaViewportBehavior != null) {
-        textareaViewportBehavior.ensureCaretVisible(textarea);
-      }
+    } else if (element instanceof TextareaElement textarea) {
+      extendTextareaSelection(textarea, cursorPosition);
+    }
+  }
+
+  private void extendTextSelection(InputElement input, Vector2fc cursorPosition) {
+    if (textInputMouseCaretBehavior != null
+        && textInputMouseCaretBehavior.placeCaret(input, cursorPosition, true)
+        && textInputViewportBehavior != null) {
+      textInputViewportBehavior.ensureCaretVisible(input);
+    }
+  }
+
+  private void extendTextareaSelection(TextareaElement textarea, Vector2fc cursorPosition) {
+    if (textareaMouseCaretBehavior != null
+        && textareaMouseCaretBehavior.placeCaret(textarea, cursorPosition, true)
+        && textareaViewportBehavior != null) {
+      textareaViewportBehavior.ensureCaretVisible(textarea);
     }
   }
 

@@ -17,7 +17,11 @@ import com.spinyowl.spinygui.core.node.TextareaElement;
 import com.spinyowl.spinygui.core.system.event.SystemKeyEvent;
 import com.spinyowl.spinygui.core.system.font.TextMeasurer;
 import com.spinyowl.spinygui.core.system.input.ButtonBehavior;
+import com.spinyowl.spinygui.core.system.input.CheckboxBehavior;
+import com.spinyowl.spinygui.core.system.input.InputBehaviorRegistry;
 import com.spinyowl.spinygui.core.system.input.MultilineTextControlMetrics;
+import com.spinyowl.spinygui.core.system.input.RadioBehavior;
+import com.spinyowl.spinygui.core.system.input.RangeBehavior;
 import com.spinyowl.spinygui.core.system.input.SystemKeyMod;
 import com.spinyowl.spinygui.core.system.input.TextInputBehavior;
 import com.spinyowl.spinygui.core.system.input.TextInputViewportBehavior;
@@ -33,6 +37,9 @@ public class SystemKeyEventListener extends AbstractSystemEventListener<SystemKe
 
   private static final TextInputBehavior TEXT_INPUT_BEHAVIOR = new TextInputBehavior();
   private static final ButtonBehavior BUTTON_BEHAVIOR = new ButtonBehavior();
+  private static final CheckboxBehavior CHECKBOX_BEHAVIOR = new CheckboxBehavior();
+  private static final RadioBehavior RADIO_BEHAVIOR = new RadioBehavior();
+  private static final RangeBehavior RANGE_BEHAVIOR = new RangeBehavior();
   @EqualsAndHashCode.Exclude private final TextareaBehavior textareaBehavior;
 
   @NonNull private final Keyboard keyboard;
@@ -77,8 +84,7 @@ public class SystemKeyEventListener extends AbstractSystemEventListener<SystemKe
     processInternal(event, frame, batch);
   }
 
-  private void processInternal(
-      SystemKeyEvent event, Frame frame, InputProcessingBatch batch) {
+  private void processInternal(SystemKeyEvent event, Frame frame, InputProcessingBatch batch) {
     var element = frame.getFocusedElement();
     if (element != null && element.disabled()) {
       element.pressed(false);
@@ -107,24 +113,7 @@ public class SystemKeyEventListener extends AbstractSystemEventListener<SystemKe
     var action = getAction(event);
 
     if (element instanceof InputElement input) {
-      if (input.buttonInput()) {
-        if (BUTTON_BEHAVIOR.handleKey(input, keyCodeObject, action)) {
-          markKnownEffect(batch);
-          generateActionEvent(frame, input);
-        }
-      } else {
-        boolean control = event.mods().contains(SystemKeyMod.CONTROL);
-        boolean shift = event.mods().contains(SystemKeyMod.SHIFT);
-        boolean changed =
-            control && isTextInputShortcut(keyCodeObject)
-                ? TEXT_INPUT_BEHAVIOR.handleShortcut(
-                    input, keyCodeObject, action, clipboardAdapter())
-                : TEXT_INPUT_BEHAVIOR.handleKey(input, keyCodeObject, action, shift, control);
-        if (changed) {
-          markKnownEffect(batch);
-          ensureCaretVisible(input);
-        }
-      }
+      processInputKey(event, frame, batch, input, keyCodeObject, action);
     } else if (element instanceof ButtonElement button) {
       if (BUTTON_BEHAVIOR.handleKey(button, keyCodeObject, action)) {
         markKnownEffect(batch);
@@ -153,6 +142,59 @@ public class SystemKeyEventListener extends AbstractSystemEventListener<SystemKe
             .mods(event.mappedMods())
             .action(action)
             .build());
+  }
+
+  private void processInputKey(
+      SystemKeyEvent event,
+      Frame frame,
+      InputProcessingBatch batch,
+      InputElement input,
+      KeyCode keyCode,
+      KeyAction action) {
+    boolean changed = false;
+    switch (InputBehaviorRegistry.kind(input)) {
+      case BUTTON -> {
+        if (BUTTON_BEHAVIOR.handleKey(input, keyCode, action)) {
+          changed = true;
+          generateActionEvent(frame, input);
+        }
+      }
+      case CHECKBOX -> {
+        if (CHECKBOX_BEHAVIOR.handleKey(input, keyCode, action)) {
+          changed = true;
+          generateActionEvent(frame, input);
+        }
+      }
+      case RADIO -> {
+        if (RADIO_BEHAVIOR.handleKey(input, frame, keyCode, action)) {
+          changed = true;
+          generateActionEvent(frame, input);
+        }
+      }
+      case RANGE -> {
+        if (RANGE_BEHAVIOR.handleKey(input, keyCode, action)) {
+          changed = true;
+          generateActionEvent(frame, input);
+        }
+      }
+      case TEXT -> {
+        boolean control = event.mods().contains(SystemKeyMod.CONTROL);
+        boolean shift = event.mods().contains(SystemKeyMod.SHIFT);
+        changed =
+            control && isTextInputShortcut(keyCode)
+                ? TEXT_INPUT_BEHAVIOR.handleShortcut(input, keyCode, action, clipboardAdapter())
+                : TEXT_INPUT_BEHAVIOR.handleKey(input, keyCode, action, shift, control);
+        if (changed) {
+          ensureCaretVisible(input);
+        }
+      }
+      case UNSUPPORTED -> {
+        // Raw KeyboardEvent is still emitted below; no native input behavior is applied.
+      }
+    }
+    if (changed) {
+      markKnownEffect(batch);
+    }
   }
 
   private void markKnownEffect(InputProcessingBatch batch) {

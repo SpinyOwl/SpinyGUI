@@ -14,7 +14,8 @@ public class ButtonBehavior {
   }
 
   public boolean handleKey(InputElement input, KeyCode keyCode, KeyAction action) {
-    return handleKey(input, input.buttonInput() && !input.disabled(), keyCode, action);
+    return handleKey(
+        input, InputBehaviorRegistry.buttonLike(input) && !input.disabled(), keyCode, action);
   }
 
   private boolean handleKey(

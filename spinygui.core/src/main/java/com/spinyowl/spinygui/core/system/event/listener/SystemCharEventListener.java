@@ -8,6 +8,7 @@ import com.spinyowl.spinygui.core.node.InputElement;
 import com.spinyowl.spinygui.core.node.TextareaElement;
 import com.spinyowl.spinygui.core.system.event.SystemCharEvent;
 import com.spinyowl.spinygui.core.system.font.TextMeasurer;
+import com.spinyowl.spinygui.core.system.input.InputBehaviorRegistry;
 import com.spinyowl.spinygui.core.system.input.MultilineTextControlMetrics;
 import com.spinyowl.spinygui.core.system.input.TextInputBehavior;
 import com.spinyowl.spinygui.core.system.input.TextInputViewportBehavior;
@@ -59,15 +60,15 @@ public class SystemCharEventListener extends AbstractSystemEventListener<SystemC
     processInternal(event, frame, batch);
   }
 
-  private void processInternal(
-      SystemCharEvent event, Frame frame, InputProcessingBatch batch) {
+  private void processInternal(SystemCharEvent event, Frame frame, InputProcessingBatch batch) {
     var focusedElement = frame.getFocusedElement();
     if (focusedElement == null || focusedElement.disabled()) {
       return;
     }
 
     boolean changed = false;
-    if (focusedElement instanceof InputElement input) {
+    if (focusedElement instanceof InputElement input
+        && InputBehaviorRegistry.textEditable(input)) {
       changed = TEXT_INPUT_BEHAVIOR.insertPrintable(input, event.codepoint());
       if (changed) {
         ensureCaretVisible(input);

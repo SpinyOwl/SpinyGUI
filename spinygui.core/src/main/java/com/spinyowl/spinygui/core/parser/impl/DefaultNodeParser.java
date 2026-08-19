@@ -32,6 +32,7 @@ public class DefaultNodeParser implements NodeParser {
           "area", "base", "br", "col", "embed", "hr", "img", "input", "keygen", "link", "meta",
           "param", "source", "track", "wbr");
   private static final String INDENT_AMOUNT = "{http://xml.apache.org/xslt}indent-amount";
+  private static final String ATTR_CHECKED = "checked";
 
   @Override
   public Node fromHtml(String html) {
@@ -202,6 +203,11 @@ public class DefaultNodeParser implements NodeParser {
     if (node instanceof InputElement input) {
       element.setAttribute("type", input.type());
       element.setAttribute("value", input.value());
+      if (input.checked()) {
+        element.setAttribute(ATTR_CHECKED, "");
+      } else {
+        element.removeAttribute(ATTR_CHECKED);
+      }
     } else if (node instanceof ButtonElement button) {
       element.setAttribute("type", button.type());
     } else if (node instanceof TextareaElement textarea) {

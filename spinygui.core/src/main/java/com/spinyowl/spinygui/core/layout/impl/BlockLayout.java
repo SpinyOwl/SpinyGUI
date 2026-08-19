@@ -41,6 +41,9 @@ import lombok.NonNull;
 public class BlockLayout implements ElementLayout {
   private static final float DEFAULT_TEXT_INPUT_WIDTH = 160f;
   private static final float DEFAULT_BUTTON_INPUT_WIDTH = 64f;
+  private static final float DEFAULT_TOGGLE_INPUT_SIZE = 18f;
+  private static final float DEFAULT_RANGE_INPUT_WIDTH = 160f;
+  private static final float DEFAULT_RANGE_INPUT_HEIGHT = 18f;
   private static final int DEFAULT_TEXTAREA_COLS = 20;
   private static final int DEFAULT_TEXTAREA_ROWS = 2;
   private static final String TEXTAREA_COLUMN_WIDTH_SAMPLE =
@@ -127,21 +130,12 @@ public class BlockLayout implements ElementLayout {
     float contentWidth;
     if (e instanceof Frame frame) {
       contentWidth = frame.frameSize().x;
-    } else if (e instanceof InputElement input && input.textInput()) {
-      contentWidth = getTextInputWidth(style, parentBox.content().width());
-    } else if (e instanceof InputElement input && input.buttonInput()) {
-      contentWidth =
-          getButtonInputWidth(input, style, parentBox.content().width(), horizontalAdditions);
-    } else if (e instanceof ButtonElement button) {
-      contentWidth =
-          getButtonWidth(button, style, parentBox.content().width(), horizontalAdditions);
-    } else if (e instanceof TextareaElement textarea) {
-      contentWidth = getTextareaWidth(textarea, style, parentBox.content().width(), horizontalAdditions);
     } else {
-      contentWidth = getWidth(parentBox.content().width(), style);
+      contentWidth =
+          getElementWidth(e, style, parentBox.content().width(), horizontalAdditions);
     }
     contentWidth -= horizontalAdditions;
-    box.content().width(contentWidth);
+    box.content().width(Math.max(0f, contentWidth));
 
     if (e instanceof Frame frame) {
       box.content().height(Math.max(0f, frame.frameSize().y - verticalAdditions));
@@ -162,30 +156,17 @@ public class BlockLayout implements ElementLayout {
       return;
     }
 
-    float borderBoxHeight;
-    if (e instanceof InputElement input && input.textInput()) {
-      borderBoxHeight =
-          getTextInputHeight(e, style, parentBox.content().height(), verticalAdditions);
-    } else if (e instanceof InputElement input && input.buttonInput()) {
-      borderBoxHeight =
-          getButtonInputHeight(input, style, parentBox.content().height(), verticalAdditions);
-    } else if (e instanceof ButtonElement button) {
-      float childrenHeight = childrenHeight(button, style, skipChildren, ctx);
-      borderBoxHeight =
-          getButtonHeight(
-              button,
-              style,
-              parentBox.content().height(),
-              childrenHeight,
-              verticalAdditions);
-    } else if (e instanceof TextareaElement textarea) {
-      borderBoxHeight =
-          getTextareaHeight(textarea, style, parentBox.content().height(), verticalAdditions);
-    } else {
-      float childrenHeight = childrenHeight(e, style, skipChildren, ctx);
-      borderBoxHeight =
-          getHeight(parentBox.content().height(), childrenHeight + verticalAdditions, style);
-    }
+    float childrenHeight =
+        e instanceof InputElement || e instanceof TextareaElement
+            ? 0f
+            : childrenHeight(e, style, skipChildren, ctx);
+    float borderBoxHeight =
+        getElementHeight(
+            e,
+            style,
+            parentBox.content().height(),
+            childrenHeight,
+            verticalAdditions);
     box.content().height(Math.max(0f, borderBoxHeight - verticalAdditions));
     finishBlockFlow(e, ctx);
   }
@@ -212,7 +193,7 @@ public class BlockLayout implements ElementLayout {
             + e.box().padding().right();
 
     calculateHorizontalPositionAndWidth(
-        parentBox, style, ancestor.box(), e.box(), horizontalAdditions);
+        e, parentBox, style, ancestor.box(), e.box(), horizontalAdditions);
 
     if (stretchesVertically(style)) {
       layoutVerticallyStretchedAbsoluteBlock(e, ancestor, style, verticalAdditions);
@@ -231,7 +212,8 @@ public class BlockLayout implements ElementLayout {
       float parentOffset = parentBox.content().y();
       contentY = getAutoVerticalContentY(ctx, e.box().border(), e.box().padding(), parentOffset);
       borderBoxHeight =
-          getHeight(parentPaddingBoxHeight, childrenHeight + verticalAdditions, style);
+          getElementHeight(
+              e, style, parentPaddingBoxHeight, childrenHeight, verticalAdditions);
     } else {
       float parentPaddingBoxHeight =
           ancestor.box().padding().top()
@@ -263,7 +245,8 @@ public class BlockLayout implements ElementLayout {
                 bottom);
       } else {
         borderBoxHeight =
-            getHeight(parentPaddingBoxHeight, childrenHeight + verticalAdditions, style);
+            getElementHeight(
+                e, style, parentPaddingBoxHeight, childrenHeight, verticalAdditions);
 
         if (style.bottom().isLength()) {
           contentY = bottom - borderBoxHeight + e.box().border().top() + e.box().padding().top();
@@ -316,7 +299,8 @@ public class BlockLayout implements ElementLayout {
       borderBoxHeight = bottom - contentY + e.box().padding().top() + e.box().border().top();
     } else {
       borderBoxHeight =
-          getHeight(parentPaddingBoxHeight, childrenHeight + verticalAdditions, style);
+          getElementHeight(
+              e, style, parentPaddingBoxHeight, childrenHeight, verticalAdditions);
     }
     return borderBoxHeight;
   }
@@ -332,7 +316,12 @@ public class BlockLayout implements ElementLayout {
   }
 
   private void calculateHorizontalPositionAndWidth(
-      Box parentBox, ResolvedStyle style, Box ancestorBox, Box box, float horizontalAdditions) {
+      Element element,
+      Box parentBox,
+      ResolvedStyle style,
+      Box ancestorBox,
+      Box box,
+      float horizontalAdditions) {
     float contentX;
     float contentWidth;
     if (style.left().isAuto() && style.right().isAuto()) {
@@ -344,7 +333,7 @@ public class BlockLayout implements ElementLayout {
               parentBox.paddingBox().width(),
               ancestorBox.paddingBox().width() - parentOffset + ancestorBox.border().right());
 
-      contentWidth = getWidth(parentPaddingBoxWidth, style);
+      contentWidth = getElementWidth(element, style, parentPaddingBoxWidth, horizontalAdditions);
     } else {
       float parentPaddingBoxWidth = ancestorBox.paddingBox().width();
       float left = box.border().left() + box.padding().left() + ancestorBox.border().left();
@@ -360,7 +349,7 @@ public class BlockLayout implements ElementLayout {
         contentX = left;
         contentWidth = right - left;
       } else {
-        contentWidth = getWidth(parentPaddingBoxWidth, style);
+        contentWidth = getElementWidth(element, style, parentPaddingBoxWidth, horizontalAdditions);
         if (style.left().isLength()) {
           contentX = left;
         } else {
@@ -474,6 +463,65 @@ public class BlockLayout implements ElementLayout {
     element.box().content().width(contentWidth);
   }
 
+  private float getElementWidth(
+      Element element, ResolvedStyle style, float parentWidth, float horizontalAdditions) {
+    if (element instanceof InputElement input) {
+      if (input.textInput()) {
+        return getTextInputWidth(style, parentWidth);
+      }
+      if (input.buttonInput()) {
+        return getButtonInputWidth(input, style, parentWidth, horizontalAdditions);
+      }
+      if (input.toggleInput()) {
+        return getIntrinsicInputWidth(
+            style, parentWidth, horizontalAdditions, DEFAULT_TOGGLE_INPUT_SIZE);
+      }
+      if (input.rangeInput()) {
+        return getIntrinsicInputWidth(
+            style, parentWidth, horizontalAdditions, DEFAULT_RANGE_INPUT_WIDTH);
+      }
+    }
+    if (element instanceof ButtonElement button) {
+      return getButtonWidth(button, style, parentWidth, horizontalAdditions);
+    }
+    if (element instanceof TextareaElement textarea) {
+      return getTextareaWidth(textarea, style, parentWidth, horizontalAdditions);
+    }
+    return getWidth(parentWidth, style);
+  }
+
+  private float getElementHeight(
+      Element element,
+      ResolvedStyle style,
+      float parentHeight,
+      float childrenHeight,
+      float verticalAdditions) {
+    if (element instanceof InputElement input) {
+      if (input.textInput()) {
+        return getTextInputHeight(input, style, parentHeight, verticalAdditions);
+      }
+      if (input.buttonInput()) {
+        return getButtonInputHeight(input, style, parentHeight, verticalAdditions);
+      }
+      if (input.toggleInput()) {
+        return getIntrinsicInputHeight(
+            style, parentHeight, verticalAdditions, DEFAULT_TOGGLE_INPUT_SIZE);
+      }
+      if (input.rangeInput()) {
+        return getIntrinsicInputHeight(
+            style, parentHeight, verticalAdditions, DEFAULT_RANGE_INPUT_HEIGHT);
+      }
+    }
+    if (element instanceof ButtonElement button) {
+      return getButtonHeight(
+          button, style, parentHeight, childrenHeight, verticalAdditions);
+    }
+    if (element instanceof TextareaElement textarea) {
+      return getTextareaHeight(textarea, style, parentHeight, verticalAdditions);
+    }
+    return getHeight(parentHeight, childrenHeight + verticalAdditions, style);
+  }
+
   private float getWidth(float parentWidth, ResolvedStyle style) {
     Optional<Float> width = getFloatLengthOptional(style.width(), parentWidth);
     Optional<Float> minWidth = getFloatLengthOptional(style.minWidth(), parentWidth);
@@ -560,6 +608,38 @@ public class BlockLayout implements ElementLayout {
       return getHeight(parentHeight, verticalAdditions, style);
     }
     float borderBoxHeight = measureTextInputLineHeight(input, style) + verticalAdditions;
+    Optional<Float> minHeight = getFloatLengthOptional(style.minHeight(), parentHeight);
+    Optional<Float> maxHeight = getFloatLengthOptional(style.maxHeight(), parentHeight);
+    borderBoxHeight = Math.max(borderBoxHeight, minHeight.orElse(borderBoxHeight));
+    borderBoxHeight = Math.min(borderBoxHeight, maxHeight.orElse(borderBoxHeight));
+    return borderBoxHeight;
+  }
+
+  private float getIntrinsicInputWidth(
+      ResolvedStyle style,
+      float parentWidth,
+      float horizontalAdditions,
+      float intrinsicContentWidth) {
+    float width =
+        style.width().isAuto()
+            ? intrinsicContentWidth + horizontalAdditions
+            : getWidth(parentWidth, style);
+    Optional<Float> minWidth = getFloatLengthOptional(style.minWidth(), parentWidth);
+    Optional<Float> maxWidth = getFloatLengthOptional(style.maxWidth(), parentWidth);
+    width = Math.max(width, minWidth.orElse(width));
+    width = Math.min(width, maxWidth.orElse(width));
+    return width;
+  }
+
+  private float getIntrinsicInputHeight(
+      ResolvedStyle style,
+      float parentHeight,
+      float verticalAdditions,
+      float intrinsicContentHeight) {
+    if (!style.height().isAuto()) {
+      return getHeight(parentHeight, verticalAdditions, style);
+    }
+    float borderBoxHeight = intrinsicContentHeight + verticalAdditions;
     Optional<Float> minHeight = getFloatLengthOptional(style.minHeight(), parentHeight);
     Optional<Float> maxHeight = getFloatLengthOptional(style.maxHeight(), parentHeight);
     borderBoxHeight = Math.max(borderBoxHeight, minHeight.orElse(borderBoxHeight));
