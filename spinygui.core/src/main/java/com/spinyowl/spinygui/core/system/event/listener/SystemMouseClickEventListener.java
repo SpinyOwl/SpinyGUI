@@ -90,6 +90,10 @@ public class SystemMouseClickEventListener
       processWithNoTarget(event, frame, focusedElement, currentCursorPosition);
     } else {
       target = buttonOwner(target);
+      if (target.disabled()) {
+        target.pressed(false);
+        return;
+      }
       processWithExistingTarget(event, frame, focusedElement, currentCursorPosition, target);
     }
   }
@@ -291,7 +295,7 @@ public class SystemMouseClickEventListener
 
   private boolean activatable(Element target) {
     return target instanceof ButtonElement button && button.activatable()
-        || target instanceof InputElement input && input.buttonInput();
+        || target instanceof InputElement input && input.buttonInput() && !input.disabled();
   }
 
   private Element buttonOwner(Element target) {
