@@ -92,6 +92,12 @@ public class SystemMouseClickEventListener
       target = buttonOwner(target);
       if (target.disabled()) {
         target.pressed(false);
+        if (event.action() == RELEASE && focusedElement != null && focusedElement != target) {
+          focusedElement.pressed(false);
+          if (!focusedElement.disabled()) {
+            generateReleaseEvent(event, frame, focusedElement, currentCursorPosition);
+          }
+        }
         return;
       }
       processWithExistingTarget(event, frame, focusedElement, currentCursorPosition, target);
