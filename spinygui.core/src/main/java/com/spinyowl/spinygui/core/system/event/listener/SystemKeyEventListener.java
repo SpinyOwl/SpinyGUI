@@ -80,6 +80,9 @@ public class SystemKeyEventListener extends AbstractSystemEventListener<SystemKe
   private void processInternal(
       SystemKeyEvent event, Frame frame, InputProcessingBatch batch) {
     var element = frame.getFocusedElement();
+    if (element != null && element.disabled()) {
+      return;
+    }
     if (element == null && batch == null) {
       return;
     }
