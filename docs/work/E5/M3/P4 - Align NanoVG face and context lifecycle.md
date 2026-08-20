@@ -1,6 +1,6 @@
 # P4: Align NanoVG Face and Context Lifecycle
 
-**Status:** In progress
+**Status:** Complete
 
 ## Goal
 
@@ -259,22 +259,38 @@ host is still valid and close the host only after the retry succeeds.
 **Parallelizable with:** None.
 
 **Changes:**
-- [ ] Test successful add/replacement/byte reload/no-op/failure through core resolution, measurement,
+- [x] Test successful add/replacement/byte reload/no-op/failure through core resolution, measurement,
   face creation, rendering recording, and teardown.
-- [ ] Test repeated same-path reload to the selected rejection/rotation/hard-bound limit and prove
+- [x] Test repeated same-path reload to the selected rejection/rotation/hard-bound limit and prove
   old `freeData=false` buffers cannot accumulate without forced context deletion.
-- [ ] Test off-thread rejection across core/backend, context mismatch/replacement policy, face failure
+- [x] Test off-thread rejection across core/backend, context mismatch/replacement policy, face failure
   x-independent lifecycle, and use-after-destroy.
-- [ ] Reconcile core plus backend entry/byte/native retention diagnostics and teardown order.
+- [x] Reconcile core plus backend entry/byte/native retention diagnostics and teardown order.
 
 **Acceptance Checks:**
-- [ ] M5 can query the production generation before/after exact mutations; M6 can attach staging to a
+- [x] M5 can query the production generation before/after exact mutations; M6 can attach staging to a
   deterministic context lifecycle; M7 can include all existing retention.
-- [ ] Full tests show no default resolver bypass, stale face, early buffer release, or hidden
+- [x] Full tests show no default resolver bypass, stale face, early buffer release, or hidden
   concurrent behavior.
 
 **Risks / Stop Criteria:** M3 is not complete while any downstream milestone would need a fake
 generation, undocumented context reset, or different font owner.
+
+#### T4 evidence
+
+- `NvgFontLifecycleIntegrationTest` provides three active production-path scenarios spanning
+  semantic add, duplicate/no-op, replacement, byte reload, failure, resolution, measurement,
+  backend glyph inspection, face creation, text-command recording, and ordered teardown.
+- Eight same-path byte revisions are rejected while the affected context owns an active face; core
+  and backend observations remain unchanged with one retained buffer/info/face set. After context
+  deletion, the accumulated byte revision is accepted once and a new renderer owns one new set.
+- Face-creation failure/retry, owner-thread rejection, context mismatch, use-after-destroy, core and
+  backend retention observations, and context-delete-before-native-info-release all use production
+  owners rather than a fake semantic/backend model.
+- The full current verification gate passed with 593 core, 97 NanoVG, 118 benchmark, and 4 complex-
+  demo tests; no tests were skipped or failed. Production source contains no
+  `FontChainResolver.DEFAULT` bypass, and the NanoVG semantic contract contains no disabled fake
+  lifecycle targets.
 
 ## Verification Strategy
 

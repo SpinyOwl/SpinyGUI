@@ -140,11 +140,11 @@ and no quadratic suffix copying/moving.
 zero-copy/call-graph fixtures, compatibility and deep-immutability tests, full core/benchmark tests,
 and the aggregate test boundary pass. Paired run `20260815-213944-045890100` is valid standalone
 supporting evidence but not an M1-qualified delta because the accepted baseline artifacts are absent
-and the current JVM differs; report suppression is therefore expected. M3 is the next milestone.
+and the current JVM differs; report suppression is therefore expected.
 
 ### M3: Establish font identity, generations, and lifecycle
 
-**Status:** In progress
+**Status:** Complete
 
 **Document:** [M3 - Establish font identity generations and lifecycle](E5/M3%20-%20Establish%20font%20identity%20generations%20and%20lifecycle.md)
 
@@ -178,6 +178,12 @@ font bytes, STB info, face buffers, contexts, and services have explicit owners 
 **Validation:** UI-thread violations are rejected/documented, generation observations are coherent,
 and context deletion precedes buffer/info release. M3 exposes the centralized resolver/thread
 contract and production generation consumed by M4/M5/M6/M7.
+
+**Completion boundary:** P1-P4 are complete. Three active integrated production scenarios cover
+semantic mutation, resolution, measurement, NanoVG inspection/face/render recording, reload bounds,
+failure recovery, thread/context rejection, aggregate retention, and ordered teardown. The full
+current core, NanoVG, benchmark, and complex-demo test gate passes with no skipped tests. M4 and M5
+are the next ready milestones.
 
 ### M4: Prepare inline text with ranges and code points
 

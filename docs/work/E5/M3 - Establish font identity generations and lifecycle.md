@@ -1,10 +1,10 @@
 # M3: Establish Font Identity, Generations, and Lifecycle
 
-**Status:** In progress
+**Status:** Complete
 
 Parent plan: `docs/work/E5 - Text performance improvements.md`
 
-Next: [P4 - Align NanoVG face and context lifecycle](M3/P4%20-%20Align%20NanoVG%20face%20and%20context%20lifecycle.md)
+Next: [M4 - Prepare inline text with ranges and code points](M4%20-%20Prepare%20inline%20text%20with%20ranges%20and%20code%20points.md)
 
 ## Goal
 
@@ -129,6 +129,8 @@ can silently leave a resolver observing stale identity.
 
 ### P4: Align NanoVG face and context lifecycle
 
+**Status:** Complete
+
 **Document:** [P4 - Align NanoVG face and context lifecycle](M3/P4%20-%20Align%20NanoVG%20face%20and%20context%20lifecycle.md)
 
 **Purpose:** Make context-local face/buffer/info ownership and renderer lifecycle follow the P1-P3
@@ -166,6 +168,12 @@ alive or if renderer reinitialization behavior remains implicit.
 - `./gradlew :spinygui.core.backend.lwjgl.nanovg:test --tests 'com.spinyowl.spinygui.core.backend.renderer.lwjgl.nanovg.NvgFontRegistryTest'`
 - `./gradlew :spinygui.core.backend.lwjgl.nanovg:test --tests 'com.spinyowl.spinygui.core.backend.renderer.lwjgl.nanovg.NvgRendererTransformStateTest'`
 - Run `./gradlew test` after integrated teardown verification.
+
+**Completion boundary:** P1-P4 are complete. The production semantic owner/generation, centralized
+resolver, bounded core and context-local resources, active-face reload rejection, and deterministic
+delete-before-release lifecycle are covered by focused production-path integration tests and the
+full current core, NanoVG, benchmark, and complex-demo test gate. M4 and M5 are now the next ready
+milestones under the E5 dependency graph.
 
 ## Dependency Graph
 
