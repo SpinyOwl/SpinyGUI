@@ -6,8 +6,9 @@ import java.util.List;
 /**
  * Immutable contiguous text run resolved to one face.
  *
- * @param sourceStart absolute UTF-16 start offset in the original measured text.
- * @param sourceEnd absolute, exclusive-end UTF-16 offset in the original measured text.
+ * @param sourceStart UTF-16 start in the containing result's coordinate space: absolute measured
+ *     source for {@link TextMetrics}, or fragment-local rendered text for an {@code InlineFragment}.
+ * @param sourceEnd exclusive UTF-16 end in the same containing-result coordinate space.
  * @param font face selected for the run.
  * @param glyphs resolved source glyphs in UTF-16 source order.
  * @param advance line-local horizontal advance of the run in pixels; it excludes the measurement's

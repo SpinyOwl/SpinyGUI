@@ -40,6 +40,11 @@ import com.spinyowl.spinygui.core.system.font.internal.FinalLineCaretStops;
 import com.spinyowl.spinygui.core.system.font.internal.PreparedRange;
 import com.spinyowl.spinygui.core.system.font.internal.RangeTextMeasurerCapability;
 import com.spinyowl.spinygui.core.system.font.internal.ResolvedMeasurement;
+import com.spinyowl.spinygui.core.system.cache.BoundedTextCache;
+import com.spinyowl.spinygui.core.system.cache.TextCacheConfiguration;
+import com.spinyowl.spinygui.core.system.cache.ResolvedPrimitiveKey;
+import com.spinyowl.spinygui.core.system.cache.WrappedLayoutKey;
+import com.spinyowl.spinygui.core.system.cache.TextCacheAggregateObservation;
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 import java.nio.charset.StandardCharsets;
@@ -72,7 +77,13 @@ public class FontServiceImpl implements FontService, TextMeasurer, RangeTextMeas
   @NonNull private final DiagnosticSession diagnostics;
   @NonNull private final ResourceLifecycleObserver resourceLifecycleObserver;
   @NonNull private final TransactionFailureInjector transactionFailureInjector;
+  @NonNull private final TextCacheConfiguration cacheConfiguration;
   private Map<String, OwnedFontInfo> fontInfoMap = new HashMap<>();
+  private final BoundedTextCache<GlyphProbeKey, Integer> glyphProbeCache;
+  private final BoundedTextCache<AdvanceKey, BaseAdvanceMeasurement> advanceCache;
+  private final BoundedTextCache<KerningKey, KerningValue> kerningCache;
+  private final BoundedTextCache<ResolvedPrimitiveKey, ResolvedPrimitiveSequence> resolvedPrimitiveCache;
+  private final BoundedTextCache<WrappedLayoutKey, ResolvedMeasurement> wrappedLayoutCache;
   private SemanticFontOwner semanticOwner;
   private FontServiceImpl aggregateService;
 
@@ -87,17 +98,33 @@ public class FontServiceImpl implements FontService, TextMeasurer, RangeTextMeas
     this(fontStorage, roundToPixel, diagnostics, ResourceLifecycleObserver.NO_OP);
   }
 
+  /** Creates a service with explicit bounded primitive-cache mode and limits. */
+  public FontServiceImpl(
+      @NonNull FontStorage fontStorage,
+      boolean roundToPixel,
+      @NonNull DiagnosticSession diagnostics,
+      @NonNull TextCacheConfiguration cacheConfiguration) {
+    this(
+        fontStorage,
+        roundToPixel,
+        diagnostics,
+        ResourceLifecycleObserver.NO_OP,
+        TransactionFailureInjector.NO_OP,
+        cacheConfiguration);
+  }
+
   FontServiceImpl(
       @NonNull FontStorage fontStorage,
       boolean roundToPixel,
       @NonNull DiagnosticSession diagnostics,
       @NonNull ResourceLifecycleObserver resourceLifecycleObserver) {
-    this(
+      this(
         fontStorage,
         roundToPixel,
         diagnostics,
         resourceLifecycleObserver,
-        TransactionFailureInjector.NO_OP);
+        TransactionFailureInjector.NO_OP,
+        TextCacheConfiguration.disabled());
   }
 
   FontServiceImpl(
@@ -106,11 +133,52 @@ public class FontServiceImpl implements FontService, TextMeasurer, RangeTextMeas
       @NonNull DiagnosticSession diagnostics,
       @NonNull ResourceLifecycleObserver resourceLifecycleObserver,
       @NonNull TransactionFailureInjector transactionFailureInjector) {
+    this(
+        fontStorage,
+        roundToPixel,
+        diagnostics,
+        resourceLifecycleObserver,
+        transactionFailureInjector,
+        TextCacheConfiguration.disabled());
+  }
+
+  FontServiceImpl(
+      @NonNull FontStorage fontStorage,
+      boolean roundToPixel,
+      @NonNull DiagnosticSession diagnostics,
+      @NonNull ResourceLifecycleObserver resourceLifecycleObserver,
+      @NonNull TransactionFailureInjector transactionFailureInjector,
+      @NonNull TextCacheConfiguration cacheConfiguration) {
     this.fontStorage = fontStorage;
     this.roundToPixel = roundToPixel;
     this.diagnostics = diagnostics;
     this.resourceLifecycleObserver = resourceLifecycleObserver;
     this.transactionFailureInjector = transactionFailureInjector;
+    this.cacheConfiguration = cacheConfiguration;
+    this.glyphProbeCache =
+        new BoundedTextCache<>(
+            cacheConfiguration.glyphEntries(),
+            cacheConfiguration.glyphWeight(),
+            ignored -> 1,
+            cacheConfiguration.enabled());
+    this.advanceCache =
+        new BoundedTextCache<>(
+            cacheConfiguration.advanceEntries(),
+            cacheConfiguration.advanceWeight(),
+            ignored -> 8,
+            cacheConfiguration.enabled());
+    this.kerningCache =
+        new BoundedTextCache<>(
+            cacheConfiguration.kerningEntries(),
+            cacheConfiguration.kerningWeight(),
+            ignored -> 8,
+            cacheConfiguration.enabled());
+    this.resolvedPrimitiveCache =
+        new BoundedTextCache<>(cacheConfiguration.resolvedEntries(), cacheConfiguration.resolvedWeight(),
+            FontServiceImpl::primitiveWeight, cacheConfiguration.enabled());
+    this.wrappedLayoutCache =
+        new BoundedTextCache<>(cacheConfiguration.wrappedEntries(), cacheConfiguration.wrappedWeight(),
+            FontServiceImpl::measurementWeight, cacheConfiguration.enabled());
   }
 
   /**
@@ -142,6 +210,80 @@ public class FontServiceImpl implements FontService, TextMeasurer, RangeTextMeas
   @Override
   public DiagnosticSession diagnostics() {
     return diagnostics;
+  }
+
+  /** Package-private M7 evidence seam; it exposes counters without publishing cache ownership. */
+  BoundedTextCache.Stats resolvedPrimitiveCacheStats() {
+    return resolvedPrimitiveCache.stats();
+  }
+
+  /** Package-private M7 evidence seam; it exposes counters without publishing cache ownership. */
+  BoundedTextCache.Stats wrappedLayoutCacheStats() {
+    return wrappedLayoutCache.stats();
+  }
+
+  /** Package-private M7 seam combining cache, M3 native, and supplied M5 current-slot weights. */
+  TextCacheAggregateObservation cacheAggregateObservation(List<Long> currentSnapshotWeights) {
+    return cacheAggregateObservation(Map.of(), currentSnapshotWeights);
+  }
+
+  /** Package-private M7 seam allowing M4 context owners to contribute their own family stats. */
+  public TextCacheAggregateObservation cacheAggregateObservation(
+      Map<String, BoundedTextCache.Stats> additionalFamilies,
+      List<Long> currentSnapshotWeights) {
+    return cacheAggregateObservation(additionalFamilies, Map.of(), currentSnapshotWeights);
+  }
+
+  /** Package-private M7 seam combining core, M4, and backend-owned native resource classes. */
+  public TextCacheAggregateObservation cacheAggregateObservation(
+      Map<String, BoundedTextCache.Stats> additionalFamilies,
+      Map<String, Long> nativeResourceWeights,
+      List<Long> currentSnapshotWeights) {
+    return cacheAggregateObservation(additionalFamilies, nativeResourceWeights, Map.of(), currentSnapshotWeights);
+  }
+
+  /** Package-private M7 seam separating native byte retention from native entry cardinality. */
+  public TextCacheAggregateObservation cacheAggregateObservation(
+      Map<String, BoundedTextCache.Stats> additionalFamilies,
+      Map<String, Long> nativeByteWeights,
+      Map<String, Long> nativeEntryCounts,
+      List<Long> currentSnapshotWeights) {
+    Map<String, BoundedTextCache.Stats> families = new HashMap<>(additionalFamilies);
+    families.put("glyph", glyphProbeCache.stats());
+    families.put("advance", advanceCache.stats());
+    families.put("kerning", kerningCache.stats());
+    families.put("resolved-primitive", resolvedPrimitiveCache.stats());
+    families.put("wrapped-layout", wrappedLayoutCache.stats());
+    return new TextCacheAggregateObservation(
+        families,
+        resourceObservation(),
+        currentSnapshotWeights,
+        mergeNativeResourceWeights(nativeByteWeights),
+        nativeEntryCounts);
+  }
+
+  private Map<String, Long> mergeNativeResourceWeights(Map<String, Long> additional) {
+    Map<String, Long> weights = new HashMap<>(additional);
+    weights.putIfAbsent("core-font-bytes", resourceObservation().ownerByteCapacity());
+    return weights;
+  }
+
+  /** Resets cache diagnostics independently while retaining warm entries. */
+  void resetCacheDiagnostics() {
+    glyphProbeCache.resetDiagnostics();
+    advanceCache.resetDiagnostics();
+    kerningCache.resetDiagnostics();
+    resolvedPrimitiveCache.resetDiagnostics();
+    wrappedLayoutCache.resetDiagnostics();
+  }
+
+  /** Clears every service-owned calculation family without changing configuration. */
+  public void clearCacheFamilies() {
+    glyphProbeCache.clear();
+    advanceCache.clear();
+    kerningCache.clear();
+    resolvedPrimitiveCache.clear();
+    wrappedLayoutCache.clear();
   }
 
   @Override
@@ -603,6 +745,11 @@ public class FontServiceImpl implements FontService, TextMeasurer, RangeTextMeas
   }
 
   private void teardownAllRetainedResources(FontStorageImpl storage) {
+    glyphProbeCache.clear();
+    advanceCache.clear();
+    kerningCache.clear();
+    resolvedPrimitiveCache.clear();
+    wrappedLayoutCache.clear();
     if (fontInfoMap.isEmpty() && !storage.hasFontData()) {
       return;
     }
@@ -785,33 +932,71 @@ public class FontServiceImpl implements FontService, TextMeasurer, RangeTextMeas
     }
   }
 
-  private GlyphMeasurement resolveGlyph(List<Font> fonts, int codePoint) {
+  private GlyphMeasurement resolveGlyph(
+      List<ResolvedFont> fonts, int codePoint, long generation) {
     diagnostics.increment(TextDiagnosticCounter.LOGICAL_GLYPH_RESOLUTIONS);
-    for (Font candidate : fonts) {
-      STBTTFontinfo fontInfo = getFontInfo(candidate.path());
-      diagnostics.increment(TextDiagnosticCounter.NATIVE_GLYPH_INDEX_PROBES);
-      int glyphIndex = stbtt_FindGlyphIndex(fontInfo, codePoint);
+    for (ResolvedFont candidate : fonts) {
+      STBTTFontinfo fontInfo = candidate.fontInfo();
+      int glyphIndex;
+      if (cacheConfiguration.enabled()) {
+        GlyphProbeKey key = glyphProbeKey(candidate.locator(), generation, codePoint);
+        Integer cached = glyphProbeCache.get(key);
+        glyphIndex = cached == null ? -1 : cached;
+        if (cached == null) {
+          diagnostics.increment(TextDiagnosticCounter.NATIVE_GLYPH_INDEX_PROBES);
+          glyphIndex = stbtt_FindGlyphIndex(fontInfo, codePoint);
+          glyphProbeCache.put(key, glyphIndex);
+        }
+      } else {
+        diagnostics.increment(TextDiagnosticCounter.NATIVE_GLYPH_INDEX_PROBES);
+        glyphIndex = stbtt_FindGlyphIndex(fontInfo, codePoint);
+      }
       if (glyphIndex != 0) {
-        return new GlyphMeasurement(candidate, fontInfo, glyphIndex, codePoint, false);
+        return new GlyphMeasurement(
+            candidate.font(), candidate.locator(), fontInfo, glyphIndex, codePoint, false);
       }
     }
 
     // The replacement character is visible in the bundled fallback instead of becoming blank.
-    for (Font candidate : fonts) {
-      STBTTFontinfo fontInfo = getFontInfo(candidate.path());
-      diagnostics.increment(TextDiagnosticCounter.NATIVE_GLYPH_INDEX_PROBES);
-      int glyphIndex = stbtt_FindGlyphIndex(fontInfo, REPLACEMENT_CODE_POINT);
+    for (ResolvedFont candidate : fonts) {
+      STBTTFontinfo fontInfo = candidate.fontInfo();
+      int glyphIndex;
+      if (cacheConfiguration.enabled()) {
+        GlyphProbeKey key =
+            glyphProbeKey(candidate.locator(), generation, REPLACEMENT_CODE_POINT);
+        Integer cached = glyphProbeCache.get(key);
+        glyphIndex = cached == null ? -1 : cached;
+        if (cached == null) {
+          diagnostics.increment(TextDiagnosticCounter.NATIVE_GLYPH_INDEX_PROBES);
+          glyphIndex = stbtt_FindGlyphIndex(fontInfo, REPLACEMENT_CODE_POINT);
+          glyphProbeCache.put(key, glyphIndex);
+        }
+      } else {
+        diagnostics.increment(TextDiagnosticCounter.NATIVE_GLYPH_INDEX_PROBES);
+        glyphIndex = stbtt_FindGlyphIndex(fontInfo, REPLACEMENT_CODE_POINT);
+      }
       if (glyphIndex != 0) {
-        return new GlyphMeasurement(candidate, fontInfo, glyphIndex, REPLACEMENT_CODE_POINT, true);
+        return new GlyphMeasurement(
+            candidate.font(),
+            candidate.locator(),
+            fontInfo,
+            glyphIndex,
+            REPLACEMENT_CODE_POINT,
+            true);
       }
     }
-    Font fallback = fonts.isEmpty() ? Font.DEFAULT : fonts.get(0);
+    ResolvedFont fallback = fonts.get(0);
     return new GlyphMeasurement(
-        fallback, getFontInfo(fallback.path()), 0, REPLACEMENT_CODE_POINT, true);
+        fallback.font(),
+        fallback.locator(),
+        fallback.fontInfo(),
+        0,
+        REPLACEMENT_CODE_POINT,
+        true);
   }
 
   private PairKerningMeasurement measurePairKerning(
-      GlyphMeasurement glyph, GlyphMeasurement previousGlyph, float fontSize) {
+      GlyphMeasurement glyph, GlyphMeasurement previousGlyph, float fontSize, long generation) {
     if (previousGlyph == null) {
       return new PairKerningMeasurement(null, -1, 0, 0);
     }
@@ -819,25 +1004,67 @@ public class FontServiceImpl implements FontService, TextMeasurer, RangeTextMeas
       return new PairKerningMeasurement(previousGlyph.fontInfo(), previousGlyph.glyphIndex(), 0, 0);
     }
 
+    KerningKey key = null;
+    if (cacheConfiguration.enabled()) {
+      key =
+          new KerningKey(
+              glyph.locator(),
+              generation,
+              previousGlyph.glyphIndex(),
+              glyph.glyphIndex(),
+              Float.floatToIntBits(fontSize));
+      KerningValue cached = kerningCache.get(key);
+      if (cached != null) {
+        return new PairKerningMeasurement(
+            previousGlyph.fontInfo(),
+            previousGlyph.glyphIndex(),
+            cached.rawAdvance(),
+            cached.advance());
+      }
+    }
     diagnostics.increment(TextDiagnosticCounter.NATIVE_KERNING_CALLS);
     int rawAdvance =
         stbtt_GetGlyphKernAdvance(
             glyph.fontInfo(), previousGlyph.glyphIndex(), glyph.glyphIndex());
     float scaleFactor = stbtt_ScaleForMappingEmToPixels(glyph.fontInfo(), fontSize);
     float advance = (int) (rawAdvance * scaleFactor + 0.5f);
+    if (key != null) {
+      kerningCache.put(key, new KerningValue(rawAdvance, advance));
+    }
     return new PairKerningMeasurement(
         previousGlyph.fontInfo(), previousGlyph.glyphIndex(), rawAdvance, advance);
   }
 
   private BaseAdvanceMeasurement measureBaseAdvance(
-      GlyphMeasurement glyph, IntBuffer pAdvance, float fontSize) {
+      GlyphMeasurement glyph, IntBuffer pAdvance, float fontSize, long generation) {
+    AdvanceKey key = null;
+    if (cacheConfiguration.enabled()) {
+      key =
+          new AdvanceKey(
+              glyph.locator(),
+              generation,
+              glyph.glyphIndex(),
+              Float.floatToIntBits(fontSize));
+      BaseAdvanceMeasurement cached = advanceCache.get(key);
+      if (cached != null) {
+        return cached;
+      }
+    }
     diagnostics.increment(TextDiagnosticCounter.NATIVE_GLYPH_ADVANCE_CALLS);
     stbtt_GetGlyphHMetrics(glyph.fontInfo(), glyph.glyphIndex(), pAdvance, null);
     int rawAdvance = pAdvance.get(0);
     float scaleFactor = stbtt_ScaleForMappingEmToPixels(glyph.fontInfo(), fontSize);
     short scaledTenths = (short) (scaleFactor * rawAdvance * 10.0f);
     float advance = (int) (scaledTenths / 10.0f + 0.5f);
-    return new BaseAdvanceMeasurement(rawAdvance, advance);
+    BaseAdvanceMeasurement result = new BaseAdvanceMeasurement(rawAdvance, advance);
+    if (key != null) {
+      advanceCache.put(key, result);
+    }
+    return result;
+  }
+
+  private GlyphProbeKey glyphProbeKey(String locator, long generation, int codePoint) {
+    return new GlyphProbeKey(locator, generation, codePoint);
   }
 
   // obtains font info from the map or if map has no entry, creates it and adds it to the map
@@ -859,23 +1086,35 @@ public class FontServiceImpl implements FontService, TextMeasurer, RangeTextMeas
     return info;
   }
 
-  private STBTTFontinfo getFontInfo(String fontPath) throws FontLoadingException {
+  private STBTTFontinfo getFontInfo(Font font) throws FontLoadingException {
     if (resourceAggregate() != this) {
-      return resourceAggregate().getFontInfo(fontPath);
+      return resourceAggregate().getFontInfo(font);
     }
     if (!(fontStorage instanceof FontStorageImpl)) {
       throw new IllegalStateException(
           "Native font measurement requires the installed FontStorageImpl lifecycle aggregate");
     }
-    String cacheKey = SemanticFontOwner.normalizeLocator(fontPath);
     requireSemanticOwner();
-    OwnedFontInfo cached = fontInfoMap.get(cacheKey);
+    return getFontInfoUnchecked(font, SemanticFontOwner.normalizeLocator(font.path()));
+  }
+
+  private STBTTFontinfo getFontInfoUnchecked(Font font, String locator)
+      throws FontLoadingException {
+    if (resourceAggregate() != this) {
+      return resourceAggregate().getFontInfoUnchecked(font, locator);
+    }
+    if (!(fontStorage instanceof FontStorageImpl)) {
+      throw new IllegalStateException(
+          "Native font measurement requires the installed FontStorageImpl lifecycle aggregate");
+    }
+    String fontPath = font.path();
+    OwnedFontInfo cached = fontInfoMap.get(locator);
     if (cached != null) {
       return cached.value();
     }
     OwnedFontInfo created = createOwnedFontInfo(fontPath, fontStorage.getFontData(fontPath));
     created.discardStagedBorrowedViews();
-    fontInfoMap.put(cacheKey, created);
+    fontInfoMap.put(locator, created);
     created.transferAfterPublication();
     return created.value();
   }
@@ -1080,6 +1319,12 @@ public class FontServiceImpl implements FontService, TextMeasurer, RangeTextMeas
     Objects.requireNonNull(fonts, "fonts");
 
     List<Font> normalizedFonts = fonts.isEmpty() ? List.of(Font.DEFAULT) : fonts;
+    long generation = requireSemanticOwner().generation();
+    List<ResolvedFont> resolvedFonts = new ArrayList<>(normalizedFonts.size());
+    for (Font font : normalizedFonts) {
+      String locator = SemanticFontOwner.normalizeLocator(font.path());
+      resolvedFonts.add(new ResolvedFont(font, locator, getFontInfoUnchecked(font, locator)));
+    }
     ResolvedPrimitiveBuilder builder = new ResolvedPrimitiveBuilder(diagnostics, start, end);
     GlyphMeasurement previousGlyph = null;
     try (MemoryStack stack = MemoryStack.stackPush()) {
@@ -1107,9 +1352,10 @@ public class FontServiceImpl implements FontService, TextMeasurer, RangeTextMeas
           continue;
         }
 
-        GlyphMeasurement glyph = resolveGlyph(normalizedFonts, sourceCodePoint);
-        PairKerningMeasurement kerning = measurePairKerning(glyph, previousGlyph, fontSize);
-        BaseAdvanceMeasurement base = measureBaseAdvance(glyph, pAdvance, fontSize);
+        GlyphMeasurement glyph = resolveGlyph(resolvedFonts, sourceCodePoint, generation);
+        PairKerningMeasurement kerning =
+            measurePairKerning(glyph, previousGlyph, fontSize, generation);
+        BaseAdvanceMeasurement base = measureBaseAdvance(glyph, pAdvance, fontSize, generation);
         builder.append(
             ResolvedPrimitive.glyph(
                 sourceStart,
@@ -1163,14 +1409,30 @@ public class FontServiceImpl implements FontService, TextMeasurer, RangeTextMeas
         request.fonts().isEmpty() ? List.of(Font.DEFAULT) : request.fonts();
     Font primaryFont = normalizedFonts.get(0);
     FontMetrics fontMetrics =
-        measureFontMetrics(getFontInfo(primaryFont.path()), request.fontSize(), request.lineHeight());
-    ResolvedPrimitiveSequence sequence =
-        resolvePrimitives(
-            request.source(),
-            request.start(),
-            request.end(),
-            normalizedFonts,
-            request.fontSize());
+        measureFontMetrics(getFontInfo(primaryFont), request.fontSize(), request.lineHeight());
+    ResolvedPrimitiveSequence sequence;
+    if (cacheConfiguration.enabled()) {
+      ResolvedPrimitiveKey primitiveKey = primitiveCacheKey(request);
+      sequence = resolvedPrimitiveCache.get(primitiveKey);
+      if (sequence == null) {
+        sequence =
+            resolvePrimitives(
+                request.source(),
+                request.start(),
+                request.end(),
+                normalizedFonts,
+                request.fontSize());
+        resolvedPrimitiveCache.put(primitiveKey, sequence);
+      }
+    } else {
+      sequence =
+          resolvePrimitives(
+              request.source(),
+              request.start(),
+              request.end(),
+              normalizedFonts,
+              request.fontSize());
+    }
     return new PrivateResultBuilder(
             diagnostics,
             sequence,
@@ -1182,7 +1444,56 @@ public class FontServiceImpl implements FontService, TextMeasurer, RangeTextMeas
 
   private ResolvedMeasurement completeMeasurement(PreparedRange request) {
     diagnostics.increment(TextDiagnosticCounter.COMPLETE_TEXT_MEASUREMENTS);
-    return new FinalMeasurementMaterializer(diagnostics, prepareRange(request)).materialize();
+    if (!cacheConfiguration.enabled()) {
+      return new FinalMeasurementMaterializer(diagnostics, prepareRange(request)).materialize();
+    }
+    ResolvedPrimitiveKey primitiveKey = primitiveCacheKey(request);
+    WrappedLayoutKey layoutKey =
+        new WrappedLayoutKey(
+            primitiveKey,
+            request.maxWidth(),
+            request.offsetX(),
+            Float.floatToIntBits(request.lineHeight()) + ":" + Float.floatToIntBits(request.fontSize()),
+            request.wordWrap() ? "word-wrap" : "no-wrap",
+            "m2-default");
+    // Keep both calculation-family lookups observable even when an exact final layout is warm.
+    resolvedPrimitiveCache.get(primitiveKey);
+    ResolvedMeasurement cached = wrappedLayoutCache.get(layoutKey);
+    if (cached != null) return cached;
+    ResolvedMeasurement measured =
+        new FinalMeasurementMaterializer(diagnostics, prepareRange(request)).materialize();
+    wrappedLayoutCache.put(layoutKey, measured);
+    return measured;
+  }
+
+  private ResolvedPrimitiveKey primitiveCacheKey(PreparedRange request) {
+    // Preserve the existing custom-storage boundary before cache-key generation can observe the
+    // semantic owner; custom storage is intentionally rejected before any native read/allocation.
+    if (!(fontStorage instanceof FontStorageImpl)) {
+      atomicStorage();
+    }
+    long generation = requireSemanticOwner().generation();
+    List<String> fonts =
+        request.fonts().stream()
+            .map(
+                font ->
+                    SemanticFontOwner.normalizeLocator(font.path()) + "@" + generation)
+            .toList();
+    return new ResolvedPrimitiveKey(
+        request.start() + ":" + request.end() + ":" + request.source(),
+        fonts,
+        request.fontSize(),
+        roundToPixel ? "round-to-pixel" : "fractional",
+        "m2-resolution");
+  }
+
+  private static long primitiveWeight(ResolvedPrimitiveSequence sequence) {
+    return Math.max(1L, sequence.primitives().size() * 96L);
+  }
+
+  private static long measurementWeight(ResolvedMeasurement measurement) {
+    return Math.max(1L, measurement.metrics().lines().size() * 64L
+        + measurement.lineCaretStops().stream().mapToLong(stops -> stops.size() * 8L).sum());
   }
 
   private SeparatorKind separatorKind(
@@ -2045,8 +2356,20 @@ public class FontServiceImpl implements FontService, TextMeasurer, RangeTextMeas
   private record PairKerningMeasurement(
       STBTTFontinfo previousFontInfo, int previousGlyphIndex, int rawAdvance, float advance) {}
 
+  private record GlyphProbeKey(String locator, long generation, int codePoint) {}
+
+  private record AdvanceKey(String locator, long generation, int glyphIndex, int fontSizeBits) {}
+
+  private record KerningKey(
+      String locator, long generation, int previousGlyphIndex, int glyphIndex, int fontSizeBits) {}
+
+  private record KerningValue(int rawAdvance, float advance) {}
+
+  private record ResolvedFont(Font font, String locator, STBTTFontinfo fontInfo) {}
+
   private record GlyphMeasurement(
       Font font,
+      String locator,
       STBTTFontinfo fontInfo,
       int glyphIndex,
       int renderedCodePoint,

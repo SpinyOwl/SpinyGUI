@@ -4,6 +4,8 @@ import com.spinyowl.spinygui.core.font.Font;
 import com.spinyowl.spinygui.core.font.FontStretch;
 import com.spinyowl.spinygui.core.font.FontStyle;
 import com.spinyowl.spinygui.core.font.FontWeight;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 import lombok.NonNull;
@@ -22,14 +24,20 @@ final class SemanticFontChainResolver implements FontChainResolver {
       FontStyle style,
       FontWeight weight,
       FontStretch stretch) {
-    List<Font> registered = owner.registeredFonts();
-    return fontFamilies.stream()
-        .flatMap(
-            family ->
-                registered.stream()
-                    .filter(font -> font.fontFamily().equalsIgnoreCase(family))
-                    .sorted(faceOrder(style, weight, stretch)))
-        .toList();
+    Collection<Font> registered = owner.registeredFontView();
+    Comparator<Font> order = faceOrder(style, weight, stretch);
+    List<Font> resolved = new ArrayList<>();
+    for (String family : fontFamilies) {
+      List<Font> matching = new ArrayList<>();
+      for (Font font : registered) {
+        if (font.fontFamily().equalsIgnoreCase(family)) {
+          matching.add(font);
+        }
+      }
+      matching.sort(order);
+      resolved.addAll(matching);
+    }
+    return List.copyOf(resolved);
   }
 
   private static Comparator<Font> faceOrder(

@@ -5,8 +5,9 @@ import com.spinyowl.spinygui.core.font.Font;
 /**
  * One source code point and the face/code point selected to display it.
  *
- * @param sourceStart absolute UTF-16 start offset in the original measured text.
- * @param sourceEnd absolute, exclusive-end UTF-16 offset in the original measured text.
+ * @param sourceStart UTF-16 start in the containing result's coordinate space: absolute measured
+ *     source for {@link TextMetrics}, or fragment-local rendered text for an {@code InlineFragment}.
+ * @param sourceEnd exclusive UTF-16 end in the same containing-result coordinate space.
  * @param sourceCodePoint code point read from the original measured text.
  * @param renderedCodePoint code point requested for rendering; it may resolve to {@code .notdef}.
  * @param font face selected for the resolved glyph.

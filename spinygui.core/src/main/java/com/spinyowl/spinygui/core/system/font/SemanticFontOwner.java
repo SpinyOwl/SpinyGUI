@@ -6,6 +6,7 @@ import java.nio.ByteBuffer;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HexFormat;
 import java.util.LinkedHashMap;
@@ -97,6 +98,12 @@ public final class SemanticFontOwner {
   public List<Font> registeredFonts() {
     requireActiveOwnerThread();
     return List.copyOf(snapshot.descriptors().values());
+  }
+
+  /** Returns the current immutable descriptor view for owner-internal resolution. */
+  Collection<Font> registeredFontView() {
+    requireActiveOwnerThread();
+    return snapshot.descriptors().values();
   }
 
   /**

@@ -15,9 +15,13 @@ import static com.spinyowl.spinygui.core.style.types.WhiteSpace.PRE_WRAP;
 import static com.spinyowl.spinygui.core.style.types.WordBreak.BREAK_ALL;
 
 import com.spinyowl.spinygui.core.diagnostic.TextDiagnosticCounter;
+import com.spinyowl.spinygui.core.diagnostic.DiagnosticSession;
 import com.spinyowl.spinygui.core.font.Font;
 import com.spinyowl.spinygui.core.font.FontStretch;
+import com.spinyowl.spinygui.core.font.FontStyle;
+import com.spinyowl.spinygui.core.font.FontWeight;
 import com.spinyowl.spinygui.core.layout.InlineFragment;
+import com.spinyowl.spinygui.core.layout.InlineSourceMapping;
 import com.spinyowl.spinygui.core.layout.LineBox;
 import com.spinyowl.spinygui.core.node.Element;
 import com.spinyowl.spinygui.core.node.Node;
@@ -27,72 +31,136 @@ import com.spinyowl.spinygui.core.style.stylesheet.util.StyleUtils;
 import com.spinyowl.spinygui.core.style.types.OverflowWrap;
 import com.spinyowl.spinygui.core.style.types.WhiteSpace;
 import com.spinyowl.spinygui.core.style.types.WordBreak;
+import com.spinyowl.spinygui.core.system.font.ResolvedGlyph;
+import com.spinyowl.spinygui.core.system.font.ResolvedTextRun;
 import com.spinyowl.spinygui.core.system.font.TextLineMetrics;
 import com.spinyowl.spinygui.core.system.font.TextMeasurer;
+import com.spinyowl.spinygui.core.system.font.TextMetrics;
+import com.spinyowl.spinygui.core.system.font.internal.RangeTextMeasurerAdapter;
+import com.spinyowl.spinygui.core.system.cache.BoundedTextCache;
+import com.spinyowl.spinygui.core.system.cache.TextCacheConfiguration;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
 import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
 
-@RequiredArgsConstructor
-public class InlineFormattingContext {
+public class InlineFormattingContext implements AutoCloseable {
   @NonNull private final TextMeasurer textMeasurer;
+  private final TextCacheConfiguration cacheConfiguration;
+  private boolean m7CacheEnabled;
+  private PreparedInlineTextCache preparedTexts;
+  private boolean closed;
+  private BoundedTextCache.Stats lastFontChainStats = new BoundedTextCache.Stats(0, 0, 0, 0, 0, 0, 0);
+  private BoundedTextCache.Stats lastMetricsStats = new BoundedTextCache.Stats(0, 0, 0, 0, 0, 0, 0);
+
+  public InlineFormattingContext(@NonNull TextMeasurer textMeasurer) {
+    this(textMeasurer, TextCacheConfiguration.disabled());
+  }
+
+  public InlineFormattingContext(
+      @NonNull TextMeasurer textMeasurer, @NonNull TextCacheConfiguration cacheConfiguration) {
+    this.textMeasurer = textMeasurer;
+    this.cacheConfiguration = cacheConfiguration;
+    this.m7CacheEnabled = cacheConfiguration.enabled();
+    this.preparedTexts = new PreparedInlineTextCache(
+        cacheConfiguration.enabled(), cacheConfiguration.preparedEntries(), cacheConfiguration.preparedWeight());
+  }
   private InlineBlockLayout inlineBlockLayout;
+
+  /** Selects the deterministic M7 cache mode for subsequently created layout passes. */
+  public void m7CacheEnabled(boolean enabled) {
+    if (closed) {
+      throw new IllegalStateException("Inline formatting context is closed");
+    }
+    if (m7CacheEnabled != enabled) {
+      preparedTexts.close();
+      preparedTexts = new PreparedInlineTextCache(
+          enabled, cacheConfiguration.preparedEntries(), cacheConfiguration.preparedWeight());
+    }
+    this.m7CacheEnabled = enabled;
+  }
+
+  /** Package-private M7 evidence seam for the context-owned prepared-value family. */
+  public BoundedTextCache.Stats preparedTextCacheStats() {
+    return preparedTexts.stats();
+  }
+
+  /** Package-private evidence seam for verifying the configured inline cache mode. */
+  boolean m7CacheEnabled() {
+    return m7CacheEnabled;
+  }
+
+  /** Latest pass-owned font-chain and metrics diagnostics, without retaining pass entries. */
+  public Map<String, BoundedTextCache.Stats> fontCalculationCacheStats() {
+    return Map.of("font-chain", lastFontChainStats, "metrics", lastMetricsStats);
+  }
 
   void inlineBlockLayout(InlineBlockLayout inlineBlockLayout) {
     this.inlineBlockLayout = inlineBlockLayout;
   }
 
   public float layout(@NonNull Element parent, @NonNull List<Node> nodes, float startY) {
+    if (closed) {
+      throw new IllegalStateException("Inline formatting context is closed");
+    }
     if (nodes.isEmpty()) {
       return 0;
     }
 
-    float contentX = parent.box().border().left() + parent.box().padding().left();
-    float contentY = parent.box().border().top() + parent.box().padding().top() + startY;
-    float availableWidth = Math.max(0, parent.box().content().width());
-    List<InlineUnit> units = new ArrayList<>();
-    Map<Text, List<InlineFragment>> textFragments = new IdentityHashMap<>();
-    Map<Element, List<InlineFragment>> elementFragments = new IdentityHashMap<>();
+    Pass pass = new Pass();
+    try {
+      float contentX = parent.box().border().left() + parent.box().padding().left();
+      float contentY = parent.box().border().top() + parent.box().padding().top() + startY;
+      float availableWidth = Math.max(0, parent.box().content().width());
+      List<InlineUnit> units = new ArrayList<>();
+      Map<Text, List<InlineFragment>> textFragments = new IdentityHashMap<>();
+      Map<Element, List<InlineFragment>> elementFragments = new IdentityHashMap<>();
 
-    nodes.forEach(node -> collectUnits(node, units, textFragments, elementFragments, parent));
-    List<LineBox> lines = buildLines(parent, units, contentX, contentY, availableWidth);
-    alignLines(parent, lines, contentX, availableWidth);
+      nodes.forEach(
+          node -> collectUnits(node, units, textFragments, elementFragments, parent, pass));
+      List<LineBox> lines = buildLines(parent, units, contentX, contentY, availableWidth);
+      alignLines(parent, lines, contentX, availableWidth);
 
-    for (LineBox line : lines) {
-      for (InlineFragment fragment : line.fragments()) {
-        if (fragment.node() instanceof Text text) {
-          textFragments.computeIfAbsent(text, k -> new ArrayList<>()).add(fragment);
+      for (LineBox line : lines) {
+        for (InlineFragment fragment : line.fragments()) {
+          if (fragment.node() instanceof Text text) {
+            textFragments.computeIfAbsent(text, k -> new ArrayList<>()).add(fragment);
+          }
         }
       }
-    }
 
-    collectElementLineFragments(lines, elementFragments);
+      collectElementLineFragments(lines, elementFragments);
 
-    textFragments.forEach(
-        (text, fragments) -> {
-          text.inlineFragments(fragments);
-          applyUnionBox(text, fragments);
-          if (!fragments.isEmpty()) {
-            InlineFragment first = fragments.get(0);
-            InlineFragment last = fragments.get(fragments.size() - 1);
-            text.textStartX(first.x() - contentX);
-            text.textStartY(first.y() - contentY);
-            text.textEndX(last.x() + last.width() - contentX);
-            text.textEndY(last.y() - contentY);
-          }
-        });
+      textFragments.forEach(
+          (text, fragments) -> {
+            text.inlineFragments(fragments);
+            applyUnionBox(text, fragments);
+            if (!fragments.isEmpty()) {
+              InlineFragment first = fragments.get(0);
+              InlineFragment last = fragments.get(fragments.size() - 1);
+              text.textStartX(first.x() - contentX);
+              text.textStartY(first.y() - contentY);
+              text.textEndX(last.x() + last.width() - contentX);
+              text.textEndY(last.y() - contentY);
+            }
+          });
 
-    for (Node node : nodes) {
-      if (node instanceof Element element) {
-        applyInlineElementFragments(element, textFragments, elementFragments);
+      for (Node node : nodes) {
+        if (node instanceof Element element) {
+          applyInlineElementFragments(element, textFragments, elementFragments);
+        }
       }
-    }
 
-    return lines.stream().map(line -> line.y() + line.height() - contentY).max(Float::compare).orElse(0f);
+      return lines.stream()
+          .map(line -> line.y() + line.height() - contentY)
+          .max(Float::compare)
+          .orElse(0f);
+    } finally {
+      pass.close();
+    }
   }
 
   public boolean inlineNode(Node node) {
@@ -107,12 +175,13 @@ public class InlineFormattingContext {
       List<InlineUnit> units,
       Map<Text, List<InlineFragment>> textFragments,
       Map<Element, List<InlineFragment>> elementFragments,
-      Element inheritedParent) {
+      Element inheritedParent,
+      Pass pass) {
     if (node instanceof Text text) {
       text.inlineFragments(List.of());
       text.box().contentPosition(0, 0);
       text.box().contentSize(0, 0);
-      units.addAll(textUnits(text, inheritedParent.resolvedStyle()));
+      units.addAll(textUnits(text, inheritedParent.resolvedStyle(), pass));
       return;
     }
 
@@ -123,7 +192,7 @@ public class InlineFormattingContext {
     ResolvedStyle style = element.resolvedStyle();
     element.inlineFragments(List.of());
     if (INLINE_BLOCK.equals(style.display())) {
-      collectInlineBlockUnit(element, units, inheritedParent);
+      collectInlineBlockUnit(element, units, inheritedParent, pass);
       return;
     }
     setBorders(style, element.box().border());
@@ -134,18 +203,19 @@ public class InlineFormattingContext {
         element.box().padding());
     setMargins(element, inheritedParent.box().content().width());
 
-    addSpacer(units, element, style, element.box().margin().left(), false);
+    addSpacer(units, element, style, element.box().margin().left(), false, pass);
     addSpacer(
         units,
         element,
         style,
         element.box().border().left() + element.box().padding().left(),
-        true);
-    addVerticalStrut(units, element, style);
+        true,
+        pass);
+    addVerticalStrut(units, element, style, pass);
 
     for (Node child : element.childNodes()) {
       if (inlineNode(child)) {
-        collectUnits(child, units, textFragments, elementFragments, element);
+        collectUnits(child, units, textFragments, elementFragments, element, pass);
       }
     }
 
@@ -154,12 +224,13 @@ public class InlineFormattingContext {
         element,
         style,
         element.box().padding().right() + element.box().border().right(),
-        true);
-    addSpacer(units, element, style, element.box().margin().right(), false);
+        true,
+        pass);
+    addSpacer(units, element, style, element.box().margin().right(), false, pass);
   }
 
   private void collectInlineBlockUnit(
-      Element element, List<InlineUnit> units, Element inheritedParent) {
+      Element element, List<InlineUnit> units, Element inheritedParent, Pass pass) {
     ResolvedStyle style = element.resolvedStyle();
     setBorders(style, element.box().border());
     setPadding(
@@ -171,12 +242,12 @@ public class InlineFormattingContext {
       inlineBlockLayout.layout(element, inheritedParent);
     }
     setMargins(element, inheritedParent.box().content().width());
-    units.add(inlineBlockUnit(element, style, inlineBlockMetrics(element)));
+    units.add(inlineBlockUnit(element, style, inlineBlockMetrics(element), pass));
   }
 
   private InlineUnit inlineBlockUnit(
-      Element element, ResolvedStyle style, InlineBlockMetrics metrics) {
-    return new InlineUnit(element, style, null, false, false, false, metrics, 0, 0, true);
+      Element element, ResolvedStyle style, InlineBlockMetrics metrics, Pass pass) {
+    return new InlineUnit(element, style, null, null, false, false, metrics, 0, 0, true, pass);
   }
 
   private void addSpacer(
@@ -184,13 +255,17 @@ public class InlineFormattingContext {
       Element element,
       ResolvedStyle style,
       float width,
-      boolean elementBox) {
+      boolean elementBox,
+      Pass pass) {
     if (width > 0) {
-      units.add(new InlineUnit(element, style, null, false, false, true, width, 0, elementBox));
+      units.add(
+          new InlineUnit(
+              element, style, null, null, false, true, null, width, 0, elementBox, pass));
     }
   }
 
-  private void addVerticalStrut(List<InlineUnit> units, Element element, ResolvedStyle style) {
+  private void addVerticalStrut(
+      List<InlineUnit> units, Element element, ResolvedStyle style, Pass pass) {
     float verticalAdditions =
         element.box().border().top()
             + element.box().padding().top()
@@ -198,57 +273,45 @@ public class InlineFormattingContext {
             + element.box().border().bottom();
     if (verticalAdditions > 0) {
       units.add(
-          new InlineUnit(element, style, null, false, false, true, 0, verticalAdditions, true));
+          new InlineUnit(
+              element, style, null, null, false, true, null, 0, verticalAdditions, true, pass));
     }
   }
 
-  private List<InlineUnit> textUnits(Text text, ResolvedStyle style) {
-    textMeasurer.diagnostics().increment(TextDiagnosticCounter.NORMALIZATION_SCANS);
-    String normalized = InlineWhitespace.normalize(text.content() == null ? "" : text.content(), style);
+  private List<InlineUnit> textUnits(Text text, ResolvedStyle style, Pass pass) {
+    PreparedInlineText prepared =
+        pass.prepare(text.content() == null ? "" : text.content(), style, textMeasurer.diagnostics());
     var result = new ArrayList<InlineUnit>();
-    WhiteSpace whiteSpace = style.whiteSpace();
-    boolean preserveSpaces = PRE.equals(whiteSpace) || PRE_WRAP.equals(whiteSpace);
-    int start = 0;
-    for (int i = 0; i < normalized.length(); i++) {
-      char c = normalized.charAt(i);
-      if (c == '\n') {
-        addTextUnit(text, style, normalized.substring(start, i), preserveSpaces, result);
-        result.add(new InlineUnit(text, style, null, false, true, false, 0, 0, false));
-        start = i + 1;
-      } else if (!preserveSpaces && c == ' ') {
-        addTextUnit(text, style, normalized.substring(start, i), false, result);
-        result.add(new InlineUnit(text, style, " ", true, false, false, 0, 0, false));
-        start = i + 1;
-      }
+    for (PreparedInlineText.Unit unit : prepared.units()) {
+      result.add(
+          new InlineUnit(
+              text,
+              style,
+              prepared,
+              unit,
+              unit.kind() == PreparedInlineText.UnitKind.COLLAPSIBLE_SPACE,
+              false,
+              null,
+              0,
+              0,
+              false,
+              pass));
     }
-    addTextUnit(text, style, normalized.substring(start), preserveSpaces, result);
     return result;
   }
 
-  private void addTextUnit(
-      Text text, ResolvedStyle style, String value, boolean preserveSpaces, List<InlineUnit> units) {
-    if (value.isEmpty()) {
-      return;
-    }
-    if (preserveSpaces) {
-      for (int i = 0; i < value.length(); i++) {
-        units.add(
-            new InlineUnit(
-                text, style, String.valueOf(value.charAt(i)), false, false, false, 0, 0, false));
-      }
-    } else {
-      units.add(new InlineUnit(text, style, value, false, false, false, 0, 0, false));
-    }
-  }
-
   private List<LineBox> buildLines(
-      Element parent, List<InlineUnit> units, float contentX, float contentY, float availableWidth) {
+      Element parent,
+      List<InlineUnit> units,
+      float contentX,
+      float contentY,
+      float availableWidth) {
     List<LineBox> lines = new ArrayList<>();
     LineBox line = newLine(contentX, contentY);
     float cursorX = contentX;
 
     for (InlineUnit unit : units) {
-      if (unit.newline) {
+      if (unit.newline()) {
         lines.add(closeLine(line));
         contentY += line.height();
         line = newLine(contentX, contentY);
@@ -259,9 +322,30 @@ public class InlineFormattingContext {
         continue;
       }
 
-      float width = unit.width(textMeasurer);
+      if (unit.preservedOutputSequence()) {
+        for (int index = unit.rangeStart(); index < unit.rangeEnd(); ) {
+          textMeasurer
+              .diagnostics()
+              .increment(TextDiagnosticCounter.INLINE_RANGE_CODE_POINT_VISITS);
+          int next = unit.nextCodePointBoundary(index);
+          float partWidth = unit.width(index, next);
+          if (unit.wraps()
+              && !line.empty()
+              && cursorX + partWidth > contentX + availableWidth) {
+            lines.add(closeLine(line));
+            contentY += line.height();
+            line = newLine(contentX, contentY);
+            cursorX = contentX;
+          }
+          cursorX = addUnit(line, unit, index, next, cursorX);
+          index = next;
+        }
+        continue;
+      }
+
+      float width = unit.width();
       boolean breakIntoCharacters =
-          unit.breakIntoCharacters(textMeasurer, availableWidth, cursorX, contentX);
+          unit.breakIntoCharacters(availableWidth, cursorX, contentX);
       boolean wrap =
           !breakIntoCharacters
               && unit.wraps()
@@ -279,14 +363,20 @@ public class InlineFormattingContext {
       }
 
       if (breakIntoCharacters) {
-        for (InlineUnit part : unit.breakIntoCharacters()) {
-          if (!line.empty() && cursorX + part.width(textMeasurer) > contentX + availableWidth) {
+        for (int index = unit.rangeStart(); index < unit.rangeEnd(); ) {
+          textMeasurer
+              .diagnostics()
+              .increment(TextDiagnosticCounter.INLINE_RANGE_CODE_POINT_VISITS);
+          int next = unit.nextCodePointBoundary(index);
+          if (!line.empty()
+              && cursorX + unit.width(index, next) > contentX + availableWidth) {
             lines.add(closeLine(line));
             contentY += line.height();
             line = newLine(contentX, contentY);
             cursorX = contentX;
           }
-          cursorX = addUnit(line, part, cursorX);
+          cursorX = addUnit(line, unit, index, next, cursorX);
+          index = next;
         }
       } else {
         cursorX = addUnit(line, unit, cursorX);
@@ -308,13 +398,27 @@ public class InlineFormattingContext {
   }
 
   private float addUnit(LineBox line, InlineUnit unit, float cursorX) {
-    float width = unit.width(textMeasurer);
-    float height = unit.lineHeight(textMeasurer);
-    float baseline = line.y() + unit.baseline(textMeasurer);
+    return addUnit(line, unit, unit.rangeStart(), unit.rangeEnd(), cursorX);
+  }
+
+  private float addUnit(
+      LineBox line, InlineUnit unit, int rangeStart, int rangeEnd, float cursorX) {
+    float width = unit.width(rangeStart, rangeEnd);
+    float height = unit.lineHeight(rangeStart, rangeEnd);
+    float baseline = line.y() + unit.baseline(rangeStart, rangeEnd);
+    String durableText = unit.durableText(rangeStart, rangeEnd);
+    FragmentResolution resolution =
+        unit.fragmentResolution(durableText, rangeStart, rangeEnd);
+    if (durableText == null) {
+      textMeasurer.diagnostics().increment(TextDiagnosticCounter.INLINE_NULL_TEXT_FRAGMENTS);
+    } else {
+      textMeasurer.diagnostics().increment(TextDiagnosticCounter.INLINE_DURABLE_TEXT_STRINGS);
+    }
     line.addFragment(
         InlineFragment.builder()
             .node(unit.fragmentNode())
-            .text(unit.text)
+            .text(durableText)
+            .sourceMapping(resolution.sourceMapping())
             .x(unit.fragmentX(cursorX))
             .y(line.y())
             .width(unit.fragmentWidth(width))
@@ -323,7 +427,7 @@ public class InlineFormattingContext {
             .font(unit.fonts.isEmpty() ? Font.DEFAULT : unit.fonts.get(0))
             .fontSize(unit.fontSize)
             .color(unit.style.color())
-            .runs(unit.measurement(textMeasurer).runs())
+            .runs(resolution.runs())
             .build());
     return cursorX + width;
   }
@@ -458,10 +562,12 @@ public class InlineFormattingContext {
         }
       }
       bounds.forEach(
-          (element, fragmentBounds) ->
-              elementFragments
-                  .computeIfAbsent(element, ignored -> new ArrayList<>())
-                  .add(fragmentBounds.toFragment(element)));
+          (element, fragmentBounds) -> {
+            textMeasurer.diagnostics().increment(TextDiagnosticCounter.INLINE_NULL_TEXT_FRAGMENTS);
+            elementFragments
+                .computeIfAbsent(element, ignored -> new ArrayList<>())
+                .add(fragmentBounds.toFragment(element));
+          });
     }
   }
 
@@ -535,14 +641,6 @@ public class InlineFormattingContext {
         || INLINE_BLOCK.equals(element.resolvedStyle().display());
   }
 
-  private List<Font> findFonts(ResolvedStyle style) {
-    textMeasurer.diagnostics().increment(TextDiagnosticCounter.FONT_CHAIN_RESOLUTIONS);
-    return Font.semanticOwner().resolver()
-        .resolve(
-            style.fontFamilies(), style.fontStyle(), style.fontWeight(), FontStretch.NORMAL)
-        ;
-  }
-
   private void setMargins(Element element, float parentWidth) {
     ResolvedStyle style = element.resolvedStyle();
     element.box().margin().left(getFloatLengthOptional(style.marginLeft(), parentWidth).orElse(0f));
@@ -554,86 +652,111 @@ public class InlineFormattingContext {
   private class InlineUnit {
     private final Node node;
     private final ResolvedStyle style;
-    private final String text;
+    private final PreparedInlineText prepared;
+    private final PreparedInlineText.Unit range;
     private final boolean space;
-    private final boolean newline;
     private final boolean spacer;
     private final InlineBlockMetrics inlineBlockMetrics;
     private final float spacerWidth;
     private final float extraHeight;
     private final boolean elementBox;
+    private final TypographyKey typographyKey;
     private final List<Font> fonts;
     private final float fontSize;
+    private final Pass pass;
     private TextLineMetrics measurement;
 
     private InlineUnit(
         Node node,
         ResolvedStyle style,
-        String text,
+        PreparedInlineText prepared,
+        PreparedInlineText.Unit range,
         boolean space,
-        boolean newline,
-        boolean spacer,
-        float spacerWidth,
-        float extraHeight,
-        boolean elementBox) {
-      this(node, style, text, space, newline, spacer, null, spacerWidth, extraHeight, elementBox);
-    }
-
-    private InlineUnit(
-        Node node,
-        ResolvedStyle style,
-        String text,
-        boolean space,
-        boolean newline,
         boolean spacer,
         InlineBlockMetrics inlineBlockMetrics,
         float spacerWidth,
         float extraHeight,
-        boolean elementBox) {
+        boolean elementBox,
+        Pass pass) {
       this.node = node;
       this.style = style;
-      this.text = text;
+      this.prepared = prepared;
+      this.range = range;
       this.space = space;
-      this.newline = newline;
       this.spacer = spacer;
       this.inlineBlockMetrics = inlineBlockMetrics;
       this.spacerWidth = spacerWidth;
       this.extraHeight = extraHeight;
       this.elementBox = elementBox;
-      this.fonts = findFonts(style);
+      this.pass = pass;
+      this.typographyKey = pass.typographyKey(style);
+      this.fonts = pass.fonts(style, typographyKey);
       Float measuredFontSize = StyleUtils.getFontSize(node);
       this.fontSize = measuredFontSize == null ? 16f : measuredFontSize;
     }
 
-    float width(TextMeasurer measurer) {
+    boolean newline() {
+      return range != null && range.kind() == PreparedInlineText.UnitKind.FORCED_BREAK;
+    }
+
+    int rangeStart() {
+      return range == null ? 0 : range.preparedStart();
+    }
+
+    int rangeEnd() {
+      return range == null ? 0 : range.preparedEnd();
+    }
+
+    int nextCodePointBoundary(int start) {
+      return start + Character.charCount(prepared.text().codePointAt(start));
+    }
+
+    boolean preservedOutputSequence() {
+      WhiteSpace whiteSpace = style.whiteSpace();
+      return range != null
+          && (PRE.equals(whiteSpace) || PRE_WRAP.equals(whiteSpace))
+          && !newline();
+    }
+
+    float width() {
+      return width(rangeStart(), rangeEnd());
+    }
+
+    float width(int start, int end) {
       if (inlineBlockMetrics != null) {
         return inlineBlockMetrics.marginWidth();
       }
       if (spacer) {
         return spacerWidth;
       }
-      return text == null || text.isEmpty() ? 0 : measurement(measurer).width();
+      return range == null || newline() ? 0 : measurement(start, end).width();
     }
 
-    TextLineMetrics measurement(TextMeasurer measurer) {
+    TextLineMetrics measurement(int start, int end) {
+      if (range != null && (start != range.preparedStart() || end != range.preparedEnd())) {
+        return pass.measure(
+            prepared, start, end, typographyKey, fonts, fontSize, style.lineHeight());
+      }
       if (measurement == null) {
-        measurement = measurer.getTextLineMetrics(text == null ? "" : text, fonts, fontSize, style.lineHeight());
+        measurement =
+            pass.measure(
+                prepared, start, end, typographyKey, fonts, fontSize, style.lineHeight());
       }
       return measurement;
     }
 
-    float lineHeight(TextMeasurer measurer) {
+    float lineHeight(int start, int end) {
       if (inlineBlockMetrics != null) {
         return inlineBlockMetrics.marginHeight();
       }
-      return measurement(measurer).height() + extraHeight;
+      return measurement(start, end).height() + extraHeight;
     }
 
-    float baseline(TextMeasurer measurer) {
+    float baseline(int start, int end) {
       if (inlineBlockMetrics != null) {
         return inlineBlockMetrics.baseline() + inlineBlockMetrics.marginTop();
       }
-      return measurement(measurer).baseline() + extraHeight / 2;
+      return measurement(start, end).baseline() + extraHeight / 2;
     }
 
     boolean wraps() {
@@ -641,35 +764,100 @@ public class InlineFormattingContext {
       return !NOWRAP.equals(whiteSpace) && !PRE.equals(whiteSpace);
     }
 
-    boolean breakWord(TextMeasurer measurer, float availableWidth) {
+    boolean breakWord(float availableWidth) {
       OverflowWrap overflowWrap = style.overflowWrap();
       WordBreak wordBreak = style.wordBreak();
       return (BREAK_WORD.equals(overflowWrap)
               || ANYWHERE.equals(overflowWrap)
               || WordBreak.BREAK_WORD.equals(wordBreak))
-          && text != null
+          && range != null
           && !space
           && wraps()
-          && width(measurer) > availableWidth;
+          && width() > availableWidth;
     }
 
-    boolean breakIntoCharacters(
-        TextMeasurer measurer, float availableWidth, float cursorX, float contentX) {
-      return text != null
+    boolean breakIntoCharacters(float availableWidth, float cursorX, float contentX) {
+      return range != null
           && !space
           && wraps()
-          && (BREAK_ALL.equals(style.wordBreak()) || breakWord(measurer, availableWidth))
-          && cursorX + width(measurer) > contentX + availableWidth;
+          && (BREAK_ALL.equals(style.wordBreak()) || breakWord(availableWidth))
+          && cursorX + width() > contentX + availableWidth;
     }
 
-    List<InlineUnit> breakIntoCharacters() {
-      var parts = new ArrayList<InlineUnit>();
-      for (int i = 0; i < text.length(); i++) {
-        parts.add(
-            new InlineUnit(
-                node, style, String.valueOf(text.charAt(i)), false, false, false, 0, 0, false));
+    String durableText(int start, int end) {
+      if (range == null || newline()) {
+        return null;
       }
-      return parts;
+      return prepared.text().substring(start, end);
+    }
+
+    FragmentResolution fragmentResolution(String durableText, int start, int end) {
+      if (range == null || newline()) {
+        return new FragmentResolution(List.of(), InlineSourceMapping.unmapped());
+      }
+      List<ResolvedTextRun> measuredRuns = measurement(start, end).runs();
+      if (measuredRuns.isEmpty()) {
+        return new FragmentResolution(
+            List.of(), prepared.sourceMappingForPreparedRange(durableText, start, end));
+      }
+
+      boolean replacementAware =
+          measuredRuns.stream()
+              .flatMap(run -> run.glyphs().stream())
+              .anyMatch(
+                  glyph ->
+                      glyph.replacement()
+                          || glyph.sourceCodePoint() != glyph.renderedCodePoint());
+      int renderedLength =
+          replacementAware
+              ? measuredRuns.stream()
+                  .flatMap(run -> run.glyphs().stream())
+                  .mapToInt(glyph -> Character.charCount(glyph.renderedCodePoint()))
+                  .sum()
+              : 0;
+      int[] sourceStarts = replacementAware ? new int[renderedLength] : null;
+      int[] sourceEnds = replacementAware ? new int[renderedLength] : null;
+      StringBuilder renderedText =
+          replacementAware ? new StringBuilder(renderedLength) : null;
+      List<ResolvedTextRun> localRuns = new ArrayList<>(measuredRuns.size());
+      int localOffset = 0;
+      for (ResolvedTextRun run : measuredRuns) {
+        int runStart = localOffset;
+        List<ResolvedGlyph> localGlyphs = new ArrayList<>(run.glyphs().size());
+        for (ResolvedGlyph glyph : run.glyphs()) {
+          int glyphStart = localOffset;
+          int glyphEnd = glyphStart + Character.charCount(glyph.renderedCodePoint());
+          if (replacementAware) {
+            int originalStart =
+                prepared.sourceStartForPreparedRange(glyph.sourceStart(), glyph.sourceEnd());
+            int originalEnd =
+                prepared.sourceEndForPreparedRange(glyph.sourceStart(), glyph.sourceEnd());
+            for (int index = glyphStart; index < glyphEnd; index++) {
+              sourceStarts[index] = originalStart;
+              sourceEnds[index] = originalEnd;
+            }
+            renderedText.appendCodePoint(glyph.renderedCodePoint());
+          }
+          localGlyphs.add(
+              new ResolvedGlyph(
+                  glyphStart,
+                  glyphEnd,
+                  glyph.sourceCodePoint(),
+                  glyph.renderedCodePoint(),
+                  glyph.font(),
+                  glyph.replacement()));
+          localOffset = glyphEnd;
+        }
+        localRuns.add(
+            new ResolvedTextRun(runStart, localOffset, run.font(), localGlyphs, run.advance()));
+      }
+
+      InlineSourceMapping mapping =
+          replacementAware
+              ? InlineSourceMapping.forRenderedText(
+                  prepared.source(), renderedText.toString(), sourceStarts, sourceEnds)
+              : prepared.sourceMappingForPreparedRange(durableText, start, end);
+      return new FragmentResolution(localRuns, mapping);
     }
 
     Node fragmentNode() {
@@ -688,6 +876,170 @@ public class InlineFormattingContext {
       return inlineBlockMetrics == null ? height : inlineBlockMetrics.borderHeight();
     }
   }
+
+  private record FragmentResolution(
+      List<ResolvedTextRun> runs, InlineSourceMapping sourceMapping) {}
+
+  private final class Pass implements AutoCloseable {
+    private final boolean cacheEnabled = m7CacheEnabled;
+    private final long generation = Font.semanticOwner().generation();
+    private final BoundedTextCache<TypographyKey, List<Font>> fontChains =
+        new BoundedTextCache<>(
+            cacheConfiguration.fontChainEntries(),
+            cacheConfiguration.fontChainWeight(),
+            value -> Math.max(1, value.size() * 32),
+            cacheEnabled);
+    private final BoundedTextCache<MeasurementKey, TextLineMetrics> measurements =
+        new BoundedTextCache<>(
+            cacheConfiguration.metricsEntries(),
+            cacheConfiguration.metricsWeight(),
+            ignored -> 256,
+            cacheEnabled);
+    private boolean closed;
+
+    PreparedInlineText prepare(String source, ResolvedStyle style, DiagnosticSession diagnostics) {
+      requireActiveGeneration();
+      return InlineFormattingContext.this.preparedTexts.getOrPrepare(source, style, diagnostics);
+    }
+
+    TypographyKey typographyKey(ResolvedStyle style) {
+      if (!cacheEnabled) {
+        return null;
+      }
+      return new TypographyKey(
+          List.copyOf(style.fontFamilies()),
+          style.fontStyle(),
+          style.fontWeight(),
+          FontStretch.NORMAL);
+    }
+
+    List<Font> fonts(ResolvedStyle style, TypographyKey key) {
+      requireActiveGeneration();
+      if (!cacheEnabled) {
+        textMeasurer.diagnostics().increment(TextDiagnosticCounter.FONT_CHAIN_RESOLUTIONS);
+        return Font.semanticOwner()
+            .resolver()
+            .resolve(
+                style.fontFamilies(),
+                style.fontStyle(),
+                style.fontWeight(),
+                FontStretch.NORMAL);
+      }
+      List<Font> cached = fontChains.get(key);
+      if (cached != null) {
+        return cached;
+      }
+      textMeasurer.diagnostics().increment(TextDiagnosticCounter.FONT_CHAIN_RESOLUTIONS);
+      List<Font> resolved =
+          List.copyOf(
+              Font.semanticOwner()
+                  .resolver()
+                  .resolve(key.families(), key.fontStyle(), key.fontWeight(), key.fontStretch()));
+      fontChains.put(key, resolved);
+      return resolved;
+    }
+
+    TextLineMetrics measure(
+        PreparedInlineText prepared,
+        int start,
+        int end,
+        TypographyKey typographyKey,
+        List<Font> fonts,
+        float fontSize,
+        float lineHeight) {
+      requireActiveGeneration();
+      String source = prepared == null ? "" : prepared.text();
+      if (!cacheEnabled) {
+        return measureRange(source, start, end, fonts, fontSize, lineHeight);
+      }
+      MeasurementKey key =
+          new MeasurementKey(
+              source,
+              start,
+              end,
+              typographyKey,
+              fonts,
+              fontSize,
+              lineHeight,
+              generation);
+      TextLineMetrics cached = measurements.get(key);
+      if (cached != null) {
+        textMeasurer.diagnostics().increment(TextDiagnosticCounter.INLINE_MEASUREMENT_REUSES);
+        return cached;
+      }
+      TextLineMetrics measured = measureRange(source, start, end, fonts, fontSize, lineHeight);
+      measurements.put(key, measured);
+      return measured;
+    }
+
+    private TextLineMetrics measureRange(
+        String source,
+        int start,
+        int end,
+        List<Font> fonts,
+        float fontSize,
+        float lineHeight) {
+      TextMetrics metrics =
+          RangeTextMeasurerAdapter.measureRange(
+              textMeasurer,
+              source,
+              start,
+              end,
+              0,
+              fonts,
+              fontSize,
+              lineHeight,
+              Float.MAX_VALUE,
+              false);
+      TextLineMetrics measured = metrics.lines().get(0);
+      textMeasurer.diagnostics().increment(TextDiagnosticCounter.INLINE_MEASUREMENT_RANGE_CALLS);
+      return measured;
+    }
+
+    private void requireActiveGeneration() {
+      if (closed) {
+        throw new IllegalStateException("Inline layout pass is already closed");
+      }
+      if (Font.semanticOwner().generation() != generation) {
+        throw new IllegalStateException("Font registry mutated during an inline layout pass");
+      }
+    }
+
+    @Override
+    public void close() {
+      if (closed) {
+        return;
+      }
+      boolean generationChanged = Font.semanticOwner().generation() != generation;
+      lastFontChainStats = fontChains.stats();
+      lastMetricsStats = measurements.stats();
+      measurements.clear();
+      fontChains.clear();
+      measurements.close();
+      fontChains.close();
+      closed = true;
+      textMeasurer.diagnostics().increment(TextDiagnosticCounter.INLINE_PASS_CLEANUPS);
+      if (generationChanged) {
+        throw new IllegalStateException("Font registry mutated during an inline layout pass");
+      }
+    }
+  }
+
+  private record TypographyKey(
+      List<String> families,
+      FontStyle fontStyle,
+      FontWeight fontWeight,
+      FontStretch fontStretch) {}
+
+  private record MeasurementKey(
+      String source,
+      int start,
+      int end,
+      TypographyKey typographyKey,
+      List<Font> fonts,
+      float fontSize,
+      float lineHeight,
+      long generation) {}
 
   private static class FragmentBounds {
     private float minX = Float.MAX_VALUE;
@@ -733,5 +1085,14 @@ public class InlineFormattingContext {
 
   interface InlineBlockLayout {
     void layout(Element element, Element formattingParent);
+  }
+
+  /** Releases context-owned prepared values; subsequent layout use is rejected. */
+  @Override
+  public void close() {
+    if (!closed) {
+      preparedTexts.close();
+      closed = true;
+    }
   }
 }

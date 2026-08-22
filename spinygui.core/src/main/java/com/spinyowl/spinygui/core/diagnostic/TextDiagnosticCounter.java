@@ -110,6 +110,46 @@ public enum TextDiagnosticCounter implements DiagnosticCounter {
       "core.text.normalization-scans",
       DiagnosticUnit.CALLS,
       "Complete source normalization scans."),
+  INLINE_PREPARED_CODE_POINTS_APPENDED(
+      "core.text.inline-preparation.code-points-appended",
+      DiagnosticUnit.CODE_POINTS,
+      "Normalized code points appended during inline preparation."),
+  INLINE_PREPARATION_FREEZES(
+      "core.text.inline-preparation.freezes",
+      DiagnosticUnit.CALLS,
+      "Immutable prepared inline text values frozen after one source scan."),
+  INLINE_PREPARED_RANGES(
+      "core.text.inline-preparation.ranges",
+      DiagnosticUnit.ITEMS,
+      "Code-point-safe text, whitespace, and forced-break ranges prepared for inline layout."),
+  INLINE_RANGE_CODE_POINT_VISITS(
+      "core.text.inline-ranges.code-point-visits",
+      DiagnosticUnit.CODE_POINTS,
+      "Prepared code points visited while splitting or materializing inline ranges."),
+  INLINE_TEMPORARY_UNITS(
+      "core.text.inline-ranges.temporary-units",
+      DiagnosticUnit.ITEMS,
+      "Legacy per-code-point temporary inline-unit objects allocated during range traversal."),
+  INLINE_MEASUREMENT_RANGE_CALLS(
+      "core.text.inline-measurement.range-calls",
+      DiagnosticUnit.CALLS,
+      "Distinct prepared ranges measured during one inline layout pass."),
+  INLINE_MEASUREMENT_REUSES(
+      "core.text.inline-measurement.reuses",
+      DiagnosticUnit.CALLS,
+      "Compatible prepared-range measurement results reused during one inline layout pass."),
+  INLINE_DURABLE_TEXT_STRINGS(
+      "core.text.inline-output.durable-text-strings",
+      DiagnosticUnit.ITEMS,
+      "Durable Strings materialized for text-bearing inline fragments."),
+  INLINE_NULL_TEXT_FRAGMENTS(
+      "core.text.inline-output.null-text-fragments",
+      DiagnosticUnit.ITEMS,
+      "Durable spacer, element, or union fragments emitted without text materialization."),
+  INLINE_PASS_CLEANUPS(
+      "core.text.inline-pass.cleanups",
+      DiagnosticUnit.CALLS,
+      "Pass-local inline preparation and reuse state dropped after success or failure."),
   FONT_CHAIN_RESOLUTIONS(
       "core.text.font-chain-resolutions",
       DiagnosticUnit.CALLS,
@@ -164,7 +204,7 @@ public enum TextDiagnosticCounter implements DiagnosticCounter {
       "Calls to getTextCaretMetrics(String,Font,float,float)."),
   ;
 
-  public static final String VOCABULARY_VERSION = "core-text-diagnostics-7";
+  public static final String VOCABULARY_VERSION = "core-text-diagnostics-8";
 
   private final String id;
   private final DiagnosticUnit unit;
