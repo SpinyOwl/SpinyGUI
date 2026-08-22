@@ -15,6 +15,7 @@ import com.spinyowl.spinygui.core.font.FontWeight;
 import com.spinyowl.spinygui.core.layout.ElementLayout;
 import com.spinyowl.spinygui.core.layout.LayoutContext;
 import com.spinyowl.spinygui.core.layout.LayoutService;
+import com.spinyowl.spinygui.core.layout.LayoutResult;
 import com.spinyowl.spinygui.core.layout.TextLayout;
 import com.spinyowl.spinygui.core.node.Element;
 import com.spinyowl.spinygui.core.node.Frame;
@@ -450,7 +451,9 @@ class FlexLayoutTest {
 
   private static class NoopLayoutService implements LayoutService {
     @Override
-    public void layout(@NonNull Frame frame) {}
+    public LayoutResult layout(@NonNull Frame frame) { return LayoutResult.converged(0); }
+
+    @Override public void resolveTransforms(@NonNull Frame frame) {}
 
     @Override
     public void layoutNode(@NonNull Node node, @NonNull LayoutContext context) {}

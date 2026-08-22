@@ -2,7 +2,7 @@ package com.spinyowl.spinygui.core.system.event.processor;
 
 import com.spinyowl.spinygui.core.event.processor.InputProcessingBatch;
 import com.spinyowl.spinygui.core.event.processor.InputProcessingCounters;
-import com.spinyowl.spinygui.core.event.processor.InputProcessingResult;
+import com.spinyowl.spinygui.core.event.processor.InputImpact;
 import com.spinyowl.spinygui.core.system.event.SystemEvent;
 import com.spinyowl.spinygui.core.system.event.listener.SystemEventListener;
 import com.spinyowl.spinygui.core.system.event.provider.SystemEventListenerProvider;
@@ -41,17 +41,16 @@ public class SystemEventProcessorImpl implements SystemEventProcessor {
   /** Used to process stored events in system event processor. */
   @Override
   @SuppressWarnings({"rawtypes", "unchecked"})
-  public void processEvents() {
-    processEventsWithResult();
+  public InputImpact processEvents() {
+    return processBatch().impact();
   }
 
-  @Override
   @SuppressWarnings({"rawtypes", "unchecked"})
-  public InputProcessingResult processEventsWithResult() {
+  private InputProcessingBatch processBatch() {
     InputProcessingBatch batch = new InputProcessingBatch();
     if (first.isEmpty()) {
       inputProcessingCounters.record(batch);
-      return batch.result();
+      return batch;
     }
 
     swap();
@@ -65,7 +64,7 @@ public class SystemEventProcessorImpl implements SystemEventProcessor {
       }
     }
     inputProcessingCounters.record(batch);
-    return batch.result();
+    return batch;
   }
 
   @Override

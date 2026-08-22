@@ -22,12 +22,14 @@ import com.spinyowl.spinygui.core.style.stylesheet.term.TermIdent;
 import com.spinyowl.spinygui.core.style.types.Display;
 import com.spinyowl.spinygui.core.style.types.ScrollbarPart;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.EnumMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.WeakHashMap;
 import lombok.Data;
 import lombok.NonNull;
@@ -74,19 +76,31 @@ public class StyleManagerImpl implements StyleManager {
   private Ruleset defaultRuleset;
   private List<Ruleset> userAgentRulesets;
 
-  public void recalculate(Frame frame) {
+  public StyleImpact recalculate(Frame frame) {
+    StyleImpactAccumulator impact = new StyleImpactAccumulator();
+    impact.capturePreviousScrollbarOwners(frame);
+    recalculate(frame, impact);
+    return styleChangeListener == null ? impact.impact : StyleImpact.FULL_UNKNOWN;
+  }
+
+  private void recalculate(Frame frame, StyleImpactAccumulator impact) {
     frame.diagnostics().increment(FrameDiagnosticCounter.STYLE_RECALCULATIONS);
     updateStyles(frame, frame.styleSheets());
-    resolveStyles(frame);
+    resolveStyles(frame, impact);
   }
 
-  private void resolveStyles(Element element) {
-    applyElementStyle(element);
+  private void resolveStyles(Element element, StyleImpactAccumulator impact) {
+    applyElementStyle(element, impact);
     applyScrollbarStyles(element);
-    element.children().forEach(this::resolveStyles);
+    if (impact != null && impact.hasPreviousOrCurrentScrollbarStyles(element)) {
+      // Scrollbar pseudo-style maps are rebuilt during selector resolution. Until their previous
+      // values are retained safely, their delta cannot be classified optimistically.
+      impact.add(StyleImpact.FULL_UNKNOWN);
+    }
+    element.children().forEach(child -> resolveStyles(child, impact));
   }
 
-  private void applyElementStyle(Element element) {
+  private void applyElementStyle(Element element, StyleImpactAccumulator impact) {
     Map<String, Object> previous = new LinkedHashMap<>(element.resolvedStyle().styles());
     element.resolvedStyle().styles().clear();
     element
@@ -105,6 +119,10 @@ public class StyleManagerImpl implements StyleManager {
                           declaration.apply(element);
                         }));
     applyAbsentProperties(element);
+    if (impact != null) {
+      impact.add(
+          ResolvedStyleImpactClassifier.classify(previous, element.resolvedStyle().styles()));
+    }
     if (styleChangeListener == null) element.presentationState().reset();
     else
       styleChangeListener.stylesResolved(
@@ -360,4 +378,23 @@ public class StyleManagerImpl implements StyleManager {
       List<Ruleset> elementRules, List<ScrollbarRuleset> scrollbarRules) {}
 
   private record ScrollbarRuleset(ScrollbarPart part, Ruleset ruleset) {}
+
+  private static final class StyleImpactAccumulator {
+    private StyleImpact impact = StyleImpact.NO_CHANGE;
+    private final Set<Element> previousScrollbarOwners =
+        Collections.newSetFromMap(new java.util.IdentityHashMap<>());
+
+    private void add(StyleImpact next) {
+      impact = impact.combine(next);
+    }
+
+    private void capturePreviousScrollbarOwners(Element element) {
+      if (!element.scrollbarStyles().isEmpty()) previousScrollbarOwners.add(element);
+      element.children().forEach(this::capturePreviousScrollbarOwners);
+    }
+
+    private boolean hasPreviousOrCurrentScrollbarStyles(Element element) {
+      return previousScrollbarOwners.contains(element) || !element.scrollbarStyles().isEmpty();
+    }
+  }
 }

@@ -1,7 +1,7 @@
 package com.spinyowl.spinygui.core.system.event.processor;
 
 import com.spinyowl.spinygui.core.event.processor.InputProcessingCounters;
-import com.spinyowl.spinygui.core.event.processor.InputProcessingResult;
+import com.spinyowl.spinygui.core.event.processor.InputImpact;
 import com.spinyowl.spinygui.core.system.event.SystemEvent;
 
 /**
@@ -12,18 +12,7 @@ import com.spinyowl.spinygui.core.system.event.SystemEvent;
 public interface SystemEventProcessor {
 
   /** Used to process stored events in system event processor. */
-  void processEvents();
-
-  /**
-   * Processes one queued batch and returns its conservative presentation-impact result.
-   *
-   * <p>Implementations predating this method retain the safe fallback when invoked through the
-   * default adapter.
-   */
-  default InputProcessingResult processEventsWithResult() {
-    processEvents();
-    return InputProcessingResult.FULL_REFRESH_REQUIRED;
-  }
+  InputImpact processEvents();
 
   /** Returns cumulative batch-level input decision counters. */
   default InputProcessingCounters.Snapshot inputProcessingCounters() {

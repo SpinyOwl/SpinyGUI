@@ -6,6 +6,7 @@ import com.spinyowl.spinygui.core.diagnostic.DiagnosticSession;
 import com.spinyowl.spinygui.core.diagnostic.FrameDiagnosticCounter;
 import com.spinyowl.spinygui.core.style.stylesheet.StyleSheet;
 import java.util.ArrayList;
+import java.util.AbstractList;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -22,9 +23,16 @@ public class Frame extends Element {
   public static final String FRAME_TAG_NAME = "winframe";
 
   /** List of stylesheets attached to frame. */
-  protected final List<StyleSheet> styleSheets = new CopyOnWriteArrayList<>();
+  private final List<StyleSheet> styleSheets = new CopyOnWriteArrayList<>();
+  private final List<StyleSheet> styleSheetView = new InvalidatingStyleSheetList();
 
-  @Getter @Setter @NonNull private Vector2f frameSize = new Vector2f();
+  @NonNull private final Vector2f frameSize = new Vector2f();
+
+  private long revision;
+  private boolean styleDirty = true;
+  private boolean layoutDirty = true;
+  private boolean transformDirty = true;
+  private boolean paintDirty = true;
 
   /** Optional owner-thread diagnostics for one frame evidence session. */
   @Getter @Setter @NonNull private DiagnosticSession diagnostics = DiagnosticSession.disabled();
@@ -35,12 +43,83 @@ public class Frame extends Element {
   }
 
   /**
-   * Returns editable list of stylesheets attached to frame.
+   * Returns a controlled mutable list. Every effective mutation invalidates style.
    *
    * @return editable list of stylesheets attached to frame.
    */
   public List<StyleSheet> styleSheets() {
-    return styleSheets;
+    return styleSheetView;
+  }
+
+  /** Returns a defensive frame-size snapshot. */
+  public Vector2f frameSize() {
+    return new Vector2f(frameSize);
+  }
+
+  public FrameInvalidation invalidation() {
+    return new FrameInvalidation(
+        revision, styleDirty, layoutDirty, transformDirty, paintDirty);
+  }
+
+  public long revision() {
+    return revision;
+  }
+
+  public void invalidateStyle() {
+    advanceRevision();
+    styleDirty = true;
+    layoutDirty = true;
+    transformDirty = true;
+    paintDirty = true;
+  }
+
+  /** Marks a pseudo-state style candidate whose downstream impact is classified by StyleManager. */
+  public void invalidateStyleCandidate() {
+    advanceRevision();
+    styleDirty = true;
+    paintDirty = true;
+  }
+
+  public void invalidateLayout() {
+    advanceRevision();
+    layoutDirty = true;
+    transformDirty = true;
+    paintDirty = true;
+  }
+
+  public void invalidateTransform() {
+    advanceRevision();
+    transformDirty = true;
+    paintDirty = true;
+  }
+
+  public void invalidatePaint() {
+    advanceRevision();
+    paintDirty = true;
+  }
+
+  /** Clears successfully prepared domains only if their source revision is still current. */
+  public boolean completePreparation(
+      long expectedRevision, boolean style, boolean layout, boolean transform) {
+    if (revision != expectedRevision) return false;
+    if (style) styleDirty = false;
+    if (layout) layoutDirty = false;
+    if (transform) transformDirty = false;
+    return true;
+  }
+
+  /** Publishes rendered paint only if the prepared source revision is still current. */
+  public boolean markPainted(long expectedRevision) {
+    if (revision != expectedRevision) return false;
+    paintDirty = false;
+    return true;
+  }
+
+  private void advanceRevision() {
+    if (revision == Long.MAX_VALUE) {
+      throw new IllegalStateException("Frame source revision overflow");
+    }
+    revision++;
   }
 
   /**
@@ -183,6 +262,27 @@ public class Frame extends Element {
   }
 
   public void frameSize(float x, float y) {
-    this.frameSize.set(x, y);
+    if (frameSize.x == x && frameSize.y == y) return;
+    frameSize.set(x, y);
+    invalidateLayout();
+  }
+
+  private final class InvalidatingStyleSheetList extends AbstractList<StyleSheet> {
+    @Override public StyleSheet get(int index) { return styleSheets.get(index); }
+    @Override public int size() { return styleSheets.size(); }
+    @Override public void add(int index, StyleSheet element) {
+      styleSheets.add(index, Objects.requireNonNull(element));
+      invalidateStyle();
+    }
+    @Override public StyleSheet set(int index, StyleSheet element) {
+      StyleSheet previous = styleSheets.set(index, Objects.requireNonNull(element));
+      if (!Objects.equals(previous, element)) invalidateStyle();
+      return previous;
+    }
+    @Override public StyleSheet remove(int index) {
+      StyleSheet previous = styleSheets.remove(index);
+      invalidateStyle();
+      return previous;
+    }
   }
 }

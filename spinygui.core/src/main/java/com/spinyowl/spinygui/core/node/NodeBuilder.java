@@ -410,7 +410,7 @@ public final class NodeBuilder {
    * @return returns filled node.
    */
   public static <T extends Node> T addAttributes(T node, Map<String, String> attributes) {
-    node.attributes().putAll(attributes);
+    attributes.forEach(node::setAttribute);
     if (node instanceof InputElement input) {
       input.initializeFromAttributes();
     } else if (node instanceof ButtonElement button) {

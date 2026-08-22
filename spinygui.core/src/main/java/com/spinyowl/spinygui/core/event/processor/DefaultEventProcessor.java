@@ -19,17 +19,16 @@ public class DefaultEventProcessor implements EventProcessor {
 
   @Override
   @SuppressWarnings({"rawtypes", "unchecked"})
-  public void processEvents() {
-    processEventsWithResult();
+  public InputImpact processEvents() {
+    return processBatch().impact();
   }
 
-  @Override
   @SuppressWarnings({"rawtypes", "unchecked"})
-  public InputProcessingResult processEventsWithResult() {
+  private InputProcessingBatch processBatch() {
     InputProcessingBatch batch = new InputProcessingBatch();
     if (first.isEmpty()) {
       inputProcessingCounters.record(batch);
-      return batch.result();
+      return batch;
     }
 
     swap();
@@ -37,7 +36,14 @@ public class DefaultEventProcessor implements EventProcessor {
       EventTarget target = event.target();
       var listeners = target.getListeners(event.getClass());
       if (listeners.isEmpty()) {
-        batch.markUnknownFallback();
+        if (event instanceof com.spinyowl.spinygui.core.event.CursorEnterEvent
+            || event instanceof com.spinyowl.spinygui.core.event.CursorExitEvent) {
+          // Hover state was changed by the system cursor listener. With no dispatched listener,
+          // there is no additional unknown application effect.
+          batch.markHoverStyleEffect();
+        } else {
+          batch.markUnknownFallback();
+        }
       } else {
         for (EventListener listener : listeners) {
           listener.processWithImpact(event, batch);
@@ -45,7 +51,7 @@ public class DefaultEventProcessor implements EventProcessor {
       }
     }
     inputProcessingCounters.record(batch);
-    return batch.result();
+    return batch;
   }
 
   @Override

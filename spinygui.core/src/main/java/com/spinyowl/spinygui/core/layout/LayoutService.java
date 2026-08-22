@@ -13,7 +13,10 @@ public interface LayoutService {
    *
    * @param frame frame to lay out.
    */
-  void layout(@NonNull Frame frame);
+  LayoutResult layout(@NonNull Frame frame);
+
+  /** Resolves presentation transforms without repeating geometry layout. */
+  void resolveTransforms(@NonNull Frame frame);
 
   /**
    * Used to layout node tree.<br>

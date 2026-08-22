@@ -6,18 +6,8 @@ public interface EventProcessor {
 
   void push(Event event);
 
-  void processEvents();
-
-  /**
-   * Processes one queued batch and returns its conservative presentation-impact result.
-   *
-   * <p>Implementations predating this method retain the safe fallback when invoked through the
-   * default adapter.
-   */
-  default InputProcessingResult processEventsWithResult() {
-    processEvents();
-    return InputProcessingResult.FULL_REFRESH_REQUIRED;
-  }
+  /** Processes one queued batch and returns its conservative presentation impact. */
+  InputImpact processEvents();
 
   /** Returns cumulative batch-level input decision counters. */
   default InputProcessingCounters.Snapshot inputProcessingCounters() {

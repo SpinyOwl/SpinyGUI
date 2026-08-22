@@ -25,7 +25,7 @@ public class ButtonElement extends Element {
 
   public ButtonElement(Map<String, String> attributes) {
     this();
-    attributes().putAll(attributes);
+    setAttributes(attributes);
     initializeFromAttributes();
   }
 

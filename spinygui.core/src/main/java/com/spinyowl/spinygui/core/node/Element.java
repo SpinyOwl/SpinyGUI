@@ -30,8 +30,10 @@ import lombok.ToString;
 public class Element extends Node implements EventTarget {
 
   /** The number of pixels that an element's content is scrolled vertically. */
+  @Setter(AccessLevel.NONE)
   private float scrollTop;
   /** The number of pixels that an element's content is scrolled from its left edge. */
+  @Setter(AccessLevel.NONE)
   private float scrollLeft;
   /**
    * A measurement of the width of an element's content, including content not visible on the screen
@@ -103,7 +105,8 @@ public class Element extends Node implements EventTarget {
   }
 
   public void setAttribute(String key, String value) {
-    attributes.put(key, value);
+    String previous = attributes.put(key, value);
+    if (!java.util.Objects.equals(previous, value)) invalidateStyleSource();
   }
 
   public String getAttribute(String key) {
@@ -116,11 +119,20 @@ public class Element extends Node implements EventTarget {
 
   @Override
   public void removeAttribute(String attribute) {
-    attributes.remove(attribute);
+    if (attributes.remove(attribute) != null) invalidateStyleSource();
   }
 
   public boolean hasAttributes() {
     return !attributes.isEmpty();
+  }
+
+  @Override
+  public Map<String, String> attributes() {
+    return Collections.unmodifiableMap(attributes);
+  }
+
+  public void setAttributes(Map<String, String> values) {
+    values.forEach(this::setAttribute);
   }
 
   public <T extends Event> void addListener(Class<T> eventClass, EventListener<T> listener) {
@@ -153,11 +165,15 @@ public class Element extends Node implements EventTarget {
 
   @Override
   public void removeChild(@NonNull Node node) {
-    unlinkSiblings(node);
     if (childNodes.remove(node)) {
+      Frame owner = frame();
+      unlinkSiblings(node);
       frameDiagnostics().increment(FrameDiagnosticCounter.MUTATION_DETACHMENTS);
       resetPresentationState(node);
-      node.parent(null);
+      node.assignParent(null);
+      node.previousSibling(null);
+      node.nextSibling(null);
+      if (owner != null) owner.invalidateStyle();
     }
   }
 
@@ -177,6 +193,8 @@ public class Element extends Node implements EventTarget {
     if (next != null) {
       next.previousSibling(prev);
     }
+    if (firstChild == node) firstChild = next;
+    if (lastChild == node) lastChild = prev;
   }
 
   @Override
@@ -196,7 +214,9 @@ public class Element extends Node implements EventTarget {
 
     linkSiblings(node);
 
-    node.parent(this);
+    node.assignParent(this);
+    Frame owner = frame();
+    if (owner != null) owner.invalidateStyle();
   }
 
   private void linkSiblings(Node node) {
@@ -252,7 +272,25 @@ public class Element extends Node implements EventTarget {
   }
 
   public void style(String style) {
-    attributes().put("style", style);
+    setAttribute("style", style);
+  }
+
+  public void scrollTop(float scrollTop) {
+    if (Float.compare(this.scrollTop, scrollTop) == 0) return;
+    this.scrollTop = scrollTop;
+    invalidateTransformSource();
+  }
+
+  public void scrollLeft(float scrollLeft) {
+    if (Float.compare(this.scrollLeft, scrollLeft) == 0) return;
+    this.scrollLeft = scrollLeft;
+    invalidateTransformSource();
+  }
+
+  /** Applies layout-owned scroll clamping without creating a new source revision. */
+  public void resolveScrollOffsets(float scrollLeft, float scrollTop) {
+    this.scrollLeft = scrollLeft;
+    this.scrollTop = scrollTop;
   }
 
   public Map<ScrollbarPart, ResolvedStyle> scrollbarStyles() {

@@ -18,7 +18,7 @@ import java.util.WeakHashMap;
  * Host-owned transition service. Hosts call {@link #tick()} once per frame after style
  * recalculation and before layout/render; E2 may later provide an optional higher-level runtime.
  */
-public final class TransitionCoordinator implements StyleChangeListener {
+public final class TransitionCoordinator implements StyleChangeListener, TransitionService {
   private final TimeService timeService;
   private final Map<Element, Map<TransitionPropertyName, TransitionTrack<Object>>> tracks = new WeakHashMap<>();
   private boolean clockInitialized;
@@ -36,8 +36,14 @@ public final class TransitionCoordinator implements StyleChangeListener {
       else tracks.computeIfAbsent(element, ignored -> new EnumMap<>(TransitionPropertyName.class)).put(property, new TransitionTrack<>(presentedOr(element, property, oldTarget), newTarget, descriptor, now(), interpolation.get()));
     }
   }
-  public void tick() {
-    double time = now(); if (!clockInitialized) { clockInitialized = true; return; }
+  @Override
+  public TransitionImpact tick() {
+    double time = now();
+    if (!clockInitialized) {
+      clockInitialized = true;
+      return TransitionImpact.NO_CHANGE;
+    }
+    TransitionImpact[] impact = {TransitionImpact.NO_CHANGE};
     tracks.entrySet().removeIf(entry -> {
       Element element = entry.getKey();
       if (!(element instanceof Frame) && element.parent() == null) {
@@ -45,9 +51,18 @@ public final class TransitionCoordinator implements StyleChangeListener {
         return true;
       }
       if (hidden(element)) { element.presentationState().reset(); return true; }
-      entry.getValue().entrySet().removeIf(track -> { element.presentationState().setValue(track.getKey().cssName(), track.getValue().valueAt(time)); return track.getValue().completeAt(time); });
+      entry.getValue().entrySet().removeIf(track -> {
+        element.presentationState().setValue(
+            track.getKey().cssName(), track.getValue().valueAt(time));
+        impact[0] = impact[0].combine(
+            track.getKey() == TransitionPropertyName.TRANSFORM
+                ? TransitionImpact.TRANSFORM
+                : TransitionImpact.PAINT);
+        return track.getValue().completeAt(time);
+      });
       return entry.getValue().isEmpty();
     });
+    return impact[0];
   }
   public void cancel(Element element) { tracks.remove(element); element.presentationState().clearValues(); }
   public void removed(Element element) { cancel(element); }

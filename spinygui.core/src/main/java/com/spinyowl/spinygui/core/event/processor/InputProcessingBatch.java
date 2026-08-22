@@ -4,9 +4,19 @@ package com.spinyowl.spinygui.core.event.processor;
 public final class InputProcessingBatch {
   private InputProcessingClassification classification =
       InputProcessingClassification.PROVEN_UNCHANGED;
+  private InputImpact impact = InputImpact.NO_IMPACT;
 
   /** Records an effect that is known to require a full refresh. */
   public void markKnownEffect() {
+    impact = impact.combine(InputImpact.FULL_REFRESH);
+    if (classification == InputProcessingClassification.PROVEN_UNCHANGED) {
+      classification = InputProcessingClassification.KNOWN_EFFECT;
+    }
+  }
+
+  /** Records a hover pseudo-state transition whose resolved style still requires classification. */
+  public void markHoverStyleEffect() {
+    impact = impact.combine(InputImpact.HOVER_STYLE);
     if (classification == InputProcessingClassification.PROVEN_UNCHANGED) {
       classification = InputProcessingClassification.KNOWN_EFFECT;
     }
@@ -14,6 +24,7 @@ public final class InputProcessingBatch {
 
   /** Records an unclassified path that must retain the full-refresh fallback. */
   public void markUnknownFallback() {
+    impact = InputImpact.FULL_UNKNOWN;
     classification = InputProcessingClassification.UNKNOWN_FALLBACK;
   }
 
@@ -21,9 +32,7 @@ public final class InputProcessingBatch {
     return classification;
   }
 
-  public InputProcessingResult result() {
-    return classification == InputProcessingClassification.PROVEN_UNCHANGED
-        ? InputProcessingResult.UNCHANGED
-        : InputProcessingResult.FULL_REFRESH_REQUIRED;
+  public InputImpact impact() {
+    return impact;
   }
 }

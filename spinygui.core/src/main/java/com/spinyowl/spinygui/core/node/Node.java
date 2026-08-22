@@ -44,12 +44,15 @@ public abstract class Node {
   private Element parent;
 
   /** Determines whether this node hovered or not (cursor is over this node). */
+  @Setter(AccessLevel.NONE)
   private boolean hovered;
 
   /** Determines whether this node focused or not. */
+  @Setter(AccessLevel.NONE)
   private boolean focused;
 
   /** Determines whether this node pressed or not (Mouse button is down and on this node). */
+  @Setter(AccessLevel.NONE)
   private boolean pressed;
 
   /**
@@ -92,17 +95,34 @@ public abstract class Node {
    * @param parent new parent node.
    */
   public void parent(Element parent) {
-    if (parent == this) {
-      return;
-    }
-
-    if (this.parent != null) {
-      this.parent.removeChild(this);
-    }
-    this.parent = parent;
-    if (parent != null) {
+    if (this.parent == parent || parent == this) return;
+    if (parent == null) {
+      if (this.parent != null) this.parent.removeChild(this);
+    } else {
       parent.addChild(this);
     }
+  }
+
+  final void assignParent(Element parent) {
+    this.parent = parent;
+  }
+
+  public void hovered(boolean hovered) {
+    if (this.hovered == hovered) return;
+    this.hovered = hovered;
+    invalidateStyleCandidateSource();
+  }
+
+  public void focused(boolean focused) {
+    if (this.focused == focused) return;
+    this.focused = focused;
+    invalidateStyleCandidateSource();
+  }
+
+  public void pressed(boolean pressed) {
+    if (this.pressed == pressed) return;
+    this.pressed = pressed;
+    invalidateStyleCandidateSource();
   }
 
   /**
@@ -251,5 +271,30 @@ public abstract class Node {
   protected final DiagnosticSession frameDiagnostics() {
     Frame frame = frame();
     return frame == null ? DiagnosticSession.disabled() : frame.diagnostics();
+  }
+
+  protected final void invalidateStyleSource() {
+    Frame frame = frame();
+    if (frame != null) frame.invalidateStyle();
+  }
+
+  protected final void invalidateStyleCandidateSource() {
+    Frame frame = frame();
+    if (frame != null) frame.invalidateStyleCandidate();
+  }
+
+  protected final void invalidateLayoutSource() {
+    Frame frame = frame();
+    if (frame != null) frame.invalidateLayout();
+  }
+
+  protected final void invalidateTransformSource() {
+    Frame frame = frame();
+    if (frame != null) frame.invalidateTransform();
+  }
+
+  protected final void invalidatePaintSource() {
+    Frame frame = frame();
+    if (frame != null) frame.invalidatePaint();
   }
 }

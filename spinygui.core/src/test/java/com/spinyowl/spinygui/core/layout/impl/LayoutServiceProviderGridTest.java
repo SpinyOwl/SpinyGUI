@@ -50,7 +50,9 @@ class LayoutServiceProviderGridTest {
     child.resolvedStyle().transformOrigin(TransformOrigin.CENTER);
     frame.addChild(child);
 
-    layoutService().layout(frame);
+    LayoutService layoutService = layoutService();
+    layoutService.layout(frame);
+    layoutService.resolveTransforms(frame);
 
     assertEquals(100, child.box().borderBoxSize().x);
     assertEquals(40, child.box().borderBoxSize().y);
@@ -71,7 +73,9 @@ class LayoutServiceProviderGridTest {
         TRANSFORM, new Transform.Translate(Length.percent(.5f), Length.percent(.5f)));
     frame.addChild(child);
 
-    layoutService().layout(frame);
+    LayoutService layoutService = layoutService();
+    layoutService.layout(frame);
+    layoutService.resolveTransforms(frame);
 
     assertEquals(100, child.box().borderBoxSize().x);
     assertEquals(40, child.box().borderBoxSize().y);

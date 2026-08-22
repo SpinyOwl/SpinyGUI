@@ -99,7 +99,7 @@ public class DefaultNodeParser implements NodeParser {
     var attributes = element.attributes().asList();
     for (var i = 0; i < attributes.size(); i++) {
       var attribute = attributes.get(i);
-      node.attributes().put(attribute.getKey(), attribute.getValue());
+      node.setAttribute(attribute.getKey(), attribute.getValue());
     }
     if (node instanceof InputElement input) {
       input.initializeFromAttributes();

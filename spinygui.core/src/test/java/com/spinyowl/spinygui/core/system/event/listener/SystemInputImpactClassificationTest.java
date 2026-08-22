@@ -4,10 +4,11 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import com.google.common.collect.ImmutableSet;
 import com.spinyowl.spinygui.core.event.CursorEnterEvent;
+import com.spinyowl.spinygui.core.event.CursorExitEvent;
 import com.spinyowl.spinygui.core.event.processor.DefaultEventProcessor;
 import com.spinyowl.spinygui.core.event.processor.InputProcessingBatch;
 import com.spinyowl.spinygui.core.event.processor.InputProcessingClassification;
-import com.spinyowl.spinygui.core.event.processor.InputProcessingResult;
+import com.spinyowl.spinygui.core.event.processor.InputImpact;
 import com.spinyowl.spinygui.core.input.KeyCode;
 import com.spinyowl.spinygui.core.input.Keyboard;
 import com.spinyowl.spinygui.core.input.impl.KeyboardLayoutImpl;
@@ -49,15 +50,15 @@ class SystemInputImpactClassificationTest {
 
     listener.processWithImpact(cursor(frame, 16, 16), frame, batch);
 
-    assertEquals(InputProcessingResult.UNCHANGED, batch.result());
+    assertEquals(InputImpact.NO_IMPACT, batch.impact());
     assertEquals(InputProcessingClassification.PROVEN_UNCHANGED, batch.classification());
     assertEquals(new Vector2f(16, 16), mouse.getCursorPositions(frame).current());
     assertEquals(new Vector2f(15, 15), mouse.getCursorPositions(frame).previous());
-    assertEquals(InputProcessingResult.UNCHANGED, guiEvents.processEventsWithResult());
+    assertEquals(InputImpact.NO_IMPACT, guiEvents.processEvents());
   }
 
   @Test
-  void pointerBoundaryPressedAndListenerCasesRemainFullRefreshRequired() {
+  void pointerBoundaryAndPressedCasesRemainBinaryFullRefreshRequired() {
     Frame frame = frameWithInertElement();
     Element child = frame.children().get(0);
     MouseServiceImpl mouse = new MouseServiceImpl();
@@ -77,7 +78,7 @@ class SystemInputImpactClassificationTest {
 
     InputProcessingBatch boundary = new InputProcessingBatch();
     listener.processWithImpact(cursor(frame, 80, 80), frame, boundary);
-    assertEquals(InputProcessingResult.FULL_REFRESH_REQUIRED, boundary.result());
+    assertEquals(InputImpact.HOVER_STYLE, boundary.impact());
 
     mouse.setCursorPositions(
         frame, new com.spinyowl.spinygui.core.input.MouseService.CursorPositions(
@@ -85,13 +86,42 @@ class SystemInputImpactClassificationTest {
     mouse.pressed(com.spinyowl.spinygui.core.input.MouseButton.LEFT, true);
     InputProcessingBatch pressed = new InputProcessingBatch();
     listener.processWithImpact(cursor(frame, 16, 16), frame, pressed);
-    assertEquals(InputProcessingResult.FULL_REFRESH_REQUIRED, pressed.result());
+    assertEquals(InputImpact.FULL_REFRESH, pressed.impact());
 
     mouse.pressed(com.spinyowl.spinygui.core.input.MouseButton.LEFT, false);
+  }
+
+  @Test
+  void stablePathIgnoresUndispatchedPointerListenersButBoundaryDispatchFallsBack() {
+    Frame frame = frameWithInertElement();
+    Element child = frame.children().get(0);
     child.addListener(CursorEnterEvent.class, ignored -> {});
-    InputProcessingBatch listenerBearing = new InputProcessingBatch();
-    listener.processWithImpact(cursor(frame, 17, 17), frame, listenerBearing);
-    assertEquals(InputProcessingResult.FULL_REFRESH_REQUIRED, listenerBearing.result());
+    child.addListener(CursorExitEvent.class, ignored -> {});
+    MouseServiceImpl mouse = new MouseServiceImpl();
+    mouse.setCursorPositions(
+        frame, new com.spinyowl.spinygui.core.input.MouseService.CursorPositions(
+            new Vector2f(15, 15), new Vector2f(15, 15)));
+    DefaultEventProcessor guiEvents = new DefaultEventProcessor();
+    SystemCursorPosEventListener listener =
+        SystemCursorPosEventListener.builder()
+            .eventProcessor(guiEvents)
+            .timeService(TIME)
+            .mouseService(mouse)
+            .build();
+
+    InputProcessingBatch stable = new InputProcessingBatch();
+    listener.processWithImpact(cursor(frame, 16, 16), frame, stable);
+    assertEquals(InputImpact.NO_IMPACT, stable.impact());
+    assertEquals(InputImpact.NO_IMPACT, guiEvents.processEvents());
+
+    InputProcessingBatch boundary = new InputProcessingBatch();
+    listener.processWithImpact(cursor(frame, 80, 80), frame, boundary);
+    InputImpact guiOutcome = guiEvents.processEvents();
+    assertEquals(InputImpact.FULL_UNKNOWN, boundary.impact());
+    assertEquals(InputImpact.FULL_UNKNOWN, guiOutcome);
+    assertEquals(
+        InputImpact.FULL_UNKNOWN,
+        boundary.impact().combine(guiOutcome));
   }
 
   @Test
@@ -110,13 +140,13 @@ class SystemInputImpactClassificationTest {
 
     InputProcessingBatch unused = new InputProcessingBatch();
     listener.processWithImpact(key(frame, 65, SystemKeyAction.PRESS), frame, unused);
-    assertEquals(InputProcessingResult.UNCHANGED, unused.result());
+    assertEquals(InputImpact.NO_IMPACT, unused.impact());
 
     shortcuts.shortcut(
         "gameplay", new com.spinyowl.spinygui.core.input.Shortcut(KeyCode.KEY_A, java.util.Set.of()));
     InputProcessingBatch shortcut = new InputProcessingBatch();
     listener.processWithImpact(key(frame, 65, SystemKeyAction.PRESS), frame, shortcut);
-    assertEquals(InputProcessingResult.FULL_REFRESH_REQUIRED, shortcut.result());
+    assertEquals(InputImpact.FULL_UNKNOWN, shortcut.impact());
     assertEquals(InputProcessingClassification.UNKNOWN_FALLBACK, shortcut.classification());
 
     InputElement input = new InputElement();
@@ -128,7 +158,7 @@ class SystemInputImpactClassificationTest {
     InputProcessingBatch editing = new InputProcessingBatch();
     listener.processWithImpact(
         key(editingFrame, 65, SystemKeyAction.PRESS), editingFrame, editing);
-    assertEquals(InputProcessingResult.FULL_REFRESH_REQUIRED, editing.result());
+    assertEquals(InputImpact.FULL_UNKNOWN, editing.impact());
   }
 
   @Test
@@ -145,7 +175,7 @@ class SystemInputImpactClassificationTest {
     Frame idleFrame = new Frame();
     InputProcessingBatch idle = new InputProcessingBatch();
     listener.processWithImpact(charEvent(idleFrame, 'a'), idleFrame, idle);
-    assertEquals(InputProcessingResult.UNCHANGED, idle.result());
+    assertEquals(InputImpact.NO_IMPACT, idle.impact());
 
     InputElement input = new InputElement();
     input.focused(true);
@@ -153,7 +183,7 @@ class SystemInputImpactClassificationTest {
     editingFrame.addChild(input);
     InputProcessingBatch editing = new InputProcessingBatch();
     listener.processWithImpact(charEvent(editingFrame, 'a'), editingFrame, editing);
-    assertEquals(InputProcessingResult.FULL_REFRESH_REQUIRED, editing.result());
+    assertEquals(InputImpact.FULL_REFRESH, editing.impact());
   }
 
   @Test
@@ -189,8 +219,8 @@ class SystemInputImpactClassificationTest {
     systemEvents.push(key(frame, 999, SystemKeyAction.PRESS));
 
     assertEquals(
-        InputProcessingResult.FULL_REFRESH_REQUIRED, systemEvents.processEventsWithResult());
-    assertEquals(InputProcessingResult.UNCHANGED, guiEvents.processEventsWithResult());
+        InputImpact.FULL_UNKNOWN, systemEvents.processEvents());
+    assertEquals(InputImpact.NO_IMPACT, guiEvents.processEvents());
   }
 
   private static Frame frameWithInertElement() {

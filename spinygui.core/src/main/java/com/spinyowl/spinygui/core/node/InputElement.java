@@ -34,7 +34,7 @@ public class InputElement extends EmptyElement {
 
   public InputElement(Map<String, String> attributes) {
     this();
-    attributes().putAll(attributes);
+    setAttributes(attributes);
     initializeFromAttributes();
   }
 
@@ -44,7 +44,10 @@ public class InputElement extends EmptyElement {
   }
 
   public void type(String type) {
-    this.type = type == null || type.isBlank() ? TYPE_TEXT : type;
+    String normalized = type == null || type.isBlank() ? TYPE_TEXT : type;
+    if (java.util.Objects.equals(this.type, normalized)) return;
+    this.type = normalized;
+    invalidateLayoutSource();
   }
 
   /**
@@ -54,9 +57,12 @@ public class InputElement extends EmptyElement {
    * @param value new value, or {@code null} for an empty value.
    */
   public void value(String value) {
-    this.value = value == null ? "" : value;
+    String normalized = value == null ? "" : value;
+    if (java.util.Objects.equals(this.value, normalized)) return;
+    this.value = normalized;
     caretIndex = TextIndexNormalizer.clampAndSnapBackward(this.value, caretIndex);
     selectionAnchor = TextIndexNormalizer.clampAndSnapBackward(this.value, selectionAnchor);
+    invalidateLayoutSource();
   }
 
   /**
@@ -67,8 +73,13 @@ public class InputElement extends EmptyElement {
    * @param caretIndex requested UTF-16 offset.
    */
   public void caretIndex(int caretIndex) {
+    int previousCaret = this.caretIndex;
+    int previousAnchor = selectionAnchor;
     this.caretIndex = clampTextIndex(caretIndex);
     selectionAnchor = this.caretIndex;
+    if (previousCaret != this.caretIndex || previousAnchor != selectionAnchor) {
+      invalidatePaintSource();
+    }
   }
 
   /**
@@ -79,8 +90,11 @@ public class InputElement extends EmptyElement {
    * @param focus requested caret/focus UTF-16 offset.
    */
   public void select(int anchor, int focus) {
+    int previousCaret = caretIndex;
+    int previousAnchor = selectionAnchor;
     selectionAnchor = clampTextIndex(anchor);
     caretIndex = clampTextIndex(focus);
+    if (previousCaret != caretIndex || previousAnchor != selectionAnchor) invalidatePaintSource();
   }
 
   /**
@@ -90,11 +104,16 @@ public class InputElement extends EmptyElement {
    * @param selectionAnchor requested selection-anchor UTF-16 offset.
    */
   public void selectionAnchor(int selectionAnchor) {
-    this.selectionAnchor = clampTextIndex(selectionAnchor);
+    int normalized = clampTextIndex(selectionAnchor);
+    if (this.selectionAnchor == normalized) return;
+    this.selectionAnchor = normalized;
+    invalidatePaintSource();
   }
 
   public void clearSelection() {
+    if (selectionAnchor == caretIndex) return;
     selectionAnchor = caretIndex;
+    invalidatePaintSource();
   }
 
   public boolean hasSelection() {
@@ -112,7 +131,10 @@ public class InputElement extends EmptyElement {
   }
 
   public void textScrollLeft(float textScrollLeft) {
-    this.textScrollLeft = Math.max(0, textScrollLeft);
+    float normalized = Math.max(0, textScrollLeft);
+    if (Float.compare(this.textScrollLeft, normalized) == 0) return;
+    this.textScrollLeft = normalized;
+    invalidatePaintSource();
   }
 
   public boolean textInput() {

@@ -8,6 +8,7 @@ import static com.spinyowl.spinygui.core.util.OverflowUtils.clampScrollOffsets;
 import com.spinyowl.spinygui.core.layout.ElementLayout;
 import com.spinyowl.spinygui.core.layout.LayoutContext;
 import com.spinyowl.spinygui.core.layout.LayoutService;
+import com.spinyowl.spinygui.core.layout.LayoutResult;
 import com.spinyowl.spinygui.core.layout.TextLayout;
 import com.spinyowl.spinygui.core.diagnostic.FrameDiagnosticCounter;
 import com.spinyowl.spinygui.core.node.Element;
@@ -40,7 +41,7 @@ public class LayoutServiceImpl implements LayoutService {
   @NonNull private final Map<Display, ElementLayout> layoutMap;
 
   @Override
-  public void layout(@NonNull Frame frame) {
+  public LayoutResult layout(@NonNull Frame frame) {
     boolean scrollbarGutterChanged;
     int pass = 0;
     do {
@@ -52,6 +53,13 @@ public class LayoutServiceImpl implements LayoutService {
       scrollbarGutterChanged = updateScrollAndClientSize(frame);
       pass++;
     } while (scrollbarGutterChanged && pass < MAX_SCROLLBAR_LAYOUT_PASSES);
+    return scrollbarGutterChanged
+        ? LayoutResult.unconverged(pass)
+        : LayoutResult.converged(pass);
+  }
+
+  @Override
+  public void resolveTransforms(@NonNull Frame frame) {
     resolvePresentationTransforms(frame);
   }
 

@@ -15,31 +15,31 @@ class InputProcessingContractTest {
   @Test
   void fullRefreshDominatesBatchAndProcessorAggregation() {
     assertEquals(
-        InputProcessingResult.UNCHANGED,
-        InputProcessingResult.aggregate(
-            InputProcessingResult.UNCHANGED, InputProcessingResult.UNCHANGED));
+        InputImpact.NO_IMPACT,
+        InputImpact.NO_IMPACT.combine(InputImpact.NO_IMPACT));
     assertEquals(
-        InputProcessingResult.FULL_REFRESH_REQUIRED,
-        InputProcessingResult.aggregate(
-            InputProcessingResult.UNCHANGED, InputProcessingResult.FULL_REFRESH_REQUIRED));
+        InputImpact.FULL_REFRESH,
+        InputImpact.NO_IMPACT.combine(InputImpact.FULL_REFRESH));
     assertEquals(
-        InputProcessingResult.FULL_REFRESH_REQUIRED,
-        InputProcessingResult.aggregate(
-            InputProcessingResult.FULL_REFRESH_REQUIRED, InputProcessingResult.UNCHANGED));
+        InputImpact.FULL_REFRESH,
+        InputImpact.FULL_REFRESH.combine(InputImpact.NO_IMPACT));
 
     InputProcessingBatch batch = new InputProcessingBatch();
     batch.markKnownEffect();
     batch.markUnknownFallback();
 
     assertEquals(InputProcessingClassification.UNKNOWN_FALLBACK, batch.classification());
-    assertEquals(InputProcessingResult.FULL_REFRESH_REQUIRED, batch.result());
+    assertEquals(InputImpact.FULL_UNKNOWN, batch.impact());
+    assertEquals(
+        InputImpact.FULL_UNKNOWN,
+        InputImpact.HOVER_STYLE.combine(InputImpact.FULL_UNKNOWN));
   }
 
   @Test
   void emptyEventBatchIsProvenUnchangedAndCounted() {
     DefaultEventProcessor processor = new DefaultEventProcessor();
 
-    assertEquals(InputProcessingResult.UNCHANGED, processor.processEventsWithResult());
+    assertEquals(InputImpact.NO_IMPACT, processor.processEvents());
     assertEquals(
         new InputProcessingCounters.Snapshot(1, 0, 0), processor.inputProcessingCounters());
   }
@@ -51,13 +51,13 @@ class InputProcessingContractTest {
     WindowRefreshEvent event = event(frame);
 
     processor.push(event);
-    assertEquals(InputProcessingResult.FULL_REFRESH_REQUIRED, processor.processEventsWithResult());
+    assertEquals(InputImpact.FULL_UNKNOWN, processor.processEvents());
     assertEquals(
         new InputProcessingCounters.Snapshot(0, 0, 1), processor.inputProcessingCounters());
 
     frame.addListener(WindowRefreshEvent.class, ignored -> {});
     processor.push(event(frame));
-    assertEquals(InputProcessingResult.FULL_REFRESH_REQUIRED, processor.processEventsWithResult());
+    assertEquals(InputImpact.FULL_UNKNOWN, processor.processEvents());
     assertEquals(
         new InputProcessingCounters.Snapshot(0, 0, 2), processor.inputProcessingCounters());
   }
@@ -72,7 +72,7 @@ class InputProcessingContractTest {
 
     processor.push(SystemWindowRefreshEvent.builder().frame(frame).build());
 
-    assertEquals(InputProcessingResult.FULL_REFRESH_REQUIRED, processor.processEventsWithResult());
+    assertEquals(InputImpact.FULL_UNKNOWN, processor.processEvents());
     assertEquals(
         new InputProcessingCounters.Snapshot(0, 0, 1), processor.inputProcessingCounters());
   }
@@ -83,7 +83,16 @@ class InputProcessingContractTest {
     batch.markKnownEffect();
 
     assertEquals(InputProcessingClassification.KNOWN_EFFECT, batch.classification());
-    assertEquals(InputProcessingResult.FULL_REFRESH_REQUIRED, batch.result());
+    assertEquals(InputImpact.FULL_REFRESH, batch.impact());
+  }
+
+  @Test
+  void hoverDetailIsReturnedDirectly() {
+    InputProcessingBatch batch = new InputProcessingBatch();
+    batch.markHoverStyleEffect();
+
+    assertEquals(InputProcessingClassification.KNOWN_EFFECT, batch.classification());
+    assertEquals(InputImpact.HOVER_STYLE, batch.impact());
   }
 
   @Test
@@ -103,8 +112,8 @@ class InputProcessingContractTest {
     DefaultEventProcessor resultAwareProcessor = new DefaultEventProcessor();
     resultAwareProcessor.push(event(frame));
     assertEquals(
-        InputProcessingResult.FULL_REFRESH_REQUIRED,
-        resultAwareProcessor.processEventsWithResult());
+        InputImpact.FULL_UNKNOWN,
+        resultAwareProcessor.processEvents());
 
     assertEquals(legacyDeliveries.get(), resultAwareDeliveries.get());
   }

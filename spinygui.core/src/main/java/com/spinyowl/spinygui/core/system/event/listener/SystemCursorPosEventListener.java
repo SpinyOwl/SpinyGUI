@@ -5,7 +5,6 @@ import static com.spinyowl.spinygui.core.input.MouseButton.RIGHT;
 
 import com.spinyowl.spinygui.core.event.CursorEnterEvent;
 import com.spinyowl.spinygui.core.event.CursorExitEvent;
-import com.spinyowl.spinygui.core.event.MouseClickEvent;
 import com.spinyowl.spinygui.core.event.MouseDragEvent;
 import com.spinyowl.spinygui.core.event.ScrollEvent;
 import com.spinyowl.spinygui.core.event.processor.EventProcessor;
@@ -106,12 +105,15 @@ public class SystemCursorPosEventListener
 
     // Generate enter / exit events.
     if (!sameHitPath) {
+      boolean unknownBoundaryListener =
+          hasDispatchedBoundaryListener(hitPath.current(), hitPath.previous());
       generateEnterEvent(frame, current, hitPath.current());
       generateExitEvent(frame, current, hitPath.current(), hitPath.previous());
-      markKnownEffect(batch);
-    }
-    if (hasPointerListeners(hitPath.current())) {
-      markUnknownFallback(batch);
+      if (unknownBoundaryListener) {
+        markUnknownFallback(batch);
+      } else {
+        markHoverStyleEffect(batch);
+      }
     }
     hitPath.advance();
 
@@ -158,13 +160,13 @@ public class SystemCursorPosEventListener
     }
   }
 
-  private boolean hasPointerListeners(List<Element> path) {
-    for (Element element : path) {
-      if (element.hasListenersFor(CursorEnterEvent.class)
-          || element.hasListenersFor(CursorExitEvent.class)
-          || element.hasListenersFor(MouseDragEvent.class)
-          || element.hasListenersFor(MouseClickEvent.class)
-          || element.hasListenersFor(ScrollEvent.class)) {
+  private boolean hasDispatchedBoundaryListener(
+      List<Element> currentPath, List<Element> previousPath) {
+    for (Element element : currentPath) {
+      if (!element.hovered() && element.hasListenersFor(CursorEnterEvent.class)) return true;
+    }
+    for (Element element : previousPath) {
+      if (!currentPath.contains(element) && element.hasListenersFor(CursorExitEvent.class)) {
         return true;
       }
     }
@@ -174,6 +176,12 @@ public class SystemCursorPosEventListener
   private void markKnownEffect(InputProcessingBatch batch) {
     if (batch != null) {
       batch.markKnownEffect();
+    }
+  }
+
+  private void markHoverStyleEffect(InputProcessingBatch batch) {
+    if (batch != null) {
+      batch.markHoverStyleEffect();
     }
   }
 

@@ -8,6 +8,7 @@ import com.spinyowl.spinygui.core.font.FontWeight;
 import com.spinyowl.spinygui.core.layout.ElementLayout;
 import com.spinyowl.spinygui.core.layout.LayoutContext;
 import com.spinyowl.spinygui.core.layout.LayoutService;
+import com.spinyowl.spinygui.core.layout.LayoutResult;
 import com.spinyowl.spinygui.core.node.ButtonElement;
 import com.spinyowl.spinygui.core.node.Element;
 import com.spinyowl.spinygui.core.node.Frame;
@@ -638,10 +639,13 @@ class BlockLayoutTest {
     }
 
     @Override
-    public void layout(@NonNull Frame frame) {
+    public LayoutResult layout(@NonNull Frame frame) {
       layoutNode(frame, new LayoutContext());
       updateScrollAndClientSize(frame);
+      return LayoutResult.converged(1);
     }
+
+    @Override public void resolveTransforms(@NonNull Frame frame) {}
 
     @Override
     public void layoutNode(@NonNull Node node, @NonNull LayoutContext context) {

@@ -8,6 +8,7 @@ import java.util.Map;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NonNull;
+import lombok.AccessLevel;
 import lombok.Setter;
 import lombok.ToString;
 
@@ -24,6 +25,7 @@ public final class Text extends Node {
   //  private Set<String> undo;
   //  private Set<String> redo;
 
+  @Setter(AccessLevel.NONE)
   private String content;
 
   private float textStartX;
@@ -49,6 +51,12 @@ public final class Text extends Node {
   public Text(String content) {
     this();
     this.content = content;
+  }
+
+  public void content(String content) {
+    if (java.util.Objects.equals(this.content, content)) return;
+    this.content = content;
+    invalidateLayoutSource();
   }
 
   /**

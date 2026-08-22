@@ -39,8 +39,9 @@ public final class OverflowUtils {
   }
 
   public static void clampScrollOffsets(@NonNull Element element) {
-    element.scrollLeft(clamp(element.scrollLeft(), maxScrollLeft(element)));
-    element.scrollTop(clamp(element.scrollTop(), maxScrollTop(element)));
+    element.resolveScrollOffsets(
+        clamp(element.scrollLeft(), maxScrollLeft(element)),
+        clamp(element.scrollTop(), maxScrollTop(element)));
   }
 
   private static boolean clips(Overflow overflow) {
