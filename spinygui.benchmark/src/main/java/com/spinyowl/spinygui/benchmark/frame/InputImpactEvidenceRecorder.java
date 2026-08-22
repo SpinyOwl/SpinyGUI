@@ -3,7 +3,7 @@ package com.spinyowl.spinygui.benchmark.frame;
 import com.google.common.collect.ImmutableSet;
 import com.spinyowl.spinygui.core.event.processor.DefaultEventProcessor;
 import com.spinyowl.spinygui.core.event.processor.InputProcessingCounters;
-import com.spinyowl.spinygui.core.event.processor.InputProcessingResult;
+import com.spinyowl.spinygui.core.event.processor.InputImpact;
 import com.spinyowl.spinygui.core.input.Keyboard;
 import com.spinyowl.spinygui.core.input.impl.KeyboardLayoutImpl;
 import com.spinyowl.spinygui.core.input.impl.MouseServiceImpl;
@@ -183,9 +183,8 @@ public final class InputImpactEvidenceRecorder {
           system.push(key(999));
         }
       }
-      InputProcessingResult systemResult = system.processEventsWithResult();
-      InputProcessingResult guiResult = gui.processEventsWithResult();
-      InputProcessingResult.aggregate(systemResult, guiResult);
+      InputImpact systemImpact = system.processEvents();
+      systemImpact.combine(gui.processEvents());
     }
 
     private InputProcessingCounters.Snapshot counters() {

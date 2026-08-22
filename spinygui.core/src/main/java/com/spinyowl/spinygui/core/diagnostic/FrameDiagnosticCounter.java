@@ -22,6 +22,14 @@ public enum FrameDiagnosticCounter implements DiagnosticCounter {
       "core.frame.transform.compositions",
       DiagnosticUnit.CALLS,
       "Presentation transform compositions resolved after layout."),
+  HIT_TEST_NODE_VISITS(
+      "core.frame.hit-test.node-visits",
+      DiagnosticUnit.ITEMS,
+      "Elements visited while resolving pointer target paths."),
+  ENTER_EXIT_EVENTS(
+      "core.frame.input.enter-exit-events",
+      DiagnosticUnit.ITEMS,
+      "Cursor enter and exit events emitted by system pointer processing."),
   SELECTOR_TESTS(
       "core.frame.selector.tests",
       DiagnosticUnit.CALLS,
@@ -59,7 +67,7 @@ public enum FrameDiagnosticCounter implements DiagnosticCounter {
       DiagnosticUnit.ITEMS,
       "Successful child detachments.");
 
-  public static final String VOCABULARY_VERSION = "core-frame-diagnostics-1";
+  public static final String VOCABULARY_VERSION = "core-frame-diagnostics-2";
 
   private final String id;
   private final DiagnosticUnit unit;

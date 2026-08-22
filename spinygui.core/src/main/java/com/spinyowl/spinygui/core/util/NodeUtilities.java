@@ -1,5 +1,6 @@
 package com.spinyowl.spinygui.core.util;
 
+import com.spinyowl.spinygui.core.diagnostic.FrameDiagnosticCounter;
 import com.spinyowl.spinygui.core.node.Element;
 import com.spinyowl.spinygui.core.node.Node;
 import com.spinyowl.spinygui.core.node.Text;
@@ -178,6 +179,9 @@ public final class NodeUtilities {
    */
   public static List<Element> fillTargetElementList(
       final Vector2fc vector, final Element element, final List<Element> targetList) {
+    if (element.frame() != null) {
+      element.frame().diagnostics().increment(FrameDiagnosticCounter.HIT_TEST_NODE_VISITS);
+    }
     if (canHitTest(element, vector)) {
       if (intersects(element, vector)) {
         targetList.add(element);

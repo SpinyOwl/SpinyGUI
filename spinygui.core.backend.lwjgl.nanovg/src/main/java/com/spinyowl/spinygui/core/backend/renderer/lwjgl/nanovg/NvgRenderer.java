@@ -11,6 +11,7 @@ import static org.lwjgl.opengl.GL11.glDisable;
 import static org.lwjgl.opengl.GL11.glEnable;
 import static org.lwjgl.opengl.GL11.glGetInteger;
 import com.spinyowl.spinygui.core.backend.renderer.Renderer;
+import com.spinyowl.spinygui.core.backend.renderer.lwjgl.nanovg.diagnostic.NvgDiagnosticCounter;
 import com.spinyowl.spinygui.core.diagnostic.DiagnosticSession;
 import com.spinyowl.spinygui.core.font.Font;
 import com.spinyowl.spinygui.core.node.Element;
@@ -202,6 +203,7 @@ public class NvgRenderer implements Renderer {
   }
 
   private void renderElement(Node node, List<Node> children) {
+    diagnostics.increment(NvgDiagnosticCounter.RENDER_NODE_VISITS);
     Element element = node.asElement();
     try (var ignored =
         transformStateFactory.apply(
@@ -276,6 +278,7 @@ public class NvgRenderer implements Renderer {
     if (node instanceof Element) {
       renderElement(node, node.layoutChildNodes());
     } else if (node instanceof Text) {
+      diagnostics.increment(NvgDiagnosticCounter.RENDER_NODE_VISITS);
       textRenderer.render(node, nanovgContext);
     }
   }

@@ -19,12 +19,16 @@ class BenchmarkTaskLifecycleContractTest {
     assertTrue(script.contains("mustRunAfter(benchmarkReportCpu)"));
     assertTrue(script.contains("dependsOn(benchmarkReportRendering)"));
     assertTrue(script.contains("inputImpactEvidence"));
+    assertTrue(script.contains("diagnosticsInteractionBaseline"));
+    assertTrue(script.contains("DiagnosticsInteractionMain"));
+    assertTrue(script.contains("TimestampedReportArgumentAction("));
+    assertTrue(script.contains("\"diagnostics-interaction\""));
     assertTrue(count(script, "benchmarkRunId, \"paired-report\"") == 4);
     assertTrue(count(script, "benchmarkRunId, \"unpaired-investigation\"") == 3);
     assertTrue(script.contains("\"text-calculation\", \"-rff\", benchmarkRunId, \"paired-report\""));
     assertTrue(script.contains("\"nanovg-text\", null, benchmarkRunId, \"paired-report\""));
     assertTrue(script.contains("\"text-diagnostics\", null, benchmarkRunId, \"unpaired-investigation\""));
-    assertEquals(8, count(script, "    freshBenchmarkRun()"));
+    assertEquals(9, count(script, "    freshBenchmarkRun()"));
     assertTrue(script.contains("doNotTrackState("));
     assertTrue(script.contains("ArchiveReportArgumentAction(benchmarkArchive.asFile, benchmarkRunId)"));
   }

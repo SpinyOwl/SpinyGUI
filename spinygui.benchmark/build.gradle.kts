@@ -55,6 +55,7 @@ abstract class BenchmarkRunIdService : BuildService<BenchmarkRunIdParameters>, A
             || archive.resolve("text-diagnostics-$identifier.json").exists()
             || archive.resolve("frame-baseline-$identifier.json").exists()
             || archive.resolve("input-impact-$identifier.json").exists()
+            || archive.resolve("diagnostics-interaction-$identifier.json").exists()
 
     override fun close() {
         reservation?.delete()
@@ -238,6 +239,30 @@ tasks.register<JavaExec>("inputImpactEvidence") {
             providers.gradleProperty("inputImpactDurationMillis").orElse("1000").get())
     }
     doFirst(TimestampedReportArgumentAction(benchmarkArchive.asFile, "input-impact", null, benchmarkRunId, "paired-report"))
+    freshBenchmarkRun()
+}
+
+tasks.register<JavaExec>("diagnosticsInteractionBaseline") {
+    group = "benchmark"
+    description = "Captures the headless E6/M1.6 text-heavy diagnostics interaction baseline."
+    dependsOn("classes")
+    classpath = sourceSets["main"].runtimeClasspath
+    mainClass.set("com.spinyowl.spinygui.benchmark.interaction.DiagnosticsInteractionMain")
+    systemProperty(
+        "spinygui.e6.interaction.warmupOperations",
+        providers.gradleProperty("diagnosticsInteractionWarmupOperations").getOrElse("20")
+    )
+    systemProperty(
+        "spinygui.e6.interaction.measuredOperations",
+        providers.gradleProperty("diagnosticsInteractionMeasuredOperations").getOrElse("100")
+    )
+    doFirst(TimestampedReportArgumentAction(
+        benchmarkArchive.asFile,
+        "diagnostics-interaction",
+        null,
+        benchmarkRunId,
+        "paired-report"
+    ))
     freshBenchmarkRun()
 }
 

@@ -3,6 +3,7 @@ package com.spinyowl.spinygui.core.system.event.listener;
 import static com.spinyowl.spinygui.core.input.MouseButton.LEFT;
 import static com.spinyowl.spinygui.core.input.MouseButton.RIGHT;
 
+import com.spinyowl.spinygui.core.diagnostic.FrameDiagnosticCounter;
 import com.spinyowl.spinygui.core.event.CursorEnterEvent;
 import com.spinyowl.spinygui.core.event.CursorExitEvent;
 import com.spinyowl.spinygui.core.event.MouseDragEvent;
@@ -220,6 +221,7 @@ public class SystemCursorPosEventListener
                 .cursorPosition(current)
                 .build();
         eventProcessor.push(enterEvent);
+        frame.diagnostics().increment(FrameDiagnosticCounter.ENTER_EXIT_EVENTS);
       }
     }
   }
@@ -244,6 +246,7 @@ public class SystemCursorPosEventListener
               .cursorPosition(current)
               .build();
       eventProcessor.push(exitEvent);
+      frame.diagnostics().increment(FrameDiagnosticCounter.ENTER_EXIT_EVENTS);
       prevTarget.hovered(false);
     }
   }

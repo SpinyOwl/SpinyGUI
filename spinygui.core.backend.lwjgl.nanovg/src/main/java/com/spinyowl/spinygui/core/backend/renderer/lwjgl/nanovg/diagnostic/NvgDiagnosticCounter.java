@@ -5,6 +5,10 @@ import com.spinyowl.spinygui.core.diagnostic.DiagnosticUnit;
 
 /** NanoVG/UTF-8 submission, state, and path-specific culling diagnostic vocabulary. */
 public enum NvgDiagnosticCounter implements DiagnosticCounter {
+  RENDER_NODE_VISITS(
+      "nanovg.render.node-visits",
+      DiagnosticUnit.ITEMS,
+      "Layout-tree nodes visited by the immediate-mode NanoVG renderer."),
   UTF8_PAYLOAD_BYTES(
       "nanovg.utf8.payload-bytes",
       DiagnosticUnit.BYTES,
@@ -147,7 +151,7 @@ public enum NvgDiagnosticCounter implements DiagnosticCounter {
       "Textarea text/run submissions culled because conservative ink is outside the effective clip."),
   ;
 
-  public static final String VOCABULARY_VERSION = "nanovg-text-diagnostics-2";
+  public static final String VOCABULARY_VERSION = "nanovg-text-diagnostics-3";
 
   private final String id;
   private final DiagnosticUnit unit;

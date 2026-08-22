@@ -47,6 +47,7 @@ only complete, valid, comparable paired runs for its accepted history and signed
 | `jmhCpu` | Standalone CPU timing/allocation investigation | `reports/text-calculation-<run-id>.json` |
 | `jmhRendering` | Standalone NanoVG rendering investigation | `reports/nanovg-text-<run-id>.json` |
 | `counterDiagnostics` | Untimed CPU and renderer structural counters | `reports/text-diagnostics-<run-id>.json` |
+| `diagnosticsInteractionBaseline` | Headless E6/M1.6 large diagnostics-panel interaction evidence | `reports/diagnostics-interaction-<run-id>.json` |
 | `generateBenchmarkReport` | Regenerate the report from the existing local archive | `reports/index.html` and `reports/report-manifest.json` |
 | `localImageComparison` | Optional, environment-specific renderer image validation | `build/local-image-comparison/` |
 | `reserveBenchmarkRunId` | Print and briefly reserve a fresh archive ID without running benchmarks | Console output only |
@@ -110,6 +111,33 @@ This task runs the identified scaled CPU and normal-text/input/textarea scenario
 semantic variant with diagnostics enabled. It records declared inputs, comparability fingerprints,
 versioned counters, and observed structural outputs. The runner contains no elapsed-time
 measurement, so its output is investigation evidence rather than a timing or allocation baseline.
+
+## Capture the expanded diagnostics interaction baseline
+
+```shell
+./gradlew :spinygui.benchmark:diagnosticsInteractionBaseline --configuration-cache
+```
+
+The task builds a deterministic 256-row panel containing 768 text nodes and captures stationary
+pointer, same-text-target movement, text-boundary crossing, paint-only and dimension-affecting
+hover, keyboard, scroll, click/focus, text editing, resize, and unknown-listener scenarios. The one
+JSON artifact contains environment and workload identity, per-operation samples, p50/p95 elapsed
+time and thread allocation, and a separately recorded structural-counter sample. It is fully
+headless: no GLFW window, VSync, or frame cap is used.
+
+The current fixture aggregates the opt-in system and GUI input outcomes and applies them, together
+with direct scroll/focus/edit/resize causes, through the production `FramePipeline` invalidation
+boundary. Headless render traversal follows the production `renderRequired` decision, so idle
+operations measure the same skipped preparation and paint work as the real pipeline.
+
+Defaults are 20 warmup operations and 100 measured operations per scenario. Short diagnostic runs
+can override them without changing the scenario or panel identity:
+
+```shell
+./gradlew :spinygui.benchmark:diagnosticsInteractionBaseline --configuration-cache \
+  -PdiagnosticsInteractionWarmupOperations=3 \
+  -PdiagnosticsInteractionMeasuredOperations=10
+```
 
 ## Run optional local image comparison
 

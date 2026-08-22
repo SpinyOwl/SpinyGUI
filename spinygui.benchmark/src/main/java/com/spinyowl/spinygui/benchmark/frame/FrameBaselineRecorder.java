@@ -4,6 +4,9 @@ import com.spinyowl.spinygui.benchmark.identity.BenchmarkInputManifests;
 import com.spinyowl.spinygui.benchmark.identity.BenchmarkInvocationMetadata;
 import com.spinyowl.spinygui.benchmark.identity.BenchmarkRunMetadata;
 import com.spinyowl.spinygui.benchmark.identity.ComparabilityMetadata;
+import com.spinyowl.spinygui.core.FramePipeline;
+import com.spinyowl.spinygui.core.FramePreparation;
+import com.spinyowl.spinygui.core.animation.TransitionImpact;
 import com.spinyowl.spinygui.core.diagnostic.DiagnosticSession;
 import com.spinyowl.spinygui.core.diagnostic.FrameDiagnosticCounter;
 import com.spinyowl.spinygui.core.layout.impl.BlockLayout;
@@ -14,6 +17,8 @@ import com.spinyowl.spinygui.core.layout.impl.TextLayoutImpl;
 import com.spinyowl.spinygui.core.node.Element;
 import com.spinyowl.spinygui.core.node.Frame;
 import com.spinyowl.spinygui.core.node.Node;
+import com.spinyowl.spinygui.core.event.processor.DefaultEventProcessor;
+import com.spinyowl.spinygui.core.system.event.processor.SystemEventProcessorImpl;
 import com.spinyowl.spinygui.core.system.font.impl.FontServiceImpl;
 import com.spinyowl.spinygui.core.system.font.impl.FontStorageImpl;
 import com.spinyowl.spinygui.core.style.manager.StyleManagerImpl;
@@ -251,21 +256,29 @@ public final class FrameBaselineRecorder {
   }
 
   private static void execute(Scene scene) {
-    scene.manager.recalculate(scene.frame);
+    scene.pipeline.processInput();
     FrameEvidenceFixtures.applyRuntimeState(scene.scenario, scene.fixture);
-    scene.layout.layout(scene.frame);
-    for (Node node : scene.frame.childNodes()) {
-      if (node instanceof Element element) {
-        element.children();
-        element.absolutePosition();
-        element.layoutAbsolutePosition();
-        element.size();
-        element.getIdAttribute();
-        element.getClassAttribute();
-      }
+    FramePreparation preparation = scene.pipeline.prepareFrame(scene.frame);
+    if (!preparation.renderable()) {
+      throw new IllegalStateException("Benchmark frame preparation failed: " + preparation);
     }
-    if (scene.scenario.hasActiveNode()) {
-      scene.frame.getElementById(scene.scenario.name() + "-" + scene.scenario.activeNodeIndex());
+    if (preparation.renderRequired()) {
+      for (Node node : scene.frame.childNodes()) {
+        if (node instanceof Element element) {
+          element.children();
+          element.absolutePosition();
+          element.layoutAbsolutePosition();
+          element.size();
+          element.getIdAttribute();
+          element.getClassAttribute();
+        }
+      }
+      if (scene.scenario.hasActiveNode()) {
+        scene.frame.getElementById(scene.scenario.name() + "-" + scene.scenario.activeNodeIndex());
+      }
+      if (!scene.pipeline.publishRendered(scene.frame, preparation)) {
+        throw new IllegalStateException("Benchmark render was superseded");
+      }
     }
   }
 
@@ -381,19 +394,16 @@ public final class FrameBaselineRecorder {
     private final FrameScenarioSpecifications.Scenario scenario;
     private final FrameEvidenceFixtures.Fixture fixture;
     private final Frame frame;
-    private final StyleManagerImpl manager;
-    private final LayoutServiceImpl layout;
+    private final FramePipeline pipeline;
 
     private Scene(
         FrameScenarioSpecifications.Scenario scenario,
         FrameEvidenceFixtures.Fixture fixture,
-        StyleManagerImpl manager,
-        LayoutServiceImpl layout) {
+        FramePipeline pipeline) {
       this.scenario = scenario;
       this.fixture = fixture;
       this.frame = fixture.frame();
-      this.manager = manager;
-      this.layout = layout;
+      this.pipeline = pipeline;
     }
 
     static Scene create(FrameScenarioSpecifications.Scenario scenario) {
@@ -418,7 +428,14 @@ public final class FrameBaselineRecorder {
           new LayoutServiceImpl(new TextLayoutImpl(fontService, fontService), layouts);
       layouts.put(Display.NONE, new NoneLayout());
       layouts.put(Display.BLOCK, new BlockLayout(layout, inline, fontService));
-      return new Scene(scenario, fixture, manager, layout);
+      FramePipeline pipeline =
+          new FramePipeline(
+              SystemEventProcessorImpl.create(),
+              new DefaultEventProcessor(),
+              manager,
+              () -> TransitionImpact.NO_CHANGE,
+              layout);
+      return new Scene(scenario, fixture, pipeline);
     }
   }
 }

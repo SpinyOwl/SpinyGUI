@@ -100,6 +100,7 @@ class DiagnosticVocabularyTest {
             "nanovg.normal-text.items-culled",
             "nanovg.normal-text.items-face-selection-failed",
             "nanovg.normal-text.items-submitted",
+            "nanovg.render.node-visits",
             "nanovg.results.font-face-failures",
             "nanovg.textarea.line-cull-reason.outside-effective-clip",
             "nanovg.textarea.lines-considered",
@@ -123,7 +124,7 @@ class DiagnosticVocabularyTest {
     assertEquals(expected, actual);
     assertEquals(expected.size(), vocabulary.size());
     assertEquals("core-text-diagnostics-7", TextDiagnosticCounter.VOCABULARY_VERSION);
-    assertEquals("nanovg-text-diagnostics-2", NvgDiagnosticCounter.VOCABULARY_VERSION);
+    assertEquals("nanovg-text-diagnostics-3", NvgDiagnosticCounter.VOCABULARY_VERSION);
     vocabulary.forEach(
         counter -> {
           assertFalse(counter.description().isBlank(), counter.id());
