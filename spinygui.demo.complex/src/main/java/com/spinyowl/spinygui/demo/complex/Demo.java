@@ -26,6 +26,7 @@ import com.spinyowl.spinygui.core.backend.renderer.lwjgl.nanovg.NvgRenderer;
 import com.spinyowl.spinygui.core.clipboard.Clipboard;
 import com.spinyowl.spinygui.core.event.processor.DefaultEventProcessor;
 import com.spinyowl.spinygui.core.event.processor.EventProcessor;
+import com.spinyowl.spinygui.core.event.processor.InputImpact;
 import com.spinyowl.spinygui.core.input.KeyCode;
 import com.spinyowl.spinygui.core.input.Keyboard;
 import com.spinyowl.spinygui.core.input.KeyboardLayout;
@@ -33,6 +34,7 @@ import com.spinyowl.spinygui.core.input.impl.KeyboardLayoutImpl;
 import com.spinyowl.spinygui.core.input.impl.MouseServiceImpl;
 import com.spinyowl.spinygui.core.input.impl.ShortcutRegistryImpl;
 import com.spinyowl.spinygui.core.layout.LayoutService;
+import com.spinyowl.spinygui.core.layout.LayoutResult;
 import com.spinyowl.spinygui.core.layout.impl.LayoutServiceProvider;
 import com.spinyowl.spinygui.core.node.Frame;
 import com.spinyowl.spinygui.core.parser.NodeParser;
@@ -148,53 +150,41 @@ public abstract class Demo {
   }
 
   private void tick() {
-    try {
-      glClearColor(1, 1, 1, 1);
-
-      int[] ww = {0};
-      int[] wh = {0};
-      int[] bw = {0};
-      int[] bh = {0};
-      glfwGetWindowSize(window, ww, wh);
-      var windowSize = new Vector2f(ww[0], wh[0]);
-
-      glfwGetFramebufferSize(window, bw, bh);
-      var framebufferSize = new Vector2i(bw[0], bh[0]);
-
-      glViewport(0, 0, framebufferSize.x, framebufferSize.y);
-
-      // frame size should be directly specified as it is not updated by layout service.
-      updateFrameDimensions(windowSize);
-      // We need to recalculate styles first.
-      styleManager.recalculate(frame);
-
-      // Hosts advance transitions after styles have produced new targets and before layout/render.
-      transitionCoordinator.tick();
-
-      // We need to relayout components after styles changed.
-      layoutService.layout(frame);
-
-      // After that we can render.
-      glClear(GL_COLOR_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
-      if (renderer instanceof NvgRenderer nvg) {
-        nvg.debugMousePosition(mouseService.getCursorPositions(frame).current());
-      }
-      renderer.render(window, windowSize, framebufferSize, frame);
-      glfwSwapBuffers(window);
-
-      // update system. could be moved for example to game loop.
-      update();
-
-    } catch (Exception e) {
-      e.printStackTrace();
-    }
-
-    // poll system events
+    // This demo intentionally assembles every phase manually for low-level host control.
     glfwPollEvents();
+    InputImpact inputImpact =
+        systemEventProcessor.processEvents().combine(eventProcessor.processEvents());
+    if (inputImpact != InputImpact.NO_IMPACT) frame.invalidateStyle();
 
-    // process system events and generated gui events
-    systemEventProcessor.processEvents();
-    eventProcessor.processEvents();
+    update();
+
+    int[] ww = {0};
+    int[] wh = {0};
+    int[] bw = {0};
+    int[] bh = {0};
+    glfwGetWindowSize(window, ww, wh);
+    var windowSize = new Vector2f(ww[0], wh[0]);
+    glfwGetFramebufferSize(window, bw, bh);
+    var framebufferSize = new Vector2i(bw[0], bh[0]);
+    updateFrameDimensions(windowSize);
+
+    styleManager.recalculate(frame);
+    transitionCoordinator.tick();
+    LayoutResult layoutResult = layoutService.layout(frame);
+    if (!layoutResult.successful()) {
+      throw new IllegalStateException("Layout did not converge: " + layoutResult);
+    }
+    layoutService.resolveTransforms(frame);
+
+    glClearColor(1, 1, 1, 1);
+    glViewport(0, 0, framebufferSize.x, framebufferSize.y);
+    glClear(GL_COLOR_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+    if (renderer instanceof NvgRenderer nvg) {
+      nvg.debugMousePosition(mouseService.getCursorPositions(frame).current());
+    }
+    renderer.render(window, windowSize, framebufferSize, frame);
+    frame.markPainted(frame.revision());
+    glfwSwapBuffers(window);
   }
 
   private void updateFrameDimensions(Vector2f windowSize) {
