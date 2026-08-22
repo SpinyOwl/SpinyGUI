@@ -1,15 +1,26 @@
 # E2: Frame runtime integration
 
-**Status:** Planned
+**Status:** Complete with verification caveat
 
 ## Goal
-Offer an optional, higher-level frame runtime that composes existing manual services in one documented lifecycle while retaining direct host integration as a supported path.
+Provide owner-native phase contracts, a backend-independent `FramePipeline`, and an optional reusable LWJGL application loop while retaining manual host composition as a first-class integration path.
 
 ## Context
 
-> **Current status note:** No frame-runtime implementation was found in the current
-> checkout. The checked documents under `docs/work/E2/M1/P1/` describe the separate
-> font-family resolution initiative and should not be treated as evidence for this epic.
+> **Current status note:** The experimental `core.frame` implementation was removed.
+> Owner-native outcomes, `FramePipeline`, and the reusable LWJGL host are now the
+> accepted boundaries. The checked documents under `docs/work/E2/M1/P1/` describe the
+> separate font-family resolution initiative and are not evidence for this epic.
+
+## Approved architecture
+
+- Delete the experimental `com.spinyowl.spinygui.core.frame` subsystem rather than evolve a parallel ownership model.
+- Return input, style, transition, and layout outcomes from their existing service owners.
+- Let `Frame` own invalidation state and a source revision, but never service or host-loop references.
+- Keep rendering and window operations outside backend-independent `FramePipeline`.
+- Use `poll -> input -> update -> style -> transition -> layout/transform -> render -> swap` as the canonical order.
+- Provide a dependency-injected reusable LWJGL loop while retaining `Demo` as a manually assembled low-level example.
+- Keep layout force-full in this epic; do not retain compatibility wrappers for unstable experimental APIs.
 
 - E1/M3 establishes the explicit host-owned transition coordinator update boundary; it is the prerequisite integration contract.
 - Current demos manually assemble parsing, style, layout, event, renderer, and animation services, and no shared runtime owns their ordering.
@@ -18,7 +29,7 @@ Offer an optional, higher-level frame runtime that composes existing manual serv
 ## Milestones
 
 ### M1: Define optional runtime contract
-**Status:** Planned
+**Status:** Complete
 **Purpose:** Specify ownership, public lifecycle, extension points, and coexistence with manually composed hosts.
 
 **Depends on:** E1/M3.
@@ -32,10 +43,10 @@ Offer an optional, higher-level frame runtime that composes existing manual serv
 - Lock the minimum frame ordering for event processing, style recalculation, transition update, layout, and rendering.
 - Define compatibility guarantees for direct `StyleManager`, `LayoutService`, `Animator`/coordinator, and renderer users.
 
-**Validation:** A reviewed public contract and fake-service ordering tests make it possible to implement without guessing behavior.
+**Validation:** The design above was reviewed and approved on 2026-08-22; implementation details are captured in M2/P1.
 
 ### M2: Implement core frame orchestration
-**Status:** Planned
+**Status:** Complete
 **Purpose:** Provide the opt-in runtime implementation and deterministic lifecycle tests.
 
 **Depends on:** M1.
@@ -44,16 +55,20 @@ Offer an optional, higher-level frame runtime that composes existing manual serv
 
 **Architectural Proposition:** The runtime coordinates existing core interfaces rather than reimplementing style, layout, event, or animation work.
 
+**Plan:** [P1 - Refactor frame loop architecture](E2/M2/P1%20-%20Refactor%20frame%20loop%20architecture.md)
+
 **Key Work:**
 - Build an explicit composition API and a single-frame update path with deterministic service call order.
 - Surface host-controlled invalidation and retain the ability to provide custom clocks, event sources, and renderers.
 - Add lifecycle, teardown, and failure-isolation tests using fakes.
 
-**Validation:** A fake host proves each service runs exactly in documented order, and manual composition remains source/binary compatible where feasible.
+**Validation:** `FramePipelineTest` proves ordering, idle skipping, source-revision
+supersession, and layout non-convergence quarantine. The experimental compatibility
+contracts and package are absent from production Java sources.
 
 ### M3: Integrate reference hosts and document adoption
-**Status:** Planned
-**Purpose:** Validate the option in demos and provide an incremental adoption path.
+**Status:** Complete with verification caveat
+**Purpose:** Add the reusable LWJGL host, preserve the manually composed demo, and make benchmark fixtures exercise production orchestration.
 
 **Depends on:** M2.
 **Enables:** None.
@@ -62,11 +77,17 @@ Offer an optional, higher-level frame runtime that composes existing manual serv
 **Architectural Proposition:** Migrate only selected reference hosts first; do not make the runtime mandatory for custom applications.
 
 **Key Work:**
-- Move one demo to the runtime with its existing backend and prove rendering/input/animation behavior.
+- Keep the complex demo manual and add a reusable base loop for subsequent examples.
+- Adapt benchmark fixtures to the production `FramePipeline` path.
 - Document manual versus runtime integration, migration steps, supported extension points, and shutdown obligations.
 - Add regression coverage for style changes and transition ticks occurring before rendered frames.
 
-**Validation:** The migrated demo compiles/runs, lifecycle tests pass, and the manual M3 integration example remains valid.
+**Validation:** The manual Demo compiles and remains independently assembled;
+`AbstractLwjglApplicationTest` proves the canonical order and reverse resource
+teardown; benchmark fixtures use `FramePipeline`; the full affected module suites and
+fresh benchmark report pass. A native Demo window was not launched. A repository-wide
+`build` remains environmentally blocked by an open/denied generated
+`spinygui.demo.complex/build` directory even though Demo compilation passes.
 
 ## Cross-Cutting Risks
 - A runtime that constructs concrete backend services would violate core backend neutrality; use interfaces and host-provided adapters.
