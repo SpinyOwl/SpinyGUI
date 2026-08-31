@@ -1,6 +1,6 @@
 # Epic Status
 
-Last reviewed: 2026-08-22
+Last reviewed: 2026-08-31
 
 This document tracks the current status of the top-level epic plans under
 [`docs/work`](work/). Status is based on the epic's milestone documents and checked
@@ -9,7 +9,7 @@ implementation/acceptance evidence, not on the presence of a plan alone.
 | Epic | Goal | Status | Current boundary and next work |
 | --- | --- | --- | --- |
 | [E1: CSS Animation Support](work/E1%20-%20CSS%20animation%20support.md) | Deliver bounded CSS transforms, transitions, and keyframe animation support. | In progress | Transform and transition work has delivered bounded implementation evidence; keyframes and hardening/documentation remain open. |
-| [E2: Frame runtime integration](work/E2%20-%20Frame%20runtime%20integration.md) | Consolidate owner-native frame contracts and provide an optional backend-independent pipeline plus reusable LWJGL host loop. | Complete with verification caveat | Owner-native contracts, invalidation, `FramePipeline`, the reusable LWJGL host, manual Demo, tests, and fresh benchmark artifacts are complete. Native visual verification was not run, and the repository-wide build is blocked by an externally locked generated Demo build directory. |
+| [E2: Frame runtime integration](work/E2%20-%20Frame%20runtime%20integration.md) | Consolidate owner-native frame contracts and provide an optional backend-independent pipeline plus reusable LWJGL application host. | In progress | M1-M3 provide the verified single-frame pipeline and host boundary. Planned M4 adds `FrameNavigator`, a frame-owned modal `TopLayer`, reusable default listeners, cbchain callback coexistence, and dynamic active-frame host composition. |
 | [E3: CSS Grid support](work/E3%20-%20CSS%20Grid%20support.md) | Deliver a first-class, bounded CSS Grid Level 1 formatting context. | In progress | A substantial typed Grid Level 1 subset is implemented and tested; container alignment, intrinsic sizing, edge-case grammar, broader interaction proof, and final documentation remain. |
 | [E3.5: Chart.js Benchmark Charts](work/E3.5%20-%20Chart.js%20Benchmark%20Charts.md) | Provide offline benchmark reports with typed Chart.js visualizations. | Complete | Typed offline Chart.js reporting, supported artifact regeneration, structural inspection, and direct-file browser verification are complete. |
 | [E4: Text Performance Benchmarks](work/E4%20-%20Text%20performance%20benchmarks.md) | Establish reproducible text measurement, layout, allocation, and rendering benchmarks. | Complete | The full benchmark suite and a fresh paired CPU/rendering report run pass; the current manifest selects complete comparable evidence. |

@@ -1,9 +1,11 @@
 # E2: Frame runtime integration
 
-**Status:** Complete with verification caveat
+**Status:** In progress
 
 ## Goal
-Provide owner-native phase contracts, a backend-independent `FramePipeline`, and an optional reusable LWJGL application loop while retaining manual host composition as a first-class integration path.
+Provide owner-native phase contracts, a backend-independent `FramePipeline`, and an optional
+reusable LWJGL application host with browser-like navigation and modal behavior while retaining
+manual host composition as a first-class integration path.
 
 ## Context
 
@@ -20,6 +22,11 @@ Provide owner-native phase contracts, a backend-independent `FramePipeline`, and
 - Keep rendering and window operations outside backend-independent `FramePipeline`.
 - Use `poll -> input -> update -> style -> transition -> layout/transform -> render -> swap` as the canonical order.
 - Provide a dependency-injected reusable LWJGL loop while retaining `Demo` as a manually assembled low-level example.
+- Model screen/document changes through `FrameNavigator`; do not model modals as frames.
+- Model modals through a frame-owned `TopLayer` that keeps normal content visible but inert.
+- Put cbchain-aware high-level composition in the existing `spinygui` facade module while keeping
+  a narrow callback-installer contract in the LWJGL backend and lower-level window, service,
+  pipeline, and renderer injection available.
 - Keep layout force-full in this epic; do not retain compatibility wrappers for unstable experimental APIs.
 
 - E1/M3 establishes the explicit host-owned transition coordinator update boundary; it is the prerequisite integration contract.
@@ -71,7 +78,7 @@ contracts and package are absent from production Java sources.
 **Purpose:** Add the reusable LWJGL host, preserve the manually composed demo, and make benchmark fixtures exercise production orchestration.
 
 **Depends on:** M2.
-**Enables:** None.
+**Enables:** M4.
 **Parallelizable with:** None.
 
 **Architectural Proposition:** Migrate only selected reference hosts first; do not make the runtime mandatory for custom applications.
@@ -89,15 +96,47 @@ fresh benchmark report pass. A native Demo window was not launched. A repository
 `build` remains environmentally blocked by an open/denied generated
 `spinygui.demo.complex/build` directory even though Demo compilation passes.
 
+### M4: Add navigable LWJGL application host
+**Status:** Planned
+**Purpose:** Complete the production convenience boundary with browser-like frame navigation,
+modal top-layer behavior, reusable standard listener composition, and cbchain-aware GLFW delivery.
+
+**Depends on:** M3.
+**Enables:** None.
+
+**Architectural Proposition:** Keep navigation frames and modal elements distinct. Compose a
+`FrameNavigator`, frame-owned `TopLayer`, `GlfwSystemEventBridge`, and reusable default listeners in
+the existing high-level facade without making the host mandatory.
+
+**Design:** [LWJGL application host navigation and top layer](../design/lwjgl-application-host-navigation-and-top-layer.md)
+
+**Plan:** [P1 - Compose navigation and top-layer host](E2/M4/P1%20-%20Compose%20navigation%20and%20top-layer%20host.md)
+
+**Key Work:**
+- Add exclusive frame navigation and element-based modal semantics.
+- Extract default listener composition and separate callback mapping from standalone window
+  lifecycle.
+- Add cbchain coexistence, dynamic current-frame event targeting, and the high-level host.
+- Preserve existing single-frame and manual integration paths and verify native behavior separately.
+
+**Validation:** Deterministic navigation, top-layer, callback-ownership, and host-lifecycle tests;
+affected module and full build gates; and a separately recorded native smoke check.
+
 ## Cross-Cutting Risks
 - A runtime that constructs concrete backend services would violate core backend neutrality; use interfaces and host-provided adapters.
 - Making the runtime mandatory would break the library's existing manual composition model; preserve both paths.
 - Hard-coding a frame order without invalidation/teardown semantics can create missed redraws or leaked tracks; define these in M1 before implementation.
+- Treating modals as frames would conflate navigation history with overlay rendering and input
+  inertness; retain the approved `FrameNavigator`/`TopLayer` split.
+- Callback teardown can corrupt an embedding host if ownership is ambiguous; the event bridge must
+  release only callbacks or chain registrations it owns.
 
 ## Verification / Review Strategy
 - Review M1 as an API/ownership decision before implementation.
 - Use fake service ordering/lifecycle tests for M2, then compile/run only targeted reference hosts for M3.
 - Confirm E1/M3's standalone coordinator integration remains supported throughout.
+- For M4, review modal input/focus correctness and callback ownership independently before native
+  host verification.
 
 ## Dependency Graph
 ```mermaid
@@ -106,7 +145,9 @@ flowchart TD
   M1["M1: Define optional runtime contract"]
   M2["M2: Implement core frame orchestration"]
   M3["M3: Integrate reference hosts and document adoption"]
+  M4["M4: Add navigable LWJGL application host"]
   E1M3 --> M1
   M1 --> M2
   M2 --> M3
+  M3 --> M4
 ```
