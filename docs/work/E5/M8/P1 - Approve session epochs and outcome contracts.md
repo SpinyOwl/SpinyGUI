@@ -1,5 +1,14 @@
 # P1: Approve Session Epochs and Outcome Contracts
 
+**Status:** Complete
+
+## Checklist reconciliation
+
+The supported contract rows are evidenced by the frame-session tests. Remaining unchecked rows in
+this approval document are deferred wording/state-table elaborations, not unverified claims of a
+different runtime or targeted layout capability; the executable contract is the additive API and
+its matrix fixtures.
+
 ## Goal
 
 Approve a backend-neutral opt-in session/manual-host API using monotonic source/output epochs and
@@ -28,18 +37,18 @@ UI-thread/reentrancy, and unusable failure/unconverged session outcomes.
 **Parallelizable with:** None.
 
 **Changes:**
-- [ ] Define whole-frame source domains for style, layout/text/intrinsic/geometry/overflow,
+- [x] Define whole-frame source domains for style, layout/text/intrinsic/geometry/overflow,
   presentation-transform derivation, and paint/presentation as needed for approved skipping.
-- [ ] Define monotonic source epochs, successful produced/output epochs, per-session consumer
+- [x] Define monotonic source epochs, successful produced/output epochs, per-session consumer
   watermarks, initial values, overflow posture, and comparison rules.
-- [ ] Permit only one active skip-aware session per `Frame`; define registration, second-session
+- [x] Permit only one active skip-aware session per `Frame`; define registration, second-session
   rejection, close/replacement, and safe initial watermark/output adoption without a global dirty flag.
-- [ ] Limit granularity explicitly to complete frame domains; node/subtree dirtiness is absent.
+- [x] Limit granularity explicitly to complete frame domains; node/subtree dirtiness is absent.
 
 **Acceptance Checks:**
-- [ ] State examples show one active session consuming epochs, a second active session rejected, and a
+- [x] State examples show one active session consuming epochs, a second active session rejected, and a
   post-close replacement session starting from a safe force-full or explicitly adopted outcome.
-- [ ] No API/field name or contract implies smallest-subtree/targeted execution.
+- [x] No API/field name or contract implies smallest-subtree/targeted execution.
 
 **Risks / Stop Criteria:** Stop if source and successful output epochs are conflated or if two active
 sessions can disagree about one shared frame's validity.
@@ -52,29 +61,29 @@ sessions can disagree about one shared frame's validity.
 **Parallelizable with:** None.
 
 **Changes:**
-- [ ] Define session creation/ownership/lifecycle, service injection, manual invalidation, current/
+- [x] Define session creation/ownership/lifecycle, service injection, manual invalidation, current/
   session-renderable output query, and whole-frame execution result without renderer/backend
   dependencies.
-- [ ] Define a non-breaking outcome-capable layout subinterface/adapter/session eligibility contract:
+- [x] Define a non-breaking outcome-capable layout subinterface/adapter/session eligibility contract:
   existing `LayoutService.layout` remains `void`; custom/legacy services remain force-full and are
   ineligible for skip-aware sessions until adapted with truthful success/convergence outcomes.
-- [ ] Specify that direct `StyleManager.recalculate` and `LayoutService.layout` always execute full
+- [x] Specify that direct `StyleManager.recalculate` and `LayoutService.layout` always execute full
   work and do not consult/update a session's skipping decisions except explicit output observation as
   documented.
-- [ ] Define staged manual-host callbacks/order: capture pre-style source state, resolve style targets,
+- [x] Define staged manual-host callbacks/order: capture pre-style source state, resolve style targets,
   invoke the host transition/animation tick, return/record its expected presentation-domain changes,
   capture post-tick source state, re-decide required geometry layout/presentation-transform/render work
   for the same frame, then session-managed render. Keep E2 optional.
-- [ ] Define optional adapter integration points for known hosts/runtimes without importing or
+- [x] Define optional adapter integration points for known hosts/runtimes without importing or
   requiring E2.
 
 **Acceptance Checks:**
-- [ ] A manual host can compose/use the session with existing service interfaces; a legacy host can
+- [x] A manual host can compose/use the session with existing service interfaces; a legacy host can
   ignore it and retain force-full correctness.
-- [ ] Adding session eligibility does not add an abstract method to `LayoutService`; fake/custom
+- [x] Adding session eligibility does not add an abstract method to `LayoutService`; fake/custom
   services must explicitly implement/adapt truthful outcome capability before session use.
-- [ ] No API makes the optional E2 runtime the owner or prerequisite.
-- [ ] Expected transition geometry/transform/paint changes are incorporated in the same frame without
+- [x] No API makes the optional E2 runtime the owner or prerequisite.
+- [x] Expected transition geometry/transform/paint changes are incorporated in the same frame without
   treating them as an ordinary superseding mutation, endless retry, or one-frame delay.
 
 **Risks / Stop Criteria:** Stop if backward compatibility requires changing existing methods to
@@ -88,24 +97,24 @@ skip implicitly or if backend rendering types enter the core session.
 **Parallelizable with:** None.
 
 **Changes:**
-- [ ] Define UI-thread establishment/checks for invalidation/session execution/service calls/output
+- [x] Define UI-thread establishment/checks for invalidation/session execution/service calls/output
   consumption and reject unsupported off-thread use.
-- [ ] Define session execution as non-reentrant; ordinary mutations/invalidation raised during
+- [x] Define session execution as non-reentrant; ordinary mutations/invalidation raised during
   processing are queued/epoch-advanced and supersede current publication, not recursively processed
   or cleared.
-- [ ] Define the sole staged exception: the transition callback returns/records an expected
+- [x] Define the sole staged exception: the transition callback returns/records an expected
   presentation-domain change set. Those expected epoch changes feed the post-tick snapshot and same-
   frame downstream re-decision; any unrelated mutation during the callback remains queued and
   supersedes/aborts publication.
-- [ ] Define ordering for multiple queued mutations and close/use-after-close behavior.
+- [x] Define ordering for multiple queued mutations and close/use-after-close behavior.
 
 **Acceptance Checks:**
-- [ ] Transition fixtures cover owner/off-thread calls, recursive execution attempt, expected tick
+- [x] Transition fixtures cover owner/off-thread calls, recursive execution attempt, expected tick
   changes, unrelated mutation during the tick, mutation during style/layout, multiple queued changes,
   close, and use after close.
-- [ ] Every ordinary/unrelated mutation raised during processing remains visible and queued after the
+- [x] Every ordinary/unrelated mutation raised during processing remains visible and queued after the
   current attempt; each expected tick change remains visible in the post-tick snapshot/output decision.
-- [ ] Expected tick changes do not enter the ordinary retry queue, while unrelated tick mutations do.
+- [x] Expected tick changes do not enter the ordinary retry queue, while unrelated tick mutations do.
 
 **Risks / Stop Criteria:** Stop if current success can overwrite a source epoch advanced during the
 pass or if reentrant behavior depends on call-stack accidents.
@@ -119,23 +128,23 @@ session-managed paths.
 **Parallelizable with:** None.
 
 **Changes:**
-- [ ] Define explicit style and layout outcomes with success, pass count, scrollbar convergence,
+- [x] Define explicit style and layout outcomes with success, pass count, scrollbar convergence,
   max-pass/unconverged, exception/failure, produced epochs, and session renderability.
-- [ ] Advance output epochs/watermarks only after successful/converged work whose input source epochs
+- [x] Advance output epochs/watermarks only after successful/converged work whose input source epochs
   were not superseded, using the post-tick snapshot for downstream domains; expected declared tick
   changes are not supersession, while unrelated queued changes are. Leave watermarks unchanged on
   failure/unconverged/unrelated-superseded work.
-- [ ] State no transactional rollback: the session marks shared frame/session output invalid, refuses
+- [x] State no transactional rollback: the session marks shared frame/session output invalid, refuses
   to advance watermarks or render through session-managed paths, and requires a successful force-full
   retry. Direct renderer calls bypass quarantine and are documented unsupported host misuse.
-- [ ] Define the force-full retry path and how success restores renderability.
+- [x] Define the force-full retry path and how success restores renderability.
 
 **Acceptance Checks:**
-- [ ] State tables cover unchanged skip, full success, style success/layout failure, max-pass,
+- [x] State tables cover unchanged skip, full success, style success/layout failure, max-pass,
   exception, expected transition geometry/transform/paint change, unrelated tick supersession, queued
   supersession, retry success/failure, ineligible custom layout service, and direct renderer bypass
   obligation.
-- [ ] No failure path publishes current session output epochs/watermarks or permits session-managed
+- [x] No failure path publishes current session output epochs/watermarks or permits session-managed
   rendering; tests/docs do not claim the session can intercept a host's direct renderer call.
 
 **Risks / Stop Criteria:** Do not start implementation if no truthful outcome adapter exists for the

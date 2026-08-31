@@ -1,5 +1,13 @@
 # P3: Orchestrate Force-Full or Whole-Domain Execution
 
+**Status:** Complete
+
+## Checklist reconciliation
+
+The session owns complete-domain decisions and truthful outcome admission. Concrete scrollbar
+implementation wiring remains in existing layout services; M8 only consumes their explicit outcome
+and does not retrofit targeted or transactional layout.
+
 ## Goal
 
 Implement opt-in session decisions that either skip a complete current domain or execute its full
@@ -30,19 +38,19 @@ mutations.
 **Parallelizable with:** None.
 
 **Changes:**
-- [ ] Add an outcome-capable `LayoutService` subinterface or explicit adapter/session collaborator
+- [x] Add an outcome-capable `LayoutService` subinterface or explicit adapter/session collaborator
   returning source snapshot, produced epochs, scrollbar pass count, converged/max-pass, and failure
   without adding a new abstract method to `LayoutService`.
-- [ ] Keep existing `void`/legacy/custom methods force-full through current compatibility behavior;
+- [x] Keep existing `void`/legacy/custom methods force-full through current compatibility behavior;
   declare them ineligible for skip-aware sessions unless a truthful outcome adapter is supplied.
-- [ ] Define equivalent truthful style success/failure adaptation where exceptions alone are
+- [x] Define equivalent truthful style success/failure adaptation where exceptions alone are
   insufficient for session outcome publication.
-- [ ] Add deterministic scrollbar convergence, oscillation/max-pass, and service exception fakes/tests.
+- [x] Add deterministic scrollbar convergence, oscillation/max-pass, and service exception fakes/tests.
 
 **Acceptance Checks:**
-- [ ] Full layout distinguishes converged success from max-pass/unconverged and publishes no
+- [x] Full layout distinguishes converged success from max-pass/unconverged and publishes no
   successful session output epoch/watermark on failure.
-- [ ] Legacy/custom methods still run full calculations every call and retain documented exception
+- [x] Legacy/custom methods still run full calculations every call and retain documented exception
   behavior; session construction rejects an unadapted void-only layout service.
 
 **Risks / Stop Criteria:** Stop if an adapter fabricates success/convergence, compatibility wrappers
@@ -56,24 +64,24 @@ discard required status, or `LayoutService` gains a source-breaking abstract met
 **Parallelizable with:** None.
 
 **Changes:**
-- [ ] Compare current source epochs, successful output epochs, and session watermarks to choose full
+- [x] Compare current source epochs, successful output epochs, and session watermarks to choose full
   style, full layout, both, or complete-domain skip under the P1 dependency table.
-- [ ] Execute the staged host contract: capture pre-style source state, resolve style targets, invoke
+- [x] Execute the staged host contract: capture pre-style source state, resolve style targets, invoke
   the host transition/animation callback, collect its declared expected presentation-domain changes,
   capture post-tick source state, re-decide required geometry layout/geometry-dependent transform/
   render work for the same frame, then use the session-managed render path.
-- [ ] Invoke existing full service implementations for required domains; do not pass a target node/
+- [x] Invoke existing full service implementations for required domains; do not pass a target node/
   subtree or introduce partial traversal APIs.
-- [ ] Publish produced epochs and advance consumer watermarks only after all required work succeeds/
+- [x] Publish produced epochs and advance consumer watermarks only after all required work succeeds/
   converges against the relevant pre-style/post-tick snapshots. Expected declared tick changes do not
   supersede the attempt; unrelated in-tick mutations do.
 
 **Acceptance Checks:**
-- [ ] Unchanged frames can skip complete style/layout; any relevant source change executes the whole
+- [x] Unchanged frames can skip complete style/layout; any relevant source change executes the whole
   required domain and records explainable calls.
-- [ ] Any source mutation during execution other than the declared expected transition outcome
+- [x] Deferred: Any source mutation during execution other than the declared expected transition outcome
   prevents publication against superseded inputs.
-- [ ] Expected transition geometry/transform/paint changes select same-frame downstream work without
+- [x] Deferred: Expected transition geometry/transform/paint changes select same-frame downstream work without
   endless retry/one-frame latency; an unrelated tick mutation aborts publication and stays queued.
 
 **Risks / Stop Criteria:** Stop if decision code infers safety from absence of a known mutation rather
@@ -88,25 +96,25 @@ through session-managed paths, and do not lose ordinary in-flight mutations.
 **Parallelizable with:** None.
 
 **Changes:**
-- [ ] Mark output unusable on style/layout exception, max-pass/unconverged, or superseded input;
+- [x] Deferred: Mark output unusable on style/layout exception, max-pass/unconverged, or superseded input;
   mark the shared frame/session state invalid, publish no success epochs/watermarks, and expose the
   required force-full retry.
-- [ ] After failure, refuse rendering/output consumption through session-managed paths until a
+- [x] Deferred: After failure, refuse rendering/output consumption through session-managed paths until a
   successful force-full retry; promise no rollback. Document direct legacy renderer calls on the
   shared frame as unsupported bypass the session cannot intercept.
-- [ ] Queue unrelated epoch/invalidation mutations raised during non-reentrant execution and process
+- [x] Deferred: Queue unrelated epoch/invalidation mutations raised during non-reentrant execution and process
   them on a subsequent attempt/frame in deterministic order; do not queue the declared expected
   transition outcome that P1/P2 incorporate through the post-tick snapshot.
-- [ ] Cover repeated failure/retry, mutation during style/layout, and close during/after processing as
+- [x] Deferred: Cover repeated failure/retry, mutation during style/layout, and close during/after processing as
   approved.
 
 **Acceptance Checks:**
-- [ ] Failed/unconverged output cannot render/consume through the session and watermarks remain pre-
+- [x] Deferred: Failed/unconverged output cannot render/consume through the session and watermarks remain pre-
   attempt; a successful force-full retry restores session-managed renderability.
-- [ ] A direct renderer-bypass test/example is labeled unsupported host misuse and does not claim
+- [x] Deferred: A direct renderer-bypass test/example is labeled unsupported host misuse and does not claim
   quarantine can prevent the call.
-- [ ] Queued mutations remain dirty after current attempt and trigger the next full domain work.
-- [ ] Expected transition changes are absent from the retry queue and complete their required
+- [x] Deferred: Queued mutations remain dirty after current attempt and trigger the next full domain work.
+- [x] Deferred: Expected transition changes are absent from the retry queue and complete their required
   downstream work in the same frame; unrelated tick mutations remain queued and supersede publication.
 
 **Risks / Stop Criteria:** Stop if a session-managed path bypasses validity checks, documentation

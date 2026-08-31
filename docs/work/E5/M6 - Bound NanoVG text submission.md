@@ -1,6 +1,6 @@
 # M6: Bound NanoVG Text Submission
 
-**Status:** Planned
+**Status:** Complete
 
 Parent plan: `docs/work/E5 - Text performance improvements.md`
 
@@ -170,6 +170,12 @@ retention remains bounded, and no structural or approved image boundary regresse
 context teardown leaks staging/font resources, or if a culling reduction lacks conservative proof.
 
 ## Milestone Validation
+
+M6 completed with direct resolved-glyph UTF-8 staging, a renderer-owned 64 KiB retention cap,
+synchronous oversized fallbacks, scoped exact state suppression, and explicit deferral of both
+culling classes. Portable structural and lifecycle tests are the acceptance oracle. Local image
+comparison remains opt-in under M1 and was not required because no culling or other visibility
+change was authorized.
 
 - `./gradlew :spinygui.core.backend.lwjgl.nanovg:test --tests 'com.spinyowl.spinygui.core.backend.renderer.lwjgl.nanovg.NvgTextRendererTest'`
 - `./gradlew :spinygui.core.backend.lwjgl.nanovg:test --tests 'com.spinyowl.spinygui.core.backend.renderer.lwjgl.nanovg.NvgInputRendererTest'`

@@ -1,6 +1,6 @@
 # M7: Add Bounded Generation-Safe Text Caches
 
-**Status:** Planned
+**Status:** Complete
 
 Parent plan: `docs/work/E5 - Text performance improvements.md`
 
@@ -233,6 +233,14 @@ introduced.
 aggregate weight double-counting/omission is unresolved, or disabled mode changes behavior.
 
 ## Milestone Validation
+
+## Completion Evidence
+
+M7 is complete on the deterministic correctness/evidence boundary. Production-owned observations now
+include pass-local font-chain/metrics diagnostics, real M4 prepared values, one current M5 snapshot,
+and explicit core/STB/NanoVG/staging resource classes. Enabled and disabled all-family aggregate
+fixtures pass. The production timed report remains a disabled baseline and is not an enabled-cache
+performance claim. M8 is the next milestone.
 
 - `./gradlew :spinygui.core:test --tests 'com.spinyowl.spinygui.core.system.font.*'`
 - `./gradlew :spinygui.core:test --tests 'com.spinyowl.spinygui.core.layout.impl.InlineFormattingContextTest'`

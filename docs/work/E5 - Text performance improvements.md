@@ -1,6 +1,6 @@
 # E5: Text Performance Improvements
 
-**Status:** In progress
+**Status:** Complete
 
 ## Goal
 
@@ -183,11 +183,11 @@ contract and production generation consumed by M4/M5/M6/M7.
 semantic mutation, resolution, measurement, NanoVG inspection/face/render recording, reload bounds,
 failure recovery, thread/context rejection, aggregate retention, and ordered teardown. The full
 current core, NanoVG, benchmark, and complex-demo test gate passes with no skipped tests. M4 and M5
-are the next ready milestones.
+have consumed this lifecycle contract and are complete; M6 and M7 are the next ready milestones.
 
 ### M4: Prepare inline text with ranges and code points
 
-**Status:** Planned
+**Status:** Complete
 
 **Document:** [M4 - Prepare inline text with ranges and code points](E5/M4%20-%20Prepare%20inline%20text%20with%20ranges%20and%20code%20points.md)
 
@@ -220,9 +220,14 @@ allocation; durable-string counters equal the preserved text-bearing fragment su
 for null-text spacer/element/union fragments. Durable allocation is not claimed eliminated, and
 fragment coalescing remains a separately approved behavior change.
 
+**Completion boundary:** P1-P3 are complete. Inline preparation, rendered-local run/glyph offsets,
+explicit immutable original-source provenance, constructor/value semantics, scaled counter evidence,
+and the focused/full core, NanoVG, and benchmark gates are verified. M4 now satisfies the M6 and M7
+dependency boundary.
+
 ### M5: Share bounded editable-control snapshots
 
-**Status:** Planned
+**Status:** Complete
 
 **Document:** [M5 - Share bounded editable-control snapshots](E5/M5%20-%20Share%20bounded%20editable-control%20snapshots.md)
 
@@ -255,9 +260,15 @@ non-invalidating presentation/interaction changes reuse. Debug/listener paths sh
 surrogate-interior setters follow M2, and textarea tests use the current wrap constant unless M2
 separately approves an API.
 
+**Completion boundary:** P1-P6 are complete. Input and textarea consumers, shared listeners,
+renderers, and debug paths use the bounded control-local snapshot service with exact cold/warm,
+generation, alias, separator, selection, caret, fallback, and teardown fixtures. Focused and full
+core, NanoVG, benchmark, counter-diagnostic, and complex-demo gates pass. M5 now satisfies the M6 and
+M7 dependency boundary.
+
 ### M6: Bound NanoVG text submission
 
-**Status:** Planned
+**Status:** Complete
 
 **Document:** [M6 - Bound NanoVG text submission](E5/M6%20-%20Bound%20NanoVG%20text%20submission.md)
 
@@ -285,10 +296,12 @@ renderer/context-owned frame-scoped or hard-capped UTF-8 staging owner.
 
 **Validation:** Structural recordings/counters are primary; local image comparisons validate
 boundaries; context/font lifecycle matches M3; no unbounded or per-run native retention appears.
+Focused normal/input/textarea failure fixtures also prove that mediated save/restore and clip
+cleanup run after injected text/staging failures.
 
 ### M7: Add bounded generation-safe text caches
 
-**Status:** Planned
+**Status:** Complete
 
 **Document:** [M7 - Add bounded generation-safe text caches](E5/M7%20-%20Add%20bounded%20generation-safe%20text%20caches.md)
 
@@ -322,7 +335,7 @@ not count as cache-reuse proof.
 
 ### M8: Add opt-in whole-frame dirty orchestration
 
-**Status:** Planned
+**Status:** Complete
 
 **Document:** [M8 - Add opt-in whole-frame dirty orchestration](E5/M8%20-%20Add%20opt-in%20whole-frame%20dirty%20orchestration.md)
 
@@ -369,11 +382,6 @@ completion proves only whole-frame skipping.
 
 ## Remaining Evidence-Driven Decision Gates
 
-- M1 must account for the actual 30/30 alternating warmup plus synchronized small-scene image
-  validation (31/30 pre-measure). It must move validation outside a fresh equal sequence or report the
-  complete distribution, then recapture the baseline.
-- M3 must select exact registry/resource bounds and either support or explicitly reject renderer
-  context replacement under the approved UI-thread lifecycle.
 - M6 must select the public-compatible rendered-text path and bounded staging design from pinned
   native-source evidence; general fragment/run culling remains gated on conservative ink and
   Java-side clip/transform proof.

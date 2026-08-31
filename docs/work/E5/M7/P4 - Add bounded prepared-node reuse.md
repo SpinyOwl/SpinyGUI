@@ -1,5 +1,7 @@
 # P4: Add Bounded Prepared-Node Reuse
 
+**Status:** Complete
+
 ## Goal
 
 Reuse M4 immutable prepared text/ranges/mappings under exact content/policy keys with node-current or
@@ -27,17 +29,17 @@ hard-bounded ownership, complete lazy validation, diagnostics, teardown, and dis
 **Parallelizable with:** None.
 
 **Changes:**
-- [ ] Implement immutable keys from exact original text/content and every effective M4 `white-space`,
+- [x] Implement immutable keys from exact original text/content and every effective M4 `white-space`,
   tab-size, CR/LF/normalization/replacement policy input; copy mutable source/policy values.
-- [ ] Implement the selected node-current naturally bounded slot or independently hard-bounded owner
+- [x] Implement the selected node-current naturally bounded slot or independently hard-bounded owner
   with no reliance on weak reachability alone and no retained historical prepared values per node.
-- [ ] Apply P1 entry/weight/admission/oversized/eviction/diagnostics/clear/close/disabled policy and
+- [x] Apply P1 entry/weight/admission/oversized/eviction/diagnostics/clear/close/disabled policy and
   UI-thread checks.
 
 **Acceptance Checks:**
-- [ ] Exact content/policy matches hit; every policy/content change misses on next query even through
+- [x] Exact content/policy matches hit; every policy/content change misses on next query even through
   unobservable aliases; disabled always performs one M4 preparation and retains nothing.
-- [ ] Owner retention stays under hard/natural policy without a global unbounded node map.
+- [x] Owner retention stays under hard/natural policy without a global unbounded node map.
 
 **Risks / Stop Criteria:** Stop if exact source strings/large mappings bypass weight accounting or if
 the owner needs to keep dead DOM nodes strongly reachable.
@@ -50,17 +52,17 @@ the owner needs to keep dead DOM nodes strongly reachable.
 **Parallelizable with:** None.
 
 **Changes:**
-- [ ] Store defensive immutable prepared text/ranges/original mappings and validate all code-point/
+- [x] Store defensive immutable prepared text/ranges/original mappings and validate all code-point/
   surrogate boundaries on cache publication/retrieval.
-- [ ] Route `InlineWhitespace`/preparation consumers to reusable values while `InlineFormattingContext`
+- [x] Route `InlineWhitespace`/preparation consumers to reusable values while `InlineFormattingContext`
   still materializes current durable fragments/runs each layout pass.
-- [ ] Preserve pass-local typography/font-chain reuse separately; do not hide M3 generation in a
+- [x] Preserve pass-local typography/font-chain reuse separately; do not hide M3 generation in a
   preparation key unless a prepared value actually depends on registry state.
 
 **Acceptance Checks:**
-- [ ] Cached mapping output equals M4 exactly under tabs/collapse/newline/replacement/supplementary
+- [x] Cached mapping output equals M4 exactly under tabs/collapse/newline/replacement/supplementary
   fixtures and remains externally immutable.
-- [ ] Fragment count/text/owner reference assertions still execute and no `InlineFragment` is retained
+- [x] Fragment count/text/owner reference assertions still execute and no `InlineFragment` is retained
   as a cache value.
 
 **Risks / Stop Criteria:** Stop if reuse accidentally stores style/font/layout geometry or changes
@@ -74,17 +76,17 @@ the approved key by adding irrelevant font generation.
 **Parallelizable with:** None.
 
 **Changes:**
-- [ ] Run cold/warm/content churn/policy churn/many-node/large-value/oversized/clear/close/disabled and
+- [x] Run cold/warm/content churn/policy churn/many-node/large-value/oversized/clear/close/disabled and
   direct-alias scenarios using P1 contract tests.
-- [ ] Assert normalization scans fall only on exact hits, retained weight/entries stay bounded, and
+- [x] Assert normalization scans fall only on exact hits, retained weight/entries stay bounded, and
   admission rejection falls back to uncached M4 output.
-- [ ] Clear independently from font/resolved/wrap families and verify no entry-identity/dangling
+- [x] Clear independently from font/resolved/wrap families and verify no entry-identity/dangling
   references or durable-fragment retention.
 
 **Acceptance Checks:**
-- [ ] Warm exact values skip normalization scans; churn/oversized values cannot exceed policy;
+- [x] Warm exact values skip normalization scans; churn/oversized values cannot exceed policy;
   disabled/uncached structure and counters match M4.
-- [ ] Diagnostics/reset/teardown and UI-thread/use-after-close behavior satisfy P1.
+- [x] Diagnostics/reset/teardown and UI-thread/use-after-close behavior satisfy P1.
 
 **Risks / Stop Criteria:** Do not default-enable if typical large prepared mappings are misweighted or
 if independent clear changes fragment output.

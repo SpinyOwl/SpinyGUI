@@ -1,6 +1,10 @@
 # M8: Add Opt-In Whole-Frame Dirty Orchestration
 
-**Status:** Planned
+> **Superseded 2026-08-22:** E2/M2 replaces this experimental session/epoch architecture with
+> owner-native phase outcomes, `Frame` revision/invalidation state, and `FramePipeline`. This file
+> remains historical design and benchmark evidence; `com.spinyowl.spinygui.core.frame` is removed.
+
+**Status:** Complete
 
 Parent plan: `docs/work/E5 - Text performance improvements.md`
 
@@ -240,3 +244,33 @@ flowchart TD
   P3 --> P4
   P4 --> P5
 ```
+
+## Implemented Evidence (current slice)
+
+The additive backend-neutral API in `spinygui.core.frame` now provides whole-frame source/output
+epochs, one active session per `Frame`, UI-thread and non-reentrant checks, explicit known-cause
+invalidation adapters, truthful outcome-capable layout admission, transform-only execution, staged
+expected-transition handling, supersession detection, and session-managed failure quarantine.
+
+Layout and style invalidation transitively mark layout, presentation-transform, and paint domains.
+Paint output is published only after the managed render consumer returns successfully; a render
+exception or mutation during rendering leaves paint output stale and the session unrenderable until
+retry. A direct renderer call remains an explicitly unsupported bypass because the session cannot
+intercept it. Existing `LayoutService` implementations remain force-full and require an additive
+`WholeFrameLayoutService` capability before joining a skip-aware session.
+
+Focused evidence is in `WholeFrameSessionTest` and `WholeFrameInvalidationTest`, covering initial
+dirty/current transitions, second-session rejection, overflow, manual cause mapping, transform-only
+frames, failed layout/retry, failed render/retry, expected versus unrelated transition changes,
+layout-to-transform propagation, queued mutation supersession, owner-thread confinement,
+non-reentrancy, close/use-after-close, and whole-frame scrollbar thumb refresh. This evidence does
+not claim targeted layout, automatic interception of mutable aliases, or retained-surface rendering.
+
+`WholeFrameScenarioMatrixTest` adds deterministic staged-host ordering (`style → transition → layout
+→ transform → render`), expected geometry transition same-frame downstream work, unrelated tick
+supersession and retry, explicit convergence/max-pass outcomes, and legacy force-full admission.
+The existing `ScrollbarGeometryTest`/NanoVG scrollbar fixtures cover the retained `Metrics` record
+components and current-scroll thumb refresh. These fixtures are contract evidence rather than
+timing or retained-surface performance approval.
+The M5 snapshot, M6 submission, and M7 aggregate-cache owners remain separate host/service concerns;
+M8 does not claim to own their cross-milestone integration.

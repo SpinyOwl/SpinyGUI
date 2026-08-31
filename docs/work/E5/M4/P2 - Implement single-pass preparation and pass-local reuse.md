@@ -1,5 +1,7 @@
 # P2: Implement Single-Pass Preparation and Pass-Local Reuse
 
+**Status:** Complete
+
 ## Goal
 
 Produce prepared text, ranges, and mappings in one deterministic scan, eliminate temporary
@@ -30,16 +32,16 @@ mapping construction.
 **Parallelizable with:** None.
 
 **Changes:**
-- [ ] Scan source code points once and apply approved CR/LF, tab expansion, form-feed, vertical-tab,
+- [x] Scan source code points once and apply approved CR/LF, tab expansion, form-feed, vertical-tab,
   collapse/preserve, and forced-break behavior while appending prepared text/range mapping metadata.
-- [ ] Represent collapsed/expanded source spans explicitly and preserve all P1 forward/reverse
+- [x] Represent collapsed/expanded source spans explicitly and preserve all P1 forward/reverse
   boundary rules.
-- [ ] Add normalization-scan/builder-append/freeze counters and freeze immutable prepared output once.
+- [x] Add normalization-scan/builder-append/freeze counters and freeze immutable prepared output once.
 
 **Acceptance Checks:**
-- [ ] Every whitespace policy fixture reports one source normalization scan and exact prepared text/
+- [x] Every whitespace policy fixture reports one source normalization scan and exact prepared text/
   mappings.
-- [ ] Supplementary code points remain atomic and no regex/replacement pass rescans prepared output.
+- [x] Supplementary code points remain atomic and no regex/replacement pass rescans prepared output.
 
 **Risks / Stop Criteria:** Stop if source must be rescanned to repair mappings or if builder freeze
 copies growing prefixes repeatedly.
@@ -52,20 +54,20 @@ copies growing prefixes repeatedly.
 **Parallelizable with:** None.
 
 **Changes:**
-- [ ] Construct text/space/break/spacer/atomic units as ranges over the immutable prepared value.
-- [ ] Update splitting/deferred-wrap helpers to produce validated code-point-safe subranges rather
+- [x] Construct text/space/break/spacer/atomic units as ranges over the immutable prepared value.
+- [x] Update splitting/deferred-wrap helpers to produce validated code-point-safe subranges rather
   than `substring` or one-unit-per-UTF-16-char objects.
-- [ ] Measure ranges through M2's internal range-aware overload/adapter without allocating a
+- [x] Measure ranges through M2's internal range-aware overload/adapter without allocating a
   temporary `String`; materialize exactly one `String` only for each preserved text-bearing fragment
   that requires one, and zero for null-text spacer, element, or union fragments.
-- [ ] Count measurement-range calls, result reuse, temporary measurement materializations, and durable
+- [x] Count measurement-range calls, result reuse, temporary measurement materializations, and durable
   fragment materializations separately.
 
 **Acceptance Checks:**
-- [ ] Break-all/preserved-space fixtures do not allocate one temporary unit/string per UTF-16 code
+- [x] Break-all/preserved-space fixtures do not allocate one temporary unit/string per UTF-16 code
   unit.
-- [ ] All split boundaries validate against P1 mappings and M2 surrogate/replacement rules.
-- [ ] Many compatible measured ranges allocate zero temporary measurement strings; durable `String`
+- [x] All split boundaries validate against P1 mappings and M2 surrogate/replacement rules.
+- [x] Many compatible measured ranges allocate zero temporary measurement strings; durable `String`
   materialization count equals the preserved text-bearing fragment subset, is zero for null-text
   spacer/element/union fragments, and never follows code-point/range count.
 
@@ -81,19 +83,19 @@ introducing persistent cache ownership.
 **Parallelizable with:** None.
 
 **Changes:**
-- [ ] Define immutable value keys for effective family list/style/weight/stretch, font size, line
+- [x] Define immutable value keys for effective family list/style/weight/stretch, font size, line
   height, color where relevant to output, and measurement configuration inside one pass.
-- [ ] Resolve/reuse typography/font-chain values through M3's central owner while the pass generation
+- [x] Resolve/reuse typography/font-chain values through M3's central owner while the pass generation
   is fixed; never key by mutable `ResolvedStyle` identity.
-- [ ] Restore pass-local measurement-result reuse for compatible source ranges/effective typography/
+- [x] Restore pass-local measurement-result reuse for compatible source ranges/effective typography/
   measurement configuration so collection/wrap stages do not repeat equivalent range calls.
-- [ ] Clear/drop pass-local maps/builders at pass completion/failure and count chain resolutions.
+- [x] Clear/drop pass-local maps/builders at pass completion/failure and count chain resolutions.
 
 **Acceptance Checks:**
-- [ ] Equal immutable typography inputs resolve once per pass; changed value inputs do not alias.
-- [ ] Compatible range measurements reuse one result/call as declared; changed source range,
+- [x] Equal immutable typography inputs resolve once per pass; changed value inputs do not alias.
+- [x] Compatible range measurements reuse one result/call as declared; changed source range,
   typography, configuration, or generation does not alias.
-- [ ] No pass-local entry survives into another layout pass or accepts registry mutation mid-pass.
+- [x] No pass-local entry survives into another layout pass or accepts registry mutation mid-pass.
 
 **Risks / Stop Criteria:** Stop if reuse depends on object identity, crosses a pass, or adds a second
 resolver owner.

@@ -1,5 +1,7 @@
 # P3: Route Input Consumers Through Snapshots
 
+**Status:** Complete
+
 ## Goal
 
 Make input rendering, caret/selection, key/char/mouse behavior, hit testing, horizontal scrolling,
@@ -28,19 +30,19 @@ and viewport logic use one service/slot and cumulative text-local geometry.
 **Parallelizable with:** None.
 
 **Changes:**
-- [ ] Query the current snapshot once per input render and consume immutable runs/line metrics/
+- [x] Query the current snapshot once per input render and consume immutable runs/line metrics/
   cumulative caret boundaries for value, selection, and caret commands.
-- [ ] Route `NvgDebugRenderer` hovered-input fragment/caret geometry through the same snapshot contract
+- [x] Route `NvgDebugRenderer` hovered-input fragment/caret geometry through the same snapshot contract
   or prepare the explicit feature redirection/removal consumed by P5 composition.
-- [ ] Convert text-local x/line geometry using content placement, vertical centering, horizontal
+- [x] Convert text-local x/line geometry using content placement, vertical centering, horizontal
   scroll, ancestor scroll/clip, and presentation transforms at consumption time.
-- [ ] Keep color/focus/current caret/selection/scroll out of snapshot validity and preserve button-
+- [x] Keep color/focus/current caret/selection/scroll out of snapshot validity and preserve button-
   input versus text-input behavior.
 
 **Acceptance Checks:**
-- [ ] Renderer recording output remains structurally equivalent and performs no prefix-substring
+- [x] Renderer recording output remains structurally equivalent and performs no prefix-substring
   `TextMeasurer` call on a warm snapshot.
-- [ ] Changing focus/color/caret/selection/scroll updates commands/coordinates while returning the
+- [x] Changing focus/color/caret/selection/scroll updates commands/coordinates while returning the
   same slot.
 
 **Risks / Stop Criteria:** Stop if vertical placement/content height becomes a key field or if button
@@ -54,17 +56,17 @@ input semantics are accidentally folded into editable text behavior.
 **Parallelizable with:** None.
 
 **Changes:**
-- [ ] Route char/key movement/selection, mouse caret/hit testing, cursor behavior, horizontal viewport,
+- [x] Route char/key movement/selection, mouse caret/hit testing, cursor behavior, horizontal viewport,
   and scroll clamping through snapshot boundary/extent queries.
-- [ ] Apply M2 surrogate-interior setter and code-point movement rules consistently for externally
+- [x] Apply M2 surrogate-interior setter and code-point movement rules consistently for externally
   assigned and event-generated indices.
-- [ ] Convert cursor/layout coordinates into text-local coordinates using the P1 conversion contract,
+- [x] Convert cursor/layout coordinates into text-local coordinates using the P1 conversion contract,
   including control/ancestor scroll and presentation transforms.
 
 **Acceptance Checks:**
-- [ ] Event and renderer caret/selection x positions agree for fallback/replacement and supplementary
+- [x] Event and renderer caret/selection x positions agree for fallback/replacement and supplementary
   fixtures.
-- [ ] No migrated input consumer directly measures full values or substrings for text geometry.
+- [x] No migrated input consumer directly measures full values or substrings for text geometry.
 
 **Risks / Stop Criteria:** Stop if event hit testing and renderer placement use different scroll/
 transform orders or if a valid surrogate pair can be split.
@@ -77,17 +79,17 @@ transform orders or if a valid surrogate pair can be split.
 **Parallelizable with:** None.
 
 **Changes:**
-- [ ] Count all `TextMeasurer` entry points separately during warm non-key render/debug/caret/
+- [x] Count all `TextMeasurer` entry points separately during warm non-key render/debug/caret/
   selection/navigation/mouse/viewport/scroll sequences and during invalidating edit/key/char operations.
-- [ ] Mutate each input key field and each excluded presentation/interaction field and assert exact
+- [x] Mutate each input key field and each excluded presentation/interaction field and assert exact
   replacement/reuse behavior.
-- [ ] Cover direct mutable typography aliases, real font generation, empty/long/fallback/replacement/
+- [x] Cover direct mutable typography aliases, real font generation, empty/long/fallback/replacement/
   supplementary values, and coordinate transforms.
 
 **Acceptance Checks:**
-- [ ] Every warm non-key migrated input sequence records zero calls to every `TextMeasurer` entry
+- [x] Every warm non-key migrated input sequence records zero calls to every `TextMeasurer` entry
   point, not only zero snapshot builds.
-- [ ] Each invalidating edit/key/char or key change rebuilds exactly once at the next required query;
+- [x] Each invalidating edit/key/char or key change rebuilds exactly once at the next required query;
   subsequent warm queries return to zero calls. Each non-key change preserves the slot.
 
 **Risks / Stop Criteria:** Do not mark migration complete while a rare key/mouse/viewport branch

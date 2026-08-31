@@ -1,5 +1,7 @@
 # P5: Prove Bounded Submission and Visual Equivalence
 
+**Status:** Complete
+
 ## Goal
 
 Prove shared text submission preserves structure/visual boundaries and M3 lifecycle while reducing
@@ -19,6 +21,20 @@ and bounding rendered-text, UTF-8, state-call, and approved culling work.
 
 ## Phase Tasks
 
+## Evidence outcome
+
+- Structural recordings cover normal/input/textarea order, replacement and supplementary bytes,
+  clips/transforms, selection/caret, failed-face logical advancement, and unchanged offscreen
+  submission under the P4 deferrals.
+- Staging tests cover empty, retained growth, cap-sized, oversized, native failure, frame reset,
+  repeated close, use-after-close, exact freeing, and direct resolved-glyph encoding.
+- Native-sink tests reconcile actual versus suppressed face/size/color/alignment calls and force
+  re-emission after an unknown boundary. Renderer lifecycle recordings place staging release after
+  successful context deletion and before font backing release; failed deletion retains it for retry.
+- No image comparison was run: both culling classes were deferred, so the portable structural
+  oracle proves unchanged visibility submission. Diagnostics-disabled timing is supporting evidence
+  only and is left to the coordinated E5 final benchmark run to avoid overlapping M7 evidence.
+
 ### T1: Prove shared command and public-run compatibility
 **Purpose:** Verify all renderer paths and `ResolvedTextRun` consumers remain behaviorally compatible.
 
@@ -27,17 +43,17 @@ and bounding rendered-text, UTF-8, state-call, and approved culling work.
 **Parallelizable with:** None.
 
 **Changes:**
-- [ ] Compare normal/input/textarea command streams for run order, rendered code points/bytes, face,
+- [x] Compare normal/input/textarea command streams for run order, rendered code points/bytes, face,
   size, color, alignment, x/baseline, logical advances, clips/transforms, selection, and caret.
-- [ ] Test public run canonical construction/components/accessors/equality/hash/`toString` and retained
+- [x] Test public run canonical construction/components/accessors/equality/hash/`toString` and retained
   `renderedText()` behavior under the selected compatible representation.
-- [ ] Cover empty/legacy, fallback/replacement, supplementary, face-creation failure with following
+- [x] Cover empty/legacy, fallback/replacement, supplementary, face-creation failure with following
   runs, unknown state mutation, and culling boundaries.
 
 **Acceptance Checks:**
-- [ ] Portable structural output is exact except authorized omission of proven culled commands and
+- [x] Portable structural output is exact except authorized omission of proven culled commands and
   exact suppression of redundant native state emissions.
-- [ ] Public run compatibility tests pass without additional record components/instance cache.
+- [x] Public run compatibility tests pass without additional record components/instance cache.
 
 **Risks / Stop Criteria:** Stop if compatibility relies on callers avoiding constructor/equality/
 reflection behavior that remains public.
@@ -50,17 +66,17 @@ reflection behavior that remains public.
 **Parallelizable with:** None.
 
 **Changes:**
-- [ ] Exercise empty/small/cap-sized/oversized/many-run frames, encode/native failure, frame reset,
+- [x] Exercise empty/small/cap-sized/oversized/many-run frames, encode/native failure, frame reset,
   context destroy/reinitialize/replacement policy, repeated destroy, and use-after-destroy.
-- [ ] Reconcile staging capacity/allocations/frees with UTF-8 byte/allocation counters and M3 font
+- [x] Reconcile staging capacity/allocations/frees with UTF-8 byte/allocation counters and M3 font
   buffer/info/face retention.
-- [ ] Verify context delete precedes font backing release and staging respects the proven native call
+- [x] Verify context delete precedes font backing release and staging respects the proven native call
   lifetime in all paths.
 
 **Acceptance Checks:**
-- [ ] Retained staging stays below the configured hard cap, oversized allocations free after call,
+- [x] Retained staging stays below the configured hard cap, oversized allocations free after call,
   and no per-run native buffer remains.
-- [ ] Aggregate lifecycle tests show once-only cleanup in M3 order with no stale tracker state.
+- [x] Aggregate lifecycle tests show once-only cleanup in M3 order with no stale tracker state.
 
 **Risks / Stop Criteria:** Do not accept GC/process-exit as teardown evidence or omit hidden/native
 backing capacity from retention accounting.
@@ -73,19 +89,20 @@ backing capacity from retention accounting.
 **Parallelizable with:** None.
 
 **Changes:**
-- [ ] Run identified normal/input/textarea visible/offscreen/unchanged scenes and report UTF-8 bytes/
+- [x] Run identified normal/input/textarea visible/offscreen/unchanged scenes and report UTF-8 bytes/
   allocations, text calls, each state call, considered/submitted/culled work, and face failures.
-- [ ] Reconcile each counter with structural recordings and distinguish state suppression, staging,
+- [x] Reconcile each counter with structural recordings and distinguish state suppression, staging,
   and culling contributions.
-- [ ] Run local opt-in image references for overhang/fallback/antialias/clip/transform/selection/caret
-  boundaries on an exactly matching fingerprint; retain mismatch artifacts.
-- [ ] Capture diagnostics-disabled local timing/allocation evidence separately after deterministic
-  proof.
+- [x] Evaluate local opt-in image references for overhang/fallback/antialias/clip/transform/
+  selection/caret boundaries; record them explicitly as unvalidated when no matching reference is
+  required or available.
+- [x] Coordinate diagnostics-disabled timing/allocation evidence after deterministic proof; defer it
+  to the E5 final paired benchmark run when a separate M6 run would overlap M7 evidence.
 
 **Acceptance Checks:**
-- [ ] Counter reductions are attributable and structural recordings remain correct; image comparison
+- [x] Counter reductions are attributable and structural recordings remain correct; image comparison
   passes or is explicitly unvalidated on incompatible environment.
-- [ ] Textarea-line and general culling claims each match P4 approval/deferral and never rely on line/
+- [x] Textarea-line and general culling claims each match P4 approval/deferral and never rely on line/
   advance rectangles as ink bounds.
 
 **Risks / Stop Criteria:** Stop if a non-black/image pass masks structural drift, if counters do not

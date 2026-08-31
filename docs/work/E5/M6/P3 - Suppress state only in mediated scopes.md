@@ -1,5 +1,7 @@
 # P3: Suppress State Only in Mediated Scopes
 
+**Status:** Complete
+
 ## Goal
 
 Suppress redundant NanoVG text state commands only inside explicit scopes that mediate every
@@ -27,16 +29,16 @@ relevant mutation and invalidate tracking at save/restore, external, callback, a
 **Parallelizable with:** None.
 
 **Changes:**
-- [ ] Define tracker start/end/reset at known renderer begin/end, `nvgSave`/`nvgRestore`, clip,
+- [x] Define tracker start/end/reset at known renderer begin/end, `nvgSave`/`nvgRestore`, clip,
   transform, control, debug, callback, and external/unknown mutation boundaries.
-- [ ] Track face, size, color, and alignment only after a successful mediated emission; invalidate
+- [x] Track face, size, color, and alignment only after a successful mediated emission; invalidate
   affected/all fields after failures or unknown state changes.
-- [ ] Join tracker reset/close with M3 renderer/context and P2 frame/staging lifecycle.
+- [x] Join tracker reset/close with M3 renderer/context and P2 frame/staging lifecycle.
 
 **Acceptance Checks:**
-- [ ] State begins unknown in every scope, cannot leak across restore/context/frame boundaries, and
+- [x] State begins unknown in every scope, cannot leak across restore/context/frame boundaries, and
   re-emits after injected unknown mutation.
-- [ ] Face-creation failure does not mark the failed face as active.
+- [x] Face-creation failure does not mark the failed face as active.
 
 **Risks / Stop Criteria:** Disable tracking for a boundary if any relevant external state mutation can
 occur without mediation/invalidation.
@@ -49,17 +51,17 @@ occur without mediation/invalidation.
 **Parallelizable with:** None.
 
 **Changes:**
-- [ ] Compare exact approved values for face, size, color, and alignment and skip only a command whose
+- [x] Compare exact approved values for face, size, color, and alignment and skip only a command whose
   state is known equal in the current scope.
-- [ ] Preserve required re-emission after control/path transitions, save/restore, clip/transform
+- [x] Preserve required re-emission after control/path transitions, save/restore, clip/transform
   boundaries, callbacks, and failed face creation.
-- [ ] Reconcile recording/counter semantics so suppressed commands are distinguishable from logical
+- [x] Reconcile recording/counter semantics so suppressed commands are distinguishable from logical
   requested state and actual native calls.
 
 **Acceptance Checks:**
-- [ ] Recording fixtures show identical logical draw order/values with fewer native state commands;
+- [x] Recording fixtures show identical logical draw order/values with fewer native state commands;
   every boundary fixture re-emits required state.
-- [ ] Normal/input/textarea produce the same alignment/face/size/color behavior under mixed scopes.
+- [x] Normal/input/textarea produce the same alignment/face/size/color behavior under mixed scopes.
 
 **Risks / Stop Criteria:** Stop if floating/color equality canonicalization is not exact enough to
 preserve native behavior or if suppression changes the first command after a scope.
@@ -72,16 +74,16 @@ preserve native behavior or if suppression changes the first command after a sco
 **Parallelizable with:** None.
 
 **Changes:**
-- [ ] Test frame reset, context destroy/reinitialize/replacement policy, partial initialization,
+- [x] Test frame reset, context destroy/reinitialize/replacement policy, partial initialization,
   repeated destroy, use-after-destroy, and staging failure with tracker diagnostics.
-- [ ] Inject unknown/external mutations at every supported callback/custom renderer boundary and
+- [x] Inject unknown/external mutations at every supported callback/custom renderer boundary and
   assert fail-closed re-emission.
-- [ ] Compare native state-call counts to structural recordings for normal/input/textarea mixed scenes.
+- [x] Compare native state-call counts to structural recordings for normal/input/textarea mixed scenes.
 
 **Acceptance Checks:**
-- [ ] No context/frame/scope starts with stale known state and lifecycle cleanup releases tracker/
+- [x] No context/frame/scope starts with stale known state and lifecycle cleanup releases tracker/
   staging/font state in M3 order.
-- [ ] Counter reductions reconcile exactly with skipped equal commands and never hide missing commands.
+- [x] Counter reductions reconcile exactly with skipped equal commands and never hide missing commands.
 
 **Risks / Stop Criteria:** Do not expand tracker scope to gain benchmark reductions when unknown
 mutation coverage is incomplete.

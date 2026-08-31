@@ -1,5 +1,7 @@
 # P2: Add Bounded Font-Chain and Metrics Caches
 
+**Status:** Complete
+
 ## Goal
 
 Implement independently bounded font-chain and font-metrics families using exact immutable value
@@ -26,17 +28,17 @@ keys and the real M3 semantic generation/lifecycle.
 **Parallelizable with:** None.
 
 **Changes:**
-- [ ] Implement the P1 font-chain key/value under the central M3 resolver owner, copying ordered
+- [x] Implement the P1 font-chain key/value under the central M3 resolver owner, copying ordered
   families/effective values and retaining immutable ordered semantic font identities/faces.
-- [ ] Apply exact entry/weight/admission/oversized/eviction/diagnostics/clear/close/disabled policies
+- [x] Apply exact entry/weight/admission/oversized/eviction/diagnostics/clear/close/disabled policies
   and UI-thread checks.
-- [ ] Handle empty/missing families, nearest style/weight/stretch selection, no-op/failure generation,
+- [x] Handle empty/missing families, nearest style/weight/stretch selection, no-op/failure generation,
   and successful semantic changes.
 
 **Acceptance Checks:**
-- [ ] Exact equivalent requests hit; order/style/weight/stretch/resolver policy/generation changes miss;
+- [x] Exact equivalent requests hit; order/style/weight/stretch/resolver policy/generation changes miss;
   disabled mode performs resolver work and retains nothing.
-- [ ] Cached values cannot mutate with caller lists or registry collections.
+- [x] Cached values cannot mutate with caller lists or registry collections.
 
 **Risks / Stop Criteria:** Stop if the cache creates a second resolver/registry owner or if missing
 families are generation-unsafe.
@@ -49,14 +51,14 @@ families are generation-unsafe.
 **Parallelizable with:** None.
 
 **Changes:**
-- [ ] Implement the P1 metrics key/value including semantic identity/generation, size, line height,
+- [x] Implement the P1 metrics key/value including semantic identity/generation, size, line height,
   vertical metric policy, and rounding/measurement configuration, excluding width/offset.
-- [ ] Apply independent owner/bound/admission/oversized/diagnostics/clear/teardown/disabled policy.
-- [ ] Preserve M2 fallback vertical-metric selection and invalid/edge numeric behavior.
+- [x] Apply independent owner/bound/admission/oversized/diagnostics/clear/teardown/disabled policy.
+- [x] Preserve M2 fallback vertical-metric selection and invalid/edge numeric behavior.
 
 **Acceptance Checks:**
-- [ ] Each exact metric input changes reuse as specified; width changes never affect this family.
-- [ ] Cached immutable metrics survive independent chain-cache clear by value/key without dangling
+- [x] Each exact metric input changes reuse as specified; width changes never affect this family.
+- [x] Cached immutable metrics survive independent chain-cache clear by value/key without dangling
   entry identity and miss on semantic generation changes.
 
 **Risks / Stop Criteria:** Stop if line-height/rounding identity is implicit in a service object or if
@@ -70,15 +72,15 @@ metrics reference released M3 STB info rather than immutable values.
 **Parallelizable with:** None.
 
 **Changes:**
-- [ ] Run reusable P1 contract tests and churn ordered families/styles/sizes/line heights/generations,
+- [x] Run reusable P1 contract tests and churn ordered families/styles/sizes/line heights/generations,
   including oversized/admission rejection and off-thread/use-after-close.
-- [ ] Clear each family independently in both orders and verify downstream/value validity.
-- [ ] Reconcile retained entries/weight with shared semantic font values and M3 resource diagnostics.
+- [x] Clear each family independently in both orders and verify downstream/value validity.
+- [x] Reconcile retained entries/weight with shared semantic font values and M3 resource diagnostics.
 
 **Acceptance Checks:**
-- [ ] Hard bounds, evictions, diagnostics, disabled mode, independent clear, and downstream-to-upstream
+- [x] Hard bounds, evictions, diagnostics, disabled mode, independent clear, and downstream-to-upstream
   teardown pass deterministically.
-- [ ] Aggregate accounting counts shared values/resources according to P1 with no hidden native owner.
+- [x] Aggregate accounting counts shared values/resources according to P1 with no hidden native owner.
 
 **Risks / Stop Criteria:** Do not enable either family by default until its independent churn/clear/
 disabled evidence passes.

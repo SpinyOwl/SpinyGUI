@@ -1,5 +1,7 @@
 # P4: Route Textarea Consumers Through Snapshots
 
+**Status:** Complete
+
 ## Goal
 
 Make textarea metrics/rendering, caret/selection, line navigation, key/char/mouse/cursor behavior,
@@ -29,17 +31,17 @@ measure repeatedly.
 **Parallelizable with:** None.
 
 **Changes:**
-- [ ] Route or replace `MultilineTextControlMetrics` methods with service snapshot queries for lines,
+- [x] Route or replace `MultilineTextControlMetrics` methods with service snapshot queries for lines,
   caret, index-at, line start/end, vertical caret movement, content extent, and text style.
-- [ ] Preserve original-value UTF-16 paragraph/newline/visual-line boundaries and M2 surrogate policy
+- [x] Preserve original-value UTF-16 paragraph/newline/visual-line boundaries and M2 surrogate policy
   across empty/trailing paragraphs and wraps.
-- [ ] Ensure the service keys the existing actual wrap policy/width and add no unsupported mutable
+- [x] Ensure the service keys the existing actual wrap policy/width and add no unsupported mutable
   wrap transition test/API.
 
 **Acceptance Checks:**
-- [ ] Calling every multiline query on a warm slot performs no paragraph split or `TextMeasurer`
+- [x] Calling every multiline query on a warm slot performs no paragraph split or `TextMeasurer`
   entry-point call.
-- [ ] Multi-paragraph wrapped fallback/replacement fixtures return exact source indexes and text-local
+- [x] Multi-paragraph wrapped fallback/replacement fixtures return exact source indexes and text-local
   geometry.
 
 **Risks / Stop Criteria:** Stop if a compatibility facade internally reconstructs complete layouts
@@ -53,17 +55,17 @@ or if visual-line boundaries cannot map unambiguously to source.
 **Parallelizable with:** None.
 
 **Changes:**
-- [ ] Route textarea renderer value/runs/visual lines, selection rectangles, and caret through one
+- [x] Route textarea renderer value/runs/visual lines, selection rectangles, and caret through one
   snapshot query and text-local geometry.
-- [ ] Route char/key line movement/selection, mouse/cursor hit testing, scroll/viewport/clamping, and
+- [x] Route char/key line movement/selection, mouse/cursor hit testing, scroll/viewport/clamping, and
   content extent through the service/slot.
-- [ ] Apply content placement, control scroll, ancestor scroll/clip, and presentation transforms only
+- [x] Apply content placement, control scroll, ancestor scroll/clip, and presentation transforms only
   during consumer conversion; keep color/focus/caret/selection/scroll outside the key.
 
 **Acceptance Checks:**
-- [ ] Renderer and event behavior agree on line/caret/selection geometry over wrapped fallback and
+- [x] Renderer and event behavior agree on line/caret/selection geometry over wrapped fallback and
   multi-line scroll fixtures.
-- [ ] No textarea consumer directly splits/wraps/measures the value after migration.
+- [x] No textarea consumer directly splits/wraps/measures the value after migration.
 
 **Risks / Stop Criteria:** Stop if renderer visibility/scroll calculations modify snapshot geometry
 or if event/render conversion order diverges.
@@ -76,18 +78,18 @@ or if event/render conversion order diverges.
 **Parallelizable with:** None.
 
 **Changes:**
-- [ ] Count complete control layouts and every `TextMeasurer` entry point separately for warm non-key
+- [x] Count complete control layouts and every `TextMeasurer` entry point separately for warm non-key
   render, K-line selection, navigation, hit-test, scroll, and viewport queries and for invalidating
   edit/key/char operations.
-- [ ] Mutate every textarea key field—including exact width/actual wrap policy inputs—and every
+- [x] Mutate every textarea key field—including exact width/actual wrap policy inputs—and every
   excluded placement/content-height/presentation/interaction field.
-- [ ] Cover direct mutable typography aliases, real M3 generation, empty/trailing/multiple paragraphs,
+- [x] Cover direct mutable typography aliases, real M3 generation, empty/trailing/multiple paragraphs,
   narrow wraps, fallback/replacement, supplementary indices, and scroll/transform coordinates.
 
 **Acceptance Checks:**
-- [ ] Warm non-key K-line and consumer queries perform zero complete layouts and zero calls to every
+- [x] Warm non-key K-line and consumer queries perform zero complete layouts and zero calls to every
   `TextMeasurer` entry point.
-- [ ] Invalidating edit/key/char or key mutations rebuild exactly once at the next required query;
+- [x] Invalidating edit/key/char or key mutations rebuild exactly once at the next required query;
   subsequent warm queries return to zero. Non-key mutations reuse and no history is retained.
 
 **Risks / Stop Criteria:** Do not accept a test that asserts only zero “snapshot builds” while a

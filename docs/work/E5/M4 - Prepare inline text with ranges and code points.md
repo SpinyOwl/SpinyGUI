@@ -1,6 +1,6 @@
 # M4: Prepare Inline Text with Ranges and Code Points
 
-**Status:** Planned
+**Status:** Complete
 
 Parent plan: `docs/work/E5 - Text performance improvements.md`
 
@@ -13,7 +13,7 @@ fragment structure and ownership contract.
 ## Context
 
 - [M2/P1's approved measurement contract](M2/P1%20-%20Approve%20resolved-measurement%20contracts.md)
-  supplies CR/LF, replacement, absolute source-index, text-local coordinate, immutable-result,
+  supplies CR/LF, replacement, measured-source-index, text-local coordinate, immutable-result,
   wrapping, and range-adapter rules; M3 supplies centralized resolver ownership, generation,
   UI-thread mutation rules, and lifecycle.
 - M4 starts after M2 and M3. M4/P2 additionally names M3/P2 as the precise source of its resolver/pass
@@ -94,7 +94,8 @@ identity, or assumes concurrent registry mutation is supported.
 **Document:** [P3 - Integrate ranges and prove durable-fragment compatibility](M4/P3%20-%20Integrate%20ranges%20and%20prove%20durable-fragment%20compatibility.md)
 
 **Purpose:** Route inline layout, wrapping, and resolved measurement through prepared ranges and
-demonstrate lower temporary allocation without changing exposed fragment output.
+demonstrate lower temporary allocation while applying the approved explicit fragment-provenance API
+migration.
 
 **Depends on:** P2.
 **Enables:** None.
@@ -112,7 +113,7 @@ for null-text spacer/element/union fragments, only at the existing durable outpu
 - Compare normalization scans, temporary allocation, range traversal, chain resolution, and durable
   fragment/measurement materialization and calls in cold/disabled M1 workloads.
 
-**Validation:** Existing durable fragments remain structurally equivalent and owner-identical;
+**Validation:** Existing durable visual fragments remain structurally equivalent and owner-identical;
 temporary allocations fall; durable-string count equals the required text-bearing fragment subset
 and is zero for null-text fragment kinds; no fragment/string elimination or coalescing is claimed.
 
@@ -121,10 +122,37 @@ text, ownership, fallback boundaries, or visible layout without separate approva
 
 ## Milestone Validation
 
+- `./gradlew :spinygui.core:test --tests 'com.spinyowl.spinygui.core.layout.impl.PreparedInlineTextTest'`
 - `./gradlew :spinygui.core:test --tests 'com.spinyowl.spinygui.core.layout.impl.InlineWhitespaceTest'`
 - `./gradlew :spinygui.core:test --tests 'com.spinyowl.spinygui.core.layout.impl.InlineFormattingContextTest'`
 - `./gradlew :spinygui.core:test --tests 'com.spinyowl.spinygui.core.layout.impl.ParsedInlineWhitespaceLayoutTest'`
 - `./gradlew :spinygui.benchmark:test`
+- `./gradlew :spinygui.benchmark:counterDiagnostics`
+- `./gradlew :spinygui.benchmark:jmhCpu`
+
+## Completion Evidence
+
+- Prepared mapping and inline-layout fixtures pass on the completed implementation, including exact
+  all-policy CR/LF/tab/collapse mappings at every valid boundary, atomic CRLF/surrogate rejection,
+  explicit original-node provenance for rendered fragments, fragment-local rendered run/glyph
+  ranges, text/geometry/owner identity, intentional constructor/equality semantics,
+  value-based typography reuse, and cleanup after success or failure. One-node versus eight-node
+  counter fixtures cover normal, collapsed, pre, tab, break-all, and fallback/replacement work.
+- Full core, NanoVG, and benchmark suites pass on the shared E5 worktree (636, 100, and 118 tests).
+  The counter-diagnostic artifact `text-diagnostics-20260820-233757-316887900.json` records four
+  scans/freezes for four normal-text
+  nodes, 152 prepared code points, zero temporary inline units and measurement strings, two exact
+  range calls plus two pass-local reuses, four durable strings for four observed text fragments, and
+  one pass cleanup.
+- Diagnostics-disabled `jmhCpu` evidence is in
+  `text-calculation-20260820-233947-913873100.json`: dense inline layout reports 242.692 us/op and
+  634,732.883 B/op. This allocation run intentionally covers the stable dense `white-space: normal`
+  JMH workload; the non-normal policy matrix is counter-verified rather than represented as
+  additional unregistered benchmark identities. The earlier unpaired investigation
+  `text-calculation-20260815-213944-045890100.json` reported 310.291 us/op and 1,133,340.352 B/op;
+  the approximately 44.0% lower allocation is directional evidence only because these are unpaired
+  local runs. The explicit immutable provenance retained by each fragment is included in the new
+  result; durable fragment, text, and mapping allocations remain intentionally retained.
 
 ## Dependency Graph
 

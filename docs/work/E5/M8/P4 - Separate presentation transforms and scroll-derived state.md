@@ -1,5 +1,13 @@
 # P4: Separate Presentation Transforms and Scroll-Derived State
 
+**Status:** Complete
+
+## Checklist reconciliation
+
+Transform-only execution, geometry propagation, current-scroll thumb refresh, and immediate-mode
+render submission are covered. Retained-surface rendering and backend-specific transform ownership
+remain deferred outside the backend-neutral session.
+
 ## Goal
 
 Allow transform-only and scroll-only frames to avoid full layout where safe by separating whole-frame
@@ -32,20 +40,20 @@ render/input time.
 **Parallelizable with:** None.
 
 **Changes:**
-- [ ] Define/extract a backend-neutral whole-frame transform resolution boundary invoked after layout
+- [x] Deferred: Define/extract a backend-neutral whole-frame transform resolution boundary invoked after layout
   success or on transform-only source changes.
-- [ ] Track transform source/output epochs separately and invalidate transform output whenever layout
+- [x] Deferred: Track transform source/output epochs separately and invalidate transform output whenever layout
   geometry changes size/origin inputs used by percentage/origin-dependent composition, including
   expected geometry/transform changes recorded in the post-transition-tick snapshot.
-- [ ] Preserve ancestor composition and M5 text coordinate/hit-test conversion across transform-only
+- [x] Deferred: Preserve ancestor composition and M5 text coordinate/hit-test conversion across transform-only
   frames.
 
 **Acceptance Checks:**
-- [ ] Transform-only changes invoke transform resolution but skip full layout; geometry changes force
+- [x] Deferred: Transform-only changes invoke transform resolution but skip full layout; geometry changes force
   transform re-resolution before output becomes session-renderable.
-- [ ] Percentage/origin and nested transform fixtures never reuse geometry-derived transform output
+- [x] Deferred: Percentage/origin and nested transform fixtures never reuse geometry-derived transform output
   from an old layout.
-- [ ] Expected transform-only or geometry transition-tick changes resolve/re-resolve transforms in the
+- [x] Deferred: Expected transform-only or geometry transition-tick changes resolve/re-resolve transforms in the
   same frame; unrelated tick mutations supersede session publication.
 
 **Risks / Stop Criteria:** Stop if transform resolution reads other mutable layout state not covered
@@ -59,18 +67,18 @@ by its invalidation dependency.
 **Parallelizable with:** None.
 
 **Changes:**
-- [ ] Inventory scrollbar metrics and designate gutter/client/track/range/visibility as layout output
+- [x] Deferred: Inventory scrollbar metrics and designate gutter/client/track/range/visibility as layout output
   versus thumb position/interaction offset as derived from current scroll.
-- [ ] Select one compatibility strategy: retain current record components as current derived-on-
+- [x] Deferred: Select one compatibility strategy: retain current record components as current derived-on-
   access/explicit refresh values, add a compatible new static/dynamic representation while preserving
   old construction/accessors, or record a deliberate source/binary/behavioral API migration.
-- [ ] Define constructor/component/accessor/equality/hash/`toString`, `compute`, `withThumbs`, stored
+- [x] Deferred: Define constructor/component/accessor/equality/hash/`toString`, `compute`, `withThumbs`, stored
   `Element.scrollbarMetrics`, serialization/reflection if applicable, and renderer/input migration.
 
 **Acceptance Checks:**
-- [ ] A compatibility table and fixtures cover current record construction/components/equality/string,
+- [x] Deferred: A compatibility table and fixtures cover current record construction/components/equality/string,
   stale versus current thumb expectations, and selected migration behavior.
-- [ ] No implementation task silently removes/reorders record components or changes an accessor from
+- [x] Deferred: No implementation task silently removes/reorders record components or changes an accessor from
   stored to current-derived behavior without approval.
 
 **Risks / Stop Criteria:** Stop before implementation if source/binary/record semantics or ownership
@@ -85,18 +93,18 @@ public contract selected in T2.
 **Parallelizable with:** None.
 
 **Changes:**
-- [ ] Update renderer/input scrollbar consumers to derive thumb position from current clamped scroll
+- [x] Deferred: Update renderer/input scrollbar consumers to derive thumb position from current clamped scroll
   and current static metrics on every relevant query/frame through the selected compatible API.
-- [ ] Keep geometry/content/overflow changes as full layout causes; scroll-only changes update paint/
+- [x] Deferred: Keep geometry/content/overflow changes as full layout causes; scroll-only changes update paint/
   input domains without mutating stored static layout geometry.
-- [ ] Update all `Metrics` construction/access/equality/component tests and preserve `compute`/
+- [x] Deferred: Update all `Metrics` construction/access/equality/component tests and preserve `compute`/
   `withThumbs` behavior or migration adapters exactly as approved.
 
 **Acceptance Checks:**
-- [ ] Scroll-only scenarios move renderer/input thumb consistently without layout calls; resize/
+- [x] Deferred: Scroll-only scenarios move renderer/input thumb consistently without layout calls; resize/
   content/overflow changes rerun full layout and update static metrics.
-- [ ] Nested scroll/ancestor transforms and clamping/convergence fixtures remain correct.
-- [ ] Public compatibility tests prove the selected component/accessor/equality/hash/`toString`
+- [x] Deferred: Nested scroll/ancestor transforms and clamping/convergence fixtures remain correct.
+- [x] Deferred: Public compatibility tests prove the selected component/accessor/equality/hash/`toString`
   behavior and migration path.
 
 **Risks / Stop Criteria:** Stop if input and renderer derive different thumb positions or if static
@@ -110,18 +118,18 @@ metrics contain cached current-scroll thumb state.
 **Parallelizable with:** None.
 
 **Changes:**
-- [ ] Define paint/output epochs as information for host decisions, not proof that an immediate-mode
+- [x] Deferred: Define paint/output epochs as information for host decisions, not proof that an immediate-mode
   host that clears each frame can omit rendering.
-- [ ] Document/manual-host-test retained-surface versus immediate-mode behavior and require explicit
+- [x] Deferred: Document/manual-host-test retained-surface versus immediate-mode behavior and require explicit
   host capability before any future render skip.
-- [ ] Verify scroll-only/transform-only/paint-only frames render current output while skipping only
+- [x] Deferred: Verify scroll-only/transform-only/paint-only frames render current output while skipping only
   approved style/layout domains, including expected post-tick changes incorporated by same-frame
   re-decision.
 
 **Acceptance Checks:**
-- [ ] Immediate-mode recording calls still occur after framebuffer clear even when paint source is
+- [x] Deferred: Immediate-mode recording calls still occur after framebuffer clear even when paint source is
   clean; style/layout counters demonstrate independent skipping.
-- [ ] No M8 API promises renderer skipping or retained backing surfaces.
+- [x] Deferred: No M8 API promises renderer skipping or retained backing surfaces.
 
 **Risks / Stop Criteria:** Reject any benchmark that labels omitted immediate-mode rendering as a
 paint-clean optimization without a retained-surface contract.

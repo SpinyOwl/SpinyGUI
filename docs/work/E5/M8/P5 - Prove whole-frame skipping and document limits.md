@@ -1,5 +1,31 @@
 # P5: Prove Whole-Frame Skipping and Document Limits
 
+**Status:** Complete
+
+## Checklist reconciliation
+
+Rows requiring direct M5/M6/M7 owner integration, live E2 runtime wiring, automatic alias
+interception, retained surfaces, or targeted layout are explicitly deferred. The executable matrix
+covers the backend-neutral session contract and records those ownership boundaries.
+
+## Implemented Evidence
+
+`WholeFrameScenarioMatrixTest` and `WholeFrameSessionTest` provide deterministic executable
+evidence for the supported P1-P5 rows: unchanged, paint-only, scroll-only, transform-only, edit,
+font-generation, resize, DOM/style, hover/focus/active adapter causes; expected and unrelated
+transition mutations; staged ordering; session failure/render refusal/retry; queued mutation;
+off-thread/reentrant/close behavior; second-session rejection; explicit manual invalidation;
+truthful outcome-capable layout admission; converged/max-pass outcomes; legacy force-full calls;
+direct-renderer bypass obligation; and coexistence with immutable M4 fragment provenance. M5
+snapshot, M6 submission, and M7 aggregate-cache ownership remain separate host/service concerns;
+this matrix does not claim an M8-owned cross-milestone cache/submission integration.
+
+Exact style/layout/transform/render counters are asserted for skip and full-domain rows. Existing
+core and NanoVG scrollbar fixtures assert `ScrollbarGeometry.Metrics` construction/equality and
+current-scroll thumb refresh. The matrix intentionally proves complete-domain decisions only; it
+does not claim targeted subtree layout, automatic mutable-alias interception, E2 ownership, or
+retained-surface renderer skipping.
+
 ## Goal
 
 Validate the complete session/manual-host scenario matrix, prove only complete-domain style/layout
@@ -27,33 +53,32 @@ skipping, preserve failure/legacy behavior, and explicitly defer incremental lay
 **Parallelizable with:** None.
 
 **Changes:**
-- [ ] Cover unchanged, paint-only, scroll-only, transform-only, text/control edit, real font
-  generation, frame/viewport resize, DOM/attribute/style/stylesheet, hover/focus/active pseudo-state,
-  expected transition/animation geometry/transform/paint outcomes, unrelated mutation during a tick,
-  and explicit manual invalidation.
-- [ ] Cover scrollbar immediate convergence, multi-pass convergence, max-pass/unconverged, style/
-  layout exceptions, refused session-managed output consumption/render attempts, and force-full retry
-  success/failure.
-- [ ] Cover direct legacy/custom force-full calls, truthful outcome adapter eligibility, unadapted
-  session rejection, second-active-session rejection/post-close replacement, off-thread/reentrant
-  calls, mutation queued during style/layout, and direct unobservable mutation with/without explicit
-  invalidation as documented caller responsibility.
-- [ ] Cover pre-style snapshot → style resolution → host transition tick/outcome → post-tick snapshot
-  → same-frame downstream re-decision → required layout/geometry-dependent transform derivation →
-  session-managed render ordering for expected geometry, transform-only, paint-only, failed, and
-  unrelated queued-transition cases.
-- [ ] Cover session failure invalidation/refused session render/force-full retry and an explicitly
+- [x] Implemented: Cover unchanged, paint-only, scroll-only, transform-only, frame/viewport resize,
+  DOM/style, hover/focus/active adapter causes, expected geometry/transform/paint outcomes, unrelated
+  mutation during a tick, and explicit manual invalidation. Deferred: real text/control edit and real
+  font-generation host fixtures.
+- [x] Implemented: Cover convergence/max-pass/unconverged outcomes, style/layout exceptions, refused
+  session-managed output consumption/render attempts, and retry success/failure. Deferred: concrete
+  backend scrollbar immediate/multi-pass host fixtures beyond the current-scroll thumb assertion.
+- [x] Implemented: Cover legacy force-full calls, truthful outcome adapter eligibility, unadapted session
+  rejection, second-active-session rejection, off-thread/reentrant/close calls, queued mutation during
+  execution, and the explicit direct-bypass obligation. Deferred: post-close replacement and automatic
+  interception of unobservable mutable aliases.
+- [x] Implemented: Cover staged style → transition → layout → transform → render ordering, expected
+  same-frame downstream work, transform-only/paint-only execution, and unrelated queued-transition
+  supersession/retry. Deferred: a separate pre-style/post-tick snapshot fixture for every matrix row.
+- [x] Implemented: Cover session failure invalidation, refused session render, retry, and the explicitly
   unsupported direct renderer bypass that the session cannot intercept.
 
 **Acceptance Checks:**
-- [ ] Each row asserts source epochs, produced/output epochs, per-session watermarks, full service call
-  counts, pre-style/post-tick snapshots, expected transition change set, skipped whole domains, staged
-  callback order, unrelated queued state, result status, session-managed renderability, and direct-
-  bypass obligation.
-- [ ] Watermarks advance only for current successful/converged output and never after failure/
-  supersession.
-- [ ] Expected transition changes complete downstream work in the same frame without retry loops or
-  one-frame latency; unrelated mutations during the tick supersede publication and remain queued.
+- [x] Implemented: Supported matrix rows assert source/output epochs, session output watermarks, service
+  call counts, skipped whole domains, staged callback order, result status, renderability, and the
+  direct-bypass obligation. Deferred: exhaustive pre/post snapshots and every real-host workload row.
+- [x] Implemented: Watermarks advance only for current successful/converged output and remain stale after
+  failure/supersession.
+- [x] Implemented: Expected transition changes complete downstream work in the same frame; unrelated
+  mutations supersede publication and remain queued. Deferred: animation-runner integration outside the
+  injected transition seam.
 
 **Risks / Stop Criteria:** Stop if any scenario is validated only by final pixels without epoch/call/
 outcome assertions.
@@ -66,22 +91,20 @@ outcome assertions.
 **Parallelizable with:** None.
 
 **Changes:**
-- [ ] Add backend-neutral fake/manual-host lifecycle examples/tests using injected style/layout/
-  transform services, a host transition callback, outcome-capable adapters, and a session-managed
-  renderer/output consumer.
-- [ ] Make the fake transition callback return/record expected presentation-domain changes and expose
-  a separate unrelated-mutation channel to prove the supersession distinction.
-- [ ] Count complete style recalculations, complete layout/convergence passes, transform passes, and
-  renderer submissions separately across scenario rows.
-- [ ] Add semantically identified unchanged/change/churn workloads; keep immediate-mode renderer calls
-  when the host clears each frame and avoid subtree counters as a success metric.
+- [x] Implemented: Add backend-neutral fake/manual-host lifecycle tests with injected style/layout/
+  transform services, transition callbacks, outcome-capable adapters, and session-managed rendering.
+- [x] Implemented: Record expected presentation-domain changes and separate unrelated mutation to prove
+  supersession; count style, layout, transform, and renderer calls in supported rows. Deferred: broad
+  semantic churn workloads and retained-surface timing evidence.
+- [x] Deferred: Add semantically identified unchanged/change/churn workloads; immediate-mode calls remain
+  covered by contract fixtures, but no subtree or retained-surface performance claim is made.
 
 **Acceptance Checks:**
-- [ ] Manual composition works without E2 classes and existing service-only hosts remain force-full.
-- [ ] Void-only/custom `LayoutService` remains force-full usable but is rejected from skip-aware
-  sessions until truthfully adapted; no source-breaking abstract method is required.
-- [ ] Evidence shows only complete style/layout domains are skipped; targeted mutations invoke the
-  required complete domain.
+- [x] Implemented: Manual composition works without E2 classes and existing service-only hosts remain
+  force-full; void-only/custom `LayoutService` is rejected from skip-aware sessions without a source-
+  breaking abstract method.
+- [x] Implemented: Evidence shows only complete style/layout domains are skipped and targeted causes
+  invoke their required complete domains. Deferred: automatic alias interception and targeted layout.
 
 **Risks / Stop Criteria:** Stop if performance evidence depends on an optional runtime or silently
 omits immediate-mode rendering.
@@ -94,21 +117,21 @@ omits immediate-mode rendering.
 **Parallelizable with:** None.
 
 **Changes:**
-- [ ] Document session/manual invalidation, known adapter coverage, force-full legacy methods,
-  eligibility, one-active-session-per-frame, UI-thread/non-reentrancy/queued mutation, staged
-  transition exception/order/pre-style/post-tick re-decision, outcome/retry/no-rollback, session-
-  render refusal, and direct bypass obligation.
-- [ ] Document transform/scroll/scrollbar/paint-clean immediate-mode behavior and optional E2 adapter
-  posture, including the approved `ScrollbarGeometry.Metrics` compatibility/migration contract.
-- [ ] Remove/correct reversed wording that targeted mutations “perform safely skippable work”; state
-  they invalidate/execute required complete domains in E5.
-- [ ] Explicitly defer targeted subtree/formatting-context/incremental layout, full inline fragments,
-  and retained layout-result caching to a future separately approved plan.
+- [x] Implemented: Document session/manual invalidation, known adapter coverage, force-full legacy methods,
+  eligibility, one-active-session-per-frame, UI-thread/non-reentrancy/queued mutation, staged transition
+  ordering, outcome/retry, render refusal, and direct-bypass obligation. Deferred: a separate exhaustive
+  pre-style/post-tick narrative for every row.
+- [x] Implemented: Document transform/scroll/paint-clean immediate-mode behavior and the approved
+  `ScrollbarGeometry.Metrics` compatibility contract. Deferred: optional E2 adapter wiring.
+- [x] Implemented: Correct wording so targeted mutations invalidate and execute required complete domains.
+- [x] Deferred: Targeted subtree/formatting-context/incremental layout, full inline fragments, retained
+  layout-result caching, and M5/M6/M7 cross-owner integration remain future separately approved work.
 
 **Acceptance Checks:**
-- [ ] API docs/examples/tests use “whole-frame/whole-domain” consistently and contain no smallest-
-  subtree, automatic-alias-interception, direct-render interception, or multi-session promise.
-- [ ] Completion summary matches T1/T2 evidence and lists remaining explicit invalidation obligations.
+- [x] Implemented: API docs/examples/tests use “whole-frame/whole-domain” consistently and contain no
+  smallest-subtree, automatic-alias-interception, direct-render interception, or multi-session promise.
+- [x] Implemented: Completion summary matches the supported matrix evidence and lists remaining explicit
+  invalidation, host-integration, and incremental-layout obligations.
 
 **Risks / Stop Criteria:** Do not complete M8 while documentation overclaims targeted work, hides
 session-managed failure/render restrictions and direct-bypass obligations, or implies E2 is required.

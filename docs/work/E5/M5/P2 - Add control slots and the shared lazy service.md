@@ -1,5 +1,7 @@
 # P2: Add Control Slots and the Shared Lazy Service
 
+**Status:** Complete
+
 ## Goal
 
 Implement one generated-method-excluded slot per editable control and one core service that computes
@@ -29,16 +31,16 @@ the current slot.
 **Parallelizable with:** None.
 
 **Changes:**
-- [ ] Add the same backend-neutral current-snapshot slot contract to `InputElement` and
+- [x] Add the same backend-neutral current-snapshot slot contract to `InputElement` and
   `TextareaElement`, exposed only as needed by the service.
-- [ ] Explicitly exclude the slot from Lombok/generated equality, hash code, and `toString` and avoid
+- [x] Explicitly exclude the slot from Lombok/generated equality, hash code, and `toString` and avoid
   public builder/attribute serialization participation.
-- [ ] Define deterministic clear/replacement on service query and node lifecycle without retaining a
+- [x] Define deterministic clear/replacement on service query and node lifecycle without retaining a
   previous snapshot.
 
 **Acceptance Checks:**
-- [ ] Tests populate/replace/clear slots and assert unchanged node equality/hash/string output.
-- [ ] Heap/ownership inspection or direct assertions show each control references at most one current
+- [x] Tests populate/replace/clear slots and assert unchanged node equality/hash/string output.
+- [x] Heap/ownership inspection or direct assertions show each control references at most one current
   snapshot and the service retains none.
 
 **Risks / Stop Criteria:** Stop if generic node copying/serialization starts copying slot history or
@@ -52,17 +54,17 @@ if a public setter allows arbitrary mutable snapshot injection.
 **Parallelizable with:** None.
 
 **Changes:**
-- [ ] Compute immutable effective keys from exact value, complete typography/line height, measurement
+- [x] Compute immutable effective keys from exact value, complete typography/line height, measurement
   context/configuration/rounding, real M3 generation, and textarea width/actual wrap policy.
-- [ ] Compare exact keys on every query; return the current immutable snapshot on equality and build/
+- [x] Compare exact keys on every query; return the current immutable snapshot on equality and build/
   replace once on mismatch.
-- [ ] Ensure key computation copies ordered family/configuration values and does not retain mutable
+- [x] Ensure key computation copies ordered family/configuration values and does not retain mutable
   `ResolvedStyle`, list, box, or context aliases.
 
 **Acceptance Checks:**
-- [ ] Table-driven tests mutate every key field through both normal APIs and direct mutable aliases,
+- [x] Table-driven tests mutate every key field through both normal APIs and direct mutable aliases,
   then observe the correct next-query replacement.
-- [ ] Non-key fields do not enter equality; fake/local font generations are absent from production.
+- [x] Non-key fields do not enter equality; fake/local font generations are absent from production.
 
 **Risks / Stop Criteria:** Stop if key validity depends solely on eager invalidation or if key
 construction itself performs text measurement.
@@ -75,17 +77,17 @@ construction itself performs text measurement.
 **Parallelizable with:** None.
 
 **Changes:**
-- [ ] Build input and textarea whole-control/paragraph/visual-line/run/replacement/cumulative-caret
+- [x] Build input and textarea whole-control/paragraph/visual-line/run/replacement/cumulative-caret
   structures using M2 result primitives and M3 resolver ownership.
-- [ ] Store defensive immutable values and exact original-value UTF-16 mappings for empty/multiple/
+- [x] Store defensive immutable values and exact original-value UTF-16 mappings for empty/multiple/
   trailing paragraphs, wraps, fallback, replacement, and supplementary code points.
-- [ ] Expose text-local query methods for caret/hit test/line/range/extent/runs and conversion inputs,
+- [x] Expose text-local query methods for caret/hit test/line/range/extent/runs and conversion inputs,
   but no absolute placement, current scroll, transform, color, focus, caret, or selection state.
 
 **Acceptance Checks:**
-- [ ] Snapshot and all nested values resist external/source mutation; one miss performs one complete
+- [x] Snapshot and all nested values resist external/source mutation; one miss performs one complete
   build and fills every mapping needed by P3/P4.
-- [ ] Core module dependencies remain NanoVG-free and no global control map/history is added.
+- [x] Core module dependencies remain NanoVG-free and no global control map/history is added.
 
 **Risks / Stop Criteria:** Stop if a later query must append mutable derived data to a snapshot or if
 snapshot construction performs separate incompatible input/textarea measurement pipelines.
