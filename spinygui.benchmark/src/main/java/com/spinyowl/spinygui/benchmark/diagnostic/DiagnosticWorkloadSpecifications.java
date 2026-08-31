@@ -834,7 +834,7 @@ public final class DiagnosticWorkloadSpecifications {
             14,
              "changed",
              8,
-             2,
+             8,
              4);
     return List.of(
         normalVisible,

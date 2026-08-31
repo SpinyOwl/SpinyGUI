@@ -383,7 +383,7 @@ class DiagnosticWorkloadSpecificationsTest {
                     scenario.category() == Category.TEXTAREA
                         && scenario.expectedShape().paragraphCount() == 4
                         && scenario.expectedShape().lineStartKerningTransitionCount() == 4
-                        && scenario.expectedShape().fallbackTransitionCount() == 2));
+                        && scenario.expectedShape().fallbackTransitionCount() == 8));
   }
 
   @Test

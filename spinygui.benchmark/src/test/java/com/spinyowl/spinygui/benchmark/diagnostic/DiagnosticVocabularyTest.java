@@ -54,6 +54,16 @@ class DiagnosticVocabularyTest {
             "core.text.glyph-slots-copied",
             "core.text.glyph-slots-moved",
             "core.text.initial-resolution.glyph-slots-copied",
+            "core.text.inline-measurement.range-calls",
+            "core.text.inline-measurement.reuses",
+            "core.text.inline-output.durable-text-strings",
+            "core.text.inline-output.null-text-fragments",
+            "core.text.inline-pass.cleanups",
+            "core.text.inline-preparation.code-points-appended",
+            "core.text.inline-preparation.freezes",
+            "core.text.inline-preparation.ranges",
+            "core.text.inline-ranges.code-point-visits",
+            "core.text.inline-ranges.temporary-units",
             "core.text.logical-glyph-resolutions",
             "core.text.line-builder-appends",
             "core.text.line-builder-freezes",
@@ -79,8 +89,11 @@ class DiagnosticVocabularyTest {
             "core.text-measurer.measure-text-font-list.entries",
             "core.text-measurer.measure-text-font.entries",
             "nanovg.calls.fill-color",
+            "nanovg.calls.fill-color-suppressed",
             "nanovg.calls.font-face",
+            "nanovg.calls.font-face-suppressed",
             "nanovg.calls.font-size",
+            "nanovg.calls.font-size-suppressed",
             "nanovg.calls.intersect-scissor",
             "nanovg.calls.reset-scissor",
             "nanovg.calls.restore",
@@ -88,6 +101,7 @@ class DiagnosticVocabularyTest {
             "nanovg.calls.scissor",
             "nanovg.calls.text",
             "nanovg.calls.text-align",
+            "nanovg.calls.text-align-suppressed",
             "nanovg.calls.transform",
             "nanovg.calls.translate",
             "nanovg.input-text.cull-reason.outside-effective-clip",
@@ -113,7 +127,10 @@ class DiagnosticVocabularyTest {
             "nanovg.textarea.text-items-submitted",
             "nanovg.utf8.allocated-bytes",
             "nanovg.utf8.allocation-calls",
-            "nanovg.utf8.payload-bytes");
+            "nanovg.utf8.oversized-allocation-calls",
+            "nanovg.utf8.oversized-freed-bytes",
+            "nanovg.utf8.payload-bytes",
+            "nanovg.utf8.reuse-calls");
     Set<DiagnosticCounter> vocabulary =
         Stream.concat(
                 Arrays.stream(TextDiagnosticCounter.values()),
@@ -123,8 +140,8 @@ class DiagnosticVocabularyTest {
 
     assertEquals(expected, actual);
     assertEquals(expected.size(), vocabulary.size());
-    assertEquals("core-text-diagnostics-7", TextDiagnosticCounter.VOCABULARY_VERSION);
-    assertEquals("nanovg-text-diagnostics-3", NvgDiagnosticCounter.VOCABULARY_VERSION);
+    assertEquals("core-text-diagnostics-8", TextDiagnosticCounter.VOCABULARY_VERSION);
+    assertEquals("nanovg-text-diagnostics-4", NvgDiagnosticCounter.VOCABULARY_VERSION);
     vocabulary.forEach(
         counter -> {
           assertFalse(counter.description().isBlank(), counter.id());

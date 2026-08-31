@@ -157,10 +157,14 @@ public final class CounterDiagnosticsMain {
                 glGetString(GL_VERSION));
         ObservedShape preparedObserved = observeRenderer(prepared);
         scenario.validateObserved(preparedObserved);
+        clearControlSnapshots(prepared);
         if ("unchanged".equals(scenario.submissionState())) {
           context.renderPredecessor(prepared);
         }
         diagnostics.reset();
+        if (scenario.category() == Category.NORMAL_TEXT) {
+          layoutNormalText(prepared);
+        }
         context.render(prepared);
         DiagnosticSnapshot snapshot = diagnostics.snapshot();
         ObservedShape observed = observeRenderer(prepared);
@@ -258,6 +262,11 @@ public final class CounterDiagnosticsMain {
     return new PreparedContent(List.copyOf(textNodes));
   }
 
+  private static void layoutNormalText(PreparedScene prepared) {
+    new InlineFormattingContext(prepared.fontService())
+        .layout(prepared.container(), prepared.nodes(), 0);
+  }
+
   private static PreparedContent prepareInputs(
       RendererScenario scenario, FontServiceImpl fontService, Element container) {
     List<Node> inputs = new ArrayList<>();
@@ -316,6 +325,16 @@ public final class CounterDiagnosticsMain {
       case TEXTAREA -> observeTextareas(prepared);
       case CPU -> throw new IllegalStateException("CPU scenario cannot use the renderer");
     };
+  }
+
+  private static void clearControlSnapshots(PreparedScene prepared) {
+    for (Node node : prepared.nodes()) {
+      if (node instanceof InputElement input) {
+        input.clearTextLayoutSnapshot();
+      } else if (node instanceof TextareaElement textarea) {
+        textarea.clearTextLayoutSnapshot();
+      }
+    }
   }
 
   private static ObservedShape observeNormalText(PreparedScene prepared) {
@@ -465,6 +484,57 @@ public final class CounterDiagnosticsMain {
 
   private static void validateRecordedRendererEvidence(
       RendererScenario scenario, ObservedShape observed, DiagnosticSnapshot snapshot) {
+    if (scenario.category() == Category.NORMAL_TEXT) {
+      if (snapshot.value(TextDiagnosticCounter.NORMALIZATION_SCANS) != scenario.itemCount()
+          || snapshot.value(TextDiagnosticCounter.INLINE_PREPARATION_FREEZES)
+              != scenario.itemCount()
+          || snapshot.value(TextDiagnosticCounter.INLINE_PREPARED_CODE_POINTS_APPENDED)
+              != observed.sourceCodePointCount()
+          || snapshot.value(TextDiagnosticCounter.INLINE_RANGE_CODE_POINT_VISITS)
+              > observed.sourceCodePointCount()
+          || snapshot.value(TextDiagnosticCounter.INLINE_PREPARED_RANGES) < scenario.itemCount()
+          || snapshot.value(TextDiagnosticCounter.INLINE_MEASUREMENT_RANGE_CALLS) == 0
+          || Math.addExact(
+                  snapshot.value(TextDiagnosticCounter.INLINE_MEASUREMENT_RANGE_CALLS),
+                  snapshot.value(TextDiagnosticCounter.INLINE_MEASUREMENT_REUSES))
+              != scenario.itemCount()
+          || snapshot.value(TextDiagnosticCounter.INLINE_TEMPORARY_UNITS) != 0
+          || snapshot.value(TextDiagnosticCounter.RANGE_TEMPORARY_STRINGS) != 0
+          || snapshot.value(TextDiagnosticCounter.INLINE_DURABLE_TEXT_STRINGS)
+              != observed.textFragmentCount()
+          || snapshot.value(TextDiagnosticCounter.INLINE_NULL_TEXT_FRAGMENTS) != 0
+          || snapshot.value(TextDiagnosticCounter.INLINE_PASS_CLEANUPS) != 1) {
+        throw new IllegalStateException(
+            "Recorded normal-text preparation evidence violates the prepared-range contract: "
+                + scenario.name()
+                + ", scans="
+                + snapshot.value(TextDiagnosticCounter.NORMALIZATION_SCANS)
+                + ", freezes="
+                + snapshot.value(TextDiagnosticCounter.INLINE_PREPARATION_FREEZES)
+                + ", appended="
+                + snapshot.value(TextDiagnosticCounter.INLINE_PREPARED_CODE_POINTS_APPENDED)
+                + ", visits="
+                + snapshot.value(TextDiagnosticCounter.INLINE_RANGE_CODE_POINT_VISITS)
+                + ", ranges="
+                + snapshot.value(TextDiagnosticCounter.INLINE_PREPARED_RANGES)
+                + ", rangeCalls="
+                + snapshot.value(TextDiagnosticCounter.INLINE_MEASUREMENT_RANGE_CALLS)
+                + ", rangeReuses="
+                + snapshot.value(TextDiagnosticCounter.INLINE_MEASUREMENT_REUSES)
+                + ", temporaryUnits="
+                + snapshot.value(TextDiagnosticCounter.INLINE_TEMPORARY_UNITS)
+                + ", temporaryStrings="
+                + snapshot.value(TextDiagnosticCounter.RANGE_TEMPORARY_STRINGS)
+                + ", durableStrings="
+                + snapshot.value(TextDiagnosticCounter.INLINE_DURABLE_TEXT_STRINGS)
+                + ", expectedDurableStrings="
+                + observed.textFragmentCount()
+                + ", nullTextFragments="
+                + snapshot.value(TextDiagnosticCounter.INLINE_NULL_TEXT_FRAGMENTS)
+                + ", cleanups="
+                + snapshot.value(TextDiagnosticCounter.INLINE_PASS_CLEANUPS));
+      }
+    }
     if (scenario.category() == Category.TEXTAREA) {
       long recordedLines = snapshot.value(NvgDiagnosticCounter.TEXTAREA_LINES_CONSIDERED);
       if (recordedLines != observed.visualLineCount()) {
@@ -472,15 +542,32 @@ public final class CounterDiagnosticsMain {
             "Recorded textarea line evidence disagrees with prepared visual lines for "
                 + scenario.name());
       }
-      if (snapshot.value(TextDiagnosticCounter.TEXTAREA_COMPLETE_LAYOUTS) <= scenario.itemCount()) {
+      long expectedCompleteLayouts =
+          "unchanged".equals(scenario.submissionState()) ? 0 : scenario.itemCount();
+      if (snapshot.value(TextDiagnosticCounter.TEXTAREA_COMPLETE_LAYOUTS)
+          != expectedCompleteLayouts) {
         throw new IllegalStateException(
-            "Textarea scenario does not expose repeated complete-layout work: " + scenario.name());
+            "Recorded textarea complete-layout count disagrees with snapshot lifecycle: "
+                + scenario.name()
+                + ", expected="
+                + expectedCompleteLayouts
+                + ", actual="
+                + snapshot.value(TextDiagnosticCounter.TEXTAREA_COMPLETE_LAYOUTS));
       }
     }
-    if (scenario.category() == Category.INPUT
-        && snapshot.value(TextDiagnosticCounter.INPUT_COMPLETE_LAYOUTS) != scenario.itemCount()) {
-      throw new IllegalStateException(
-          "Recorded input complete-layout count disagrees with aggregate item scope");
+    if (scenario.category() == Category.INPUT) {
+      long expectedCompleteLayouts =
+          "unchanged".equals(scenario.submissionState()) ? 0 : scenario.itemCount();
+      if (snapshot.value(TextDiagnosticCounter.INPUT_COMPLETE_LAYOUTS)
+          != expectedCompleteLayouts) {
+        throw new IllegalStateException(
+            "Recorded input complete-layout count disagrees with snapshot lifecycle: "
+                + scenario.name()
+                + ", expected="
+                + expectedCompleteLayouts
+                + ", actual="
+                + snapshot.value(TextDiagnosticCounter.INPUT_COMPLETE_LAYOUTS));
+      }
     }
   }
 
