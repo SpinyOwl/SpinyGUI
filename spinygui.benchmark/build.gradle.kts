@@ -144,8 +144,13 @@ tasks.named<JavaCompile>("compileTestJava") {
     dependsOn("precompileJte")
 }
 
+val isBenchmarkTestRequested = gradle.startParameter.taskNames.any { it.contains("spinygui.benchmark") || it.contains("benchmark") }
+    || providers.gradleProperty("benchmarkTests").map { it.toBoolean() }.getOrElse(false)
+    || providers.systemProperty("spinygui.benchmark.test").map { it.toBoolean() }.getOrElse(false)
+
 tasks.withType<Test>().configureEach {
     dependsOn("precompileJte")
+    enabled = isBenchmarkTestRequested
 }
 
 val benchmarkArchive = layout.projectDirectory.dir("reports")

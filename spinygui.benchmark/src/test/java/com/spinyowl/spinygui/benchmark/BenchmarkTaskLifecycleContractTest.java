@@ -31,6 +31,7 @@ class BenchmarkTaskLifecycleContractTest {
     assertEquals(9, count(script, "    freshBenchmarkRun()"));
     assertTrue(script.contains("doNotTrackState("));
     assertTrue(script.contains("ArchiveReportArgumentAction(benchmarkArchive.asFile, benchmarkRunId)"));
+    assertTrue(script.contains("enabled = isBenchmarkTestRequested"));
   }
 
   private static int count(String value, String token) {
