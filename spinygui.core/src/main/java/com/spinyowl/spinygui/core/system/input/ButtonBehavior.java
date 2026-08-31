@@ -14,12 +14,16 @@ public class ButtonBehavior {
   }
 
   public boolean handleKey(InputElement input, KeyCode keyCode, KeyAction action) {
-    return handleKey(input, input.buttonInput(), keyCode, action);
+    return handleKey(input, input.buttonInput() && !input.disabled(), keyCode, action);
   }
 
   private boolean handleKey(
       Element element, boolean activatable, KeyCode keyCode, KeyAction action) {
-    if (!activatable || !activationKey(keyCode)) {
+    if (!activatable) {
+      element.pressed(false);
+      return false;
+    }
+    if (!activationKey(keyCode)) {
       return false;
     }
 

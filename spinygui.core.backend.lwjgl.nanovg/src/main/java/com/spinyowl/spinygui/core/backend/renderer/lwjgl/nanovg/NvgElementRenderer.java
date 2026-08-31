@@ -200,8 +200,6 @@ public class NvgElementRenderer {
     while (parent != null && Display.INLINE.equals(parent.resolvedStyle().display())) {
       parent = parent.parent();
     }
-    return parent == null
-        ? new Vector2f()
-        : parent.layoutAbsolutePosition();
+    return parent == null ? new Vector2f() : parent.layoutAbsolutePosition();
   }
 }

@@ -11,6 +11,7 @@ public final class NodeBuilder {
   public static final String ATTR_TYPE = "type";
   public static final String ATTR_NAME = "name";
   public static final String ATTR_VALUE = "value";
+  public static final String ATTR_DISABLED = "disabled";
   public static final String ATTR_ROWS = "rows";
   public static final String ATTR_COLS = "cols";
 
@@ -97,6 +98,11 @@ public final class NodeBuilder {
 
   public static Attribute value(String value) {
     return attr(ATTR_VALUE, value);
+  }
+
+  /** Creates a boolean {@code disabled} attribute. */
+  public static Attribute disabled() {
+    return attr(ATTR_DISABLED, "");
   }
 
   public static Attribute rows(String value) {

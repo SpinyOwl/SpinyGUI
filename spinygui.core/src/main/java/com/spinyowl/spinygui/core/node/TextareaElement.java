@@ -1,5 +1,6 @@
 package com.spinyowl.spinygui.core.node;
 
+import static com.spinyowl.spinygui.core.node.NodeBuilder.ATTR_DISABLED;
 import static com.spinyowl.spinygui.core.node.NodeBuilder.NODE_TEXTAREA;
 
 import java.util.Map;
@@ -146,6 +147,11 @@ public class TextareaElement extends Element {
   /** Clears the single current snapshot without retaining history. */
   public void clearTextLayoutSnapshot() {
     textLayoutSnapshot = null;
+  }
+
+  @Override
+  public boolean disabled() {
+    return hasAttribute(ATTR_DISABLED);
   }
 
   private int clampTextIndex(int index) {
