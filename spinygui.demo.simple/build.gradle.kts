@@ -22,3 +22,22 @@ tasks.named<JavaExec>("run") {
         "--add-reads", "org.lwjgl=com.spinyowl.cbchain"
     )
 }
+
+fun registerExampleTask(name: String, exampleMainClass: String) {
+    tasks.register<JavaExec>(name) {
+        group = "application"
+        description = "Runs $exampleMainClass."
+        classpath = sourceSets.main.get().runtimeClasspath
+        mainClass.set(exampleMainClass)
+        jvmArgs = application.applicationDefaultJvmArgs.toList()
+    }
+}
+
+registerExampleTask(
+    "runHelloWorldExample",
+    "com.spinyowl.spinygui.demo.simple.HelloWorldExample"
+)
+registerExampleTask(
+    "runCounterExample",
+    "com.spinyowl.spinygui.demo.simple.CounterExample"
+)

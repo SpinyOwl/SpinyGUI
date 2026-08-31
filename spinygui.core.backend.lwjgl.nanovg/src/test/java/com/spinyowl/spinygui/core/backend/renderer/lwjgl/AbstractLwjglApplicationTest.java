@@ -41,7 +41,8 @@ class AbstractLwjglApplicationTest {
         () -> { calls.add("transition"); return TransitionImpact.NO_CHANGE; },
         new RecordingLayout(calls, LayoutResult.converged(1)));
     AbstractLwjglApplication application =
-        new AbstractLwjglApplication(frame, pipeline, renderer, window, () -> 1d) {
+        new AbstractLwjglApplication(
+            frame, pipeline, renderer, window, () -> calls.add("services-close"), () -> 1d) {
           @Override protected void update(double deltaSeconds) { calls.add("update"); }
           @Override protected void beforeRender(FramePreparation preparation) { calls.add("before"); }
           @Override protected void afterRender(FramePreparation preparation) { calls.add("after"); }
@@ -52,7 +53,7 @@ class AbstractLwjglApplicationTest {
     assertEquals(
         List.of("window-init", "renderer-init", "poll", "system", "gui", "update",
             "style", "transition", "layout", "transform", "before", "begin", "render",
-            "after", "swap", "renderer-close", "window-close"),
+            "after", "swap", "renderer-close", "services-close", "window-close"),
         calls);
   }
 
@@ -69,7 +70,8 @@ class AbstractLwjglApplicationTest {
         () -> { calls.add("transition"); return TransitionImpact.NO_CHANGE; },
         new RecordingLayout(calls, LayoutResult.unconverged(4)));
     AbstractLwjglApplication application =
-        new AbstractLwjglApplication(frame, pipeline, renderer, window, () -> 1d) { };
+        new AbstractLwjglApplication(
+            frame, pipeline, renderer, window, () -> calls.add("services-close"), () -> 1d) { };
 
     FramePreparationException failure =
         assertThrows(FramePreparationException.class, application::run);
@@ -77,11 +79,40 @@ class AbstractLwjglApplicationTest {
     assertEquals(FramePreparation.Status.UNCONVERGED, failure.preparation().status());
     assertEquals(
         List.of("window-init", "renderer-init", "poll", "system", "gui", "style",
-            "transition", "layout", "renderer-close", "window-close"),
+            "transition", "layout", "renderer-close", "services-close", "window-close"),
         calls);
   }
 
-  private static final class RecordingWindow implements LwjglWindow {
+  @Test
+  void windowInitializationFailureStillClosesInjectedServices() {
+    List<String> calls = new ArrayList<>();
+    Frame frame = new Frame();
+    LwjglWindow window =
+        new RecordingWindow(calls) {
+          @Override
+          public void initialize() {
+            calls.add("window-init");
+            throw new IllegalStateException("window failed");
+          }
+        };
+    Renderer renderer = new RecordingRenderer(calls);
+    FramePipeline pipeline =
+        new FramePipeline(
+            new SystemEvents(calls),
+            new GuiEvents(calls),
+            target -> StyleImpact.NO_CHANGE,
+            () -> TransitionImpact.NO_CHANGE,
+            new RecordingLayout(calls, LayoutResult.converged(1)));
+    AbstractLwjglApplication application =
+        new AbstractLwjglApplication(
+            frame, pipeline, renderer, window, () -> calls.add("services-close"), () -> 1d) {};
+
+    assertThrows(IllegalStateException.class, application::run);
+
+    assertEquals(List.of("window-init", "services-close"), calls);
+  }
+
+  private static class RecordingWindow implements LwjglWindow {
     private final List<String> calls;
     private boolean closed;
     private RecordingWindow(List<String> calls) { this.calls = calls; }

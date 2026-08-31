@@ -15,6 +15,7 @@ public abstract class AbstractLwjglApplication {
   private final FramePipeline pipeline;
   private final Renderer renderer;
   private final LwjglWindow window;
+  private final AutoCloseable services;
   private final DoubleSupplier clock;
   private boolean started;
 
@@ -23,11 +24,13 @@ public abstract class AbstractLwjglApplication {
       FramePipeline pipeline,
       Renderer renderer,
       LwjglWindow window,
+      AutoCloseable services,
       DoubleSupplier clock) {
     this.frame = Objects.requireNonNull(frame, "frame");
     this.pipeline = Objects.requireNonNull(pipeline, "pipeline");
     this.renderer = Objects.requireNonNull(renderer, "renderer");
     this.window = Objects.requireNonNull(window, "window");
+    this.services = Objects.requireNonNull(services, "services");
     this.clock = Objects.requireNonNull(clock, "clock");
   }
 
@@ -76,7 +79,11 @@ public abstract class AbstractLwjglApplication {
         try {
           if (rendererInitialized) renderer.destroy();
         } finally {
-          if (windowInitialized) window.close();
+          try {
+            closeServices();
+          } finally {
+            if (windowInitialized) window.close();
+          }
         }
       }
     }
@@ -89,4 +96,14 @@ public abstract class AbstractLwjglApplication {
   protected void beforeRender(FramePreparation preparation) { }
   protected void afterRender(FramePreparation preparation) { }
   protected void shutdownApplication() { }
+
+  private void closeServices() {
+    try {
+      services.close();
+    } catch (RuntimeException failure) {
+      throw failure;
+    } catch (Exception failure) {
+      throw new IllegalStateException("Failed to close application services", failure);
+    }
+  }
 }
