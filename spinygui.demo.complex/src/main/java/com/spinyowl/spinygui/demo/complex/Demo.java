@@ -68,6 +68,7 @@ import com.spinyowl.spinygui.core.system.font.FontStorage;
 import com.spinyowl.spinygui.core.system.font.TextMeasurer;
 import com.spinyowl.spinygui.core.system.font.impl.FontServiceImpl;
 import com.spinyowl.spinygui.core.system.font.impl.FontStorageImpl;
+import com.spinyowl.spinygui.core.system.input.ControlTextLayoutService;
 import com.spinyowl.spinygui.core.system.input.ScrollbarInteraction;
 import com.spinyowl.spinygui.core.system.input.SystemKeyAction;
 import com.spinyowl.spinygui.core.system.input.SystemKeyMod;
@@ -241,19 +242,23 @@ public abstract class Demo {
     FontStorage fontStorage = new FontStorageImpl();
     fontService = new FontServiceImpl(fontStorage, true);
     fontService.installSemanticOwner();
-    if (renderer instanceof NvgRenderer nvg && fontService instanceof TextMeasurer textMeasurer) {
-      nvg.textMeasurer(textMeasurer);
+    TextMeasurer textMeasurer =
+        fontService instanceof TextMeasurer measurer ? measurer : null;
+    ControlTextLayoutService controlTextLayoutService =
+        textMeasurer == null ? null : new ControlTextLayoutService(textMeasurer);
+    if (renderer instanceof NvgRenderer nvg) {
+      nvg.controlTextLayoutService(controlTextLayoutService);
     }
 
-    initializeSystemEventListener(
-        fontService instanceof TextMeasurer textMeasurer ? textMeasurer : null);
+    initializeSystemEventListener(textMeasurer, controlTextLayoutService);
 
     layoutService =
         LayoutServiceProvider.create(
             systemEventProcessor, eventProcessor, timeService, fontService);
   }
 
-  private void initializeSystemEventListener(TextMeasurer textMeasurer) {
+  private void initializeSystemEventListener(
+      TextMeasurer textMeasurer, ControlTextLayoutService controlTextLayoutService) {
     SystemEventListenerProviderImpl systemEventListenerProvider =
         new SystemEventListenerProviderImpl();
     ScrollbarInteraction scrollbarInteraction = new ScrollbarInteraction();
@@ -265,6 +270,7 @@ public abstract class Demo {
             .mouseService(mouseService)
             .scrollbarInteraction(scrollbarInteraction)
             .textMeasurer(textMeasurer)
+            .controlTextLayoutService(controlTextLayoutService)
             .build());
     systemEventListenerProvider.listener(
         SystemCursorEnterEvent.class,
@@ -286,6 +292,7 @@ public abstract class Demo {
             .eventProcessor(eventProcessor)
             .timeService(timeService)
             .textMeasurer(textMeasurer)
+            .controlTextLayoutService(controlTextLayoutService)
             .build());
     systemEventListenerProvider.listener(
         SystemMouseClickEvent.class,
@@ -295,6 +302,7 @@ public abstract class Demo {
             .timeService(timeService)
             .textMeasurer(textMeasurer)
             .scrollbarInteraction(scrollbarInteraction)
+            .controlTextLayoutService(controlTextLayoutService)
             .build());
     systemEventListenerProvider.listener(
         SystemCharEvent.class,
@@ -302,6 +310,7 @@ public abstract class Demo {
             .eventProcessor(eventProcessor)
             .timeService(timeService)
             .textMeasurer(textMeasurer)
+            .controlTextLayoutService(controlTextLayoutService)
             .build());
     systemEventListenerProvider.listener(
         SystemKeyEvent.class,
@@ -311,6 +320,7 @@ public abstract class Demo {
             .eventProcessor(eventProcessor)
             .timeService(timeService)
             .textMeasurer(textMeasurer)
+            .controlTextLayoutService(controlTextLayoutService)
             .build());
 
     systemEventProcessor =

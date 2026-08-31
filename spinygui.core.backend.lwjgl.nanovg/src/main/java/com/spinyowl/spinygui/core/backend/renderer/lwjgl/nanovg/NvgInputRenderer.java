@@ -8,17 +8,15 @@ import static org.lwjgl.nanovg.NanoVG.NVG_ALIGN_LEFT;
 import com.spinyowl.spinygui.core.backend.renderer.lwjgl.nanovg.diagnostic.NvgDiagnosticCounter;
 import com.spinyowl.spinygui.core.backend.renderer.lwjgl.nanovg.util.NvgClipStack;
 import com.spinyowl.spinygui.core.diagnostic.DiagnosticSession;
-import com.spinyowl.spinygui.core.diagnostic.TextDiagnosticCounter;
 import com.spinyowl.spinygui.core.font.Font;
 import com.spinyowl.spinygui.core.font.FontStretch;
 import com.spinyowl.spinygui.core.node.InputElement;
 import com.spinyowl.spinygui.core.style.ResolvedStyle;
-import com.spinyowl.spinygui.core.style.stylesheet.util.StyleUtils;
 import com.spinyowl.spinygui.core.style.types.Color;
-import com.spinyowl.spinygui.core.style.types.length.Length;
 import com.spinyowl.spinygui.core.system.font.ResolvedTextRun;
-import com.spinyowl.spinygui.core.system.font.TextLineMetrics;
 import com.spinyowl.spinygui.core.system.font.TextMeasurer;
+import com.spinyowl.spinygui.core.system.input.ControlTextLayoutService;
+import com.spinyowl.spinygui.core.system.input.ControlTextLayoutSnapshot;
 import java.util.List;
 import org.joml.Vector2f;
 
@@ -33,7 +31,7 @@ class NvgInputRenderer {
   private final InputSelectionSink selectionSink;
   private final InputTextSink textSink;
   private final InputCaretSink caretSink;
-  private TextMeasurer textMeasurer;
+  private ControlTextLayoutService layoutService;
 
   NvgInputRenderer() {
     this(new NvgFontRegistry(), DiagnosticSession.disabled());
@@ -67,30 +65,36 @@ class NvgInputRenderer {
   }
 
   void textMeasurer(TextMeasurer textMeasurer) {
-    this.textMeasurer = textMeasurer;
+    this.layoutService = textMeasurer == null ? null : new ControlTextLayoutService(textMeasurer);
+  }
+
+  void layoutService(ControlTextLayoutService layoutService) {
+    this.layoutService = layoutService;
   }
 
   void render(InputElement input, long nanovgContext) {
-    if ((!input.textInput() && !input.buttonInput()) || textMeasurer == null) {
+    if ((!input.textInput() && !input.buttonInput()) || layoutService == null) {
       return;
     }
 
     TextGeometry geometry = textGeometry(input);
     stateSink.begin(nanovgContext, input, geometry.contentPosition(), geometry.contentSize());
-    if (input.buttonInput()) {
-      drawValue(input, nanovgContext, geometry);
-      stateSink.end(nanovgContext);
-      return;
-    }
+    try {
+      if (input.buttonInput()) {
+        drawValue(input, nanovgContext, geometry);
+        return;
+      }
 
-    if (input.hasSelection()) {
-      drawSelection(input, nanovgContext, geometry);
+      if (input.hasSelection()) {
+        drawSelection(input, nanovgContext, geometry);
+      }
+      drawValue(input, nanovgContext, geometry);
+      if (input.focused()) {
+        drawCaret(input, nanovgContext, geometry);
+      }
+    } finally {
+      stateSink.end(nanovgContext);
     }
-    drawValue(input, nanovgContext, geometry);
-    if (input.focused()) {
-      drawCaret(input, nanovgContext, geometry);
-    }
-    stateSink.end(nanovgContext);
   }
 
   private void drawValue(InputElement input, long nanovgContext, TextGeometry geometry) {
@@ -133,25 +137,16 @@ class NvgInputRenderer {
   }
 
   private float textX(InputElement input, int textIndex, TextGeometry geometry) {
-    int safeTextIndex = Math.max(0, Math.min(textIndex, input.value().length()));
-    TextLineMetrics line =
-        textMeasurer.getTextLineMetrics(
-            input.value().substring(0, safeTextIndex),
-            geometry.fonts(),
-            geometry.fontSize(),
-            geometry.requestedLineHeight());
-    return line.width();
+    return geometry.snapshot().caret(textIndex, layoutService.diagnostics()).x();
   }
 
   private TextGeometry textGeometry(InputElement input) {
-    textMeasurer.diagnostics().increment(TextDiagnosticCounter.INPUT_COMPLETE_LAYOUTS);
-    ResolvedStyle style = input.resolvedStyle();
-    List<Font> fonts = findFonts(style);
+    ControlTextLayoutSnapshot snapshot = layoutService.query(input);
+    ControlTextLayoutSnapshot.Key key = snapshot.key();
+    List<Font> fonts = key.resolvedFonts();
     Font font = fonts.isEmpty() ? Font.DEFAULT : fonts.get(0);
-    float fontSize = fontSize(input);
-    float lineHeight = lineHeight(style);
-    TextLineMetrics line =
-        textMeasurer.getTextLineMetrics(input.value(), fonts, fontSize, lineHeight);
+    float fontSize = key.fontSize();
+    ControlTextLayoutSnapshot.Line line = snapshot.lines().get(0);
     Vector2f contentPosition = contentPosition(input);
     Vector2f contentSize = input.box().contentSize();
     float lineTop = contentPosition.y() + Math.max(0, (contentSize.y() - line.height()) / 2f);
@@ -167,7 +162,8 @@ class NvgInputRenderer {
         lineTop,
         lineTop + line.baseline(),
         line.height(),
-        lineHeight);
+        key.lineHeight(),
+        snapshot);
   }
 
   private float textScrollLeft(InputElement input) {
@@ -182,23 +178,13 @@ class NvgInputRenderer {
     return position;
   }
 
+  /** Compatibility inspection of the production semantic resolver used by the snapshot service. */
   List<Font> findFonts(ResolvedStyle style) {
     if (style.fontFamilies() == null) {
       return List.of(Font.DEFAULT);
     }
-    textMeasurer.diagnostics().increment(TextDiagnosticCounter.FONT_CHAIN_RESOLUTIONS);
     return Font.semanticOwner().resolver()
         .resolve(style.fontFamilies(), style.fontStyle(), style.fontWeight(), FontStretch.NORMAL);
-  }
-
-  private float fontSize(InputElement input) {
-    Length<?> fontSize = input.resolvedStyle().fontSize();
-    return fontSize == null ? 16f : StyleUtils.getFontSize(input);
-  }
-
-  private float lineHeight(ResolvedStyle style) {
-    Float lineHeight = style.lineHeight();
-    return lineHeight == null ? 1f : lineHeight;
   }
 
   private Color color(InputElement input) {
@@ -244,7 +230,8 @@ class NvgInputRenderer {
       float lineTop,
       float baseline,
       float lineHeight,
-      float requestedLineHeight) {}
+      float requestedLineHeight,
+      ControlTextLayoutSnapshot snapshot) {}
 
   private static final class CommandStateSink implements InputStateSink {
     private final NvgTextCommandSink commands;
@@ -276,16 +263,53 @@ class NvgInputRenderer {
     @Override
     public void begin(
         long context, InputElement input, Vector2f contentPosition, Vector2f contentSize) {
-      clipStack.create(context, input);
-      commands.beginScope(context, NvgTextCommand.TextPath.INPUT);
-      commands.intersectScissor(
-          context, contentPosition.x(), contentPosition.y(), contentSize.x(), contentSize.y());
+      boolean scopeStarted = false;
+      try {
+        clipStack.create(context, input);
+        commands.beginScope(context, NvgTextCommand.TextPath.INPUT);
+        scopeStarted = true;
+        commands.intersectScissor(
+            context, contentPosition.x(), contentPosition.y(), contentSize.x(), contentSize.y());
+      } catch (RuntimeException | Error failure) {
+        cleanupAfterBeginFailure(context, scopeStarted, failure);
+        throw failure;
+      }
     }
 
     @Override
     public void end(long context) {
-      commands.endScope(context, NvgTextCommand.TextPath.INPUT);
-      clipStack.reset(context);
+      Throwable failure = null;
+      try {
+        commands.endScope(context, NvgTextCommand.TextPath.INPUT);
+      } catch (RuntimeException | Error error) {
+        failure = error;
+      }
+      try {
+        clipStack.reset(context);
+      } catch (RuntimeException | Error cleanupFailure) {
+        if (failure != null) {
+          failure.addSuppressed(cleanupFailure);
+        } else {
+          throw cleanupFailure;
+        }
+      }
+      if (failure instanceof RuntimeException error) throw error;
+      if (failure instanceof Error error) throw error;
+    }
+
+    private void cleanupAfterBeginFailure(long context, boolean scopeStarted, Throwable failure) {
+      if (scopeStarted) {
+        try {
+          commands.endScope(context, NvgTextCommand.TextPath.INPUT);
+        } catch (RuntimeException | Error cleanupFailure) {
+          failure.addSuppressed(cleanupFailure);
+        }
+      }
+      try {
+        clipStack.reset(context);
+      } catch (RuntimeException | Error cleanupFailure) {
+        failure.addSuppressed(cleanupFailure);
+      }
     }
   }
 
@@ -318,26 +342,25 @@ class NvgInputRenderer {
             font,
             fontSize,
             null,
-            commands.displayText(context, font, text),
+            NvgRenderedText.literal(commands.displayText(context, font, text)),
             x,
             baseline);
         return;
       }
       float runX = x;
       for (ResolvedTextRun run : runs) {
-        if (submission.submit(
+        submission.submit(
             context,
             NvgTextCommand.TextPath.INPUT,
             INPUT,
             run.font(),
             fontSize,
             null,
-            run.renderedText(),
+            NvgRenderedText.run(run),
             runX,
-            baseline)) {
-          commands.advance(NvgTextCommand.TextPath.INPUT, runX, run.advance());
-          runX += run.advance();
-        }
+            baseline);
+        commands.advance(NvgTextCommand.TextPath.INPUT, runX, run.advance());
+        runX += run.advance();
       }
     }
   }

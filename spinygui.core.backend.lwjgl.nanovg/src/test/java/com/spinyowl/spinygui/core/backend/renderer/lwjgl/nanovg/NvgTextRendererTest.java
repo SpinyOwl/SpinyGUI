@@ -1,10 +1,15 @@
 package com.spinyowl.spinygui.core.backend.renderer.lwjgl.nanovg;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import com.spinyowl.spinygui.core.animation.TransitionCoordinator;
+import com.spinyowl.spinygui.core.backend.renderer.lwjgl.nanovg.diagnostic.NvgDiagnosticCounter;
+import com.spinyowl.spinygui.core.diagnostic.DiagnosticSession;
 import com.spinyowl.spinygui.core.font.Font;
 import com.spinyowl.spinygui.core.layout.InlineFragment;
+import com.spinyowl.spinygui.core.layout.InlineSourceMapping;
 import com.spinyowl.spinygui.core.node.ButtonElement;
 import com.spinyowl.spinygui.core.node.Element;
 import com.spinyowl.spinygui.core.node.Frame;
@@ -17,9 +22,15 @@ import com.spinyowl.spinygui.core.time.TimeService;
 import java.util.ArrayList;
 import java.util.List;
 import org.joml.Vector2f;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 class NvgTextRendererTest {
+
+  @BeforeEach
+  void installFontOwner() {
+    NvgFontTestOwner.install();
+  }
 
   @Test
   void renderFragments_drawsTextFragmentsAtComputedOffsetPositions() {
@@ -97,6 +108,77 @@ class NvgTextRendererTest {
   }
 
   @Test
+  void textFailure_restoresScope() {
+    FailingNativeApi nativeApi = new FailingNativeApi();
+    DiagnosticSession diagnostics =
+        DiagnosticSession.enabled(List.of(NvgDiagnosticCounter.values()));
+    NanoVgTextCommandSink commands =
+        new NanoVgTextCommandSink(
+            new NvgFontRegistry(), diagnostics, (font, context) -> font.fontFamily(), nativeApi);
+    NvgTextRenderer renderer = new NvgTextRenderer(commands, diagnostics);
+    Text text = new Text("abc");
+    text.inlineFragments(List.of(fragment("abc", 0, 8)));
+
+    nativeApi.failText = true;
+    IllegalStateException failure = assertThrows(IllegalStateException.class, () -> renderer.render(text, 9));
+
+    assertEquals("injected text failure", failure.getMessage());
+    assertEquals(List.of("save", "align:65", "face:Roboto", "size:16.0", "color", "text", "restore"), nativeApi.calls);
+    assertEquals(1, diagnostics.snapshot().value(NvgDiagnosticCounter.SAVE_CALLS));
+    assertEquals(1, diagnostics.snapshot().value(NvgDiagnosticCounter.RESTORE_CALLS));
+    commands.close();
+  }
+
+  @Test
+  void textFailureAndRestoreFailure_preservesTextFailureAndSuppressesCleanupFailure() {
+    FailingNativeApi nativeApi = new FailingNativeApi();
+    DiagnosticSession diagnostics =
+        DiagnosticSession.enabled(List.of(NvgDiagnosticCounter.values()));
+    NanoVgTextCommandSink commands =
+        new NanoVgTextCommandSink(
+            new NvgFontRegistry(), diagnostics, (font, context) -> font.fontFamily(), nativeApi);
+    NvgTextRenderer renderer = new NvgTextRenderer(commands, diagnostics);
+    Text text = new Text("abc");
+    text.inlineFragments(List.of(fragment("abc", 0, 8)));
+
+    nativeApi.failText = true;
+    nativeApi.failRestore = true;
+    IllegalStateException failure = assertThrows(IllegalStateException.class, () -> renderer.render(text, 9));
+
+    assertEquals("injected text failure", failure.getMessage());
+    assertEquals(1, failure.getSuppressed().length);
+    assertEquals("injected restore failure", failure.getSuppressed()[0].getMessage());
+    commands.close();
+  }
+
+  @Test
+  void renderFragments_preservesOriginalSourceMappingWhenApplyingPresentedColor() {
+    RecordingColorTextSink sink = new RecordingColorTextSink();
+    NvgTextRenderer renderer = new NvgTextRenderer(sink);
+    ButtonElement button = new ButtonElement();
+    button.resolvedStyle().color(Color.RED);
+    Text text = new Text("Save");
+    button.addChild(text);
+    InlineSourceMapping mapping =
+        InlineSourceMapping.forRenderedText(
+            "xxSave", "Save", new int[] {2, 3, 4, 5}, new int[] {3, 4, 5, 6});
+    text.inlineFragments(
+        List.of(
+            InlineFragment.builder()
+                .node(text)
+                .text("Save")
+                .sourceMapping(mapping)
+                .font(Font.DEFAULT)
+                .fontSize(16)
+                .color(Color.BLACK)
+                .build()));
+
+    renderer.renderFragments(text, 4, new Vector2f());
+
+    assertSame(mapping, sink.fragment().sourceMapping());
+  }
+
+  @Test
   void renderFragments_usesFakeClockTransitionValuesAtMidpoint() {
     FakeClock clock = new FakeClock();
     TransitionCoordinator coordinator = new TransitionCoordinator(clock);
@@ -149,14 +231,45 @@ class NvgTextRendererTest {
 
   private static final class RecordingColorTextSink implements NvgTextRenderer.TextSink {
     private Color color;
+    private InlineFragment fragment;
 
     @Override
     public void drawText(long context, InlineFragment fragment, float x, float baseline) {
       color = fragment.color();
+      this.fragment = fragment;
     }
 
     Color colors() {
       return color;
+    }
+
+    InlineFragment fragment() {
+      return fragment;
+    }
+  }
+
+  private static final class FailingNativeApi implements NanoVgTextCommandSink.NativeApi {
+    private final List<String> calls = new ArrayList<>();
+    private boolean failText;
+    private boolean failRestore;
+
+    @Override public void save(long context) { calls.add("save"); }
+    @Override public void restore(long context) {
+      calls.add("restore");
+      if (failRestore) throw new IllegalStateException("injected restore failure");
+    }
+    @Override public void scissor(long context, float x, float y, float width, float height) { calls.add("scissor"); }
+    @Override public void intersectScissor(long context, float x, float y, float width, float height) { calls.add("intersect"); }
+    @Override public void resetScissor(long context) { calls.add("reset-scissor"); }
+    @Override public void transform(long context, float a, float b, float c, float d, float tx, float ty) { calls.add("transform"); }
+    @Override public void translate(long context, float x, float y) { calls.add("translate"); }
+    @Override public void align(long context, int value) { calls.add("align:" + value); }
+    @Override public void fontFace(long context, String face) { calls.add("face:" + face); }
+    @Override public void fontSize(long context, float value) { calls.add("size:" + value); }
+    @Override public void fillColor(long context, Color color) { calls.add("color"); }
+    @Override public void text(long context, float x, float y, java.nio.ByteBuffer utf8) {
+      calls.add("text");
+      if (failText) throw new IllegalStateException("injected text failure");
     }
   }
 

@@ -70,7 +70,7 @@ class NvgScrollbarRenderer {
     ScrollbarGeometry.Metrics metrics = element.scrollbarMetrics();
     return metrics == null
         ? ScrollbarGeometry.compute(element, element.scrollWidth(), element.scrollHeight())
-        : metrics;
+        : ScrollbarGeometry.withThumbs(element, metrics);
   }
 
   private void drawPart(

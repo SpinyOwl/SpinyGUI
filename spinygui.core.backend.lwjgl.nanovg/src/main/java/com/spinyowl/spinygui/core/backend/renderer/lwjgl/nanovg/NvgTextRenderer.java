@@ -56,9 +56,25 @@ public class NvgTextRenderer {
     Text text = node.asText();
     if (text.inlineFragments().isEmpty()) return;
     commands.beginScope(context, NvgTextCommand.TextPath.NORMAL);
-    commands.align(context, NVG_ALIGN_LEFT | NVG_ALIGN_BASELINE);
-    renderFragments(text, context, inlineFormattingOffset(text));
-    commands.endScope(context, NvgTextCommand.TextPath.NORMAL);
+    Throwable failure = null;
+    try {
+      commands.align(context, NVG_ALIGN_LEFT | NVG_ALIGN_BASELINE);
+      renderFragments(text, context, inlineFormattingOffset(text));
+    } catch (RuntimeException | Error error) {
+      failure = error;
+    } finally {
+      try {
+        commands.endScope(context, NvgTextCommand.TextPath.NORMAL);
+      } catch (RuntimeException | Error cleanupFailure) {
+        if (failure != null) {
+          failure.addSuppressed(cleanupFailure);
+        } else {
+          throw cleanupFailure;
+        }
+      }
+    }
+    if (failure instanceof RuntimeException error) throw error;
+    if (failure instanceof Error error) throw error;
   }
 
   Vector2f inlineFormattingOffset(Text text) {
@@ -95,20 +111,20 @@ public class NvgTextRenderer {
           fragment.font(),
           fragment.fontSize(),
           presented,
-          commands.displayText(context, fragment.font(), fragment.text()),
+          NvgRenderedText.literal(commands.displayText(context, fragment.font(), fragment.text())),
           x,
           baseline);
       return;
     }
     float runX = x;
     for (ResolvedTextRun run : fragment.runs()) {
-      submit(context, run.font(), fragment.fontSize(), presented, run.renderedText(), runX, baseline);
+      submit(context, run.font(), fragment.fontSize(), presented, NvgRenderedText.run(run), runX, baseline);
       commands.advance(NvgTextCommand.TextPath.NORMAL, runX, run.advance());
       runX += run.advance();
     }
   }
 
-  private void submit(long context, com.spinyowl.spinygui.core.font.Font font, float size, Color color, String text, float x, float baseline) {
+  private void submit(long context, com.spinyowl.spinygui.core.font.Font font, float size, Color color, NvgRenderedText text, float x, float baseline) {
     submission.submit(
         context,
         NvgTextCommand.TextPath.NORMAL,
@@ -130,6 +146,7 @@ public class NvgTextRenderer {
     return InlineFragment.builder()
         .node(fragment.node())
         .text(fragment.text())
+        .sourceMapping(fragment.sourceMapping())
         .x(fragment.x())
         .y(fragment.y())
         .width(fragment.width())

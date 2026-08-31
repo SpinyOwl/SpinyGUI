@@ -10,10 +10,25 @@ import com.spinyowl.spinygui.core.system.font.TextCaretMetrics;
 import com.spinyowl.spinygui.core.system.font.TextLineMetrics;
 import com.spinyowl.spinygui.core.system.font.TextMeasurer;
 import com.spinyowl.spinygui.core.system.font.TextMetrics;
+import com.spinyowl.spinygui.core.system.font.FontTestOwner;
 import java.util.List;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 class TextInputViewportBehaviorTest {
+
+  @BeforeEach
+  void installFontOwner() {
+    FontTestOwner.install();
+  }
+
+  @AfterEach
+  void closeFontOwner() {
+    if (Font.hasSemanticOwner()) {
+      Font.semanticService().close();
+    }
+  }
 
   @Test
   void ensureCaretVisible_whenCaretIsRightOfVisibleContent_scrollsRight() {

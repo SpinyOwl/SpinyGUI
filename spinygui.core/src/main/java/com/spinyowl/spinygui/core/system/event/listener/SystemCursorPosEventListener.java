@@ -18,6 +18,7 @@ import com.spinyowl.spinygui.core.node.InputElement;
 import com.spinyowl.spinygui.core.node.TextareaElement;
 import com.spinyowl.spinygui.core.system.event.SystemCursorPosEvent;
 import com.spinyowl.spinygui.core.system.font.TextMeasurer;
+import com.spinyowl.spinygui.core.system.input.ControlTextLayoutService;
 import com.spinyowl.spinygui.core.system.input.MultilineTextControlMetrics;
 import com.spinyowl.spinygui.core.system.input.ScrollbarInteraction;
 import com.spinyowl.spinygui.core.system.input.ScrollbarInteraction.ScrollDelta;
@@ -51,6 +52,16 @@ public class SystemCursorPosEventListener
   @EqualsAndHashCode.Exclude private final TextareaViewportBehavior textareaViewportBehavior;
   @EqualsAndHashCode.Exclude
   private final Map<Frame, HitPathState> hitPaths = new IdentityHashMap<>();
+  @EqualsAndHashCode.Exclude private final ControlTextLayoutService controlTextLayoutService;
+
+  public SystemCursorPosEventListener(
+      @NonNull EventProcessor eventProcessor,
+      @NonNull TimeService timeService,
+      @NonNull MouseService mouseService,
+      TextMeasurer textMeasurer,
+      ScrollbarInteraction scrollbarInteraction) {
+    this(eventProcessor, timeService, mouseService, textMeasurer, scrollbarInteraction, null);
+  }
 
   @Builder
   public SystemCursorPosEventListener(
@@ -58,21 +69,31 @@ public class SystemCursorPosEventListener
       @NonNull TimeService timeService,
       @NonNull MouseService mouseService,
       TextMeasurer textMeasurer,
-      ScrollbarInteraction scrollbarInteraction) {
+      ScrollbarInteraction scrollbarInteraction,
+      ControlTextLayoutService controlTextLayoutService) {
     super(eventProcessor, timeService);
     this.mouseService = mouseService;
     this.scrollbarInteraction =
         scrollbarInteraction == null ? new ScrollbarInteraction() : scrollbarInteraction;
+    ControlTextLayoutService layoutService =
+        controlTextLayoutService != null
+            ? controlTextLayoutService
+            : textMeasurer == null ? null : new ControlTextLayoutService(textMeasurer);
+    this.controlTextLayoutService = layoutService;
     textInputMouseCaretBehavior =
-        textMeasurer == null ? null : new TextInputMouseCaretBehavior(textMeasurer);
+        layoutService == null ? null : new TextInputMouseCaretBehavior(layoutService);
     textInputViewportBehavior =
-        textMeasurer == null ? null : new TextInputViewportBehavior(textMeasurer);
+        layoutService == null ? null : new TextInputViewportBehavior(layoutService);
     MultilineTextControlMetrics textareaMetrics =
-        textMeasurer == null ? null : new MultilineTextControlMetrics(textMeasurer);
+        layoutService == null ? null : new MultilineTextControlMetrics(layoutService);
     textareaMouseCaretBehavior =
         textareaMetrics == null ? null : new TextareaMouseCaretBehavior(textareaMetrics);
     textareaViewportBehavior =
         textareaMetrics == null ? null : new TextareaViewportBehavior(textareaMetrics);
+  }
+
+  ControlTextLayoutService controlTextLayoutService() {
+    return controlTextLayoutService;
   }
 
   /**

@@ -17,14 +17,13 @@ import com.spinyowl.spinygui.core.node.InputElement;
 import com.spinyowl.spinygui.core.node.Node;
 import com.spinyowl.spinygui.core.node.Text;
 import com.spinyowl.spinygui.core.style.ResolvedStyle;
-import com.spinyowl.spinygui.core.style.stylesheet.util.StyleUtils;
 import com.spinyowl.spinygui.core.style.types.Color;
 import com.spinyowl.spinygui.core.style.types.Display;
-import com.spinyowl.spinygui.core.style.types.length.Length;
 import com.spinyowl.spinygui.core.system.font.TextCaretMetrics;
-import com.spinyowl.spinygui.core.system.font.TextLineMetrics;
 import com.spinyowl.spinygui.core.system.font.TextMeasurer;
 import com.spinyowl.spinygui.core.system.font.ResolvedTextRun;
+import com.spinyowl.spinygui.core.system.input.ControlTextLayoutService;
+import com.spinyowl.spinygui.core.system.input.ControlTextLayoutSnapshot;
 import java.util.List;
 import org.joml.Vector2f;
 import org.joml.Vector2fc;
@@ -41,6 +40,7 @@ class NvgDebugRenderer implements NvgRenderer.DebugRenderer {
   private final CaretSink caretSink;
   private final StateSink stateSink;
   private TextMeasurer textMeasurer;
+  private ControlTextLayoutService layoutService;
 
   NvgDebugRenderer() {
     this(DiagnosticSession.disabled());
@@ -62,6 +62,13 @@ class NvgDebugRenderer implements NvgRenderer.DebugRenderer {
   @Override
   public void textMeasurer(TextMeasurer textMeasurer) {
     this.textMeasurer = textMeasurer;
+    this.layoutService = textMeasurer == null ? null : new ControlTextLayoutService(textMeasurer);
+  }
+
+  @Override
+  public void layoutService(ControlTextLayoutService layoutService) {
+    this.layoutService = layoutService;
+    this.textMeasurer = layoutService == null ? null : layoutService.textMeasurer();
   }
 
   @Override
@@ -95,7 +102,7 @@ class NvgDebugRenderer implements NvgRenderer.DebugRenderer {
   }
 
   private void renderInput(InputElement input, long nanovgContext, Vector2fc mousePosition) {
-    if (!input.hovered() || !input.textInput() || textMeasurer == null) {
+    if (!input.hovered() || !input.textInput() || layoutService == null) {
       return;
     }
     var fragment = inputTextFragment(input);
@@ -146,6 +153,12 @@ class NvgDebugRenderer implements NvgRenderer.DebugRenderer {
     if (textMeasurer == null || fragment.font() == null) {
       return;
     }
+    if (fragment.node() instanceof InputElement input && layoutService != null) {
+      float caretX = layoutService.query(input)
+          .caretAt(Math.max(0, mouseX - x), 0, layoutService.diagnostics()).x();
+      caretSink.drawCaret(nanovgContext, x + caretX, y, fragment.height());
+      return;
+    }
     List<Font> fonts =
         fragment.runs().stream().map(ResolvedTextRun::font).distinct().toList();
     TextCaretMetrics caret =
@@ -158,12 +171,12 @@ class NvgDebugRenderer implements NvgRenderer.DebugRenderer {
   }
 
   private InlineFragment inputTextFragment(InputElement input) {
+    ControlTextLayoutSnapshot snapshot = layoutService.query(input);
+    ControlTextLayoutSnapshot.Key key = snapshot.key();
+    ControlTextLayoutSnapshot.Line line = snapshot.lines().get(0);
     ResolvedStyle style = input.resolvedStyle();
-    Font font = findFont(style);
-    float fontSize = fontSize(input);
-    float lineHeight = lineHeight(style);
-    TextLineMetrics line =
-        textMeasurer.getTextLineMetrics(input.value(), font, fontSize, lineHeight);
+    Font font = key.resolvedFonts().isEmpty() ? Font.DEFAULT : key.resolvedFonts().get(0);
+    float fontSize = key.fontSize();
     Vector2f contentPosition = contentPosition(input);
     Vector2f contentSize = input.box().contentSize();
     float lineTop = contentPosition.y() + Math.max(0, (contentSize.y() - line.height()) / 2f);
@@ -202,16 +215,6 @@ class NvgDebugRenderer implements NvgRenderer.DebugRenderer {
         .stream()
         .findFirst()
         .orElse(Font.DEFAULT);
-  }
-
-  private float fontSize(InputElement input) {
-    Length<?> fontSize = input.resolvedStyle().fontSize();
-    return fontSize == null ? 16f : StyleUtils.getFontSize(input);
-  }
-
-  private float lineHeight(ResolvedStyle style) {
-    Float lineHeight = style.lineHeight();
-    return lineHeight == null ? 1f : lineHeight;
   }
 
   private boolean contains(InlineFragment fragment, float x, float y, Vector2fc mousePosition) {

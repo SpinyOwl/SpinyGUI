@@ -18,10 +18,18 @@ import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.AfterEach;
 
 class MultilineTextControlMetricsTest {
   private final FontServiceImpl fontService = installedService();
   private final MultilineTextControlMetrics metrics = new MultilineTextControlMetrics(fontService);
+
+  @AfterEach
+  void closeFontOwner() {
+    if (Font.hasSemanticOwner()) {
+      Font.semanticService().close();
+    }
+  }
 
   @Test
   void caretAndHitTesting_useFallbackFaceForCjkAndKeepUtf16CaretBoundary() {
@@ -47,7 +55,7 @@ class MultilineTextControlMetricsTest {
   }
 
   @Test
-  void independentTextareaQueriesRepeatCompleteCurrentLayoutsWithoutChangingResults() {
+  void independentTextareaQueriesReuseOneCurrentSnapshotWithoutChangingResults() {
     DiagnosticSession diagnostics =
         DiagnosticSession.enabled(List.of(TextDiagnosticCounter.values()));
     FontServiceImpl instrumentedFontService =
@@ -67,7 +75,7 @@ class MultilineTextControlMetricsTest {
     assertEquals(2, second.index());
     assertTrue(second.x() > first.x());
     assertEquals(
-        3, diagnostics.snapshot().value(TextDiagnosticCounter.TEXTAREA_COMPLETE_LAYOUTS));
+        1, diagnostics.snapshot().value(TextDiagnosticCounter.TEXTAREA_COMPLETE_LAYOUTS));
   }
 
   @Test
@@ -85,7 +93,7 @@ class MultilineTextControlMetricsTest {
             FontStyle.NORMAL,
             FontStretch.NORMAL,
             FontWeight.REGULAR,
-            "fonts/t3-textarea.ttf");
+            Font.ROBOTO_REGULAR.path());
     Font.semanticOwner()
         .add(
             SemanticFontOwner.FontRequest.from(
@@ -96,6 +104,38 @@ class MultilineTextControlMetricsTest {
 
     assertEquals(List.of(registered), metrics.textStyle(textarea).fonts());
     assertEquals(generation + 1, Font.semanticOwner().generation());
+  }
+
+  @Test
+  void multiParagraphFallbackReplacementAndSeparatorsKeepAbsoluteSourceMappings() {
+    String replacementSource = new String(Character.toChars(0x10FFFF));
+    TextareaElement textarea = textarea("a\u96EA\r\n" + replacementSource + "\n");
+
+    ControlTextLayoutSnapshot snapshot = metrics.layoutService().query(textarea);
+
+    assertEquals(3, snapshot.paragraphs().size());
+    assertEquals("a\u96EA", snapshot.lineForIndex(3).text());
+    assertEquals(replacementSource, snapshot.lineForIndex(6).text());
+    assertEquals("", snapshot.lineForIndex(7).text());
+    assertTrue(
+        snapshot.lines().stream()
+            .flatMap(line -> line.runs().stream())
+            .flatMap(run -> run.glyphs().stream())
+            .anyMatch(
+                glyph ->
+                    glyph.sourceStart() == 1
+                        && glyph.sourceEnd() == 2
+                        && glyph.font().equals(Font.NOTO_SANS_CJK_SC_REGULAR)));
+    assertTrue(
+        snapshot.lines().stream()
+            .flatMap(line -> line.runs().stream())
+            .flatMap(run -> run.glyphs().stream())
+            .anyMatch(
+                glyph ->
+                    glyph.sourceStart() == 4
+                        && glyph.sourceEnd() == 6
+                        && glyph.replacement()
+                        && glyph.renderedCodePoint() == 0xFFFD));
   }
 
   private static FontServiceImpl installedService() {

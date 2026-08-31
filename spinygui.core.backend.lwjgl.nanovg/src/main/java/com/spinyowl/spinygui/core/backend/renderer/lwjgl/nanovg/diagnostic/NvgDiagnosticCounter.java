@@ -21,6 +21,18 @@ public enum NvgDiagnosticCounter implements DiagnosticCounter {
       "nanovg.utf8.allocated-bytes",
       DiagnosticUnit.BYTES,
       "Bytes reserved by UTF-8 staging allocations, including terminators or spare capacity."),
+  UTF8_REUSE_CALLS(
+      "nanovg.utf8.reuse-calls",
+      DiagnosticUnit.CALLS,
+      "Text submissions encoded into renderer-owned retained staging."),
+  UTF8_OVERSIZED_ALLOCATION_CALLS(
+      "nanovg.utf8.oversized-allocation-calls",
+      DiagnosticUnit.CALLS,
+      "One-shot allocations for payloads larger than the retained staging cap."),
+  UTF8_OVERSIZED_FREED_BYTES(
+      "nanovg.utf8.oversized-freed-bytes",
+      DiagnosticUnit.BYTES,
+      "One-shot oversized staging bytes freed synchronously after nvgText returns."),
   TEXT_CALLS(
       "nanovg.calls.text",
       DiagnosticUnit.CALLS,
@@ -45,6 +57,22 @@ public enum NvgDiagnosticCounter implements DiagnosticCounter {
       "nanovg.calls.text-align",
       DiagnosticUnit.CALLS,
       "NanoVG text-alignment state calls."),
+  FONT_FACE_CALLS_SUPPRESSED(
+      "nanovg.calls.font-face-suppressed",
+      DiagnosticUnit.CALLS,
+      "Logically requested font-face calls skipped because scoped state was exactly equal."),
+  FONT_SIZE_CALLS_SUPPRESSED(
+      "nanovg.calls.font-size-suppressed",
+      DiagnosticUnit.CALLS,
+      "Logically requested font-size calls skipped because scoped state was exactly equal."),
+  FILL_COLOR_CALLS_SUPPRESSED(
+      "nanovg.calls.fill-color-suppressed",
+      DiagnosticUnit.CALLS,
+      "Logically requested fill-color calls skipped because scoped state was exactly equal."),
+  TEXT_ALIGN_CALLS_SUPPRESSED(
+      "nanovg.calls.text-align-suppressed",
+      DiagnosticUnit.CALLS,
+      "Logically requested text-alignment calls skipped because scoped state was exactly equal."),
   SAVE_CALLS(
       "nanovg.calls.save",
       DiagnosticUnit.CALLS,
@@ -151,7 +179,7 @@ public enum NvgDiagnosticCounter implements DiagnosticCounter {
       "Textarea text/run submissions culled because conservative ink is outside the effective clip."),
   ;
 
-  public static final String VOCABULARY_VERSION = "nanovg-text-diagnostics-3";
+  public static final String VOCABULARY_VERSION = "nanovg-text-diagnostics-4";
 
   private final String id;
   private final DiagnosticUnit unit;

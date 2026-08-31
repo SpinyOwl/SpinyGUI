@@ -18,6 +18,7 @@ import com.spinyowl.spinygui.core.system.event.SystemKeyEvent;
 import com.spinyowl.spinygui.core.system.font.TextMeasurer;
 import com.spinyowl.spinygui.core.system.input.ButtonBehavior;
 import com.spinyowl.spinygui.core.system.input.MultilineTextControlMetrics;
+import com.spinyowl.spinygui.core.system.input.ControlTextLayoutService;
 import com.spinyowl.spinygui.core.system.input.SystemKeyMod;
 import com.spinyowl.spinygui.core.system.input.TextInputBehavior;
 import com.spinyowl.spinygui.core.system.input.TextInputViewportBehavior;
@@ -39,6 +40,16 @@ public class SystemKeyEventListener extends AbstractSystemEventListener<SystemKe
   @EqualsAndHashCode.Exclude private final Clipboard clipboard;
   @EqualsAndHashCode.Exclude private final TextInputViewportBehavior viewportBehavior;
   @EqualsAndHashCode.Exclude private final TextareaViewportBehavior textareaViewportBehavior;
+  @EqualsAndHashCode.Exclude private final ControlTextLayoutService controlTextLayoutService;
+
+  public SystemKeyEventListener(
+      @NonNull EventProcessor eventProcessor,
+      @NonNull TimeService timeService,
+      @NonNull Keyboard keyboard,
+      Clipboard clipboard,
+      TextMeasurer textMeasurer) {
+    this(eventProcessor, timeService, keyboard, clipboard, textMeasurer, null);
+  }
 
   @Builder
   public SystemKeyEventListener(
@@ -46,13 +57,19 @@ public class SystemKeyEventListener extends AbstractSystemEventListener<SystemKe
       @NonNull TimeService timeService,
       @NonNull Keyboard keyboard,
       Clipboard clipboard,
-      TextMeasurer textMeasurer) {
+      TextMeasurer textMeasurer,
+      ControlTextLayoutService controlTextLayoutService) {
     super(eventProcessor, timeService);
     this.keyboard = keyboard;
     this.clipboard = clipboard;
-    viewportBehavior = textMeasurer == null ? null : new TextInputViewportBehavior(textMeasurer);
+    ControlTextLayoutService layoutService =
+        controlTextLayoutService != null
+            ? controlTextLayoutService
+            : textMeasurer == null ? null : new ControlTextLayoutService(textMeasurer);
+    this.controlTextLayoutService = layoutService;
+    viewportBehavior = layoutService == null ? null : new TextInputViewportBehavior(layoutService);
     MultilineTextControlMetrics textareaMetrics =
-        textMeasurer == null ? null : new MultilineTextControlMetrics(textMeasurer);
+        layoutService == null ? null : new MultilineTextControlMetrics(layoutService);
     textareaBehavior = new TextareaBehavior(textareaMetrics);
     textareaViewportBehavior =
         textareaMetrics == null ? null : new TextareaViewportBehavior(textareaMetrics);
@@ -67,6 +84,10 @@ public class SystemKeyEventListener extends AbstractSystemEventListener<SystemKe
   @Override
   public void process(@NonNull SystemKeyEvent event, @NonNull Frame frame) {
     processInternal(event, frame, null);
+  }
+
+  ControlTextLayoutService controlTextLayoutService() {
+    return controlTextLayoutService;
   }
 
   @Override

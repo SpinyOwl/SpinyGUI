@@ -4,6 +4,7 @@ import static com.spinyowl.spinygui.core.node.NodeBuilder.TYPE_BUTTON;
 import static com.spinyowl.spinygui.core.style.stylesheet.Properties.COLOR;
 import static com.spinyowl.spinygui.core.style.stylesheet.Properties.OPACITY;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import com.spinyowl.spinygui.core.diagnostic.DiagnosticSession;
 import com.spinyowl.spinygui.core.diagnostic.TextDiagnosticCounter;
@@ -30,6 +31,31 @@ class NvgInputRendererTest {
   @BeforeEach
   void installFontOwner() {
     NvgFontTestOwner.install();
+  }
+
+  @Test
+  void textFailure_restoresScopeAndResetsClip() {
+    RecordingNativeApi nativeApi = new RecordingNativeApi();
+    DiagnosticSession diagnostics =
+        DiagnosticSession.enabled(List.of(NvgDiagnosticCounter.values()));
+    NanoVgTextCommandSink commands =
+        new NanoVgTextCommandSink(
+            new NvgFontRegistry(), diagnostics, (font, context) -> font.fontFamily(), nativeApi);
+    NvgInputRenderer renderer = new NvgInputRenderer(commands, diagnostics);
+    renderer.textMeasurer(new FixedTextMeasurer());
+
+    nativeApi.failText = true;
+    IllegalStateException failure =
+        assertThrows(IllegalStateException.class, () -> renderer.render(input("abc"), 9));
+
+    assertEquals("injected text failure", failure.getMessage());
+    assertEquals(
+        List.of("save", "intersect", "align:65", "color", "face:Roboto", "size:16.0", "text", "restore", "reset-scissor"),
+        nativeApi.calls);
+    assertEquals(1, diagnostics.snapshot().value(NvgDiagnosticCounter.SAVE_CALLS));
+    assertEquals(1, diagnostics.snapshot().value(NvgDiagnosticCounter.RESTORE_CALLS));
+    assertEquals(1, diagnostics.snapshot().value(NvgDiagnosticCounter.RESET_SCISSOR_CALLS));
+    commands.close();
   }
 
   @Test
@@ -268,7 +294,7 @@ class NvgInputRendererTest {
   }
 
   @Test
-  void render_reportsOneCompleteInputLayoutAndEveryRepeatedPrefixMeasurement() {
+  void render_buildsOnceAndWarmRenderPerformsNoAdditionalPrefixMeasurement() {
     DiagnosticSession diagnostics =
         DiagnosticSession.enabled(List.of(TextDiagnosticCounter.values()));
     FixedTextMeasurer textMeasurer = new FixedTextMeasurer(List.of(), diagnostics);
@@ -285,19 +311,24 @@ class NvgInputRendererTest {
     input.select(1, 4);
 
     renderer.render(input, 13);
+    renderer.render(input, 13);
 
-    assertEquals(List.of("abcdef", "a", "abcd", "abcd"), textMeasurer.measuredTexts());
-    assertEquals(List.of("text(13,abcdef,20.0,44.0,16.0)"), textSink.calls());
+    assertEquals(
+        List.of("abcdef", "a", "ab", "abc", "abcd", "abcde", "abcdef"),
+        textMeasurer.measuredTexts());
+    assertEquals(
+        List.of("text(13,abcdef,20.0,44.0,16.0)", "text(13,abcdef,20.0,44.0,16.0)"),
+        textSink.calls());
     assertEquals(
         1, diagnostics.snapshot().value(TextDiagnosticCounter.INPUT_COMPLETE_LAYOUTS));
     assertEquals(
-        4,
+        7,
         diagnostics
             .snapshot()
             .value(
                 TextDiagnosticCounter.TEXT_MEASURER_GET_TEXT_LINE_METRICS_FONT_LIST_ENTRIES));
     assertEquals(
-        1, diagnostics.snapshot().value(TextDiagnosticCounter.FONT_CHAIN_RESOLUTIONS));
+        2, diagnostics.snapshot().value(TextDiagnosticCounter.FONT_CHAIN_RESOLUTIONS));
   }
 
   @Test
@@ -347,9 +378,10 @@ class NvgInputRendererTest {
             NvgTextCommand.TextPath.INPUT,
             NvgDiagnosticCounter.INPUT_TEXT_ITEMS_FACE_SELECTION_FAILED.id()),
         commands.get(13));
-    assertEquals(NvgTextCommand.Caret.class, commands.get(14).getClass());
-    assertEquals(new NvgTextCommand.Scope(NvgTextCommand.TextPath.INPUT, false), commands.get(15));
-    assertEquals(NvgTextCommand.Clip.class, commands.get(16).getClass());
+    assertEquals(new NvgTextCommand.Advance(NvgTextCommand.TextPath.INPUT, 29, 7), commands.get(14));
+    assertEquals(NvgTextCommand.Caret.class, commands.get(15).getClass());
+    assertEquals(new NvgTextCommand.Scope(NvgTextCommand.TextPath.INPUT, false), commands.get(16));
+    assertEquals(NvgTextCommand.Clip.class, commands.get(17).getClass());
     assertEquals(2, diagnostics.snapshot().value(NvgDiagnosticCounter.INPUT_TEXT_ITEMS_CONSIDERED));
     assertEquals(1, diagnostics.snapshot().value(NvgDiagnosticCounter.INPUT_TEXT_ITEMS_SUBMITTED));
     assertEquals(
@@ -464,6 +496,27 @@ class NvgInputRendererTest {
 
     List<String> calls() {
       return calls;
+    }
+  }
+
+  private static final class RecordingNativeApi implements NanoVgTextCommandSink.NativeApi {
+    private final List<String> calls = new ArrayList<>();
+    private boolean failText;
+
+    @Override public void save(long context) { calls.add("save"); }
+    @Override public void restore(long context) { calls.add("restore"); }
+    @Override public void scissor(long context, float x, float y, float width, float height) { calls.add("scissor"); }
+    @Override public void intersectScissor(long context, float x, float y, float width, float height) { calls.add("intersect"); }
+    @Override public void resetScissor(long context) { calls.add("reset-scissor"); }
+    @Override public void transform(long context, float a, float b, float c, float d, float tx, float ty) { calls.add("transform"); }
+    @Override public void translate(long context, float x, float y) { calls.add("translate"); }
+    @Override public void align(long context, int value) { calls.add("align:" + value); }
+    @Override public void fontFace(long context, String face) { calls.add("face:" + face); }
+    @Override public void fontSize(long context, float value) { calls.add("size:" + value); }
+    @Override public void fillColor(long context, Color color) { calls.add("color"); }
+    @Override public void text(long context, float x, float y, java.nio.ByteBuffer utf8) {
+      calls.add("text");
+      if (failText) throw new IllegalStateException("injected text failure");
     }
   }
 

@@ -9,6 +9,7 @@ import com.spinyowl.spinygui.core.node.TextareaElement;
 import com.spinyowl.spinygui.core.system.event.SystemCharEvent;
 import com.spinyowl.spinygui.core.system.font.TextMeasurer;
 import com.spinyowl.spinygui.core.system.input.MultilineTextControlMetrics;
+import com.spinyowl.spinygui.core.system.input.ControlTextLayoutService;
 import com.spinyowl.spinygui.core.system.input.TextInputBehavior;
 import com.spinyowl.spinygui.core.system.input.TextInputViewportBehavior;
 import com.spinyowl.spinygui.core.system.input.TextareaBehavior;
@@ -26,18 +27,32 @@ public class SystemCharEventListener extends AbstractSystemEventListener<SystemC
   private static final TextareaBehavior TEXTAREA_BEHAVIOR = new TextareaBehavior();
   @EqualsAndHashCode.Exclude private final TextInputViewportBehavior viewportBehavior;
   @EqualsAndHashCode.Exclude private final TextareaViewportBehavior textareaViewportBehavior;
+  @EqualsAndHashCode.Exclude private final ControlTextLayoutService controlTextLayoutService;
+
+  public SystemCharEventListener(
+      @NonNull EventProcessor eventProcessor,
+      @NonNull TimeService timeService,
+      TextMeasurer textMeasurer) {
+    this(eventProcessor, timeService, textMeasurer, null);
+  }
 
   @Builder
   public SystemCharEventListener(
       @NonNull EventProcessor eventProcessor,
       @NonNull TimeService timeService,
-      TextMeasurer textMeasurer) {
+      TextMeasurer textMeasurer,
+      ControlTextLayoutService controlTextLayoutService) {
     super(eventProcessor, timeService);
-    viewportBehavior = textMeasurer == null ? null : new TextInputViewportBehavior(textMeasurer);
+    ControlTextLayoutService layoutService =
+        controlTextLayoutService != null
+            ? controlTextLayoutService
+            : textMeasurer == null ? null : new ControlTextLayoutService(textMeasurer);
+    this.controlTextLayoutService = layoutService;
+    viewportBehavior = layoutService == null ? null : new TextInputViewportBehavior(layoutService);
     textareaViewportBehavior =
-        textMeasurer == null
+        layoutService == null
             ? null
-            : new TextareaViewportBehavior(new MultilineTextControlMetrics(textMeasurer));
+            : new TextareaViewportBehavior(new MultilineTextControlMetrics(layoutService));
   }
 
   /**
@@ -49,6 +64,10 @@ public class SystemCharEventListener extends AbstractSystemEventListener<SystemC
   @Override
   public void process(@NonNull SystemCharEvent event, @NonNull Frame frame) {
     processInternal(event, frame, null);
+  }
+
+  ControlTextLayoutService controlTextLayoutService() {
+    return controlTextLayoutService;
   }
 
   @Override

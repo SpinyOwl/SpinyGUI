@@ -3,6 +3,8 @@ package com.spinyowl.spinygui.core.node;
 import static com.spinyowl.spinygui.core.node.NodeBuilder.NODE_TEXTAREA;
 
 import java.util.Map;
+import com.spinyowl.spinygui.core.system.input.ControlTextLayoutSnapshot;
+import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
@@ -18,6 +20,10 @@ public class TextareaElement extends Element {
   private int selectionAnchor;
   private float textScrollTop;
   private float textScrollLeft;
+  @Getter(AccessLevel.NONE)
+  @EqualsAndHashCode.Exclude
+  @ToString.Exclude
+  private transient ControlTextLayoutSnapshot textLayoutSnapshot;
 
   public TextareaElement() {
     super(NODE_TEXTAREA);
@@ -125,6 +131,21 @@ public class TextareaElement extends Element {
     if (Float.compare(this.textScrollLeft, normalized) == 0) return;
     this.textScrollLeft = normalized;
     invalidatePaintSource();
+  }
+
+  /** Returns the current immutable text-layout snapshot, or {@code null} before the first query. */
+  public ControlTextLayoutSnapshot currentTextLayoutSnapshot() {
+    return textLayoutSnapshot;
+  }
+
+  /** Replaces the single current immutable text-layout snapshot. Intended for the core service. */
+  public void replaceTextLayoutSnapshot(ControlTextLayoutSnapshot snapshot) {
+    textLayoutSnapshot = snapshot;
+  }
+
+  /** Clears the single current snapshot without retaining history. */
+  public void clearTextLayoutSnapshot() {
+    textLayoutSnapshot = null;
   }
 
   private int clampTextIndex(int index) {

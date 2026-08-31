@@ -13,6 +13,7 @@ val lwjglNatives = when {
 dependencies {
     api(project(":spinygui.core"))
     api(project(":spinygui.core.backend"))
+    implementation(libs.guava)
 
     api(libs.lwjgl)
     api(variantOf(libs.lwjgl) { classifier(lwjglNatives) })

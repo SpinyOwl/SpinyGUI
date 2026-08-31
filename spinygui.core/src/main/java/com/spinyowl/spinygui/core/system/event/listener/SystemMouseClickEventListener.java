@@ -21,6 +21,7 @@ import com.spinyowl.spinygui.core.node.TextareaElement;
 import com.spinyowl.spinygui.core.system.event.SystemMouseClickEvent;
 import com.spinyowl.spinygui.core.system.font.TextMeasurer;
 import com.spinyowl.spinygui.core.system.input.MultilineTextControlMetrics;
+import com.spinyowl.spinygui.core.system.input.ControlTextLayoutService;
 import com.spinyowl.spinygui.core.system.input.ScrollbarInteraction;
 import com.spinyowl.spinygui.core.system.input.ScrollbarInteraction.HitPart;
 import com.spinyowl.spinygui.core.system.input.ScrollbarInteraction.ScrollDelta;
@@ -44,6 +45,16 @@ public class SystemMouseClickEventListener
   @EqualsAndHashCode.Exclude
   private final TextareaMouseCaretBehavior textareaMouseCaretBehavior;
   @EqualsAndHashCode.Exclude private final ScrollbarInteraction scrollbarInteraction;
+  @EqualsAndHashCode.Exclude private final ControlTextLayoutService controlTextLayoutService;
+
+  public SystemMouseClickEventListener(
+      @NonNull EventProcessor eventProcessor,
+      @NonNull TimeService timeService,
+      @NonNull MouseService mouseService,
+      TextMeasurer textMeasurer,
+      ScrollbarInteraction scrollbarInteraction) {
+    this(eventProcessor, timeService, mouseService, textMeasurer, scrollbarInteraction, null);
+  }
 
   @Builder
   public SystemMouseClickEventListener(
@@ -51,17 +62,23 @@ public class SystemMouseClickEventListener
       @NonNull TimeService timeService,
       @NonNull MouseService mouseService,
       TextMeasurer textMeasurer,
-      ScrollbarInteraction scrollbarInteraction) {
+      ScrollbarInteraction scrollbarInteraction,
+      ControlTextLayoutService controlTextLayoutService) {
     super(eventProcessor, timeService);
     this.mouseService = mouseService;
     this.scrollbarInteraction =
         scrollbarInteraction == null ? new ScrollbarInteraction() : scrollbarInteraction;
+    ControlTextLayoutService layoutService =
+        controlTextLayoutService != null
+            ? controlTextLayoutService
+            : textMeasurer == null ? null : new ControlTextLayoutService(textMeasurer);
+    this.controlTextLayoutService = layoutService;
     textInputMouseCaretBehavior =
-        textMeasurer == null ? null : new TextInputMouseCaretBehavior(textMeasurer);
+        layoutService == null ? null : new TextInputMouseCaretBehavior(layoutService);
     textareaMouseCaretBehavior =
-        textMeasurer == null
+        layoutService == null
             ? null
-            : new TextareaMouseCaretBehavior(new MultilineTextControlMetrics(textMeasurer));
+            : new TextareaMouseCaretBehavior(new MultilineTextControlMetrics(layoutService));
   }
 
   private static Vector2fc positionInElement(Vector2fc cursorPos, Element element) {
@@ -92,6 +109,10 @@ public class SystemMouseClickEventListener
       target = buttonOwner(target);
       processWithExistingTarget(event, frame, focusedElement, currentCursorPosition, target);
     }
+  }
+
+  ControlTextLayoutService controlTextLayoutService() {
+    return controlTextLayoutService;
   }
 
   private boolean processScrollbarInteraction(

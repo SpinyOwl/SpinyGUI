@@ -136,11 +136,13 @@ final class NvgTextCommandRecorder implements NvgTextCommandSink {
   }
 
   @Override
-  public void text(long context, NvgTextCommand.TextPath path, String text, float x, float baseline) {
+  public void text(
+      long context, NvgTextCommand.TextPath path, NvgRenderedText text, float x, float baseline) {
     diagnostics.increment(NvgDiagnosticCounter.TEXT_CALLS);
+    String value = text.displayValue();
     commands.add(
         new NvgTextCommand.Text(
-            path, text, text.getBytes(StandardCharsets.UTF_8).length, x, baseline));
+            path, value, value.getBytes(StandardCharsets.UTF_8).length, x, baseline));
   }
 
   @Override

@@ -1,6 +1,7 @@
 package com.spinyowl.spinygui.core.backend.renderer.lwjgl.nanovg;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertSame;
 
 import com.spinyowl.spinygui.core.backend.renderer.lwjgl.nanovg.diagnostic.NvgDiagnosticCounter;
 import com.spinyowl.spinygui.core.backend.renderer.lwjgl.nanovg.util.NvgClipStack;
@@ -19,6 +20,8 @@ import com.spinyowl.spinygui.core.system.font.FontMetrics;
 import com.spinyowl.spinygui.core.system.font.TextLineMetrics;
 import com.spinyowl.spinygui.core.system.font.TextMeasurer;
 import com.spinyowl.spinygui.core.system.font.TextMetrics;
+import com.spinyowl.spinygui.core.system.input.ControlTextLayoutService;
+import com.spinyowl.spinygui.core.system.input.ControlTextLayoutSnapshot;
 import java.util.ArrayList;
 import java.util.List;
 import org.joml.Vector2f;
@@ -164,7 +167,30 @@ class NvgDebugRendererTest {
 
     renderer.render(frame, 3, new Vector2f(28, 35));
 
-    assertEquals(List.of("caret(3,24.0,32.0,16.0)"), caretSink.calls());
+    assertEquals(List.of("caret(3,30.0,32.0,16.0)"), caretSink.calls());
+  }
+
+  @Test
+  void hoveredInputDebugUsesTheExistingSharedSnapshotWithoutMeasurement() {
+    FixedCaretTextMeasurer measurer = new FixedCaretTextMeasurer();
+    ControlTextLayoutService service = new ControlTextLayoutService(measurer);
+    NvgDebugRenderer renderer =
+        new NvgDebugRenderer(
+            new RecordingHighlightSink(), new RecordingCaretSink(), new NoOpStateSink());
+    renderer.layoutService(service);
+    Frame frame = new Frame();
+    InputElement input = input("abcd");
+    input.hovered(true);
+    frame.addChild(input);
+    frame.layoutChildNodes(List.of(input));
+    ControlTextLayoutSnapshot snapshot = service.query(input);
+    int coldEntrypoints = measurer.entryCalls();
+
+    renderer.render(frame, 3, null);
+    renderer.render(frame, 3, new Vector2f(28, 35));
+
+    assertSame(snapshot, input.currentTextLayoutSnapshot());
+    assertEquals(coldEntrypoints, measurer.entryCalls());
   }
 
   @Test
@@ -304,6 +330,8 @@ class NvgDebugRendererTest {
   }
 
   private static final class FixedCaretTextMeasurer implements TextMeasurer {
+    private int entryCalls;
+
     @Override
     public TextMetrics measureText(String text, Font font, float fontSize, float lineHeight) {
       throw new UnsupportedOperationException();
@@ -336,6 +364,7 @@ class NvgDebugRendererTest {
     @Override
     public TextLineMetrics getTextLineMetrics(
         String text, Font font, float fontSize, float lineHeight) {
+      entryCalls++;
       return TextLineMetrics.builder()
           .characters(text)
           .width(text.length() * 10f)
@@ -348,13 +377,25 @@ class NvgDebugRendererTest {
     @Override
     public TextLineMetrics getTextLineMetrics(
         String text, List<Font> fonts, float fontSize, float lineHeight) {
-      return getTextLineMetrics(text, fonts.get(0), fontSize, lineHeight);
+      entryCalls++;
+      return TextLineMetrics.builder()
+          .characters(text)
+          .width(text.length() * 10f)
+          .height(16)
+          .baseline(12)
+          .fontMetrics(new FontMetrics(12, 4, 0, 16, 12))
+          .build();
     }
 
     @Override
     public TextCaretMetrics getTextCaretMetrics(
         String text, Font font, float fontSize, float offsetX) {
+      entryCalls++;
       return new TextCaretMetrics(1, 4);
+    }
+
+    private int entryCalls() {
+      return entryCalls;
     }
   }
 }

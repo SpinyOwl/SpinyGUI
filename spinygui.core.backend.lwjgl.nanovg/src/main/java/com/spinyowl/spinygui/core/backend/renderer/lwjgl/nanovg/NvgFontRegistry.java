@@ -19,11 +19,20 @@ import org.lwjgl.stb.STBTTFontinfo;
 
 class NvgFontRegistry {
   private static final int REPLACEMENT_CODE_POINT = 0xFFFD;
+  /** Maximum descriptor aliases retained by the generation-scoped NanoVG lookup fast path. */
+  private static final int RESOURCE_KEY_CACHE_LIMIT = 64;
 
   private final Map<FontResourceKey, FontFace> loadedFontFaces = new HashMap<>();
   private final Map<FontResourceKey, ByteBuffer> fontBuffers = new HashMap<>();
   private final Map<FontResourceKey, OwnedFontInfo> fontInfos = new HashMap<>();
   private final Set<FontResourceKey> retryableFaceFailures = new HashSet<>();
+  /**
+   * Generation-scoped descriptor memoization for the renderer hot path. Entries are hard-capped
+   * and cleared on semantic reconciliation or context teardown.
+   */
+  private final Map<Font, FontResourceKey> resourceKeysByFont = new HashMap<>();
+  /** Direct face lookup paired with {@link #resourceKeysByFont} and cleared at the same boundaries. */
+  private final Map<Font, FontFace> fontFacesByFont = new HashMap<>();
   private final NvgRenderer renderer;
   private final FaceCreator faceCreator;
   private final FontInfoAllocator fontInfoAllocator;
@@ -50,50 +59,50 @@ class NvgFontRegistry {
 
   void bindContext(long context, SemanticFontOwner.Observation observation) {
     Objects.requireNonNull(observation, "observation");
-    if (context == 0) {
-      throw new IllegalArgumentException("NanoVG font registry context must be non-zero");
-    }
-    if (contextIdentity != 0 && contextIdentity != context) {
-      throw new IllegalStateException(
-          "NanoVG font resources cannot migrate to a different context");
-    }
-    contextIdentity = context;
+    bindContextIdentity(context);
     reconcile(observation);
   }
 
   String fontFace(Font font, long nanovg) {
     prepareContext(nanovg);
 
-    FontResourceKey key = resourceKey(font);
-    FontFace face = loadedFontFaces.get(key);
-    if (face == null) {
-      ByteBuffer fontBuffer = fontBuffer(key, font);
-      if (fontBuffer == null) {
-        return null;
-      }
-
-      String fontFace =
-          font.fontFamily()
-              + "-"
-              + Integer.toUnsignedString(fontKey(font).hashCode())
-              + "-"
-              + Integer.toUnsignedString(Long.hashCode(contextIdentity));
-      int id;
-      try {
-        id = faceCreator.create(nanovg, fontFace, fontBuffer.duplicate());
-      } catch (RuntimeException | Error failure) {
-        recordFaceFailure(key);
-        throw failure;
-      }
-      if (id == -1) {
-        recordFaceFailure(key);
-        return null;
-      }
-
-      face = new FontFace(key, fontFace, id);
-      loadedFontFaces.put(key, face);
-      retryableFaceFailures.remove(key);
+    FontFace face = fontFacesByFont.get(font);
+    if (face != null) {
+      return face.name();
     }
+    FontResourceKey key = resourceKey(font);
+    face = loadedFontFaces.get(key);
+    if (face != null) {
+      fontFacesByFont.put(font, face);
+      return face.name();
+    }
+
+    ByteBuffer fontBuffer = fontBuffer(key, font);
+    if (fontBuffer == null) {
+      return null;
+    }
+    String fontFace =
+        font.fontFamily()
+            + "-"
+            + Integer.toUnsignedString(fontKey(font).hashCode())
+            + "-"
+            + Integer.toUnsignedString(Long.hashCode(contextIdentity));
+    int id;
+    try {
+      id = faceCreator.create(nanovg, fontFace, fontBuffer.duplicate());
+    } catch (RuntimeException | Error failure) {
+      recordFaceFailure(key);
+      throw failure;
+    }
+    if (id == -1) {
+      recordFaceFailure(key);
+      return null;
+    }
+
+    face = new FontFace(key, fontFace, id);
+    loadedFontFaces.put(key, face);
+    fontFacesByFont.put(font, face);
+    retryableFaceFailures.remove(key);
     return face.name();
   }
 
@@ -125,7 +134,7 @@ class NvgFontRegistry {
   }
 
   NvgFontResourceObservation observation() {
-    reconcile(Font.semanticOwner().observation());
+    reconcileCurrentGeneration(Font.semanticOwner());
     Set<SemanticFontOwner.Identity> retainedIdentities = new HashSet<>();
     collectSemanticIdentities(loadedFontFaces.keySet(), retainedIdentities);
     collectSemanticIdentities(fontBuffers.keySet(), retainedIdentities);
@@ -190,6 +199,8 @@ class NvgFontRegistry {
 
     fontBuffers.clear();
     recordLifecycle(NvgRenderer.LifecycleEvent.DROP_FONT_BUFFER_REFERENCES);
+    resourceKeysByFont.clear();
+    fontFacesByFont.clear();
     observedIdentities = Map.of();
     observedGeneration = 0;
     faceCreationFailures = 0;
@@ -203,17 +214,17 @@ class NvgFontRegistry {
   private void prepareContext(long context) {
     SemanticFontOwner owner = Font.semanticOwner();
     if (renderer == null) {
-      bindContext(context, owner.observation());
+      bindContextIdentity(context);
     } else {
       renderer.requireFontFaceUse(context);
-      reconcile(owner.observation());
     }
+    reconcileCurrentGeneration(owner);
   }
 
   private int glyphIndex(Font font, int codePoint) {
     FontResourceKey key = resourceKey(font);
-    return stbtt_FindGlyphIndex(
-        fontInfos.computeIfAbsent(key, ignored -> loadFontInfo(key, font)).value(), codePoint);
+    OwnedFontInfo fontInfo = fontInfos.computeIfAbsent(key, ignored -> loadFontInfo(key, font));
+    return stbtt_FindGlyphIndex(fontInfo.value(), codePoint);
   }
 
   private OwnedFontInfo loadFontInfo(FontResourceKey key, Font font) {
@@ -269,6 +280,8 @@ class NvgFontRegistry {
     fontBuffers.keySet().removeIf(
         resource -> resource.isStale(current) && !fontInfos.containsKey(resource));
     retryableFaceFailures.removeIf(resource -> resource.isStale(current));
+    resourceKeysByFont.clear();
+    fontFacesByFont.clear();
     observedIdentities = Map.copyOf(current);
     observedGeneration = observation.generation();
   }
@@ -278,6 +291,10 @@ class NvgFontRegistry {
       throw new IllegalStateException(
           "NanoVG font resources require a bound non-zero context");
     }
+    FontResourceKey cached = resourceKeysByFont.get(font);
+    if (cached != null) {
+      return cached;
+    }
     SemanticFontOwner.FaceKey faceKey = faceKey(font);
     String normalizedLocator = SemanticFontOwner.normalizeLocator(font.path());
     SemanticFontOwner.Identity semanticIdentity = observedIdentities.get(faceKey);
@@ -286,7 +303,35 @@ class NvgFontRegistry {
       throw new IllegalStateException(
           "NanoVG font descriptor is stale for the current semantic identity");
     }
-    return new FontResourceKey(contextIdentity, faceKey, semanticIdentity, normalizedLocator);
+    FontResourceKey key =
+        new FontResourceKey(contextIdentity, faceKey, semanticIdentity, normalizedLocator);
+    cacheResourceKey(font, key);
+    return key;
+  }
+
+  private void bindContextIdentity(long context) {
+    if (context == 0) {
+      throw new IllegalArgumentException("NanoVG font registry context must be non-zero");
+    }
+    if (contextIdentity != 0 && contextIdentity != context) {
+      throw new IllegalStateException("NanoVG font resources cannot migrate to a different context");
+    }
+    contextIdentity = context;
+  }
+
+  private void reconcileCurrentGeneration(SemanticFontOwner owner) {
+    if (owner.generation() != observedGeneration) {
+      reconcile(owner.observation());
+    }
+  }
+
+  private void cacheResourceKey(Font font, FontResourceKey key) {
+    if (resourceKeysByFont.size() >= RESOURCE_KEY_CACHE_LIMIT
+        && !resourceKeysByFont.containsKey(font)) {
+      resourceKeysByFont.clear();
+      fontFacesByFont.clear();
+    }
+    resourceKeysByFont.put(font, key);
   }
 
   private String fontKey(Font font) {

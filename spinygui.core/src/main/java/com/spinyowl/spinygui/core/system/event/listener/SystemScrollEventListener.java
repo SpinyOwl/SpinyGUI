@@ -9,6 +9,7 @@ import com.spinyowl.spinygui.core.node.TextareaElement;
 import com.spinyowl.spinygui.core.system.event.SystemScrollEvent;
 import com.spinyowl.spinygui.core.system.font.TextMeasurer;
 import com.spinyowl.spinygui.core.system.input.MultilineTextControlMetrics;
+import com.spinyowl.spinygui.core.system.input.ControlTextLayoutService;
 import com.spinyowl.spinygui.core.time.TimeService;
 import com.spinyowl.spinygui.core.util.NodeUtilities;
 import com.spinyowl.spinygui.core.util.OverflowUtils;
@@ -26,16 +27,35 @@ public class SystemScrollEventListener extends AbstractSystemEventListener<Syste
 
   @NonNull private final MouseService mouseService;
   @EqualsAndHashCode.Exclude private final MultilineTextControlMetrics textareaMetrics;
+  @EqualsAndHashCode.Exclude private final ControlTextLayoutService controlTextLayoutService;
+
+  public SystemScrollEventListener(
+      @NonNull EventProcessor eventProcessor,
+      @NonNull TimeService timeService,
+      @NonNull MouseService mouseService,
+      TextMeasurer textMeasurer) {
+    this(eventProcessor, timeService, mouseService, textMeasurer, null);
+  }
 
   @Builder
   public SystemScrollEventListener(
       @NonNull EventProcessor eventProcessor,
       @NonNull TimeService timeService,
       @NonNull MouseService mouseService,
-      TextMeasurer textMeasurer) {
+      TextMeasurer textMeasurer,
+      ControlTextLayoutService controlTextLayoutService) {
     super(eventProcessor, timeService);
     this.mouseService = mouseService;
-    textareaMetrics = textMeasurer == null ? null : new MultilineTextControlMetrics(textMeasurer);
+    ControlTextLayoutService layoutService =
+        controlTextLayoutService != null
+            ? controlTextLayoutService
+            : textMeasurer == null ? null : new ControlTextLayoutService(textMeasurer);
+    this.controlTextLayoutService = layoutService;
+    textareaMetrics = layoutService == null ? null : new MultilineTextControlMetrics(layoutService);
+  }
+
+  ControlTextLayoutService controlTextLayoutService() {
+    return controlTextLayoutService;
   }
 
   /**

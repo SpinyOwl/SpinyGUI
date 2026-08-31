@@ -22,7 +22,7 @@ final class NvgTextSubmission {
       Font font,
       Float fontSize,
       Color color,
-      String text,
+      NvgRenderedText text,
       float x,
       float baseline) {
     NvgTextOutcomeDiagnostics.considered(diagnostics, diagnosticPath);

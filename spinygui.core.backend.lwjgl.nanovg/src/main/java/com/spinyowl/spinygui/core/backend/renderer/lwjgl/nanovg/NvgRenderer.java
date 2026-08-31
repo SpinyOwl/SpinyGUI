@@ -23,6 +23,7 @@ import com.spinyowl.spinygui.core.node.TextareaElement;
 import com.spinyowl.spinygui.core.style.types.AffineTransform;
 import com.spinyowl.spinygui.core.system.font.SemanticFontOwner;
 import com.spinyowl.spinygui.core.system.font.TextMeasurer;
+import com.spinyowl.spinygui.core.system.input.ControlTextLayoutService;
 import java.util.List;
 import java.util.Objects;
 import org.joml.Vector2f;
@@ -46,7 +47,7 @@ public class NvgRenderer implements Renderer {
   private final NvgTextareaRenderer textareaRenderer;
   private final NvgScrollbarRenderer scrollbarRenderer;
   private final DiagnosticSession diagnostics;
-  private final NvgTextCommandSink textCommands;
+  private final NanoVgTextCommandSink textCommands;
   private DebugRenderer debugRenderer;
 
   private boolean debugMode;
@@ -198,7 +199,9 @@ public class NvgRenderer implements Renderer {
 
   void renderDebug(Frame frame) {
     if (debugMode) {
+      textCommands.unknownMutation();
       debugRenderer.render(frame, nanovgContext, debugMousePosition);
+      textCommands.unknownMutation();
     }
   }
 
@@ -243,6 +246,7 @@ public class NvgRenderer implements Renderer {
   }
 
   private void renderSubtreeContent(Node node, long context) {
+    textCommands.unknownMutation();
     elementRenderer.render(node, context);
     borderRenderer.render(node, context);
     if (node instanceof InputElement input) {
@@ -250,6 +254,7 @@ public class NvgRenderer implements Renderer {
     } else if (node instanceof TextareaElement textarea) {
       textareaRenderer.render(textarea, context);
     }
+    textCommands.unknownMutation();
   }
 
   @FunctionalInterface
@@ -272,6 +277,10 @@ public class NvgRenderer implements Renderer {
     void render(Frame frame, long context, Vector2fc mousePosition);
 
     default void textMeasurer(TextMeasurer textMeasurer) {}
+
+    default void layoutService(ControlTextLayoutService layoutService) {
+      textMeasurer(layoutService == null ? null : layoutService.textMeasurer());
+    }
   }
 
   private void renderLayoutNode(Node node) {
@@ -286,6 +295,7 @@ public class NvgRenderer implements Renderer {
   private void postRender() {
 
     nvgEndFrame(nanovgContext);
+    textCommands.unknownMutation();
 
     glDisable(GL_BLEND);
     glEnable(GL_DEPTH_TEST);
@@ -299,6 +309,7 @@ public class NvgRenderer implements Renderer {
     //    loadFontsToNvg();
     //    context.getContextData().put(NVG_CONTEXT, nvgContext);
 
+    textCommands.resetFrame();
     glDisable(GL_DEPTH_TEST);
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -345,9 +356,16 @@ public class NvgRenderer implements Renderer {
   }
 
   public void textMeasurer(TextMeasurer textMeasurer) {
-    inputRenderer.textMeasurer(textMeasurer);
-    textareaRenderer.textMeasurer(textMeasurer);
-    debugRenderer.textMeasurer(textMeasurer);
+    ControlTextLayoutService layoutService =
+        textMeasurer == null ? null : new ControlTextLayoutService(textMeasurer);
+    controlTextLayoutService(layoutService);
+  }
+
+  /** Supplies the shared editable-control snapshot service to normal and debug render paths. */
+  public void controlTextLayoutService(ControlTextLayoutService layoutService) {
+    inputRenderer.layoutService(layoutService);
+    textareaRenderer.layoutService(layoutService);
+    debugRenderer.layoutService(layoutService);
   }
 
   /**
@@ -358,6 +376,16 @@ public class NvgRenderer implements Renderer {
   public NvgFontResourceObservation fontResourceObservation() {
     requireInitializedUse("font resource observation", nanovgContext);
     return fontRegistry.observation();
+  }
+
+  /**
+   * Returns bounded UTF-8 staging accounting for this renderer/context.
+   *
+   * @return the current immutable staging observation
+   */
+  public NvgTextStagingObservation textStagingObservation() {
+    requireInitializedUse("text staging observation", nanovgContext);
+    return textCommands.stagingObservation();
   }
 
   State state() {
@@ -440,6 +468,8 @@ public class NvgRenderer implements Renderer {
       contextHandle = null;
       nanovgContext = 0;
       recordLifecycle(LifecycleEvent.CONTEXT_DELETED);
+      textCommands.close();
+      recordLifecycle(LifecycleEvent.TEXT_STAGING_RELEASED);
     }
     fontRegistry.releaseAfterContextDelete();
     recordLifecycle(LifecycleEvent.BACKEND_FONT_RESOURCES_RELEASED);
@@ -521,6 +551,7 @@ public class NvgRenderer implements Renderer {
   enum LifecycleEvent {
     STOP_SUBMISSION_USE,
     CONTEXT_DELETED,
+    TEXT_STAGING_RELEASED,
     RELEASE_FACE_AND_RETRY_STATE,
     FREE_BACKEND_STB_FONT_INFO,
     DROP_FONT_BUFFER_REFERENCES,

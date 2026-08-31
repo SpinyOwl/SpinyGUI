@@ -10,11 +10,12 @@ import com.spinyowl.spinygui.core.backend.renderer.lwjgl.nanovg.util.NvgClipStac
 import com.spinyowl.spinygui.core.diagnostic.DiagnosticSession;
 import com.spinyowl.spinygui.core.font.Font;
 import com.spinyowl.spinygui.core.node.TextareaElement;
-import com.spinyowl.spinygui.core.style.ResolvedStyle;
 import com.spinyowl.spinygui.core.style.types.Color;
 import com.spinyowl.spinygui.core.system.font.ResolvedTextRun;
 import com.spinyowl.spinygui.core.system.font.TextMeasurer;
-import com.spinyowl.spinygui.core.system.input.MultilineTextControlMetrics;
+import com.spinyowl.spinygui.core.system.input.ControlTextLayoutService;
+import com.spinyowl.spinygui.core.system.input.ControlTextLayoutSnapshot;
+import java.util.List;
 import org.joml.Vector2f;
 
 class NvgTextareaRenderer {
@@ -28,7 +29,7 @@ class NvgTextareaRenderer {
   private final TextareaTextSink textSink;
   private final TextareaSelectionSink selectionSink;
   private final TextareaCaretSink caretSink;
-  private TextMeasurer textMeasurer;
+  private ControlTextLayoutService layoutService;
 
   NvgTextareaRenderer() {
     this(new NvgFontRegistry(), DiagnosticSession.disabled());
@@ -62,38 +63,55 @@ class NvgTextareaRenderer {
   }
 
   void textMeasurer(TextMeasurer textMeasurer) {
-    this.textMeasurer = textMeasurer;
+    this.layoutService = textMeasurer == null ? null : new ControlTextLayoutService(textMeasurer);
+  }
+
+  void layoutService(ControlTextLayoutService layoutService) {
+    this.layoutService = layoutService;
   }
 
   void render(TextareaElement textarea, long nanovgContext) {
-    if (textMeasurer == null) {
+    if (layoutService == null) {
       return;
     }
-    MultilineTextControlMetrics metrics = new MultilineTextControlMetrics(textMeasurer);
-    Vector2f contentPosition = metrics.contentPosition(textarea);
+    ControlTextLayoutSnapshot snapshot = layoutService.query(textarea);
+    Vector2f contentPosition = contentPosition(textarea);
     Vector2f contentSize = textarea.box().contentSize();
-    MultilineTextControlMetrics.TextStyle textStyle = metrics.textStyle(textarea);
+    TextStyle textStyle =
+        new TextStyle(
+            snapshot.key().resolvedFonts(), snapshot.key().fontSize(), snapshot.key().lineHeight());
 
     stateSink.begin(nanovgContext, textarea, contentPosition, contentSize);
-    if (textarea.hasSelection()) {
-      drawSelection(textarea, nanovgContext, metrics, contentPosition);
+    try {
+      if (textarea.hasSelection()) {
+        drawSelection(textarea, nanovgContext, snapshot, contentPosition);
+      }
+      drawLines(textarea, nanovgContext, snapshot, textStyle, contentPosition);
+      if (textarea.focused()) {
+        drawCaret(textarea, nanovgContext, snapshot, contentPosition);
+      }
+    } finally {
+      stateSink.end(nanovgContext);
     }
-    drawLines(textarea, nanovgContext, metrics, textStyle, contentPosition);
-    if (textarea.focused()) {
-      drawCaret(textarea, nanovgContext, metrics, contentPosition);
-    }
-    stateSink.end(nanovgContext);
+  }
+
+  private Vector2f contentPosition(TextareaElement textarea) {
+    Vector2f position = textarea.layoutAbsolutePosition();
+    position.add(
+        textarea.box().border().left() + textarea.box().padding().left(),
+        textarea.box().border().top() + textarea.box().padding().top());
+    return position;
   }
 
   private void drawLines(
       TextareaElement textarea,
       long nanovgContext,
-      MultilineTextControlMetrics metrics,
-      MultilineTextControlMetrics.TextStyle textStyle,
+      ControlTextLayoutSnapshot snapshot,
+      TextStyle textStyle,
       Vector2f contentPosition) {
     Color color = color(textarea);
     textSink.begin(nanovgContext, textStyle, color);
-    for (MultilineTextControlMetrics.Line line : metrics.lines(textarea)) {
+    for (ControlTextLayoutSnapshot.Line line : snapshot.lines()) {
       float baseline = contentPosition.y() - textarea.textScrollTop() + line.y() + line.baseline();
       float x = contentPosition.x() - textarea.textScrollLeft();
       textSink.drawLine(nanovgContext, line, textStyle, color, x, baseline);
@@ -104,9 +122,10 @@ class NvgTextareaRenderer {
   private void drawCaret(
       TextareaElement textarea,
       long nanovgContext,
-      MultilineTextControlMetrics metrics,
+      ControlTextLayoutSnapshot snapshot,
       Vector2f contentPosition) {
-    MultilineTextControlMetrics.Caret caret = metrics.caret(textarea, textarea.caretIndex());
+    ControlTextLayoutSnapshot.Caret caret =
+        snapshot.caret(textarea.caretIndex(), layoutService.diagnostics());
     caretSink.drawCaret(
         nanovgContext,
         contentPosition.x() - textarea.textScrollLeft() + caret.x(),
@@ -117,18 +136,20 @@ class NvgTextareaRenderer {
   private void drawSelection(
       TextareaElement textarea,
       long nanovgContext,
-      MultilineTextControlMetrics metrics,
+      ControlTextLayoutSnapshot snapshot,
       Vector2f contentPosition) {
     int start = textarea.selectionStart();
     int end = textarea.selectionEnd();
-    for (MultilineTextControlMetrics.Line line : metrics.lines(textarea)) {
+    for (ControlTextLayoutSnapshot.Line line : snapshot.lines()) {
       int lineStart = Math.max(start, line.startIndex());
       int lineEnd = Math.min(end, line.endIndex());
       if (lineEnd <= lineStart) {
         continue;
       }
-      MultilineTextControlMetrics.Caret startCaret = metrics.caret(textarea, lineStart);
-      MultilineTextControlMetrics.Caret endCaret = metrics.caret(textarea, lineEnd);
+      ControlTextLayoutSnapshot.Caret startCaret =
+          snapshot.caret(lineStart, layoutService.diagnostics());
+      ControlTextLayoutSnapshot.Caret endCaret =
+          snapshot.caret(lineEnd, layoutService.diagnostics());
       selectionSink.drawSelection(
           nanovgContext,
           contentPosition.x() - textarea.textScrollLeft() + startCaret.x(),
@@ -150,12 +171,12 @@ class NvgTextareaRenderer {
   }
 
   interface TextareaTextSink {
-    void begin(long context, MultilineTextControlMetrics.TextStyle style, Color color);
+    void begin(long context, TextStyle style, Color color);
 
     void drawLine(
         long context,
-        MultilineTextControlMetrics.Line line,
-        MultilineTextControlMetrics.TextStyle style,
+        ControlTextLayoutSnapshot.Line line,
+        TextStyle style,
         Color color,
         float x,
         float baseline);
@@ -201,16 +222,53 @@ class NvgTextareaRenderer {
     @Override
     public void begin(
         long context, TextareaElement textarea, Vector2f contentPosition, Vector2f contentSize) {
-      clipStack.create(context, textarea);
-      commands.beginScope(context, NvgTextCommand.TextPath.TEXTAREA);
-      commands.intersectScissor(
-          context, contentPosition.x(), contentPosition.y(), contentSize.x(), contentSize.y());
+      boolean scopeStarted = false;
+      try {
+        clipStack.create(context, textarea);
+        commands.beginScope(context, NvgTextCommand.TextPath.TEXTAREA);
+        scopeStarted = true;
+        commands.intersectScissor(
+            context, contentPosition.x(), contentPosition.y(), contentSize.x(), contentSize.y());
+      } catch (RuntimeException | Error failure) {
+        cleanupAfterBeginFailure(context, scopeStarted, failure);
+        throw failure;
+      }
     }
 
     @Override
     public void end(long context) {
-      commands.endScope(context, NvgTextCommand.TextPath.TEXTAREA);
-      clipStack.reset(context);
+      Throwable failure = null;
+      try {
+        commands.endScope(context, NvgTextCommand.TextPath.TEXTAREA);
+      } catch (RuntimeException | Error error) {
+        failure = error;
+      }
+      try {
+        clipStack.reset(context);
+      } catch (RuntimeException | Error cleanupFailure) {
+        if (failure != null) {
+          failure.addSuppressed(cleanupFailure);
+        } else {
+          throw cleanupFailure;
+        }
+      }
+      if (failure instanceof RuntimeException error) throw error;
+      if (failure instanceof Error error) throw error;
+    }
+
+    private void cleanupAfterBeginFailure(long context, boolean scopeStarted, Throwable failure) {
+      if (scopeStarted) {
+        try {
+          commands.endScope(context, NvgTextCommand.TextPath.TEXTAREA);
+        } catch (RuntimeException | Error cleanupFailure) {
+          failure.addSuppressed(cleanupFailure);
+        }
+      }
+      try {
+        clipStack.reset(context);
+      } catch (RuntimeException | Error cleanupFailure) {
+        failure.addSuppressed(cleanupFailure);
+      }
     }
   }
 
@@ -226,7 +284,7 @@ class NvgTextareaRenderer {
     }
 
     @Override
-    public void begin(long context, MultilineTextControlMetrics.TextStyle style, Color color) {
+    public void begin(long context, TextStyle style, Color color) {
       commands.fontSize(context, style.fontSize());
       commands.align(context, NVG_ALIGN_LEFT | NVG_ALIGN_BASELINE);
       commands.fillColor(context, color);
@@ -235,8 +293,8 @@ class NvgTextareaRenderer {
     @Override
     public void drawLine(
         long context,
-        MultilineTextControlMetrics.Line line,
-        MultilineTextControlMetrics.TextStyle style,
+        ControlTextLayoutSnapshot.Line line,
+        TextStyle style,
         Color color,
         float x,
         float baseline) {
@@ -254,26 +312,25 @@ class NvgTextareaRenderer {
             style.fonts().get(0),
             null,
             null,
-            commands.displayText(context, style.fonts().get(0), line.text()),
+            NvgRenderedText.literal(commands.displayText(context, style.fonts().get(0), line.text())),
             x,
             baseline);
         return;
       }
       float runX = x;
       for (ResolvedTextRun run : line.runs()) {
-        if (submission.submit(
+        submission.submit(
             context,
             NvgTextCommand.TextPath.TEXTAREA,
             TEXTAREA,
             run.font(),
             null,
             null,
-            run.renderedText(),
+            NvgRenderedText.run(run),
             runX,
-            baseline)) {
-          commands.advance(NvgTextCommand.TextPath.TEXTAREA, runX, run.advance());
-          runX += run.advance();
-        }
+            baseline);
+        commands.advance(NvgTextCommand.TextPath.TEXTAREA, runX, run.advance());
+        runX += run.advance();
       }
     }
 
@@ -304,6 +361,12 @@ class NvgTextareaRenderer {
     @Override
     public void drawCaret(long context, float x, float y, float height) {
       commands.caret(context, x, y, CARET_WIDTH, height, CARET_COLOR);
+    }
+  }
+
+  record TextStyle(List<Font> fonts, float fontSize, float lineHeight) {
+    TextStyle {
+      fonts = List.copyOf(fonts);
     }
   }
 

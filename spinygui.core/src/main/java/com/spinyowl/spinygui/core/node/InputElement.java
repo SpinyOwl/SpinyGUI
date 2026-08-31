@@ -7,6 +7,8 @@ import static com.spinyowl.spinygui.core.node.NodeBuilder.TYPE_BUTTON;
 import static com.spinyowl.spinygui.core.node.NodeBuilder.TYPE_TEXT;
 
 import java.util.Map;
+import com.spinyowl.spinygui.core.system.input.ControlTextLayoutSnapshot;
+import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
@@ -27,6 +29,10 @@ public class InputElement extends EmptyElement {
   private int caretIndex;
   private int selectionAnchor;
   private float textScrollLeft;
+  @Getter(AccessLevel.NONE)
+  @EqualsAndHashCode.Exclude
+  @ToString.Exclude
+  private transient ControlTextLayoutSnapshot textLayoutSnapshot;
 
   public InputElement() {
     super(NODE_INPUT);
@@ -143,6 +149,21 @@ public class InputElement extends EmptyElement {
 
   public boolean buttonInput() {
     return TYPE_BUTTON.equalsIgnoreCase(type);
+  }
+
+  /** Returns the current immutable text-layout snapshot, or {@code null} before the first query. */
+  public ControlTextLayoutSnapshot currentTextLayoutSnapshot() {
+    return textLayoutSnapshot;
+  }
+
+  /** Replaces the single current immutable text-layout snapshot. Intended for the core service. */
+  public void replaceTextLayoutSnapshot(ControlTextLayoutSnapshot snapshot) {
+    textLayoutSnapshot = snapshot;
+  }
+
+  /** Clears the single current snapshot without retaining history. */
+  public void clearTextLayoutSnapshot() {
+    textLayoutSnapshot = null;
   }
 
   private int clampTextIndex(int index) {

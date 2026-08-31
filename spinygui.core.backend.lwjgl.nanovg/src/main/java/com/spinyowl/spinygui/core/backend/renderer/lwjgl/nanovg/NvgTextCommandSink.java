@@ -19,9 +19,12 @@ interface NvgTextCommandSink {
   String displayText(long context, Font font, String text);
   void fontSize(long context, float value);
   void fillColor(long context, Color color);
-  void text(long context, NvgTextCommand.TextPath path, String text, float x, float baseline);
+  void text(long context, NvgTextCommand.TextPath path, NvgRenderedText text, float x, float baseline);
   void advance(NvgTextCommand.TextPath path, float x, float advance);
   void selection(long context, float x, float y, float width, float height, Color color);
   void caret(long context, float x, float y, float width, float height, Color color);
   void outcome(NvgTextCommand.TextPath path, NvgDiagnosticCounter counter);
+
+  /** Invalidates any backend-local state knowledge after an unmediated native mutation boundary. */
+  default void unknownMutation() {}
 }
