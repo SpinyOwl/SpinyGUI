@@ -20,8 +20,11 @@ lombok = "1.18.46"
 lwjgl = "3.4.2-SNAPSHOT"
 mockito = "5.23.0"
 netty = "4.1.120.Final"
+pmd = "7.24.0"
 slf4j = "2.0.18"
 snakeYaml = "2.6"
+spotbugs = "4.10.4"
+spotbugsGradlePlugin = "6.5.11"
 
 
 
@@ -57,6 +60,7 @@ mockitoJunitJupiter = { module = "org.mockito:mockito-junit-jupiter", version.re
 netty = { module = "io.netty:netty-all", version.ref = "netty" }
 slf4j = { module = "org.slf4j:slf4j-api", version.ref = "slf4j" }
 snakeYaml = { module = "org.yaml:snakeyaml", version.ref = "snakeYaml" }
+spotbugsGradlePlugin = { module = "com.github.spotbugs:com.github.spotbugs.gradle.plugin", version.ref = "spotbugsGradlePlugin" }
 
 [bundles]
 lwjgl = [

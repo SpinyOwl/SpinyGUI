@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<ruleset name="SpinyGUI correctness"
+         xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 https://pmd.github.io/pmd-7.24.0/ruleset_xml_schema.xsd">
+    <description>
+        Correctness-oriented rules that can gate the existing codebase without imposing a style migration.
+    </description>
+
+    <rule ref="category/java/errorprone.xml/AvoidUsingOctalValues"/>
+    <rule ref="category/java/errorprone.xml/BrokenNullCheck"/>
+    <rule ref="category/java/errorprone.xml/DontUseFloatTypeForLoopIndices"/>
+    <rule ref="category/java/errorprone.xml/EmptyCatchBlock">
+        <properties>
+            <property name="allowCommentedBlocks" value="true"/>
+        </properties>
+    </rule>
+    <rule ref="category/java/errorprone.xml/EqualsNull"/>
+    <rule ref="category/java/errorprone.xml/JumbledIncrementer"/>
+    <rule ref="category/java/errorprone.xml/ReturnFromFinallyBlock"/>
+    <rule ref="category/java/errorprone.xml/StringBufferInstantiationWithChar"/>
+    <rule ref="category/java/errorprone.xml/SuspiciousEqualsMethodName"/>
+    <rule ref="category/java/errorprone.xml/SuspiciousHashcodeMethodName"/>
+</ruleset>

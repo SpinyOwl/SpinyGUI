@@ -14,3 +14,22 @@ java {
     }
 }
 
+val staticAnalysis by tasks.registering {
+    group = "verification"
+    description = "Runs static analysis for all Java source sets."
+    dependsOn(
+        subprojects.flatMap { project ->
+            listOf(
+                "${project.path}:pmdMain",
+                "${project.path}:pmdTest",
+                "${project.path}:spotbugsMain",
+                "${project.path}:spotbugsTest"
+            )
+        }
+    )
+}
+
+tasks.named("check") {
+    dependsOn(staticAnalysis)
+}
+
