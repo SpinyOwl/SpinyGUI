@@ -26,3 +26,7 @@ build
 
 # Ignore Kotlin plugin data
 .kotlin
+
+# Ignore local Graphify indexes and caches
+**/graphify-out/
+**/graphify_out/
