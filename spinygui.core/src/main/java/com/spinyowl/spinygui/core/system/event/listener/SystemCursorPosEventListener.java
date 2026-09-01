@@ -139,6 +139,10 @@ public class SystemCursorPosEventListener
     }
     hitPath.advance();
 
+    Element draggedElement = scrollbarInteraction.draggedElement();
+    if (draggedElement != null && !frame.topLayer().allowsInteraction(draggedElement)) {
+      scrollbarInteraction.endDrag();
+    }
     if (scrollbarInteraction.dragging() && mouseService.pressed(LEFT)) {
       markUnknownFallback(batch);
       pushScrollEvent(frame, scrollbarInteraction.dragTo(current));

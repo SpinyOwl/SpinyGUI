@@ -17,6 +17,32 @@ import org.junit.jupiter.api.Test;
 class NvgRendererTransformStateTest {
 
   @Test
+  void renderLayoutTree_promotesBackdropAndModalRootsAboveNormalContent() {
+    NvgRenderer renderer = new NvgRenderer();
+    List<String> paints = new ArrayList<>();
+    renderer.transformStateFactory((context, transform) -> () -> {});
+    renderer.subtreeContentStateFactory((context, element) -> () -> {});
+    renderer.subtreeContentRenderer((node, context) -> paints.add(node.nodeName()));
+
+    Frame frame = new Frame();
+    Element content = new Element("content");
+    Element firstModal = new Element("first-modal");
+    Element secondModal = new Element("second-modal");
+    frame.addChild(content);
+    content.addChildren(firstModal, secondModal);
+    frame.topLayer().showModal(firstModal);
+    frame.topLayer().showModal(secondModal);
+    frame.layoutChildNodes(List.of(content, frame.topLayer().backdrop()));
+    content.layoutChildNodes(List.of(firstModal, secondModal));
+
+    renderer.renderLayoutTree(frame);
+
+    assertEquals(
+        List.of("winframe", "content", "modal-backdrop", "first-modal", "second-modal"),
+        paints);
+  }
+
+  @Test
   void renderLayoutTree_balancesNestedAndSiblingTransformStates() {
     NvgRenderer renderer = new NvgRenderer();
     RecordingTransformStates states = new RecordingTransformStates();

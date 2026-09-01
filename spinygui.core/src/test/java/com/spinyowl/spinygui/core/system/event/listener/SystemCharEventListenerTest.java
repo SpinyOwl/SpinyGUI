@@ -175,6 +175,30 @@ class SystemCharEventListenerTest {
   }
 
   @Test
+  void process_withModalOpenTargetsOnlyModalFocusedInput() {
+    Frame frame = new Frame();
+    InputElement background = new InputElement();
+    background.value("background");
+    background.focused(true);
+    Element modal = new Element("modal");
+    InputElement modalInput = new InputElement();
+    modalInput.value("a");
+    modalInput.caretIndex(1);
+    modal.addChild(modalInput);
+    frame.addChildren(background, modal);
+    frame.topLayer().showModal(modal);
+    modalInput.focused(true);
+    background.focused(true);
+    when(timeService.currentTime()).thenReturn(1D);
+
+    listener.process(SystemCharEvent.builder().frame(frame).codepoint('b').build(), frame);
+
+    Assertions.assertEquals("background", background.value());
+    Assertions.assertEquals("ab", modalInput.value());
+    verify(eventProcessor).push(any(CharEvent.class));
+  }
+
+  @Test
   void process_whenFocusedTextInputReceivesCjkCodePoint_retainsItExactly() {
     Frame frame = new Frame();
     InputElement input = new InputElement();

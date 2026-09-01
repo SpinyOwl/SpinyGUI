@@ -28,6 +28,9 @@ public class Frame extends Element {
 
   @NonNull private final Vector2f frameSize = new Vector2f();
 
+  /** Modal presentation and interaction state owned for the full lifetime of this frame. */
+  private final TopLayer topLayer = new TopLayer(this);
+
   private long revision;
   private boolean styleDirty = true;
   private boolean layoutDirty = true;
@@ -63,6 +66,15 @@ public class Frame extends Element {
 
   public long revision() {
     return revision;
+  }
+
+  /**
+   * Returns this frame's modal top layer.
+   *
+   * @return frame-owned top layer
+   */
+  public TopLayer topLayer() {
+    return topLayer;
   }
 
   public void invalidateStyle() {
@@ -160,7 +172,8 @@ public class Frame extends Element {
    * @return first focused element.
    */
   public Element getFocusedElement() {
-    return findFocused(this);
+    Element interactionRoot = topLayer.topModal();
+    return findFocused(interactionRoot == null ? this : interactionRoot);
   }
 
   private Element findFocused(Element element) {

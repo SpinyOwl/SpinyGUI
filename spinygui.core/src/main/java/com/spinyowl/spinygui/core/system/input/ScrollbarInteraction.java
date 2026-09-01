@@ -99,6 +99,15 @@ public class ScrollbarInteraction {
     return activeDrag != null;
   }
 
+  /**
+   * Returns the element captured by the active scrollbar drag.
+   *
+   * @return captured element, or {@code null} when no drag is active
+   */
+  public Element draggedElement() {
+    return activeDrag == null ? null : activeDrag.element();
+  }
+
   private Hit hit(Element element, Vector2fc point) {
     if (!ScrollbarGeometry.canShowScrollbars(element)) {
       return null;

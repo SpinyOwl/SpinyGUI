@@ -6,6 +6,7 @@ import static com.spinyowl.spinygui.core.input.KeyAction.REPEAT;
 import static com.spinyowl.spinygui.core.node.NodeBuilder.TYPE_BUTTON;
 import static com.spinyowl.spinygui.core.node.NodeBuilder.div;
 import static com.spinyowl.spinygui.core.node.NodeBuilder.frame;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -22,6 +23,7 @@ import com.spinyowl.spinygui.core.input.Keyboard;
 import com.spinyowl.spinygui.core.input.KeyboardKey;
 import com.spinyowl.spinygui.core.input.KeyboardLayout;
 import com.spinyowl.spinygui.core.node.ButtonElement;
+import com.spinyowl.spinygui.core.node.Element;
 import com.spinyowl.spinygui.core.node.Frame;
 import com.spinyowl.spinygui.core.node.InputElement;
 import com.spinyowl.spinygui.core.node.TextareaElement;
@@ -93,6 +95,40 @@ class SystemKeyEventListenerTest {
     verifyNoInteractions(eventProcessor);
     verifyNoInteractions(timeService);
     verifyNoInteractions(keyboard);
+  }
+
+  @Test
+  void process_withModalOpenTargetsOnlyModalFocusedInput() {
+    Frame frame = new Frame();
+    InputElement background = new InputElement();
+    background.value("background");
+    background.focused(true);
+    Element modal = new Element("modal");
+    InputElement modalInput = new InputElement();
+    modalInput.value("ab");
+    modalInput.caretIndex(2);
+    modal.addChild(modalInput);
+    frame.addChildren(background, modal);
+    frame.topLayer().showModal(modal);
+    modalInput.focused(true);
+    background.focused(true);
+    KeyboardLayout layout = mock(KeyboardLayout.class);
+    when(keyboard.layout()).thenReturn(layout);
+    when(layout.keyCode(8)).thenReturn(KeyCode.BACKSPACE);
+
+    listener.process(
+        SystemKeyEvent.builder()
+            .keyCode(8)
+            .scancode(8)
+            .action(SystemKeyAction.PRESS)
+            .mods(ImmutableSet.of())
+            .frame(frame)
+            .build(),
+        frame);
+
+    Assertions.assertEquals("background", background.value());
+    Assertions.assertEquals("a", modalInput.value());
+    verify(eventProcessor).push(any(KeyboardEvent.class));
   }
 
   @Test

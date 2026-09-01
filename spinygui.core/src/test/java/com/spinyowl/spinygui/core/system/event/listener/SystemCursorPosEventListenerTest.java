@@ -4,6 +4,7 @@ import static com.spinyowl.spinygui.core.input.MouseButton.LEFT;
 import static com.spinyowl.spinygui.core.node.NodeBuilder.div;
 import static com.spinyowl.spinygui.core.node.NodeBuilder.frame;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
@@ -322,6 +323,34 @@ class SystemCursorPosEventListenerTest {
     assertEquals(element, event.target());
     assertEquals(150, event.offsetX(), 0.0001f);
     assertEquals(0, event.offsetY(), 0.0001f);
+  }
+
+  @Test
+  void process_modalOpenCancelsCapturedBackgroundScrollbarDrag() {
+    ScrollbarInteraction scrollbarInteraction = new ScrollbarInteraction();
+    listener =
+        SystemCursorPosEventListener.builder()
+            .eventProcessor(eventProcessor)
+            .mouseService(mouseService)
+            .timeService(timeService)
+            .scrollbarInteraction(scrollbarInteraction)
+            .build();
+    Element background = scrollableElement(100, 100, 100, 300);
+    background.resolvedStyle().overflowX(Overflow.HIDDEN);
+    Element modal = div();
+    modal.box().contentSize(50, 50);
+    Frame frame = frame(background, modal);
+    frame.box().contentSize(200, 200);
+    beginDrag(scrollbarInteraction, background, new Vector2f(99, 10));
+    frame.topLayer().showModal(modal);
+    when(mouseService.getCursorPositions(frame))
+        .thenReturn(new CursorPositions(new Vector2f(99, 10), new Vector2f(99, 10)));
+    when(mouseService.pressed(LEFT)).thenReturn(true);
+
+    listener.process(cursorEvent(frame, 99, 90), frame);
+
+    assertFalse(scrollbarInteraction.dragging());
+    assertEquals(0, background.scrollTop(), 0.0001f);
   }
 
   @Test

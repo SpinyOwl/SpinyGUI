@@ -194,7 +194,17 @@ public class NvgRenderer implements Renderer {
   }
 
   void renderLayoutTree(Frame layoutTree) {
-    renderElement(layoutTree, layoutTree.layoutChildNodes());
+    renderElement(layoutTree, layoutTree.layoutChildNodes(), layoutTree);
+    if (layoutTree.topLayer().hasModal()) {
+      renderElement(
+          layoutTree.topLayer().backdrop(),
+          layoutTree.topLayer().backdrop().layoutChildNodes(),
+          layoutTree);
+      layoutTree
+          .topLayer()
+          .modalRoots()
+          .forEach(modal -> renderElement(modal, modal.layoutChildNodes(), layoutTree));
+    }
   }
 
   void renderDebug(Frame frame) {
@@ -205,7 +215,7 @@ public class NvgRenderer implements Renderer {
     }
   }
 
-  private void renderElement(Node node, List<Node> children) {
+  private void renderElement(Node node, List<Node> children, Frame frame) {
     diagnostics.increment(NvgDiagnosticCounter.RENDER_NODE_VISITS);
     Element element = node.asElement();
     try (var ignored =
@@ -215,7 +225,7 @@ public class NvgRenderer implements Renderer {
 
       if (children != null) {
         try (var contentState = subtreeContentStateFactory.apply(nanovgContext, element)) {
-          children.forEach(this::renderLayoutNode);
+          children.forEach(child -> renderLayoutNode(child, frame));
         }
       }
       scrollbarRenderer.render(element, nanovgContext);
@@ -283,9 +293,12 @@ public class NvgRenderer implements Renderer {
     }
   }
 
-  private void renderLayoutNode(Node node) {
+  private void renderLayoutNode(Node node, Frame frame) {
+    if (frame.topLayer().isPresentationRoot(node)) {
+      return;
+    }
     if (node instanceof Element) {
-      renderElement(node, node.layoutChildNodes());
+      renderElement(node, node.layoutChildNodes(), frame);
     } else if (node instanceof Text) {
       diagnostics.increment(NvgDiagnosticCounter.RENDER_NODE_VISITS);
       textRenderer.render(node, nanovgContext);

@@ -2,6 +2,7 @@ package com.spinyowl.spinygui.core.util;
 
 import com.spinyowl.spinygui.core.diagnostic.FrameDiagnosticCounter;
 import com.spinyowl.spinygui.core.node.Element;
+import com.spinyowl.spinygui.core.node.Frame;
 import com.spinyowl.spinygui.core.node.Node;
 import com.spinyowl.spinygui.core.node.Text;
 import com.spinyowl.spinygui.core.style.types.Display;
@@ -132,6 +133,20 @@ public final class NodeUtilities {
       final Vector2fc vector,
       final Element initialTarget,
       final boolean searchOnlyClickable) {
+    Element interactionRoot = interactionRoot(element);
+    Element admittedInitialTarget =
+        interactionRoot == element || isDescendantOrSelf(initialTarget, interactionRoot)
+            ? initialTarget
+            : null;
+    return findTargetElement(
+        interactionRoot, vector, admittedInitialTarget, searchOnlyClickable);
+  }
+
+  private static Element findTargetElement(
+      final Element element,
+      final Vector2fc vector,
+      final Element initialTarget,
+      final boolean searchOnlyClickable) {
     Element retarget = initialTarget;
     if (canHitTest(element, vector)) {
       if (intersects(element, vector) && (!searchOnlyClickable || clickable(element))) {
@@ -141,7 +156,7 @@ public final class NodeUtilities {
 
       childElements.sort(Comparator.comparing(comparator));
       for (Element child : childElements) {
-        retarget = getTargetElement(child, vector, retarget, searchOnlyClickable);
+        retarget = findTargetElement(child, vector, retarget, searchOnlyClickable);
       }
     }
     return retarget;
@@ -179,6 +194,11 @@ public final class NodeUtilities {
    */
   public static List<Element> fillTargetElementList(
       final Vector2fc vector, final Element element, final List<Element> targetList) {
+    return fillTargetElementListFromRoot(vector, interactionRoot(element), targetList);
+  }
+
+  private static List<Element> fillTargetElementListFromRoot(
+      final Vector2fc vector, final Element element, final List<Element> targetList) {
     if (element.frame() != null) {
       element.frame().diagnostics().increment(FrameDiagnosticCounter.HIT_TEST_NODE_VISITS);
     }
@@ -188,11 +208,27 @@ public final class NodeUtilities {
       }
       for (Node childNode : element.childNodes()) {
         if (childNode instanceof Element child) {
-          fillTargetElementList(vector, child, targetList);
+          fillTargetElementListFromRoot(vector, child, targetList);
         }
       }
     }
     return targetList;
+  }
+
+  private static Element interactionRoot(Element element) {
+    if (element instanceof Frame frame && frame.topLayer().hasModal()) {
+      return frame.topLayer().topModal();
+    }
+    return element;
+  }
+
+  private static boolean isDescendantOrSelf(Element element, Element ancestor) {
+    for (Element current = element; current != null; current = current.parent()) {
+      if (current == ancestor) {
+        return true;
+      }
+    }
+    return false;
   }
 
   private static boolean canHitTest(final Element element, final Vector2fc vector) {
@@ -210,12 +246,30 @@ public final class NodeUtilities {
   }
 
   private static boolean insideClippingAncestors(final Node node, final Vector2fc vector) {
+    Element promotedModal = promotedModalRoot(node);
     for (Element parent = node.parent(); parent != null; parent = parent.parent()) {
+      if (promotedModal != null && parent == promotedModal.parent()) {
+        break;
+      }
       if (OverflowUtils.clipsAny(parent) && !insidePaddingBox(parent, vector)) {
         return false;
       }
     }
     return true;
+  }
+
+  private static Element promotedModalRoot(Node node) {
+    Frame frame = node.frame();
+    if (frame == null || !frame.topLayer().hasModal()) {
+      return null;
+    }
+    Element modal = frame.topLayer().topModal();
+    for (Node current = node; current != null; current = current.parent()) {
+      if (current == modal) {
+        return modal;
+      }
+    }
+    return null;
   }
 
   private static boolean insidePaddingBox(final Element element, final Vector2fc vector) {
