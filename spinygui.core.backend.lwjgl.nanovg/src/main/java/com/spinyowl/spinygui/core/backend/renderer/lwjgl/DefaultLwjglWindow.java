@@ -4,12 +4,6 @@ import static org.lwjgl.glfw.GLFW.GLFW_DECORATED;
 import static org.lwjgl.glfw.GLFW.GLFW_DOUBLEBUFFER;
 import static org.lwjgl.glfw.GLFW.GLFW_FALSE;
 import static org.lwjgl.glfw.GLFW.GLFW_KEY_ESCAPE;
-import static org.lwjgl.glfw.GLFW.GLFW_MOD_ALT;
-import static org.lwjgl.glfw.GLFW.GLFW_MOD_CAPS_LOCK;
-import static org.lwjgl.glfw.GLFW.GLFW_MOD_CONTROL;
-import static org.lwjgl.glfw.GLFW.GLFW_MOD_NUM_LOCK;
-import static org.lwjgl.glfw.GLFW.GLFW_MOD_SHIFT;
-import static org.lwjgl.glfw.GLFW.GLFW_MOD_SUPER;
 import static org.lwjgl.glfw.GLFW.GLFW_PLATFORM;
 import static org.lwjgl.glfw.GLFW.GLFW_PLATFORM_X11;
 import static org.lwjgl.glfw.GLFW.GLFW_RELEASE;
@@ -50,43 +44,69 @@ import static org.lwjgl.opengl.GL11.glClearColor;
 import static org.lwjgl.opengl.GL11.glViewport;
 import static org.lwjgl.system.MemoryUtil.NULL;
 
-import com.google.common.collect.ImmutableSet;
+import com.spinyowl.spinygui.core.FrameNavigator;
 import com.spinyowl.spinygui.core.node.Frame;
-import com.spinyowl.spinygui.core.system.event.SystemCharEvent;
-import com.spinyowl.spinygui.core.system.event.SystemCursorEnterEvent;
-import com.spinyowl.spinygui.core.system.event.SystemCursorPosEvent;
-import com.spinyowl.spinygui.core.system.event.SystemKeyEvent;
-import com.spinyowl.spinygui.core.system.event.SystemMouseClickEvent;
-import com.spinyowl.spinygui.core.system.event.SystemScrollEvent;
-import com.spinyowl.spinygui.core.system.event.SystemWindowSizeEvent;
 import com.spinyowl.spinygui.core.system.event.processor.SystemEventProcessor;
-import com.spinyowl.spinygui.core.system.input.SystemKeyAction;
-import com.spinyowl.spinygui.core.system.input.SystemKeyMod;
-import com.spinyowl.spinygui.core.system.input.SystemMouseButton;
 import java.util.Objects;
 import org.joml.Vector2f;
 import org.joml.Vector2i;
 import org.lwjgl.glfw.Callbacks;
-import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWErrorCallback;
 
 /** Single-window GLFW/OpenGL adapter for the default application wrapper. */
 public final class DefaultLwjglWindow implements LwjglWindow {
+  /** Production adapter for the native resources exclusively owned by a standalone window. */
+  private static final NativeCleanup SYSTEM_CLEANUP = new NativeCleanup() {
+    @Override public void freeCallbacks(long window) { Callbacks.glfwFreeCallbacks(window); }
+    @Override public long currentContext() { return glfwGetCurrentContext(); }
+    @Override public void clearCapabilities() { setCapabilities(null); }
+    @Override public void clearCurrentContext() { glfwMakeContextCurrent(NULL); }
+    @Override public void destroyWindow(long window) { glfwDestroyWindow(window); }
+    @Override public void terminateGlfw() { glfwTerminate(); }
+    @Override public void clearErrorCallback() { DefaultLwjglWindow.clearErrorCallback(); }
+  };
   private final LwjglApplicationConfiguration configuration;
-  private final Frame frame;
-  private final SystemEventProcessor systemEvents;
+  /** Installer retained for this window's lifetime and invoked once after context creation. */
+  private final LwjglCallbackInstaller callbackInstaller;
+  /** Native cleanup adapter retained for failure-safe teardown and deterministic testing. */
+  private final NativeCleanup nativeCleanup;
   private long window;
   private boolean glfwInitialized;
   private boolean closed;
   private GLFWErrorCallback errorCallback;
+  /** Installed callback ownership handle, closed before this window destroys native resources. */
+  private LwjglCallbackInstaller.Registration callbackRegistration;
 
   public DefaultLwjglWindow(
       LwjglApplicationConfiguration configuration,
       Frame frame,
       SystemEventProcessor systemEvents) {
+    this(
+        configuration,
+        directCallbacks(
+            new GlfwSystemEventMapper(
+                new FrameNavigator(Objects.requireNonNull(frame, "frame"), 1),
+                Objects.requireNonNull(systemEvents, "systemEvents"),
+                (window, key, action) -> {
+                  if (key == GLFW_KEY_ESCAPE && action != GLFW_RELEASE) {
+                    glfwSetWindowShouldClose(window, true);
+                  }
+                })));
+  }
+
+  /** Creates a standalone window that delegates callback installation to {@code callbackInstaller}. */
+  public DefaultLwjglWindow(
+      LwjglApplicationConfiguration configuration, LwjglCallbackInstaller callbackInstaller) {
+    this(configuration, callbackInstaller, SYSTEM_CLEANUP);
+  }
+
+  DefaultLwjglWindow(
+      LwjglApplicationConfiguration configuration,
+      LwjglCallbackInstaller callbackInstaller,
+      NativeCleanup nativeCleanup) {
     this.configuration = Objects.requireNonNull(configuration, "configuration");
-    this.frame = Objects.requireNonNull(frame, "frame");
-    this.systemEvents = Objects.requireNonNull(systemEvents, "systemEvents");
+    this.callbackInstaller = Objects.requireNonNull(callbackInstaller, "callbackInstaller");
+    this.nativeCleanup = Objects.requireNonNull(nativeCleanup, "nativeCleanup");
   }
 
   @Override
@@ -122,7 +142,11 @@ public final class DefaultLwjglWindow implements LwjglWindow {
       installCallbacks();
       glfwShowWindow(window);
     } catch (RuntimeException failure) {
-      close();
+      try {
+        close();
+      } catch (RuntimeException cleanupFailure) {
+        failure.addSuppressed(cleanupFailure);
+      }
       throw failure;
     }
   }
@@ -181,134 +205,110 @@ public final class DefaultLwjglWindow implements LwjglWindow {
   public void close() {
     if (closed) return;
     closed = true;
+    RuntimeException failure = null;
     if (window != NULL) {
-      Callbacks.glfwFreeCallbacks(window);
-      if (glfwGetCurrentContext() == window) {
-        setCapabilities(null);
-        glfwMakeContextCurrent(NULL);
+      if (callbackRegistration != null) {
+        LwjglCallbackInstaller.Registration registration = callbackRegistration;
+        callbackRegistration = null;
+        failure = cleanup(failure, registration::close);
       }
-      glfwDestroyWindow(window);
+      long ownedWindow = window;
+      failure = cleanup(failure, () -> nativeCleanup.freeCallbacks(ownedWindow));
+      boolean ownsCurrentContext = false;
+      try {
+        ownsCurrentContext = nativeCleanup.currentContext() == ownedWindow;
+      } catch (RuntimeException cleanupFailure) {
+        failure = record(failure, cleanupFailure);
+      }
+      if (ownsCurrentContext) {
+        failure = cleanup(failure, nativeCleanup::clearCapabilities);
+        failure = cleanup(failure, nativeCleanup::clearCurrentContext);
+      }
+      failure = cleanup(failure, () -> nativeCleanup.destroyWindow(ownedWindow));
       window = NULL;
     }
     if (glfwInitialized) {
-      glfwTerminate();
       glfwInitialized = false;
+      failure = cleanup(failure, nativeCleanup::terminateGlfw);
     }
     if (errorCallback != null) {
-      GLFWErrorCallback installed = glfwSetErrorCallback(null);
-      if (installed != null) installed.free();
       errorCallback = null;
+      failure = cleanup(failure, nativeCleanup::clearErrorCallback);
+    }
+    if (failure != null) throw failure;
+  }
+
+  private static RuntimeException cleanup(RuntimeException failure, Runnable cleanup) {
+    try {
+      cleanup.run();
+      return failure;
+    } catch (RuntimeException cleanupFailure) {
+      return record(failure, cleanupFailure);
     }
   }
 
+  private static void clearErrorCallback() {
+    GLFWErrorCallback installed = glfwSetErrorCallback(null);
+    if (installed != null) installed.free();
+  }
+
+  private static RuntimeException record(
+      RuntimeException failure, RuntimeException cleanupFailure) {
+    if (failure == null) return cleanupFailure;
+    failure.addSuppressed(cleanupFailure);
+    return failure;
+  }
+
   private void installCallbacks() {
-    glfwSetCursorPosCallback(
-        window,
-        (ignored, x, y) ->
-            systemEvents.push(
-                SystemCursorPosEvent.builder()
-                    .frame(frame)
-                    .posX((float) x)
-                    .posY((float) y)
-                    .build()));
-    glfwSetCursorEnterCallback(
-        window,
-        (ignored, entered) ->
-            systemEvents.push(
-                SystemCursorEnterEvent.builder().frame(frame).entered(entered).build()));
-    glfwSetWindowSizeCallback(
-        window,
-        (ignored, width, height) ->
-            systemEvents.push(
-                SystemWindowSizeEvent.builder()
-                    .frame(frame)
-                    .width(width)
-                    .height(height)
-                    .build()));
-    glfwSetScrollCallback(
-        window,
-        (ignored, x, y) ->
-            systemEvents.push(
-                SystemScrollEvent.builder()
-                    .frame(frame)
-                    .offsetX((float) x)
-                    .offsetY((float) y)
-                    .build()));
-    glfwSetMouseButtonCallback(
-        window,
-        (ignored, button, action, mods) -> {
-          SystemMouseButton mappedButton = mapMouseButton(button);
-          SystemKeyAction mappedAction = mapAction(action);
-          if (mappedButton != null && mappedAction != null) {
-            systemEvents.push(
-                SystemMouseClickEvent.builder()
-                    .frame(frame)
-                    .button(mappedButton)
-                    .action(mappedAction)
-                    .mods(mapMods(mods))
-                    .build());
-          }
-        });
-    glfwSetCharCallback(
-        window,
-        (ignored, codepoint) ->
-            systemEvents.push(
-                SystemCharEvent.builder().frame(frame).codepoint(codepoint).build()));
-    glfwSetKeyCallback(
-        window,
-        (ignored, key, scancode, action, mods) -> {
-          if (key == GLFW_KEY_ESCAPE && action != GLFW_RELEASE) {
-            glfwSetWindowShouldClose(window, true);
-          }
-          SystemKeyAction mappedAction = mapAction(action);
-          if (mappedAction != null) {
-            systemEvents.push(
-                SystemKeyEvent.builder()
-                    .frame(frame)
-                    .keyCode(key)
-                    .scancode(scancode)
-                    .action(mappedAction)
-                    .mods(mapMods(mods))
-                    .build());
-          }
-        });
+    callbackRegistration =
+        Objects.requireNonNull(callbackInstaller.install(window), "callback registration");
   }
 
   private void requireInitialized() {
     if (window == NULL || closed) throw new IllegalStateException("Window is not initialized");
   }
 
-  private static SystemKeyAction mapAction(int action) {
-    return switch (action) {
-      case GLFW.GLFW_PRESS -> SystemKeyAction.PRESS;
-      case GLFW.GLFW_RELEASE -> SystemKeyAction.RELEASE;
-      case GLFW.GLFW_REPEAT -> SystemKeyAction.REPEAT;
-      default -> null;
+  private static LwjglCallbackInstaller directCallbacks(GlfwSystemEventMapper mapper) {
+    return window -> {
+      GlfwSystemEventMapper.Callbacks callbacks = mapper.callbacks();
+      try {
+        glfwSetCursorPosCallback(window, callbacks.cursorPos());
+        glfwSetCursorEnterCallback(window, callbacks.cursorEnter());
+        glfwSetWindowSizeCallback(window, callbacks.windowSize());
+        glfwSetScrollCallback(window, callbacks.scroll());
+        glfwSetMouseButtonCallback(window, callbacks.mouseButton());
+        glfwSetCharCallback(window, callbacks.character());
+        glfwSetKeyCallback(window, callbacks.key());
+        return () -> unsetDirectCallbacks(window);
+      } catch (RuntimeException failure) {
+        unsetDirectCallbacks(window);
+        throw failure;
+      }
     };
   }
 
-  private static SystemMouseButton mapMouseButton(int button) {
-    return switch (button) {
-      case GLFW.GLFW_MOUSE_BUTTON_1 -> SystemMouseButton.MOUSE_BUTTON_1;
-      case GLFW.GLFW_MOUSE_BUTTON_2 -> SystemMouseButton.MOUSE_BUTTON_2;
-      case GLFW.GLFW_MOUSE_BUTTON_3 -> SystemMouseButton.MOUSE_BUTTON_3;
-      case GLFW.GLFW_MOUSE_BUTTON_4 -> SystemMouseButton.MOUSE_BUTTON_4;
-      case GLFW.GLFW_MOUSE_BUTTON_5 -> SystemMouseButton.MOUSE_BUTTON_5;
-      case GLFW.GLFW_MOUSE_BUTTON_6 -> SystemMouseButton.MOUSE_BUTTON_6;
-      case GLFW.GLFW_MOUSE_BUTTON_7 -> SystemMouseButton.MOUSE_BUTTON_7;
-      case GLFW.GLFW_MOUSE_BUTTON_8 -> SystemMouseButton.MOUSE_BUTTON_8;
-      default -> null;
-    };
+  private static void unsetDirectCallbacks(long window) {
+    free(glfwSetKeyCallback(window, null));
+    free(glfwSetCharCallback(window, null));
+    free(glfwSetMouseButtonCallback(window, null));
+    free(glfwSetScrollCallback(window, null));
+    free(glfwSetWindowSizeCallback(window, null));
+    free(glfwSetCursorEnterCallback(window, null));
+    free(glfwSetCursorPosCallback(window, null));
   }
 
-  private static ImmutableSet<SystemKeyMod> mapMods(int mods) {
-    ImmutableSet.Builder<SystemKeyMod> mapped = ImmutableSet.builder();
-    if ((mods & GLFW_MOD_SHIFT) != 0) mapped.add(SystemKeyMod.SHIFT);
-    if ((mods & GLFW_MOD_CONTROL) != 0) mapped.add(SystemKeyMod.CONTROL);
-    if ((mods & GLFW_MOD_ALT) != 0) mapped.add(SystemKeyMod.ALT);
-    if ((mods & GLFW_MOD_SUPER) != 0) mapped.add(SystemKeyMod.SUPER);
-    if ((mods & GLFW_MOD_CAPS_LOCK) != 0) mapped.add(SystemKeyMod.CAPS_LOCK);
-    if ((mods & GLFW_MOD_NUM_LOCK) != 0) mapped.add(SystemKeyMod.NUM_LOCK);
-    return mapped.build();
+  private static void free(org.lwjgl.system.Callback callback) {
+    if (callback != null) callback.free();
+  }
+
+  /** Failure-injectable native teardown boundary used only after ownership has been established. */
+  interface NativeCleanup {
+    void freeCallbacks(long window);
+    long currentContext();
+    void clearCapabilities();
+    void clearCurrentContext();
+    void destroyWindow(long window);
+    void terminateGlfw();
+    void clearErrorCallback();
   }
 }
