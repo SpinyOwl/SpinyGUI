@@ -3,6 +3,7 @@ package com.spinyowl.spinygui.core.backend.renderer.lwjgl;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import com.spinyowl.spinygui.core.FrameNavigator;
 import com.spinyowl.spinygui.core.FramePipeline;
 import com.spinyowl.spinygui.core.FramePreparation;
 import com.spinyowl.spinygui.core.animation.TransitionImpact;
@@ -112,6 +113,96 @@ class AbstractLwjglApplicationTest {
     assertEquals(List.of("window-init", "services-close"), calls);
   }
 
+  @Test
+  void ownedLoopClosesAttemptedWindowAndServicesAfterWindowInitializationFailure() {
+    List<String> calls = new ArrayList<>();
+    Frame frame = new Frame();
+    LwjglWindow window = new RecordingWindow(calls) {
+      @Override public void initialize() {
+        calls.add("window-init");
+        throw new IllegalStateException("window failed");
+      }
+    };
+    AbstractLwjglApplication application = new AbstractLwjglApplication(
+        new FrameNavigator(frame, 1),
+        pipeline(calls),
+        new RecordingRenderer(calls),
+        window,
+        () -> calls.add("services-close"),
+        () -> 1d,
+        AbstractLwjglApplication.ResourceOwnership.owned()) {};
+
+    assertThrows(IllegalStateException.class, application::run);
+
+    assertEquals(List.of("window-init", "window-close", "services-close"), calls);
+  }
+
+  @Test
+  void ownedLoopClosesAttemptedRendererWindowAndServicesInReverseOrder() {
+    List<String> calls = new ArrayList<>();
+    Frame frame = new Frame();
+    Renderer renderer = new RecordingRenderer(calls) {
+      @Override public void initialize() {
+        calls.add("renderer-init");
+        throw new IllegalStateException("renderer failed");
+      }
+    };
+    AbstractLwjglApplication application = new AbstractLwjglApplication(
+        new FrameNavigator(frame, 1),
+        pipeline(calls),
+        renderer,
+        new RecordingWindow(calls),
+        () -> calls.add("services-close"),
+        () -> 1d,
+        AbstractLwjglApplication.ResourceOwnership.owned()) {};
+
+    assertThrows(IllegalStateException.class, application::run);
+
+    assertEquals(
+        List.of("window-init", "renderer-init", "renderer-close", "window-close", "services-close"),
+        calls);
+  }
+
+  @Test
+  void ownedLoopDoesNotDoubleCloseWindowAfterCallbackInstallSelfCleanup() {
+    List<String> calls = new ArrayList<>();
+    Frame frame = new Frame();
+    LwjglWindow window = new RecordingWindow(calls) {
+      private boolean selfClosed;
+      @Override public void initialize() {
+        calls.add("window-init");
+        calls.add("callback-install");
+        calls.add("callback-close");
+        calls.add("window-close");
+        selfClosed = true;
+        throw new IllegalStateException("callback install failed");
+      }
+      @Override public void close() {
+        if (!selfClosed) calls.add("window-close");
+      }
+    };
+    AbstractLwjglApplication application = new AbstractLwjglApplication(
+        new FrameNavigator(frame, 1), pipeline(calls), new RecordingRenderer(calls), window,
+        () -> calls.add("services-close"), () -> 1d,
+        AbstractLwjglApplication.ResourceOwnership.owned()) {};
+
+    assertThrows(IllegalStateException.class, application::run);
+
+    assertEquals(
+        List.of("window-init", "callback-install", "callback-close", "window-close",
+            "services-close"),
+        calls);
+  }
+
+  private static FramePipeline pipeline(List<String> calls) {
+    return new FramePipeline(
+        new SystemEvents(calls),
+        new GuiEvents(calls),
+        target -> StyleImpact.NO_CHANGE,
+        () -> TransitionImpact.NO_CHANGE,
+        new RecordingLayout(calls, LayoutResult.converged(1)));
+  }
+
   private static class RecordingWindow implements LwjglWindow {
     private final List<String> calls;
     private boolean closed;
@@ -127,7 +218,7 @@ class AbstractLwjglApplicationTest {
     @Override public void close() { calls.add("window-close"); }
   }
 
-  private static final class RecordingRenderer implements Renderer {
+  private static class RecordingRenderer implements Renderer {
     private final List<String> calls;
     private RecordingRenderer(List<String> calls) { this.calls = calls; }
     @Override public void initialize() { calls.add("renderer-init"); }
