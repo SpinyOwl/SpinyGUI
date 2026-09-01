@@ -1,6 +1,6 @@
 # E2: Frame runtime integration
 
-**Status:** In progress
+**Status:** Complete with verification caveat
 
 ## Goal
 Provide owner-native phase contracts, a backend-independent `FramePipeline`, and an optional
@@ -97,7 +97,7 @@ fresh benchmark report pass. A native Demo window was not launched. A repository
 `spinygui.demo.complex/build` directory even though Demo compilation passes.
 
 ### M4: Add navigable LWJGL application host
-**Status:** Planned
+**Status:** Complete with verification caveat
 **Purpose:** Complete the production convenience boundary with browser-like frame navigation,
 modal top-layer behavior, reusable standard listener composition, and cbchain-aware GLFW delivery.
 

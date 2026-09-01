@@ -2,7 +2,7 @@
 
 ## Document Context
 
-- Status: Planned
+- Status: Complete with verification caveat
 - Dependencies: E2/M3
 - Parent: [E2 - Frame runtime integration](../E2%20-%20Frame%20runtime%20integration.md)
 - Children: [P1 - Compose navigation and top-layer host](M4/P1%20-%20Compose%20navigation%20and%20top-layer%20host.md)
