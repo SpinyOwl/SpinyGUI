@@ -4,7 +4,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 
-import com.spinyowl.spinygui.core.event.processor.EventProcessor;
 import com.spinyowl.spinygui.core.layout.LayoutService;
 import com.spinyowl.spinygui.core.node.Element;
 import com.spinyowl.spinygui.core.node.Frame;
@@ -20,10 +19,8 @@ import com.spinyowl.spinygui.core.style.types.flex.FlexWrap;
 import com.spinyowl.spinygui.core.style.types.flex.JustifyContent;
 import com.spinyowl.spinygui.core.style.types.length.Length;
 import com.spinyowl.spinygui.core.style.types.length.Unit;
-import com.spinyowl.spinygui.core.system.event.processor.SystemEventProcessor;
 import com.spinyowl.spinygui.core.system.font.FontService;
 import com.spinyowl.spinygui.core.system.font.TextMeasurer;
-import com.spinyowl.spinygui.core.time.TimeService;
 import org.junit.jupiter.api.Test;
 
 class IntrinsicFlexLayoutTest {
@@ -118,12 +115,7 @@ class IntrinsicFlexLayoutTest {
   }
 
   private static LayoutService layoutService() {
-    return LayoutServiceProvider.create(
-        mock(SystemEventProcessor.class),
-        mock(EventProcessor.class),
-        mock(TimeService.class),
-        mock(FontService.class),
-        mock(TextMeasurer.class));
+    return LayoutServiceProvider.create(mock(FontService.class), mock(TextMeasurer.class));
   }
 
   private static void style(Element element) {

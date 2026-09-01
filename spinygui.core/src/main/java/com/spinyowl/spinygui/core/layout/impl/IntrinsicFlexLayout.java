@@ -4,7 +4,6 @@ import static com.spinyowl.spinygui.core.layout.impl.LayoutUtils.hasPosition;
 import static com.spinyowl.spinygui.core.style.types.Position.ABSOLUTE;
 import static com.spinyowl.spinygui.core.util.NodeUtilities.visible;
 
-import com.spinyowl.spinygui.core.event.processor.EventProcessor;
 import com.spinyowl.spinygui.core.layout.LayoutContext;
 import com.spinyowl.spinygui.core.layout.LayoutService;
 import com.spinyowl.spinygui.core.node.Element;
@@ -15,29 +14,22 @@ import com.spinyowl.spinygui.core.node.layout.Rect;
 import com.spinyowl.spinygui.core.style.types.Display;
 import com.spinyowl.spinygui.core.style.types.flex.FlexDirection;
 import com.spinyowl.spinygui.core.style.types.length.Length.PercentLength;
-import com.spinyowl.spinygui.core.system.event.processor.SystemEventProcessor;
-import com.spinyowl.spinygui.core.time.TimeService;
 import lombok.NonNull;
 
 /**
- * Flex layout variant that preserves intrinsic sizing after the block pre-pass used by
- * {@link FlexLayout}.
+ * Flex layout variant that preserves intrinsic sizing after the block pre-pass used by {@link
+ * FlexLayout}.
  *
  * <p>The pre-pass cannot know the final size of nested flex contents. Without a correction,
  * auto-height containers can remain shorter than their flex children and following siblings overlap
  * them. Likewise, a flex container used as an auto-width flex item can retain the block pre-pass
- * width (the full containing block) instead of its intrinsic content width, pushing later flex items
- * outside the viewport.
+ * width (the full containing block) instead of its intrinsic content width, pushing later flex
+ * items outside the viewport.
  */
 final class IntrinsicFlexLayout extends FlexLayout {
 
-  IntrinsicFlexLayout(
-      @NonNull SystemEventProcessor systemEventProcessor,
-      @NonNull EventProcessor eventProcessor,
-      @NonNull TimeService timeService,
-      @NonNull BlockLayout blockLayout,
-      @NonNull LayoutService layoutService) {
-    super(systemEventProcessor, eventProcessor, timeService, blockLayout, layoutService);
+  IntrinsicFlexLayout(@NonNull BlockLayout blockLayout, @NonNull LayoutService layoutService) {
+    super(blockLayout, layoutService);
   }
 
   @Override

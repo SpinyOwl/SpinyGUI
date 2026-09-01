@@ -3,7 +3,6 @@ package com.spinyowl.spinygui.core.layout.impl;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.mock;
 
-import com.spinyowl.spinygui.core.event.processor.EventProcessor;
 import com.spinyowl.spinygui.core.font.Font;
 import com.spinyowl.spinygui.core.layout.ElementLayout;
 import com.spinyowl.spinygui.core.layout.LayoutService;
@@ -18,11 +17,9 @@ import com.spinyowl.spinygui.core.style.manager.StyleManagerImpl;
 import com.spinyowl.spinygui.core.style.stylesheet.PropertyStore;
 import com.spinyowl.spinygui.core.style.stylesheet.impl.DefaultPropertyStoreProvider;
 import com.spinyowl.spinygui.core.style.types.Display;
-import com.spinyowl.spinygui.core.system.event.processor.SystemEventProcessor;
 import com.spinyowl.spinygui.core.system.font.FontMetrics;
 import com.spinyowl.spinygui.core.system.font.FontTestOwner;
 import com.spinyowl.spinygui.core.system.font.TextLineMetrics;
-import com.spinyowl.spinygui.core.time.TimeService;
 import java.util.HashMap;
 import lombok.NonNull;
 import org.junit.jupiter.api.BeforeEach;
@@ -110,12 +107,7 @@ class ParsedInlineWhitespaceLayoutTest {
     layoutMap.put(Display.BLOCK, blockLayout);
     layoutMap.put(
         Display.FLEX,
-        new FlexLayout(
-            mock(SystemEventProcessor.class),
-            mock(EventProcessor.class),
-            mock(TimeService.class),
-            blockLayout,
-            layoutService));
+        new FlexLayout(blockLayout, layoutService));
     return layoutService;
   }
 

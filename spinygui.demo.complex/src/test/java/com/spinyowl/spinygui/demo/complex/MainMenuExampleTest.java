@@ -4,18 +4,15 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import com.spinyowl.spinygui.core.event.processor.DefaultEventProcessor;
+import com.spinyowl.spinygui.core.layout.impl.LayoutServiceProvider;
 import com.spinyowl.spinygui.core.node.Frame;
 import com.spinyowl.spinygui.core.parser.impl.DefaultNodeParser;
 import com.spinyowl.spinygui.core.parser.impl.StyleSheetParserFactory;
-import com.spinyowl.spinygui.core.layout.impl.LayoutServiceProvider;
 import com.spinyowl.spinygui.core.style.manager.StyleManagerImpl;
 import com.spinyowl.spinygui.core.style.stylesheet.impl.DefaultPropertyStoreProvider;
 import com.spinyowl.spinygui.core.style.types.Display;
 import com.spinyowl.spinygui.core.style.types.flex.AlignItems;
 import com.spinyowl.spinygui.core.style.types.flex.JustifyContent;
-import com.spinyowl.spinygui.core.system.event.processor.SystemEventProcessorImpl;
-import com.spinyowl.spinygui.core.system.event.provider.SystemEventListenerProviderImpl;
 import com.spinyowl.spinygui.core.system.font.impl.FontServiceImpl;
 import com.spinyowl.spinygui.core.system.font.impl.FontStorageImpl;
 import com.spinyowl.spinygui.core.util.IOUtil;
@@ -37,14 +34,7 @@ class MainMenuExampleTest {
     Frame frame = styledMainMenuFrame();
     frame.frameSize(720, 640);
 
-    var layoutService =
-        LayoutServiceProvider.create(
-            SystemEventProcessorImpl.builder()
-                .eventListenerProvider(new SystemEventListenerProviderImpl())
-                .build(),
-            new DefaultEventProcessor(),
-            () -> 0,
-            installedFontService());
+    var layoutService = LayoutServiceProvider.create(installedFontService());
 
     layoutService.layout(frame);
 
@@ -59,14 +49,7 @@ class MainMenuExampleTest {
     Frame frame = styledMainMenuFrame();
     frame.frameSize(720, 640);
 
-    var layoutService =
-        LayoutServiceProvider.create(
-            SystemEventProcessorImpl.builder()
-                .eventListenerProvider(new SystemEventListenerProviderImpl())
-                .build(),
-            new DefaultEventProcessor(),
-            () -> 0,
-            installedFontService());
+    var layoutService = LayoutServiceProvider.create(installedFontService());
 
     layoutService.layout(frame);
 

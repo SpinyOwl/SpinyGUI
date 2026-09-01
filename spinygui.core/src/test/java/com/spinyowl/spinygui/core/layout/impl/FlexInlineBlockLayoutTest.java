@@ -4,7 +4,6 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 
-import com.spinyowl.spinygui.core.event.processor.EventProcessor;
 import com.spinyowl.spinygui.core.font.Font;
 import com.spinyowl.spinygui.core.font.FontStyle;
 import com.spinyowl.spinygui.core.font.FontWeight;
@@ -29,12 +28,10 @@ import com.spinyowl.spinygui.core.style.types.flex.FlexWrap;
 import com.spinyowl.spinygui.core.style.types.flex.JustifyContent;
 import com.spinyowl.spinygui.core.style.types.length.Length;
 import com.spinyowl.spinygui.core.style.types.length.Unit;
-import com.spinyowl.spinygui.core.system.event.processor.SystemEventProcessor;
 import com.spinyowl.spinygui.core.system.font.FontMetrics;
 import com.spinyowl.spinygui.core.system.font.FontService;
 import com.spinyowl.spinygui.core.system.font.TextLineMetrics;
 import com.spinyowl.spinygui.core.system.font.TextMeasurer;
-import com.spinyowl.spinygui.core.time.TimeService;
 import java.util.List;
 import lombok.NonNull;
 import org.junit.jupiter.api.Test;
@@ -103,12 +100,7 @@ class FlexInlineBlockLayoutTest {
   }
 
   private static LayoutService layoutService(TextMeasurer textMeasurer) {
-    return LayoutServiceProvider.create(
-        mock(SystemEventProcessor.class),
-        mock(EventProcessor.class),
-        mock(TimeService.class),
-        mock(FontService.class),
-        textMeasurer);
+    return LayoutServiceProvider.create(mock(FontService.class), textMeasurer);
   }
 
   private static void style(Element element) {

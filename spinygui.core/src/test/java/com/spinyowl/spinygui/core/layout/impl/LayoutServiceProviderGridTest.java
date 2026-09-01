@@ -8,16 +8,17 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.withSettings;
 
-import com.spinyowl.spinygui.core.event.processor.EventProcessor;
 import com.spinyowl.spinygui.core.layout.LayoutService;
 import com.spinyowl.spinygui.core.node.Element;
 import com.spinyowl.spinygui.core.node.Frame;
 import com.spinyowl.spinygui.core.node.NodeBuilder;
 import com.spinyowl.spinygui.core.style.ResolvedStyle;
-import com.spinyowl.spinygui.core.style.types.Display;
 import com.spinyowl.spinygui.core.style.types.Color;
+import com.spinyowl.spinygui.core.style.types.Display;
 import com.spinyowl.spinygui.core.style.types.Overflow;
 import com.spinyowl.spinygui.core.style.types.Position;
+import com.spinyowl.spinygui.core.style.types.Transform;
+import com.spinyowl.spinygui.core.style.types.TransformOrigin;
 import com.spinyowl.spinygui.core.style.types.border.BorderStyle;
 import com.spinyowl.spinygui.core.style.types.flex.FlexDirection;
 import com.spinyowl.spinygui.core.style.types.flex.FlexWrap;
@@ -28,12 +29,8 @@ import com.spinyowl.spinygui.core.style.types.grid.GridTrackList;
 import com.spinyowl.spinygui.core.style.types.grid.GridTrackSize;
 import com.spinyowl.spinygui.core.style.types.length.Length;
 import com.spinyowl.spinygui.core.style.types.length.Unit;
-import com.spinyowl.spinygui.core.style.types.Transform;
-import com.spinyowl.spinygui.core.style.types.TransformOrigin;
-import com.spinyowl.spinygui.core.system.event.processor.SystemEventProcessor;
 import com.spinyowl.spinygui.core.system.font.FontService;
 import com.spinyowl.spinygui.core.system.font.TextMeasurer;
-import com.spinyowl.spinygui.core.time.TimeService;
 import org.junit.jupiter.api.Test;
 
 class LayoutServiceProviderGridTest {
@@ -45,8 +42,12 @@ class LayoutServiceProviderGridTest {
     style(frame, Display.BLOCK, 300, 300);
     Element child = NodeBuilder.div();
     style(child, Display.BLOCK, 100, 40);
-    child.resolvedStyle().transform(
-        new Transform.Operations(java.util.List.of(new Transform.Translate(Length.percent(.5f), Length.percent(.5f)))));
+    child
+        .resolvedStyle()
+        .transform(
+            new Transform.Operations(
+                java.util.List.of(
+                    new Transform.Translate(Length.percent(.5f), Length.percent(.5f)))));
     child.resolvedStyle().transformOrigin(TransformOrigin.CENTER);
     frame.addChild(child);
 
@@ -69,8 +70,9 @@ class LayoutServiceProviderGridTest {
     style(child, Display.BLOCK, 100, 40);
     child.resolvedStyle().transform(Transform.NONE);
     child.resolvedStyle().transformOrigin(TransformOrigin.CENTER);
-    child.presentationState().setValue(
-        TRANSFORM, new Transform.Translate(Length.percent(.5f), Length.percent(.5f)));
+    child
+        .presentationState()
+        .setValue(TRANSFORM, new Transform.Translate(Length.percent(.5f), Length.percent(.5f)));
     frame.addChild(child);
 
     LayoutService layoutService = layoutService();
@@ -105,8 +107,9 @@ class LayoutServiceProviderGridTest {
     float clientHeight = scrollContainer.clientHeight();
     scrollContainer.presentationState().setValue(BACKGROUND_COLOR, Color.BLUE);
     scrollContainer.presentationState().setValue(OPACITY, 0.5f);
-    scrollContainer.presentationState().setValue(
-        TRANSFORM, new Transform.Translate(Length.percent(.5f), Length.ZERO));
+    scrollContainer
+        .presentationState()
+        .setValue(TRANSFORM, new Transform.Translate(Length.percent(.5f), Length.ZERO));
 
     layoutService.layout(frame);
 
@@ -131,7 +134,8 @@ class LayoutServiceProviderGridTest {
                     GridTrack.of(GridTrackSize.fixed(Length.pixel(70))))));
     grid.resolvedStyle()
         .gridTemplateRows(
-            GridTrackList.of(java.util.List.of(GridTrack.of(GridTrackSize.fixed(Length.pixel(30))))));
+            GridTrackList.of(
+                java.util.List.of(GridTrack.of(GridTrackSize.fixed(Length.pixel(30))))));
     grid.resolvedStyle().gridColumnGap(Length.pixel(10));
     Element first = NodeBuilder.div();
     style(first, Display.BLOCK, Float.NaN, Float.NaN);
@@ -172,7 +176,8 @@ class LayoutServiceProviderGridTest {
                     GridTrack.of(GridTrackSize.fixed(Length.pixel(30))))));
     grid.resolvedStyle()
         .gridTemplateColumns(
-            GridTrackList.of(java.util.List.of(GridTrack.of(GridTrackSize.fixed(Length.pixel(80))))));
+            GridTrackList.of(
+                java.util.List.of(GridTrack.of(GridTrackSize.fixed(Length.pixel(80))))));
     Element first = NodeBuilder.div();
     style(first, Display.BLOCK, Float.NaN, Float.NaN);
     first.resolvedStyle().width(Unit.AUTO);
@@ -253,8 +258,7 @@ class LayoutServiceProviderGridTest {
         .gridTemplateAreas(
             GridTemplateAreas.of(
                 java.util.List.of(
-                    java.util.List.of("header", "header"),
-                    java.util.List.of("sidebar", "main"))));
+                    java.util.List.of("header", "header"), java.util.List.of("sidebar", "main"))));
     Element header = NodeBuilder.div();
     style(header, Display.BLOCK, Float.NaN, Float.NaN);
     header.resolvedStyle().width(Unit.AUTO);
@@ -313,7 +317,8 @@ class LayoutServiceProviderGridTest {
                         GridTrackSize.minmax(
                             GridTrackSize.fixed(Length.pixel(112)),
                             GridTrackSize.flexible(
-                                com.spinyowl.spinygui.core.style.types.grid.GridFraction.fr(1)))))));
+                                com.spinyowl.spinygui.core.style.types.grid.GridFraction.fr(
+                                    1)))))));
     grid.resolvedStyle()
         .gridTemplateRows(
             GridTrackList.of(
@@ -380,7 +385,8 @@ class LayoutServiceProviderGridTest {
                             com.spinyowl.spinygui.core.style.types.grid.GridFraction.fr(2))))));
     grid.resolvedStyle()
         .gridTemplateRows(
-            GridTrackList.of(java.util.List.of(GridTrack.of(GridTrackSize.fixed(Length.pixel(20))))));
+            GridTrackList.of(
+                java.util.List.of(GridTrack.of(GridTrackSize.fixed(Length.pixel(20))))));
     grid.resolvedStyle().gridColumnGap(Length.pixel(10));
     Element first = gridItem();
     Element second = gridItem();
@@ -416,10 +422,12 @@ class LayoutServiceProviderGridTest {
                         GridTrackSize.minmax(
                             GridTrackSize.fixed(Length.pixel(30)),
                             GridTrackSize.flexible(
-                                com.spinyowl.spinygui.core.style.types.grid.GridFraction.fr(2)))))));
+                                com.spinyowl.spinygui.core.style.types.grid.GridFraction.fr(
+                                    2)))))));
     grid.resolvedStyle()
         .gridTemplateRows(
-            GridTrackList.of(java.util.List.of(GridTrack.of(GridTrackSize.fixed(Length.pixel(20))))));
+            GridTrackList.of(
+                java.util.List.of(GridTrack.of(GridTrackSize.fixed(Length.pixel(20))))));
     grid.resolvedStyle().gridColumnGap(Length.pixel(10));
     Element first = gridItem();
     Element second = gridItem();
@@ -446,10 +454,12 @@ class LayoutServiceProviderGridTest {
     grid.resolvedStyle().overflowY(Overflow.AUTO);
     grid.resolvedStyle()
         .gridTemplateColumns(
-            GridTrackList.of(java.util.List.of(GridTrack.of(GridTrackSize.fixed(Length.pixel(140))))));
+            GridTrackList.of(
+                java.util.List.of(GridTrack.of(GridTrackSize.fixed(Length.pixel(140))))));
     grid.resolvedStyle()
         .gridTemplateRows(
-            GridTrackList.of(java.util.List.of(GridTrack.of(GridTrackSize.fixed(Length.pixel(120))))));
+            GridTrackList.of(
+                java.util.List.of(GridTrack.of(GridTrackSize.fixed(Length.pixel(120))))));
     Element item = gridItem();
     grid.addChild(item);
     frame.addChild(grid);
@@ -469,17 +479,39 @@ class LayoutServiceProviderGridTest {
     style(frame, Display.BLOCK, 600, 120);
     Element outer = NodeBuilder.div();
     style(outer, Display.GRID, 600, 60);
-    outer.resolvedStyle().gridTemplateRows(GridTrackList.of(java.util.List.of(GridTrack.of(GridTrackSize.fixed(Length.pixel(60))))));
-    outer.resolvedStyle().gridTemplateAreas(GridTemplateAreas.of(java.util.List.of(java.util.List.of("diagnostics"))));
+    outer
+        .resolvedStyle()
+        .gridTemplateRows(
+            GridTrackList.of(
+                java.util.List.of(GridTrack.of(GridTrackSize.fixed(Length.pixel(60))))));
+    outer
+        .resolvedStyle()
+        .gridTemplateAreas(
+            GridTemplateAreas.of(java.util.List.of(java.util.List.of("diagnostics"))));
     Element nested = gridItem();
     nested.resolvedStyle().display(Display.GRID);
     nested.resolvedStyle().gridRowStart(GridPlacement.line("diagnostics"));
-    nested.resolvedStyle().gridTemplateColumns(
-        GridTrackList.of(java.util.List.of(
-            GridTrack.of(GridTrackSize.flexible(com.spinyowl.spinygui.core.style.types.grid.GridFraction.fr(1))),
-            GridTrack.of(GridTrackSize.fixed(Length.pixel(8))))));
-    nested.resolvedStyle().gridTemplateRows(GridTrackList.of(java.util.List.of(GridTrack.of(GridTrackSize.flexible(com.spinyowl.spinygui.core.style.types.grid.GridFraction.fr(1))))));
-    nested.resolvedStyle().gridTemplateAreas(GridTemplateAreas.of(java.util.List.of(java.util.List.of("scroll", "resize"))));
+    nested
+        .resolvedStyle()
+        .gridTemplateColumns(
+            GridTrackList.of(
+                java.util.List.of(
+                    GridTrack.of(
+                        GridTrackSize.flexible(
+                            com.spinyowl.spinygui.core.style.types.grid.GridFraction.fr(1))),
+                    GridTrack.of(GridTrackSize.fixed(Length.pixel(8))))));
+    nested
+        .resolvedStyle()
+        .gridTemplateRows(
+            GridTrackList.of(
+                java.util.List.of(
+                    GridTrack.of(
+                        GridTrackSize.flexible(
+                            com.spinyowl.spinygui.core.style.types.grid.GridFraction.fr(1))))));
+    nested
+        .resolvedStyle()
+        .gridTemplateAreas(
+            GridTemplateAreas.of(java.util.List.of(java.util.List.of("scroll", "resize"))));
     Element viewport = gridItem();
     viewport.resolvedStyle().gridRowStart(GridPlacement.line("scroll"));
     Element viewportChild = gridItem();
@@ -524,23 +556,38 @@ class LayoutServiceProviderGridTest {
 
     layoutService().layout(frame);
 
-    assertEquals(ancestor.absolutePosition().y() + ancestor.box().border().top(), child.absolutePosition().y(), 0.001);
     assertEquals(
-        ancestor.absolutePosition().x() + ancestor.box().border().left() + ancestor.box().paddingBox().width(),
+        ancestor.absolutePosition().y() + ancestor.box().border().top(),
+        child.absolutePosition().y(),
+        0.001);
+    assertEquals(
+        ancestor.absolutePosition().x()
+            + ancestor.box().border().left()
+            + ancestor.box().paddingBox().width(),
         child.absolutePosition().x() + child.box().borderBox().width(),
         0.001);
   }
 
   private static void assertNestedGridTrack(
-      LayoutService layoutService, Element outer, Element nested, Element handle, Element viewportChild, float width) {
-    outer.resolvedStyle().gridTemplateColumns(
-        GridTrackList.of(java.util.List.of(GridTrack.of(GridTrackSize.fixed(Length.pixel(width))))));
+      LayoutService layoutService,
+      Element outer,
+      Element nested,
+      Element handle,
+      Element viewportChild,
+      float width) {
+    outer
+        .resolvedStyle()
+        .gridTemplateColumns(
+            GridTrackList.of(
+                java.util.List.of(GridTrack.of(GridTrackSize.fixed(Length.pixel(width))))));
     layoutService.layout(outer.frame());
 
     assertEquals(8, handle.box().content().width(), 0.001);
     assertEquals(width - 8, handle.box().content().x(), 0.001);
     assertEquals(
-        nested.absolutePosition().x() + nested.box().border().left() + nested.box().paddingBox().width(),
+        nested.absolutePosition().x()
+            + nested.box().border().left()
+            + nested.box().paddingBox().width(),
         handle.absolutePosition().x() + handle.box().borderBox().width(),
         0.001);
     assertEquals(0, viewportChild.box().content().x(), 0.001);
@@ -550,11 +597,7 @@ class LayoutServiceProviderGridTest {
   private static LayoutService layoutService() {
     FontService fontService =
         mock(FontService.class, withSettings().extraInterfaces(TextMeasurer.class));
-    return LayoutServiceProvider.create(
-        mock(SystemEventProcessor.class),
-        mock(EventProcessor.class),
-        mock(TimeService.class),
-        fontService);
+    return LayoutServiceProvider.create(fontService);
   }
 
   private static void style(Element element, Display display, float width, float height) {

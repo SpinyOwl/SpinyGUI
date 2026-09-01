@@ -30,11 +30,9 @@ import com.spinyowl.spinygui.core.backend.renderer.lwjgl.nanovg.NvgRenderer;
 import com.spinyowl.spinygui.core.clipboard.Clipboard;
 import com.spinyowl.spinygui.core.event.processor.DefaultEventProcessor;
 import com.spinyowl.spinygui.core.input.KeyCode;
-import com.spinyowl.spinygui.core.input.Keyboard;
 import com.spinyowl.spinygui.core.input.KeyboardLayout;
 import com.spinyowl.spinygui.core.input.impl.KeyboardLayoutImpl;
 import com.spinyowl.spinygui.core.input.impl.MouseServiceImpl;
-import com.spinyowl.spinygui.core.input.impl.ShortcutRegistryImpl;
 import com.spinyowl.spinygui.core.layout.LayoutService;
 import com.spinyowl.spinygui.core.layout.impl.LayoutServiceProvider;
 import com.spinyowl.spinygui.core.node.Frame;
@@ -46,20 +44,7 @@ import com.spinyowl.spinygui.core.style.manager.StyleManager;
 import com.spinyowl.spinygui.core.style.manager.StyleManagerImpl;
 import com.spinyowl.spinygui.core.style.stylesheet.PropertyStore;
 import com.spinyowl.spinygui.core.style.stylesheet.impl.DefaultPropertyStoreProvider;
-import com.spinyowl.spinygui.core.system.event.SystemCharEvent;
-import com.spinyowl.spinygui.core.system.event.SystemCursorEnterEvent;
-import com.spinyowl.spinygui.core.system.event.SystemCursorPosEvent;
-import com.spinyowl.spinygui.core.system.event.SystemKeyEvent;
-import com.spinyowl.spinygui.core.system.event.SystemMouseClickEvent;
-import com.spinyowl.spinygui.core.system.event.SystemScrollEvent;
-import com.spinyowl.spinygui.core.system.event.SystemWindowSizeEvent;
-import com.spinyowl.spinygui.core.system.event.listener.SystemCharEventListener;
-import com.spinyowl.spinygui.core.system.event.listener.SystemCursorEnterEventListener;
-import com.spinyowl.spinygui.core.system.event.listener.SystemCursorPosEventListener;
-import com.spinyowl.spinygui.core.system.event.listener.SystemKeyEventListener;
-import com.spinyowl.spinygui.core.system.event.listener.SystemMouseClickEventListener;
-import com.spinyowl.spinygui.core.system.event.listener.SystemScrollEventListener;
-import com.spinyowl.spinygui.core.system.event.listener.SystemWindowSizeEventListener;
+import com.spinyowl.spinygui.core.system.event.listener.DefaultSystemEventListeners;
 import com.spinyowl.spinygui.core.system.event.processor.SystemEventProcessor;
 import com.spinyowl.spinygui.core.system.event.processor.SystemEventProcessorImpl;
 import com.spinyowl.spinygui.core.system.event.provider.SystemEventListenerProviderImpl;
@@ -67,7 +52,6 @@ import com.spinyowl.spinygui.core.system.font.FontService;
 import com.spinyowl.spinygui.core.system.font.TextMeasurer;
 import com.spinyowl.spinygui.core.system.font.impl.FontServiceImpl;
 import com.spinyowl.spinygui.core.system.font.impl.FontStorageImpl;
-import com.spinyowl.spinygui.core.system.input.ScrollbarInteraction;
 import com.spinyowl.spinygui.core.time.TimeService;
 import java.util.Map;
 import java.util.Objects;
@@ -93,6 +77,16 @@ public final class LwjglFrameServices implements AutoCloseable {
   public LwjglFrameServices(Renderer renderer) {
     this(
         new Frame(),
+        renderer,
+        () -> System.nanoTime() / 1_000_000_000d,
+        glfwClipboard(),
+        defaultKeyboardLayout());
+  }
+
+  /** Creates default services around a caller-selected initial frame and renderer. */
+  public LwjglFrameServices(Frame frame, Renderer renderer) {
+    this(
+        frame,
         renderer,
         () -> System.nanoTime() / 1_000_000_000d,
         glfwClipboard(),
@@ -129,11 +123,10 @@ public final class LwjglFrameServices implements AutoCloseable {
       }
 
       SystemEventListenerProviderImpl listeners =
-          listeners(timeService, clipboard, keyboardLayout, textMeasurer);
-      systemEvents =
-          SystemEventProcessorImpl.builder().eventListenerProvider(listeners).build();
-      LayoutService layout =
-          LayoutServiceProvider.create(systemEvents, guiEvents, timeService, fontService);
+          DefaultSystemEventListeners.create(
+              guiEvents, timeService, mouseService, clipboard, keyboardLayout, textMeasurer);
+      systemEvents = SystemEventProcessorImpl.builder().eventListenerProvider(listeners).build();
+      LayoutService layout = LayoutServiceProvider.create(fontService);
       pipeline = new FramePipeline(systemEvents, guiEvents, styles, transitions, layout);
     } catch (RuntimeException failure) {
       createdFontService.close();
@@ -178,71 +171,6 @@ public final class LwjglFrameServices implements AutoCloseable {
     if (closed) return;
     closed = true;
     fontService.close();
-  }
-
-  private SystemEventListenerProviderImpl listeners(
-      TimeService timeService,
-      Clipboard clipboard,
-      KeyboardLayout keyboardLayout,
-      TextMeasurer textMeasurer) {
-    SystemEventListenerProviderImpl listeners = new SystemEventListenerProviderImpl();
-    ScrollbarInteraction scrollbarInteraction = new ScrollbarInteraction();
-    listeners.listener(
-        SystemCursorPosEvent.class,
-        SystemCursorPosEventListener.builder()
-            .eventProcessor(guiEvents)
-            .timeService(timeService)
-            .mouseService(mouseService)
-            .scrollbarInteraction(scrollbarInteraction)
-            .textMeasurer(textMeasurer)
-            .build());
-    listeners.listener(
-        SystemCursorEnterEvent.class,
-        SystemCursorEnterEventListener.builder()
-            .eventProcessor(guiEvents)
-            .timeService(timeService)
-            .mouseService(mouseService)
-            .build());
-    listeners.listener(
-        SystemWindowSizeEvent.class,
-        SystemWindowSizeEventListener.builder()
-            .eventProcessor(guiEvents)
-            .timeService(timeService)
-            .build());
-    listeners.listener(
-        SystemScrollEvent.class,
-        SystemScrollEventListener.builder()
-            .eventProcessor(guiEvents)
-            .timeService(timeService)
-            .mouseService(mouseService)
-            .textMeasurer(textMeasurer)
-            .build());
-    listeners.listener(
-        SystemMouseClickEvent.class,
-        SystemMouseClickEventListener.builder()
-            .eventProcessor(guiEvents)
-            .timeService(timeService)
-            .mouseService(mouseService)
-            .textMeasurer(textMeasurer)
-            .scrollbarInteraction(scrollbarInteraction)
-            .build());
-    listeners.listener(
-        SystemCharEvent.class,
-        SystemCharEventListener.builder()
-            .eventProcessor(guiEvents)
-            .timeService(timeService)
-            .textMeasurer(textMeasurer)
-            .build());
-    listeners.listener(
-        SystemKeyEvent.class,
-        SystemKeyEventListener.builder()
-            .eventProcessor(guiEvents)
-            .timeService(timeService)
-            .keyboard(new Keyboard(keyboardLayout, new ShortcutRegistryImpl()))
-            .clipboard(clipboard)
-            .textMeasurer(textMeasurer)
-            .build());
-    return listeners;
   }
 
   private static KeyboardLayout defaultKeyboardLayout() {

@@ -33,8 +33,8 @@ import com.spinyowl.spinygui.core.input.KeyboardLayout;
 import com.spinyowl.spinygui.core.input.impl.KeyboardLayoutImpl;
 import com.spinyowl.spinygui.core.input.impl.MouseServiceImpl;
 import com.spinyowl.spinygui.core.input.impl.ShortcutRegistryImpl;
-import com.spinyowl.spinygui.core.layout.LayoutService;
 import com.spinyowl.spinygui.core.layout.LayoutResult;
+import com.spinyowl.spinygui.core.layout.LayoutService;
 import com.spinyowl.spinygui.core.layout.impl.LayoutServiceProvider;
 import com.spinyowl.spinygui.core.node.Frame;
 import com.spinyowl.spinygui.core.parser.NodeParser;
@@ -208,7 +208,6 @@ public abstract class Demo {
 
     frame = createGuiElements(width, height);
 
-
     glfwDefaultWindowHints();
     glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
     glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
@@ -242,8 +241,7 @@ public abstract class Demo {
     FontStorage fontStorage = new FontStorageImpl();
     fontService = new FontServiceImpl(fontStorage, true);
     fontService.installSemanticOwner();
-    TextMeasurer textMeasurer =
-        fontService instanceof TextMeasurer measurer ? measurer : null;
+    TextMeasurer textMeasurer = fontService instanceof TextMeasurer measurer ? measurer : null;
     ControlTextLayoutService controlTextLayoutService =
         textMeasurer == null ? null : new ControlTextLayoutService(textMeasurer);
     if (renderer instanceof NvgRenderer nvg) {
@@ -252,9 +250,7 @@ public abstract class Demo {
 
     initializeSystemEventListener(textMeasurer, controlTextLayoutService);
 
-    layoutService =
-        LayoutServiceProvider.create(
-            systemEventProcessor, eventProcessor, timeService, fontService);
+    layoutService = LayoutServiceProvider.create(fontService);
   }
 
   private void initializeSystemEventListener(

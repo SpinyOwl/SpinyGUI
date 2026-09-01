@@ -6,7 +6,6 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 
-import com.spinyowl.spinygui.core.event.processor.EventProcessor;
 import com.spinyowl.spinygui.core.layout.ElementLayout;
 import com.spinyowl.spinygui.core.layout.LayoutService;
 import com.spinyowl.spinygui.core.layout.TextLayout;
@@ -28,9 +27,7 @@ import com.spinyowl.spinygui.core.style.types.flex.FlexWrap;
 import com.spinyowl.spinygui.core.style.types.flex.JustifyContent;
 import com.spinyowl.spinygui.core.style.types.length.Length;
 import com.spinyowl.spinygui.core.style.types.length.Unit;
-import com.spinyowl.spinygui.core.system.event.processor.SystemEventProcessor;
 import com.spinyowl.spinygui.core.system.font.TextMeasurer;
-import com.spinyowl.spinygui.core.time.TimeService;
 import com.spinyowl.spinygui.core.util.OverflowUtils;
 import java.util.HashMap;
 import org.junit.jupiter.api.Test;
@@ -518,12 +515,7 @@ class OverflowLayoutTest {
     layoutMap.put(Display.BLOCK, blockLayout);
     layoutMap.put(
         Display.FLEX,
-        new FlexLayout(
-            mock(SystemEventProcessor.class),
-            mock(EventProcessor.class),
-            mock(TimeService.class),
-            blockLayout,
-            layoutService));
+        new FlexLayout(blockLayout, layoutService));
     return layoutService;
   }
 

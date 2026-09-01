@@ -54,7 +54,6 @@ import static org.lwjgl.util.yoga.Yoga.YGWrapNoWrap;
 import static org.lwjgl.util.yoga.Yoga.YGWrapReverse;
 import static org.lwjgl.util.yoga.Yoga.YGWrapWrap;
 
-import com.spinyowl.spinygui.core.event.processor.EventProcessor;
 import com.spinyowl.spinygui.core.layout.ElementLayout;
 import com.spinyowl.spinygui.core.layout.LayoutContext;
 import com.spinyowl.spinygui.core.layout.LayoutService;
@@ -74,8 +73,6 @@ import com.spinyowl.spinygui.core.style.types.length.Length;
 import com.spinyowl.spinygui.core.style.types.length.Length.PercentLength;
 import com.spinyowl.spinygui.core.style.types.length.Length.PixelLength;
 import com.spinyowl.spinygui.core.style.types.length.Unit;
-import com.spinyowl.spinygui.core.system.event.processor.SystemEventProcessor;
-import com.spinyowl.spinygui.core.time.TimeService;
 import java.util.ArrayList;
 import java.util.function.BiConsumer;
 import java.util.function.LongConsumer;
@@ -89,10 +86,6 @@ import org.lwjgl.util.yoga.Yoga;
 @RequiredArgsConstructor
 public class FlexLayout implements ElementLayout {
 
-  public static final float THRESHOLD = 0.0001f;
-  @NonNull private final SystemEventProcessor systemEventProcessor;
-  @NonNull private final EventProcessor eventProcessor;
-  @NonNull private final TimeService timeService;
   @NonNull private final BlockLayout blockLayout;
   @NonNull private final LayoutService layoutService;
 
@@ -216,7 +209,8 @@ public class FlexLayout implements ElementLayout {
       return true;
     }
     return (alignSelf == null || AlignSelf.AUTO.equals(alignSelf))
-        && (parentStyle.alignItems() == null || AlignItems.STRETCH.equals(parentStyle.alignItems()));
+        && (parentStyle.alignItems() == null
+            || AlignItems.STRETCH.equals(parentStyle.alignItems()));
   }
 
   private boolean shouldPersist(Element node, Element positionedParent) {

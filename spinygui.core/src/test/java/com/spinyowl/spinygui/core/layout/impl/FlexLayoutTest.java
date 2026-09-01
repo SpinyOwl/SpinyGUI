@@ -8,7 +8,6 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
 
-import com.spinyowl.spinygui.core.event.processor.EventProcessor;
 import com.spinyowl.spinygui.core.font.Font;
 import com.spinyowl.spinygui.core.font.FontStyle;
 import com.spinyowl.spinygui.core.font.FontWeight;
@@ -37,12 +36,10 @@ import com.spinyowl.spinygui.core.style.types.flex.FlexWrap;
 import com.spinyowl.spinygui.core.style.types.flex.JustifyContent;
 import com.spinyowl.spinygui.core.style.types.length.Length;
 import com.spinyowl.spinygui.core.style.types.length.Unit;
-import com.spinyowl.spinygui.core.system.event.processor.SystemEventProcessor;
 import com.spinyowl.spinygui.core.system.font.FontMetrics;
 import com.spinyowl.spinygui.core.system.font.FontTestOwner;
 import com.spinyowl.spinygui.core.system.font.TextLineMetrics;
 import com.spinyowl.spinygui.core.system.font.TextMeasurer;
-import com.spinyowl.spinygui.core.time.TimeService;
 import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -219,13 +216,7 @@ class FlexLayoutTest {
     doAnswer(invocation -> null)
         .when(blockLayout)
         .layout(eq(parent), eq(true), any(LayoutContext.class));
-    FlexLayout layout =
-        new FlexLayout(
-            mock(SystemEventProcessor.class),
-            mock(EventProcessor.class),
-            mock(TimeService.class),
-            blockLayout,
-            layoutService);
+    FlexLayout layout = new FlexLayout(blockLayout, layoutService);
 
     layout.layout(parent, new LayoutContext());
 
@@ -256,12 +247,7 @@ class FlexLayoutTest {
     layoutMap.put(Display.BLOCK, blockLayout);
     layoutMap.put(
         Display.FLEX,
-        new FlexLayout(
-            mock(SystemEventProcessor.class),
-            mock(EventProcessor.class),
-            mock(TimeService.class),
-            blockLayout,
-            layoutService));
+        new FlexLayout(blockLayout, layoutService));
 
     layoutService.layout(frame);
 
@@ -390,12 +376,7 @@ class FlexLayoutTest {
     layoutMap.put(Display.BLOCK, blockLayout);
     layoutMap.put(
         Display.FLEX,
-        new FlexLayout(
-            mock(SystemEventProcessor.class),
-            mock(EventProcessor.class),
-            mock(TimeService.class),
-            blockLayout,
-            layoutService));
+        new FlexLayout(blockLayout, layoutService));
     return layoutService;
   }
 
