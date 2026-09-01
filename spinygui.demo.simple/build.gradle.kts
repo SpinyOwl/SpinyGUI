@@ -41,3 +41,14 @@ registerExampleTask(
     "runCounterExample",
     "com.spinyowl.spinygui.demo.simple.CounterExample"
 )
+registerExampleTask(
+    "runNavigationModalHostExample",
+    "com.spinyowl.spinygui.demo.simple.NavigationModalHostExample"
+)
+registerExampleTask(
+    "runEmbeddedCallbackCoexistenceSmoke",
+    "com.spinyowl.spinygui.demo.simple.EmbeddedCallbackCoexistenceSmoke"
+)
+tasks.named<JavaExec>("runEmbeddedCallbackCoexistenceSmoke") {
+    jvmArgs = application.applicationDefaultJvmArgs.toList() + "--enable-native-access=ALL-UNNAMED"
+}

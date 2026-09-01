@@ -21,6 +21,7 @@ SpinyGUI requires Java 25+.
 
 ## Links
 
+[LWJGL application host: navigation, modals, ownership, and embedding](docs/features/lwjgl-application-host.md)
 [LWJGL - Lightweight Java Game Library 3](https://github.com/LWJGL/lwjgl3)  
 [JOML – Java OpenGL Math Library](https://github.com/JOML-CI/JOML)  
 [NanoVG -Small antialiased vector graphics rendering library for OpenGL.](https://github.com/memononen/nanovg) 
