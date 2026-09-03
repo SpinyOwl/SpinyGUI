@@ -2,7 +2,7 @@
 
 ## Document Context
 
-- Status: Planned
+- Status: Completed
 - Dependencies: None
 - Parent: None
 - Children: [M1 - Add optional handler registry binding](E8/M1%20-%20Add%20optional%20handler%20registry%20binding.md)

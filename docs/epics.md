@@ -16,7 +16,7 @@ implementation/acceptance evidence, not on the presence of a plan alone.
 | [E5: Text Performance Improvements](work/E5%20-%20Text%20performance%20improvements.md) | Improve text-path measurement, font lifecycle, controls, rendering submission, and caches. | Complete | M1-M7 remain complete. The experimental M8 session architecture was superseded by E2's owner-native `FramePipeline`. |
 | [E6: Frame Pipeline Performance](work/E6%20-%20Frame%20pipeline%20performance.md) | Reduce non-text frame CPU cost and transient allocation while preserving ownership boundaries. | In progress | M1 and M1.5 are implemented; traversal, selector, property-storage, incremental-boundary, and mutation work remains. |
 | [E7: Skija Renderer Backends](work/E7%20-%20Skija%20renderer%20backends.md) | Add opt-in Skija OpenGL and Vulkan renderers behind the backend-neutral renderer SPI. | Planned | Renderer-host and Skija backend milestones are defined but not yet started in this checkout. |
-| [E8: Declarative XML Event Binding](work/E8%20-%20Declarative%20XML%20event%20binding.md) | Bind named XML event declarations to caller-owned Java listeners through an optional typed registry. | Planned | M1/P1 defines default resolving proxies, dispatch-time registry lookup, configurable diagnostics, compatibility coverage, demo adoption, and documentation. |
+| [E8: Declarative XML Event Binding](work/E8%20-%20Declarative%20XML%20event%20binding.md) | Bind named XML event declarations to caller-owned Java listeners through an optional typed registry. | Complete | M1/P1 delivers default resolving proxies, dispatch-time registry lookup, configurable diagnostics, compatibility coverage, demo adoption, and documentation. |
 
 ## Status conventions
 

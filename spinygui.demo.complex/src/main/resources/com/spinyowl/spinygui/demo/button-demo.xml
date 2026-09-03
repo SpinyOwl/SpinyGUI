@@ -1,9 +1,9 @@
 <winframe>
   <div class="panel">
     <div class="title">Button verification</div>
-    <button id="save" type="button">Save</button>
-    <button id="nested" type="button">Save <span class="accent">nested</span></button>
-    <input id="input-button" type="button" value="Save" />
+    <button id="save" type="button" on-action="save">Save</button>
+    <button id="nested" type="button" on-action="save-nested">Save <span class="accent">nested</span></button>
+    <input id="input-button" type="button" value="Save" on-action="save-input" />
     <div id="status" class="status">Ready</div>
   </div>
 </winframe>

@@ -2,7 +2,7 @@
 
 ## Document Context
 
-- Status: Planned
+- Status: Completed
 - Dependencies: None
 - Parent: [E8 - Declarative XML event binding](../E8%20-%20Declarative%20XML%20event%20binding.md)
 - Children: [P1 - Bind XML event declarations through an optional registry](M1/P1%20-%20Bind%20XML%20event%20declarations%20through%20an%20optional%20registry.md)

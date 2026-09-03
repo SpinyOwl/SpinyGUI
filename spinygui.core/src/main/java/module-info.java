@@ -20,6 +20,7 @@ open module com.spinyowl.spinygui.core {
 
   exports com.spinyowl.spinygui.core;
   exports com.spinyowl.spinygui.core.animation;
+  exports com.spinyowl.spinygui.core.binding;
   exports com.spinyowl.spinygui.core.clipboard;
   exports com.spinyowl.spinygui.core.diagnostic;
   exports com.spinyowl.spinygui.core.event;

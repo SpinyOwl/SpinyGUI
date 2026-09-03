@@ -2,7 +2,7 @@
 
 ## Document Context
 
-- Status: Planned
+- Status: Completed
 - Dependencies: None
 - Parent: [M1 - Add optional handler registry binding](../M1%20-%20Add%20optional%20handler%20registry%20binding.md)
 - Children: None
@@ -66,30 +66,45 @@ reflection or global mutable state.
 
 **Changes:**
 
-- [ ] Add `HandlerRegistry` in a dedicated exported core binding package, with controlled registration,
+- [x] Add `HandlerRegistry` in a dedicated exported core binding package, with controlled registration,
   replacement, and event-time lookup based on a nonblank name and exact `Class<T extends Event>`.
-- [ ] Add `replace(name, eventClass, listener)` or an equivalently typed operation that rejects
+- [x] Add `replace(name, eventClass, listener)` or an equivalently typed operation that rejects
   event-type changes and makes the new listener visible to the next proxy dispatch without tree
   traversal or listener reattachment.
-- [ ] Add immutable loader/binder initialization options with a `MissingHandlerPolicy` enum containing
+- [x] Add immutable loader/binder initialization options with a `MissingHandlerPolicy` enum containing
   `ERROR`, `WARNING`, and `SILENT`; default omitted configuration to `ERROR`.
-- [ ] Add an injectable structured diagnostic sink for `WARNING`, with a documented default sink and no
+- [x] Add an injectable structured diagnostic sink for `WARNING`, with a documented default sink and no
   warning emission in `SILENT` mode.
-- [ ] Reject null/blank names and duplicate names deterministically; define controlled replacement and
+- [x] Reject null/blank names and duplicate names deterministically; define controlled replacement and
   removal semantics using a monotonically changing registry revision for diagnostic deduplication.
-- [ ] Add focused registry tests for typed lookup, missing lookup, duplicate registration, invalid
+- [x] Add focused registry tests for typed lookup, missing lookup, duplicate registration, invalid
   names, controlled mutation, and revision changes.
 
 **Acceptance Checks:**
 
-- [ ] Registry tests prove exact event type, controlled replacement/removal, revision changes, and
+- [x] Registry tests prove exact event type, controlled replacement/removal, revision changes, and
   event-time visibility across multiple references without reflection or backend dependencies.
-- [ ] Options tests prove the `ERROR` default, explicit `WARNING`/`SILENT` selection, injected warning
+- [x] Options tests prove the `ERROR` default, explicit `WARNING`/`SILENT` selection, injected warning
   delivery, and immutable initialization state.
-- [ ] The new public package is exported by `spinygui.core` and compiles on the module path.
+- [x] The new public package is exported by `spinygui.core` and compiles on the module path.
 
 **Risks:** A generic lookup API can hide unsafe casts. Keep unchecked conversion inside one reviewed
 exact-type boundary, use structured diagnostics, and reject event-type mutation explicitly.
+
+**Execution Record:**
+
+- Status: Completed
+- Last Updated: 2026-09-02
+- Implemented Scope: Added the backend-neutral T1 binding contract: an exact-type caller-owned handler registry with deterministic registration, lookup, replacement, removal, and revision behavior; immutable missing-handler options; structured warning diagnostics; a documented default SLF4J sink; focused contract tests; and the JPMS package export. Corrected `replace(...)` to validate all nullable arguments before consulting name presence, matching its documented exception contract.
+- Relevant Files and Symbols: `spinygui.core/src/main/java/com/spinyowl/spinygui/core/binding/HandlerRegistry.java` (`HandlerRegistry`); `spinygui.core/src/main/java/com/spinyowl/spinygui/core/binding/MissingHandlerPolicy.java` (`MissingHandlerPolicy`); `spinygui.core/src/main/java/com/spinyowl/spinygui/core/binding/BindingDiagnostic.java` (`BindingDiagnostic`, `BindingDiagnostic.Reason`); `spinygui.core/src/main/java/com/spinyowl/spinygui/core/binding/BindingDiagnosticSink.java` (`BindingDiagnosticSink`); `spinygui.core/src/main/java/com/spinyowl/spinygui/core/binding/DefaultBindingDiagnosticSink.java` (`DefaultBindingDiagnosticSink`); `spinygui.core/src/main/java/com/spinyowl/spinygui/core/binding/XmlEventBindingOptions.java` (`XmlEventBindingOptions`); `spinygui.core/src/main/java/module-info.java`; `spinygui.core/src/test/java/com/spinyowl/spinygui/core/binding/HandlerRegistryTest.java`; `spinygui.core/src/test/java/com/spinyowl/spinygui/core/binding/XmlEventBindingOptionsTest.java`
+- Acceptance Evidence:
+  - Registry tests prove exact event type, controlled replacement/removal, revision changes, and event-time visibility across multiple references without reflection or backend dependencies.: Verified — Automated — fresh `./gradlew.bat --no-daemon :spinygui.core:test --tests "*HandlerRegistry*" --tests "*XmlEventBindingOptions*" :spinygui.core:compileJava --rerun-tasks --console=plain` passed all 6 `HandlerRegistryTest` cases and all 4 options cases; the added precedence case proves null type/listener arguments fail before an absent-name lookup; an earlier forced full `:spinygui.core:test` rerun passed 705 tests
+  - Options tests prove the `ERROR` default, explicit `WARNING`/`SILENT` selection, injected warning delivery, and immutable initialization state.: Verified — Automated — the fresh focused command passed all 4 `XmlEventBindingOptionsTest` cases, including structured sink delivery and retained initialization values
+  - The new public package is exported by `spinygui.core` and compiles on the module path.: Verified — Automated — the fresh focused command compiled `module-info.java` with the exported `com.spinyowl.spinygui.core.binding` package; a fresh combined run also passed `:spinygui.core:pmdMain`, `pmdTest`, `spotbugsMain`, and `spotbugsTest`
+- Decisions and Deviations: Kept the single unchecked generic conversion private to exact-type lookup after a runtime class-identity check. Successful register, replace, and remove operations advance the revision; rejected mutations and removal of an absent name leave it unchanged. The default diagnostic sink logs structured fields through the module's existing SLF4J API. Resolved the independent review finding by validating the replacement registration tuple before reading registry state, preserving the documented null-failure precedence without changing the absent-name or type-mismatch contracts. No plan deviations.
+- Review Outcome: Accepted — independent public-contract review found one low-severity validation-precedence issue; the same implementer fixed it, focused verification passed, and manager inspection confirmed the reviewed T1 change set
+- Remaining Work: None for T1. T2 is newly unlocked.
+- Resume or Closure: Closed after manager acceptance; continue with T2 using this accepted registry contract.
 
 ### T2: Add explicit XML event declaration mappings
 
@@ -99,21 +114,35 @@ exact-type boundary, use structured diagnostics, and reject event-type mutation 
 
 **Changes:**
 
-- [ ] Define lowercase kebab-case `on-action` to `ActionEvent` and `on-click` to `MouseClickEvent`
+- [x] Define lowercase kebab-case `on-action` to `ActionEvent` and `on-click` to `MouseClickEvent`
   mappings without arbitrary class-name loading.
-- [ ] Validate declaration values as nonblank handler names and retain ordinary attribute
+- [x] Validate declaration values as nonblank handler names and retain ordinary attribute
   parse/serialization behavior.
-- [ ] Add parser/binding fixtures proving Jsoup normalization and XML round-trip behavior for the
+- [x] Add parser/binding fixtures proving Jsoup normalization and XML round-trip behavior for the
   reserved attributes.
 
 **Acceptance Checks:**
 
-- [ ] Focused tests prove both supported attributes map to their exact GUI event classes after parsing.
-- [ ] Existing XML without handler attributes and XML with unrelated custom attributes parse exactly as
+- [x] Focused tests prove both supported attributes map to their exact GUI event classes after parsing.
+- [x] Existing XML without handler attributes and XML with unrelated custom attributes parse exactly as
   before.
 
 **Risks:** Treating every `on-*` attribute as reserved would block future application metadata. Match
 only the explicitly supported vocabulary.
+
+**Execution Record:**
+
+- Status: Completed
+- Last Updated: 2026-09-02
+- Implemented Scope: Added the explicit XML declaration vocabulary in the exported binding package. `XmlEventDeclaration.fromAttribute(...)` recognizes only normalized lowercase `on-action` and `on-click`, maps them to exact `ActionEvent` and `MouseClickEvent` classes, validates supported values as nonblank registry keys, and ignores unsupported/custom attributes without interpreting their values. Added focused parser-backed normalization, round-trip, validation, and compatibility fixtures without changing `DefaultNodeParser`.
+- Relevant Files and Symbols: `spinygui.core/src/main/java/com/spinyowl/spinygui/core/binding/XmlEventDeclaration.java` (`XmlEventDeclaration`, `fromAttribute`, `attributeName`, `handlerName`, `eventClass`); `spinygui.core/src/test/java/com/spinyowl/spinygui/core/binding/XmlEventDeclarationTest.java`
+- Acceptance Evidence:
+  - Focused tests prove both supported attributes map to their exact GUI event classes after parsing.: Verified — Automated — `./gradlew.bat --no-daemon :spinygui.core:test --tests "*XmlEventDeclarationTest" --tests "*DefaultNodeParserTest" :spinygui.core:compileJava --rerun-tasks --console=plain` passed all 5 declaration cases and compiled the public mapping; coverage proves Jsoup normalization, exact event classes, nonblank validation, and supported-attribute serialization/reparse
+  - Existing XML without handler attributes and XML with unrelated custom attributes parse exactly as before.: Verified — Automated — the same focused run passed all 11 existing `DefaultNodeParserTest` cases; declaration fixtures additionally preserve and round-trip handler-free templates plus unrelated `data-*` and unsupported `on-hover` attributes
+- Decisions and Deviations: Used one immutable explicit attribute-to-class map and returned an empty declaration for every unsupported attribute before inspecting its value, preventing accidental reservation of arbitrary `on-*` or application metadata. Direct uppercase lookup remains unsupported by contract; parser-backed fixtures prove Jsoup normalizes markup names before mapping. Fresh core PMD and SpotBugs main/test tasks passed. No plan deviations.
+- Review Outcome: Accepted — localized explicit mapping was manager-reviewed against the plan; the fresh parser-backed focused suite and module compilation passed with no scope drift
+- Remaining Work: None for T2. T3 is newly unlocked.
+- Resume or Closure: Closed after manager acceptance; continue with T3 using the accepted explicit vocabulary.
 
 ### T3: Install event-time resolving proxy listeners
 
@@ -124,48 +153,68 @@ registry optional and resolving current handler state only when an event is disp
 
 **Changes:**
 
-- [ ] Add a loader composition initialized with an injected `NodeParser`, an optional registry source,
+- [x] Add a loader composition initialized with an injected `NodeParser`, an optional registry source,
   and immutable binding options; retain the existing `NodeParser.fromHtml(String)` API and current call
   sites unchanged.
-- [ ] Traverse the parsed tree once and automatically attach exactly one stable resolving proxy for
+- [x] Traverse the parsed tree once and automatically attach exactly one stable resolving proxy for
   each supported `on-*` declaration, whether or not a registry is currently available.
-- [ ] Make the proxy read the current attribute value on every event, then read the current optional
+- [x] Make the proxy read the current attribute value on every event, then read the current optional
   registry and perform an exact event-class lookup for that handler name.
-- [ ] When no registry is available or no exact-type handler exists, apply `ERROR` by failing the
+- [x] When no registry is available or no exact-type handler exists, apply `ERROR` by failing the
   dispatch, `WARNING` by skipping invocation and emitting a structured diagnostic, or `SILENT` by
   skipping invocation without diagnostics.
-- [ ] Deduplicate `WARNING` diagnostics for the same element, attribute, current value, and registry
+- [x] Deduplicate `WARNING` diagnostics for the same element, attribute, current value, and registry
   revision/state; emit again after any of those resolution inputs changes.
-- [ ] Treat blank/malformed current declarations and event-type mismatches as hard errors in all modes;
+- [x] Treat blank/malformed current declarations and event-type mismatches as hard errors in all modes;
   validate initial syntax during loading and dynamically introduced values at dispatch.
-- [ ] Include event attribute, handler name, tag, and element `id` or deterministic tree path in errors
+- [x] Include event attribute, handler name, tag, and element `id` or deterministic tree path in errors
   and warnings.
-- [ ] Make the proxy delegate both `process(...)` and `processWithImpact(...)` to the currently resolved
+- [x] Make the proxy delegate both `process(...)` and `processWithImpact(...)` to the currently resolved
   handler; when `WARNING` or `SILENT` skips invocation, call `batch.markUnknownFallback()` so the
   installed proxy cannot incorrectly turn an unresolved application path into proven unchanged input.
-- [ ] Prevent duplicate proxy attachment through all public loader paths without introducing a
+- [x] Prevent duplicate proxy attachment through all public loader paths without introducing a
   separate binding lifecycle or requiring teardown/rebind calls.
 
 **Acceptance Checks:**
 
-- [ ] Loading attaches one proxy per supported declaration even when the optional registry is absent;
+- [x] Loading attaches one proxy per supported declaration even when the optional registry is absent;
   templates without supported declarations receive no proxy listeners.
-- [ ] One handler registration serves multiple elements, and each event invokes its resolved handler
+- [x] One handler registration serves multiple elements, and each event invokes its resolved handler
   exactly once.
-- [ ] With no registry and with a missing exact-type handler, `ERROR` fails dispatch, `WARNING` skips and
+- [x] With no registry and with a missing exact-type handler, `ERROR` fails dispatch, `WARNING` skips and
   reports once per unresolved state, and `SILENT` skips without warning emission.
-- [ ] Directly changing an existing declaration attribute changes the handler used on the next event
+- [x] Directly changing an existing declaration attribute changes the handler used on the next event
   without traversal, rebind, or listener reattachment.
-- [ ] Replacing or removing a registry entry changes subsequent dispatch for every referencing element
+- [x] Replacing or removing a registry entry changes subsequent dispatch for every referencing element
   without traversal or listener reattachment.
-- [ ] Blank/malformed declarations and event-type mismatches remain hard errors in all three modes.
-- [ ] The proxy preserves resolved handlers' custom `processWithImpact(...)` behavior, and skipped
+- [x] Blank/malformed declarations and event-type mismatches remain hard errors in all three modes.
+- [x] The proxy preserves resolved handlers' custom `processWithImpact(...)` behavior, and skipped
   `WARNING`/`SILENT` resolution records `FULL_UNKNOWN` through `markUnknownFallback()`.
-- [ ] Existing direct parser and manual `addListener(...)` tests remain green.
+- [x] Existing direct parser and manual `addListener(...)` tests remain green.
 
 **Risks:** Event-time lookup adds work and runtime failure modes to dispatch. Keep proxy state small,
 limit the initial vocabulary to action/click, deduplicate warnings, and test the exact error boundary
 and input-impact result rather than allowing exceptions or classification to emerge accidentally.
+
+**Execution Record:**
+
+- Status: Completed
+- Last Updated: 2026-09-02
+- Implemented Scope: Added `XmlEventBindingLoader`, an opt-in `NodeParser` composition that delegates existing parsing/serialization, performs one post-parse tree traversal, and attaches stable private resolving proxies for declarations present at load time. Proxies read the current declaration and current optional registry on every call, enforce exact handler types and contextual hard errors, apply all missing-handler policies, deduplicate structured warnings by per-element declaration plus registry identity/revision, preserve resolved listeners' ordinary and impact-aware dispatch methods, and mark skipped permissive resolution as `FULL_UNKNOWN`. Duplicate proxy detection prevents repeated attachment even when multiple loader instances receive the same tree.
+- Relevant Files and Symbols: `spinygui.core/src/main/java/com/spinyowl/spinygui/core/binding/XmlEventBindingLoader.java` (`XmlEventBindingLoader`, `ResolvingEventListener`, `WarningState`); `spinygui.core/src/test/java/com/spinyowl/spinygui/core/binding/XmlEventBindingLoaderTest.java`
+- Acceptance Evidence:
+  - Loading attaches one proxy per supported declaration even when the optional registry is absent; templates without supported declarations receive no proxy listeners.: Verified — Automated — focused `XmlEventBindingLoaderTest` passed attachment for both supported declarations, no-proxy behavior for unrelated attributes, and stable single-listener identity across repeated and cross-loader same-tree parsing
+  - One handler registration serves multiple elements, and each event invokes its resolved handler exactly once.: Verified — Automated — focused shared-registration coverage invoked one registry listener exactly twice across two distinct bound buttons
+  - With no registry and with a missing exact-type handler, `ERROR` fails dispatch, `WARNING` skips and reports once per unresolved state, and `SILENT` skips without warning emission.: Verified — Automated — focused policy coverage passed all three policies for both unavailable-registry and available-but-missing-handler states, including contextual error fields and one warning per unchanged state
+  - Directly changing an existing declaration attribute changes the handler used on the next event without traversal, rebind, or listener reattachment.: Verified — Automated — focused dynamic-state coverage switched from `first` to `second` on the same proxy identity and listener count
+  - Replacing or removing a registry entry changes subsequent dispatch for every referencing element without traversal or listener reattachment.: Verified — Automated — final focused dynamic-state coverage observed replacement on the next call for both referencing elements and permissive skips for both after removal, retaining both proxy identities and one-listener counts
+  - Blank/malformed declarations and event-type mismatches remain hard errors in all three modes.: Verified — Automated — focused coverage passed initial blank, dynamic blank, removed declaration, and exact-type mismatch failures under `ERROR`, `WARNING`, and `SILENT`, with attribute, handler, tag, and id/path context
+  - The proxy preserves resolved handlers' custom `processWithImpact(...)` behavior, and skipped `WARNING`/`SILENT` resolution records `FULL_UNKNOWN` through `markUnknownFallback()`.: Verified — Automated — focused impact coverage preserved a custom `FULL_REFRESH` result without invoking ordinary `process(...)` and produced `FULL_UNKNOWN` for both permissive skip policies
+  - Existing direct parser and manual `addListener(...)` tests remain green.: Verified — Automated — `./gradlew.bat --no-daemon :spinygui.core:test --rerun-tasks --console=plain` passed all 719 core tests with zero failures, errors, or skips; the focused pre-run also passed declaration, parser, and input-processing compatibility suites
+- Decisions and Deviations: Implemented the opt-in loader as `NodeParser` rather than changing `NodeParser` or `DefaultNodeParser`. The dynamic registry boundary is `Supplier<Optional<HandlerRegistry>>`; a fixed-registry convenience constructor validates immediately. Duplicate prevention recognizes the private proxy type plus attribute on the exact event listener list. Warning state includes handler name, registry object identity, revision, and failure reason; successful resolution clears it so a later return to the same unresolved state can warn again. Fresh core PMD and SpotBugs main/test tasks passed. No plan deviations.
+- Review Outcome: Accepted — independent review found no T3 defects or scope drift; fresh focused, full core, PMD, and SpotBugs verification passed against the reviewed loader/proxy change set
+- Remaining Work: None for T3. T4 is newly unlocked.
+- Resume or Closure: Closed after manager acceptance; continue with T4 end-to-end dispatcher compatibility evidence.
 
 ### T4: Prove dispatch semantics and compatibility
 
@@ -176,28 +225,43 @@ system and does not alter dispatch, input, or invalidation semantics.
 
 **Changes:**
 
-- [ ] Add focused tests that dispatch `ActionEvent` and `MouseClickEvent` through
+- [x] Add focused tests that dispatch `ActionEvent` and `MouseClickEvent` through
   `DefaultEventProcessor` to XML-bound elements and assert the correct handler invocation.
-- [ ] Cover multiple declarations, shared handlers, no-handler events, disabled controls where
+- [x] Cover multiple declarations, shared handlers, no-handler events, disabled controls where
   applicable, exact-class mismatch behavior, and dispatch after `WARNING`/`SILENT` skips.
-- [ ] Prove a custom listener override of `processWithImpact(...)` survives registry binding unchanged.
-- [ ] Prove direct attribute mutation and registry replacement/removal affect all relevant elements on
+- [x] Prove a custom listener override of `processWithImpact(...)` survives registry binding unchanged.
+- [x] Prove direct attribute mutation and registry replacement/removal affect all relevant elements on
   their next event without changing proxy listener identity.
-- [ ] Prove missing registry and missing-handler dispatch follow each configured policy without
+- [x] Prove missing registry and missing-handler dispatch follow each configured policy without
   interfering with manually attached listeners.
-- [ ] Run the existing button mouse/keyboard activation suites to confirm that `on-action` continues to
+- [x] Run the existing button mouse/keyboard activation suites to confirm that `on-action` continues to
   receive semantic activation from both supported input paths.
 
 **Acceptance Checks:**
 
-- [ ] Binding-focused dispatch tests pass without adding a second queue, event bus, bubbling rule, or
+- [x] Binding-focused dispatch tests pass without adding a second queue, event bus, bubbling rule, or
   native callback path.
-- [ ] Dynamic attribute lookup, registry replacement/removal, warning deduplication, and missing-registry
+- [x] Dynamic attribute lookup, registry replacement/removal, warning deduplication, and missing-registry
   policy tests pass without repeating the initial full-tree traversal.
-- [ ] Existing event processor, system mouse, system key, and disabled-control focused suites pass.
+- [x] Existing event processor, system mouse, system key, and disabled-control focused suites pass.
 
 **Risks:** Tests that invoke listeners directly would miss dispatcher compatibility. At least one test
 per supported declaration must pass through `DefaultEventProcessor`.
+
+**Execution Record:**
+
+- Status: Completed
+- Last Updated: 2026-09-02
+- Implemented Scope: Added dispatcher-level tests proving XML-bound action/click declarations, shared registrations, live attribute and registry mutation, missing-registry/handler policy behavior, warning deduplication, exact-class mismatch handling, manual-listener coexistence, and custom impact propagation through `DefaultEventProcessor`; reran the existing event/system/disabled-control compatibility suites.
+- Relevant Files and Symbols: `spinygui.core/src/test/java/com/spinyowl/spinygui/core/binding/XmlEventBindingDispatchTest.java` (`dispatchesBothSupportedDeclarationsThroughDefaultEventProcessor`, `dispatchesOneSharedRegistrationOnceForEachTarget`, `dynamicAttributeAndRegistryMutationsAffectEveryTargetWithoutReattachment`, `missingPoliciesPreserveManualListenersAndWarningDedupeAcrossBatches`, `preservesCustomImpactOverrideThroughDefaultEventProcessor`, `preservesExactClassDispatchAndHardMismatchFailure`)
+- Acceptance Evidence:
+  - Binding-focused dispatch tests pass without adding a second queue, event bus, bubbling rule, or native callback path.: Verified — Automated — `.\gradlew.bat --no-daemon :spinygui.core:test --tests "*XmlEventBindingDispatchTest" --rerun-tasks --console=plain` passed 6/6 tests through `DefaultEventProcessor`.
+  - Dynamic attribute lookup, registry replacement/removal, warning deduplication, and missing-registry policy tests pass without repeating the initial full-tree traversal.: Verified — Automated — the combined focused command passed `XmlEventBindingDispatchTest` 6/6 and `XmlEventBindingLoaderTest` 8/8; proxy identity and listener counts remained unchanged across mutations.
+  - Existing event processor, system mouse, system key, and disabled-control focused suites pass.: Verified — Automated — `.\gradlew.bat --no-daemon :spinygui.core:test --tests "*XmlEventBindingDispatchTest" --tests "*XmlEventBindingLoaderTest" --tests "*InputProcessingContractTest" --tests "*SystemMouseClickEventListenerTest" --tests "*SystemKeyEventListenerTest" --tests "*DisabledControlEventListenerTest" --rerun-tasks --console=plain` passed 81/81 tests (6 binding dispatch, 8 binding loader, 7 processor contract, 23 mouse, 33 key, 4 disabled-control); `.\gradlew.bat --no-daemon :spinygui.core:pmdTest :spinygui.core:spotbugsTest --rerun-tasks --console=plain` also passed.
+- Decisions and Deviations: T4 is test-only because accepted T1-T3 already compose bindings over `DefaultEventProcessor`; no second dispatch mechanism was added. Existing disabled-control semantics are covered by the focused compatibility suite. `ERROR` remains intentionally fail-fast, while `WARNING` and `SILENT` skips allow later manual listeners to run.
+- Review Outcome: Accepted — test-only T4 was manager-reviewed; the fresh dispatcher gate passed and the implementer compatibility matrix passed 81 tests with PMD/SpotBugs test analysis
+- Remaining Work: None for T4. T5 is newly unlocked.
+- Resume or Closure: Closed after manager acceptance; continue with T5 demo adoption.
 
 ### T5: Migrate one demo to the optional registry path
 
@@ -208,22 +272,36 @@ a supported compatibility path elsewhere.
 
 **Changes:**
 
-- [ ] Add `on-action` declarations to `button-demo.xml` and migrate `ButtonExample` to a caller-owned
+- [x] Add `on-action` declarations to `button-demo.xml` and migrate `ButtonExample` to a caller-owned
   registry plus the optional loader/binder path.
-- [ ] Preserve activation counts, status text updates, logging, CSS loading, nested button content, and
+- [x] Preserve activation counts, status text updates, logging, CSS loading, nested button content, and
   input-button behavior.
-- [ ] Add or extend the focused complex-demo test so it verifies the resource declares resolvable
+- [x] Add or extend the focused complex-demo test so it verifies the resource declares resolvable
   handlers and each action updates the expected state.
 
 **Acceptance Checks:**
 
-- [ ] The migrated demo compiles and its focused automated test proves all three current controls bind
+- [x] The migrated demo compiles and its focused automated test proves all three current controls bind
   and activate once per action.
-- [ ] At least one existing demo remains on manual `getElementById(...)` plus `addListener(...)`, proving
+- [x] At least one existing demo remains on manual `getElementById(...)` plus `addListener(...)`, proving
   declarative binding is optional rather than a migration requirement.
 
 **Risks:** Demo-only success can hide public API friction. Keep the demo on the same public classes and
 resource-loading path available to external consumers.
+
+**Execution Record:**
+
+- Status: Completed
+- Last Updated: 2026-09-02
+- Implemented Scope: Migrated the resource-backed button demo's three current controls to `on-action` declarations resolved by a caller-owned `HandlerRegistry` through `XmlEventBindingLoader`; preserved activation numbering, status text, logging, CSS loading, nested content, and input-button behavior; added focused dispatcher-backed demo coverage while retaining existing manual-binding demos.
+- Relevant Files and Symbols: `spinygui.demo.complex/src/main/resources/com/spinyowl/spinygui/demo/button-demo.xml` (`on-action` declarations); `spinygui.demo.complex/src/main/java/com/spinyowl/spinygui/demo/complex/ButtonExample.java` (`createGuiElements`, `registerActivationFeedback`); `spinygui.demo.complex/src/test/java/com/spinyowl/spinygui/demo/complex/ButtonExampleTest.java` (`declarativeActionsPreserveAllButtonDemoStateChanges`)
+- Acceptance Evidence:
+  - The migrated demo compiles and its focused automated test proves all three current controls bind and activate once per action.: Verified — Automated — `.\gradlew.bat --no-daemon :spinygui.demo.complex:test --tests "*ButtonExampleTest" :spinygui.demo.complex:compileJava --rerun-tasks --console=plain` passed 1/1 focused test; `.\gradlew.bat --no-daemon :spinygui.demo.complex:check :spinygui.demo.complex:compileJava --rerun-tasks --console=plain` passed all 5 module tests plus PMD and SpotBugs.
+  - At least one existing demo remains on manual `getElementById(...)` plus `addListener(...)`, proving declarative binding is optional rather than a migration requirement.: Verified — Documentation — current `MainMenuExample` retains its manual `getElementById(...)` and `addListener(...)` action setup unchanged.
+- Decisions and Deviations: The caller-owned registry is populated after XML loading because proxies resolve at dispatch time, keeping the example concise while exercising the public late-registration contract. Native/manual smoke is not required for T5 acceptance because renderer and system-input paths are unchanged and accepted T4 already covers mouse/keyboard action synthesis; it remains optional for visual confidence.
+- Review Outcome: Accepted — manager review confirmed the three declarative controls, preserved observable state contract, unchanged manual-binding MainMenuExample, and successful fresh focused demo test/compilation
+- Remaining Work: None for T5. T6 is newly unlocked.
+- Resume or Closure: Closed after manager acceptance; continue with T6 documentation and final integrated verification.
 
 ### T6: Document adoption and run final verification
 
@@ -234,31 +312,47 @@ callers understand when proxies are installed and when resolution occurs.
 
 **Changes:**
 
-- [ ] Add a focused feature guide showing default proxy attachment, optional registry configuration,
+- [x] Add a focused feature guide showing default proxy attachment, optional registry configuration,
   and manual listeners, plus supported attributes, the default `ERROR` policy, `WARNING` diagnostic
   sink configuration, and explicit `SILENT` behavior.
-- [ ] Document event-time attribute lookup, controlled registry replacement/removal, warning
+- [x] Document event-time attribute lookup, controlled registry replacement/removal, warning
   deduplication, owner-thread requirements, and the absence of a binding-session lifecycle.
-- [ ] Update the nearest project documentation index or README entry that currently advertises XML and
+- [x] Update the nearest project documentation index or README entry that currently advertises XML and
   event usage without claiming reflection, data binding, or unsupported event declarations.
-- [ ] Record deferred work for additional event mappings, high-frequency-event measurement,
+- [x] Record deferred work for additional event mappings, high-frequency-event measurement,
   controller adapters, and reactive data binding.
-- [ ] Run formatting/diff checks and the focused plus aggregate module verification commands.
+- [x] Run formatting/diff checks and the focused plus aggregate module verification commands.
 
 **Acceptance Checks:**
 
-- [ ] Documentation examples compile against the delivered public API and state that the registry is
+- [x] Documentation examples compile against the delivered public API and state that the registry is
   optional, resolution failures default to `ERROR` even when the registry is absent, and callers can
   explicitly select `WARNING` or `SILENT`.
-- [ ] Documentation examples cover direct attribute changes and registry replacement without implying
+- [x] Documentation examples cover direct attribute changes and registry replacement without implying
   thread-safe mid-dispatch mutation or mutation callbacks inside `setAttribute(...)`.
-- [ ] `:spinygui.core:test` and `:spinygui.demo.complex:test` pass, and complex-demo production sources
+- [x] `:spinygui.core:test` and `:spinygui.demo.complex:test` pass, and complex-demo production sources
   compile.
-- [ ] `git diff --check` passes; native demo smoke, if performed, is reported separately from automated
+- [x] `git diff --check` passes; native demo smoke, if performed, is reported separately from automated
   evidence.
 
 **Risks:** Documentation can accidentally imply a full template/controller framework. Keep claims
 limited to named event handler binding.
+
+**Execution Record:**
+
+- Status: Completed
+- Last Updated: 2026-09-02
+- Implemented Scope: Added a focused named XML event-handler guide covering opt-in loader composition, supported declarations, exact-type registry usage, default and permissive policies, event-time mutation and registry replacement/removal, warning deduplication, owner-thread constraints, manual listeners, the absence of `BindingSession`, and deferred scope; linked it from the root README and ran the final integrated core/demo gate.
+- Relevant Files and Symbols: `docs/features/xml-event-binding.md` (public usage, policies, mutation/lifecycle contract, manual path, deferred scope); `README.md` (`Named XML event handlers` link)
+- Acceptance Evidence:
+  - Documentation examples compile against the delivered public API and state that the registry is optional, resolution failures default to `ERROR` even when the registry is absent, and callers can explicitly select `WARNING` or `SILENT`.: Verified — Documentation — guide snippets were checked against the delivered constructors and methods; the same registry/loader composition in `ButtonExample` compiled during the final gate, and the guide explicitly covers optional direct parsing plus `ERROR`, `WARNING`, and `SILENT`.
+  - Documentation examples cover direct attribute changes and registry replacement without implying thread-safe mid-dispatch mutation or mutation callbacks inside `setAttribute(...)`.: Verified — Documentation — the guide shows `setAttribute(...)`, entry replacement/removal, and whole-registry supplier replacement, and limits all mutation to the owner thread between event batches while stating that `setAttribute(...)` invokes no callback or proxy attachment.
+  - `:spinygui.core:test` and `:spinygui.demo.complex:test` pass, and complex-demo production sources compile.: Verified — Automated — `.\gradlew.bat --no-daemon :spinygui.core:test :spinygui.demo.complex:test :spinygui.demo.complex:compileJava --rerun-tasks --console=plain` passed 725/725 core tests and 5/5 complex-demo tests with production compilation successful.
+  - `git diff --check` passes; native demo smoke, if performed, is reported separately from automated evidence.: Verified — Automated — `git diff --check` passed after removing one README hard-break whitespace issue; native smoke was not run and is not included in automated evidence.
+- Decisions and Deviations: Published the guide under `docs/features/` and linked it from the root README's feature Links section. The guide deliberately describes only named event-handler binding, states there is no `BindingSession`, and records additional event mappings, high-frequency-event measurement, controller adapters, and reactive binding as deferred. Native smoke was not needed for this documentation-only slice and was not run.
+- Review Outcome: Accepted — final independent integrated review found no findings, confirmed documentation/API alignment, and passed core 725/725 plus complex-demo 5/5 and production compilation; the sandbox-only javac directory failure was reproduced and cleared by the successful unsandboxed gate
+- Remaining Work: None for T6 or P1.
+- Resume or Closure: Closed after manager acceptance; all T1-T6 records and acceptance checks are complete.
 
 ## Verification Strategy
 
