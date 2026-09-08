@@ -1,7 +1,7 @@
 # T12 - Paint per-side borders and rounded outlines
 
 ## Document Context
-- Status: Planned
+- Status: Completed
 - Dependencies: T1, T2
 - Parent: [P1 - Repair browser-native view parity](<../P1 - Repair browser-native view parity.md>)
 - Children: None
@@ -15,18 +15,18 @@ Make NanoVG paint supported border sides and radii from their own resolved value
 [T1 - Normalize paired capture defaults](<T1 - Normalize paired capture defaults.md>); [T2 - Correct client and scroll geometry semantics](<T2 - Correct client and scroll geometry semantics.md>) must satisfy their acceptance checks before execution.
 
 ## Changes
-- [ ] Use each side's style, width and color rather than borderTop values for the complete perimeter.
-- [ ] Implement continuous rounded outer/inner border contours for the current solid-border subset, including unequal sides and radius clamping.
-- [ ] Preserve background radius behavior, opacity, transforms, clipping and inline fragment offsets.
-- [ ] Add focused fixtures for none/zero-width sides, asymmetric solid borders and rounded uniform/asymmetric outlines.
+- [x] Use each side's style, width and color rather than borderTop values for the complete perimeter.
+- [x] Implement continuous rounded outer/inner border contours for the current solid-border subset, including unequal sides and radius clamping.
+- [x] Preserve background radius behavior, opacity, transforms, clipping and inline fragment offsets.
+- [x] Add focused fixtures for none/zero-width sides, asymmetric solid borders and rounded uniform/asymmetric outlines.
 
 Relevant implementation: NvgBorderRenderer.java, NvgShapes.java, NvgElementRenderer.java.
 Existing test entry points: NvgScrollbarRendererTest, NvgRendererTransformStateTest and new focused border painting tests. Extend existing behavioral tests where possible.
 
 ## Acceptance Checks
-- [ ] borders retains the matching square box, renders the 18 px green rounded outline and the four correctly colored/thick asymmetric sides.
-- [ ] Zero/top-none cases do not suppress other visible sides, and rounded joins have no gaps or overlaps.
-- [ ] Backend regression checks and real NanoVG paired captures pass for the targeted border shapes.
+- [x] borders retains the matching square box, renders the 18 px green rounded outline and the four correctly colored/thick asymmetric sides.
+- [x] Zero/top-none cases do not suppress other visible sides, and rounded joins have no gaps or overlaps.
+- [x] Backend regression checks and real NanoVG paired captures pass for the targeted border shapes.
 
 ## Verification
 Use Java 25 and the repository wrapper. Begin with relevant test-class filters from the entry points above, using `--tests` on the affected module's `test` task; broaden to affected module checks after behavior is stable.
@@ -37,15 +37,15 @@ Shared unresolved defects may keep a selected case red: acceptance must identify
 Do not silently expand this to every CSS border style or elliptical syntax. Preserve existing supported styles and identify additional unsupported styles explicitly.
 
 ## Execution Record
-- Status: Planned
+- Status: Completed
 - Last Updated: 2026-09-08
-- Implemented Scope: None
-- Relevant Files and Symbols: None
+- Implemented Scope: Individual side widths/styles/presented colors; none/hidden/zero suppression per side; inset rounded uniform strokes; joined outer/inner contours for unequal rounded solid borders; proportional radius clamping. Existing inline offsets and presented opacity remain in use.
+- Relevant Files and Symbols: NvgBorderRenderer; BorderContour; NvgBorderRendererTest; fixtures/borders.xml and borders.css.
 - Acceptance Evidence:
-  - borders retains the matching square box, renders the 18 px green rounded outline and the four correctly colored/thick asymmetric sides.: Not Run — Native Host — planned focused regressions and paired report described in Verification.
-  - Zero/top-none cases do not suppress other visible sides, and rounded joins have no gaps or overlaps.: Not Run — Automated — planned focused regressions and paired report described in Verification.
-  - Backend regression checks and real NanoVG paired captures pass for the targeted border shapes.: Not Run — Native Host — planned focused regressions and paired report described in Verification.
-- Decisions and Deviations: None
-- Review Outcome: Not Reviewed
-- Remaining Work: Make NanoVG paint supported border sides and radii from their own resolved values.
-- Resume or Closure: Resume by verifying the prerequisite records, then reproducing the stated defect in the named source/test entry points before editing production code.
+  - Original shapes: Passed — Native Host — run-18106950044369630495, both geometry and pixel gates pass.
+  - Missing/zero/asymmetric rounded sides: Passed — Automated / Native Host — new recording tests cover side visibility, shared contour endpoints, radius clamping, inset radius and opacity. Two additional shapes were added without removing/moving any original shape. run-14538511329276847815 passes both gates: no geometry mismatches and 269 differing pixels (0.175%). Both screenshots visually inspected; contours continuous.
+  - Backend checks: Passed — Automated — full :spinygui.core.backend.lwjgl.nanovg:check in t12-backend-check.log, including tests, PMD and SpotBugs. Earlier focused run also covers inline offsets, renderer transforms and scrollbars.
+- Decisions and Deviations: Supported solid contours are the scope. Previously non-solid visible styles were painted as solid; that fallback is retained, not represented as new dashed/dotted/double support. Rounded color transitions and rasterization can differ slightly from Chromium, within the unchanged gate. No background radius, transform or clipping policy changes.
+- Review Outcome: Not Required — direct user-authorized implementation; source/diff and native screenshot self-review completed.
+- Remaining Work: None for the supported solid-border correction.
+- Resume or Closure: Continue with T13 full-suite verification.
