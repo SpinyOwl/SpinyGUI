@@ -36,7 +36,8 @@ public final class CompareViewsMain {
     try {
       var cases = ViewCase.load(root, args[2]);
       try (Playwright playwright = Playwright.create();
-           Browser browser = playwright.chromium().launch(new BrowserType.LaunchOptions().setHeadless(true))) {
+           Browser browser = playwright.chromium().launch(new BrowserType.LaunchOptions()
+               .setHeadless(true).setIgnoreDefaultArgs(List.of("--hide-scrollbars")))) {
         for (ViewCase view : cases) {
           Path directory = run.resolve(view.id());
           Files.createDirectories(directory);
@@ -93,7 +94,9 @@ public final class CompareViewsMain {
       page.screenshot(new Page.ScreenshotOptions().setPath(output.resolve("browser.png")));
       Files.writeString(output.resolve("browser-environment.json"), JSON.toJson(Map.of(
           "version", browser.version(), "playwright", "1.58.0", "pixelRatio", 1,
-          "width", view.width(), "height", view.height(), "locale", "en-US")));
+          "width", view.width(), "height", view.height(), "locale", "en-US",
+          "captureDefaults", "shared-css-v2-visible-scrollbars",
+          "arguments", browser.newBrowserCDPSession().send("Browser.getBrowserCommandLine"))));
     }
   }
 

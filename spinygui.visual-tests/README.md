@@ -79,6 +79,14 @@ For a timed launch smoke check, add `-PdemoSeconds=5`; the default `0` keeps the
 
 ## Results and tolerances
 
+Capture defaults v2 explicitly style spans as inline and controls without browser-native
+appearance, borders, centered text or resize handles; demo rules override these shared defaults.
+Headless Chromium keeps scrollbars visible. Shared scrollbars are 12 px, with gray tracks/thumbs;
+demo-specific dimensions and colors still apply. The browser root is absolutely positioned at
+the viewport origin to isolate first-child margin collapse, matching a native Frame. Nested
+margins and all declared layout dimensions remain observable. Browser metadata records effective
+launch arguments, viewport/DPR and the policy version. Native element defaults are unchanged.
+
 Open `build/reports/view-comparison/index.html`. Every invocation creates a new `run-*` directory
 containing per-case input JSON, browser/native PNGs, a magenta difference image, geometry JSON,
 runtime metadata, native process log, results and a run summary. Earlier run data is retained;

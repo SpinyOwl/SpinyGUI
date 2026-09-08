@@ -11,6 +11,8 @@ window.visualReady = (async () => {
     @font-face { font-family: Roboto; src: url('/fonts/Roboto-Bold.ttf'); font-weight: 700; }
     html, body { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; background: white; }
     #app { width: ${view.width}px; height: ${view.height}px; }
+    /* A native Frame is a rooted formatting context: child margins cannot move it. */
+    #app > winframe { position: absolute; left: 0; top: 0; }
   `;
   document.head.append(hostStyle);
   const style = document.createElement('style');
