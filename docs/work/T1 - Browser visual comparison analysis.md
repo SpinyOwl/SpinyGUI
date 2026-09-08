@@ -1,5 +1,7 @@
 # Browser/native comparison analysis
 
+Historical baseline analysis. Current fixes, commits, all 15 per-case results and remaining font work are recorded in [T13 verification](<P1/T13 - Verify the full suite and account for residual differences.md>). The source descriptions and line links below describe the pre-repair state. Numeric font-weight parsing was subsequently verified to produce TermInteger as well as TermFloat; T5 supports both.
+
 Analyzed run: `run-18295419870537634196`. All 15 captures completed; all failed the combined geometry/pixel gate. Percentages below mean pixels exceeding the configured channel difference of 16, not the percentage of the layout that is incorrect. Geometry tolerance is 1 px; allowed differing pixels are 0.5%.
 
 Evidence: paired screenshots, saved case definitions and geometry/result JSON, current source, and a disposable native layout probe. No production fixes were made. The probe and log are under `spinygui.visual-tests/build/analysis`. These are static initial-state comparisons: they do not establish hover, transition, editing, or action behavior.

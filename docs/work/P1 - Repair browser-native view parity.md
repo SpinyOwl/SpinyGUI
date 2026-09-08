@@ -19,8 +19,10 @@
   - [T12 - Paint per-side borders and rounded outlines](<P1/T12 - Paint per-side borders and rounded outlines.md>)
   - [T13 - Verify the full suite and account for residual differences](<P1/T13 - Verify the full suite and account for residual differences.md>)
   - [T14 - Exclude trailing padding from visible overflow extents](<P1/T14 - Exclude trailing padding from visible overflow extents.md>)
+  - [T15 - Resolve normal line height from font metrics](<P1/T15 - Resolve normal line height from font metrics.md>)
+  - [T16 - Align text advances and drawing positions](<P1/T16 - Align text advances and drawing positions.md>)
 - Related: [Original analysis](<T1 - Browser visual comparison analysis.md>); [Tooling execution record](<T1 - Browser visual comparison.md>); [E1 transforms](<E1 - CSS animation support.md>); [E3 Grid](<E3 - CSS Grid support.md>); [E5 text](<E5 - Text performance improvements.md>)
-- Next: [T1 - Normalize paired capture defaults](<P1/T1 - Normalize paired capture defaults.md>)
+- Next: [T15 - Resolve normal line height from font metrics](<P1/T15 - Resolve normal line height from font metrics.md>)
 
 **Depends on:** None. The comparison subproject already exists in commit `f809341f`.
 
@@ -56,6 +58,8 @@ Order is recommended; hard prerequisites live in individual task documents.
 - [x] [T12 - Paint per-side borders and rounded outlines](<P1/T12 - Paint per-side borders and rounded outlines.md>)
 - [ ] [T13 - Verify the full suite and account for residual differences](<P1/T13 - Verify the full suite and account for residual differences.md>)
 - [x] [T14 - Exclude trailing padding from visible overflow extents](<P1/T14 - Exclude trailing padding from visible overflow extents.md>)
+- [ ] [T15 - Resolve normal line height from font metrics](<P1/T15 - Resolve normal line height from font metrics.md>)
+- [ ] [T16 - Align text advances and drawing positions](<P1/T16 - Align text advances and drawing positions.md>)
 
 ## Verification Strategy
 Keep core geometry/style regressions in core, paint regressions in NanoVG, and orchestration/report regressions in visual-tests. Each repair pairs a focused behavioral regression with targeted fresh captures.
@@ -63,6 +67,6 @@ Inspect metric categories and affected regions while other failures remain. Fina
 Residual rasterization uncertainty belongs to T13. If it reveals another functional defect, add a concrete follow-up and leave the phase open. Policy changes require a separate explicit decision.
 
 ## Phase Implementation State
-- Progress: 13/14 task documents completed.
-- Active task or next action: T13 — full-suite verification and residual attribution.
-- Phase-level blockers or decisions: Remaining typography and scroll extents require attribution in T13; all-green results remain an acceptance target, not a prediction.
+- Progress: 13/16 task documents completed (T1–T12 and T14). T13 verification ran but cannot close; T15/T16 remain planned.
+- Active task or next action: T15 — normal line-height semantics, then T16 and a T13 rerun.
+- Phase-level blockers or decisions: Final capture has 5/15 combined passes and zero capture errors. Remaining normal line heights and rounded text advances are source-confirmed functional differences. Full affected checks pass (936 tests, PMD, SpotBugs); both launch smoke runs pass. Do not weaken tolerances or close the phase until T13 acceptance is met.
