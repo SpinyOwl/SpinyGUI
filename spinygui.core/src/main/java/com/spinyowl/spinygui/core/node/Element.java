@@ -26,7 +26,7 @@ import lombok.ToString;
 
 @Getter
 @Setter
-@ToString(exclude = {"childNodes", "resolvedStyle", "listenerMap", "inlineFragments"})
+@ToString(exclude = {"childNodes", "resolvedStyle", "listenerMap", "inlineFragments", "classList"})
 public class Element extends Node implements EventTarget {
 
   /** The number of pixels that an element's content is scrolled vertically. */
@@ -90,6 +90,16 @@ public class Element extends Node implements EventTarget {
   /** Node attributes. */
   @Setter(AccessLevel.NONE)
   private final Map<String, String> attributes = new HashMap<>();
+
+  /** Live class-attribute view owned by this element for its lifetime. */
+  @Getter(AccessLevel.NONE)
+  @Setter(AccessLevel.NONE)
+  private final ClassList classList = new ClassList(this);
+
+  /** Returns a live view for inspecting and updating this element's CSS class tokens. */
+  public ClassList classList() {
+    return classList;
+  }
 
   /**
    * Map of listeners attached that should be attached for node and processed if any event
