@@ -888,8 +888,14 @@ public class ResolvedStyle {
     set(OVERFLOW_Y, overflow);
   }
 
+  /** Resolves an inherited absolute line height to the multiplier consumed by text measurement. */
   public Float lineHeight() {
-    return get(LINE_HEIGHT);
+    Object value = get(LINE_HEIGHT);
+    if (value instanceof Length<?> length) {
+      float size = fontSize().convert();
+      return size > 0 ? length.convert() / size : 0;
+    }
+    return (Float) value;
   }
 
   public void lineHeight(Float lineHeight) {

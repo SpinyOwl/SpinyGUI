@@ -87,6 +87,12 @@ the viewport origin to isolate first-child margin collapse, matching a native Fr
 margins and all declared layout dimensions remain observable. Browser metadata records effective
 launch arguments, viewport/DPR and the policy version. Native element defaults are unchanged.
 
+Native text accepts positive pixel and unitless line heights. Pixel values remain absolute when
+inherited; unitless values scale with the child's font size. Line advances retain fractional
+precision and glyph ink may exceed a short line box. Native `normal` still uses the configured
+default multiplier (1.2); differences from Chromium's font-dependent `normal` remain visible.
+Numeric font weights select supported static weights and the nearest available bundled face.
+
 Open `build/reports/view-comparison/index.html`. Every invocation creates a new `run-*` directory
 containing per-case input JSON, browser/native PNGs, a magenta difference image, geometry JSON,
 runtime metadata, native process log, results and a run summary. Earlier run data is retained;

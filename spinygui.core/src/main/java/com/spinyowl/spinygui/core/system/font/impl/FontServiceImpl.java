@@ -920,15 +920,15 @@ public class FontServiceImpl implements FontService, TextMeasurer, RangeTextMeas
       float metricsAscent = ascent.get(0) * scaleFactor;
       float metricsDescent = Math.abs(descent.get(0) * scaleFactor);
       float metricsLineGap = Math.max(0, lineGap.get(0) * scaleFactor);
-      float measuredLineHeight = Math.max(requestedLineHeight, metricsAscent + metricsDescent + metricsLineGap);
       if (roundToPixel) {
         metricsAscent = Math.round(metricsAscent);
         metricsDescent = Math.round(metricsDescent);
         metricsLineGap = Math.round(metricsLineGap);
-        measuredLineHeight = Math.round(measuredLineHeight);
       }
+      // CSS line boxes retain their requested advance; glyph ink may exceed a short line box.
+      float baseline = metricsAscent + (requestedLineHeight - metricsAscent - metricsDescent) / 2;
       return new FontMetrics(
-          metricsAscent, metricsDescent, metricsLineGap, measuredLineHeight, metricsAscent);
+          metricsAscent, metricsDescent, metricsLineGap, requestedLineHeight, baseline);
     }
   }
 

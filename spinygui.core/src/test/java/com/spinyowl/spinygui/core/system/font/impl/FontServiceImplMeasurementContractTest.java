@@ -780,11 +780,11 @@ class FontServiceImplMeasurementContractTest {
         () -> assertEquals(13.884033f, font.ascent(), EPSILON),
         () -> assertEquals(3.5906982f, font.descent(), EPSILON),
         () -> assertEquals(0, font.lineGap(), EPSILON),
-        () -> assertEquals(17.474731f, font.lineHeight(), EPSILON),
-        () -> assertEquals(13.884033f, font.baseline(), EPSILON),
+        () -> assertEquals(13.25f * 1.17f, font.lineHeight(), EPSILON),
+        () -> assertEquals((13.884033f - 3.5906982f + 13.25f * 1.17f) / 2, font.baseline(), EPSILON),
         () -> assertEquals(30, metrics.width(), EPSILON),
-        () -> assertEquals(34.949463f, metrics.height(), EPSILON),
-        () -> assertEquals(17.474731f, metrics.lineHeight(), EPSILON),
+        () -> assertEquals(2 * 13.25f * 1.17f, metrics.height(), EPSILON),
+        () -> assertEquals(13.25f * 1.17f, metrics.lineHeight(), EPSILON),
         () -> assertEquals(List.of("AV\u96ea:0-3", "VA:4-6"), lineSignatures(metrics)),
         () -> assertEquals(30, metrics.lines().get(0).width(), EPSILON),
         () -> assertEquals(17, metrics.lines().get(1).width(), EPSILON),
@@ -793,7 +793,7 @@ class FontServiceImplMeasurementContractTest {
   }
 
   @Test
-  void pixelRoundedVerticalMetrics_roundComponentsBeforeLineCountAccumulation() {
+  void pixelRoundedGlyphMetrics_preserveFractionalLineAdvanceAndHalfLeading() {
     FontServiceImpl rounded = new FontServiceImpl(new FontStorageImpl(), true);
     rounded.installSemanticOwner();
 
@@ -805,11 +805,11 @@ class FontServiceImplMeasurementContractTest {
         () -> assertEquals(14, metrics.fontMetrics().ascent(), EPSILON),
         () -> assertEquals(4, metrics.fontMetrics().descent(), EPSILON),
         () -> assertEquals(0, metrics.fontMetrics().lineGap(), EPSILON),
-        () -> assertEquals(17, metrics.fontMetrics().lineHeight(), EPSILON),
-        () -> assertEquals(14, metrics.fontMetrics().baseline(), EPSILON),
-        () -> assertEquals(17, metrics.lines().get(0).height(), EPSILON),
-        () -> assertEquals(14, metrics.lines().get(0).baseline(), EPSILON),
-        () -> assertEquals(34, metrics.height(), EPSILON));
+        () -> assertEquals(13.25f * 1.17f, metrics.fontMetrics().lineHeight(), EPSILON),
+        () -> assertEquals((10 + 13.25f * 1.17f) / 2, metrics.fontMetrics().baseline(), EPSILON),
+        () -> assertEquals(13.25f * 1.17f, metrics.lines().get(0).height(), EPSILON),
+        () -> assertEquals((10 + 13.25f * 1.17f) / 2, metrics.lines().get(0).baseline(), EPSILON),
+        () -> assertEquals(2 * 13.25f * 1.17f, metrics.height(), EPSILON));
   }
 
   @Test

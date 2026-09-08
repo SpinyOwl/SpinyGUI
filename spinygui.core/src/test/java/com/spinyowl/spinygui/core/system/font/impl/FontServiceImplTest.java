@@ -94,7 +94,9 @@ class FontServiceImplTest {
     TextMetrics metrics = fontService.measureText("abc", Font.DEFAULT, 16, 1.0f);
 
     assertTrue(metrics.fontMetrics().ascent() + metrics.fontMetrics().descent() > 16);
-    assertEquals(metrics.fontMetrics().ascent(), metrics.fontMetrics().baseline());
+    assertEquals(16, metrics.fontMetrics().lineHeight());
+    assertEquals((metrics.fontMetrics().ascent() - metrics.fontMetrics().descent() + 16) / 2,
+        metrics.fontMetrics().baseline());
   }
 
   @Test

@@ -46,7 +46,7 @@ Order is recommended; hard prerequisites live in individual task documents.
 - [x] [T3 - Clamp programmatic scrolling before presentation](<P1/T3 - Clamp programmatic scrolling before presentation.md>)
 - [x] [T4 - Apply normal-flow block margins](<P1/T4 - Apply normal-flow block margins.md>)
 - [x] [T5 - Accept numeric font weights](<P1/T5 - Accept numeric font weights.md>)
-- [ ] [T6 - Resolve CSS line height and preserve fractional metrics](<P1/T6 - Resolve CSS line height and preserve fractional metrics.md>)
+- [x] [T6 - Resolve CSS line height and preserve fractional metrics](<P1/T6 - Resolve CSS line height and preserve fractional metrics.md>)
 - [ ] [T7 - Measure auto-sized flex items intrinsically](<P1/T7 - Measure auto-sized flex items intrinsically.md>)
 - [ ] [T8 - Correct intrinsic form-control dimensions](<P1/T8 - Correct intrinsic form-control dimensions.md>)
 - [ ] [T9 - Correct flexible grid track allocation](<P1/T9 - Correct flexible grid track allocation.md>)
@@ -61,6 +61,6 @@ Inspect metric categories and affected regions while other failures remain. Fina
 Residual rasterization uncertainty belongs to T13. If it reveals another functional defect, add a concrete follow-up and leave the phase open. Policy changes require a separate explicit decision.
 
 ## Phase Implementation State
-- Progress: 5/13 task documents completed.
-- Active task or next action: T6 — resolve line-height and fractional line advances.
+- Progress: 6/13 task documents completed.
+- Active task or next action: T7 — flex intrinsic sizing and blockification of inline flex items.
 - Phase-level blockers or decisions: No implementation started. Remaining font rasterization differences are not yet attributed; all-green results are an acceptance target, not a prediction.

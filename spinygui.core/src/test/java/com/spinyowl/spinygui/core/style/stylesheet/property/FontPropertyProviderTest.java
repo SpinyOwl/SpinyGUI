@@ -16,6 +16,31 @@ import org.junit.jupiter.api.Test;
 class FontPropertyProviderTest {
 
   @Test
+  void lineHeightKeepsAbsoluteInheritanceAndUnitlessScalingDistinct() {
+    var frame = NodeBuilder.frame();
+    Element child = NodeBuilder.div();
+    frame.addChild(child);
+    var store = new com.spinyowl.spinygui.core.style.stylesheet.impl.DefaultPropertyStoreProvider()
+        .createPropertyStore();
+    var parser = com.spinyowl.spinygui.core.parser.impl.StyleSheetParserFactory.createParser(store);
+    var manager = new com.spinyowl.spinygui.core.style.manager.StyleManagerImpl(store, parser);
+    frame.style("font-size:16px; line-height:24px");
+    child.style("font-size:12px");
+    manager.recalculate(frame);
+    assertEquals(1.5f, frame.resolvedStyle().lineHeight());
+    assertEquals(2f, child.resolvedStyle().lineHeight());
+    frame.style("font-size:16px; line-height:1.25");
+    manager.recalculate(frame);
+    assertEquals(1.25f, child.resolvedStyle().lineHeight());
+    frame.style("font-size:16px; line-height:2");
+    manager.recalculate(frame);
+    assertEquals(2f, child.resolvedStyle().lineHeight());
+    child.style("font-size:12px; line-height:18.5px");
+    manager.recalculate(frame);
+    assertEquals(18.5f, child.resolvedStyle().lineHeight() * 12, 0.0001f);
+  }
+
+  @Test
   void numericWeightsResolveInheritAndRejectInvalidUpdates() {
     var frame = NodeBuilder.frame();
     Element child = NodeBuilder.div();

@@ -110,10 +110,15 @@ public class FontPropertyProvider implements PropertyProvider {
                         TermIdent.class,
                         NORMAL::equalsIgnoreCase,
                         v -> Configuration.LINE_HEIGHT.value())
-                    .or(put(LINE_HEIGHT, TermFloat.class)))
+                    .or(put(LINE_HEIGHT, TermFloat.class))
+                    .or(put(LINE_HEIGHT, TermInteger.class, Integer::floatValue))
+                    .or(put(LINE_HEIGHT, TermLength.class)))
             .validator(
                 checkValue(TermIdent.class, NORMAL::equalsIgnoreCase)
-                    .or(TermFloat.class::isInstance))
+                    .or(checkValue(TermFloat.class, value -> Float.isFinite(value) && value > 0))
+                    .or(checkValue(TermInteger.class, value -> value > 0))
+                    .or(checkValue(TermLength.class, value -> "px".equals(value.type())
+                        && Float.isFinite(value.convert()) && value.convert() > 0)))
             .build());
   }
 
