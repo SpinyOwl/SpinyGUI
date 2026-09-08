@@ -998,10 +998,12 @@ public class FontServiceImpl implements FontService, TextMeasurer, RangeTextMeas
   /** Measures the primary face's intrinsic column advance without rasterizer pixel rounding. */
   @Override
   public float averageCharacterWidth(@NonNull List<Font> fonts, float fontSize) {
+    diagnostics.increment(TextDiagnosticCounter.TEXT_MEASURER_AVERAGE_CHARACTER_WIDTH_ENTRIES);
     STBTTFontinfo info = getFontInfo(fonts.isEmpty() ? Font.DEFAULT : fonts.getFirst());
     try (MemoryStack stack = MemoryStack.stackPush()) {
       IntBuffer advance = stack.mallocInt(1);
       IntBuffer bearing = stack.mallocInt(1);
+      diagnostics.increment(TextDiagnosticCounter.NATIVE_GLYPH_ADVANCE_CALLS);
       STBTruetype.stbtt_GetCodepointHMetrics(info, 'x', advance, bearing);
       return advance.get(0) * stbtt_ScaleForMappingEmToPixels(info, fontSize);
     }

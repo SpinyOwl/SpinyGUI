@@ -13,6 +13,7 @@ public interface TextMeasurer {
    * average-character proxy. Native implementations should preserve its fractional advance.
    */
   default float averageCharacterWidth(@NonNull List<Font> fonts, float fontSize) {
+    diagnostics().increment(TextDiagnosticCounter.TEXT_MEASURER_AVERAGE_CHARACTER_WIDTH_ENTRIES);
     return getTextLineMetrics("x", fonts, fontSize, 1).width();
   }
 

@@ -72,6 +72,14 @@ class DiagnosticSessionTest {
         session.snapshot(),
         TextDiagnosticCounter.TEXT_MEASURER_GET_TEXT_CARET_METRICS_FONT_LIST_ENTRIES,
         TextDiagnosticCounter.TEXT_MEASURER_GET_TEXT_CARET_METRICS_FONT_ENTRIES);
+    session.reset();
+    fixture.averageCharacterWidth(List.of(Font.DEFAULT), 16);
+    assertCounts(session.snapshot(),
+        TextDiagnosticCounter.TEXT_MEASURER_AVERAGE_CHARACTER_WIDTH_ENTRIES,
+        TextDiagnosticCounter.TEXT_MEASURER_GET_TEXT_LINE_METRICS_FONT_LIST_ENTRIES,
+        TextDiagnosticCounter.TEXT_MEASURER_MEASURE_TEXT_FONT_LIST_ENTRIES,
+        TextDiagnosticCounter.TEXT_MEASURER_MEASURE_TEXT_FONT_LIST_FULL_ENTRIES,
+        TextDiagnosticCounter.TEXT_MEASURER_MEASURE_TEXT_FONT_FULL_ENTRIES);
   }
 
   @Test
@@ -220,6 +228,9 @@ class DiagnosticSessionTest {
   void everyTextMeasurerEntryPointHasOneDistinctEntryCounter() throws NoSuchMethodException {
     Map<Method, TextDiagnosticCounter> entries =
         Map.ofEntries(
+            Map.entry(
+                TextMeasurer.class.getDeclaredMethod("averageCharacterWidth", List.class, float.class),
+                TextDiagnosticCounter.TEXT_MEASURER_AVERAGE_CHARACTER_WIDTH_ENTRIES),
             Map.entry(
                 TextMeasurer.class.getDeclaredMethod(
                     "measureText", String.class, List.class, float.class, float.class),

@@ -166,6 +166,10 @@ public enum TextDiagnosticCounter implements DiagnosticCounter {
       "core.control.textarea-complete-layouts",
       DiagnosticUnit.CALLS,
       "Complete textarea text/control layout builds."),
+  TEXT_MEASURER_AVERAGE_CHARACTER_WIDTH_ENTRIES(
+      "core.text.api.average-character-width.entries",
+      DiagnosticUnit.CALLS,
+      "Intrinsic control column measurement entries."),
   TEXT_MEASURER_MEASURE_TEXT_FONT_LIST_ENTRIES(
       "core.text-measurer.measure-text-font-list.entries",
       DiagnosticUnit.CALLS,
