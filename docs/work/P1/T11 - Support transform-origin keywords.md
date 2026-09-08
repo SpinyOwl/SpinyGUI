@@ -1,7 +1,7 @@
 # T11 - Support transform-origin keywords
 
 ## Document Context
-- Status: Planned
+- Status: Completed
 - Dependencies: T1
 - Parent: [P1 - Repair browser-native view parity](<../P1 - Repair browser-native view parity.md>)
 - Children: None
@@ -15,17 +15,17 @@ Resolve CSS origin keywords to the correct axis anchors instead of retaining the
 [T1 - Normalize paired capture defaults](<T1 - Normalize paired capture defaults.md>) must satisfy their acceptance checks before execution.
 
 ## Changes
-- [ ] Accept supported one/two-value left/right/top/bottom/center forms and mixed keyword/length forms with axis validation.
-- [ ] Preserve percentage/length support and reject invalid combinations without corrupting the previous resolved value.
-- [ ] Check transformed rendering, bounding geometry and hit-testing share the same resolved origin.
+- [x] Accept supported one/two-value left/right/top/bottom/center forms and mixed keyword/length forms with axis validation.
+- [x] Preserve percentage/length support and reject invalid combinations without corrupting the previous resolved value.
+- [x] Check transformed rendering, bounding geometry and hit-testing share the same resolved origin.
 
 Relevant implementation: TransformPropertyProvider.java, transform resolution and hit-test consumers.
 Existing test entry points: TransformStyleManagerTest, TransformTest, NodeUtilitiesTransformHitTest, NvgRendererTransformStateTest. Extend existing behavioral tests where possible.
 
 ## Acceptance Checks
-- [ ] left top on a 220 px box scaled 1.25 no longer introduces the erroneous 27.5 px left shift.
-- [ ] Valid keyword orderings, single values, mixed forms and invalid axis pairs have parser/resolution regressions.
-- [ ] Transform geometry and hit-testing regressions pass; demo-transform-demo origin-related bounds agree.
+- [x] left top on a 220 px box scaled 1.25 no longer introduces the erroneous 27.5 px left shift.
+- [x] Valid keyword orderings, single values, mixed forms and invalid axis pairs have parser/resolution regressions.
+- [x] Transform geometry and hit-testing regressions pass; demo-transform-demo origin-related bounds agree.
 
 ## Verification
 Use Java 25 and the repository wrapper. Begin with relevant test-class filters from the entry points above, using `--tests` on the affected module's `test` task; broaden to affected module checks after behavior is stable.
@@ -36,15 +36,15 @@ Shared unresolved defects may keep a selected case red: acceptance must identify
 Origin parsing must not accidentally change matrix composition or default center semantics; third-axis/3D support is outside this task.
 
 ## Execution Record
-- Status: Planned
+- Status: Completed
 - Last Updated: 2026-09-08
-- Implemented Scope: None
-- Relevant Files and Symbols: None
+- Implemented Scope: Parse one/two-value origin keywords with axis validation, keyword pair reversal and mixed lengths. Invalid declarations leave the earlier valid declaration effective.
+- Relevant Files and Symbols: TransformPropertyProvider.parseOrigin/originAxis; TransformStyleManagerTest.
 - Acceptance Evidence:
-  - left top on a 220 px box scaled 1.25 no longer introduces the erroneous 27.5 px left shift.: Not Run — Automated — planned focused regressions and paired report described in Verification.
-  - Valid keyword orderings, single values, mixed forms and invalid axis pairs have parser/resolution regressions.: Not Run — Automated — planned focused regressions and paired report described in Verification.
-  - Transform geometry and hit-testing regressions pass; demo-transform-demo origin-related bounds agree.: Not Run — Native Host — planned focused regressions and paired report described in Verification.
-- Decisions and Deviations: None
-- Review Outcome: Not Reviewed
-- Remaining Work: Resolve CSS origin keywords to the correct axis anchors instead of retaining the center default.
-- Resume or Closure: Resume by verifying the prerequisite records, then reproducing the stated defect in the named source/test entry points before editing production code.
+  - Left/top scale origin: Passed — Native Host — run-7180520739343119625 removes scale x/width differences (including the original 27.5 px shift); remaining six geometry fields are vertical line-height/scroll extents.
+  - Grammar: Passed — Automated — 15 valid forms and six invalid forms through parsed CSS, including reversed keywords, one value, percentages and mixed lengths.
+  - Transform and hit testing: Passed — Automated — TransformStyleManagerTest, TransformTest, NodeUtilitiesTransformHitTest and backend NvgRendererTransformStateTest completed in t11-checks.log. Paired capture remains mismatch at 1.66% pixels due residual typography; it is not an aggregate pass.
+- Decisions and Deviations: Only keyword pairs reverse order. Third-axis/3D syntax remains outside the supported contract. Matrix composition and hit-test consumers are unchanged.
+- Review Outcome: Not Required — direct user-authorized implementation; source/diff self-review completed.
+- Remaining Work: None for origin keywords.
+- Resume or Closure: Continue with T12.

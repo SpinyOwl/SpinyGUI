@@ -17,6 +17,42 @@ import org.junit.jupiter.api.Test;
 
 class TransformStyleManagerTest {
 
+  @org.junit.jupiter.params.ParameterizedTest
+  @org.junit.jupiter.params.provider.CsvSource({
+      "left top,0,0", "top left,0,0", "right bottom,220,100", "bottom right,220,100",
+      "center top,110,0", "top center,110,0", "left,0,50", "top,110,0",
+      "center,110,50", "bottom,110,100", "right,220,50", "20px,20,50",
+      "left 20px,0,20", "20px bottom,20,100", "25% 10px,55,10"
+  })
+  void originKeywordsResolveAxes(String css, float x, float y) {
+    var store = new DefaultPropertyStoreProvider().createPropertyStore();
+    var parser = StyleSheetParserFactory.createParser(store);
+    var frame = new Frame();
+    var element = new Element("div");
+    element.style("transform-origin:" + css);
+    frame.addChild(element);
+    new StyleManagerImpl(store, parser).recalculate(frame);
+    var origin = element.resolvedStyle().transformOrigin();
+    assertEquals(x, origin.x().convert(220), .001f);
+    assertEquals(y, origin.y().convert(100), .001f);
+  }
+
+  @org.junit.jupiter.params.ParameterizedTest
+  @org.junit.jupiter.params.provider.ValueSource(strings = {
+      "left right", "top bottom", "top 20px", "20px left", "unknown", "left top 5px"
+  })
+  void invalidOriginKeepsEarlierValidDeclaration(String invalid) {
+    var store = new DefaultPropertyStoreProvider().createPropertyStore();
+    var parser = StyleSheetParserFactory.createParser(store);
+    var frame = new Frame();
+    var element = new Element("div");
+    element.style("transform-origin:10px 20px; transform-origin:" + invalid);
+    frame.addChild(element);
+    new StyleManagerImpl(store, parser).recalculate(frame);
+    assertEquals(10, element.resolvedStyle().transformOrigin().x().convert(220));
+    assertEquals(20, element.resolvedStyle().transformOrigin().y().convert(100));
+  }
+
   @Test
   void propertyStoreDiscoversTransformPropertiesAndResolvesDefaultsFromParsedCss() {
     var propertyStore = new DefaultPropertyStoreProvider().createPropertyStore();

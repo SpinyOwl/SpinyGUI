@@ -18,7 +18,7 @@ import com.spinyowl.spinygui.core.style.types.length.Length;
 import java.util.List;
 import java.util.Map;
 
-/** Registers transform properties; function and arbitrary-origin parsing is added in P1/T2. */
+/** Registers supported 2D transforms and axis-validated length/keyword origins. */
 public class TransformPropertyProvider implements PropertyProvider {
 
   private static final TermIdent NONE = new TermIdent("none");
@@ -39,25 +39,46 @@ public class TransformPropertyProvider implements PropertyProvider {
             .name(TRANSFORM_ORIGIN)
             .defaultValue(CENTER)
             .updater(TransformPropertyProvider::updateOrigin)
-            .validator(TransformPropertyProvider::isCenter)
+            .validator(term -> parseOrigin(term) != null)
             .build());
   }
 
   private static void updateOrigin(Term<?> term, Map<String, Object> styles) {
-    List<Term<?>> values = values(term);
-    styles.put(
-        TRANSFORM_ORIGIN,
-        new TransformOrigin(
-            ((TermLength) values.get(0)).value(),
-            values.size() == 1 ? Length.percent(0.5f) : ((TermLength) values.get(1)).value()));
+    styles.put(TRANSFORM_ORIGIN, parseOrigin(term));
   }
 
-  private static boolean isCenter(Term<?> term) {
+  private static TransformOrigin parseOrigin(Term<?> term) {
     List<Term<?>> values = values(term);
-    if (values.size() < 1 || values.size() > 2 || values.stream().anyMatch(value -> !(value instanceof TermLength))) {
-      return false;
+    if (values.size() == 1) {
+      Length<?> x = originAxis(values.getFirst(), true);
+      if (x != null) return new TransformOrigin(x, Length.percent(.5f));
+      Length<?> y = originAxis(values.getFirst(), false);
+      return y == null ? null : new TransformOrigin(Length.percent(.5f), y);
     }
-    return true;
+    if (values.size() != 2) return null;
+    Length<?> x = originAxis(values.get(0), true);
+    Length<?> y = originAxis(values.get(1), false);
+    if (x != null && y != null) return new TransformOrigin(x, y);
+    // Only keyword pairs may reverse axis order; lengths stay in x/y order.
+    if (values.get(0) instanceof TermIdent && values.get(1) instanceof TermIdent) {
+      x = originAxis(values.get(1), true);
+      y = originAxis(values.get(0), false);
+      if (x != null && y != null) return new TransformOrigin(x, y);
+    }
+    return null;
+  }
+
+  private static Length<?> originAxis(Term<?> term, boolean horizontal) {
+    if (term instanceof TermLength length) return length.value();
+    if (!(term instanceof TermIdent ident)) return null;
+    return switch (ident.value().toLowerCase(java.util.Locale.ROOT)) {
+      case "center" -> Length.percent(.5f);
+      case "left" -> horizontal ? Length.ZERO : null;
+      case "right" -> horizontal ? Length.percent(1) : null;
+      case "top" -> horizontal ? null : Length.ZERO;
+      case "bottom" -> horizontal ? null : Length.percent(1);
+      default -> null;
+    };
   }
 
   private static List<Term<?>> values(Term<?> term) {
