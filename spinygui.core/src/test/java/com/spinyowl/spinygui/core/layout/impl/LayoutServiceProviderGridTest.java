@@ -36,6 +36,44 @@ import org.junit.jupiter.api.Test;
 class LayoutServiceProviderGridTest {
 
   @org.junit.jupiter.params.ParameterizedTest
+  @org.junit.jupiter.params.provider.CsvSource(delimiter = '|', value = {
+      "392 | 18 | 2fr minmax(112px, 1fr) | 249.33333 | 124.66667",
+      "200 | 18 | 2fr minmax(112px, 1fr) | 70 | 112",
+      "100 | 10 | minmax(80px, 1fr) minmax(60px, 2fr) | 80 | 60",
+      "100 | 10 | 90px 1fr | 90 | 0",
+      "70 | 10 | 90px 1fr | 90 | 0",
+      "200 | 10 | 50px 1fr | 50 | 140",
+      "200 | 0 | 0.25fr 0.25fr | 50 | 50"
+  })
+  void fractionalTracksRespectMinimaOnBothAxes(
+      float available, float gap, String tracks, float firstSize, float secondSize) {
+    for (boolean rows : new boolean[] {false, true}) {
+      Frame frame = NodeBuilder.frame();
+      frame.frameSize(500, 500);
+      Element grid = NodeBuilder.div();
+      grid.style("display:grid; width:" + available + "px; height:" + available
+          + "px; gap:" + gap + "px; grid-template-" + (rows ? "rows:" : "columns:")
+          + tracks + (rows ? "; grid-template-columns: 30px;" : "; grid-template-rows: 30px;"));
+      Element first = NodeBuilder.div();
+      Element second = NodeBuilder.div();
+      grid.addChild(first);
+      grid.addChild(second);
+      frame.addChild(grid);
+      var store = new com.spinyowl.spinygui.core.style.stylesheet.impl.DefaultPropertyStoreProvider()
+          .createPropertyStore();
+      var parser = com.spinyowl.spinygui.core.parser.impl.StyleSheetParserFactory.createParser(store);
+      new com.spinyowl.spinygui.core.style.manager.StyleManagerImpl(store, parser).recalculate(frame);
+      layoutService().layout(frame);
+      assertEquals(firstSize, rows ? first.box().borderBox().height()
+          : first.box().borderBox().width(), .001f);
+      assertEquals(secondSize, rows ? second.box().borderBox().height()
+          : second.box().borderBox().width(), .001f);
+      assertEquals(firstSize + gap, rows ? second.box().borderBox().y()
+          : second.box().borderBox().x(), .001f);
+    }
+  }
+
+  @org.junit.jupiter.params.ParameterizedTest
   @org.junit.jupiter.params.provider.CsvSource({
       "grid, 8px 12px, 62, 0, 0, 28",
       "flex, 8px 12px, 62, 0, 0, 28",
@@ -386,19 +424,19 @@ class LayoutServiceProviderGridTest {
     assertEquals(218, grid.box().content().height(), 0.001);
     assertEquals(19, featured.box().borderBox().x(), 0.001);
     assertEquals(19, featured.box().borderBox().y(), 0.001);
-    assertEquals(174.667, featured.box().borderBox().width(), 0.001);
+    assertEquals(249.333, featured.box().borderBox().width(), 0.001);
     assertEquals(148, featured.box().borderBox().height(), 0.001);
     assertEquals(51, featured.absolutePosition().x(), 0.001);
     assertEquals(131, featured.absolutePosition().y(), 0.001);
     assertEquals(19, summary.box().borderBox().x(), 0.001);
     assertEquals(179, summary.box().borderBox().y(), 0.001);
-    assertEquals(211.667, actions.box().borderBox().x(), 0.001);
+    assertEquals(286.333, actions.box().borderBox().x(), 0.001);
     assertEquals(19, actions.box().borderBox().y(), 0.001);
-    assertEquals(199.333, actions.box().borderBox().width(), 0.001);
+    assertEquals(124.667, actions.box().borderBox().width(), 0.001);
     assertEquals(218, actions.box().borderBox().height(), 0.001);
-    assertEquals(243.667, actions.absolutePosition().x(), 0.001);
+    assertEquals(318.333, actions.absolutePosition().x(), 0.001);
     assertEquals(131, actions.absolutePosition().y(), 0.001);
-    assertEquals(224.667, actions.box().content().x(), 0.001);
+    assertEquals(299.333, actions.box().content().x(), 0.001);
     assertEquals(32, actions.box().content().y(), 0.001);
   }
 
@@ -475,9 +513,9 @@ class LayoutServiceProviderGridTest {
     layoutService().layout(frame);
 
     assertEquals(50, first.box().content().width(), 0.001);
-    assertEquals(33.333, second.box().content().width(), 0.001);
-    assertEquals(96.666, third.box().content().width(), 0.001);
-    assertEquals(103.333, third.box().content().x(), 0.001);
+    assertEquals(43.333, second.box().content().width(), 0.001);
+    assertEquals(86.667, third.box().content().width(), 0.001);
+    assertEquals(113.333, third.box().content().x(), 0.001);
   }
 
   @Test

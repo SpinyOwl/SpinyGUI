@@ -221,21 +221,37 @@ public class GridLayout implements ElementLayout {
         float base = flexibleBase(size, available, items, axis, i);
         flexTotal += flex;
         resolved.add(base);
-        fixed += base;
       } else {
         float value = resolveTrack(size, available, items, axis, i);
         resolved.add(value);
         fixed += value;
       }
     }
-    float free = Math.max(0, available - fixed);
-    if (flexTotal > EPSILON) {
+    // Minima constrain a fractional share; they are not an additional share of free space.
+    boolean[] frozen = new boolean[sizes.size()];
+    float free = available - fixed;
+    while (flexTotal > EPSILON) {
+      float fraction = Math.max(0, free) / Math.max(1, flexTotal);
+      boolean constrained = false;
       for (int i = 0; i < sizes.size(); i++) {
         float flex = flexibleFactor(sizes.get(i));
-        if (flex > 0f) {
-          resolved.set(i, resolved.get(i) + free * flex / flexTotal);
+        if (flex > 0f && !frozen[i] && fraction * flex < resolved.get(i)) {
+          frozen[i] = true;
+          free -= resolved.get(i);
+          flexTotal -= flex;
+          constrained = true;
         }
       }
+      if (constrained) {
+        continue;
+      }
+      for (int i = 0; i < sizes.size(); i++) {
+        float flex = flexibleFactor(sizes.get(i));
+        if (flex > 0f && !frozen[i]) {
+          resolved.set(i, fraction * flex);
+        }
+      }
+      break;
     }
     return resolved;
   }
