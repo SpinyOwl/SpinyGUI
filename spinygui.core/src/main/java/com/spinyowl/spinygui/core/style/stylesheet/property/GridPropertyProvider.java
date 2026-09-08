@@ -1,6 +1,7 @@
 package com.spinyowl.spinygui.core.style.stylesheet.property;
 
 import static com.spinyowl.spinygui.core.style.stylesheet.Properties.COLUMN_GAP;
+import static com.spinyowl.spinygui.core.style.stylesheet.Properties.GAP;
 import static com.spinyowl.spinygui.core.style.stylesheet.Properties.GRID;
 import static com.spinyowl.spinygui.core.style.stylesheet.Properties.GRID_AREA;
 import static com.spinyowl.spinygui.core.style.stylesheet.Properties.GRID_AUTO_COLUMNS;
@@ -74,7 +75,8 @@ public class GridPropertyProvider implements PropertyProvider {
         gapLonghand(ROW_GAP),
         axisPlacementShorthand(GRID_COLUMN, GRID_COLUMN_START, GRID_COLUMN_END),
         axisPlacementShorthand(GRID_ROW, GRID_ROW_START, GRID_ROW_END),
-        gridGapShorthand(),
+        gapShorthand(GRID_GAP),
+        gapShorthand(GAP),
         gridAreaShorthand(),
         gridTemplateShorthand(),
         gridShorthand());
@@ -130,8 +132,8 @@ public class GridPropertyProvider implements PropertyProvider {
     return Property.builder()
         .name(name)
         .defaultValue(ZERO)
-        .updater((term, styles) -> styles.put(name, term.value()))
-        .validator(TermLength.class::isInstance)
+        .updater((term, styles) -> updateGap(name, term, styles))
+        .validator(GridPropertyProvider::testGap)
         .build();
   }
 
@@ -155,9 +157,9 @@ public class GridPropertyProvider implements PropertyProvider {
         .build();
   }
 
-  private static Property gridGapShorthand() {
+  private static Property gapShorthand(String name) {
     return Property.builder()
-        .name(GRID_GAP)
+        .name(name)
         .defaultValue(ZERO)
         .updater(GridPropertyProvider::updateGridGap)
         .validator(GridPropertyProvider::testGapShorthand)
@@ -233,16 +235,20 @@ public class GridPropertyProvider implements PropertyProvider {
 
   private static void updateGridGap(Term<?> term, Map<String, Object> styles) {
     if (term instanceof TermList termList) {
-      styles.put(GRID_ROW_GAP, termList.get(0).value());
-      styles.put(ROW_GAP, termList.get(0).value());
-      styles.put(GRID_COLUMN_GAP, termList.get(1).value());
-      styles.put(COLUMN_GAP, termList.get(1).value());
+      updateGap(ROW_GAP, termList.get(0), styles);
+      updateGap(COLUMN_GAP, termList.get(1), styles);
     } else {
-      styles.put(GRID_ROW_GAP, term.value());
-      styles.put(ROW_GAP, term.value());
-      styles.put(GRID_COLUMN_GAP, term.value());
-      styles.put(COLUMN_GAP, term.value());
+      updateGap(ROW_GAP, term, styles);
+      updateGap(COLUMN_GAP, term, styles);
     }
+  }
+
+  /** Keeps modern and legacy names synchronized in declaration order. */
+  private static void updateGap(String name, Term<?> term, Map<String, Object> styles) {
+    Object value = term instanceof TermLength ? term.value() : Length.ZERO;
+    boolean row = ROW_GAP.equals(name) || GRID_ROW_GAP.equals(name);
+    styles.put(row ? ROW_GAP : COLUMN_GAP, value);
+    styles.put(row ? GRID_ROW_GAP : GRID_COLUMN_GAP, value);
   }
 
   private static void updateGridArea(Term<?> term, Map<String, Object> styles) {
@@ -360,15 +366,22 @@ public class GridPropertyProvider implements PropertyProvider {
   }
 
   private static boolean testGapShorthand(Term<?> term) {
-    if (term instanceof TermLength) {
+    if (testGap(term)) {
       return true;
     }
     if (term instanceof TermList termList) {
       return Operator.SPACE.equals(termList.operator())
           && termList.size() == 2
-          && termList.terms().stream().allMatch(TermLength.class::isInstance);
+          && termList.terms().stream().allMatch(GridPropertyProvider::testGap);
     }
     return false;
+  }
+
+  /** Accepts nonnegative lengths, unitless zero, and normal (zero for grid/flex). */
+  private static boolean testGap(Term<?> term) {
+    return term instanceof TermLength length && length.value().value().doubleValue() >= 0
+        || term.value() instanceof Number number && number.doubleValue() == 0
+        || term instanceof TermIdent ident && "normal".equalsIgnoreCase(ident.value());
   }
 
   private static boolean testArea(Term<?> term) {

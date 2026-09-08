@@ -256,6 +256,10 @@ public class FlexLayout implements ElementLayout {
 
     setPadding(node, style);
     setMargin(node, style);
+    setLength(style.gridRowGap(), node, Yoga.YGGutterRow,
+        Yoga::YGNodeStyleSetGap, Yoga::YGNodeStyleSetGapPercent);
+    setLength(style.gridColumnGap(), node, Yoga.YGGutterColumn,
+        Yoga::YGNodeStyleSetGap, Yoga::YGNodeStyleSetGapPercent);
 
     setFlexWrap(node, style.flexWrap());
 

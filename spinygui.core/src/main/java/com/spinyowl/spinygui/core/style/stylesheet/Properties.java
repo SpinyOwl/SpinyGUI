@@ -93,6 +93,8 @@ public final class Properties {
   public static final String GRID_COLUMN_GAP = "grid-column-gap";
   public static final String GRID_COLUMN_START = "grid-column-start";
   public static final String GRID_GAP = "grid-gap";
+  /** Shorthand for row and column spacing in grid and flex containers. */
+  public static final String GAP = "gap";
   public static final String GRID_ROW = "grid-row";
   public static final String GRID_ROW_END = "grid-row-end";
   public static final String GRID_ROW_GAP = "grid-row-gap";

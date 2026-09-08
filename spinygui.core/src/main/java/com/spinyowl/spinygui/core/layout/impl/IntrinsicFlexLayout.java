@@ -76,9 +76,21 @@ final class IntrinsicFlexLayout extends FlexLayout {
   private float intrinsicContentWidth(Element element) {
     boolean row = isRowFlex(element);
     float width = 0f;
+    int items = 0;
     for (Node child : element.childNodes()) {
+      if (child instanceof Element item && (!visible(item) || hasPosition(item, ABSOLUTE))) {
+        continue;
+      }
+      if (child instanceof Element || child instanceof Text) {
+        items++;
+      }
       float contribution = intrinsicOuterWidth(child);
       width = row ? width + contribution : Math.max(width, contribution);
+    }
+    // Cyclic percentage gaps contribute zero to an auto-width flex container.
+    var gap = element.resolvedStyle().gridColumnGap();
+    if (row && !(gap instanceof PercentLength)) {
+      width += Math.max(0, items - 1) * gap.convert();
     }
     return width;
   }

@@ -68,8 +68,9 @@ class IntrinsicFlexLayoutTest {
     assertTrue(footer.box().borderBox().y() >= metricsBottom);
   }
 
-  @Test
-  void layout_whenRowContainsAutoWidthFlexItems_usesTheirIntrinsicWidths() {
+  @org.junit.jupiter.params.ParameterizedTest
+  @org.junit.jupiter.params.provider.ValueSource(floats = {0, 12})
+  void layout_whenRowContainsAutoWidthFlexItems_usesTheirIntrinsicWidths(float gap) {
     Frame frame = NodeBuilder.frame();
     Element identity = NodeBuilder.div();
     Element identityContent = NodeBuilder.div();
@@ -102,6 +103,7 @@ class IntrinsicFlexLayoutTest {
 
     actions.resolvedStyle().display(Display.FLEX);
     actions.resolvedStyle().flexDirection(FlexDirection.ROW);
+    actions.resolvedStyle().gridColumnGap(Length.pixel(gap));
     firstAction.resolvedStyle().width(Length.pixel(60));
     firstAction.resolvedStyle().height(Length.pixel(32));
     secondAction.resolvedStyle().width(Length.pixel(70));
@@ -110,7 +112,7 @@ class IntrinsicFlexLayoutTest {
     layoutService().layout(frame);
 
     assertEquals(120f, identity.box().content().width(), 0.01f);
-    assertEquals(130f, actions.box().content().width(), 0.01f);
+    assertEquals(130f + gap, actions.box().content().width(), 0.01f);
     assertTrue(actions.box().borderBox().x() + actions.box().borderBox().width() <= 640.01f);
   }
 

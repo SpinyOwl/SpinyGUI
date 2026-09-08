@@ -30,6 +30,39 @@ import org.junit.jupiter.api.Test;
 
 class GridStyleManagerTest {
 
+  @org.junit.jupiter.params.ParameterizedTest
+  @org.junit.jupiter.params.provider.CsvSource({
+      "gap: 8px, 8, 8",
+      "gap: 4px 8px, 4, 8",
+      "gap: 0, 0, 0",
+      "gap: normal 8px, 0, 8",
+      "gap: 8px; row-gap: 3px, 3, 8",
+      "gap: 8px; grid-column-gap: 3px, 8, 3",
+      "row-gap: 3px; gap: 8px, 8, 8",
+      "grid-gap: 3px; gap: 8px, 8, 8",
+      "gap: 8px; grid-gap: 3px, 3, 3",
+      "gap: 8px; gap: -1px, 8, 8",
+      "gap: 8px; gap: 2, 8, 8",
+      "gap: 8px; gap: 1px 2px 3px, 8, 8",
+      "gap: 8px; gap: auto, 8, 8"
+  })
+  void gapExpandsAndRespectsAliasesAndValidation(String css, float row, float column) {
+    Element element = styledElement(css);
+    assertEquals(row, element.resolvedStyle().gridRowGap().convert());
+    assertEquals(column, element.resolvedStyle().gridColumnGap().convert());
+    assertEquals(element.resolvedStyle().getSafe(GRID_ROW_GAP),
+        element.resolvedStyle().getSafe(ROW_GAP));
+    assertEquals(element.resolvedStyle().getSafe(GRID_COLUMN_GAP),
+        element.resolvedStyle().getSafe(COLUMN_GAP));
+  }
+
+  @Test
+  void gapPreservesPercentages() {
+    Element element = styledElement("gap: 10% 20%;");
+    assertEquals(Length.percent(.1f), element.resolvedStyle().gridRowGap());
+    assertEquals(Length.percent(.2f), element.resolvedStyle().gridColumnGap());
+  }
+
   @Test
   void recalculateAppliesGridDisplayParsedByRealParser() {
     Element element = styledElement("display: grid");

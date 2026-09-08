@@ -35,6 +35,43 @@ import org.junit.jupiter.api.Test;
 
 class LayoutServiceProviderGridTest {
 
+  @org.junit.jupiter.params.ParameterizedTest
+  @org.junit.jupiter.params.provider.CsvSource({
+      "grid, 8px 12px, 62, 0, 0, 28",
+      "flex, 8px 12px, 62, 0, 0, 28",
+      "flex; flex-direction: column, 8px 12px, 0, 28, 62, 0",
+      "grid, 10% 10%, 62, 0, 0, 26",
+      "flex, 10% 10%, 62, 0, 0, 26"
+  })
+  void layoutAppliesParsedGap(String display, String gap,
+      float secondX, float secondY, float thirdX, float thirdY) {
+    Frame frame = NodeBuilder.frame();
+    frame.frameSize(300, 300);
+    Element container = NodeBuilder.div();
+    container.style("display: " + display + "; width: 120px; height: 60px; gap: " + gap
+        + "; grid-template-columns: 50px 50px; grid-template-rows: 20px 20px;"
+        + " flex-wrap: wrap; align-items: flex-start;");
+    frame.addChild(container);
+    Element first = NodeBuilder.div();
+    Element second = NodeBuilder.div();
+    Element third = NodeBuilder.div();
+    for (Element child : java.util.List.of(first, second, third)) {
+      child.style("width: 50px; height: 20px; flex-shrink: 0;");
+      container.addChild(child);
+    }
+    var store = new com.spinyowl.spinygui.core.style.stylesheet.impl.DefaultPropertyStoreProvider()
+        .createPropertyStore();
+    var parser = com.spinyowl.spinygui.core.parser.impl.StyleSheetParserFactory.createParser(store);
+    var manager = new com.spinyowl.spinygui.core.style.manager.StyleManagerImpl(store, parser);
+    manager.recalculate(frame);
+    layoutService().layout(frame);
+
+    assertEquals(secondX, second.box().borderBox().x() - first.box().borderBox().x(), .001f);
+    assertEquals(secondY, second.box().borderBox().y() - first.box().borderBox().y(), .001f);
+    assertEquals(thirdX, third.box().borderBox().x() - first.box().borderBox().x(), .001f);
+    assertEquals(thirdY, third.box().borderBox().y() - first.box().borderBox().y(), .001f);
+  }
+
   @Test
   void layout_resolvesPercentageTransformWithoutChangingGeometry() {
     Frame frame = NodeBuilder.frame();
