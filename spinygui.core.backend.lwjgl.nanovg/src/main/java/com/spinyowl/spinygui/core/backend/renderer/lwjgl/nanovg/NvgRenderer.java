@@ -181,7 +181,8 @@ public class NvgRenderer implements Renderer {
 
   private void renderFrame(Vector2fc windowSize, Vector2ic frameBufferSize, Frame frame) {
 
-    float pixelRatio = windowSize.x() / frameBufferSize.x();
+    float pixelRatio = frameBufferSize.x() / windowSize.x();
+    borderRenderer.pixelRatio(pixelRatio);
 
     preRender(windowSize, pixelRatio);
 

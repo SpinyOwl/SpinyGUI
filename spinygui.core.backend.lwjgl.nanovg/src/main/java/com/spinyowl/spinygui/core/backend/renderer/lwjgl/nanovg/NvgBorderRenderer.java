@@ -21,6 +21,13 @@ public class NvgBorderRenderer {
   /** Backend-owned drawing seam; tests record contours without requiring an OpenGL context. */
   private final ShapeSink sink;
 
+  /** Physical pixels per logical pixel, refreshed by the owning renderer each frame. */
+  private float pixelRatio = 1;
+
+  void pixelRatio(float value) {
+    pixelRatio = value;
+  }
+
   public NvgBorderRenderer() {
     this(new NativeShapeSink());
   }
@@ -68,6 +75,7 @@ public class NvgBorderRenderer {
     if (uniform) {
       float width = widths[0];
       if (width <= 0) return;
+      rect = sink.align(context, rect, width, pixelRatio);
       float half = width / 2;
       Vector4f strokeRadii = new Vector4f(
           Math.max(0, clamped.x - half), Math.max(0, clamped.y - half),
@@ -99,11 +107,25 @@ public class NvgBorderRenderer {
   }
 
   interface ShapeSink {
+    default Rect align(long context, Rect rect, float width, float pixelRatio) {
+      return rect;
+    }
+
     void stroke(long context, Rect rect, Color color, float width, Vector4f radius);
     void fill(long context, List<Vector2f> contour, Color color);
   }
 
   private static final class NativeShapeSink implements ShapeSink {
+    @Override
+    public Rect align(long context, Rect rect, float width, float pixelRatio) {
+      try (var stack = org.lwjgl.system.MemoryStack.stackPush()) {
+        var transform = stack.mallocFloat(6);
+        NanoVG.nvgCurrentTransform(context, transform);
+        return alignBorder(rect, width, pixelRatio, transform.get(0), transform.get(1),
+            transform.get(2), transform.get(3), transform.get(4), transform.get(5));
+      }
+    }
+
     @Override
     public void stroke(long context, Rect rect, Color color, float width, Vector4f radius) {
       NvgShapes.drawRectStroke(context, new Vector4f(rect.x(), rect.y(), rect.width(), rect.height()),
@@ -125,5 +147,19 @@ public class NvgBorderRenderer {
         NanoVG.nvgFill(context);
       }
     }
+  }
+
+  /** Snaps thin, untranslated-scale border edges in device space; transformed artwork stays smooth. */
+  static Rect alignBorder(Rect rect, float width, float ratio,
+      float a, float b, float c, float d, float tx, float ty) {
+    float physicalWidth = width * ratio;
+    if (!(ratio > 0) || a != 1 || d != 1 || b != 0 || c != 0
+        || physicalWidth < 1 || physicalWidth > 2
+        || Math.abs(physicalWidth - Math.round(physicalWidth)) > .0001f) return rect;
+    float left = Math.round((rect.x() + tx) * ratio) / ratio - tx;
+    float top = Math.round((rect.y() + ty) * ratio) / ratio - ty;
+    float right = Math.round((rect.x() + rect.width() + tx) * ratio) / ratio - tx;
+    float bottom = Math.round((rect.y() + rect.height() + ty) * ratio) / ratio - ty;
+    return new Rect(left, top, Math.max(0, right - left), Math.max(0, bottom - top));
   }
 }

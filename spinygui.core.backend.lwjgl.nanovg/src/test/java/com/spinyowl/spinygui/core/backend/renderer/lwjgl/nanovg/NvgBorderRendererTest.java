@@ -17,6 +17,20 @@ import org.junit.jupiter.api.Test;
 
 class NvgBorderRendererTest {
   @Test
+  void thinBordersSnapInDeviceSpaceAndRespectTranslationAndDpi() {
+    var rect = new Rect(10.2f, 332.4f, 100, 54);
+    assertEquals(new Rect(10, 332, 100, 54),
+        NvgBorderRenderer.alignBorder(rect, 1, 1, 1, 0, 0, 1, 0, 0));
+    assertEquals(new Rect(10, 332.5f, 100, 54),
+        NvgBorderRenderer.alignBorder(rect, 1, 2, 1, 0, 0, 1, 0, 0));
+    assertEquals(new Rect(10.25f, 332.25f, 100, 54),
+        NvgBorderRenderer.alignBorder(rect, 1, 1, 1, 0, 0, 1, .75f, .75f));
+    assertEquals(rect, NvgBorderRenderer.alignBorder(rect, 1, 1, 0, 1, -1, 0, 0, 0));
+    assertEquals(rect, NvgBorderRenderer.alignBorder(rect, 1, 1, 2, 0, 0, 2, 0, 0));
+    assertEquals(rect, NvgBorderRenderer.alignBorder(rect, 1.5f, 1, 1, 0, 0, 1, 0, 0));
+  }
+
+  @Test
   void roundedUniformBorderUsesInsetStrokeRadiusAndPresentedOpacity() {
     Element element = element();
     element.box().border().top(4);
