@@ -35,6 +35,43 @@ import org.junit.jupiter.api.Test;
 class OverflowLayoutTest {
 
   @Test
+  void trailingPaddingExpandsOnlyClippedScrollContainers() {
+    Frame frame = NodeBuilder.frame();
+    frame.frameSize(300, 300);
+    style(frame, Display.BLOCK, 300, 300);
+    Element panel = NodeBuilder.div();
+    style(panel, Display.BLOCK, 100, 100);
+    var s = panel.resolvedStyle();
+    s.paddingTop(Length.pixel(14));
+    s.paddingRight(Length.pixel(14));
+    s.paddingBottom(Length.pixel(14));
+    s.paddingLeft(Length.pixel(14));
+    s.borderTopWidth(Length.pixel(3));
+    s.borderRightWidth(Length.pixel(3));
+    s.borderBottomWidth(Length.pixel(3));
+    s.borderLeftWidth(Length.pixel(3));
+    s.borderTopStyle(BorderStyle.SOLID);
+    s.borderRightStyle(BorderStyle.SOLID);
+    s.borderBottomStyle(BorderStyle.SOLID);
+    s.borderLeftStyle(BorderStyle.SOLID);
+    Element child = NodeBuilder.div();
+    style(child, Display.BLOCK, 80, 80);
+    panel.addChild(child);
+    frame.addChild(panel);
+    LayoutService service = layoutService();
+    service.layout(frame);
+    assertEquals(94, panel.scrollWidth());
+    assertEquals(94, panel.scrollHeight());
+    s.overflowX(Overflow.HIDDEN);
+    s.overflowY(Overflow.HIDDEN);
+    service.layout(frame);
+    assertEquals(108, panel.scrollWidth());
+    assertEquals(108, panel.scrollHeight());
+    assertEquals(94, panel.clientWidth());
+    assertEquals(94, panel.clientHeight());
+  }
+
+  @Test
   void preparation_clampsRequestsWithoutRelayoutAndReclampsAfterShrink() {
     Frame frame = NodeBuilder.frame();
     frame.frameSize(500, 500);
@@ -136,8 +173,11 @@ class OverflowLayoutTest {
     child.resolvedStyle().top(Length.pixel(30));
     container.addChild(child);
     service.layout(frame);
-    assertEquals(180, container.scrollWidth());
+    assertEquals(170, container.scrollWidth());
     assertEquals(230, container.scrollHeight());
+    container.resolvedStyle().overflowX(Overflow.HIDDEN);
+    service.layout(frame);
+    assertEquals(180, container.scrollWidth());
   }
 
   @Test

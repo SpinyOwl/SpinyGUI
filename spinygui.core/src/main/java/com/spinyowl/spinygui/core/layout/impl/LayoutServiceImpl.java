@@ -105,8 +105,11 @@ public class LayoutServiceImpl implements LayoutService {
     }
 
     Box box = element.box();
-    scrollWidth = Math.max(0, scrollWidth - box.border().left() + box.padding().right());
-    scrollHeight = Math.max(0, scrollHeight - box.border().top() + box.padding().bottom());
+    // Trailing padding expands scroll-container contents, but not ordinary visible overflow.
+    scrollWidth = Math.max(0, scrollWidth - box.border().left()
+        + (com.spinyowl.spinygui.core.util.OverflowUtils.clipsX(element) ? box.padding().right() : 0));
+    scrollHeight = Math.max(0, scrollHeight - box.border().top()
+        + (com.spinyowl.spinygui.core.util.OverflowUtils.clipsY(element) ? box.padding().bottom() : 0));
 
     ScrollbarGeometry.Metrics previousScrollbarMetrics = element.scrollbarMetrics();
     ScrollbarGeometry.Metrics scrollbarMetrics = null;
