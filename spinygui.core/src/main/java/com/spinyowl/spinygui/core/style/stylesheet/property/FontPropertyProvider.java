@@ -19,6 +19,7 @@ import com.spinyowl.spinygui.core.style.stylesheet.Property;
 import com.spinyowl.spinygui.core.style.stylesheet.PropertyProvider;
 import com.spinyowl.spinygui.core.style.stylesheet.term.TermFloat;
 import com.spinyowl.spinygui.core.style.stylesheet.term.TermIdent;
+import com.spinyowl.spinygui.core.style.stylesheet.term.TermInteger;
 import com.spinyowl.spinygui.core.style.stylesheet.term.TermLength;
 import com.spinyowl.spinygui.core.style.stylesheet.term.TermList;
 import com.spinyowl.spinygui.core.style.types.length.Length;
@@ -91,8 +92,12 @@ public class FontPropertyProvider implements PropertyProvider {
             .defaultValue(new TermIdent(FontWeight.NORMAL.name()))
             .inheritable(true)
             .animatable(true)
-            .updater(put(FONT_WEIGHT, TermIdent.class, FontWeight::find))
-            .validator(checkValue(TermIdent.class, FontWeight::contains))
+            .updater(put(FONT_WEIGHT, TermIdent.class, FontWeight::find)
+                .or(put(FONT_WEIGHT, TermInteger.class, value -> FontWeight.find(value.intValue())))
+                .or(put(FONT_WEIGHT, TermFloat.class, value -> FontWeight.find(Math.round(value)))))
+            .validator(checkValue(TermIdent.class, FontWeight::contains)
+                .or(checkValue(TermInteger.class, value -> value >= 1 && value <= 1000))
+                .or(checkValue(TermFloat.class, value -> Float.isFinite(value) && value >= 1 && value <= 1000)))
             .build(),
         Property.builder()
             .name(LINE_HEIGHT)

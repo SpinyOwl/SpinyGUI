@@ -16,6 +16,32 @@ import org.junit.jupiter.api.Test;
 class FontPropertyProviderTest {
 
   @Test
+  void numericWeightsResolveInheritAndRejectInvalidUpdates() {
+    var frame = NodeBuilder.frame();
+    Element child = NodeBuilder.div();
+    frame.addChild(child);
+    var store = new com.spinyowl.spinygui.core.style.stylesheet.impl.DefaultPropertyStoreProvider()
+        .createPropertyStore();
+    var parser = com.spinyowl.spinygui.core.parser.impl.StyleSheetParserFactory.createParser(store);
+    var manager = new com.spinyowl.spinygui.core.style.manager.StyleManagerImpl(store, parser);
+    frame.style("font-weight: 700");
+    manager.recalculate(frame);
+    assertEquals(700, child.resolvedStyle().fontWeight().weight());
+    child.style("font-weight: 800");
+    manager.recalculate(frame);
+    assertEquals(800, child.resolvedStyle().fontWeight().weight());
+    child.style("font-weight: normal");
+    manager.recalculate(frame);
+    assertEquals(400, child.resolvedStyle().fontWeight().weight());
+    Property weight = new FontPropertyProvider().getProperties().stream()
+        .filter(p -> p.name().equals("font-weight")).findFirst().orElseThrow();
+    for (float invalid : new float[] {0, -1, 1001, Float.NaN, Float.POSITIVE_INFINITY}) {
+      weight.apply(child, new com.spinyowl.spinygui.core.style.stylesheet.term.TermFloat(invalid));
+      assertEquals(400, child.resolvedStyle().fontWeight().weight());
+    }
+  }
+
+  @Test
   void fontFamily_defaultPreservesBundledFallbackOrder() {
     Element element = NodeBuilder.div();
 

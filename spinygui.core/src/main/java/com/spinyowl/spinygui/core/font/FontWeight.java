@@ -81,8 +81,9 @@ public final class FontWeight {
     return VALUES.get(name.toLowerCase());
   }
 
+  /** Maps a numeric request to the nearest supported static weight, clamped to thin/black. */
   public static FontWeight find(int value) {
-    return switch (Math.round(value / 100f)) {
+    return switch (Math.max(1, Math.min(9, Math.round(value / 100f)))) {
       case 1 -> THIN;
       case 2 -> EXTRA_LIGHT;
       case 3 -> LIGHT;

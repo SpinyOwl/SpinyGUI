@@ -18,6 +18,15 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 class FontChainResolverTest {
+
+  @Test
+  void numericRobotoWeightsSelectRegularBoldAndNearestAvailableFace() {
+    for (int weight : new int[] {400, 700, 800}) {
+      var face = fontService.fontChainResolver().resolve(List.of("Roboto"), FontStyle.NORMAL,
+          FontWeight.find(weight), FontStretch.NORMAL).getFirst();
+      assertEquals(weight == 400 ? 400 : 700, face.weight().weight());
+    }
+  }
   private FontServiceImpl fontService;
 
   @BeforeEach
