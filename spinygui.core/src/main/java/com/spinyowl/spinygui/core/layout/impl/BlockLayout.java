@@ -83,6 +83,14 @@ public class BlockLayout implements ElementLayout {
         parentBox.content().width(), parentBox.content().height(), style, element.box().padding());
 
     Position elementPosition = element.resolvedStyle().position();
+    if (!Position.ABSOLUTE.equals(elementPosition)) {
+      Edges margin = element.box().margin();
+      float base = parentBox.content().width();
+      margin.left(marginLength(style.marginLeft(), base));
+      margin.right(marginLength(style.marginRight(), base));
+      margin.top(marginLength(style.marginTop(), base));
+      margin.bottom(marginLength(style.marginBottom(), base));
+    }
     if (Position.STATIC.equals(elementPosition)) {
       layoutStaticBlock(element, parentBox, style, skipChildren, ctx);
     } else if (Position.ABSOLUTE.equals(elementPosition)) {
@@ -107,7 +115,7 @@ public class BlockLayout implements ElementLayout {
 
     float contentX =
         parentBox.border().left()
-            + Math.max(parentBox.padding().left(), margin.left())
+            + parentBox.padding().left() + margin.left()
             + border.left()
             + padding.left();
 
@@ -116,8 +124,8 @@ public class BlockLayout implements ElementLayout {
         border.top()
             + padding.top()
             + (blockBottomY != null
-                ? blockBottomY
-                : Math.max(parentBox.padding().top(), margin.top()) + parentBox.border().top());
+                ? blockBottomY + collapsedMargin(previousBottomMargin(ctx), margin.top())
+                : parentBox.padding().top() + margin.top() + parentBox.border().top());
 
     box.contentPosition(contentX, contentY);
 
@@ -138,9 +146,22 @@ public class BlockLayout implements ElementLayout {
     } else if (e instanceof TextareaElement textarea) {
       contentWidth = getTextareaWidth(textarea, style, parentBox.content().width(), horizontalAdditions);
     } else {
-      contentWidth = getWidth(parentBox.content().width(), style);
+      contentWidth = getWidth(parentBox.content().width() -
+          (style.width().isAuto() ? margin.left() + margin.right() : 0), style);
     }
     contentWidth -= horizontalAdditions;
+    if (!style.width().isAuto() && !(e instanceof Frame)) {
+      float remainder = Math.max(0, parentBox.content().width() - contentWidth
+          - horizontalAdditions - margin.left() - margin.right());
+      boolean autoLeft = style.marginLeft() != null && style.marginLeft().isAuto();
+      boolean autoRight = style.marginRight() != null && style.marginRight().isAuto();
+      if (autoLeft) {
+        float offset = autoRight ? remainder / 2 : remainder;
+        margin.left(offset);
+        box.content().x(box.content().x() + offset);
+      }
+      if (autoRight) margin.right(autoLeft ? remainder / 2 : remainder);
+    }
     box.content().width(contentWidth);
 
     if (e instanceof Frame frame) {
@@ -194,6 +215,20 @@ public class BlockLayout implements ElementLayout {
     ctx.lastTextEndY(null);
     ctx.previousNode(e);
     ctx.lastBlockBottomY(e.box().borderBox().y() + e.box().borderBox().height());
+  }
+
+  /** Auto margins start at zero; horizontal free-space distribution runs after sizing. */
+  private static float marginLength(Unit value, float width) {
+    return value != null && value.isLength() ? value.asLength().convert(width) : 0;
+  }
+
+  /** Adjacent vertical margins combine largest positive and smallest negative contributions. */
+  private static float collapsedMargin(float previous, float next) {
+    return Math.max(0, Math.max(previous, next)) + Math.min(0, Math.min(previous, next));
+  }
+
+  private static float previousBottomMargin(LayoutContext context) {
+    return context.previousNode() instanceof Element previous ? previous.box().margin().bottom() : 0;
   }
 
   private void layoutAbsoluteBlock(
@@ -717,9 +752,10 @@ public class BlockLayout implements ElementLayout {
     float startY =
         context.lastBlockBottomY() == null
             ? 0
-            : Math.max(0, context.lastBlockBottomY() - contentStart);
+            : Math.max(0, context.lastBlockBottomY() + previousBottomMargin(context) - contentStart);
     float height = inlineFormattingContext.layout(element, inlineNodes, startY);
     context.lastBlockBottomY(contentStart + startY + height);
+    context.previousNode(null);
     inlineNodes.clear();
   }
 

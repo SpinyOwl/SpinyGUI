@@ -65,12 +65,12 @@ public final class LayoutUtils {
 
     float minY =
         heightNodes.stream()
-            .map(node -> node.box().borderBox().y())
+            .map(node -> node.box().marginBox().y())
             .min(Float::compare)
             .orElse(0f);
     float maxY =
         heightNodes.stream()
-            .map(node -> node.box().borderBox().y() + node.box().borderBox().height())
+            .map(node -> node.box().marginBox().y() + node.box().marginBox().height())
             .max(Float::compare)
             .orElse(minY);
     return maxY - minY;

@@ -37,6 +37,41 @@ import org.junit.jupiter.api.Test;
 
 class BlockLayoutTest {
 
+  @Test
+  void layout_blockMarginsOffsetShrinkAndCollapseIncludingNegativeValues() {
+    Frame frame = NodeBuilder.frame();
+    frame.frameSize(200, 200);
+    style(frame, 0);
+    Element first = NodeBuilder.div();
+    Element second = NodeBuilder.div();
+    style(first, 0);
+    style(second, 0);
+    first.resolvedStyle().height(Length.pixel(30));
+    first.resolvedStyle().marginTop(Length.pixel(20));
+    first.resolvedStyle().marginLeft(Length.pixel(20));
+    first.resolvedStyle().marginRight(Length.pixel(20));
+    first.resolvedStyle().marginBottom(Length.pixel(15));
+    second.resolvedStyle().height(Length.pixel(20));
+    second.resolvedStyle().marginTop(Length.pixel(10));
+    frame.addChildren(first, second);
+    RecursiveLayoutService service = new RecursiveLayoutService();
+    service.blockLayout(new BlockLayout(service, new InlineFormattingContext(new FixedTextMeasurer())));
+    service.layout(frame);
+    assertEquals(20, first.box().borderBox().x());
+    assertEquals(20, first.box().borderBox().y());
+    assertEquals(160, first.box().borderBox().width());
+    assertEquals(65, second.box().borderBox().y());
+    second.resolvedStyle().marginTop(Length.pixel(-5));
+    second.resolvedStyle().width(Length.pixel(100));
+    second.resolvedStyle().marginLeft(Unit.AUTO);
+    second.resolvedStyle().marginRight(Unit.AUTO);
+    service.layout(frame);
+    assertEquals(60, second.box().borderBox().y());
+    assertEquals(50, second.box().borderBox().x());
+    assertEquals(50, second.box().margin().left());
+    assertEquals(50, second.box().margin().right());
+  }
+
   @BeforeEach
   void installFontOwner() {
     FontTestOwner.install();
