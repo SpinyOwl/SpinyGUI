@@ -32,8 +32,8 @@ public final class ScrollbarGeometry {
   public static Metrics compute(@NonNull Element element, float scrollWidth, float scrollHeight) {
     float verticalThickness = verticalThickness(element);
     float horizontalThickness = horizontalThickness(element);
-    float baseClientWidth = element.box().content().width();
-    float baseClientHeight = element.box().content().height();
+    float baseClientWidth = element.box().paddingBox().width();
+    float baseClientHeight = element.box().paddingBox().height();
 
     boolean vertical = false;
     boolean horizontal = false;

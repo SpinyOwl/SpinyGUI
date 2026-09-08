@@ -422,7 +422,9 @@ public class BlockLayout implements ElementLayout {
   private Box copyWithClientSize(Box source, ScrollbarGeometry.Metrics scrollbarMetrics) {
     Box copy = new Box();
     copy.contentPosition(source.content().x(), source.content().y());
-    copy.contentSize(scrollbarMetrics.clientWidth(), scrollbarMetrics.clientHeight());
+    copy.contentSize(
+        Math.max(0, scrollbarMetrics.clientWidth() - source.padding().left() - source.padding().right()),
+        Math.max(0, scrollbarMetrics.clientHeight() - source.padding().top() - source.padding().bottom()));
     copyEdges(source.padding(), copy.padding());
     copyEdges(source.border(), copy.border());
     copyEdges(source.margin(), copy.margin());

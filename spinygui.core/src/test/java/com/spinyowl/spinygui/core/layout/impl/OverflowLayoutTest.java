@@ -35,6 +35,74 @@ import org.junit.jupiter.api.Test;
 class OverflowLayoutTest {
 
   @Test
+  void layout_nonReplacedInlineHasNoClientOrScrollArea() {
+    Frame frame = NodeBuilder.frame();
+    frame.frameSize(100, 100);
+    style(frame, Display.BLOCK, 100, 100);
+    Element span = NodeBuilder.div();
+    style(span, Display.INLINE, 40, 20);
+    span.box().contentSize(40, 20);
+    span.clientWidth(40);
+    span.scrollWidth(40);
+    frame.addChild(span);
+    layoutService().layout(frame);
+    assertEquals(0, span.clientWidth());
+    assertEquals(0, span.clientHeight());
+    assertEquals(0, span.scrollWidth());
+    assertEquals(0, span.scrollHeight());
+  }
+
+  @Test
+  void layout_visibleTransformedOverflowPropagatesUntilClipped() {
+    Frame frame = NodeBuilder.frame();
+    frame.frameSize(100, 100);
+    style(frame, Display.BLOCK, 100, 100);
+    Element parent = NodeBuilder.div();
+    style(parent, Display.BLOCK, 100, 100);
+    Element child = NodeBuilder.div();
+    style(child, Display.BLOCK, 200, 100);
+    child.resolvedStyle().transform(new com.spinyowl.spinygui.core.style.types.Transform.Translate(
+        Length.pixel(30), Length.ZERO));
+    parent.addChild(child);
+    frame.addChild(parent);
+    LayoutService service = layoutService();
+    service.layout(frame);
+    assertEquals(230, parent.scrollWidth());
+    assertEquals(230, frame.scrollWidth());
+    parent.resolvedStyle().overflowX(Overflow.HIDDEN);
+    service.layout(frame);
+    assertEquals(230, parent.scrollWidth());
+    assertEquals(100, frame.scrollWidth());
+  }
+
+  @Test
+  void layout_emptyPaddedBox_reportsPaddingAreaAndIncludesOwnedAbsoluteOverflow() {
+    Frame frame = NodeBuilder.frame();
+    frame.frameSize(500, 500);
+    style(frame, Display.BLOCK, 500, 500);
+    Element container = NodeBuilder.div();
+    style(container, Display.BLOCK, 100, 100);
+    container.resolvedStyle().position(Position.RELATIVE);
+    container.resolvedStyle().paddingLeft(Length.pixel(10));
+    container.resolvedStyle().paddingRight(Length.pixel(10));
+    frame.addChild(container);
+    LayoutService service = layoutService();
+    service.layout(frame);
+    assertEquals(80, container.box().content().width());
+    assertEquals(100, container.clientWidth());
+    assertEquals(100, container.scrollWidth());
+    Element child = NodeBuilder.div();
+    style(child, Display.BLOCK, 150, 200);
+    child.resolvedStyle().position(Position.ABSOLUTE);
+    child.resolvedStyle().left(Length.pixel(20));
+    child.resolvedStyle().top(Length.pixel(30));
+    container.addChild(child);
+    service.layout(frame);
+    assertEquals(180, container.scrollWidth());
+    assertEquals(230, container.scrollHeight());
+  }
+
+  @Test
   void layout_whenBlockChildExceedsFixedHeight_preservesClientHeightAndMeasuresScrollHeight() {
     Frame frame = NodeBuilder.frame();
     frame.frameSize(500, 500);
@@ -159,7 +227,7 @@ class OverflowLayoutTest {
     layoutService().layout(frame);
 
     assertEquals(100, container.clientHeight());
-    assertEquals(0, container.scrollHeight());
+    assertEquals(100, container.scrollHeight());
     assertEquals(0, OverflowUtils.maxScrollTop(container));
   }
 
@@ -180,7 +248,7 @@ class OverflowLayoutTest {
     layoutService().layout(frame);
 
     assertEquals(100, container.clientHeight());
-    assertEquals(50, container.scrollHeight());
+    assertEquals(100, container.scrollHeight());
     assertEquals(0, container.scrollTop());
     assertFalse(OverflowUtils.acceptsWheelY(container));
   }
@@ -211,8 +279,8 @@ class OverflowLayoutTest {
     child.resolvedStyle().display(Display.NONE);
     layoutService.layout(frame);
 
-    assertEquals(0, container.scrollHeight());
-    assertEquals(0, container.scrollWidth());
+    assertEquals(100, container.scrollHeight());
+    assertEquals(100, container.scrollWidth());
     assertFalse(container.layoutChildNodes().contains(child));
     assertTrue(child.layoutChildNodes().isEmpty());
     assertNull(child.offsetParent());
@@ -248,8 +316,8 @@ class OverflowLayoutTest {
 
     layoutService().layout(frame);
 
-    assertEquals(0, container.scrollHeight());
-    assertEquals(0, container.scrollWidth());
+    assertEquals(100, container.scrollHeight());
+    assertEquals(100, container.scrollWidth());
     assertFalse(container.layoutChildNodes().contains(child));
     assertNull(child.offsetParent());
   }

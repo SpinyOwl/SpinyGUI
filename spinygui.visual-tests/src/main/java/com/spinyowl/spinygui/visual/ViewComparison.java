@@ -32,7 +32,8 @@ final class ViewComparison {
       for (int i = 0; i < wanted.length; i++) {
         if (!Double.isFinite(wanted[i]) || !Double.isFinite(got[i])
             || Math.abs(wanted[i] - got[i]) > GEOMETRY_TOLERANCE) {
-          failures.add(entry.getKey() + "." + FIELDS.get(i)
+          String category = i < 4 ? "border-box" : i < 8 ? "client/scroll-size" : "scroll-offset";
+          failures.add("[" + category + "] " + entry.getKey() + "." + FIELDS.get(i)
               + ": browser=" + wanted[i] + ", native=" + got[i]);
         }
       }

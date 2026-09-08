@@ -1,6 +1,5 @@
 package com.spinyowl.spinygui.core.layout.impl;
 
-import static com.spinyowl.spinygui.core.layout.impl.LayoutUtils.hasPosition;
 import static com.spinyowl.spinygui.core.layout.impl.LayoutUtils.isPositioned;
 import static com.spinyowl.spinygui.core.util.NodeUtilities.visible;
 import static com.spinyowl.spinygui.core.util.OverflowUtils.clampScrollOffsets;
@@ -19,7 +18,6 @@ import com.spinyowl.spinygui.core.node.layout.Box;
 import com.spinyowl.spinygui.core.node.layout.Edges;
 import com.spinyowl.spinygui.core.node.layout.Rect;
 import com.spinyowl.spinygui.core.style.types.Display;
-import com.spinyowl.spinygui.core.style.types.Position;
 import com.spinyowl.spinygui.core.style.types.TransformComposition;
 import com.spinyowl.spinygui.core.style.types.Transform;
 import com.spinyowl.spinygui.core.style.types.TransformOrigin;
@@ -87,65 +85,98 @@ public class LayoutServiceImpl implements LayoutService {
         .frame()
         .diagnostics()
         .increment(FrameDiagnosticCounter.SCROLL_CONVERGENCE_CHECKS);
+    boolean descendantGutterChanged = false;
+    for (Node child : element.layoutChildNodes()) {
+      if (child instanceof Element childElement) {
+        descendantGutterChanged |= updateScrollAndClientSize(childElement);
+      }
+    }
     float scrollWidth = 0;
     float scrollHeight = 0;
 
-    for (Node node : element.childNodes()) {
+    for (Node node : element.layoutChildNodes()) {
       if (affectsScrollSize(node)) {
-        Rect rect = node.box().marginBox();
+        Rect rect = scrollBounds(node);
         scrollWidth = Math.max(scrollWidth, rect.x() + rect.width());
         scrollHeight = Math.max(scrollHeight, rect.y() + rect.height());
       }
     }
 
     Box box = element.box();
-    scrollWidth = Math.max(0, scrollWidth - box.border().left() - box.padding().left());
-    scrollHeight = Math.max(0, scrollHeight - box.border().top() - box.padding().top());
+    scrollWidth = Math.max(0, scrollWidth - box.border().left() + box.padding().right());
+    scrollHeight = Math.max(0, scrollHeight - box.border().top() + box.padding().bottom());
 
     ScrollbarGeometry.Metrics previousScrollbarMetrics = element.scrollbarMetrics();
     ScrollbarGeometry.Metrics scrollbarMetrics = null;
-    float clientWidth = box.content().width();
-    float clientHeight = box.content().height();
+    float clientWidth = box.paddingBox().width();
+    float clientHeight = box.paddingBox().height();
     if (ScrollbarGeometry.canShowScrollbars(element)) {
       scrollbarMetrics = ScrollbarGeometry.compute(element, scrollWidth, scrollHeight);
       clientWidth = scrollbarMetrics.clientWidth();
       clientHeight = scrollbarMetrics.clientHeight();
     }
 
-    element.scrollWidth(scrollWidth);
-    element.scrollHeight(scrollHeight);
+    boolean inline = Display.INLINE.equals(element.resolvedStyle().display());
+    element.scrollWidth(inline ? 0 : Math.max(clientWidth, scrollWidth));
+    element.scrollHeight(inline ? 0 : Math.max(clientHeight, scrollHeight));
 
-    element.clientWidth(clientWidth);
-    element.clientHeight(clientHeight);
+    element.clientWidth(inline ? 0 : clientWidth);
+    element.clientHeight(inline ? 0 : clientHeight);
     element.scrollbarMetrics(scrollbarMetrics);
 
     clampScrollOffsets(element);
 
     float previousClientWidth =
         previousScrollbarMetrics == null
-            ? box.content().width()
+            ? box.paddingBox().width()
             : previousScrollbarMetrics.clientWidth();
     float previousClientHeight =
         previousScrollbarMetrics == null
-            ? box.content().height()
+            ? box.paddingBox().height()
             : previousScrollbarMetrics.clientHeight();
     boolean gutterChanged =
         previousClientWidth != clientWidth || previousClientHeight != clientHeight;
 
-    // Update scroll and client size for all children, propagating a nested gutter change upward.
-    for (Node child : element.childNodes()) {
-      if (child instanceof Element childElement && visible(childElement)) {
-        gutterChanged |= updateScrollAndClientSize(childElement);
-      }
-    }
-    return gutterChanged;
+    return gutterChanged || descendantGutterChanged;
   }
 
   private boolean affectsScrollSize(Node node) {
     if (node instanceof Element element) {
-      return visible(element) && !hasPosition(element, Position.ABSOLUTE);
+      return visible(element);
     }
     return true;
+  }
+
+  /** Scrollable overflow includes visible descendant ink and transformed bounds, but never shrinks. */
+  private Rect scrollBounds(Node node) {
+    Rect margin = node.box().marginBox();
+    float right = margin.x() + margin.width();
+    float bottom = margin.y() + margin.height();
+    if (node instanceof Element child) {
+      Rect border = child.box().borderBox();
+      if (!com.spinyowl.spinygui.core.util.OverflowUtils.clipsX(child)) {
+        right = Math.max(right, border.x() + child.box().border().left() + child.scrollWidth());
+      }
+      if (!com.spinyowl.spinygui.core.util.OverflowUtils.clipsY(child)) {
+        bottom = Math.max(bottom, border.y() + child.box().border().top() + child.scrollHeight());
+      }
+      var transform = child.presentedStyle().transform();
+      if (transform != null && !Transform.NONE.equals(transform)) {
+        var origin = child.resolvedStyle().transformOrigin();
+        var matrix = TransformComposition.compose(List.of(transform),
+            origin == null ? TransformOrigin.CENTER : origin, border.width(), border.height());
+        float extentRight = right;
+        float extentBottom = bottom;
+        for (float x : new float[] {margin.x(), extentRight}) {
+          for (float y : new float[] {margin.y(), extentBottom}) {
+            var point = matrix.apply(x - border.x(), y - border.y());
+            right = Math.max(right, border.x() + point.x());
+            bottom = Math.max(bottom, border.y() + point.y());
+          }
+        }
+      }
+    }
+    return new Rect(margin.x(), margin.y(), right - margin.x(), bottom - margin.y());
   }
 
   public void layoutNode(@NonNull Node node, @NonNull LayoutContext context) {
