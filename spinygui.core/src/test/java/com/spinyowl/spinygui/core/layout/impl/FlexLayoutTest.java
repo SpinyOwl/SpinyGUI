@@ -281,10 +281,20 @@ class FlexLayoutTest {
 
     layoutService(new FixedTextMeasurer()).layout(frame);
 
-    assertTrue(label.box().content().width() > 0);
-    assertTrue(status.box().content().width() > 0);
+    assertEquals(100, label.box().content().width());
+    assertEquals(70, status.box().content().width());
     assertFalse(labelText.inlineFragments().isEmpty());
     assertFalse(statusText.inlineFragments().isEmpty());
+    label.resolvedStyle().display(Display.INLINE);
+    button.resolvedStyle().alignItems(AlignItems.STRETCH);
+    layoutService(new FixedTextMeasurer()).layout(frame);
+    assertEquals(180, label.box().content().width());
+    assertEquals(180, label.clientWidth());
+    label.resolvedStyle().alignSelf(AlignSelf.FLEX_START);
+    label.resolvedStyle().minWidth(Length.pixel(120));
+    label.resolvedStyle().maxWidth(Length.pixel(140));
+    layoutService(new FixedTextMeasurer()).layout(frame);
+    assertEquals(120, label.box().content().width());
   }
 
   @Test

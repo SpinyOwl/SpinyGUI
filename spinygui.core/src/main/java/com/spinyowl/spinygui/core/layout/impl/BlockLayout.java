@@ -481,6 +481,7 @@ public class BlockLayout implements ElementLayout {
       layoutFlowChildren(element);
     }
     if ((style.display().equals(Display.BLOCK)
+            || style.display().equals(Display.INLINE)
             || style.display().equals(Display.INLINE_BLOCK)
             || style.display().equals(Display.GRID))
         && height.isAuto()

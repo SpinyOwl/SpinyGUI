@@ -58,10 +58,13 @@ import com.spinyowl.spinygui.core.layout.ElementLayout;
 import com.spinyowl.spinygui.core.layout.LayoutContext;
 import com.spinyowl.spinygui.core.layout.LayoutService;
 import com.spinyowl.spinygui.core.node.Element;
+import com.spinyowl.spinygui.core.node.Node;
+import com.spinyowl.spinygui.core.node.Text;
 import com.spinyowl.spinygui.core.node.layout.Box;
 import com.spinyowl.spinygui.core.node.layout.Edges;
 import com.spinyowl.spinygui.core.node.layout.Rect;
 import com.spinyowl.spinygui.core.style.ResolvedStyle;
+import com.spinyowl.spinygui.core.style.types.Display;
 import com.spinyowl.spinygui.core.style.types.Position;
 import com.spinyowl.spinygui.core.style.types.border.BorderStyle;
 import com.spinyowl.spinygui.core.style.types.flex.AlignItems;
@@ -191,16 +194,93 @@ public class FlexLayout implements ElementLayout {
         Yoga.YGNodeStyleSetHeight(childNode, borderBox.height());
       }
       if (child.resolvedStyle().width().isAuto() && !stretchesCrossAxis(parentStyle, child)) {
-        Yoga.YGNodeStyleSetWidth(childNode, borderBox.width());
+        Yoga.YGNodeStyleSetWidth(childNode, intrinsicBorderBoxWidth(child));
       }
     } else {
       if (child.resolvedStyle().width().isAuto()) {
-        Yoga.YGNodeStyleSetWidth(childNode, borderBox.width());
+        Yoga.YGNodeStyleSetWidth(childNode, intrinsicBorderBoxWidth(child));
       }
       if (child.resolvedStyle().height().isAuto() && !stretchesCrossAxis(parentStyle, child)) {
         Yoga.YGNodeStyleSetHeight(childNode, borderBox.height());
       }
     }
+  }
+
+  /** Measures auto flex items from their contents rather than the provisional block width. */
+  protected float intrinsicContentWidth(Element element) {
+    boolean row = isRowFlex(element);
+    float width = 0f;
+    int items = 0;
+    float inlineWidth = 0;
+    boolean flex = Display.FLEX.equals(element.resolvedStyle().display());
+    for (Node child : element.childNodes()) {
+      if (child instanceof Element item && (!visible(item) || hasPosition(item, ABSOLUTE))) {
+        continue;
+      }
+      if (child instanceof Element || child instanceof Text) {
+        items++;
+      }
+      float contribution = intrinsicOuterWidth(child);
+      if (row) {
+        width += contribution;
+      } else if (!flex && (child instanceof Text || child instanceof Element item
+          && (Display.INLINE.equals(item.resolvedStyle().display())
+              || Display.INLINE_BLOCK.equals(item.resolvedStyle().display())))) {
+        inlineWidth += contribution;
+        width = Math.max(width, inlineWidth);
+      } else {
+        inlineWidth = 0;
+        width = Math.max(width, contribution);
+      }
+    }
+    // Cyclic percentage gaps contribute zero to an auto-width flex container.
+    var gap = element.resolvedStyle().gridColumnGap();
+    if (row && !(gap instanceof PercentLength)) {
+      width += Math.max(0, items - 1) * gap.convert();
+    }
+    return width;
+  }
+
+  private boolean isRowFlex(Element element) {
+    if (!Display.FLEX.equals(element.resolvedStyle().display())) {
+      return false;
+    }
+    FlexDirection direction = element.resolvedStyle().flexDirection();
+    return FlexDirection.ROW.equals(direction) || FlexDirection.ROW_REVERSE.equals(direction);
+  }
+
+  private float intrinsicOuterWidth(Node node) {
+    if (node instanceof Text text) {
+      return text.box().borderBox().width();
+    }
+    if (!(node instanceof Element child) || !visible(child) || hasPosition(child, ABSOLUTE)) {
+      return 0f;
+    }
+
+    Edges margin = child.box().margin();
+    return margin.left() + intrinsicBorderBoxWidth(child) + margin.right();
+  }
+
+  private float intrinsicBorderBoxWidth(Element element) {
+    var width = element.resolvedStyle().width();
+    Display display = element.resolvedStyle().display();
+
+    // Inline-block controls already have their shrink-wrapped width from BlockLayout. Pixel-sized
+    // elements are likewise definite. Percentage widths do not establish an intrinsic contribution;
+    // use their contents instead so an auto-width parent is not circularly sized from its own
+    // pre-pass width.
+    if (Display.INLINE_BLOCK.equals(display)
+        || (!width.isAuto() && !(width.asLength() instanceof PercentLength))) {
+      return element.box().borderBox().width();
+    }
+
+    Edges padding = element.box().padding();
+    Edges border = element.box().border();
+    return intrinsicContentWidth(element)
+        + padding.left()
+        + padding.right()
+        + border.left()
+        + border.right();
   }
 
   private boolean stretchesCrossAxis(ResolvedStyle parentStyle, Element child) {

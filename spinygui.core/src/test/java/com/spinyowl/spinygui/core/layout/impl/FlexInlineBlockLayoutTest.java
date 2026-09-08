@@ -38,6 +38,11 @@ import org.junit.jupiter.api.Test;
 
 class FlexInlineBlockLayoutTest {
 
+  @org.junit.jupiter.api.BeforeEach
+  void installFontOwner() {
+    com.spinyowl.spinygui.core.system.font.FontTestOwner.install();
+  }
+
   @Test
   void layout_whenInlineBlockIsDirectFlexItem_laysOutItsText() {
     Frame frame = NodeBuilder.frame();

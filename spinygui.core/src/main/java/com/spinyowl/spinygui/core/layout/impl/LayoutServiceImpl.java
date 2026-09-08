@@ -118,7 +118,7 @@ public class LayoutServiceImpl implements LayoutService {
       clientHeight = scrollbarMetrics.clientHeight();
     }
 
-    boolean inline = Display.INLINE.equals(element.resolvedStyle().display());
+    boolean inline = Display.INLINE.equals(element.resolvedStyle().display()) && !blockifiedItem(element);
     element.scrollWidth(inline ? 0 : Math.max(clientWidth, scrollWidth));
     element.scrollHeight(inline ? 0 : Math.max(clientHeight, scrollHeight));
 
@@ -140,6 +140,13 @@ public class LayoutServiceImpl implements LayoutService {
         previousClientWidth != clientWidth || previousClientHeight != clientHeight;
 
     return gutterChanged || descendantGutterChanged;
+  }
+
+  /** Flex/grid items establish a block formatting context even when declared inline. */
+  private static boolean blockifiedItem(Element element) {
+    Element parent = element.parent();
+    return parent != null && (Display.FLEX.equals(parent.resolvedStyle().display())
+        || Display.GRID.equals(parent.resolvedStyle().display()));
   }
 
   private boolean affectsScrollSize(Node node) {
@@ -189,6 +196,7 @@ public class LayoutServiceImpl implements LayoutService {
         return;
       }
       Display display = element.resolvedStyle().display();
+      if (Display.INLINE.equals(display) && blockifiedItem(element)) display = Display.BLOCK;
       ElementLayout layout = layoutMap.get(display);
       if (layout != null) {
         layout.layout(element, context);
