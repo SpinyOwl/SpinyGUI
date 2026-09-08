@@ -24,6 +24,40 @@ import com.spinyowl.spinygui.core.system.font.TextMeasurer;
 import org.junit.jupiter.api.Test;
 
 class IntrinsicFlexLayoutTest {
+  @Test
+  void nestedAutoColumnsGrowBeyondTheirMinimumBeforePlacingSiblings() {
+    Frame frame = NodeBuilder.frame();
+    Element panel = NodeBuilder.div();
+    Element first = NodeBuilder.div();
+    Element second = NodeBuilder.div();
+    Element firstContent = NodeBuilder.div();
+    Element secondContent = NodeBuilder.div();
+    frame.addChild(panel);
+    panel.addChildren(first, second);
+    first.addChild(firstContent);
+    second.addChild(secondContent);
+    for (Element element : java.util.List.of(frame, panel, first, second, firstContent, secondContent)) {
+      style(element);
+    }
+    frame.frameSize(400, 400);
+    for (Element element : java.util.List.of(panel, first, second)) {
+      element.resolvedStyle().display(Display.FLEX);
+      element.resolvedStyle().flexDirection(FlexDirection.COLUMN);
+    }
+    for (Element element : java.util.List.of(first, second)) {
+      element.resolvedStyle().minHeight(Length.pixel(54));
+      element.resolvedStyle().paddingTop(Length.pixel(9));
+      element.resolvedStyle().paddingBottom(Length.pixel(9));
+      element.resolvedStyle().marginBottom(Length.pixel(6));
+    }
+    firstContent.resolvedStyle().height(Length.pixel(39));
+    secondContent.resolvedStyle().height(Length.pixel(39));
+    layoutService().layout(frame);
+    assertEquals(57, first.box().borderBox().height(), .01f);
+    assertEquals(63, second.box().borderBox().y(), .01f);
+    assertEquals(126, panel.box().borderBox().height(), .01f);
+  }
+
 
   @Test
   void layout_whenNestedFlexRowHasAutoHeight_followingSiblingStartsAfterItsChildren() {

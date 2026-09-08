@@ -23,6 +23,7 @@
   - [T16 - Align text advances and drawing positions](<P1/T16 - Align text advances and drawing positions.md>)
   - [T17 - Accept unitless zero lengths](<P1/T17 - Accept unitless zero lengths.md>)
   - [T18 - Align thin native borders to physical pixels](<P1/T18 - Align thin native borders to physical pixels.md>)
+  - [T19 - Size auto flex containers from measured children](<P1/T19 - Size auto flex containers from measured children.md>)
 - Related: [Original analysis](<T1 - Browser visual comparison analysis.md>); [Tooling execution record](<T1 - Browser visual comparison.md>); [E1 transforms](<E1 - CSS animation support.md>); [E3 Grid](<E3 - CSS Grid support.md>); [E5 text](<E5 - Text performance improvements.md>)
 - Next: [T15 - Resolve normal line height from font metrics](<P1/T15 - Resolve normal line height from font metrics.md>)
 
@@ -64,6 +65,7 @@ Order is recommended; hard prerequisites live in individual task documents.
 - [ ] [T16 - Align text advances and drawing positions](<P1/T16 - Align text advances and drawing positions.md>)
 - [ ] [T17 - Accept unitless zero lengths](<P1/T17 - Accept unitless zero lengths.md>)
 - [ ] [T18 - Align thin native borders to physical pixels](<P1/T18 - Align thin native borders to physical pixels.md>)
+- [ ] [T19 - Size auto flex containers from measured children](<P1/T19 - Size auto flex containers from measured children.md>)
 
 ## Verification Strategy
 Keep core geometry/style regressions in core, paint regressions in NanoVG, and orchestration/report regressions in visual-tests. Each repair pairs a focused behavioral regression with targeted fresh captures.
@@ -71,6 +73,6 @@ Inspect metric categories and affected regions while other failures remain. Fina
 Residual rasterization uncertainty belongs to T13. If it reveals another functional defect, add a concrete follow-up and leave the phase open. Policy changes require a separate explicit decision.
 
 ## Phase Implementation State
-- Progress: 13/18 task documents accepted (T1–T12 and T14). T17/T18 implemented, pending acceptance review; T15 is being verified and T16 remains open.
-- Active task or next action: T15 aggregate checks and fresh captures; classify remaining text rasterization and advance differences under T16/T13.
+- Progress: 13/19 task documents accepted (T1–T12 and T14). T15/T17/T18 implemented and verified; T19 final checks and acceptance review remain. T16 stays open.
+- Active task or next action: T19 final check and commit; remaining rasterization, text advances and action-container extent belong to the next T16/T13 work.
 - Phase-level blockers or decisions: Final capture has 5/15 combined passes and zero capture errors. Remaining normal line heights and rounded text advances are source-confirmed functional differences. Full affected checks pass (936 tests, PMD, SpotBugs); both launch smoke runs pass. Do not weaken tolerances or close the phase until T13 acceptance is met.

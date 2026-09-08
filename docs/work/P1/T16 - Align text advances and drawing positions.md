@@ -38,6 +38,7 @@ Changing only core measurement would desynchronize drawing and input. NanoVG's e
 - Implemented Scope: None
 - Relevant Files and Symbols: FontServiceImpl.measureBaseAdvance/measurePairKerning; resolved runs and caret stops; NvgTextRenderer and NanoVG text submission.
 - Acceptance Evidence:
+  - Post-T15/T18/T19 raster check: Passed for characterization — Native Host — run-16902693949945211376 places Start Game visible pixels at rows 345–356 in both renderers. At RGB-channel threshold 150, native bright ink occupies 346–356 versus browser 345–356; title bright ink spans 29 rows in both at that threshold. Line heights/positions are corrected; edge coverage remains different. No font-size inflation, gamma tweak or threshold relaxation was applied. A separate rasterizer/hinting investigation is still required before claiming matching edge coverage.
   - Horizontal text geometry: Failed — Native Host — source-confirmed rounded advance differences remain.
   - Layout/drawing/input consistency: Not Run — Automated — implementation pending.
   - Residual classification: Passed — Native Host — text screenshot pair has visible width/baseline shifts; current 6.447% text difference is not established as pure antialiasing.

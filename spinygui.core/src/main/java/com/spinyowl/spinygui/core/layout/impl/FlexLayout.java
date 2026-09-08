@@ -125,11 +125,23 @@ public class FlexLayout implements ElementLayout {
     }
 
     Rect parentBorderBox = parent.box().borderBox();
+    // A provisional block minimum must not become a definite height for a content-sized flex box.
+    boolean contentHeight = parent.resolvedStyle().height().isAuto()
+        && !(parent instanceof com.spinyowl.spinygui.core.node.Frame)
+        && !hasPosition(parent, ABSOLUTE);
     Yoga.YGNodeStyleSetWidth(rootNode, parentBorderBox.width());
-    Yoga.YGNodeStyleSetHeight(rootNode, parentBorderBox.height());
+    if (contentHeight) Yoga.YGNodeStyleSetHeightAuto(rootNode);
+    else Yoga.YGNodeStyleSetHeight(rootNode, parentBorderBox.height());
     // calculate
     YGNodeCalculateLayout(
-        rootNode, parentBorderBox.width(), parentBorderBox.height(), YGDirectionLTR);
+        rootNode, parentBorderBox.width(), contentHeight ? Float.NaN : parentBorderBox.height(), YGDirectionLTR);
+    if (contentHeight) {
+      Box parentBox = parent.box();
+      parentBox.content().height(Math.max(0, YGNodeLayoutGetHeight(rootNode)
+          - parentBox.padding().top() - parentBox.padding().bottom()
+          - parentBox.border().top() - parentBox.border().bottom()));
+      context.lastBlockBottomY(parentBox.borderBox().y() + parentBox.borderBox().height());
+    }
 
     // apply to children
     for (var i = 0; i < children.size(); i++) {
