@@ -35,6 +35,44 @@ import org.junit.jupiter.api.Test;
 class OverflowLayoutTest {
 
   @Test
+  void preparation_clampsRequestsWithoutRelayoutAndReclampsAfterShrink() {
+    Frame frame = NodeBuilder.frame();
+    frame.frameSize(500, 500);
+    style(frame, Display.BLOCK, 500, 500);
+    Element container = NodeBuilder.div();
+    style(container, Display.BLOCK, 100, 100);
+    container.resolvedStyle().overflowY(Overflow.HIDDEN);
+    Element child = NodeBuilder.div();
+    style(child, Display.BLOCK, 100, 300);
+    container.addChild(child);
+    frame.addChild(container);
+    var pipeline = new com.spinyowl.spinygui.core.FramePipeline(
+        mock(com.spinyowl.spinygui.core.system.event.processor.SystemEventProcessor.class),
+        mock(com.spinyowl.spinygui.core.event.processor.EventProcessor.class),
+        target -> com.spinyowl.spinygui.core.style.manager.StyleImpact.NO_CHANGE,
+        () -> com.spinyowl.spinygui.core.animation.TransitionImpact.NO_CHANGE,
+        layoutService());
+    container.scrollTop(10000);
+    assertTrue(pipeline.prepareFrame(frame).renderable());
+    assertEquals(200, container.scrollTop());
+    container.scrollTop(-10);
+    var negative = pipeline.prepareFrame(frame);
+    assertTrue(negative.renderable());
+    assertFalse(negative.layoutExecuted());
+    assertEquals(0, container.scrollTop());
+    container.scrollTop(10000);
+    assertFalse(pipeline.prepareFrame(frame).layoutExecuted());
+    assertEquals(200, container.scrollTop());
+    container.scrollTop(70);
+    assertFalse(pipeline.prepareFrame(frame).layoutExecuted());
+    assertEquals(70, container.scrollTop());
+    child.resolvedStyle().height(Length.pixel(120));
+    frame.invalidateLayout();
+    assertTrue(pipeline.prepareFrame(frame).renderable());
+    assertEquals(20, container.scrollTop());
+  }
+
+  @Test
   void layout_nonReplacedInlineHasNoClientOrScrollArea() {
     Frame frame = NodeBuilder.frame();
     frame.frameSize(100, 100);

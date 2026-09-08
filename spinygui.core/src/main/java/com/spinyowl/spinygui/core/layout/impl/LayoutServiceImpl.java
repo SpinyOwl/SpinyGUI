@@ -62,6 +62,8 @@ public class LayoutServiceImpl implements LayoutService {
   }
 
   private void resolvePresentationTransforms(Element element) {
+    // Scroll setters invalidate only transforms; clamp after metrics exist, before presentation.
+    clampScrollOffsets(element);
     element
         .frame()
         .diagnostics()

@@ -290,19 +290,21 @@ public class Element extends Node implements EventTarget {
     setAttribute("style", style);
   }
 
+  /** Requests a vertical offset; frame preparation clamps it against the current layout metrics. */
   public void scrollTop(float scrollTop) {
     if (Float.compare(this.scrollTop, scrollTop) == 0) return;
     this.scrollTop = scrollTop;
     invalidateTransformSource();
   }
 
+  /** Requests a horizontal offset, including before initial layout; preparation resolves its range. */
   public void scrollLeft(float scrollLeft) {
     if (Float.compare(this.scrollLeft, scrollLeft) == 0) return;
     this.scrollLeft = scrollLeft;
     invalidateTransformSource();
   }
 
-  /** Applies layout-owned scroll clamping without creating a new source revision. */
+  /** Applies preparation-owned scroll clamping without creating a new source revision. */
   public void resolveScrollOffsets(float scrollLeft, float scrollTop) {
     this.scrollLeft = scrollLeft;
     this.scrollTop = scrollTop;
