@@ -471,6 +471,18 @@ class BlockLayoutTest {
     assertEquals(20, textarea.box().content().height());
     assertEquals(204, textarea.box().borderBox().width());
     assertEquals(24, textarea.box().borderBox().height());
+    for (String invalid : new String[] {"0", "-3", "bad"}) {
+      textarea.setAttribute("cols", invalid);
+      textarea.setAttribute("rows", invalid);
+      blockLayout.layout(frame, new LayoutContext());
+      assertEquals(204, textarea.box().borderBox().width());
+      assertEquals(24, textarea.box().borderBox().height());
+    }
+    textarea.setAttribute("cols", "5");
+    textarea.setAttribute("rows", "3");
+    blockLayout.layout(frame, new LayoutContext());
+    assertEquals(54, textarea.box().borderBox().width());
+    assertEquals(34, textarea.box().borderBox().height());
   }
 
   @Test
@@ -548,7 +560,7 @@ class BlockLayoutTest {
   }
 
   @Test
-  void layout_whenButtonAutoWidthDependsOnDisplay_blockFillsAndInlineBlockStaysIntrinsic() {
+  void layout_whenButtonAutoWidth_bothBlockAndInlineBlockStayIntrinsic() {
     Frame frame = NodeBuilder.frame();
     frame.frameSize(300, 200);
     style(frame, 0);
@@ -563,7 +575,7 @@ class BlockLayoutTest {
     layoutService.blockLayout(blockLayout);
 
     blockLayout.layout(frame, new LayoutContext());
-    assertEquals(300, blockButton.box().borderBox().width());
+    assertEquals(44, blockButton.box().borderBox().width());
 
     ButtonElement inlineBlockButton = NodeBuilder.button(NodeBuilder.text("Save"));
     style(inlineBlockButton, 2);

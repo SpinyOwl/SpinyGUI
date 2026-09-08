@@ -43,8 +43,6 @@ public class BlockLayout implements ElementLayout {
   private static final float DEFAULT_BUTTON_INPUT_WIDTH = 64f;
   private static final int DEFAULT_TEXTAREA_COLS = 20;
   private static final int DEFAULT_TEXTAREA_ROWS = 2;
-  private static final String TEXTAREA_COLUMN_WIDTH_SAMPLE =
-      "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 
   @NonNull private final LayoutService layoutService;
   @NonNull private final InlineFormattingContext inlineFormattingContext;
@@ -550,9 +548,7 @@ public class BlockLayout implements ElementLayout {
       ButtonElement button, ResolvedStyle style, float parentWidth, float horizontalAdditions) {
     float width =
         style.width().isAuto()
-            ? Display.BLOCK.equals(style.display())
-                ? parentWidth
-                : measureButtonContentWidth(button, style) + horizontalAdditions
+            ? measureButtonContentWidth(button, style) + horizontalAdditions
             : getWidth(parentWidth, style);
     Optional<Float> minWidth = getFloatLengthOptional(style.minWidth(), parentWidth);
     Optional<Float> maxWidth = getFloatLengthOptional(style.maxWidth(), parentWidth);
@@ -634,8 +630,8 @@ public class BlockLayout implements ElementLayout {
       TextareaElement textarea, ResolvedStyle style, float parentWidth, float horizontalAdditions) {
     float width =
         style.width().isAuto()
-            ? measureTextareaColumnWidth(textarea, style)
-                    * intAttribute(textarea, "cols", DEFAULT_TEXTAREA_COLS)
+            ? (float) Math.ceil(measureTextareaColumnWidth(textarea, style)
+                    * intAttribute(textarea, "cols", DEFAULT_TEXTAREA_COLS))
                 + horizontalAdditions
             : getWidth(parentWidth, style);
     Optional<Float> minWidth = getFloatLengthOptional(style.minWidth(), parentWidth);
@@ -662,20 +658,16 @@ public class BlockLayout implements ElementLayout {
 
   private float measureTextareaColumnWidth(TextareaElement textarea, ResolvedStyle style) {
     float fontSize = StyleUtils.getFontSize(textarea);
-    float lineHeight = style.lineHeight();
     if (textMeasurer == null) {
       return fontSize * 0.8f;
     }
-    return textMeasurer
-            .getTextLineMetrics(
-                TEXTAREA_COLUMN_WIDTH_SAMPLE, findFonts(style), fontSize, lineHeight)
-            .width()
-        / TEXTAREA_COLUMN_WIDTH_SAMPLE.length();
+    return textMeasurer.averageCharacterWidth(findFonts(style), fontSize);
   }
 
   private int intAttribute(Element element, String name, int fallback) {
     try {
-      return Math.max(1, Integer.parseInt(element.getAttribute(name)));
+      int value = Integer.parseInt(element.getAttribute(name));
+      return value > 0 ? value : fallback;
     } catch (RuntimeException ignored) {
       return fallback;
     }

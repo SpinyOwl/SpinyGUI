@@ -995,6 +995,18 @@ public class FontServiceImpl implements FontService, TextMeasurer, RangeTextMeas
         true);
   }
 
+  /** Measures the primary face's intrinsic column advance without rasterizer pixel rounding. */
+  @Override
+  public float averageCharacterWidth(@NonNull List<Font> fonts, float fontSize) {
+    STBTTFontinfo info = getFontInfo(fonts.isEmpty() ? Font.DEFAULT : fonts.getFirst());
+    try (MemoryStack stack = MemoryStack.stackPush()) {
+      IntBuffer advance = stack.mallocInt(1);
+      IntBuffer bearing = stack.mallocInt(1);
+      STBTruetype.stbtt_GetCodepointHMetrics(info, 'x', advance, bearing);
+      return advance.get(0) * stbtt_ScaleForMappingEmToPixels(info, fontSize);
+    }
+  }
+
   private PairKerningMeasurement measurePairKerning(
       GlyphMeasurement glyph, GlyphMeasurement previousGlyph, float fontSize, long generation) {
     if (previousGlyph == null) {

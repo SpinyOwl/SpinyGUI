@@ -8,6 +8,14 @@ import java.util.List;
 
 public interface TextMeasurer {
 
+  /**
+   * Intrinsic control column advance, using the primary font's lowercase x as the supported
+   * average-character proxy. Native implementations should preserve its fractional advance.
+   */
+  default float averageCharacterWidth(@NonNull List<Font> fonts, float fontSize) {
+    return getTextLineMetrics("x", fonts, fontSize, 1).width();
+  }
+
   /** Narrow diagnostics hook; implementations remain allocation-free when returning the default. */
   default DiagnosticSession diagnostics() {
     return DiagnosticSession.disabled();

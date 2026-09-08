@@ -50,6 +50,15 @@ class FontServiceImplTest {
   }
 
   @Test
+  void averageCharacterWidth_preservesFractionalRobotoColumnsAcrossFontSizes() {
+    FontServiceImpl rounded = new FontServiceImpl(new FontStorageImpl(), true);
+    rounded.installSemanticOwner();
+    assertEquals(6.03515625f, rounded.averageCharacterWidth(List.of(Font.DEFAULT), 12), 0.0001f);
+    assertEquals(8.046875f, rounded.averageCharacterWidth(List.of(Font.DEFAULT), 16), 0.0001f);
+    assertEquals(10.05859375f, rounded.averageCharacterWidth(List.of(Font.DEFAULT), 20), 0.0001f);
+  }
+
+  @Test
   void compatibilityWrappers_matchUnifiedApi() {
     TextMetrics metrics = fontService.measureText("abc", Font.DEFAULT, 16, 1.2f);
     TextLineMetrics line = fontService.getTextLineMetrics("abc", Font.DEFAULT, 16, 1.2f);

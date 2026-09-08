@@ -31,7 +31,7 @@ The analyzed run captured all 15 cases with zero capture errors and 15 mismatche
 Existing E1/E3/E5 plans overlap source areas; link resulting fixes to those plans where relevant without declaring unrelated milestones complete. Preserve unrelated working-tree edits.
 
 ## Assumptions and Decisions
-- This is a proposed execution plan, not implementation evidence.
+- Task execution records below contain the implementation and verification evidence.
 - Recommended boundary: explicit shared root, inline-tag and form-control presentation defaults in the comparison harness; preserve generic native Element defaults. Numeric CSS values, declared margins, intrinsic control sizes and supported layout rules remain parity obligations.
 - T1 records the exact shared-default policy before changing captures. Public API compatibility breaks or broader HTML/CSS support require a bounded decision before dependent implementation; complete Chromium emulation is not assumed.
 - Native client sizes should follow the padding-inclusive contract already documented on Element. Scrolling must be valid before presentation, without a full layout on ordinary scroll updates.
@@ -48,7 +48,7 @@ Order is recommended; hard prerequisites live in individual task documents.
 - [x] [T5 - Accept numeric font weights](<P1/T5 - Accept numeric font weights.md>)
 - [x] [T6 - Resolve CSS line height and preserve fractional metrics](<P1/T6 - Resolve CSS line height and preserve fractional metrics.md>)
 - [x] [T7 - Measure auto-sized flex items intrinsically](<P1/T7 - Measure auto-sized flex items intrinsically.md>)
-- [ ] [T8 - Correct intrinsic form-control dimensions](<P1/T8 - Correct intrinsic form-control dimensions.md>)
+- [x] [T8 - Correct intrinsic form-control dimensions](<P1/T8 - Correct intrinsic form-control dimensions.md>)
 - [ ] [T9 - Correct flexible grid track allocation](<P1/T9 - Correct flexible grid track allocation.md>)
 - [ ] [T10 - Reflow grid text using final track widths](<P1/T10 - Reflow grid text using final track widths.md>)
 - [ ] [T11 - Support transform-origin keywords](<P1/T11 - Support transform-origin keywords.md>)
@@ -61,6 +61,6 @@ Inspect metric categories and affected regions while other failures remain. Fina
 Residual rasterization uncertainty belongs to T13. If it reveals another functional defect, add a concrete follow-up and leave the phase open. Policy changes require a separate explicit decision.
 
 ## Phase Implementation State
-- Progress: 7/13 task documents completed.
-- Active task or next action: T8 — intrinsic form-control sizing.
-- Phase-level blockers or decisions: No implementation started. Remaining font rasterization differences are not yet attributed; all-green results are an acceptance target, not a prediction.
+- Progress: 8/13 task documents completed.
+- Active task or next action: T9 — fractional grid tracks.
+- Phase-level blockers or decisions: Remaining typography and scroll extents require attribution in T13; all-green results remain an acceptance target, not a prediction.
