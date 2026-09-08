@@ -71,6 +71,34 @@ class AbstractLwjglApplicationFirstFrameTraceTest {
         trace.dump());
   }
 
+  @Test
+  void sameFramebufferRendersAgainAfterTemporaryUnavailability(TestReporter reporter) {
+    Trace trace = new Trace(reporter);
+    Frame frame = new Frame();
+    ScriptedWindow window =
+        new ScriptedWindow(
+            trace,
+            List.of(
+                new Vector2f(640, 480),
+                new Vector2f(640, 480),
+                new Vector2f(640, 480)),
+            List.of(
+                new Vector2i(640, 480),
+                new Vector2i(0, 0),
+                new Vector2i(640, 480)));
+    RecordingRenderer renderer = new RecordingRenderer(trace);
+
+    application(frame, window, renderer, trace).run();
+
+    assertEquals(
+        List.of(new Vector2i(640, 480), new Vector2i(640, 480)),
+        renderer.renderedFramebufferSizes,
+        trace.dump());
+    assertTrue(
+        trace.contains("framebuffer-size iteration=2 value=0x0"),
+        trace.dump());
+  }
+
   private static AbstractLwjglApplication application(
       Frame frame, ScriptedWindow window, RecordingRenderer renderer, Trace trace) {
     FramePipeline pipeline =

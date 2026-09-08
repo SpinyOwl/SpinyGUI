@@ -2,6 +2,7 @@ package com.spinyowl.spinygui.core.backend.renderer.lwjgl;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.spinyowl.spinygui.core.FrameNavigator;
 import com.spinyowl.spinygui.core.FramePipeline;
@@ -191,6 +192,76 @@ class AbstractLwjglApplicationTest {
     assertEquals(
         List.of("window-init", "callback-install", "callback-close", "window-close",
             "services-close"),
+        calls);
+  }
+
+  @Test
+  void renderFailurePreventsPublicationAndSwapAndStillClosesResources() {
+    List<String> calls = new ArrayList<>();
+    Frame frame = new Frame();
+    Renderer renderer =
+        new RecordingRenderer(calls) {
+          @Override
+          public void render(
+              long window, Vector2fc windowSize, Vector2ic bufferSize, Frame target) {
+            calls.add("render");
+            throw new IllegalStateException("render failed");
+          }
+        };
+    AbstractLwjglApplication application =
+        new AbstractLwjglApplication(
+            frame,
+            pipeline(calls),
+            renderer,
+            new RecordingWindow(calls),
+            () -> calls.add("services-close"),
+            () -> 1d) {};
+
+    IllegalStateException failure = assertThrows(IllegalStateException.class, application::run);
+
+    assertEquals("render failed", failure.getMessage());
+    assertTrue(frame.invalidation().paintDirty());
+    assertEquals(
+        List.of(
+            "window-init", "renderer-init", "poll", "system", "gui", "layout", "transform",
+            "begin", "render", "renderer-close", "services-close", "window-close"),
+        calls);
+  }
+
+  @Test
+  void swapFailurePropagatesAfterRenderAndStillClosesResources() {
+    List<String> calls = new ArrayList<>();
+    Frame frame = new Frame();
+    LwjglWindow window =
+        new RecordingWindow(calls) {
+          @Override
+          public void swapBuffers() {
+            calls.add("swap");
+            throw new IllegalStateException("swap failed");
+          }
+        };
+    AbstractLwjglApplication application =
+        new AbstractLwjglApplication(
+            frame,
+            pipeline(calls),
+            new RecordingRenderer(calls),
+            window,
+            () -> calls.add("services-close"),
+            () -> 1d) {
+          @Override
+          protected void afterRender(FramePreparation preparation) {
+            calls.add("after");
+          }
+        };
+
+    IllegalStateException failure = assertThrows(IllegalStateException.class, application::run);
+
+    assertEquals("swap failed", failure.getMessage());
+    assertEquals(
+        List.of(
+            "window-init", "renderer-init", "poll", "system", "gui", "layout", "transform",
+            "begin", "render", "after", "swap", "renderer-close", "services-close",
+            "window-close"),
         calls);
   }
 
