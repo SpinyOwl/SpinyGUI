@@ -324,8 +324,10 @@ public class GridLayout implements ElementLayout {
     if (Display.GRID.equals(item.resolvedStyle().display())) {
       // A nested grid must place its own items after its final grid area is known.
       layoutGridContents(item, context);
-    } else {
+    } else if (Display.FLEX.equals(item.resolvedStyle().display())) {
       layoutService.layoutChildNodes(item, context);
+    } else {
+      blockLayout.layoutFlowChildren(item);
     }
   }
 

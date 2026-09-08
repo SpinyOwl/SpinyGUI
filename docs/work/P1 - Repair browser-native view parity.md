@@ -50,7 +50,7 @@ Order is recommended; hard prerequisites live in individual task documents.
 - [x] [T7 - Measure auto-sized flex items intrinsically](<P1/T7 - Measure auto-sized flex items intrinsically.md>)
 - [x] [T8 - Correct intrinsic form-control dimensions](<P1/T8 - Correct intrinsic form-control dimensions.md>)
 - [x] [T9 - Correct flexible grid track allocation](<P1/T9 - Correct flexible grid track allocation.md>)
-- [ ] [T10 - Reflow grid text using final track widths](<P1/T10 - Reflow grid text using final track widths.md>)
+- [x] [T10 - Reflow grid text using final track widths](<P1/T10 - Reflow grid text using final track widths.md>)
 - [ ] [T11 - Support transform-origin keywords](<P1/T11 - Support transform-origin keywords.md>)
 - [ ] [T12 - Paint per-side borders and rounded outlines](<P1/T12 - Paint per-side borders and rounded outlines.md>)
 - [ ] [T13 - Verify the full suite and account for residual differences](<P1/T13 - Verify the full suite and account for residual differences.md>)
@@ -61,6 +61,6 @@ Inspect metric categories and affected regions while other failures remain. Fina
 Residual rasterization uncertainty belongs to T13. If it reveals another functional defect, add a concrete follow-up and leave the phase open. Policy changes require a separate explicit decision.
 
 ## Phase Implementation State
-- Progress: 9/13 task documents completed.
-- Active task or next action: T10 — grid text reflow.
+- Progress: 10/13 task documents completed.
+- Active task or next action: T11 — transform origins.
 - Phase-level blockers or decisions: Remaining typography and scroll extents require attribution in T13; all-green results remain an acceptance target, not a prediction.

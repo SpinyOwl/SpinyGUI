@@ -1,7 +1,7 @@
 # T10 - Reflow grid text using final track widths
 
 ## Document Context
-- Status: Planned
+- Status: Completed
 - Dependencies: T6, T9
 - Parent: [P1 - Repair browser-native view parity](<../P1 - Repair browser-native view parity.md>)
 - Children: None
@@ -15,17 +15,17 @@ Ensure text wraps against the final grid item content box after track sizing.
 [T6 - Resolve CSS line height and preserve fractional metrics](<T6 - Resolve CSS line height and preserve fractional metrics.md>); [T9 - Correct flexible grid track allocation](<T9 - Correct flexible grid track allocation.md>) must satisfy their acceptance checks before execution.
 
 ## Changes
-- [ ] Route grid item content reflow through the existing inline formatting path at final dimensions, preserving nested grid and control handling.
-- [ ] Invalidate affected text measurements/fragments when a track width changes; avoid repeated whole-frame layout loops.
-- [ ] Test the reported clipping independently with a deliberately narrow fixed grid cell as well as corrected fractional tracks.
+- [x] Route grid item content reflow through the existing inline formatting path at final dimensions, preserving nested grid and control handling.
+- [x] Invalidate affected text measurements/fragments when a track width changes; avoid repeated whole-frame layout loops.
+- [x] Test the reported clipping independently with a deliberately narrow fixed grid cell as well as corrected fractional tracks.
 
 Relevant implementation: GridLayout.reflowItemContents, LayoutServiceImpl.layoutChildNodes, TextLayoutImpl, InlineFormattingContext.
 Existing test entry points: LayoutServiceProviderGridTest, inline formatting tests, TextLayoutFontResolutionTest. Extend existing behavioral tests where possible.
 
 ## Acceptance Checks
-- [ ] Text wraps at final cell width without stale clipping or overlap, including after resizing.
-- [ ] Nested grid, inline content, control and overflow cases retain correct positions and hit bounds.
-- [ ] Fresh grid demo captures and existing grid/inline regression suites verify the corrected text layout.
+- [x] Text wraps at final cell width without stale clipping or overlap, including after resizing.
+- [x] Nested grid, inline content, control and overflow cases retain correct positions and hit bounds.
+- [x] Fresh grid demo captures and existing grid/inline regression suites verify the corrected text layout.
 
 ## Verification
 Use Java 25 and the repository wrapper. Begin with relevant test-class filters from the entry points above, using `--tests` on the affected module's `test` task; broaden to affected module checks after behavior is stable.
@@ -36,15 +36,15 @@ Shared unresolved defects may keep a selected case red: acceptance must identify
 The original grid-width defect can conceal or amplify reflow defects. Keep an independent narrow-cell regression instead of accepting a wider cell as proof.
 
 ## Execution Record
-- Status: Planned
+- Status: Completed
 - Last Updated: 2026-09-08
-- Implemented Scope: None
-- Relevant Files and Symbols: None
+- Implemented Scope: Ordinary grid cells reflow through BlockLayout's inline formatting path at final content dimensions. Nested grid and existing flex dispatch remain separate. Reflow rebuilds inline fragments directly without a whole-frame retry loop.
+- Relevant Files and Symbols: GridLayout.reflowItemContents; BlockLayout.layoutFlowChildren; LayoutServiceProviderGridTest.gridReflowsInlineFragmentsAtFinalWidthAndAfterResize.
 - Acceptance Evidence:
-  - Text wraps at final cell width without stale clipping or overlap, including after resizing.: Not Run — Automated — planned focused regressions and paired report described in Verification.
-  - Nested grid, inline content, control and overflow cases retain correct positions and hit bounds.: Not Run — Automated — planned focused regressions and paired report described in Verification.
-  - Fresh grid demo captures and existing grid/inline regression suites verify the corrected text layout.: Not Run — Native Host — planned focused regressions and paired report described in Verification.
-- Decisions and Deviations: None
-- Review Outcome: Not Reviewed
-- Remaining Work: Ensure text wraps against the final grid item content box after track sizing.
-- Resume or Closure: Resume by verifying the prerequisite records, then reproducing the stated defect in the named source/test entry points before editing production code.
+  - Final width and resize: Passed — Automated — real-font narrow fixed 80 px cell (70 px content) wraps into at least four lines, fragments remain within padding bounds; widening to 200 px rebuilds fewer lines within 190 px content.
+  - Existing behaviors: Passed — Automated — LayoutServiceProviderGridTest, InlineFormatting*Test, TextLayoutFontResolutionTest and ControlTextLayoutServiceTest in t10-checks.log; refined resize assertion rerun passed in t10-final.log.
+  - Native capture: Passed — Native Host — run-6391224980420900562, screenshot inspected: Actions column wraps and all card text is visible. Full case remains mismatch (2.52% pixels, 10 normal-line-height/scroll fields in the declarations panel), independently tracked for T13.
+- Decisions and Deviations: The wider corrected T9 tracks alone were not used as proof; a deliberately narrow fixed track and subsequent resize independently cover stale fragment replacement. No hit-test, control-editing or matrix contract changes.
+- Review Outcome: Not Required — direct user-authorized implementation; source/diff self-review completed.
+- Remaining Work: None for this reflow correction; remaining normal typography is outside this task.
+- Resume or Closure: Continue with T11.

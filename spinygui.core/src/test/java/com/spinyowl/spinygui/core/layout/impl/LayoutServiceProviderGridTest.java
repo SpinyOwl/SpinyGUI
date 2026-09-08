@@ -35,6 +35,41 @@ import org.junit.jupiter.api.Test;
 
 class LayoutServiceProviderGridTest {
 
+  @Test
+  void gridReflowsInlineFragmentsAtFinalWidthAndAfterResize() {
+    var fonts = new com.spinyowl.spinygui.core.system.font.impl.FontServiceImpl(
+        new com.spinyowl.spinygui.core.system.font.impl.FontStorageImpl(), false);
+    fonts.installSemanticOwner();
+    Frame frame = NodeBuilder.frame();
+    frame.frameSize(400, 250);
+    Element grid = NodeBuilder.div();
+    grid.style("display:grid; width:300px; height:200px; grid-template-columns:80px;"
+        + "grid-template-rows:180px;");
+    Element cell = NodeBuilder.div();
+    cell.style("padding:5px; font-size:16px; line-height:20px; overflow:hidden;");
+    var text = NodeBuilder.text("alpha beta gamma delta epsilon");
+    cell.addChild(text);
+    grid.addChild(cell);
+    frame.addChild(grid);
+    var store = new com.spinyowl.spinygui.core.style.stylesheet.impl.DefaultPropertyStoreProvider()
+        .createPropertyStore();
+    var parser = com.spinyowl.spinygui.core.parser.impl.StyleSheetParserFactory.createParser(store);
+    new com.spinyowl.spinygui.core.style.manager.StyleManagerImpl(store, parser).recalculate(frame);
+    LayoutService service = LayoutServiceProvider.create(fonts);
+    service.layout(frame);
+    assertEquals(70, cell.box().content().width(), .001f);
+    long narrowLines = text.inlineFragments().stream().map(f -> f.y()).distinct().count();
+    assertTrue(narrowLines >= 4);
+    assertTrue(text.inlineFragments().stream().allMatch(f -> f.x() + f.width() <= 75.001f));
+    grid.resolvedStyle().gridTemplateColumns(GridTrackList.of(java.util.List.of(
+        GridTrack.of(GridTrackSize.fixed(Length.pixel(200))))));
+    service.layout(frame);
+    long wideLines = text.inlineFragments().stream().map(f -> f.y()).distinct().count();
+    assertTrue(wideLines < narrowLines);
+    assertEquals(190, cell.box().content().width(), .001f);
+    assertTrue(text.inlineFragments().stream().allMatch(f -> f.x() + f.width() <= 195.001f));
+  }
+
   @org.junit.jupiter.params.ParameterizedTest
   @org.junit.jupiter.params.provider.CsvSource(delimiter = '|', value = {
       "392 | 18 | 2fr minmax(112px, 1fr) | 249.33333 | 124.66667",

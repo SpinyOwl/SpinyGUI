@@ -723,7 +723,8 @@ public class BlockLayout implements ElementLayout {
     return element.frame() == null || (element.parent() == null && !(element instanceof Frame));
   }
 
-  private void layoutFlowChildren(Element element) {
+  /** Reflows descendants in the existing content box, including fresh inline fragments. */
+  void layoutFlowChildren(Element element) {
     LayoutContext context = new LayoutContext();
     List<Node> inlineNodes = new ArrayList<>();
     for (Node child : element.childNodes()) {
