@@ -21,6 +21,8 @@ SpinyGUI requires Java 25+.
 
 ## Links
 
+[Automated Chromium / SpinyGUI view comparison](spinygui.visual-tests/README.md)
+
 [Named XML event handlers](docs/features/xml-event-binding.md)
 
 [LWJGL application host: navigation, modals, ownership, and embedding](docs/features/lwjgl-application-host.md)

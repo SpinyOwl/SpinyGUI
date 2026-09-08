@@ -1,0 +1,3 @@
+#outer { position: absolute; left: 30px; top: 30px; width: 260px; height: 200px; overflow: hidden; border: 5px solid #334155; background-color: #e2e8f0; }
+#inner { margin: 35px; width: 160px; height: 110px; overflow: hidden; border: 3px solid #2563eb; }
+#oversized { width: 280px; height: 190px; background-color: #f59e0b; }

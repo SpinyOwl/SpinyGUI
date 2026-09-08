@@ -102,7 +102,14 @@
     document.getElementById("app").innerHTML = xml;
   }
 
-  loadDemo().catch((error) => {
+  const automated = new URLSearchParams(window.location.search).has("compare");
+  if (automated) {
+    // Remove manual-preview defaults; the runner supplies defaults shared with SpinyGUI.
+    document.querySelectorAll("style").forEach(style => style.remove());
+    const script = document.createElement("script");
+    script.src = "comparison.js";
+    document.head.appendChild(script);
+  } else loadDemo().catch((error) => {
     const errorNode = document.createElement("div");
     errorNode.className = "load-error";
     errorNode.textContent = error.message;

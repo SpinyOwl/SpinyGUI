@@ -1,0 +1,11 @@
+/* Shared explicit defaults for paired rendering. Demo rules follow this sheet. */
+* {
+  box-sizing: border-box;
+  font-family: Roboto;
+  font-weight: 400;
+  font-style: normal;
+  font-size: 14px;
+  margin: 0;
+  padding: 0;
+}
+winframe { display: block; background-color: #ffffff; }

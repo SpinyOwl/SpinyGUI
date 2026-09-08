@@ -1,0 +1,3 @@
+#scroller { position: absolute; left: 30px; top: 25px; width: 260px; height: 200px; overflow: scroll; border: 3px solid #334155; }
+#content { position: relative; width: 500px; height: 420px; background-color: #dbeafe; }
+#marker { position: absolute; left: 150px; top: 170px; width: 180px; height: 80px; background-color: #f59e0b; }

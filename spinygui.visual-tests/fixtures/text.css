@@ -1,0 +1,3 @@
+#regular { margin: 20px; font-size: 18px; height: 35px; }
+#bold { margin: 20px; font-size: 18px; font-weight: 700; height: 35px; }
+#wrapped { margin: 20px; width: 210px; height: 130px; font-size: 16px; line-height: 24px; background-color: #f1f5f9; }
