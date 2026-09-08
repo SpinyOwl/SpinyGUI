@@ -53,6 +53,16 @@ class FontServiceImplMeasurementContractTest {
 
   private FontServiceImpl fontService;
 
+  @Test
+  void normalLineHeightUsesRobotoMetricsInsteadOfFixedMultiplier() {
+    int[] sizes = {14, 16, 18, 30};
+    int[] heights = {19, 21, 24, 39};
+    for (int i = 0; i < sizes.length; i++) {
+      assertEquals(heights[i], fontService.normalLineHeight(List.of(Font.DEFAULT), sizes[i])
+          * sizes[i], .0001f);
+    }
+  }
+
   @BeforeEach
   void setUp() {
     fontService = new FontServiceImpl(new FontStorageImpl(), false);

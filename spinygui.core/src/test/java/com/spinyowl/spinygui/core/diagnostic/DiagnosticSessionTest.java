@@ -228,6 +228,11 @@ class DiagnosticSessionTest {
   void everyTextMeasurerEntryPointHasOneDistinctEntryCounter() throws NoSuchMethodException {
     Map<Method, TextDiagnosticCounter> entries =
         Map.ofEntries(
+            Map.entry(TextMeasurer.class.getDeclaredMethod("resolveLineHeight",
+                com.spinyowl.spinygui.core.style.ResolvedStyle.class, List.class, float.class),
+                TextDiagnosticCounter.TEXT_MEASURER_RESOLVE_LINE_HEIGHT_ENTRIES),
+            Map.entry(TextMeasurer.class.getDeclaredMethod("normalLineHeight", List.class, float.class),
+                TextDiagnosticCounter.TEXT_MEASURER_NORMAL_LINE_HEIGHT_ENTRIES),
             Map.entry(
                 TextMeasurer.class.getDeclaredMethod("averageCharacterWidth", List.class, float.class),
                 TextDiagnosticCounter.TEXT_MEASURER_AVERAGE_CHARACTER_WIDTH_ENTRIES),

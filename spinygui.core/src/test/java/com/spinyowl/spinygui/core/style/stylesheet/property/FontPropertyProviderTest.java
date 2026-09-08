@@ -16,6 +16,25 @@ import org.junit.jupiter.api.Test;
 class FontPropertyProviderTest {
 
   @Test
+  void normalLineHeightRemainsTypedThroughInheritanceAndNumericSetterOverridesIt() {
+    var frame = NodeBuilder.frame();
+    Element child = NodeBuilder.div();
+    frame.addChild(child);
+    var store = new com.spinyowl.spinygui.core.style.stylesheet.impl.DefaultPropertyStoreProvider()
+        .createPropertyStore();
+    var parser = com.spinyowl.spinygui.core.parser.impl.StyleSheetParserFactory.createParser(store);
+    var manager = new com.spinyowl.spinygui.core.style.manager.StyleManagerImpl(store, parser);
+    frame.style("font-size:30px; line-height:normal");
+    child.style("font-size:14px");
+    manager.recalculate(frame);
+    org.junit.jupiter.api.Assertions.assertTrue(frame.resolvedStyle().normalLineHeight());
+    org.junit.jupiter.api.Assertions.assertTrue(child.resolvedStyle().normalLineHeight());
+    child.resolvedStyle().lineHeight(1.25f);
+    org.junit.jupiter.api.Assertions.assertFalse(child.resolvedStyle().normalLineHeight());
+    assertEquals(1.25f, child.resolvedStyle().lineHeight());
+  }
+
+  @Test
   void lineHeightKeepsAbsoluteInheritanceAndUnitlessScalingDistinct() {
     var frame = NodeBuilder.frame();
     Element child = NodeBuilder.div();

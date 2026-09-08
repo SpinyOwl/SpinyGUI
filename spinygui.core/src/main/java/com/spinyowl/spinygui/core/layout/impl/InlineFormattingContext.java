@@ -663,6 +663,8 @@ public class InlineFormattingContext implements AutoCloseable {
     private final TypographyKey typographyKey;
     private final List<Font> fonts;
     private final float fontSize;
+    /** Resolved per font/size for this measurement pass; normal remains typed in the style. */
+    private final float resolvedLineHeight;
     private final Pass pass;
     private TextLineMetrics measurement;
 
@@ -693,6 +695,7 @@ public class InlineFormattingContext implements AutoCloseable {
       this.fonts = pass.fonts(style, typographyKey);
       Float measuredFontSize = StyleUtils.getFontSize(node);
       this.fontSize = measuredFontSize == null ? 16f : measuredFontSize;
+      this.resolvedLineHeight = textMeasurer.resolveLineHeight(style, fonts, fontSize);
     }
 
     boolean newline() {
@@ -735,12 +738,12 @@ public class InlineFormattingContext implements AutoCloseable {
     TextLineMetrics measurement(int start, int end) {
       if (range != null && (start != range.preparedStart() || end != range.preparedEnd())) {
         return pass.measure(
-            prepared, start, end, typographyKey, fonts, fontSize, style.lineHeight());
+            prepared, start, end, typographyKey, fonts, fontSize, resolvedLineHeight);
       }
       if (measurement == null) {
         measurement =
             pass.measure(
-                prepared, start, end, typographyKey, fonts, fontSize, style.lineHeight());
+                prepared, start, end, typographyKey, fonts, fontSize, resolvedLineHeight);
       }
       return measurement;
     }

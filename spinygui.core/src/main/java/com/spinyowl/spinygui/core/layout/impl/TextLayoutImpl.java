@@ -51,10 +51,9 @@ public class TextLayoutImpl implements TextLayout {
     FontStyle fontStyle = style.fontStyle();
     FontWeight fontWeight = style.fontWeight();
 
-    Float lineHeight = style.lineHeight();
-
     // find appropriate font.
     List<Font> fontsToUse = findFonts(fontFamilies, fontStyle, fontWeight);
+    float lineHeight = textMeasurer.resolveLineHeight(style, fontsToUse, fontSize);
 
     // get width of parent node.
     Box parentBox = parent.box();

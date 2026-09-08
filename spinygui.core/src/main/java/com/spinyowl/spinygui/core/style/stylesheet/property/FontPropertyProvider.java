@@ -9,7 +9,6 @@ import static com.spinyowl.spinygui.core.style.stylesheet.Properties.LINE_HEIGHT
 import static com.spinyowl.spinygui.core.style.stylesheet.Property.checkValue;
 import static com.spinyowl.spinygui.core.style.stylesheet.Property.put;
 
-import com.spinyowl.spinygui.core.Configuration;
 import com.spinyowl.spinygui.core.font.Font;
 import com.spinyowl.spinygui.core.font.FontSize;
 import com.spinyowl.spinygui.core.font.FontStretch;
@@ -109,7 +108,7 @@ public class FontPropertyProvider implements PropertyProvider {
                         LINE_HEIGHT,
                         TermIdent.class,
                         NORMAL::equalsIgnoreCase,
-                        v -> Configuration.LINE_HEIGHT.value())
+                          v -> com.spinyowl.spinygui.core.style.types.LineHeight.NORMAL)
                     .or(put(LINE_HEIGHT, TermFloat.class))
                     .or(put(LINE_HEIGHT, TermInteger.class, Integer::floatValue))
                     .or(put(LINE_HEIGHT, TermLength.class)))

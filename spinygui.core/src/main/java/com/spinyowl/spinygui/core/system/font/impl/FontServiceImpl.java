@@ -995,6 +995,17 @@ public class FontServiceImpl implements FontService, TextMeasurer, RangeTextMeas
         true);
   }
 
+  /** Uses separately rounded ascent, descent and leading for a font-dependent normal line box. */
+  @Override
+  public float normalLineHeight(List<Font> fonts, float fontSize) {
+    diagnostics.increment(TextDiagnosticCounter.TEXT_MEASURER_NORMAL_LINE_HEIGHT_ENTRIES);
+    if (!(fontSize > 0) || !Float.isFinite(fontSize)) return 0;
+    FontMetrics metrics = measureFontMetrics(
+        getFontInfo(fonts.isEmpty() ? Font.DEFAULT : fonts.getFirst()), fontSize, 1);
+    return (Math.round(metrics.ascent()) + Math.round(metrics.descent())
+        + Math.round(metrics.lineGap())) / fontSize;
+  }
+
   /** Measures the primary face's intrinsic column advance without rasterizer pixel rounding. */
   @Override
   public float averageCharacterWidth(@NonNull List<Font> fonts, float fontSize) {

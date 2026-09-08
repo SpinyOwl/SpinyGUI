@@ -2,6 +2,12 @@ package com.spinyowl.spinygui.core.diagnostic;
 
 /** Backend-neutral text, font, builder, and editable-control diagnostic vocabulary. */
 public enum TextDiagnosticCounter implements DiagnosticCounter {
+  TEXT_MEASURER_RESOLVE_LINE_HEIGHT_ENTRIES(
+      "core.text.resolve-line-height-entries", DiagnosticUnit.CALLS,
+      "CSS line-height resolution calls at the text measurement boundary."),
+  TEXT_MEASURER_NORMAL_LINE_HEIGHT_ENTRIES(
+      "core.text.normal-line-height-entries", DiagnosticUnit.CALLS,
+      "Font-dependent normal line-height measurement calls."),
   SOURCE_CODE_POINTS_SCANNED(
       "core.text.source-code-points-scanned",
       DiagnosticUnit.CODE_POINTS,

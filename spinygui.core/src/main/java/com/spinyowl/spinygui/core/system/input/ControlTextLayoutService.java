@@ -88,7 +88,8 @@ public final class ControlTextLayoutService {
     if (generationAvailable) {
       generation = Font.semanticOwner().generation();
     }
-    float lineHeight = style.lineHeight() == null ? 1f : style.lineHeight();
+    float lineHeight = style.lineHeight() == null ? 1f
+        : textMeasurer.resolveLineHeight(style, fonts, fontSize);
     return new ControlTextLayoutSnapshot.Key(
         value,
         families,

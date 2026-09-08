@@ -8,6 +8,19 @@ import java.util.List;
 
 public interface TextMeasurer {
 
+  /** Resolves normal at the font boundary while preserving explicit CSS multipliers and lengths. */
+  default float resolveLineHeight(com.spinyowl.spinygui.core.style.ResolvedStyle style,
+      List<Font> fonts, float fontSize) {
+    diagnostics().increment(TextDiagnosticCounter.TEXT_MEASURER_RESOLVE_LINE_HEIGHT_ENTRIES);
+    return style.normalLineHeight() ? normalLineHeight(fonts, fontSize) : style.lineHeight();
+  }
+
+  /** Compatibility fallback for measurers without access to native font metrics. */
+  default float normalLineHeight(List<Font> fonts, float fontSize) {
+    diagnostics().increment(TextDiagnosticCounter.TEXT_MEASURER_NORMAL_LINE_HEIGHT_ENTRIES);
+    return com.spinyowl.spinygui.core.Configuration.LINE_HEIGHT.value();
+  }
+
   /**
    * Intrinsic control column advance, using the primary font's lowercase x as the supported
    * average-character proxy. Native implementations should preserve its fractional advance.

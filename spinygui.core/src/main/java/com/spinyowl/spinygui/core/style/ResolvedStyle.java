@@ -888,9 +888,15 @@ public class ResolvedStyle {
     set(OVERFLOW_Y, overflow);
   }
 
-  /** Resolves an inherited absolute line height to the multiplier consumed by text measurement. */
+  /**
+   * Compatibility multiplier; normal retains the configured fallback here. Text measurement must
+   * resolve {@link #normalLineHeight()} using the selected font's metrics.
+   */
   public Float lineHeight() {
     Object value = get(LINE_HEIGHT);
+    if (value == com.spinyowl.spinygui.core.style.types.LineHeight.NORMAL) {
+      return com.spinyowl.spinygui.core.Configuration.LINE_HEIGHT.value();
+    }
     if (value instanceof Length<?> length) {
       float size = fontSize().convert();
       return size > 0 ? length.convert() / size : 0;
@@ -900,6 +906,11 @@ public class ResolvedStyle {
 
   public void lineHeight(Float lineHeight) {
     set(LINE_HEIGHT, lineHeight);
+  }
+
+  /** Whether the inherited CSS value requests font-dependent normal metrics. */
+  public boolean normalLineHeight() {
+    return get(LINE_HEIGHT) == com.spinyowl.spinygui.core.style.types.LineHeight.NORMAL;
   }
 
   public TextAlign textAlign() {

@@ -611,7 +611,7 @@ public class BlockLayout implements ElementLayout {
     }
     return textMeasurer
         .getTextLineMetrics(
-            text, findFonts(style), StyleUtils.getFontSize(input), style.lineHeight())
+            text, findFonts(style), StyleUtils.getFontSize(input), resolvedLineHeight(input, style))
         .width();
   }
 
@@ -622,7 +622,7 @@ public class BlockLayout implements ElementLayout {
     }
     return textMeasurer
         .getTextLineMetrics(
-            text, findFonts(style), StyleUtils.getFontSize(button), style.lineHeight())
+            text, findFonts(style), StyleUtils.getFontSize(button), resolvedLineHeight(button, style))
         .width();
   }
 
@@ -675,7 +675,7 @@ public class BlockLayout implements ElementLayout {
 
   private float measureTextInputLineHeight(Element element, ResolvedStyle style) {
     float fontSize = StyleUtils.getFontSize(element);
-    float lineHeight = style.lineHeight();
+    float lineHeight = resolvedLineHeight(element, style);
     if (textMeasurer == null) {
       return fontSize * lineHeight;
     }
@@ -692,6 +692,12 @@ public class BlockLayout implements ElementLayout {
           .collect(Collectors.joining());
     }
     return "";
+  }
+
+  /** Resolves font-dependent normal metrics for intrinsic form-control sizing. */
+  private float resolvedLineHeight(Element element, ResolvedStyle style) {
+    return textMeasurer == null || !style.normalLineHeight() ? style.lineHeight()
+        : textMeasurer.resolveLineHeight(style, findFonts(style), StyleUtils.getFontSize(element));
   }
 
   private List<Font> findFonts(ResolvedStyle style) {
