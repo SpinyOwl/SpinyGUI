@@ -5,7 +5,13 @@ import static com.spinyowl.spinygui.core.style.stylesheet.term.TermIdent.INITIAL
 
 import com.spinyowl.spinygui.core.node.Element;
 import com.spinyowl.spinygui.core.style.ResolvedStyle;
+import com.spinyowl.spinygui.core.style.stylesheet.term.TermFloat;
+import com.spinyowl.spinygui.core.style.stylesheet.term.TermFunction;
 import com.spinyowl.spinygui.core.style.stylesheet.term.TermIdent;
+import com.spinyowl.spinygui.core.style.stylesheet.term.TermInteger;
+import com.spinyowl.spinygui.core.style.stylesheet.term.TermLength;
+import com.spinyowl.spinygui.core.style.stylesheet.term.TermList;
+import com.spinyowl.spinygui.core.style.types.length.Length;
 import java.util.Map;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
@@ -148,6 +154,10 @@ public class Property {
   }
 
   public void apply(@NonNull Element element, Term<?> value, @NonNull ResolvedStyle targetStyle) {
+    // Preserve valid numbers (e.g. opacity: 0); only retry rejected values as lengths.
+    if (value != null && !validator.test(value)) {
+      value = zeroLengths(value);
+    }
     @NonNull Map<String, Object> styles = targetStyle.styles();
     if (value == null) {
       computeAbsent(element, styles);
@@ -171,6 +181,21 @@ public class Property {
         computeAbsent(element, styles);
       }
     }
+  }
+
+  /** Converts unitless numeric zeros to lengths without mutating shared parsed declarations. */
+  private static Term<?> zeroLengths(Term<?> term) {
+    if (term instanceof TermFunction) {
+      return term;
+    }
+    if (term instanceof TermInteger integer && integer.value() == 0
+        || term instanceof TermFloat decimal && decimal.value() == 0f) {
+      return new TermLength(Length.ZERO);
+    }
+    if (term instanceof TermList list) {
+      return new TermList(list.operator(), list.terms().stream().map(Property::zeroLengths).toList());
+    }
+    return term;
   }
 
   public void computeAbsent(Element element, @NonNull Map<String, Object> styles) {
