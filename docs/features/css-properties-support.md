@@ -1,6 +1,25 @@
 Supported means the property is registered by a `PropertyProvider` in
 `core.style.stylesheet.property` and can be parsed/applied through the stylesheet property store.
 
+## Flex shorthands
+
+`flex` expands into `flex-grow`, `flex-shrink`, and `flex-basis` in declaration order.
+It accepts one or two nonnegative numeric factors and an optional nonnegative length,
+percentage, or `auto` basis. The basis can precede or follow the factors; it cannot
+separate them. Examples: `flex: 1`, `flex: 2 0`, `flex: 1 1 120px`, `flex: 25%`.
+`auto` expands to `1 1 auto`, `none` to `0 0 auto`, and `initial` to `0 1 auto`.
+Omitted factors default to 1 and an omitted basis to `0px`, as specified by
+[CSS Flexbox](https://www.w3.org/TR/css-flexbox-1/#flex-property).
+Unitless zero is a factor until both factors are supplied: `flex: 0` is `0 1 0px`,
+while `flex: 0px` is `1 1 0px`. The existing absent longhand defaults are unchanged
+(including SpinyGUI's default `flex-shrink: 0`). Intrinsic basis keywords and functions
+such as `content`, `min-content`, and `calc()` are not supported by this shorthand.
+
+`flex-flow` expands into `flex-direction` and `flex-wrap`, accepting either or both
+in either order: `row wrap`, `wrap column`, `column-reverse`, or `wrap-reverse`.
+Omitted components reset to `row` and `nowrap`. Both shorthands support explicit
+`initial` and `inherit`; invalid declarations leave earlier values intact.
+
 ## Bounded 2D transform and transition support
 
 `transform` and `transform-origin` support the delivered 2D subset: ordered `translate`,
@@ -57,8 +76,6 @@ Approximate implementation estimates for unchecked entries:
 | `cursor` | M | Property parsing plus wiring resolved style to cursor service during hover/focus transitions. |
 | `direction`, `unicode-bidi`, `writing-mode` | XL | Bidirectional and vertical text shaping/layout support. |
 | `filter` | L | Renderer effects pipeline for blur/color/filter operations. |
-| `flex` | S | Shorthand expansion into `flex-grow`, `flex-shrink`, and `flex-basis`. |
-| `flex-flow` | XS | Shorthand expansion into `flex-direction` and `flex-wrap`. |
 | `font` | M | CSS font shorthand parser with optional style/variant/weight/stretch/size/line-height/family handling. |
 | `font-feature-settings`, `font-kerning`, `font-variant`, `font-variant-caps` | L | Font shaping/OpenType feature support through font service and NanoVG/text backend. |
 | `font-size-adjust` | M | Font metrics integration and adjusted used font-size calculations. |
@@ -206,10 +223,10 @@ Checklist of CSS properties:
    - [x] `inline-block`
 -  [ ] `empty-cells`
 -  [ ] `filter`
--  [ ] `flex`
+-  [x] `flex`
 -  [x] `flex-basis`
 -  [x] `flex-direction`
--  [ ] `flex-flow`
+-  [x] `flex-flow`
 -  [x] `flex-grow`
 -  [x] `flex-shrink`
 -  [x] `flex-wrap`

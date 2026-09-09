@@ -76,6 +76,10 @@ public final class Properties {
   public static final String ALIGN_CONTENT = "align-content";
   public static final String ALIGN_ITEMS = "align-items";
   public static final String ALIGN_SELF = "align-self";
+  /** Shorthand for flex grow, shrink and basis. */
+  public static final String FLEX = "flex";
+  /** Shorthand for flex direction and wrapping. */
+  public static final String FLEX_FLOW = "flex-flow";
   public static final String FLEX_BASIS = "flex-basis";
   public static final String FLEX_DIRECTION = "flex-direction";
   public static final String FLEX_GROW = "flex-grow";

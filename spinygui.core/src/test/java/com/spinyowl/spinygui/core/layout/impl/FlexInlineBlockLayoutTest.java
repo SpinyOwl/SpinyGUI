@@ -1,6 +1,7 @@
 package com.spinyowl.spinygui.core.layout.impl;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 
@@ -37,6 +38,39 @@ import lombok.NonNull;
 import org.junit.jupiter.api.Test;
 
 class FlexInlineBlockLayoutTest {
+
+  @Test
+  void parsedShorthandsDriveYogaSizingAndWrapping() {
+    var store = new com.spinyowl.spinygui.core.style.stylesheet.impl.DefaultPropertyStoreProvider()
+        .createPropertyStore();
+    var parser = com.spinyowl.spinygui.core.parser.impl.StyleSheetParserFactory.createParser(store);
+    var manager = new com.spinyowl.spinygui.core.style.manager.StyleManagerImpl(store, parser);
+    Frame frame = NodeBuilder.frame();
+    Element panel = NodeBuilder.div();
+    Element first = NodeBuilder.div();
+    Element second = NodeBuilder.div();
+    panel.addChild(first);
+    panel.addChild(second);
+    frame.addChild(panel);
+    frame.frameSize(400, 300);
+    panel.setAttribute("style", "display: flex; width: 300px; height: 100px; flex-flow: row nowrap");
+    first.setAttribute("style", "flex: 1; height: 20px");
+    second.setAttribute("style", "flex: 2; height: 20px");
+    manager.recalculate(frame);
+    LayoutService service = layoutService(new FixedTextMeasurer());
+    service.layout(frame);
+    assertEquals(100F, first.box().borderBox().width(), 0.01F);
+    assertEquals(200F, second.box().borderBox().width(), 0.01F);
+
+    panel.setAttribute("style", "display: flex; width: 300px; height: 100px; flex-flow: wrap row");
+    first.setAttribute("style", "flex: 0 0 200px; height: 20px");
+    second.setAttribute("style", "flex: 0 0 200px; height: 20px");
+    manager.recalculate(frame);
+    service.layout(frame);
+    assertEquals(200F, first.box().borderBox().width(), 0.01F);
+    assertEquals(200F, second.box().borderBox().width(), 0.01F);
+    assertTrue(second.box().borderBox().y() > first.box().borderBox().y());
+  }
 
   @org.junit.jupiter.api.BeforeEach
   void installFontOwner() {
