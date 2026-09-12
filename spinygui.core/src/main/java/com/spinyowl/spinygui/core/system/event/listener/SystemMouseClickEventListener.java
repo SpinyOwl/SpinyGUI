@@ -6,6 +6,7 @@ import static com.spinyowl.spinygui.core.system.input.SystemKeyAction.RELEASE;
 import static com.spinyowl.spinygui.core.util.NodeUtilities.getTargetElement;
 import static com.spinyowl.spinygui.core.util.NodeUtilities.visible;
 import com.spinyowl.spinygui.core.event.ActionEvent;
+import com.spinyowl.spinygui.core.event.ChangeEvent;
 import com.spinyowl.spinygui.core.event.FocusInEvent;
 import com.spinyowl.spinygui.core.event.FocusOutEvent;
 import com.spinyowl.spinygui.core.event.MouseClickEvent;
@@ -22,6 +23,7 @@ import com.spinyowl.spinygui.core.system.event.SystemMouseClickEvent;
 import com.spinyowl.spinygui.core.system.font.TextMeasurer;
 import com.spinyowl.spinygui.core.system.input.MultilineTextControlMetrics;
 import com.spinyowl.spinygui.core.system.input.ControlTextLayoutService;
+import com.spinyowl.spinygui.core.system.input.CheckableInputBehavior;
 import com.spinyowl.spinygui.core.system.input.ScrollbarInteraction;
 import com.spinyowl.spinygui.core.system.input.ScrollbarInteraction.HitPart;
 import com.spinyowl.spinygui.core.system.input.ScrollbarInteraction.ScrollDelta;
@@ -190,6 +192,7 @@ public class SystemMouseClickEventListener
         focusedElement.pressed(false);
         if (focusedElement == target) {
           generateClickEvent(event, frame, cursorPosition, target);
+          changeCheckableInput(frame, target);
           generateActionEvent(frame, target);
         }
         generateReleaseEvent(event, frame, focusedElement, cursorPosition);
@@ -322,7 +325,16 @@ public class SystemMouseClickEventListener
 
   private boolean activatable(Element target) {
     return target instanceof ButtonElement button && button.activatable()
-        || target instanceof InputElement input && input.buttonInput() && !input.disabled();
+        || target instanceof InputElement input
+            && (input.buttonInput() || input.checkboxInput() || input.radioInput()) && !input.disabled();
+  }
+
+  private void changeCheckableInput(Frame frame, Element target) {
+    if (!(target instanceof InputElement input)) return;
+    for (InputElement changed : CheckableInputBehavior.activate(input, frame)) {
+      eventProcessor.push(ChangeEvent.builder().source(frame).target(changed)
+          .timestamp(timeService.currentTime()).build());
+    }
   }
 
   private Element buttonOwner(Element target) {

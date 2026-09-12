@@ -4,6 +4,9 @@
     <button id="save" type="button" on-action="save">Save</button>
     <button id="nested" type="button" on-action="save-nested">Save <span class="accent">nested</span></button>
     <input id="input-button" type="button" value="Save" on-action="save-input" />
+    <input id="newsletter" type="checkbox" name="newsletter" value="yes" on-change="checkable-change" />
+    <input id="small" type="radio" name="size" value="small" checked on-change="checkable-change" />
+    <input id="large" type="radio" name="size" value="large" on-change="checkable-change" />
     <div id="status" class="status">Ready</div>
   </div>
 </winframe>

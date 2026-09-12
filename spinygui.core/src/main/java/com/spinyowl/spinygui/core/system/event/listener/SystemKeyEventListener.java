@@ -2,6 +2,7 @@ package com.spinyowl.spinygui.core.system.event.listener;
 
 import com.spinyowl.spinygui.core.clipboard.Clipboard;
 import com.spinyowl.spinygui.core.event.ActionEvent;
+import com.spinyowl.spinygui.core.event.ChangeEvent;
 import com.spinyowl.spinygui.core.event.KeyboardEvent;
 import com.spinyowl.spinygui.core.event.processor.EventProcessor;
 import com.spinyowl.spinygui.core.event.processor.InputProcessingBatch;
@@ -17,6 +18,7 @@ import com.spinyowl.spinygui.core.node.TextareaElement;
 import com.spinyowl.spinygui.core.system.event.SystemKeyEvent;
 import com.spinyowl.spinygui.core.system.font.TextMeasurer;
 import com.spinyowl.spinygui.core.system.input.ButtonBehavior;
+import com.spinyowl.spinygui.core.system.input.CheckableInputBehavior;
 import com.spinyowl.spinygui.core.system.input.MultilineTextControlMetrics;
 import com.spinyowl.spinygui.core.system.input.ControlTextLayoutService;
 import com.spinyowl.spinygui.core.system.input.SystemKeyMod;
@@ -133,6 +135,19 @@ public class SystemKeyEventListener extends AbstractSystemEventListener<SystemKe
           markKnownEffect(batch);
           generateActionEvent(frame, input);
         }
+      } else if (input.checkboxInput() || input.radioInput()) {
+        if (KeyAction.PRESS.equals(action) && KeyCode.SPACE.equals(keyCodeObject)) {
+          changeCheckableInput(frame, input, CheckableInputBehavior.activate(input, frame));
+          generateActionEvent(frame, input);
+          markKnownEffect(batch);
+        } else if (KeyAction.PRESS.equals(action) && input.radioInput()
+            && (KeyCode.LEFT.equals(keyCodeObject) || KeyCode.UP.equals(keyCodeObject)
+                || KeyCode.RIGHT.equals(keyCodeObject) || KeyCode.DOWN.equals(keyCodeObject))) {
+          int direction = KeyCode.LEFT.equals(keyCodeObject) || KeyCode.UP.equals(keyCodeObject) ? -1 : 1;
+          changeCheckableInput(frame, input,
+              CheckableInputBehavior.selectRelativeRadio(input, frame, direction));
+          markKnownEffect(batch);
+        }
       } else {
         boolean control = event.mods().contains(SystemKeyMod.CONTROL);
         boolean shift = event.mods().contains(SystemKeyMod.SHIFT);
@@ -247,5 +262,13 @@ public class SystemKeyEventListener extends AbstractSystemEventListener<SystemKe
             .target(element)
             .timestamp(timeService.currentTime())
             .build());
+  }
+
+  private void changeCheckableInput(
+      Frame frame, InputElement input, java.util.List<InputElement> changed) {
+    for (InputElement changedInput : changed) {
+      eventProcessor.push(ChangeEvent.builder().source(frame).target(changedInput)
+          .timestamp(timeService.currentTime()).build());
+    }
   }
 }

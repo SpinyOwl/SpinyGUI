@@ -11,7 +11,7 @@ winframe {
   left: 24px;
   top: 24px;
   width: 460px;
-  height: 210px;
+  height: 280px;
   padding: 14px;
   border: 3px solid #334155;
   background-color: #ffffff;
@@ -69,6 +69,10 @@ input:focus {
 input:active {
   border-color: #b45309;
   background-color: #fde68a;
+}
+
+input:checked {
+  border-color: #059669;
 }
 
 .status {

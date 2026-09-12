@@ -15,6 +15,7 @@ import com.spinyowl.spinygui.core.style.stylesheet.selector.combinator.Descendan
 import com.spinyowl.spinygui.core.style.stylesheet.selector.combinator.GeneralSiblingSelector;
 import com.spinyowl.spinygui.core.style.stylesheet.selector.pseudoclass.ActiveSelector;
 import com.spinyowl.spinygui.core.style.stylesheet.selector.pseudoclass.DisabledSelector;
+import com.spinyowl.spinygui.core.style.stylesheet.selector.pseudoclass.CheckedSelector;
 import com.spinyowl.spinygui.core.style.stylesheet.selector.pseudoclass.FocusSelector;
 import com.spinyowl.spinygui.core.style.stylesheet.selector.pseudoclass.HoverSelector;
 import com.spinyowl.spinygui.core.style.stylesheet.selector.pseudoelement.AfterSelector;
@@ -102,6 +103,9 @@ public class SelectorVisitor extends CSS3BaseVisitor<Selector> {
 
     if ("disabled".equals(selectorName)) {
       return new DisabledSelector();
+    }
+    if ("checked".equals(selectorName)) {
+      return new CheckedSelector();
     }
 
     if ("before".equals(selectorName)) {

@@ -5,8 +5,10 @@ import com.spinyowl.spinygui.core.binding.HandlerRegistry;
 import com.spinyowl.spinygui.core.binding.XmlEventBindingLoader;
 import com.spinyowl.spinygui.core.binding.XmlEventBindingOptions;
 import com.spinyowl.spinygui.core.event.ActionEvent;
+import com.spinyowl.spinygui.core.event.ChangeEvent;
 import com.spinyowl.spinygui.core.node.Element;
 import com.spinyowl.spinygui.core.node.Frame;
+import com.spinyowl.spinygui.core.node.InputElement;
 import com.spinyowl.spinygui.core.node.Text;
 import com.spinyowl.spinygui.core.util.IOUtil;
 import org.slf4j.Logger;
@@ -54,6 +56,15 @@ public class ButtonExample extends Demo {
     registerActivationFeedback(handlers, "save", "Save", statusText);
     registerActivationFeedback(handlers, "save-nested", "Nested", statusText);
     registerActivationFeedback(handlers, "save-input", "Input button", statusText);
+    handlers.register(
+        "checkable-change",
+        ChangeEvent.class,
+        event -> {
+          InputElement input = (InputElement) event.target();
+          String message = input.getAttribute("id") + " is " + (input.checked() ? "checked" : "unchecked");
+          statusText.content(message);
+          LOG.info(message);
+        });
 
     return frame;
   }

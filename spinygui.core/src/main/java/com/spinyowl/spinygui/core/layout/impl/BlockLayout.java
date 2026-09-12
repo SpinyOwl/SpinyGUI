@@ -138,6 +138,8 @@ public class BlockLayout implements ElementLayout {
     } else if (e instanceof InputElement input && input.buttonInput()) {
       contentWidth =
           getButtonInputWidth(input, style, parentBox.content().width(), horizontalAdditions);
+    } else if (e instanceof InputElement input && (input.checkboxInput() || input.radioInput())) {
+      contentWidth = getCheckableInputWidth(style, parentBox.content().width(), horizontalAdditions);
     } else if (e instanceof ButtonElement button) {
       contentWidth =
           getButtonWidth(button, style, parentBox.content().width(), horizontalAdditions);
@@ -188,6 +190,8 @@ public class BlockLayout implements ElementLayout {
     } else if (e instanceof InputElement input && input.buttonInput()) {
       borderBoxHeight =
           getButtonInputHeight(input, style, parentBox.content().height(), verticalAdditions);
+    } else if (e instanceof InputElement input && (input.checkboxInput() || input.radioInput())) {
+      borderBoxHeight = getCheckableInputHeight(style, parentBox.content().height(), verticalAdditions);
     } else if (e instanceof ButtonElement button) {
       float childrenHeight = childrenHeight(button, style, skipChildren, ctx);
       borderBoxHeight =
@@ -698,6 +702,20 @@ public class BlockLayout implements ElementLayout {
   private float resolvedLineHeight(Element element, ResolvedStyle style) {
     return textMeasurer == null || !style.normalLineHeight() ? style.lineHeight()
         : textMeasurer.resolveLineHeight(style, findFonts(style), StyleUtils.getFontSize(element));
+  }
+
+  /** Gives native-style checkable inputs a usable 16px indicator when CSS leaves size automatic. */
+  private float getCheckableInputWidth(
+      ResolvedStyle style, float parentWidth, float horizontalAdditions) {
+    return style.width().isAuto()
+        ? 16F + horizontalAdditions
+        : getWidth(parentWidth, style);
+  }
+
+  /** Keeps automatic checkbox and radio indicators square. */
+  private float getCheckableInputHeight(
+      ResolvedStyle style, float parentHeight, float verticalAdditions) {
+    return 16F + verticalAdditions;
   }
 
   private List<Font> findFonts(ResolvedStyle style) {

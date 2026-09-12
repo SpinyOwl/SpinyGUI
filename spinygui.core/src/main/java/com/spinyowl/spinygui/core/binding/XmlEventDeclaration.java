@@ -1,6 +1,7 @@
 package com.spinyowl.spinygui.core.binding;
 
 import com.spinyowl.spinygui.core.event.ActionEvent;
+import com.spinyowl.spinygui.core.event.ChangeEvent;
 import com.spinyowl.spinygui.core.event.Event;
 import com.spinyowl.spinygui.core.event.MouseClickEvent;
 import java.util.Map;
@@ -16,7 +17,7 @@ import java.util.Optional;
 public final class XmlEventDeclaration {
   /** Immutable built-in attribute-to-event mapping used for every declaration lookup. */
   private static final Map<String, Class<? extends Event>> EVENT_TYPES =
-      Map.of("on-action", ActionEvent.class, "on-click", MouseClickEvent.class);
+      Map.of("on-action", ActionEvent.class, "on-click", MouseClickEvent.class, "on-change", ChangeEvent.class);
 
   /** Normalized supported XML attribute that owns this declaration. */
   private final String attributeName;

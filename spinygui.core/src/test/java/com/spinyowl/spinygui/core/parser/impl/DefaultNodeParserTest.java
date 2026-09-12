@@ -112,6 +112,14 @@ class DefaultNodeParserTest {
   }
 
   @Test
+  void fromHtml_whenInputIsCheckedCheckbox_preservesItsSelectionState() {
+    InputElement input = assertInstanceOf(
+        InputElement.class, parser.fromHtml("<input type=\"checkbox\" checked value=\"yes\">"));
+    assertTrue(input.checkboxInput());
+    assertTrue(input.checked());
+  }
+
+  @Test
   void toHtml_whenInputTypeIsButton_roundTripsTypeAndRuntimeValue() {
     InputElement input =
         assertInstanceOf(

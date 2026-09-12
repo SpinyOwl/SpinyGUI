@@ -12,6 +12,7 @@ public final class NodeBuilder {
   public static final String ATTR_NAME = "name";
   public static final String ATTR_VALUE = "value";
   public static final String ATTR_DISABLED = "disabled";
+  public static final String ATTR_CHECKED = "checked";
   public static final String ATTR_ROWS = "rows";
   public static final String ATTR_COLS = "cols";
 
@@ -405,6 +406,11 @@ public final class NodeBuilder {
    */
   public static InputElement radioButton(String name, String value) {
     return input(TYPE_RADIO, name, value);
+  }
+
+  /** Creates an input with {@code type="checkbox"} and the supplied name and value. */
+  public static InputElement checkbox(String name, String value) {
+    return input(TYPE_CHECKBOX, name, value);
   }
 
   /**

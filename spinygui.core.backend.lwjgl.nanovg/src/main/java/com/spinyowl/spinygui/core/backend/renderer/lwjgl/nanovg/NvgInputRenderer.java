@@ -4,6 +4,16 @@ import static com.spinyowl.spinygui.core.backend.renderer.lwjgl.nanovg.NvgTextOu
 import static com.spinyowl.spinygui.core.backend.renderer.lwjgl.nanovg.util.NvgRenderUtils.withPresentedOpacity;
 import static org.lwjgl.nanovg.NanoVG.NVG_ALIGN_BASELINE;
 import static org.lwjgl.nanovg.NanoVG.NVG_ALIGN_LEFT;
+import static org.lwjgl.nanovg.NanoVG.nvgBeginPath;
+import static org.lwjgl.nanovg.NanoVG.nvgCircle;
+import static org.lwjgl.nanovg.NanoVG.nvgFill;
+import static org.lwjgl.nanovg.NanoVG.nvgFillColor;
+import static org.lwjgl.nanovg.NanoVG.nvgLineTo;
+import static org.lwjgl.nanovg.NanoVG.nvgMoveTo;
+import static org.lwjgl.nanovg.NanoVG.nvgRect;
+import static org.lwjgl.nanovg.NanoVG.nvgStroke;
+import static org.lwjgl.nanovg.NanoVG.nvgStrokeColor;
+import static org.lwjgl.nanovg.NanoVG.nvgStrokeWidth;
 
 import com.spinyowl.spinygui.core.backend.renderer.lwjgl.nanovg.diagnostic.NvgDiagnosticCounter;
 import com.spinyowl.spinygui.core.backend.renderer.lwjgl.nanovg.util.NvgClipStack;
@@ -13,6 +23,8 @@ import com.spinyowl.spinygui.core.font.FontStretch;
 import com.spinyowl.spinygui.core.node.InputElement;
 import com.spinyowl.spinygui.core.style.ResolvedStyle;
 import com.spinyowl.spinygui.core.style.types.Color;
+import com.spinyowl.spinygui.core.backend.renderer.lwjgl.nanovg.util.NvgColorUtil;
+import org.lwjgl.nanovg.NVGColor;
 import com.spinyowl.spinygui.core.system.font.ResolvedTextRun;
 import com.spinyowl.spinygui.core.system.font.TextMeasurer;
 import com.spinyowl.spinygui.core.system.input.ControlTextLayoutService;
@@ -73,6 +85,10 @@ class NvgInputRenderer {
   }
 
   void render(InputElement input, long nanovgContext) {
+    if (input.checkboxInput() || input.radioInput()) {
+      drawCheckable(input, nanovgContext);
+      return;
+    }
     if ((!input.textInput() && !input.buttonInput()) || layoutService == null) {
       return;
     }
@@ -94,6 +110,43 @@ class NvgInputRenderer {
       }
     } finally {
       stateSink.end(nanovgContext);
+    }
+  }
+
+  /** Draws the fixed native indicator; authored element background and border remain renderer-owned. */
+  private void drawCheckable(InputElement input, long context) {
+    Vector2f position = input.layoutAbsolutePosition();
+    float size = Math.min(input.box().borderBox().width(), input.box().borderBox().height());
+    if (size <= 0) return;
+    float x = position.x();
+    float y = position.y();
+    Color accent = input.disabled() ? new Color(150, 150, 150) : new Color(37, 99, 235);
+    Color border = input.disabled() ? new Color(160, 160, 160) : new Color(75, 85, 99);
+    try (NVGColor accentColor = NvgColorUtil.create(accent);
+        NVGColor borderColor = NvgColorUtil.create(border);
+        NVGColor white = NvgColorUtil.create(Color.WHITE)) {
+      nvgBeginPath(context);
+      if (input.radioInput()) nvgCircle(context, x + size / 2F, y + size / 2F, size / 2F - 1F);
+      else nvgRect(context, x + 1F, y + 1F, size - 2F, size - 2F);
+      nvgFillColor(context, input.checked() ? accentColor : white);
+      nvgFill(context);
+      nvgStrokeColor(context, borderColor);
+      nvgStrokeWidth(context, 1.5F);
+      nvgStroke(context);
+      if (!input.checked()) return;
+      nvgBeginPath(context);
+      if (input.radioInput()) {
+        nvgCircle(context, x + size / 2F, y + size / 2F, Math.max(2F, size * .22F));
+        nvgFillColor(context, white);
+        nvgFill(context);
+      } else {
+        nvgMoveTo(context, x + size * .22F, y + size * .53F);
+        nvgLineTo(context, x + size * .43F, y + size * .73F);
+        nvgLineTo(context, x + size * .78F, y + size * .30F);
+        nvgStrokeColor(context, white);
+        nvgStrokeWidth(context, Math.max(1.5F, size * .13F));
+        nvgStroke(context);
+      }
     }
   }
 

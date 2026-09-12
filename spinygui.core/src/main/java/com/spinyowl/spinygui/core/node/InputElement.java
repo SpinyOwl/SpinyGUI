@@ -1,10 +1,13 @@
 package com.spinyowl.spinygui.core.node;
 
 import static com.spinyowl.spinygui.core.node.NodeBuilder.ATTR_DISABLED;
+import static com.spinyowl.spinygui.core.node.NodeBuilder.ATTR_CHECKED;
 import static com.spinyowl.spinygui.core.node.NodeBuilder.ATTR_TYPE;
 import static com.spinyowl.spinygui.core.node.NodeBuilder.ATTR_VALUE;
 import static com.spinyowl.spinygui.core.node.NodeBuilder.NODE_INPUT;
 import static com.spinyowl.spinygui.core.node.NodeBuilder.TYPE_BUTTON;
+import static com.spinyowl.spinygui.core.node.NodeBuilder.TYPE_CHECKBOX;
+import static com.spinyowl.spinygui.core.node.NodeBuilder.TYPE_RADIO;
 import static com.spinyowl.spinygui.core.node.NodeBuilder.TYPE_TEXT;
 
 import java.util.Map;
@@ -30,6 +33,8 @@ public class InputElement extends EmptyElement {
   private int caretIndex;
   private int selectionAnchor;
   private float textScrollLeft;
+  /** Current selected state for checkbox and radio inputs. */
+  private boolean checked;
   @Getter(AccessLevel.NONE)
   @EqualsAndHashCode.Exclude
   @ToString.Exclude
@@ -48,6 +53,7 @@ public class InputElement extends EmptyElement {
   public void initializeFromAttributes() {
     type(attributes().get(ATTR_TYPE));
     value(attributes().get(ATTR_VALUE));
+    checked(hasAttribute(ATTR_CHECKED));
   }
 
   public void type(String type) {
@@ -155,6 +161,24 @@ public class InputElement extends EmptyElement {
 
   public boolean buttonInput() {
     return TYPE_BUTTON.equalsIgnoreCase(type);
+  }
+
+  /** Returns whether this input is a toggleable checkbox. */
+  public boolean checkboxInput() {
+    return TYPE_CHECKBOX.equalsIgnoreCase(type);
+  }
+
+  /** Returns whether this input belongs to a mutually exclusive radio group. */
+  public boolean radioInput() {
+    return TYPE_RADIO.equalsIgnoreCase(type);
+  }
+
+  /** Updates checkable state and invalidates selector matching and painting. */
+  public void checked(boolean checked) {
+    if (this.checked == checked) return;
+    this.checked = checked;
+    invalidateStyleCandidateSource();
+    invalidatePaintSource();
   }
 
   /** Returns the current immutable text-layout snapshot, or {@code null} before the first query. */

@@ -5,6 +5,8 @@ import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.spinyowl.spinygui.core.event.ActionEvent;
+import com.spinyowl.spinygui.core.event.ChangeEvent;
+import com.spinyowl.spinygui.core.event.ChangeEvent;
 import com.spinyowl.spinygui.core.event.processor.DefaultEventProcessor;
 import com.spinyowl.spinygui.core.node.Element;
 import com.spinyowl.spinygui.core.node.Frame;
@@ -25,6 +27,10 @@ class ButtonExampleTest {
     Element nested = frame.getElementById("nested");
     InputElement input =
         assertInstanceOf(InputElement.class, frame.getElementById("input-button"));
+    InputElement checkbox =
+        assertInstanceOf(InputElement.class, frame.getElementById("newsletter"));
+    InputElement selectedRadio =
+        assertInstanceOf(InputElement.class, frame.getElementById("small"));
     Text status = statusText(frame);
 
     assertEquals("save", save.getAttribute("on-action"));
@@ -34,6 +40,10 @@ class ButtonExampleTest {
     assertEquals(1, nested.getListeners(ActionEvent.class).size());
     assertEquals(1, input.getListeners(ActionEvent.class).size());
     assertTrue(input.buttonInput());
+    assertTrue(checkbox.checkboxInput());
+    assertTrue(selectedRadio.radioInput());
+    assertTrue(selectedRadio.checked());
+    assertEquals(1, checkbox.getListeners(ChangeEvent.class).size());
     assertTrue(
         nested.childNodes().stream()
             .anyMatch(node -> node instanceof Element element && "span".equals(element.nodeName())));
