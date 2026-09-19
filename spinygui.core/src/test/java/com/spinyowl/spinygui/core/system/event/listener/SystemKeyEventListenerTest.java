@@ -4,17 +4,21 @@ import static com.spinyowl.spinygui.core.input.KeyAction.PRESS;
 import static com.spinyowl.spinygui.core.input.KeyAction.RELEASE;
 import static com.spinyowl.spinygui.core.input.KeyAction.REPEAT;
 import static com.spinyowl.spinygui.core.node.NodeBuilder.TYPE_BUTTON;
+import static com.spinyowl.spinygui.core.node.NodeBuilder.TYPE_CHECKBOX;
+import static com.spinyowl.spinygui.core.node.NodeBuilder.TYPE_RADIO;
 import static com.spinyowl.spinygui.core.node.NodeBuilder.div;
 import static com.spinyowl.spinygui.core.node.NodeBuilder.frame;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 import com.google.common.collect.ImmutableSet;
 import com.spinyowl.spinygui.core.clipboard.Clipboard;
 import com.spinyowl.spinygui.core.event.ActionEvent;
+import com.spinyowl.spinygui.core.event.ChangeEvent;
 import com.spinyowl.spinygui.core.event.KeyboardEvent;
 import com.spinyowl.spinygui.core.event.processor.EventProcessor;
 import com.spinyowl.spinygui.core.input.KeyAction;
@@ -406,6 +410,62 @@ class SystemKeyEventListenerTest {
 
     Assertions.assertFalse(input.pressed());
     Assertions.assertEquals("Save", input.value());
+  }
+
+  @Test
+  void process_whenFocusedCheckboxHandlesSpacePress_togglesAndEmitsChangeEvent() {
+    InputElement input = focusedInput("", 0);
+    input.type(TYPE_CHECKBOX);
+    Frame frame = frame(input);
+    when(timeService.currentTime()).thenReturn(1D);
+    KeyboardLayout keyboardLayout = mock(KeyboardLayout.class);
+    when(keyboard.layout()).thenReturn(keyboardLayout);
+    when(keyboardLayout.keyCode(7)).thenReturn(KeyCode.SPACE);
+
+    listener.process(
+        SystemKeyEvent.builder()
+            .keyCode(7)
+            .scancode(7)
+            .action(SystemKeyAction.PRESS)
+            .mods(ImmutableSet.of())
+            .frame(frame)
+            .build(),
+        frame);
+
+    verify(eventProcessor).push(any(ChangeEvent.class));
+    Assertions.assertTrue(input.checked());
+  }
+
+  @Test
+  void process_whenFocusedRadioHandlesRightPress_selectsNextNamedRadio() {
+    InputElement first = new InputElement();
+    first.type(TYPE_RADIO);
+    first.setAttribute("name", "size");
+    first.checked(true);
+    first.focused(true);
+    InputElement second = new InputElement();
+    second.type(TYPE_RADIO);
+    second.setAttribute("name", "size");
+    Frame frame = frame(first, second);
+    double timestamp = 1D;
+    when(timeService.currentTime()).thenReturn(timestamp);
+    KeyboardLayout keyboardLayout = mock(KeyboardLayout.class);
+    when(keyboard.layout()).thenReturn(keyboardLayout);
+    when(keyboardLayout.keyCode(7)).thenReturn(KeyCode.RIGHT);
+
+    listener.process(
+        SystemKeyEvent.builder()
+            .keyCode(7)
+            .scancode(7)
+            .action(SystemKeyAction.PRESS)
+            .mods(ImmutableSet.of())
+            .frame(frame)
+            .build(),
+        frame);
+
+    Assertions.assertFalse(first.checked());
+    Assertions.assertTrue(second.checked());
+    verify(eventProcessor, times(2)).push(any(ChangeEvent.class));
   }
 
   @Test

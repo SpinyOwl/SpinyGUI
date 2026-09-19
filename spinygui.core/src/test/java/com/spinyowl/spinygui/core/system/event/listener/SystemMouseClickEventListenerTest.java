@@ -1,6 +1,7 @@
 package com.spinyowl.spinygui.core.system.event.listener;
 
 import static com.spinyowl.spinygui.core.node.NodeBuilder.TYPE_BUTTON;
+import static com.spinyowl.spinygui.core.node.NodeBuilder.TYPE_CHECKBOX;
 import static com.spinyowl.spinygui.core.node.NodeBuilder.div;
 import static com.spinyowl.spinygui.core.node.NodeBuilder.frame;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -14,6 +15,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import com.google.common.collect.ImmutableSet;
 import com.spinyowl.spinygui.core.event.ActionEvent;
+import com.spinyowl.spinygui.core.event.ChangeEvent;
 import com.spinyowl.spinygui.core.event.Event;
 import com.spinyowl.spinygui.core.event.FocusInEvent;
 import com.spinyowl.spinygui.core.event.FocusOutEvent;
@@ -448,6 +450,37 @@ class SystemMouseClickEventListenerTest {
     assertTrue(input.focused());
     assertFalse(input.pressed());
     assertEquals("Save", input.value());
+  }
+
+  @Test
+  void process_releaseFocusedCheckboxInCurrentFrame_togglesAndGeneratesChangeEvent() {
+    InputElement input = new InputElement();
+    input.type(TYPE_CHECKBOX);
+    input.focused(true);
+    input.pressed(true);
+    input.box().contentSize(20, 20);
+    input.box().contentPosition(50, 20);
+    Frame frame = frame(input);
+    frame.box().contentSize(100, 100);
+
+    SystemMouseClickEvent event = mouseRelease(frame);
+    Vector2f current = new Vector2f(55, 25);
+    when(mouseService.getCursorPositions(frame))
+        .thenReturn(new CursorPositions(current, current));
+    double timestamp = 1;
+    when(timeService.currentTime()).thenReturn(timestamp);
+
+    ChangeEvent expectedChangeEvent =
+        ChangeEvent.builder().source(frame).target(input).timestamp(timestamp).build();
+    ActionEvent expectedActionEvent =
+        ActionEvent.builder().source(frame).target(input).timestamp(timestamp).build();
+
+    listener.process(event, frame);
+
+    verify(eventProcessor).push(expectedChangeEvent);
+    verify(eventProcessor).push(expectedActionEvent);
+    assertTrue(input.checked());
+    assertFalse(input.pressed());
   }
 
   @Test

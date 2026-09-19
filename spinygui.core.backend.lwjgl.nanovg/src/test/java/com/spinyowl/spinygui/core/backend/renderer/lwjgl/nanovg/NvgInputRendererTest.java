@@ -1,6 +1,8 @@
 package com.spinyowl.spinygui.core.backend.renderer.lwjgl.nanovg;
 
 import static com.spinyowl.spinygui.core.node.NodeBuilder.TYPE_BUTTON;
+import static com.spinyowl.spinygui.core.node.NodeBuilder.TYPE_CHECKBOX;
+import static com.spinyowl.spinygui.core.node.NodeBuilder.TYPE_RADIO;
 import static com.spinyowl.spinygui.core.style.stylesheet.Properties.COLOR;
 import static com.spinyowl.spinygui.core.style.stylesheet.Properties.OPACITY;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -78,6 +80,30 @@ class NvgInputRendererTest {
     assertEquals(List.of(), selectionSink.calls());
     assertEquals(List.of("text(9,abcd,20.0,44.0,16.0)"), textSink.calls());
     assertEquals(List.of("caret(9,40.0,32.0,16.0)"), caretSink.calls());
+  }
+
+  @Test
+  void render_whenCheckableInput_delegatesStateToNativeIndicatorSink() {
+    RecordingCheckableSink checkableSink = new RecordingCheckableSink();
+    NvgInputRenderer renderer =
+        new NvgInputRenderer(
+            new RecordingStateSink(),
+            new RecordingSelectionSink(),
+            new RecordingTextSink(),
+            new RecordingCaretSink(),
+            checkableSink);
+    InputElement checkbox = input("");
+    checkbox.type(TYPE_CHECKBOX);
+    checkbox.checked(true);
+    InputElement radio = input("");
+    radio.type(TYPE_RADIO);
+    radio.setAttribute("disabled", "");
+
+    renderer.render(checkbox, 9);
+    renderer.render(radio, 10);
+
+    assertEquals(List.of("checkable(9,checkbox,true,false)", "checkable(10,radio,false,true)"),
+        checkableSink.calls());
   }
 
   @Test
@@ -426,6 +452,21 @@ class NvgInputRendererTest {
     @Override
     public void end(long context) {
       calls.add("end(%d)".formatted(context));
+    }
+
+    List<String> calls() {
+      return calls;
+    }
+  }
+
+  private static final class RecordingCheckableSink implements NvgInputRenderer.InputCheckableSink {
+    private final List<String> calls = new ArrayList<>();
+
+    @Override
+    public void draw(long context, InputElement input) {
+      calls.add(
+          "checkable(%d,%s,%s,%s)"
+              .formatted(context, input.type(), input.checked(), input.disabled()));
     }
 
     List<String> calls() {

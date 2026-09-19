@@ -331,6 +331,33 @@ class BlockLayoutTest {
   }
 
   @Test
+  void layout_whenCheckableInputHasAutoSize_usesFixedIndicatorSize() {
+    Frame frame = NodeBuilder.frame();
+    frame.frameSize(300, 200);
+    style(frame, 0);
+    InputElement checkbox = NodeBuilder.input(NodeBuilder.TYPE_CHECKBOX, "newsletter", "");
+    InputElement radio = NodeBuilder.input(NodeBuilder.TYPE_RADIO, "size", "small");
+    style(checkbox, 2);
+    style(radio, 2);
+    frame.addChildren(checkbox, radio);
+
+    RecursiveLayoutService layoutService = new RecursiveLayoutService();
+    FixedTextMeasurer textMeasurer = new FixedTextMeasurer();
+    BlockLayout blockLayout =
+        new BlockLayout(layoutService, new InlineFormattingContext(textMeasurer), textMeasurer);
+    layoutService.blockLayout(blockLayout);
+
+    blockLayout.layout(frame, new LayoutContext());
+
+    assertEquals(16, checkbox.box().content().width());
+    assertEquals(16, checkbox.box().content().height());
+    assertEquals(20, checkbox.box().borderBox().width());
+    assertEquals(20, checkbox.box().borderBox().height());
+    assertEquals(20, radio.box().borderBox().width());
+    assertEquals(20, radio.box().borderBox().height());
+  }
+
+  @Test
   void layout_whenButtonInputHasEmptyValue_usesFallbackWidth() {
     Frame frame = NodeBuilder.frame();
     frame.frameSize(300, 200);

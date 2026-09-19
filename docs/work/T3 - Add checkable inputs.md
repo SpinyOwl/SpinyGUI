@@ -18,9 +18,9 @@ Add first-class checkbox and radio inputs using the existing `InputElement` type
 
 ## Acceptance Checks
 - [x] XML and `NodeBuilder` inputs preserve an initial `checked` state and CSS `:checked` follows programmatic changes.
-- [ ] Mouse and Space toggle a checkbox; selecting a radio clears only named peers in the same frame; arrow keys cycle the selected radio.
-- [ ] Disabled controls cannot change; each actual state transition emits one `ChangeEvent` alongside its activation.
-- [ ] Checkboxes and radios have usable auto geometry and their NanoVG renderer draws the correct checked/unchecked indicator.
+- [x] Mouse and Space toggle a checkbox; selecting a radio clears only named peers in the same frame; arrow keys cycle the selected radio.
+- [x] Disabled controls cannot change; each actual state transition emits one `ChangeEvent` alongside its activation.
+- [x] Checkboxes and radios have usable auto geometry and their NanoVG renderer draws the correct checked/unchecked indicator.
 - [x] Focused core and NanoVG tests, PMD, and SpotBugs pass.
 
 ## Risks
@@ -28,16 +28,17 @@ HTML form submission, labels, indeterminate checkboxes, and browser-complete key
 
 ## Execution Record
 - Status: In Progress
-- Last Updated: 2026-09-12
+- Last Updated: 2026-09-19
 - Implemented Scope: Added frame-local checkable state transitions, `ChangeEvent` and XML `on-change`, `:checked`, automatic geometry, NanoVG indicators, focused tests, demo resources, and support documentation.
 - Relevant Files and Symbols: InputElement, CheckableInputBehavior, SystemMouseClickEventListener, SystemKeyEventListener, CheckedSelector, BlockLayout, NvgInputRenderer, ButtonExample.
 - Acceptance Evidence:
   - Checkable model and selector: Passed — Automated — CheckableInputBehaviorTest, CheckedSelectorTest, and DefaultNodeParserTest passed.
-  - State-changing input: Partially Passed — Automated — CheckableInputBehaviorTest covers toggle, group clearing, wrapping and disabled state; direct system-listener event assertions remain unrun.
-  - Layout and rendering: Partially Passed — Automated — NanoVG input renderer compilation and existing NvgInputRendererTest passed; direct checkable drawing and layout assertions remain unrun.
+  - State-changing input: Passed — Automated — direct `SystemMouseClickEventListenerTest` covers checkbox release, `SystemKeyEventListenerTest` covers checkbox Space and same-name radio Right navigation; `CheckableInputBehaviorTest` covers disabled, grouping, and wrapping semantics.
+  - Layout and rendering: Passed — Automated — direct `BlockLayoutTest` confirms 16 px content and 20 px border-box auto geometry with borders; `NvgInputRendererTest` confirms checkbox/radio type, checked state, and disabled state reach the native-indicator rendering path.
+  - Focused direct regression: Passed — Automated — `gradlew.bat :spinygui.core:test --tests "*SystemMouseClickEventListenerTest" --tests "*SystemKeyEventListenerTest" --tests "*BlockLayoutTest" :spinygui.core.backend.lwjgl.nanovg:test --tests "*NvgInputRendererTest"` completed successfully (86 core tests and NanoVG renderer tests).
   - Full affected-module regression: Passed — Automated — `gradlew.bat :spinygui.core:test :spinygui.core.backend.lwjgl.nanovg:test :spinygui.demo.complex:test --rerun-tasks --console=plain --no-configuration-cache` completed with 100 core, 28 NanoVG, and 3 demo XML result reports; no failures or errors.
   - Static analysis: Passed — Automated — `:spinygui.core:pmdMain` and `:spinygui.core:spotbugsMain` passed.
 - Decisions and Deviations: Radio group membership is a matching nonblank `name` among descendants of the owning Frame, as approved.
 - Review Outcome: Not Reviewed
-- Remaining Work: Add direct listener, layout, and checkable-renderer tests; manually exercise the ButtonExample controls in a native window.
-- Resume or Closure: Implementation is ready for review. Resume by adding direct system-listener tests for release, Space and radio arrow changes.
+- Remaining Work: Perform the native-window manual demo check. `:spinygui.demo.complex:runButtonExample` was launched on 2026-09-19, but this session's computer-use adapter reported no available native app surfaces (`apps: []`), so click and keyboard outcomes could not be observed or claimed.
+- Resume or Closure: Direct automated verification is complete. Resume from an environment with a native app surface and exercise checkbox click/Space plus radio click/arrow navigation in ButtonExample.

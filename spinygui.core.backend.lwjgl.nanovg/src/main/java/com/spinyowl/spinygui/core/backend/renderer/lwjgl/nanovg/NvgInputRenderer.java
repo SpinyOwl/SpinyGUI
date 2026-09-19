@@ -43,6 +43,7 @@ class NvgInputRenderer {
   private final InputSelectionSink selectionSink;
   private final InputTextSink textSink;
   private final InputCaretSink caretSink;
+  private final InputCheckableSink checkableSink;
   private ControlTextLayoutService layoutService;
 
   NvgInputRenderer() {
@@ -62,7 +63,8 @@ class NvgInputRenderer {
         new CommandStateSink(commands),
         new CommandSelectionSink(commands),
         new CommandTextSink(commands, diagnostics),
-        new CommandCaretSink(commands));
+        new CommandCaretSink(commands),
+        new NativeCheckableSink());
   }
 
   NvgInputRenderer(
@@ -70,10 +72,20 @@ class NvgInputRenderer {
       InputSelectionSink selectionSink,
       InputTextSink textSink,
       InputCaretSink caretSink) {
+    this(stateSink, selectionSink, textSink, caretSink, new NativeCheckableSink());
+  }
+
+  NvgInputRenderer(
+      InputStateSink stateSink,
+      InputSelectionSink selectionSink,
+      InputTextSink textSink,
+      InputCaretSink caretSink,
+      InputCheckableSink checkableSink) {
     this.stateSink = stateSink;
     this.selectionSink = selectionSink;
     this.textSink = textSink;
     this.caretSink = caretSink;
+    this.checkableSink = checkableSink;
   }
 
   void textMeasurer(TextMeasurer textMeasurer) {
@@ -86,7 +98,7 @@ class NvgInputRenderer {
 
   void render(InputElement input, long nanovgContext) {
     if (input.checkboxInput() || input.radioInput()) {
-      drawCheckable(input, nanovgContext);
+      checkableSink.draw(nanovgContext, input);
       return;
     }
     if ((!input.textInput() && !input.buttonInput()) || layoutService == null) {
@@ -113,39 +125,46 @@ class NvgInputRenderer {
     }
   }
 
+  interface InputCheckableSink {
+    void draw(long context, InputElement input);
+  }
+
   /** Draws the fixed native indicator; authored element background and border remain renderer-owned. */
-  private void drawCheckable(InputElement input, long context) {
-    Vector2f position = input.layoutAbsolutePosition();
-    float size = Math.min(input.box().borderBox().width(), input.box().borderBox().height());
-    if (size <= 0) return;
-    float x = position.x();
-    float y = position.y();
-    Color accent = input.disabled() ? new Color(150, 150, 150) : new Color(37, 99, 235);
-    Color border = input.disabled() ? new Color(160, 160, 160) : new Color(75, 85, 99);
-    try (NVGColor accentColor = NvgColorUtil.create(accent);
-        NVGColor borderColor = NvgColorUtil.create(border);
-        NVGColor white = NvgColorUtil.create(Color.WHITE)) {
-      nvgBeginPath(context);
-      if (input.radioInput()) nvgCircle(context, x + size / 2F, y + size / 2F, size / 2F - 1F);
-      else nvgRect(context, x + 1F, y + 1F, size - 2F, size - 2F);
-      nvgFillColor(context, input.checked() ? accentColor : white);
-      nvgFill(context);
-      nvgStrokeColor(context, borderColor);
-      nvgStrokeWidth(context, 1.5F);
-      nvgStroke(context);
-      if (!input.checked()) return;
-      nvgBeginPath(context);
-      if (input.radioInput()) {
-        nvgCircle(context, x + size / 2F, y + size / 2F, Math.max(2F, size * .22F));
-        nvgFillColor(context, white);
+  private static final class NativeCheckableSink implements InputCheckableSink {
+    @Override
+    public void draw(long context, InputElement input) {
+      Vector2f position = input.layoutAbsolutePosition();
+      float size = Math.min(input.box().borderBox().width(), input.box().borderBox().height());
+      if (size <= 0) return;
+      float x = position.x();
+      float y = position.y();
+      Color accent = input.disabled() ? new Color(150, 150, 150) : new Color(37, 99, 235);
+      Color border = input.disabled() ? new Color(160, 160, 160) : new Color(75, 85, 99);
+      try (NVGColor accentColor = NvgColorUtil.create(accent);
+          NVGColor borderColor = NvgColorUtil.create(border);
+          NVGColor white = NvgColorUtil.create(Color.WHITE)) {
+        nvgBeginPath(context);
+        if (input.radioInput()) nvgCircle(context, x + size / 2F, y + size / 2F, size / 2F - 1F);
+        else nvgRect(context, x + 1F, y + 1F, size - 2F, size - 2F);
+        nvgFillColor(context, input.checked() ? accentColor : white);
         nvgFill(context);
-      } else {
-        nvgMoveTo(context, x + size * .22F, y + size * .53F);
-        nvgLineTo(context, x + size * .43F, y + size * .73F);
-        nvgLineTo(context, x + size * .78F, y + size * .30F);
-        nvgStrokeColor(context, white);
-        nvgStrokeWidth(context, Math.max(1.5F, size * .13F));
+        nvgStrokeColor(context, borderColor);
+        nvgStrokeWidth(context, 1.5F);
         nvgStroke(context);
+        if (!input.checked()) return;
+        nvgBeginPath(context);
+        if (input.radioInput()) {
+          nvgCircle(context, x + size / 2F, y + size / 2F, Math.max(2F, size * .22F));
+          nvgFillColor(context, white);
+          nvgFill(context);
+        } else {
+          nvgMoveTo(context, x + size * .22F, y + size * .53F);
+          nvgLineTo(context, x + size * .43F, y + size * .73F);
+          nvgLineTo(context, x + size * .78F, y + size * .30F);
+          nvgStrokeColor(context, white);
+          nvgStrokeWidth(context, Math.max(1.5F, size * .13F));
+          nvgStroke(context);
+        }
       }
     }
   }
