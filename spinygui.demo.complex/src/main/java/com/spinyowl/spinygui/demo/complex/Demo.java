@@ -23,6 +23,7 @@ import com.spinyowl.cbchain.impl.ChainWindowSizeCallback;
 import com.spinyowl.spinygui.core.animation.TransitionCoordinator;
 import com.spinyowl.spinygui.core.backend.renderer.Renderer;
 import com.spinyowl.spinygui.core.backend.renderer.lwjgl.nanovg.NvgRenderer;
+import com.spinyowl.spinygui.core.backend.renderer.lwjgl.GlfwCursorController;
 import com.spinyowl.spinygui.core.clipboard.Clipboard;
 import com.spinyowl.spinygui.core.event.processor.DefaultEventProcessor;
 import com.spinyowl.spinygui.core.event.processor.EventProcessor;
@@ -103,6 +104,8 @@ public abstract class Demo {
   private Frame frame;
   private long window;
   private MouseServiceImpl mouseService;
+  /** Window-owned native cursor cache, released before its GLFW window is destroyed. */
+  private GlfwCursorController cursorController;
 
   protected Demo(int width, int height, String title, Renderer renderer) {
     this.width = width;
@@ -215,6 +218,7 @@ public abstract class Demo {
 
     window = glfwCreateWindow(width, height, title, NULL, NULL);
     glfwWindowHint(GLFW_DOUBLEBUFFER, GLFW_TRUE);
+    cursorController = new GlfwCursorController(frame);
     initializeCallbacks(window);
     glfwShowWindow(window);
 
@@ -337,6 +341,7 @@ public abstract class Demo {
     glfwSetWindowCloseCallback(window, chainWindowCloseCallback);
 
     var chainCursorPosCallback = new ChainCursorPosCallback();
+    chainCursorPosCallback.add((w, x, y) -> cursorController.update(w, x, y));
     chainCursorPosCallback.add(
         (w, x, y) ->
             systemEventProcessor.push(
@@ -498,6 +503,7 @@ public abstract class Demo {
   }
 
   private void destroy() {
+    if (cursorController != null) cursorController.close();
     glfwDestroyWindow(window);
     glfwTerminate();
   }

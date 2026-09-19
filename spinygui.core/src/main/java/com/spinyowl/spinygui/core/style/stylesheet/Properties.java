@@ -9,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 public final class Properties {
 
   public static final String COLOR = "color";
+  public static final String CURSOR = "cursor";
 
   public static final String BACKGROUND = "background";
   public static final String BACKGROUND_COLOR = "background-color";

@@ -2,6 +2,7 @@ package com.spinyowl.spinygui.core.style.manager;
 
 import static com.spinyowl.spinygui.core.style.stylesheet.Properties.TRANSFORM;
 import static com.spinyowl.spinygui.core.style.stylesheet.Properties.TRANSFORM_ORIGIN;
+import static com.spinyowl.spinygui.core.style.stylesheet.Properties.CURSOR;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
@@ -13,9 +14,24 @@ import com.spinyowl.spinygui.core.style.stylesheet.term.TermFunction;
 import com.spinyowl.spinygui.core.style.stylesheet.term.TermInteger;
 import com.spinyowl.spinygui.core.style.types.Transform;
 import com.spinyowl.spinygui.core.style.types.TransformOrigin;
+import com.spinyowl.spinygui.core.style.types.CursorType;
 import org.junit.jupiter.api.Test;
 
 class TransformStyleManagerTest {
+
+  @Test
+  void invalidCursorKeepsEarlierValidDeclaration() {
+    var store = new DefaultPropertyStoreProvider().createPropertyStore();
+    var parser = StyleSheetParserFactory.createParser(store);
+    var frame = new Frame();
+    var element = new Element("div");
+    element.style("cursor: move; cursor: wait");
+    frame.addChild(element);
+
+    new StyleManagerImpl(store, parser).recalculate(frame);
+
+    assertEquals(CursorType.MOVE, element.resolvedStyle().get(CURSOR));
+  }
 
   @org.junit.jupiter.params.ParameterizedTest
   @org.junit.jupiter.params.provider.CsvSource({

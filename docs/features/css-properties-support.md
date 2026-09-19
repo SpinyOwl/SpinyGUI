@@ -73,7 +73,7 @@ Approximate implementation estimates for unchecked entries:
 | `clip-path` | L | Shape/path clipping in renderer and hit-testing. |
 | `column-count`, `column-fill`, `column-gap`, `column-rule`, `column-rule-color`, `column-rule-style`, `column-rule-width`, `column-span`, `column-width`, `columns` | XL | Multi-column layout, fragmentation, balancing, and column rule painting. |
 | `content`, `counter-increment`, `counter-reset`, `quotes` | L | Generated content, pseudo-elements, and counter state. |
-| `cursor` | M | Property parsing plus wiring resolved style to cursor service during hover/focus transitions. |
+| `cursor` | Supported subset | Supports `auto`, `default`, `pointer`, `text`, `move`, `ew-resize`, `ns-resize`, `nwse-resize`, and `nesw-resize`. Explicit CSS wins; controls and scrollbar thumbs have bounded automatic defaults in the GLFW host. |
 | `direction`, `unicode-bidi`, `writing-mode` | XL | Bidirectional and vertical text shaping/layout support. |
 | `filter` | L | Renderer effects pipeline for blur/color/filter operations. |
 | `font` | M | CSS font shorthand parser with optional style/variant/weight/stretch/size/line-height/family handling. |
@@ -213,7 +213,7 @@ Checklist of CSS properties:
 -  [ ] `content`
 -  [ ] `counter-increment`
 -  [ ] `counter-reset`
--  [ ] `cursor`
+-  [x] `cursor`
 -  [ ] `direction`
 -  [x] `display`
    - [x] `flex`

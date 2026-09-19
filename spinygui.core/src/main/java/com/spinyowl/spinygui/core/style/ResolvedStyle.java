@@ -29,6 +29,7 @@ import static com.spinyowl.spinygui.core.style.stylesheet.Properties.BORDER_TOP_
 import static com.spinyowl.spinygui.core.style.stylesheet.Properties.BOTTOM;
 import static com.spinyowl.spinygui.core.style.stylesheet.Properties.BOX_SHADOW;
 import static com.spinyowl.spinygui.core.style.stylesheet.Properties.COLOR;
+import static com.spinyowl.spinygui.core.style.stylesheet.Properties.CURSOR;
 import static com.spinyowl.spinygui.core.style.stylesheet.Properties.DISPLAY;
 import static com.spinyowl.spinygui.core.style.stylesheet.Properties.FLEX_BASIS;
 import static com.spinyowl.spinygui.core.style.stylesheet.Properties.FLEX_DIRECTION;
@@ -92,6 +93,7 @@ import com.spinyowl.spinygui.core.font.FontWeight;
 import com.spinyowl.spinygui.core.style.stylesheet.Ruleset;
 import com.spinyowl.spinygui.core.style.types.BoxShadow;
 import com.spinyowl.spinygui.core.style.types.Color;
+import com.spinyowl.spinygui.core.style.types.CursorType;
 import com.spinyowl.spinygui.core.style.types.Display;
 import com.spinyowl.spinygui.core.style.types.Overflow;
 import com.spinyowl.spinygui.core.style.types.OverflowWrap;
@@ -325,6 +327,16 @@ public class ResolvedStyle {
 
   public List<String> fontFamilies() {
     return get(FONT_FAMILY);
+  }
+
+  /** Returns the resolved CSS cursor, or {@link CursorType#AUTO} when it is not styled. */
+  public CursorType cursor() {
+    return get(CURSOR, CursorType.AUTO);
+  }
+
+  /** Sets the resolved CSS cursor. */
+  public void cursor(CursorType cursor) {
+    set(CURSOR, cursor);
   }
 
   public void fontFamilies(List<String> fontFamilies) {

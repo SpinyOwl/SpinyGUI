@@ -84,8 +84,9 @@ public final class DefaultLwjglWindow implements LwjglWindow {
     this(
         configuration,
         directCallbacks(
+            Objects.requireNonNull(frame, "frame"),
             new GlfwSystemEventMapper(
-                new FrameNavigator(Objects.requireNonNull(frame, "frame"), 1),
+                new FrameNavigator(frame, 1),
                 Objects.requireNonNull(systemEvents, "systemEvents"),
                 (window, key, action) -> {
                   if (key == GLFW_KEY_ESCAPE && action != GLFW_RELEASE) {
@@ -268,20 +269,30 @@ public final class DefaultLwjglWindow implements LwjglWindow {
     if (window == NULL || closed) throw new IllegalStateException("Window is not initialized");
   }
 
-  private static LwjglCallbackInstaller directCallbacks(GlfwSystemEventMapper mapper) {
+  private static LwjglCallbackInstaller directCallbacks(Frame frame, GlfwSystemEventMapper mapper) {
     return window -> {
       GlfwSystemEventMapper.Callbacks callbacks = mapper.callbacks();
+      GlfwCursorController cursorController = new GlfwCursorController(frame);
       try {
-        glfwSetCursorPosCallback(window, callbacks.cursorPos());
+        glfwSetCursorPosCallback(
+            window,
+            (callbackWindow, x, y) -> {
+              cursorController.update(callbackWindow, x, y);
+              callbacks.cursorPos().invoke(callbackWindow, x, y);
+            });
         glfwSetCursorEnterCallback(window, callbacks.cursorEnter());
         glfwSetWindowSizeCallback(window, callbacks.windowSize());
         glfwSetScrollCallback(window, callbacks.scroll());
         glfwSetMouseButtonCallback(window, callbacks.mouseButton());
         glfwSetCharCallback(window, callbacks.character());
         glfwSetKeyCallback(window, callbacks.key());
-        return () -> unsetDirectCallbacks(window);
+        return () -> {
+          unsetDirectCallbacks(window);
+          cursorController.close();
+        };
       } catch (RuntimeException failure) {
         unsetDirectCallbacks(window);
+        cursorController.close();
         throw failure;
       }
     };
