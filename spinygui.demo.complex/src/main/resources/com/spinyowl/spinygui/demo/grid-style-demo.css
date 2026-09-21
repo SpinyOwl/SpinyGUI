@@ -88,3 +88,80 @@ winframe {
   color: #334155;
   overflow: hidden;
 }
+
+.m7-grid-panel {
+  display: grid;
+  position: absolute;
+  left: 32px;
+  top: 400px;
+  width: 88%;
+  height: 116px;
+  padding: 10px;
+  border: 3px solid #0f766e;
+  background-color: #f0fdfa;
+  grid-template-columns: auto 0.25fr minmax(96px, 0.25fr);
+  grid-template-rows: 24px 58px;
+  grid-template-areas: "title title title" "summary controls scroll";
+  grid-gap: 8px;
+  justify-content: space-evenly;
+  align-content: space-evenly;
+}
+
+.m7-title {
+  grid-area: title;
+  color: #134e4a;
+  font-size: 16px;
+  line-height: 20px;
+}
+
+.m7-summary {
+  grid-area: summary;
+  width: 132px;
+  padding: 4px;
+  border: 2px solid #0f766e;
+  background-color: #ccfbf1;
+  color: #134e4a;
+  line-height: 18px;
+  overflow: hidden;
+}
+
+.m7-controls {
+  display: grid;
+  grid-area: controls;
+  grid-template-columns: 1fr;
+  grid-template-rows: 24px 26px;
+  grid-gap: 4px;
+}
+
+.m7-controls input,
+.m7-controls button {
+  cursor: pointer;
+}
+
+.m7-controls input {
+  border: 2px solid #0f766e;
+  background-color: #ffffff;
+}
+
+.m7-controls button {
+  padding: 3px 8px;
+  border: 2px solid #0f766e;
+  background-color: #99f6e4;
+  color: #134e4a;
+}
+
+.m7-scroll {
+  grid-area: scroll;
+  border: 2px solid #0f766e;
+  background-color: #ffffff;
+  overflow: auto;
+}
+
+.m7-scroll-content {
+  width: 220px;
+  height: 96px;
+  padding: 4px;
+  background-color: #fef3c7;
+  color: #134e4a;
+  line-height: 18px;
+}

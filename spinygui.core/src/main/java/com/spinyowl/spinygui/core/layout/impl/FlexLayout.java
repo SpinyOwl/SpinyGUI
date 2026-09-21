@@ -101,8 +101,19 @@ public class FlexLayout implements ElementLayout {
    */
   @Override
   public void layout(Element parent, LayoutContext context) {
-    // initially layout as block
-    blockLayout.layout(parent, true, context);
+    layout(parent, context, false);
+  }
+
+  /** Reflows a flex item after another layout has assigned its final content area. */
+  void layoutAssignedArea(Element parent, LayoutContext context) {
+    layout(parent, context, true);
+  }
+
+  private void layout(Element parent, LayoutContext context, boolean preserveAssignedArea) {
+    if (!preserveAssignedArea) {
+      // Initially layout as block to establish the provisional flex area.
+      blockLayout.layout(parent, true, context);
+    }
 
     // initialize
     var rootNode = YGNodeNew();
@@ -126,7 +137,8 @@ public class FlexLayout implements ElementLayout {
 
     Rect parentBorderBox = parent.box().borderBox();
     // A provisional block minimum must not become a definite height for a content-sized flex box.
-    boolean contentHeight = parent.resolvedStyle().height().isAuto()
+    boolean contentHeight = !preserveAssignedArea
+        && parent.resolvedStyle().height().isAuto()
         && !(parent instanceof com.spinyowl.spinygui.core.node.Frame)
         && !hasPosition(parent, ABSOLUTE);
     Yoga.YGNodeStyleSetWidth(rootNode, parentBorderBox.width());

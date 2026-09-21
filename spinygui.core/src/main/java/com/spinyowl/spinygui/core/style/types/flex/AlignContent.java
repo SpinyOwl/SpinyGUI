@@ -31,6 +31,8 @@ public final class AlignContent {
   public static final AlignContent SPACE_BETWEEN = AlignContent.create("space-between");
   /** Lines are evenly distributed in the flex container, with half-size spaces on either end. */
   public static final AlignContent SPACE_AROUND = AlignContent.create("space-around");
+  /** Lines are evenly distributed in the container, including at both edges. */
+  public static final AlignContent SPACE_EVENLY = AlignContent.create("space-evenly");
 
   @NonNull private final String name;
 

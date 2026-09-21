@@ -68,6 +68,16 @@ tasks.register<JavaExec>("compareViews") {
     outputs.upToDateWhen { false }
 }
 
+tasks.register<JavaExec>("captureM7GridPanel") {
+    group = "verification"
+    description = "Captures the initial M7 Grid panel through NanoVG/OpenGL and checks its local structure."
+    classpath = visualRuntime
+    mainClass.set("com.spinyowl.spinygui.visual.M7GridPanelScreenshotMain")
+    args(rootProject.projectDir.absolutePath,
+        layout.buildDirectory.dir("reports/m7-grid-panel-capture").get().asFile.absolutePath)
+    outputs.upToDateWhen { false }
+}
+
 tasks.register<JavaExec>("launchDemos") {
     group = "application"
     description = "Opens native and Chromium demos side by side; select with -Pdemo=overflow-demo."

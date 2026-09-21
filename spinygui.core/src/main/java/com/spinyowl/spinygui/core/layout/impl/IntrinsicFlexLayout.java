@@ -30,6 +30,15 @@ final class IntrinsicFlexLayout extends FlexLayout {
   @Override
   public void layout(Element parent, LayoutContext context) {
     super.layout(parent, context);
+    updateIntrinsicSize(parent);
+  }
+
+  @Override
+  void layoutAssignedArea(Element parent, LayoutContext context) {
+    super.layoutAssignedArea(parent, context);
+  }
+
+  private void updateIntrinsicSize(Element parent) {
     updateAutoHeight(parent);
     updateAutoWidthWhenFlexItem(parent);
   }

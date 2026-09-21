@@ -25,7 +25,7 @@ public class GridStyleExample extends Demo {
   private static final String CSS_RESOURCE = "com/spinyowl/spinygui/demo/grid-style-demo.css";
 
   public GridStyleExample() {
-    super(720, 460, "Grid Style Example", new NvgRenderer());
+    super(720, 560, "Grid Style Example", new NvgRenderer());
   }
 
   public static void main(String[] args) {
@@ -56,6 +56,7 @@ public class GridStyleExample extends Demo {
 
     Element grid = requireElement(frame, "visual-stage");
     Element featured = requireElement(frame, "featured-card");
+    Element m7Panel = requireElement(frame, "m7-grid-panel");
 
     require(
         Display.GRID.equals(grid.resolvedStyle().display()),
@@ -65,6 +66,9 @@ public class GridStyleExample extends Demo {
     require(grid.resolvedStyle().getSafe(GRID_TEMPLATE_AREAS) != null, "grid areas were not parsed");
     require(featured.resolvedStyle().getSafe(GRID_ROW_START) != null, "grid-row shorthand was not parsed");
     require(featured.resolvedStyle().getSafe(GRID_COLUMN_START) != null, "grid-column shorthand was not parsed");
+    require(Display.GRID.equals(m7Panel.resolvedStyle().display()), "m7 grid panel did not resolve display:grid");
+    require(m7Panel.resolvedStyle().getSafe(GRID_TEMPLATE_COLUMNS) != null, "m7 grid columns were not parsed");
+    require(m7Panel.resolvedStyle().getSafe(GRID_TEMPLATE_ROWS) != null, "m7 grid rows were not parsed");
   }
 
   private static Element requireElement(Frame frame, String id) {

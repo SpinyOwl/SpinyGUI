@@ -9,10 +9,17 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import com.spinyowl.spinygui.core.backend.renderer.lwjgl.nanovg.diagnostic.NvgDiagnosticCounter;
 import com.spinyowl.spinygui.core.backend.renderer.lwjgl.nanovg.util.NvgClipStack.ClipSink;
 import com.spinyowl.spinygui.core.diagnostic.DiagnosticSession;
+import com.spinyowl.spinygui.core.layout.impl.LayoutServiceProvider;
 import com.spinyowl.spinygui.core.node.Element;
+import com.spinyowl.spinygui.core.node.Frame;
 import com.spinyowl.spinygui.core.node.NodeBuilder;
+import com.spinyowl.spinygui.core.parser.impl.StyleSheetParserFactory;
+import com.spinyowl.spinygui.core.style.manager.StyleManagerImpl;
+import com.spinyowl.spinygui.core.style.stylesheet.impl.DefaultPropertyStoreProvider;
 import com.spinyowl.spinygui.core.style.types.Color;
 import com.spinyowl.spinygui.core.style.types.Overflow;
+import com.spinyowl.spinygui.core.system.font.impl.FontServiceImpl;
+import com.spinyowl.spinygui.core.system.font.impl.FontStorageImpl;
 import java.util.ArrayList;
 import java.util.List;
 import org.junit.jupiter.api.Test;
@@ -88,6 +95,38 @@ class NvgClipStackTest {
     clipStack.reset(7);
 
     assertEquals(List.of("reset(7)"), sink.calls());
+  }
+
+  @Test
+  void create_clipsTheFinalAlignedGridPanelBox() {
+    RecordingClipSink sink = new RecordingClipSink();
+    NvgClipStack clipStack = new NvgClipStack(sink);
+    Frame frame = NodeBuilder.frame();
+    frame.frameSize(300, 180);
+    Element grid = NodeBuilder.div();
+    grid.style("display:grid; width:240px; height:120px; grid-template-columns:100px;"
+        + "grid-template-rows:50px; justify-content:flex-end; align-content:flex-end;");
+    Element panel = NodeBuilder.div();
+    panel.style("display:grid; grid-template-columns:100px; grid-template-rows:50px;"
+        + "overflow:hidden;");
+    Element overflowingChild = NodeBuilder.div();
+    overflowingChild.style("width:140px; height:80px;");
+    panel.addChild(overflowingChild);
+    grid.addChild(panel);
+    frame.addChild(grid);
+    var store = new DefaultPropertyStoreProvider().createPropertyStore();
+    new StyleManagerImpl(store, StyleSheetParserFactory.createParser(store)).recalculate(frame);
+    FontServiceImpl fonts = new FontServiceImpl(new FontStorageImpl(), false);
+    fonts.installSemanticOwner();
+    LayoutServiceProvider.create(fonts).layout(frame);
+
+    clipStack.create(7, overflowingChild);
+
+    assertEquals(140, panel.box().content().x(), .001f);
+    assertEquals(70, panel.box().content().y(), .001f);
+    assertEquals(100, panel.box().content().width(), .001f);
+    assertEquals(50, panel.box().content().height(), .001f);
+    assertEquals(List.of("scissor(7,140.0,70.0,100.0,50.0)"), sink.calls());
   }
 
   @Test

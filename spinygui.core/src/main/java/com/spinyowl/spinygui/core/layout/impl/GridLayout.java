@@ -36,6 +36,7 @@ public class GridLayout implements ElementLayout {
 
   @NonNull private final BlockLayout blockLayout;
   @NonNull private final LayoutService layoutService;
+  @NonNull private final FlexLayout flexLayout;
 
   @Override
   public void layout(Element parent, LayoutContext context) {
@@ -74,7 +75,20 @@ public class GridLayout implements ElementLayout {
             rowGap,
             placement.items(),
             Axis.ROW);
-    applyItemBoxes(content, columns, rows, columnGap, rowGap, placement.items(), style);
+    GridTrackAlignment.Geometry columnGeometry =
+        GridTrackAlignment.resolve(
+            content.width(), sum(columns), columns.size(), columnGap, contentAlignment(style.justifyContent()));
+    GridTrackAlignment.Geometry rowGeometry =
+        GridTrackAlignment.resolve(
+            content.height(), sum(rows), rows.size(), rowGap, contentAlignment(style.alignContent()));
+    applyItemBoxes(
+        content,
+        columns,
+        rows,
+        columnGeometry,
+        rowGeometry,
+        placement.items(),
+        style);
     if (parent.resolvedStyle().height().isAuto()) {
       float height = sum(rows) + rowGap * Math.max(0, rows.size() - 1);
       parent.box().content().height(height);
@@ -295,37 +309,52 @@ public class GridLayout implements ElementLayout {
     return items.stream()
         .filter(item -> axis.start(item.range()) <= index && axis.end(item.range()) > index)
         .filter(item -> axis.span(item.range()) == 1)
-        .map(item -> axis == Axis.COLUMN ? item.element().box().borderBox().width() : item.element().box().borderBox().height())
+        .map(item -> intrinsicContribution(item.element(), axis))
         .max(Comparator.naturalOrder())
         .orElse(0f);
+  }
+
+  private float intrinsicContribution(Element element, Axis axis) {
+    GridIntrinsicContribution.Measurement measurement = GridIntrinsicContribution.measure(element);
+    return axis == Axis.COLUMN ? measurement.width() : measurement.height();
   }
 
   private void applyItemBoxes(
       Rect content,
       List<Float> columns,
       List<Float> rows,
-      float columnGap,
-      float rowGap,
+      GridTrackAlignment.Geometry columnGeometry,
+      GridTrackAlignment.Geometry rowGeometry,
       List<PlacedItem> items,
       ResolvedStyle parentStyle) {
     for (PlacedItem item : items) {
       GridItem range = item.range();
-      float areaX = content.x() + offset(columns, columnGap, range.columnStart());
-      float areaY = content.y() + offset(rows, rowGap, range.rowStart());
-      float areaWidth = spanSize(columns, columnGap, range.columnStart(), range.columnEnd());
-      float areaHeight = spanSize(rows, rowGap, range.rowStart(), range.rowEnd());
+      float areaX =
+          content.x()
+              + columnGeometry.offset()
+              + offset(columns, columnGeometry.gap(), range.columnStart());
+      float areaY =
+          content.y() + rowGeometry.offset() + offset(rows, rowGeometry.gap(), range.rowStart());
+      float areaWidth =
+          spanSize(columns, columnGeometry.gap(), range.columnStart(), range.columnEnd());
+      float areaHeight = spanSize(rows, rowGeometry.gap(), range.rowStart(), range.rowEnd());
       applyItemBox(item.element(), areaX, areaY, areaWidth, areaHeight, parentStyle);
       reflowItemContents(item.element());
     }
   }
 
   private void reflowItemContents(Element item) {
+    if (!GridIntrinsicContribution.measure(item).requiresFinalReflow()) {
+      return;
+    }
     LayoutContext context = new LayoutContext();
     if (Display.GRID.equals(item.resolvedStyle().display())) {
       // A nested grid must place its own items after its final grid area is known.
       layoutGridContents(item, context);
     } else if (Display.FLEX.equals(item.resolvedStyle().display())) {
-      layoutService.layoutChildNodes(item, context);
+      // Flex needs its own Yoga pass after Grid assigns the final area; laying out only its
+      // children leaves their previous main-axis positions and sizes intact.
+      flexLayout.layoutAssignedArea(item, context);
     } else {
       blockLayout.layoutFlowChildren(item);
     }
@@ -442,6 +471,10 @@ public class GridLayout implements ElementLayout {
       sum += value;
     }
     return sum;
+  }
+
+  private String contentAlignment(Object alignment) {
+    return alignment == null ? "flex-start" : alignment.toString();
   }
 
   private float resolveLength(Length<?> length, float base) {

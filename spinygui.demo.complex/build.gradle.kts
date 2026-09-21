@@ -1,6 +1,11 @@
+import java.util.UUID
+
 plugins {
     id("buildlogic.java-application-conventions")
 }
+
+val testRunOutputDirectory =
+    layout.projectDirectory.dir(".gradle/test-output/${UUID.randomUUID()}")
 
 val lwjglNatives = when {
     providers.systemProperty("os.name").get().startsWith("Windows", ignoreCase = true) -> "natives-windows"
@@ -41,6 +46,19 @@ tasks.named<JavaExec>("run") {
         "--add-opens", "com.spinyowl.cbchain/com.spinyowl.cbchain=org.lwjgl",
         "--add-reads", "org.lwjgl=com.spinyowl.cbchain"
     )
+}
+
+tasks.named<JavaCompile>("compileTestJava") {
+    destinationDirectory.set(testRunOutputDirectory.dir("classes"))
+    options.isIncremental = false
+}
+
+tasks.named<Test>("test") {
+    testClassesDirs = files(testRunOutputDirectory.dir("classes"))
+    classpath = sourceSets.test.get().runtimeClasspath + files(testRunOutputDirectory.dir("classes"))
+    binaryResultsDirectory.set(testRunOutputDirectory.dir("binary"))
+    reports.junitXml.outputLocation.set(testRunOutputDirectory.dir("junit-xml"))
+    reports.html.outputLocation.set(testRunOutputDirectory.dir("html"))
 }
 
 tasks.register<JavaExec>("runButtonExample") {

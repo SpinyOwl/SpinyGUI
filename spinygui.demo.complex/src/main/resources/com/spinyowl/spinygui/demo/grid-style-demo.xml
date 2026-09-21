@@ -16,4 +16,16 @@
         <div class="contract-row row-areas">areas: featured / summary / actions</div>
         <div class="contract-row row-gap">gap: 12px 18px</div>
     </div>
+
+    <div id="m7-grid-panel" class="m7-grid-panel">
+        <div class="m7-title">M7 aligned intrinsic panel</div>
+        <div class="m7-summary">Auto track: this clipped summary keeps its final width while the panel is resized.</div>
+        <div class="m7-controls">
+            <input id="m7-check" type="checkbox" name="grid-proof" value="enabled" />
+            <button id="m7-apply" type="button">Apply</button>
+        </div>
+        <div id="m7-scroll" class="m7-scroll">
+            <div class="m7-scroll-content">Scrollable content stays clipped to this final Grid cell. Resize the window, then scroll both directions to check the container bounds.</div>
+        </div>
+    </div>
 </winframe>

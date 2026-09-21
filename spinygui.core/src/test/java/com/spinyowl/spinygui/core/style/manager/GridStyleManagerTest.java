@@ -20,6 +20,8 @@ import com.spinyowl.spinygui.core.parser.impl.StyleSheetParserFactory;
 import com.spinyowl.spinygui.core.style.stylesheet.PropertyStore;
 import com.spinyowl.spinygui.core.style.stylesheet.impl.DefaultPropertyStoreProvider;
 import com.spinyowl.spinygui.core.style.types.Display;
+import com.spinyowl.spinygui.core.style.types.flex.AlignContent;
+import com.spinyowl.spinygui.core.style.types.flex.JustifyContent;
 import com.spinyowl.spinygui.core.style.types.grid.GridAutoFlow;
 import com.spinyowl.spinygui.core.style.types.grid.GridPlacement;
 import com.spinyowl.spinygui.core.style.types.grid.GridTemplateAreas;
@@ -29,6 +31,14 @@ import com.spinyowl.spinygui.core.style.types.length.Length;
 import org.junit.jupiter.api.Test;
 
 class GridStyleManagerTest {
+
+  @Test
+  void recalculateKeepsGridContainerAlignmentValuesTyped() {
+    Element element = styledElement("justify-content: space-evenly; align-content: space-evenly;");
+
+    assertEquals(JustifyContent.SPACE_EVENLY, element.resolvedStyle().justifyContent());
+    assertEquals(AlignContent.SPACE_EVENLY, element.resolvedStyle().alignContent());
+  }
 
   @org.junit.jupiter.params.ParameterizedTest
   @org.junit.jupiter.params.provider.CsvSource({

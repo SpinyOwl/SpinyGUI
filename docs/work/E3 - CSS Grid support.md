@@ -256,6 +256,28 @@ demo, not parser registration alone.
   pass using the project JDK.
 - Manual demo verification confirms geometry and pointer behavior match the documented subset.
 
+### M7: Complete predictable Grid panels
+
+**Document:** [M7 - Complete predictable Grid panels](E3/M7%20-%20Complete%20predictable%20Grid%20panels.md)
+
+**Purpose:** Close the remaining Grid Level 1 behavior needed for stable panel alignment and intrinsic dimensions.
+
+**Depends on:** M6/P2.
+
+**Architectural Proposition:** Add bounded container alignment and measured intrinsic contributions inside `GridLayout`, then prove them through core, backend, and native demo evidence.
+
+**Key Work:**
+
+- Implement container `justify-content`/`align-content` after track sizing.
+- Stabilize intrinsic contributions for text, controls, and nested layouts with bounded reflow.
+- Add end-to-end complex-panel evidence and reconcile support documentation.
+
+**Status:** Planned.
+
+**Validation:**
+
+- Focused Grid/core/backend tests and a native complex-demo check pass.
+
 ## Cross-Cutting Risks
 
 - Grid’s intrinsic sizing and item-layout feedback can require multiple measurement passes. Stop
@@ -286,5 +308,7 @@ flowchart TD
   M4["M4: Implement placement, areas, and auto-flow"]
   M5["M5: Integrate alignment, stretch, nesting, and overflow"]
   M6["M6: Prove, document, and harden Grid Level 1 support"]
+  M7["M7: Complete predictable Grid panels"]
   M1 --> M2 --> M3 --> M4 --> M5 --> M6
+  M6 --> M7
 ```

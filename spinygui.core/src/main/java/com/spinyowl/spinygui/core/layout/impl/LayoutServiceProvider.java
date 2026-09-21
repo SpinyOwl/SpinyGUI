@@ -39,10 +39,9 @@ public final class LayoutServiceProvider {
     elementLayoutMap.put(
         Display.INLINE_BLOCK,
         (element, context) -> blockLayout.layoutInlineBlock(element, element.parent()));
-    elementLayoutMap.put(Display.GRID, new GridLayout(blockLayout, layoutService));
-
     var flexLayout = new IntrinsicFlexLayout(blockLayout, layoutService);
     elementLayoutMap.put(Display.FLEX, flexLayout);
+    elementLayoutMap.put(Display.GRID, new GridLayout(blockLayout, layoutService, flexLayout));
 
     return layoutService;
   }

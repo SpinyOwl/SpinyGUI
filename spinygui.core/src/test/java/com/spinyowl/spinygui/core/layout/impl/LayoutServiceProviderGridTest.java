@@ -11,6 +11,7 @@ import static org.mockito.Mockito.withSettings;
 import com.spinyowl.spinygui.core.layout.LayoutService;
 import com.spinyowl.spinygui.core.node.Element;
 import com.spinyowl.spinygui.core.node.Frame;
+import com.spinyowl.spinygui.core.node.InputElement;
 import com.spinyowl.spinygui.core.node.NodeBuilder;
 import com.spinyowl.spinygui.core.style.ResolvedStyle;
 import com.spinyowl.spinygui.core.style.types.Color;
@@ -20,8 +21,10 @@ import com.spinyowl.spinygui.core.style.types.Position;
 import com.spinyowl.spinygui.core.style.types.Transform;
 import com.spinyowl.spinygui.core.style.types.TransformOrigin;
 import com.spinyowl.spinygui.core.style.types.border.BorderStyle;
+import com.spinyowl.spinygui.core.style.types.flex.AlignContent;
 import com.spinyowl.spinygui.core.style.types.flex.FlexDirection;
 import com.spinyowl.spinygui.core.style.types.flex.FlexWrap;
+import com.spinyowl.spinygui.core.style.types.flex.JustifyContent;
 import com.spinyowl.spinygui.core.style.types.grid.GridPlacement;
 import com.spinyowl.spinygui.core.style.types.grid.GridTemplateAreas;
 import com.spinyowl.spinygui.core.style.types.grid.GridTrack;
@@ -34,6 +37,72 @@ import com.spinyowl.spinygui.core.system.font.TextMeasurer;
 import org.junit.jupiter.api.Test;
 
 class LayoutServiceProviderGridTest {
+
+  @Test
+  void layout_placesAlignedNestedGridPanelWithTextAndControl() {
+    var fonts = new com.spinyowl.spinygui.core.system.font.impl.FontServiceImpl(
+        new com.spinyowl.spinygui.core.system.font.impl.FontStorageImpl(), false);
+    fonts.installSemanticOwner();
+    Frame frame = NodeBuilder.frame();
+    frame.frameSize(300, 180);
+    Element outer = NodeBuilder.div();
+    outer.style("display:grid; width:240px; height:120px; grid-template-columns:100px;"
+        + "grid-template-rows:50px; justify-content:flex-end; align-content:flex-end;");
+    Element panel = NodeBuilder.div();
+    panel.style("display:grid; grid-template-columns:1fr; grid-template-rows:25px 25px;");
+    Element textCell = NodeBuilder.div();
+    textCell.style("padding:2px; font-size:16px; line-height:20px; overflow:hidden;");
+    var text = NodeBuilder.text("panel text");
+    textCell.addChild(text);
+    InputElement control = NodeBuilder.input(NodeBuilder.TYPE_BUTTON, "save", "Save");
+    control.style("width:30px; height:20px;");
+    panel.addChildren(textCell, control);
+    outer.addChild(panel);
+    frame.addChild(outer);
+    var store = new com.spinyowl.spinygui.core.style.stylesheet.impl.DefaultPropertyStoreProvider()
+        .createPropertyStore();
+    var parser = com.spinyowl.spinygui.core.parser.impl.StyleSheetParserFactory.createParser(store);
+    new com.spinyowl.spinygui.core.style.manager.StyleManagerImpl(store, parser).recalculate(frame);
+
+    LayoutServiceProvider.create(fonts).layout(frame);
+
+    assertEquals(140, panel.box().content().x(), .001f);
+    assertEquals(70, panel.box().content().y(), .001f);
+    assertEquals(100, panel.box().content().width(), .001f);
+    assertEquals(50, panel.box().content().height(), .001f);
+    assertEquals(96, textCell.box().content().width(), .001f);
+    assertEquals(20, control.box().content().height(), .001f);
+    assertTrue(text.inlineFragments().stream().allMatch(fragment ->
+        fragment.x() + fragment.width() <= textCell.box().content().x()
+            + textCell.box().content().width() + .001f));
+  }
+
+  @Test
+  void gridReflowsMarkedAutoTextItemToItsFinalContentBox() {
+    var fonts = new com.spinyowl.spinygui.core.system.font.impl.FontServiceImpl(
+        new com.spinyowl.spinygui.core.system.font.impl.FontStorageImpl(), false);
+    fonts.installSemanticOwner();
+    Frame frame = NodeBuilder.frame();
+    frame.frameSize(400, 250);
+    Element grid = NodeBuilder.div();
+    grid.style("display:grid; width:300px; height:200px; grid-template-columns:80px;"
+        + "grid-template-rows:180px;");
+    Element cell = NodeBuilder.div();
+    cell.style("padding:5px; font-size:16px; line-height:20px; overflow:hidden;");
+    cell.addChild(NodeBuilder.text("alpha beta gamma delta epsilon"));
+    grid.addChild(cell);
+    frame.addChild(grid);
+    var store = new com.spinyowl.spinygui.core.style.stylesheet.impl.DefaultPropertyStoreProvider()
+        .createPropertyStore();
+    var parser = com.spinyowl.spinygui.core.parser.impl.StyleSheetParserFactory.createParser(store);
+    new com.spinyowl.spinygui.core.style.manager.StyleManagerImpl(store, parser).recalculate(frame);
+
+    assertTrue(GridIntrinsicContribution.measure(cell).requiresFinalReflow());
+    LayoutServiceProvider.create(fonts).layout(frame);
+
+    assertEquals(70, cell.box().content().width(), .001f);
+    assertTrue(cell.childNodes().getFirst().box().borderBox().height() > 20);
+  }
 
   @Test
   void gridReflowsInlineFragmentsAtFinalWidthAndAfterResize() {
@@ -560,6 +629,8 @@ class LayoutServiceProviderGridTest {
     style(frame, Display.BLOCK, 300, 300);
     Element grid = NodeBuilder.div();
     style(grid, Display.GRID, 100, 100);
+    grid.resolvedStyle().justifyContent(JustifyContent.FLEX_END);
+    grid.resolvedStyle().alignContent(AlignContent.FLEX_END);
     grid.resolvedStyle().overflowX(Overflow.AUTO);
     grid.resolvedStyle().overflowY(Overflow.AUTO);
     grid.resolvedStyle()
@@ -580,6 +651,155 @@ class LayoutServiceProviderGridTest {
     assertEquals(120, grid.scrollHeight());
     assertTrue(grid.clientWidth() < grid.scrollWidth());
     assertTrue(grid.clientHeight() < grid.scrollHeight());
+  }
+
+  @org.junit.jupiter.params.ParameterizedTest
+  @org.junit.jupiter.params.provider.CsvSource({
+      "flex-start, 0, 20",
+      "flex-end, 60, 80",
+      "center, 30, 50",
+      "space-between, 0, 80",
+      "space-around, 15, 65",
+      "space-evenly, 20, 60"
+  })
+  void layout_alignsFixedGridTracksOnBothAxes(String value, float firstPosition, float secondPosition) {
+    Frame frame = NodeBuilder.frame();
+    frame.frameSize(200, 200);
+    style(frame, Display.BLOCK, 200, 200);
+    Element grid = NodeBuilder.div();
+    style(grid, Display.GRID, 100, 100);
+    grid.resolvedStyle().justifyContent(JustifyContent.find(value));
+    grid.resolvedStyle().alignContent(AlignContent.find(value));
+    grid.resolvedStyle().gridTemplateColumns(fixedTracks(20, 20));
+    grid.resolvedStyle().gridTemplateRows(fixedTracks(20, 20));
+    Element first = gridItem();
+    Element second = gridItem();
+    Element third = gridItem();
+    Element fourth = gridItem();
+    grid.addChildren(first, second, third, fourth);
+    frame.addChild(grid);
+
+    layoutService().layout(frame);
+
+    assertEquals(firstPosition, first.box().content().x(), .001f);
+    assertEquals(firstPosition, first.box().content().y(), .001f);
+    assertEquals(secondPosition, second.box().content().x(), .001f);
+    assertEquals(firstPosition, second.box().content().y(), .001f);
+    assertEquals(firstPosition, third.box().content().x(), .001f);
+    assertEquals(secondPosition, third.box().content().y(), .001f);
+    assertEquals(secondPosition, fourth.box().content().x(), .001f);
+    assertEquals(secondPosition, fourth.box().content().y(), .001f);
+  }
+
+  @Test
+  void layout_alignsImplicitTracksAndNestedGridOnlyWithinItsOwnContentArea() {
+    Frame frame = NodeBuilder.frame();
+    frame.frameSize(200, 100);
+    style(frame, Display.BLOCK, 200, 100);
+    Element outer = NodeBuilder.div();
+    style(outer, Display.GRID, 100, 20);
+    outer.resolvedStyle().justifyContent(JustifyContent.FLEX_END);
+    outer.resolvedStyle().gridTemplateColumns(fixedTracks(20));
+    outer.resolvedStyle().gridAutoColumns(fixedTracks(10));
+    outer.resolvedStyle().gridTemplateRows(fixedTracks(20));
+    Element nested = gridItem();
+    nested.resolvedStyle().display(Display.GRID);
+    nested.resolvedStyle().justifyContent(JustifyContent.CENTER);
+    nested.resolvedStyle().gridTemplateColumns(fixedTracks(10));
+    nested.resolvedStyle().gridTemplateRows(fixedTracks(20));
+    Element nestedItem = gridItem();
+    nested.addChild(nestedItem);
+    Element implicit = gridItem();
+    implicit.resolvedStyle().gridColumnStart(GridPlacement.line(2));
+    outer.addChildren(nested, implicit);
+    frame.addChild(outer);
+
+    layoutService().layout(frame);
+
+    assertEquals(70, nested.box().content().x(), .001f);
+    assertEquals(90, implicit.box().content().x(), .001f);
+    assertEquals(5, nestedItem.box().content().x(), .001f);
+  }
+
+  @Test
+  void layout_autoTracksUsePreMeasuredInputAndTextareaBorderBoxes() {
+    Frame frame = NodeBuilder.frame();
+    frame.frameSize(200, 100);
+    style(frame, Display.BLOCK, 200, 100);
+    Element grid = NodeBuilder.div();
+    style(grid, Display.GRID, 100, 20);
+    grid.resolvedStyle().gridTemplateRows(fixedTracks(20));
+    InputElement input = NodeBuilder.input();
+    style(input, Display.BLOCK, 40, 20);
+    input.resolvedStyle().gridColumnStart(GridPlacement.line(1));
+    com.spinyowl.spinygui.core.node.TextareaElement textarea = NodeBuilder.textarea("notes");
+    style(textarea, Display.BLOCK, 50, 20);
+    textarea.resolvedStyle().gridColumnStart(GridPlacement.line(2));
+    grid.addChildren(input, textarea);
+    frame.addChild(grid);
+
+    layoutService().layout(frame);
+
+    assertEquals(40, input.box().content().width(), .001f);
+    assertEquals(50, textarea.box().content().width(), .001f);
+    assertEquals(40, textarea.box().content().x(), .001f);
+  }
+
+  @Test
+  void layout_reflowsFlexItemAfterGridTrackResize() {
+    Frame frame = NodeBuilder.frame();
+    frame.frameSize(300, 100);
+    style(frame, Display.BLOCK, 300, 100);
+    Element grid = NodeBuilder.div();
+    style(grid, Display.GRID, 300, 40);
+    grid.resolvedStyle().gridTemplateColumns(fixedTracks(100));
+    grid.resolvedStyle().gridTemplateRows(fixedTracks(40));
+    Element flex = gridItem();
+    flex.resolvedStyle().display(Display.FLEX);
+    flex.resolvedStyle().flexDirection(FlexDirection.ROW);
+    Element first = NodeBuilder.div();
+    style(first, Display.BLOCK, 10, 20);
+    first.resolvedStyle().flexGrow(1);
+    Element second = NodeBuilder.div();
+    style(second, Display.BLOCK, 10, 20);
+    second.resolvedStyle().flexGrow(1);
+    flex.addChildren(first, second);
+    grid.addChild(flex);
+    frame.addChild(grid);
+    LayoutService service = layoutService();
+
+    service.layout(frame);
+    assertGridItemArea(flex, 100, 40);
+    assertFlexRow(first, second, 50);
+
+    grid.resolvedStyle().gridTemplateColumns(fixedTracks(200));
+    service.layout(frame);
+    assertGridItemArea(flex, 200, 40);
+    assertFlexRow(first, second, 100);
+  }
+
+  @Test
+  void layout_keepsGridAssignedFlexHeightWhenChildOverflows() {
+    Frame frame = NodeBuilder.frame();
+    frame.frameSize(200, 100);
+    style(frame, Display.BLOCK, 200, 100);
+    Element grid = NodeBuilder.div();
+    style(grid, Display.GRID, 200, 40);
+    grid.resolvedStyle().gridTemplateColumns(fixedTracks(100));
+    grid.resolvedStyle().gridTemplateRows(fixedTracks(40));
+    Element flex = gridItem();
+    flex.resolvedStyle().display(Display.FLEX);
+    Element tallChild = NodeBuilder.div();
+    style(tallChild, Display.BLOCK, 20, 80);
+    tallChild.resolvedStyle().flexShrink(0);
+    flex.addChild(tallChild);
+    grid.addChild(flex);
+    frame.addChild(grid);
+
+    layoutService().layout(frame);
+
+    assertGridItemArea(flex, 100, 40);
+    assertEquals(80, tallChild.box().content().height(), .001f);
   }
 
   @Test
@@ -757,6 +977,28 @@ class LayoutServiceProviderGridTest {
     item.resolvedStyle().width(Unit.AUTO);
     item.resolvedStyle().height(Unit.AUTO);
     return item;
+  }
+
+  private static GridTrackList fixedTracks(float... sizes) {
+    java.util.List<GridTrack> tracks = new java.util.ArrayList<>();
+    for (float size : sizes) {
+      tracks.add(GridTrack.of(GridTrackSize.fixed(Length.pixel(size))));
+    }
+    return GridTrackList.of(tracks);
+  }
+
+  private static void assertFlexRow(Element first, Element second, float itemWidth) {
+    assertEquals(itemWidth, first.box().content().width(), .001f);
+    assertEquals(0, first.box().content().x(), .001f);
+    assertEquals(itemWidth, second.box().content().width(), .001f);
+    assertEquals(itemWidth, second.box().content().x(), .001f);
+  }
+
+  private static void assertGridItemArea(Element item, float width, float height) {
+    assertEquals(width, item.box().content().width(), .001f);
+    assertEquals(height, item.box().content().height(), .001f);
+    assertEquals(0, item.box().content().x(), .001f);
+    assertEquals(0, item.box().content().y(), .001f);
   }
 
   private static Element demoGridCard(String areaName) {
