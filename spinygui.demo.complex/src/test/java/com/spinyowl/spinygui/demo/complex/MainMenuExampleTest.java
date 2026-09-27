@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import com.spinyowl.spinygui.core.font.Font;
 import com.spinyowl.spinygui.core.layout.impl.LayoutServiceProvider;
 import com.spinyowl.spinygui.core.node.Frame;
 import com.spinyowl.spinygui.core.parser.impl.DefaultNodeParser;
@@ -16,9 +17,26 @@ import com.spinyowl.spinygui.core.style.types.flex.JustifyContent;
 import com.spinyowl.spinygui.core.system.font.impl.FontServiceImpl;
 import com.spinyowl.spinygui.core.system.font.impl.FontStorageImpl;
 import com.spinyowl.spinygui.core.util.IOUtil;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 class MainMenuExampleTest {
+
+  private FontServiceImpl fontService;
+
+  @BeforeEach
+  void installSemanticFontOwner() {
+    fontService = new FontServiceImpl(new FontStorageImpl(), true);
+    fontService.installSemanticOwner();
+  }
+
+  @AfterEach
+  void closeSemanticFontOwner() {
+    if (Font.hasSemanticOwner()) {
+      Font.semanticService().close();
+    }
+  }
 
   @Test
   void mainMenuResourceStylesCenterRootContent() {
@@ -34,7 +52,7 @@ class MainMenuExampleTest {
     Frame frame = styledMainMenuFrame();
     frame.frameSize(720, 640);
 
-    var layoutService = LayoutServiceProvider.create(installedFontService());
+    var layoutService = LayoutServiceProvider.create(fontService);
 
     layoutService.layout(frame);
 
@@ -49,7 +67,7 @@ class MainMenuExampleTest {
     Frame frame = styledMainMenuFrame();
     frame.frameSize(720, 640);
 
-    var layoutService = LayoutServiceProvider.create(installedFontService());
+    var layoutService = LayoutServiceProvider.create(fontService);
 
     layoutService.layout(frame);
 
@@ -68,12 +86,6 @@ class MainMenuExampleTest {
     frame.styleSheets().add(parser.parse(readResource("com/spinyowl/spinygui/demo/main-menu.css")));
     new StyleManagerImpl(propertyStore, parser).recalculate(frame);
     return frame;
-  }
-
-  private static FontServiceImpl installedFontService() {
-    FontServiceImpl service = new FontServiceImpl(new FontStorageImpl(), true);
-    service.installSemanticOwner();
-    return service;
   }
 
   private static String readResource(String path) {
